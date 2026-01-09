@@ -366,10 +366,10 @@
                         value="{{ old('name') }}"
                         required
                         autocomplete="given-name"
-                        class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('name') border-red-500/50 @enderror"
+                        class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('name', 'register') border-red-500/50 @enderror"
                         placeholder="Ad"
                     >
-                    @error('name')
+                    @error('name', 'register')
                         <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
                             <i class="fas fa-exclamation-circle"></i>
                             {{ $message }}
@@ -383,10 +383,10 @@
                         value="{{ old('surname') }}"
                         required
                         autocomplete="family-name"
-                        class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('surname') border-red-500/50 @enderror"
+                        class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('surname', 'register') border-red-500/50 @enderror"
                         placeholder="Soyad"
                     >
-                    @error('surname')
+                    @error('surname', 'register')
                         <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
                             <i class="fas fa-exclamation-circle"></i>
                             {{ $message }}
@@ -403,10 +403,10 @@
                     value="{{ old('email') }}"
                     required
                     autocomplete="username"
-                    class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('email') border-red-500/50 @enderror"
+                    class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('email', 'register') border-red-500/50 @enderror"
                     placeholder="E-posta adresiniz"
                 >
-                @error('email')
+                @error('email', 'register')
                     <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
                         <i class="fas fa-exclamation-circle"></i>
                         {{ $message }}
@@ -422,7 +422,7 @@
                     required
                     autocomplete="new-password"
                     @input="checkPasswordStrength($event.target.value)"
-                    class="w-full px-5 py-4 pr-12 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('password') border-red-500/50 @enderror"
+                    class="w-full px-5 py-4 pr-12 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('password', 'register') border-red-500/50 @enderror"
                     placeholder="Şifre (en az 8 karakter)"
                 >
                 <button
@@ -447,7 +447,7 @@
                     </div>
                 </div>
 
-                @error('password')
+                @error('password', 'register')
                     <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
                         <i class="fas fa-exclamation-circle"></i>
                         {{ $message }}

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sağ Sidebar Görünürlük Sistemi - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            border-color: rgba(96, 165, 250, 0.3);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.1);
+        }
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 3px solid #3b82f6;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-primary { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
+        .badge-success { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+        .badge-warning { background: rgba(251, 146, 60, 0.2); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.3); }
+        .badge-purple { background: rgba(168, 85, 247, 0.2); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+    </style>
+</head>
+<body class="text-slate-100 p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto mb-8">
+        <div class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <span class="badge badge-primary mb-4">
+                        <i class="fas fa-analytics"></i>
+                        Sistem Analizi
+                    </span>
+                    <h1 class="text-3xl md:text-4xl font-bold gradient-text mt-2">
+                        Sağ Sidebar Görünürlük Sistemi
+                    </h1>
+                    <p class="text-slate-400 mt-2">
+                        Muzibu müzik platformunda sağ sidebar'ın nerede göründüğü ve hangi koşullarda gizlendiğinin detaylı analizi
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-3 text-sm text-slate-400">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-calendar text-blue-400"></i>
+                    09 Ocak 2026
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-layer-group text-purple-400"></i>
+                    Frontend Layout
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-code text-green-400"></i>
+                    Alpine.js + Laravel Blade
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto space-y-6">
+
+        <!-- 📝 Basit Anlatım -->
+        <section class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                    <i class="fas fa-book-open text-green-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">📝 Basit Anlatım (Herkes İçin)</h2>
+            </div>
+
+            <div class="space-y-4 text-slate-300 leading-relaxed">
+                <p class="text-lg">
+                    <strong class="text-white">Sağ sidebar</strong>, Muzibu sitesinde ekranın sağ tarafında çıkan panel.
+                    Bu panel müzik sayfalarında gösterilir, diğer sayfalarda gizlenir.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-4 my-6">
+                    <div class="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+                        <h4 class="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            Sağ Sidebar Göründüğü Yerler
+                        </h4>
+                        <ul class="space-y-1 text-sm">
+                            <li>• Ana sayfa</li>
+                            <li>• Şarkılar sayfası</li>
+                            <li>• Albümler sayfası</li>
+                            <li>• Playlistler sayfası</li>
+                            <li>• Türler (Genre) sayfası</li>
+                            <li>• Sektörler sayfası</li>
+                            <li>• Radyolar sayfası</li>
+                            <li>• Arama sayfası</li>
+                            <li>• Favoriler sayfası</li>
+                            <li>• Playlistlerim sayfası</li>
+                            <li>• Kurumsal Playlistler</li>
+                            <li>• Dinleme Geçmişi</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 rounded-lg bg-red-500/10 border border-red-500/30">
+                        <h4 class="font-semibold text-red-400 mb-2 flex items-center gap-2">
+                            <i class="fas fa-times-circle"></i>
+                            Sağ Sidebar Gizlendiği Yerler
+                        </h4>
+                        <ul class="space-y-1 text-sm">
+                            <li>• Profil sayfası</li>
+                            <li>• Ayarlar sayfası</li>
+                            <li>• Giriş/Kayıt sayfaları</li>
+                            <li>• Ödeme sayfaları</li>
+                            <li>• Kurumsal dashboard</li>
+                            <li>• Diğer statik sayfalar</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-mobile-screen"></i>
+                        Responsive Davranış
+                    </h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><strong class="text-white">Mobil (768px altı):</strong> Sağ sidebar tamamen gizli</li>
+                        <li><strong class="text-white">Tablet (768px - 1024px):</strong> Sol sidebar hamburger menü, sağ sidebar görünür</li>
+                        <li><strong class="text-white">Desktop (1024px üstü):</strong> Her iki sidebar da görünür</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔧 Teknik Detaylar -->
+        <section class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                    <i class="fas fa-code text-blue-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+            </div>
+
+            <!-- 1. PHP Route Kontrolü -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                    <i class="fas fa-php text-purple-400"></i>
+                    1. PHP Route Kontrolü
+                </h3>
+                <p class="text-slate-300 mb-4">
+                    <strong>Dosya:</strong> <code class="px-2 py-1 bg-slate-700 rounded text-blue-300">resources/views/themes/muzibu/layouts/app.blade.php</code>
+                    <br>
+                    <strong>Satır:</strong> 467-490
+                </p>
+                <div class="code-block rounded-lg p-4 overflow-x-auto">
+                    <pre class="text-sm text-slate-300"><code>@php
+    $showRightSidebar = in_array(Route::currentRouteName(), [
+        'muzibu.home',
+        'muzibu.songs.index',
+        'muzibu.songs.show',
+        'muzibu.albums.index',
+        'muzibu.albums.show',
+        'muzibu.artists.index',
+        'muzibu.artists.show',
+        'muzibu.playlists.index',
+        'muzibu.playlists.show',
+        'muzibu.genres.index',
+        'muzibu.genres.show',
+        'muzibu.sectors.index',
+        'muzibu.sectors.show',
+        'muzibu.radios.index',
+        'muzibu.search',
+        'muzibu.favorites',
+        'muzibu.my-playlists',
+        'muzibu.corporate-playlists',
+        'muzibu.listening-history',
+    ]);
+@endphp</code></pre>
+                </div>
+            </div>
+
+            <!-- 2. Grid Layout Class Sistemi -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                    <i class="fas fa-grid text-green-400"></i>
+                    2. Grid Layout Class Sistemi
+                </h3>
+                <p class="text-slate-300 mb-4">
+                    <strong>Dosya:</strong> <code class="px-2 py-1 bg-slate-700 rounded text-blue-300">app.blade.php</code>
+                    <br>
+                    <strong>Satır:</strong> 492-496
+                </p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="code-block rounded-lg p-4">
+                        <p class="text-xs text-green-400 mb-2 font-semibold uppercase">✅ Sağ Sidebar Var</p>
+                        <pre class="text-xs text-slate-300"><code>md:grid-cols-[1fr_280px]
+lg:grid-cols-[220px_1fr_280px]
+xl:grid-cols-[220px_1fr_320px]
+2xl:grid-cols-[220px_1fr_360px]</code></pre>
+                    </div>
+                    <div class="code-block rounded-lg p-4">
+                        <p class="text-xs text-red-400 mb-2 font-semibold uppercase">❌ Sağ Sidebar Yok</p>
+                        <pre class="text-xs text-slate-300"><code>lg:grid-cols-[220px_1fr]
+xl:grid-cols-[220px_1fr]
+2xl:grid-cols-[220px_1fr]</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Hybrid Sistem: PHP Initial + Alpine SPA -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                    <i class="fas fa-code-merge text-purple-400"></i>
+                    3. Hybrid Sistem: PHP Initial + Alpine SPA
+                </h3>
+                <p class="text-slate-300 mb-4">
+                    <strong>Dosya:</strong> <code class="px-2 py-1 bg-slate-700 rounded text-blue-300">app.blade.php</code>
+                    <br>
+                    <strong>Satır:</strong> 501-506
+                </p>
+                <div class="code-block rounded-lg p-4 overflow-x-auto">
+                    <pre class="text-sm text-slate-300"><code>&lt;div id="main-app-grid"
+    class="grid {{ $initialGridCols }}"
+    x-bind:class="$store.sidebar?.rightSidebarVisible
+        ? '{{ $gridColsWithSidebar }}'
+        : '{{ $gridColsNoSidebar }}'"
+&gt;</code></pre>
+                </div>
+                <div class="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <p class="text-sm text-yellow-300">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        <strong>İlk Yükleme:</strong> PHP değişkeni (<code>$initialGridCols</code>) kullanılır.
+                        <br>
+                        <strong>SPA Navigasyon:</strong> Alpine.js store (<code>$store.sidebar.rightSidebarVisible</code>) ile dinamik güncellenir.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4. Sidebar Element Görünürlüğü -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                    <i class="fas fa-eye text-blue-400"></i>
+                    4. Sidebar Element Görünürlüğü
+                </h3>
+                <p class="text-slate-300 mb-4">
+                    <strong>Dosya:</strong> <code class="px-2 py-1 bg-slate-700 rounded text-blue-300">app.blade.php</code>
+                    <br>
+                    <strong>Satır:</strong> 519-524
+                </p>
+                <div class="code-block rounded-lg p-4 overflow-x-auto">
+                    <pre class="text-sm text-slate-300"><code>&lt;aside
+    class="muzibu-right-sidebar {{ $showRightSidebar ? 'hidden md:block' : 'hidden' }}"
+    x-bind:class="$store.sidebar?.rightSidebarVisible ? 'md:block' : 'hidden'"
+&gt;
+    @include('themes.muzibu.components.sidebar-right')
+&lt;/aside&gt;</code></pre>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 🎨 Sağ Sidebar İçerik Modları -->
+        <section class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                    <i class="fas fa-layer-group text-purple-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">🎨 Sağ Sidebar İçerik Modları</h2>
+            </div>
+
+            <p class="text-slate-300 mb-6">
+                <strong>Dosya:</strong> <code class="px-2 py-1 bg-slate-700 rounded text-blue-300">resources/views/themes/muzibu/components/sidebar-right.blade.php</code>
+            </p>
+
+            <div class="space-y-4">
+                <!-- Mode 1: Preview Mode -->
+                <div class="border border-purple-500/30 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="badge badge-purple">Mode 1</span>
+                        <h3 class="text-lg font-semibold text-white">Preview Mode</h3>
+                    </div>
+                    <p class="text-slate-300 mb-3">
+                        Liste elemanına (playlist, album, genre, sector) tıklandığında aktif olur.
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-sm text-slate-300">
+                        <p class="font-semibold text-purple-400 mb-2">Gösterir:</p>
+                        <ul class="space-y-1">
+                            <li>• Büyük kapak resmi + gradient overlay</li>
+                            <li>• Favori butonu + Play All butonu</li>
+                            <li>• Şarkı listesi (thumbnail + duration + favorite + 3-dot menu)</li>
+                            <li>• Kendi playlist'i ise: Sürükle-bırak (reorder) + Şarkı çıkar (delete)</li>
+                            <li>• Infinite scroll (100'e kadar) + Pagination (100+ için)</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Satır:</strong> 58-530</p>
+                    </div>
+                </div>
+
+                <!-- Mode 2: Detail Page Mode -->
+                <div class="border border-blue-500/30 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="badge badge-primary">Mode 2</span>
+                        <h3 class="text-lg font-semibold text-white">Detail Page Mode</h3>
+                    </div>
+                    <p class="text-slate-300 mb-3">
+                        Detay sayfasında (album show, playlist show) ve preview mode aktif değilken çalışır.
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-sm text-slate-300">
+                        <p class="font-semibold text-blue-400 mb-2">Gösterir:</p>
+                        <ul class="space-y-1">
+                            <li>• Büyük kapak resmi + gradient overlay</li>
+                            <li>• Favori butonu + Play All butonu</li>
+                            <li>• Entity bilgileri (type, title, song count)</li>
+                            <li>• Şarkı listesi (thumbnail + favorite + 3-dot menu)</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Satır:</strong> 533-641</p>
+                    </div>
+                </div>
+
+                <!-- Mode 3: Homepage Default -->
+                <div class="border border-green-500/30 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="badge badge-success">Mode 3</span>
+                        <h3 class="text-lg font-semibold text-white">Homepage Default</h3>
+                    </div>
+                    <p class="text-slate-300 mb-3">
+                        Preview ve detail page mode değilse (ana sayfa, liste sayfaları vb.) varsayılan içerik gösterilir.
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-sm text-slate-300">
+                        <p class="font-semibold text-green-400 mb-2">Gösterir:</p>
+                        <ul class="space-y-1">
+                            <li>• Premium Header + Gradient Background</li>
+                            <li>• Tab Sistemi: "Yeni Şarkılar" ve "Popüler Şarkılar"</li>
+                            <li>• Tab'a göre başlık + ikon değişir (⭐ Yeni / 🔥 Popüler)</li>
+                            <li>• Şarkı listesi (PHP'den gelen $newSongs ve $popularSongs)</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Satır:</strong> 645-745</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📱 Responsive Breakpoints -->
+        <section class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                    <i class="fas fa-mobile-screen text-orange-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">📱 Responsive Breakpoints</h2>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-semibold">Breakpoint</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-semibold">Ekran Genişliği</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-semibold">Sol Sidebar</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-semibold">Sağ Sidebar</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-semibold">Sağ Sidebar Genişliği</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">
+                                <span class="badge badge-warning">Mobile</span>
+                            </td>
+                            <td class="py-3 px-4">&lt; 768px</td>
+                            <td class="py-3 px-4">
+                                <span class="text-orange-400">
+                                    <i class="fas fa-bars mr-1"></i>
+                                    Hamburger Menu
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-red-400">
+                                    <i class="fas fa-times mr-1"></i>
+                                    Gizli
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-slate-500">-</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">
+                                <span class="badge badge-primary">Tablet</span>
+                            </td>
+                            <td class="py-3 px-4">768px - 1023px</td>
+                            <td class="py-3 px-4">
+                                <span class="text-orange-400">
+                                    <i class="fas fa-bars mr-1"></i>
+                                    Hamburger Menu
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-green-400">
+                                    <i class="fas fa-check mr-1"></i>
+                                    Görünür
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">280px</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">
+                                <span class="badge badge-success">Desktop (LG)</span>
+                            </td>
+                            <td class="py-3 px-4">1024px - 1279px</td>
+                            <td class="py-3 px-4">
+                                <span class="text-green-400">
+                                    <i class="fas fa-check mr-1"></i>
+                                    Görünür (220px)
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-green-400">
+                                    <i class="fas fa-check mr-1"></i>
+                                    Görünür
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">280px</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">
+                                <span class="badge badge-success">Desktop (XL)</span>
+                            </td>
+                            <td class="py-3 px-4">1280px - 1535px</td>
+                            <td class="py-3 px-4">
+                                <span class="text-green-400">
+                                    <i class="fas fa-check mr-1"></i>
+                                    Görünür (220px)
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-green-400">
+                                    <i class="fas fa-check mr-1"></i>
+                                    Görünür
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">320px</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4">
+                                <span class="badge badge-success">Desktop (2XL)</span>
+                            </td>
+                            <td class="py-3 px-4">≥ 1536px</td>
+                            <td class="py-3 px-4">
+                                <span class="text-green-400">
+                                    <i class="fas fa-check mr-1"></i>
+                                    Görünür (220px)
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-green-400">
+                                    <i class="fas fa-check mr-1"></i>
+                                    Görünür
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">360px</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 💡 Önemli Notlar -->
+        <section class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-yellow-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">💡 Önemli Notlar</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                    <h4 class="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-code-branch"></i>
+                        1. Hybrid Yaklaşım
+                    </h4>
+                    <p class="text-sm text-slate-300">
+                        Sistem hem PHP hem de Alpine.js kullanır. İlk yükleme PHP ile olur, SPA navigasyonları Alpine.js store ile yönetilir.
+                        Bu sayede hem SEO dostu hem de dinamik bir yapı sağlanır.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                    <h4 class="font-semibold text-purple-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-arrows-alt"></i>
+                        2. Grid Layout
+                    </h4>
+                    <p class="text-sm text-slate-300">
+                        CSS Grid kullanılarak responsive layout sağlanır. Tailwind'in grid-cols-[...] syntax'ı ile sabit genişlikler tanımlanır.
+                        Mobilde tek sütun, tablette 2 sütun, desktop'ta 3 sütun layout çalışır.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <h4 class="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-layer-group"></i>
+                        3. Dinamik İçerik
+                    </h4>
+                    <p class="text-sm text-slate-300">
+                        Sağ sidebar içeriği Alpine.js <code>x-if</code> ve <code>x-show</code> direktifleri ile dinamik olarak değişir.
+                        Preview mode, detail page mode ve homepage default mode arasında geçiş yapar.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                    <h4 class="font-semibold text-orange-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-mobile-screen"></i>
+                        4. Mobile First
+                    </h4>
+                    <p class="text-sm text-slate-300">
+                        Mobilde sağ sidebar gizli olduğu için performans kazancı sağlanır. Tablet ve üstünde sidebar yüklendiğinde
+                        infinite scroll ve pagination ile büyük listeler optimize edilir.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📊 Route Listesi -->
+        <section class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                    <i class="fas fa-route text-green-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">📊 Sağ Sidebar Görünen Route'lar</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.home</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.songs.index</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.songs.show</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.albums.index</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.albums.show</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.artists.index</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.artists.show</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.playlists.index</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.playlists.show</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.genres.index</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.genres.show</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.sectors.index</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.sectors.show</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.radios.index</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.search</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.favorites</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.my-playlists</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.corporate-playlists</p>
+                </div>
+                <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+                    <p class="text-sm text-green-400 font-mono">muzibu.listening-history</p>
+                </div>
+            </div>
+
+            <p class="text-sm text-slate-400 mt-4">
+                <i class="fas fa-info-circle text-blue-400 mr-1"></i>
+                <strong>Toplam:</strong> 19 route'da sağ sidebar gösteriliyor
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto mt-8 text-center text-slate-500 text-sm py-6">
+        <p>🤖 Claude AI tarafından analiz edildi - 09 Ocak 2026</p>
+    </footer>
+
+</body>
+</html>

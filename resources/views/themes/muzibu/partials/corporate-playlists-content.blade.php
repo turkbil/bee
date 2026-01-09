@@ -24,5 +24,12 @@
                 <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
             @endforeach
         </div>
+
+        {{-- Pagination --}}
+        @if($playlists->hasPages())
+            <div class="mt-8">
+                {{ $playlists->links('themes.muzibu.partials.pagination') }}
+            </div>
+        @endif
     @endif
 </div>

@@ -100,13 +100,20 @@ class PaymentSuccessController extends Controller
             ]);
         }
 
+        // ⚠️ ÖDEME DURUMU KONTROLÜ
+        // PayTR callback henüz gelmemiş olabilir, pending kontrolü yap
+        $isPending = $order->payment_status !== 'paid';
+
         Log::info('✅ Payment success page loaded', [
             'order_number' => $order->order_number,
+            'payment_status' => $order->payment_status,
+            'is_pending' => $isPending,
             'amount' => $payment->amount,
             'items_count' => $order->items->count()
         ]);
 
         // Session'dan payment verilerini temizle (ama localStorage için cart_id kalsın)
+        // NOT: Pending durumunda da temizle çünkü sepet kullanıldı
         session()->forget([
             'last_order_number',
             'checkout_user_info',
@@ -121,10 +128,11 @@ class PaymentSuccessController extends Controller
             $layoutPath = 'themes.simple.layouts.app';
         }
 
-        // Başarı sayfasını göster
+        // Başarı/İşleniyor sayfasını göster
         return view('payment::front.payment-success', [
             'payment' => $payment,
             'order' => $order,
+            'isPending' => $isPending,
             'layoutPath' => $layoutPath,
         ]);
     }

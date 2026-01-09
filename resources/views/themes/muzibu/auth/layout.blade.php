@@ -178,6 +178,11 @@
                         this.otherDevices = deviceData.devices || [];
                         this.intendedUrl = deviceData.intendedUrl || '/';
                     }
+
+                    // Register validation hatası varsa otomatik register tab'ına geç
+                    @if($errors->register->any())
+                        this.activeTab = 'register';
+                    @endif
                 },
 
                 async openPageModal(pageId) {

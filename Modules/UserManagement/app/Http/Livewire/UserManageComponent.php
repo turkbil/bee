@@ -536,8 +536,25 @@ class UserManageComponent extends Component
 
     public function save($redirect = false, $resetForm = false)
     {
-        $this->validate();
-    
+        // 🔍 DEBUG: Save fonksiyonu başlangıcı
+        Log::debug('💾 SAVE BAŞLADI', [
+            'user_id' => $this->userId,
+            'role_id' => $this->inputs['role_id'] ?? 'null',
+            'modulePermissions_count' => count($this->modulePermissions ?? []),
+            'modulePermissions' => $this->modulePermissions,
+        ]);
+
+        try {
+            $this->validate();
+            Log::debug('✅ Validation passed');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('❌ Validation failed', [
+                'errors' => $e->errors(),
+                'message' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+
         try {
             DB::beginTransaction();
     

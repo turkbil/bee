@@ -596,8 +596,8 @@ function muzibuApp() {
             // 🎯 QUEUE CHECKER: Monitor queue and auto-refill (PHASE 4)
             this.startQueueMonitor();
 
-            // ⏱️ SUBSCRIPTION COUNTDOWN: Premium/Trial bitiş süresini takip et
-            this.startSubscriptionCountdown();
+            // ⏱️ SUBSCRIPTION CHECK: Server her şarkı isteğinde kontrol ediyor (402 status)
+            // Client-side countdown KALDIRILDI - gereksiz performans kaybı
 
             // 🎵 BACKGROUND PLAYBACK: Tarayıcı minimize olsa bile çalsın
             this.enableBackgroundPlayback();
@@ -656,7 +656,7 @@ function muzibuApp() {
 
             // 🚀 PRELOAD LAST PLAYED: Sayfa yüklenince son şarkıyı hazırla (instant play için)
             // ⚡ INSTANT: Anında başlat (no delay!)
-            if (this.isLoggedIn && (this.currentUser?.is_premium || this.currentUser?.is_trial)) {
+            if (this.isLoggedIn && (this.currentUser?.is_premium)) {
                 this.preloadLastPlayedSong();
             }
 
@@ -728,7 +728,7 @@ function muzibuApp() {
         // Sadece URL cache'liyoruz, play basınca playSongFromQueue yeni HLS oluşturur
         async preloadLastPlayedSong() {
             // 🚫 Skip if not premium (prevent 402 spam)
-            if (!this.isLoggedIn || (!this.currentUser?.is_premium && !this.currentUser?.is_trial)) {
+            if (!this.isLoggedIn || !this.currentUser?.is_premium) {
                 return;
             }
 
@@ -893,9 +893,9 @@ function muzibuApp() {
                         return;
                     }
 
-                    // Premium/Trial olmayan üye → Direkt /subscription/plans
-                    const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-                    if (!isPremiumOrTrial) {
+                    // Premium olmayan üye → Direkt /subscription/plans
+                    const isPremium = this.currentUser?.is_premium;
+                    if (!isPremium) {
                         this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
                         setTimeout(() => {
                             window.location.href = '/subscription/plans';
@@ -1077,8 +1077,8 @@ function muzibuApp() {
                 return;
             }
 
-            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-            if (!isPremiumOrTrial) {
+            const isPremium = this.currentUser?.is_premium;
+            if (!isPremium) {
                 this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
                 setTimeout(() => {
                     window.location.href = '/subscription/plans';
@@ -2860,8 +2860,8 @@ function muzibuApp() {
                 return;
             }
 
-            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-            if (!isPremiumOrTrial) {
+            const isPremium = this.currentUser?.is_premium;
+            if (!isPremium) {
                 this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
                 return;
             }
@@ -2902,8 +2902,8 @@ function muzibuApp() {
                 return;
             }
 
-            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-            if (!isPremiumOrTrial) {
+            const isPremium = this.currentUser?.is_premium;
+            if (!isPremium) {
                 this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
                 return;
             }
@@ -2944,8 +2944,8 @@ function muzibuApp() {
                 return;
             }
 
-            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-            if (!isPremiumOrTrial) {
+            const isPremium = this.currentUser?.is_premium;
+            if (!isPremium) {
                 this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
                 return;
             }
@@ -2981,8 +2981,8 @@ function muzibuApp() {
                 return;
             }
 
-            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-            if (!isPremiumOrTrial) {
+            const isPremium = this.currentUser?.is_premium;
+            if (!isPremium) {
                 this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
                 return;
             }
@@ -3018,8 +3018,8 @@ function muzibuApp() {
                 return;
             }
 
-            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-            if (!isPremiumOrTrial) {
+            const isPremium = this.currentUser?.is_premium;
+            if (!isPremium) {
                 this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
                 return;
             }
@@ -3077,7 +3077,7 @@ function muzibuApp() {
 
         async playSong(id) {
             // 🔍 SERVER LOG: playSong başlangıcı
-            serverLog('playSongStart', { songId: id, isLoggedIn: this.isLoggedIn, isPremium: this.currentUser?.is_premium, isTrial: this.currentUser?.is_trial });
+            serverLog('playSongStart', { songId: id, isLoggedIn: this.isLoggedIn, isPremium: this.currentUser?.is_premium });
 
             try {
                 // 🔄 Loading state başlat
@@ -3092,9 +3092,9 @@ function muzibuApp() {
                     return;
                 }
 
-                // Premium/Trial olmayan üye → Toast mesajı göster
-                const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-                if (!isPremiumOrTrial) {
+                // Premium olmayan üye → Toast mesajı göster
+                const isPremium = this.currentUser?.is_premium;
+                if (!isPremium) {
                     this.isSongLoading = false;
                     serverLog('playSongBlocked', { reason: 'not_premium' });
                     this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
@@ -3203,19 +3203,25 @@ function muzibuApp() {
                 // 🍎 Update iOS Control Center / Lock Screen metadata
                 this.updateMediaSession();
 
-                // 🔄 Her şarkı çalmada premium status ve subscription bilgilerini güncelle
+                // 🔄 Her şarkı çalmada premium status güncelle (TEK KAYNAK: subscription_expires_at)
                 if (this.currentUser) {
+                    const oldPremium = this.currentUser.is_premium;
+
                     if (streamData.is_premium !== undefined) {
                         this.currentUser.is_premium = streamData.is_premium;
                     }
-                    if (streamData.is_trial !== undefined) {
-                        this.currentUser.is_trial = streamData.is_trial;
-                    }
-                    if (streamData.trial_ends_at !== undefined) {
-                        this.currentUser.trial_ends_at = streamData.trial_ends_at;
-                    }
                     if (streamData.subscription_ends_at !== undefined) {
                         this.currentUser.subscription_ends_at = streamData.subscription_ends_at;
+                    }
+
+                    // 🔔 Premium durumu değiştiyse UI'a bildir (sidebar, header vs)
+                    if (oldPremium !== this.currentUser.is_premium) {
+                        window.dispatchEvent(new CustomEvent('user:premium-changed', {
+                            detail: {
+                                is_premium: this.currentUser.is_premium,
+                                subscription_ends_at: this.currentUser.subscription_ends_at
+                            }
+                        }));
                     }
                 }
 
@@ -3938,17 +3944,23 @@ function muzibuApp() {
 
                 // Update premium status ve subscription bilgileri
                 if (this.currentUser) {
+                    const oldPremium = this.currentUser.is_premium;
+
                     if (data.is_premium !== undefined) {
                         this.currentUser.is_premium = data.is_premium;
                     }
-                    if (data.is_trial !== undefined) {
-                        this.currentUser.is_trial = data.is_trial;
-                    }
-                    if (data.trial_ends_at !== undefined) {
-                        this.currentUser.trial_ends_at = data.trial_ends_at;
-                    }
                     if (data.subscription_ends_at !== undefined) {
                         this.currentUser.subscription_ends_at = data.subscription_ends_at;
+                    }
+
+                    // 🔔 Premium durumu değiştiyse UI'a bildir
+                    if (oldPremium !== this.currentUser.is_premium) {
+                        window.dispatchEvent(new CustomEvent('user:premium-changed', {
+                            detail: {
+                                is_premium: this.currentUser.is_premium,
+                                subscription_ends_at: this.currentUser.subscription_ends_at
+                            }
+                        }));
                     }
                 }
 
@@ -6074,7 +6086,7 @@ onplay: function() {
                     }
 
                     // 🎵 Başarı mesajı göster
-                    const welcomePremiumMsg = (this.frontLang?.user?.welcome_premium || 'Welcome, :name! Your premium trial has started.').replace(':name', data.user.name);
+                    const welcomePremiumMsg = (this.frontLang?.user?.welcome_premium || 'Welcome, :name! Your premium account is now active.').replace(':name', data.user.name);
                     this.showToast(welcomePremiumMsg + ' 🎉', 'success');
 
 
@@ -6270,7 +6282,7 @@ onplay: function() {
          */
         async preloadNextThreeSongs() {
             // 🚫 Skip if not premium (prevent 402 spam)
-            if (!this.isLoggedIn || (!this.currentUser?.is_premium && !this.currentUser?.is_trial)) {
+            if (!this.isLoggedIn || !this.currentUser?.is_premium) {
                 return;
             }
 
@@ -6897,69 +6909,12 @@ onplay: function() {
         },
 
         /**
-         * ⏱️ SUBSCRIPTION COUNTDOWN: Premium/Trial bitiş süresini takip et
-         * Süre bitince: Şarkıyı durdur + Cache temizle + Abonelik sayfasına yönlendir
+         * ⏱️ SUBSCRIPTION CHECK
+         * 🔴 KALDIRILDI: Her saniye kontrol gereksiz performans kaybı
+         * Server her şarkı stream isteğinde isPremium() kontrolü yapıyor (402 status)
+         * Premium değilse → toast + /subscription/plans yönlendirme (line 3146, 3885)
          */
-        startSubscriptionCountdown() {
-            // Sadece login olan kullanıcılar için
-            if (!this.isLoggedIn || !this.currentUser) {
-                return;
-            }
-
-            // Trial veya subscription bitiş tarihini al (hangisi daha yakınsa)
-            const trialEnd = this.currentUser.trial_ends_at ? new Date(this.currentUser.trial_ends_at) : null;
-            const subscriptionEnd = this.currentUser.subscription_ends_at ? new Date(this.currentUser.subscription_ends_at) : null;
-
-            let expiresAt = null;
-            if (trialEnd && subscriptionEnd) {
-                // İkisi de varsa, hangisi daha yakınsa onu kullan
-                expiresAt = trialEnd < subscriptionEnd ? trialEnd : subscriptionEnd;
-            } else if (trialEnd) {
-                expiresAt = trialEnd;
-            } else if (subscriptionEnd) {
-                expiresAt = subscriptionEnd;
-            }
-
-            // Bitiş tarihi yoksa countdown başlatma
-            if (!expiresAt) {
-                return;
-            }
-
-            // Her saniye kontrol et
-            const countdownInterval = setInterval(() => {
-                const now = new Date();
-                const timeLeft = expiresAt - now;
-
-                // Süre doldu
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    console.warn('⏰ Subscription expired! Stopping playback and redirecting...');
-
-                    // 1. Şarkıyı durdur
-                    if (this.isPlaying) {
-                        if (this.howl) {
-                            this.howl.pause();
-                        } else if (this.hls) {
-                            const audio = this.getActiveHlsAudio();
-                            if (audio) audio.pause();
-                        }
-                        this.isPlaying = false;
-                        window.dispatchEvent(new CustomEvent('player:pause'));
-                    }
-
-                    // 2. Toast göster
-                    this.showToast(this.frontLang?.messages?.subscription_expired || 'Your subscription has expired. Redirecting to subscription page...', 'warning');
-
-                    // 3. 2 saniye bekle, sonra cache temizle ve redirect
-                    setTimeout(() => {
-                        // Hard reload (cache temizle)
-                        window.location.href = '/subscription/plans';
-                    }, 2000);
-                }
-
-                // Subscription time check (silent)
-            }, 1000); // Her saniye kontrol
-        },
+        // startSubscriptionCountdown() - REMOVED
 
         /**
          * 🔄 Player state sync (sayfa visible olunca)

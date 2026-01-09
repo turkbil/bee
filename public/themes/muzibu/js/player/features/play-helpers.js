@@ -68,8 +68,8 @@ async function playGenres(genreId) {
             return;
         }
 
-        const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
-        if (!isPremiumOrTrial) {
+        const isPremium = player.currentUser?.is_premium;
+        if (!isPremium) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
@@ -141,8 +141,8 @@ async function playPlaylist(playlistId) {
             return;
         }
 
-        const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
-        if (!isPremiumOrTrial) {
+        const isPremium = player.currentUser?.is_premium;
+        if (!isPremium) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
@@ -214,8 +214,8 @@ async function playAlbum(albumId) {
             return;
         }
 
-        const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
-        if (!isPremiumOrTrial) {
+        const isPremium = player.currentUser?.is_premium;
+        if (!isPremium) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
@@ -287,8 +287,8 @@ async function playRadio(radioId) {
             return;
         }
 
-        const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
-        if (!isPremiumOrTrial) {
+        const isPremium = player.currentUser?.is_premium;
+        if (!isPremium) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
@@ -360,8 +360,8 @@ async function playSector(sectorId) {
             return;
         }
 
-        const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
-        if (!isPremiumOrTrial) {
+        const isPremium = player.currentUser?.is_premium;
+        if (!isPremium) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }

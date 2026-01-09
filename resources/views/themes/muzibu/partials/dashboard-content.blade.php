@@ -47,32 +47,12 @@
 
         {{-- Stats Grid --}}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {{-- 🔴 TEK KAYNAK: isPremium() (subscription_expires_at > now) --}}
             @php
-                $isTrial = $access['is_trial'] ?? false;
-                $isPremium = $user->isPremiumOrTrial();
+                $isPremium = $user->isPremium();
             @endphp
 
-            @if($isTrial && !$timeLeft['expired'])
-                <div class="col-span-2 lg:col-span-1 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl p-5">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-gift text-green-400 text-xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-green-400 text-sm font-semibold">{{ __('muzibu::front.dashboard.trial') }}</p>
-                            <p class="text-white text-lg font-bold">
-                                @if($timeLeft['days'] > 0)
-                                    {{ $timeLeft['days'] }}{{ __('muzibu::front.dashboard.days_short') }} {{ $timeLeft['hours'] }}{{ __('muzibu::front.dashboard.hours_short') }}
-                                @elseif($timeLeft['hours'] > 0)
-                                    {{ $timeLeft['hours'] }}{{ __('muzibu::front.dashboard.hours_short') }} {{ $timeLeft['minutes'] }}{{ __('muzibu::front.dashboard.minutes_short') }}
-                                @else
-                                    {{ $timeLeft['minutes'] }}{{ __('muzibu::front.dashboard.minutes_short') }}
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            @elseif($isPremium && !$timeLeft['expired'])
+            @if($isPremium && !$timeLeft['expired'])
                 <div class="col-span-2 lg:col-span-1 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-5">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">

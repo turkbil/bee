@@ -150,23 +150,9 @@ Route::post('/verify-construction-password', [App\Http\Controllers\ConstructionA
     ->withoutMiddleware([\App\Http\Middleware\UnderConstructionProtection::class])
     ->name('construction.verify');
 
-// 🎵 MUZIBU ROUTES - Domain-specific routes (Tenant 1001)
-// Load module routes with domain filter
-$muzibuDomains = \Illuminate\Support\Facades\DB::table('domains')
-    ->where('tenant_id', 1001)
-    ->pluck('domain')
-    ->toArray();
-
-foreach ($muzibuDomains as $index => $domain) {
-    Route::middleware([
-        'web', // Session, cookies, CSRF - AUTH İÇİN ZORUNLU!
-        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
-        'site', // Response cache, locale, SEO middleware'leri
-    ])
-        ->domain($domain)
-        ->name($index === 0 ? '' : "d{$index}.")
-        ->group(module_path('Muzibu', 'routes/web.php'));
-}
+// 🎵 MUZIBU ROUTES - Loaded from MuzibuServiceProvider (module-specific routing)
+// Domain-based routing with cached domain list
+// See: Modules/Muzibu/Providers/MuzibuServiceProvider::loadWebRoutes()
 
 // 🎵 MUZIBU STREAMING ROUTES - EN ÖNCE TANIMLANMALI (high priority)
 // Sadece tenant middleware - session/web middleware yok (stateless streaming)
@@ -768,16 +754,16 @@ Route::middleware([InitializeTenancy::class, 'site'])
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription)[^/]+$');
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors)[^/]+$');
 
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$');
 
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$')
          ->where('slug3', '[^/]+');
     });

@@ -1576,26 +1576,25 @@
                             }"
                             class="w-full py-4 rounded-xl font-bold text-lg text-white transition-all">
 
-                            <template x-if="!processing && selectedGateway === 'paytr'">
-                                <span>
-                                    <i class="fas fa-credit-card mr-2"></i>
-                                    {{ __('Kartla Ödemeye Geç') }}
-                                    <i class="fas fa-arrow-right ml-2"></i>
-                                </span>
-                            </template>
-                            <template x-if="!processing && (selectedGateway === 'bank_transfer' || selectedGateway === 'manual')">
-                                <span>
-                                    <i class="fas fa-building-columns mr-2"></i>
-                                    {{ __('Havale Bilgilerini Gör') }}
-                                    <i class="fas fa-arrow-right ml-2"></i>
-                                </span>
-                            </template>
-                            <template x-if="processing">
-                                <span>
-                                    <i class="fas fa-spinner fa-spin mr-2"></i>
-                                    {{ __('İşleniyor...') }}
-                                </span>
-                            </template>
+                            {{-- PayTR Gateway --}}
+                            <span x-show="!processing && selectedGateway === 'paytr'">
+                                <i class="fas fa-credit-card mr-2"></i>
+                                {{ __('Kartla Ödemeye Geç') }}
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </span>
+
+                            {{-- Bank Transfer / Manual Gateway --}}
+                            <span x-show="!processing && (selectedGateway === 'bank_transfer' || selectedGateway === 'manual')">
+                                <i class="fas fa-building-columns mr-2"></i>
+                                {{ __('Havale Bilgilerini Gör') }}
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </span>
+
+                            {{-- Processing State --}}
+                            <span x-show="processing">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                {{ __('İşleniyor...') }}
+                            </span>
                         </button>
 
                         <p class="text-center text-xs text-gray-500 mt-4" x-show="selectedGateway === 'paytr'">

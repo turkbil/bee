@@ -620,11 +620,18 @@
             }
         "></div>
 
-        {{-- Premium Button (non-premium only) - SPA Reactive --}}
+        {{-- Premium Button (non-premium only) - SPA Reactive - 🔴 TEK KAYNAK: isPremium (reaktif) --}}
         <a
             href="/subscription/plans"
-           
-            x-show="isLoggedIn && (!currentUser?.is_premium)"
+            x-data="{
+                isPremium: window.muzibuPlayerConfig?.currentUser?.is_premium || false,
+                init() {
+                    window.addEventListener('user:premium-changed', (e) => {
+                        this.isPremium = e.detail.is_premium;
+                    });
+                }
+            }"
+            x-show="isLoggedIn && !isPremium"
             x-cloak
             class="hidden sm:flex items-center gap-2 px-4 py-2 border border-muzibu-coral/40 hover:border-muzibu-coral hover:bg-muzibu-coral/10 rounded-full text-muzibu-coral text-sm font-semibold transition-all duration-300"
         >
@@ -646,7 +653,16 @@
         </button>
 
         {{-- User Dropdown - SPA Reactive --}}
-        <div x-show="isLoggedIn" x-cloak class="relative" x-data="{ userMenuOpen: false }">
+        <div x-show="isLoggedIn" x-cloak class="relative" x-data="{
+            userMenuOpen: false,
+            isPremium: window.muzibuPlayerConfig?.currentUser?.is_premium || false,
+            init() {
+                // 🔔 Premium değişikliğini dinle (player'dan event gelir)
+                window.addEventListener('user:premium-changed', (e) => {
+                    this.isPremium = e.detail.is_premium;
+                });
+            }
+        }">
             <button
                 @click="userMenuOpen = !userMenuOpen"
                 class="relative w-10 h-10 bg-gradient-to-br from-[#ff6b6b] via-[#ff5252] to-[#e91e63] hover:opacity-90 rounded-full text-white font-bold text-sm transition-all duration-300 shadow-lg hover:shadow-xl"
@@ -667,32 +683,17 @@
                     <p class="text-white font-semibold text-sm" x-text="currentUser?.name || (window.muzibuPlayerConfig?.frontLang?.user?.user || 'User')"></p>
                     <p class="text-zinc-400 text-xs" x-text="currentUser?.email || ''"></p>
 
-                    {{-- Premium Badge --}}
+                    {{-- Premium Badge - 🔴 TEK KAYNAK: isPremium (reaktif) --}}
                     <div
-                        x-show="currentUser?.is_premium"
+                        x-show="isPremium"
                         class="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full"
                     >
                         <i class="fas fa-crown text-yellow-400 text-xs"></i>
                         <span class="text-yellow-400 text-xs font-semibold">{{ trans('muzibu::front.user.premium_member') }}</span>
                     </div>
 
-                    {{-- Trial Badge (Sadece trial üyeler için) --}}
-                    @auth
-                        @php
-                            $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
-                            $access = $subscriptionService->checkUserAccess(auth()->user());
-                            $isTrial = $access['is_trial'] ?? false;
-                            $isPremium = auth()->user()->isPremiumOrTrial();
-                        @endphp
-
-                        @if($isTrial && !$isPremium)
-                            {{-- Sadece deneme üyeliği var, premium yok --}}
-                            <div class="mt-2 inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 border border-green-500/30 rounded-full">
-                                <i class="fas fa-gift text-green-400 text-[10px]"></i>
-                                <span class="text-green-400 text-[10px] font-semibold">{{ trans('muzibu::front.user.trial_member') }}</span>
-                            </div>
-                        @endif
-                    @endauth
+                    {{-- 🔴 TEK KAYNAK: isPremium() (subscription_expires_at > now) --}}
+                    {{-- Trial ayrımı kaldırıldı - trial da premium sayılır --}}
                 </div>
 
                 {{-- Admin Panel (Sadece admin/root/editor yetkisi olanlara) --}}
@@ -736,11 +737,10 @@
 
                 <div class="h-px bg-white/10 my-1"></div>
 
-                {{-- Premium'a Geç (ücretsiz üyeler için) --}}
+                {{-- Premium'a Geç (ücretsiz üyeler için) - 🔴 TEK KAYNAK: isPremium (reaktif) --}}
                 <a
                     href="/subscription/plans"
-
-                    x-show="!currentUser?.is_premium"
+                    x-show="!isPremium"
                     @click="userMenuOpen = false"
                     class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
                 >
@@ -756,7 +756,7 @@
                         $daysRemainingHeader = $accessHeader['days_remaining'] ?? null;
                         $showExtendButtonHeader = $daysRemainingHeader !== null && $daysRemainingHeader <= 30;
                     @endphp
-                    @if($showExtendButtonHeader && auth()->user()->isPremiumOrTrial())
+                    @if($showExtendButtonHeader && auth()->user()->isPremium())
                         <a
                             href="/subscription/plans"
                             @click="userMenuOpen = false"

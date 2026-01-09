@@ -783,7 +783,7 @@ class PlaylistController extends Controller
 
     /**
      * Check if user has active premium subscription
-     * (from central database)
+     * 🔴 TEK KAYNAK: users.subscription_expires_at (tenant database)
      *
      * @param int $userId
      * @return bool
@@ -791,14 +791,9 @@ class PlaylistController extends Controller
     protected function checkUserPremium(int $userId): bool
     {
         try {
-            $subscription = \DB::connection('central')
-                ->table('subscriptions')
-                ->where('user_id', $userId)
-                ->where('status', 'active')
-                ->where('ends_at', '>', now())
-                ->first();
-
-            return $subscription !== null;
+            // 🔴 TEK KAYNAK: users.subscription_expires_at
+            $user = \App\Models\User::find($userId);
+            return $user ? $user->isPremium() : false;
         } catch (\Exception $e) {
             \Log::error('Premium check error', ['error' => $e->getMessage()]);
             return false;

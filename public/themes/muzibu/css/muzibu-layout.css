@@ -793,30 +793,17 @@
 
 /* ==================== RESPONSIVE ==================== */
 
-/* MOBILE (< 768px) - Hide right sidebar */
+/* MOBILE ONLY (< 768px) - Hide right sidebar */
 @media (max-width: 767px) {
     .muzibu-right-sidebar {
-        display: none;
+        display: none !important;
     }
 }
 
-/* TABLET/SMALL DESKTOP (768px - 1279px) - Adjust grid for right sidebar only */
-@media (min-width: 768px) and (max-width: 1279px) {
-    .muzibu-app {
-        grid-template-columns: 1fr 280px;
-    }
-
-    .muzibu-right-sidebar {
-        border-radius: 8px 8px 0 0;
-        display: block;
-    }
-}
-
-/* LARGE DESKTOP (1280px+) - Both sidebars visible */
-@media (min-width: 1280px) {
-    .muzibu-app {
-        grid-template-columns: 280px 1fr 280px;
-    }
+/* TABLET & DESKTOP (768px+) - Right sidebar visible (controlled by Tailwind classes) */
+@media (min-width: 768px) {
+    /* Tailwind classes (hidden md:block) kontrol eder */
+    /* CSS burada override YAPMA! */
 }
 
 /* TABLET (768px - 1024px) */

@@ -29,7 +29,10 @@ class PlaylistController extends Controller
                 $q->where('is_active', 1);
             }], 'duration')
             ->orderBy('created_at', 'desc')
-            ->paginate(200);
+            ->paginate(40);
+
+        // Set custom pagination view
+        $playlists->setPath(request()->url());
 
         return view('themes.muzibu.playlists.index', compact('playlists'));
     }
@@ -79,7 +82,7 @@ class PlaylistController extends Controller
                 $q->where('is_active', 1);
             }], 'duration')
             ->orderBy('created_at', 'desc')
-            ->paginate(200);
+            ->paginate(40);
 
         $html = view('themes.muzibu.partials.playlists-grid', compact('playlists'))->render();
 

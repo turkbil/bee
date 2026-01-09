@@ -1,4 +1,4 @@
-@props(['playlist', 'preview' => true, 'compact' => false])
+@props(['playlist', 'preview' => true, 'compact' => false, 'index' => 0])
 
 {{-- ⚠️⚠️⚠️ UYARI: PREVIEW MODU HER ZAMAN TRUE OLMALI! ⚠️⚠️⚠️ --}}
 {{--
@@ -80,7 +80,7 @@
             <img src="{{ thumb($heroMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
-                 loading="lazy">
+                 loading="{{ $index < 4 ? 'eager' : 'lazy' }}">
         @else
             <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                 <span class="text-5xl">🎵</span>

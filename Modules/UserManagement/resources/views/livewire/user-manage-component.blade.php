@@ -410,8 +410,7 @@
                                 </div>
                             </div>
 
-                            <!-- Hidden input for Livewire sync -->
-                            <input type="hidden" x-model="permissionsJson" wire:model.defer="modulePermissions">
+                            {{-- Alpine.js ile Livewire senkronizasyonu $watch ile otomatik yapılıyor --}}
                         </div>
                     </div>
                     
@@ -500,18 +499,6 @@ document.addEventListener('alpine:init', () => {
 
             const selected = this.permissionTypes.filter(type => this.permissions[moduleName][type]).length;
             return { selected, total: this.permissionTypes.length };
-        },
-
-        get permissionsJson() {
-            return JSON.stringify(this.permissions);
-        },
-
-        set permissionsJson(value) {
-            try {
-                this.permissions = JSON.parse(value);
-            } catch (e) {
-                console.error('Invalid JSON:', e);
-            }
         }
     }));
 });

@@ -70,7 +70,10 @@ class FavoritesController extends Controller
             $query->where('favoritable_type', $modelMap[$type]);
         }
 
-        $favorites = $query->paginate(200);
+        $favorites = $query->paginate(40);
+
+        // Set custom pagination view
+        $favorites->setPath(request()->url());
 
         return response()
             ->view('themes.muzibu.favorites.index', compact('favorites', 'type', 'counts'))
@@ -122,7 +125,7 @@ class FavoritesController extends Controller
             }
         }
 
-        $favorites = $query->paginate(200);
+        $favorites = $query->paginate(40);
         $html = view('themes.muzibu.partials.favorites-list', compact('favorites', 'type'))->render();
         return response()->json(['html' => $html, 'meta' => ['title' => 'Favorilerim - Muzibu', 'description' => 'Favori içerikleriniz']])
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')

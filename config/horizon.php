@@ -227,10 +227,10 @@ return [
             ],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'minProcesses' => 2,
-            'maxProcesses' => 6,  // 10 saat için artırıldı (277 job)
+            'minProcesses' => 6,  // 🚀 ARTTIRILDI: 2 → 4 → 6 (daha fazla aktif worker)
+            'maxProcesses' => 20, // 🚀 ARTTIRILDI: 6 → 12 → 20 (184 AI görsel + HLS için)
             'maxTime' => 0,
-            'maxJobs' => 200,     // maxJobs artırıldı
+            'maxJobs' => 2000,    // 🚀 ARTTIRILDI: 200 → 300 → 2000 (MAXIMUM POWER!)
             'memory' => 512,      // Memory artırıldı (HLS + AI için)
             'tries' => 2,
             'timeout' => 600, // 10 dakika - HLS conversion için

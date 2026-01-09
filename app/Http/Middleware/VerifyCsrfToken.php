@@ -20,6 +20,9 @@ class VerifyCsrfToken extends Middleware
 
         // Telescope API (delete entries vb.)
         'telescope/telescope-api/*',
+
+        // Logout - Session expire olsa bile çalışmalı (419 hatası önlenir)
+        'logout',
     ];
     
     /**

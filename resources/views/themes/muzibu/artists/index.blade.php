@@ -80,7 +80,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         {{-- Pagination --}}
         @if($artists->hasPages())
             <div class="mt-8">
-                {{ $artists->links() }}
+                {{ $artists->links('themes.muzibu.partials.pagination') }}
             </div>
         @endif
     @else

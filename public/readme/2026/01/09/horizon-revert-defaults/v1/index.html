@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon Varsayılan Ayarlarına Döndürme Kılavuzu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-6xl mx-auto p-6 md:p-8">
+        <!-- Header -->
+        <header class="mb-8 pb-6 border-b border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-yellow-900/30 text-yellow-400 text-sm font-medium rounded-full border border-yellow-800">
+                    ⚙️ Konfigürasyon
+                </span>
+                <span class="text-slate-500">•</span>
+                <span class="text-slate-400 text-sm">9 Ocak 2026 - 11:05</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-3 text-white">Horizon Varsayılan Ayarlarına Döndürme</h1>
+            <p class="text-slate-400 text-lg">Kuyruk kapasitesini yüksek ayarlara çıkardıktan sonra geri alma rehberi</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4 text-green-400">📝 Basit Anlatım (Herkes İçin)</h3>
+            <div class="space-y-3 text-slate-300">
+                <p>
+                    <strong>Ne Yaptık?</strong><br>
+                    Horizon kuyruk sisteminin kapasitesini çok yükseğe çıkardık:
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Worker sayısı: 2-6 → 6-20 (En az 6, en fazla 20 işçi çalışıyor)</li>
+                    <li>İş limiti: 200-300 → 2000 (Her işçi 2000 iş yapabilir)</li>
+                    <li>Amaç: 184 AI görseli + HLS dönüşümleri hızlı yapmak</li>
+                </ul>
+                <p class="mt-4">
+                    <strong>Ne Zaman Geri Almalıyım?</strong>
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Sunucu CPU kullanımı çok yüksekse (%80-100)</li>
+                    <li>Hafıza (RAM) doluyorsa</li>
+                    <li>Site yavaşlamaya başladıysa</li>
+                    <li>Yoğun işler bittiyse (AI görselleri tamamlandı)</li>
+                </ul>
+                <p class="mt-4 text-green-300 font-medium">
+                    ✅ Geri alma işlemi 2 dakika sürer ve tamamen güvenlidir.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4 text-blue-400">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h4 class="font-semibold text-white mb-2">📁 Dosya:</h4>
+                    <code class="text-sm text-blue-300">config/horizon.php</code>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">📊 Değişiklik Tablosu:</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border border-slate-700 rounded">
+                            <thead class="bg-slate-800">
+                                <tr>
+                                    <th class="px-4 py-2 text-left border-b border-slate-700">Parametre</th>
+                                    <th class="px-4 py-2 text-left border-b border-slate-700">Eski (Varsayılan)</th>
+                                    <th class="px-4 py-2 text-left border-b border-slate-700">Yeni (Yüksek Kapasite)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-700">
+                                    <td class="px-4 py-2 font-mono text-yellow-400">minProcesses</td>
+                                    <td class="px-4 py-2">2</td>
+                                    <td class="px-4 py-2 text-green-400 font-bold">6</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="px-4 py-2 font-mono text-yellow-400">maxProcesses</td>
+                                    <td class="px-4 py-2">6</td>
+                                    <td class="px-4 py-2 text-green-400 font-bold">20</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-mono text-yellow-400">maxJobs</td>
+                                    <td class="px-4 py-2">200</td>
+                                    <td class="px-4 py-2 text-green-400 font-bold">2000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">🎯 Etkilenen Supervisor:</h4>
+                    <code class="text-sm text-blue-300">muzibu-supervisor</code>
+                    <p class="text-slate-400 text-sm mt-1">
+                        (muzibu_my_playlist, muzibu_hls, muzibu_seo kuyrukları)
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">⚠️ Yan Etkiler:</h4>
+                    <ul class="list-disc list-inside space-y-1 ml-4 text-sm text-slate-400">
+                        <li>Yüksek CPU kullanımı (20 worker eş zamanlı çalışabilir)</li>
+                        <li>Yüksek RAM kullanımı (her worker ~256-512MB)</li>
+                        <li>Yüksek Redis bağlantı sayısı</li>
+                        <li>Yüksek API çağrı hızı (Leonardo AI, OpenAI)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geri Alma Adımları -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold mb-6 text-white">📋 Geri Alma Adımları</h3>
+
+            <!-- Adım 1 -->
+            <div class="mb-6 p-5 bg-slate-850 rounded-lg border border-slate-700">
+                <div class="flex items-start gap-3 mb-3">
+                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                    <h4 class="text-lg font-semibold text-white">Config Dosyasını Düzenle</h4>
+                </div>
+                <div class="ml-11 space-y-3">
+                    <p class="text-slate-300">Dosyayı aç:</p>
+                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">nano /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php</pre>
+
+                    <p class="text-slate-300 mt-3">Satır 230-233'ü bul ve değiştir:</p>
+                    <div class="grid md:grid-cols-2 gap-3 mt-2">
+                        <div>
+                            <p class="text-red-400 text-xs mb-1">❌ Şu anki (Yüksek):</p>
+                            <pre class="bg-slate-950 text-red-300 p-3 rounded text-xs">minProcesses => 6
+maxProcesses => 20
+maxJobs => 2000</pre>
+                        </div>
+                        <div>
+                            <p class="text-green-400 text-xs mb-1">✅ Varsayılan (Normal):</p>
+                            <pre class="bg-slate-950 text-green-300 p-3 rounded text-xs">minProcesses => 2
+maxProcesses => 6
+maxJobs => 200</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="mb-6 p-5 bg-slate-850 rounded-lg border border-slate-700">
+                <div class="flex items-start gap-3 mb-3">
+                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                    <h4 class="text-lg font-semibold text-white">İzinleri Düzelt</h4>
+                </div>
+                <div class="ml-11 space-y-3">
+                    <p class="text-slate-300">Dosya kaydedildikten sonra izinleri düzelt:</p>
+                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">sudo chown tuufi.com_:psaserv /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php
+sudo chmod 644 /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php</pre>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="mb-6 p-5 bg-slate-850 rounded-lg border border-slate-700">
+                <div class="flex items-start gap-3 mb-3">
+                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                    <h4 class="text-lg font-semibold text-white">Cache Temizle</h4>
+                </div>
+                <div class="ml-11 space-y-3">
+                    <p class="text-slate-300">Config cache'i temizle:</p>
+                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">/opt/plesk/php/8.5/bin/php artisan config:clear</pre>
+                </div>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="mb-6 p-5 bg-slate-850 rounded-lg border border-slate-700">
+                <div class="flex items-start gap-3 mb-3">
+                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-sm">4</span>
+                    <h4 class="text-lg font-semibold text-white">Horizon'u Restart Et</h4>
+                </div>
+                <div class="ml-11 space-y-3">
+                    <p class="text-slate-300">Horizon'u durdur (otomatik başlayacak):</p>
+                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">/opt/plesk/php/8.5/bin/php artisan horizon:terminate</pre>
+                    <p class="text-slate-400 text-sm mt-2">
+                        ℹ️ horizon-keeper.sh scripti 30 saniye içinde otomatik başlatacak.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Adım 5 -->
+            <div class="p-5 bg-slate-850 rounded-lg border border-slate-700">
+                <div class="flex items-start gap-3 mb-3">
+                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-sm">5</span>
+                    <h4 class="text-lg font-semibold text-white">Doğrulama</h4>
+                </div>
+                <div class="ml-11 space-y-3">
+                    <p class="text-slate-300">Worker sayısını kontrol et:</p>
+                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">ps aux | grep "horizon:work" | grep -v grep | wc -l</pre>
+                    <p class="text-slate-400 text-sm mt-2">
+                        Beklenen sonuç: 6-10 worker (varsayılan ayarlarda)
+                    </p>
+                    <p class="text-slate-300 mt-3">Detaylı kontrol (ilk 3 worker):</p>
+                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">ps aux | grep "horizon:work" | grep -v grep | head -3</pre>
+                    <p class="text-slate-400 text-sm mt-2">
+                        Kontrol: <code class="text-yellow-400">--max-jobs=200</code> olmalı (2000 değil!)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tek Komutla Geri Alma -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4 text-purple-400">⚡ Tek Komutla Geri Alma (İleri Seviye)</h3>
+            <div class="space-y-3 text-slate-300">
+                <p>Tüm adımları tek komutla yapabilirsiniz:</p>
+                <pre class="bg-slate-950 text-purple-300 p-4 rounded text-sm overflow-x-auto whitespace-pre-wrap">sed -i "s/'minProcesses' => 6/'minProcesses' => 2/g" /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php && \
+sed -i "s/'maxProcesses' => 20/'maxProcesses' => 6/g" /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php && \
+sed -i "s/'maxJobs' => 2000/'maxJobs' => 200/g" /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php && \
+sudo chown tuufi.com_:psaserv /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php && \
+/opt/plesk/php/8.5/bin/php artisan config:clear && \
+/opt/plesk/php/8.5/bin/php artisan horizon:terminate && \
+echo "✅ Horizon varsayılan ayarlara döndürüldü! 30 saniye içinde yeniden başlayacak."</pre>
+                <p class="text-yellow-300 text-sm mt-3">
+                    ⚠️ Bu komut tüm değişiklikleri geri alır. Dikkatli kullanın!
+                </p>
+            </div>
+        </div>
+
+        <!-- Yüksek Kapasite Ne Zaman Gerekli? -->
+        <div class="bg-orange-900/20 border border-orange-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4 text-orange-400">🎯 Yüksek Kapasite Ne Zaman Gerekli?</h3>
+            <div class="space-y-3 text-slate-300">
+                <p class="font-medium text-white">Yüksek kapasiteyi (2000 maxJobs) şu durumlarda kullanın:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Toplu AI görsel üretimi (100+ resim)</li>
+                    <li>Toplu HLS dönüşümü (50+ şarkı)</li>
+                    <li>Toplu SEO oluşturma (100+ sayfa)</li>
+                    <li>Migration sonrası data işleme</li>
+                    <li>Büyük import işlemleri</li>
+                </ul>
+                <p class="font-medium text-white mt-4">Varsayılan ayarlara (200 maxJobs) dönün:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Yoğun işler tamamlandığında</li>
+                    <li>Normal işletme modunda (günlük site kullanımı)</li>
+                    <li>Sunucu kaynaklarını korumak için</li>
+                    <li>CPU/RAM kullanımı yüksekse</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sorun Giderme -->
+        <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4 text-red-400">🔧 Sorun Giderme</h3>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Horizon başlamıyor:</h4>
+                    <pre class="bg-slate-950 text-red-300 p-3 rounded text-sm overflow-x-auto">tail -n 50 /tmp/horizon-output.log</pre>
+                    <p class="text-slate-400 text-sm mt-1">Log dosyasını kontrol edin, hata varsa göreceksiniz.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Worker sayısı hala yüksek:</h4>
+                    <pre class="bg-slate-950 text-red-300 p-3 rounded text-sm overflow-x-auto">php artisan config:cache</pre>
+                    <p class="text-slate-400 text-sm mt-1">Config'i yeniden cache'leyin ve Horizon'u tekrar restart edin.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">horizon-keeper scripti çalışmıyor:</h4>
+                    <pre class="bg-slate-950 text-red-300 p-3 rounded text-sm overflow-x-auto">nohup /bin/bash /tmp/horizon-keeper.sh &</pre>
+                    <p class="text-slate-400 text-sm mt-1">Scripti manuel başlatın.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Manuel restart gerekiyorsa:</h4>
+                    <pre class="bg-slate-950 text-red-300 p-3 rounded text-sm overflow-x-auto">nohup /opt/plesk/php/8.5/bin/php artisan horizon >> /tmp/horizon-output.log 2>&1 &</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="bg-slate-800 rounded-lg p-6">
+            <h3 class="text-xl font-semibold mb-4 text-white">📌 Özet</h3>
+            <div class="space-y-3 text-slate-300">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-green-900/20 border border-green-800 rounded p-4">
+                        <h4 class="font-semibold text-green-400 mb-2">✅ Yüksek Kapasite</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>6-20 worker</li>
+                            <li>2000 iş/worker</li>
+                            <li>Hızlı toplu işlemler</li>
+                            <li>Yüksek kaynak kullanımı</li>
+                        </ul>
+                    </div>
+                    <div class="bg-blue-900/20 border border-blue-800 rounded p-4">
+                        <h4 class="font-semibold text-blue-400 mb-2">✅ Varsayılan (Normal)</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>2-6 worker</li>
+                            <li>200 iş/worker</li>
+                            <li>Dengeli performans</li>
+                            <li>Düşük kaynak kullanımı</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-center text-slate-400 text-sm mt-4">
+                    💡 İpucu: Yoğun işler için yüksek kapasiteyi kullanın, normal işletmede varsayılana dönün.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu</p>
+            <p class="mt-1">Muzibu Platform - Horizon Queue Management</p>
+        </footer>
+    </div>
+</body>
+</html>

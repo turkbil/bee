@@ -17,6 +17,53 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     use HasFactory, Notifiable, HasApiTokens, HasRoles, InteractsWithMedia, HasModulePermissions, SoftDeletes;
 
     /**
+     * The guard name for Spatie Permission
+     *
+     * @var string
+     */
+    protected $guard_name = 'web';
+
+    /**
+     * Get the name of the guard to be used during authentication.
+     *
+     * @return string
+     */
+    public function guardName(): string
+    {
+        return 'web';
+    }
+
+    /**
+     * A model may have multiple roles.
+     * Override to fix guard name issue.
+     */
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->morphToMany(
+            config('permission.models.role'),
+            'model',
+            config('permission.table_names.model_has_roles'),
+            config('permission.column_names.model_morph_key'),
+            'role_id'
+        )->where(config('permission.table_names.roles') . '.guard_name', 'web');
+    }
+
+    /**
+     * A model may have multiple direct permissions.
+     * Override to fix guard name issue.
+     */
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->morphToMany(
+            config('permission.models.permission'),
+            'model',
+            config('permission.table_names.model_has_permissions'),
+            config('permission.column_names.model_morph_key'),
+            'permission_id'
+        )->where(config('permission.table_names.permissions') . '.guard_name', 'web');
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -368,13 +415,14 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     // ==========================================
 
     /**
-     * Premium üye mi? (aktif subscription veya trial)
+     * Premium üye mi?
+     *
+     * 🔴 TEK KAYNAK: users.subscription_expires_at
+     * - Gelecekte ise = Premium
+     * - NULL veya geçmişte ise = Ücretsiz
+     * - Trial ayrımı YOK (trial da premium sayılır)
      *
      * ⚠️ SADECE TENANT CONTEXT'İNDE ÇALIŞIR
-     * Diğer tenant'lar için direkt false döner, cache kullanılmaz
-     *
-     * ⚡ PERFORMANCE: subscription_expires_at ile ULTRA HIZLI kontrol
-     * Önce tenant DB, sonra central DB kontrol edilir
      */
     public function isPremium(): bool
     {
@@ -383,74 +431,17 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             return false;
         }
 
-        // 🚀 ULTRA FAST: Önce tenant users tablosundan kontrol
-        // (Model zaten tenant context'inde yüklendiyse bu değer mevcut)
+        // 1. Model değeri (hızlı)
         if ($this->subscription_expires_at && $this->subscription_expires_at->isFuture()) {
             return true;
         }
 
-        // Tenant DB'den fresh kontrol (model eski olabilir)
-        $tenantExpiry = \DB::table('users')
+        // 2. Fresh DB kontrolü (model stale olabilir)
+        $freshExpiry = \DB::table('users')
             ->where('id', $this->id)
             ->value('subscription_expires_at');
 
-        if ($tenantExpiry && \Carbon\Carbon::parse($tenantExpiry)->isFuture()) {
-            return true;
-        }
-
-        // Fallback: Subscription tablosu kontrolü (geçiş dönemi için)
-        $cacheKey = 'user_' . $this->id . '_is_premium_tenant_' . tenant()->id;
-
-        return \Cache::remember($cacheKey, 300, function () {
-            $activeSubscription = $this->subscriptions()
-                ->where('status', 'active')
-                ->where('current_period_end', '>', now())
-                ->first();
-
-            if ($activeSubscription) {
-                return true;
-            }
-
-            return $this->is_premium ?? false;
-        });
-    }
-
-    /**
-     * Aktif trial var mı?
-     * Tenant 1001 (muzibu.com) için
-     * 🔥 FIX: has_trial=true VE trial_ends_at gelecekte ise trial aktif
-     */
-    public function isTrialActive(): bool
-    {
-        if (!$this->isMuzibuTenant()) {
-            return false;
-        }
-
-        // Yeni subscription sistemi: has_trial=true VE trial_ends_at gelecekte
-        // NOT: status 'active' veya 'trial' olabilir, önemli olan has_trial ve trial_ends_at
-        $trialSubscription = $this->subscriptions()
-            ->whereIn('status', ['active', 'trial'])
-            ->where('has_trial', true)
-            ->whereNotNull('trial_ends_at')
-            ->where('trial_ends_at', '>', now())
-            ->first();
-
-        if ($trialSubscription) {
-            return true;
-        }
-
-        // Fallback: Eski sistem (trial_ends_at kolonu)
-        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
-    }
-
-    /**
-     * Premium veya Trial üye mi?
-     * 🔥 Helper: Tek çağrı ile hem premium hem trial kontrolü
-     * Tenant 1001 (muzibu.com) için
-     */
-    public function isPremiumOrTrial(): bool
-    {
-        return $this->isPremium() || $this->isTrialActive();
+        return $freshExpiry && \Carbon\Carbon::parse($freshExpiry)->isFuture();
     }
 
     /**

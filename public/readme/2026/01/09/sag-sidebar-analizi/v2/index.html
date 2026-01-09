@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sağ Sidebar Görünürlük + Dashboard Sorunu - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            border-color: rgba(96, 165, 250, 0.3);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.1);
+        }
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 3px solid #3b82f6;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-primary { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
+        .badge-success { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+        .badge-warning { background: rgba(251, 146, 60, 0.2); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.3); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-purple { background: rgba(168, 85, 247, 0.2); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+    </style>
+</head>
+<body class="text-slate-100 p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto mb-8">
+        <div class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <span class="badge badge-warning mb-4">
+                        <i class="fas fa-bug"></i>
+                        v2 - Dashboard Sorunu
+                    </span>
+                    <h1 class="text-3xl md:text-4xl font-bold gradient-text mt-2">
+                        Sağ Sidebar Görünürlük + Dashboard Analizi
+                    </h1>
+                    <p class="text-slate-400 mt-2">
+                        Muzibu müzik platformunda sağ sidebar sistemi ve dashboard sayfasındaki responsive davranış analizi
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-3 text-sm text-slate-400">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-calendar text-blue-400"></i>
+                    09 Ocak 2026
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-code-branch text-orange-400"></i>
+                    Versiyon 2
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-layer-group text-purple-400"></i>
+                    Dashboard Issue
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto space-y-6">
+
+        <!-- 🚨 Dashboard Sorunu -->
+        <section class="card rounded-2xl p-6 md:p-8 border-2 border-red-500/50">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-red-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">🚨 Dashboard Sayfası Sorunu</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Problem Tanımı -->
+                <div class="p-5 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-bug"></i>
+                        Problem Tanımı
+                    </h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        <strong>/dashboard</strong> sayfasında sağ sidebar route listesinde <strong>bulunmadığı için</strong>
+                        sağ sidebar gösterilmiyor. Ancak kullanıcı "1279px ve altında gözükmeye başlıyor" demiş.
+                    </p>
+                </div>
+
+                <!-- Dashboard Route Durumu -->
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-route text-orange-400"></i>
+                        Dashboard Route Durumu
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="code-block rounded-lg p-4">
+                            <p class="text-xs text-red-400 mb-2 font-semibold uppercase">❌ Mevcut Durum</p>
+                            <p class="text-sm text-slate-300 mb-3">
+                                <strong>Route:</strong> <code class="text-blue-300">dashboard</code>
+                                <br>
+                                <strong>Dosya:</strong> routes/web.php
+                            </p>
+                            <div class="bg-red-500/10 border border-red-500/30 rounded p-2 text-xs text-red-300">
+                                <i class="fas fa-times mr-1"></i>
+                                $showRightSidebar listesinde YOK!
+                            </div>
+                        </div>
+                        <div class="code-block rounded-lg p-4">
+                            <p class="text-xs text-green-400 mb-2 font-semibold uppercase">✅ Olması Gereken</p>
+                            <p class="text-sm text-slate-300 mb-3">
+                                Dashboard'da sağ sidebar gösterilsin mi?
+                            </p>
+                            <div class="space-y-2 text-xs">
+                                <div class="bg-green-500/10 border border-green-500/30 rounded p-2 text-green-300">
+                                    <i class="fas fa-check mr-1"></i>
+                                    EVET → Route listesine ekle
+                                </div>
+                                <div class="bg-gray-500/10 border border-gray-500/30 rounded p-2 text-gray-300">
+                                    <i class="fas fa-times mr-1"></i>
+                                    HAYIR → Mevcut durum doğru
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid Layout Davranışı -->
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-table-cells text-purple-400"></i>
+                        Dashboard'da Grid Layout Davranışı
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-700">
+                                    <th class="text-left py-3 px-4 text-slate-400 font-semibold">Breakpoint</th>
+                                    <th class="text-left py-3 px-4 text-slate-400 font-semibold">Ekran</th>
+                                    <th class="text-left py-3 px-4 text-slate-400 font-semibold">Grid Sütunlar</th>
+                                    <th class="text-left py-3 px-4 text-slate-400 font-semibold">Sağ Sidebar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3 px-4">
+                                        <span class="badge badge-warning">Mobile</span>
+                                    </td>
+                                    <td class="py-3 px-4">&lt; 768px</td>
+                                    <td class="py-3 px-4">
+                                        <code class="text-xs text-blue-300">grid-cols-1</code>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="text-red-400">
+                                            <i class="fas fa-times mr-1"></i>
+                                            Gizli
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3 px-4">
+                                        <span class="badge badge-primary">Tablet (MD)</span>
+                                    </td>
+                                    <td class="py-3 px-4">768px - 1023px</td>
+                                    <td class="py-3 px-4">
+                                        <code class="text-xs text-blue-300">grid-cols-1</code>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="text-red-400">
+                                            <i class="fas fa-times mr-1"></i>
+                                            Gizli
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-orange-500/5">
+                                    <td class="py-3 px-4">
+                                        <span class="badge badge-success">Desktop (LG)</span>
+                                    </td>
+                                    <td class="py-3 px-4">1024px - 1279px</td>
+                                    <td class="py-3 px-4">
+                                        <code class="text-xs text-green-300">lg:grid-cols-[220px_1fr]</code>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="text-red-400">
+                                            <i class="fas fa-times mr-1"></i>
+                                            Gizli (Sol sidebar + Main)
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-red-500/10">
+                                    <td class="py-3 px-4">
+                                        <span class="badge badge-danger">Desktop (XL) ⚠️</span>
+                                    </td>
+                                    <td class="py-3 px-4">1280px - 1535px</td>
+                                    <td class="py-3 px-4">
+                                        <code class="text-xs text-red-300">xl:grid-cols-[220px_1fr]</code>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="text-red-400">
+                                            <i class="fas fa-times mr-1"></i>
+                                            Gizli (Sol sidebar + Main)
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4">
+                                        <span class="badge badge-success">Desktop (2XL)</span>
+                                    </td>
+                                    <td class="py-3 px-4">≥ 1536px</td>
+                                    <td class="py-3 px-4">
+                                        <code class="text-xs text-blue-300">2xl:grid-cols-[220px_1fr]</code>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="text-red-400">
+                                            <i class="fas fa-times mr-1"></i>
+                                            Gizli (Sol sidebar + Main)
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                        <p class="text-sm text-blue-300">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Not:</strong> Dashboard sayfasında tüm breakpoint'lerde sağ sidebar GİZLİ çünkü route listesinde yok.
+                            Grid layout her zaman 2 sütunlu: Sol sidebar (220px) + Main content (1fr)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Müzik Sayfaları ile Karşılaştırma -->
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-music text-green-400"></i>
+                        Müzik Sayfaları ile Karşılaştırma
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Dashboard -->
+                        <div class="p-5 bg-red-500/10 border border-red-500/30 rounded-lg">
+                            <h4 class="font-semibold text-red-400 mb-3 flex items-center gap-2">
+                                <i class="fas fa-chart-line"></i>
+                                /dashboard (Mevcut)
+                            </h4>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                                    Route listesinde YOK
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                                    Sağ sidebar GİZLİ
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                                    2 sütunlu layout (tüm breakpoint'lerde)
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                                    Main content daha geniş (sidebar yokluğu)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Müzik Sayfaları -->
+                        <div class="p-5 bg-green-500/10 border border-green-500/30 rounded-lg">
+                            <h4 class="font-semibold text-green-400 mb-3 flex items-center gap-2">
+                                <i class="fas fa-music"></i>
+                                /muzibu/* (Müzik Sayfaları)
+                            </h4>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                                    Route listesinde VAR
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                                    Sağ sidebar GÖRÜNÜR (MD+)
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                                    3 sütunlu layout (LG+: 220px + 1fr + 280px)
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                                    Sağ sidebar genişlik: 280-360px (breakpoint'e göre)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Çözüm Önerileri -->
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-wrench text-yellow-400"></i>
+                        Çözüm Önerileri
+                    </h3>
+                    <div class="space-y-3">
+                        <!-- Çözüm 1 -->
+                        <div class="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                            <h4 class="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-1"></i>
+                                Dashboard'a Sağ Sidebar Ekle
+                            </h4>
+                            <p class="text-sm text-slate-300 mb-3">
+                                Eğer dashboard'da da sağ sidebar gösterilsin isteniyorsa:
+                            </p>
+                            <div class="code-block rounded-lg p-4 text-xs overflow-x-auto">
+                                <pre class="text-slate-300"><code>// app.blade.php - Satır 470
+$showRightSidebar = in_array(Route::currentRouteName(), [
+    'dashboard',  // ← Ekle
+    'muzibu.home',
+    'muzibu.songs.index',
+    // ...
+]);</code></pre>
+                            </div>
+                            <div class="mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded text-xs text-green-300">
+                                <i class="fas fa-check mr-1"></i>
+                                Dashboard'da sağ sidebar gösterilir (yeni şarkılar + popüler şarkılar)
+                            </div>
+                        </div>
+
+                        <!-- Çözüm 2 -->
+                        <div class="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                            <h4 class="font-semibold text-purple-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-2"></i>
+                                Mevcut Durumu Koru
+                            </h4>
+                            <p class="text-sm text-slate-300 mb-3">
+                                Eğer dashboard'da sağ sidebar OLMAMALI tasarım kararıysa:
+                            </p>
+                            <div class="mt-3 p-3 bg-gray-500/10 border border-gray-500/30 rounded text-xs text-gray-300">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Mevcut kod değişmeden kalır, dashboard'da sağ sidebar gizli olur
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📊 Tüm Route'ların Breakpoint Davranışları -->
+        <section class="card rounded-2xl p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                    <i class="fas fa-chart-bar text-green-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">📊 Tüm Route'ların Responsive Davranışı</h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Sağ Sidebar Olan Route'lar -->
+                <div class="p-5 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Sağ Sidebar OLAN Route'lar (19 adet)
+                    </h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-2 mb-4">
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.home</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.songs.index</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.songs.show</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.albums.index</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.albums.show</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.artists.index</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.artists.show</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.playlists.index</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.playlists.show</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.genres.index</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.genres.show</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.sectors.index</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.sectors.show</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.radios.index</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.search</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.favorites</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.my-playlists</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.corporate-playlists</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-green-300">muzibu.listening-history</code>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Bu route'larda: MD (768px+) → Sağ sidebar görünür, LG (1024px+) → Her iki sidebar da görünür
+                    </p>
+                </div>
+
+                <!-- Sağ Sidebar Olmayan Route'lar -->
+                <div class="p-5 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-times-circle"></i>
+                        Sağ Sidebar OLMAYAN Route'lar
+                    </h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-2 mb-4">
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-red-300">dashboard</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-red-300">profile</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-red-300">login</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-red-300">register</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-red-300">corporate/*</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-red-300">subscription/*</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-red-300">payment/*</code>
+                        <code class="text-xs bg-slate-900/50 px-2 py-1 rounded text-red-300">...</code>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Bu route'larda: Tüm breakpoint'lerde sağ sidebar GİZLİ, 2 sütunlu layout (LG+)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 💡 Sonuç -->
+        <section class="card rounded-2xl p-6 md:p-8 border-2 border-yellow-500/50">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-yellow-400 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">💡 Sonuç ve Öneriler</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="p-5 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                    <h3 class="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Sistem Doğru Çalışıyor
+                    </h3>
+                    <p class="text-sm text-slate-300">
+                        Dashboard sayfasında sağ sidebar gösterilmiyor çünkü route listesinde yok.
+                        Bu bir tasarım kararı. Müzik sayfalarında sağ sidebar gösteriliyor, dashboard'da gösterilmiyor.
+                    </p>
+                </div>
+
+                <div class="p-5 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                    <h3 class="font-semibold text-orange-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-question-circle"></i>
+                        Kullanıcı Talebi Belirsiz
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-3">
+                        "1279px ve altında gözükmeye başlıyor" ifadesi net değil. İki ihtimal var:
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-4">
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-400 flex-shrink-0">1.</span>
+                            <span>Dashboard'da sağ sidebar OLMALI ama şu an YOK → Route listesine ekle</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-400 flex-shrink-0">2.</span>
+                            <span>Dashboard'da sağ sidebar ZATEN YOK ve bu doğru → Değişiklik gerekmez</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="p-5 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <h3 class="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-code"></i>
+                        İstenen Değişiklik Basit
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-3">
+                        Eğer dashboard'da sağ sidebar gösterilsin isteniyorsa:
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-xs">
+                        <p class="text-green-400 mb-2">app.blade.php - Satır 470'e ekle:</p>
+                        <code class="text-blue-300">'dashboard',</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto mt-8 text-center text-slate-500 text-sm py-6">
+        <p>🤖 Claude AI tarafından analiz edildi - 09 Ocak 2026 - v2 (Dashboard Issue)</p>
+    </footer>
+
+</body>
+</html>

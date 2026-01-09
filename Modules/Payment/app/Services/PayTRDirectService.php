@@ -63,9 +63,12 @@ class PayTRDirectService
 
             $paytrToken = base64_encode(hash_hmac('sha256', $hashStr . $merchantSalt, $merchantKey, true));
 
-            // Callback URL'leri
-            $merchantOkUrl = route('payment.callback.success', ['payment' => $payment->payment_id]);
-            $merchantFailUrl = route('payment.callback.fail', ['payment' => $payment->payment_id]);
+            // Callback URL'leri (Browser redirect için - frontend sayfalar)
+            // NOT: merchant_ok_url ve merchant_fail_url sadece kullanıcının tarayıcısını yönlendirir
+            // PayTR'nin server-to-server callback'i için /payment/callback/paytr endpoint'i kullanılır (PayTR panel ayarı)
+            $orderNumber = $orderInfo['order_number'] ?? $payment->payment_number;
+            $merchantOkUrl = route('payment.success') . '?order=' . urlencode($orderNumber);
+            $merchantFailUrl = route('cart.checkout') . '?payment=failed&order=' . urlencode($orderNumber);
 
             // POST verileri (PayTR'a gönderilecek)
             $postData = [

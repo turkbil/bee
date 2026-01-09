@@ -17,7 +17,10 @@ class SongController extends Controller
         $songs = Song::with(['artist', 'album', 'coverMedia'])
             ->where('is_active', 1)
             ->orderBy('created_at', 'desc')
-            ->paginate(200);
+            ->paginate(40);
+
+        // Set custom pagination view
+        $songs->setPath(request()->url());
 
         return view('themes.muzibu.songs.index', compact('songs'));
     }

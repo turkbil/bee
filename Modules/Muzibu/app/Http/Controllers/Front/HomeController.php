@@ -16,23 +16,23 @@ class HomeController extends Controller
     public function index(): View
     {
         try {
-            // 🔥 CACHE: Featured Playlists (5 min) - 8 items max
-            $featuredPlaylists = Cache::remember('home_featured_playlists_v3', 300, function () {
+            // 🔥 CACHE: Featured Playlists (5 min) - 10 items max
+            $featuredPlaylists = Cache::remember('home_featured_playlists_v4', 300, function () {
                 return Playlist::where('is_active', 1)
                     ->where('is_system', 1)
                     ->where('songs_count', '>', 0)
                     ->with(['coverMedia'])
-                    ->limit(8)
+                    ->limit(10)
                     ->get();
             });
 
-            // 🔥 CACHE: New Releases (5 min) - 8 items max
-            $newReleases = Cache::remember('home_new_releases_v3', 300, function () {
+            // 🔥 CACHE: New Releases (5 min) - 10 items max
+            $newReleases = Cache::remember('home_new_releases_v4', 300, function () {
                 return Album::where('is_active', 1)
                     ->where('songs_count', '>', 0)
                     ->with(['artist', 'coverMedia'])
                     ->orderBy('created_at', 'desc')
-                    ->limit(8)
+                    ->limit(10)
                     ->get();
             });
 
@@ -58,29 +58,29 @@ class HomeController extends Controller
                     ->get();
             });
 
-            // 🔥 CACHE: Genres (5 min) - 8 items max
-            $genres = Cache::remember('home_genres_v3', 300, function () {
+            // 🔥 CACHE: Genres (5 min) - 15 items max
+            $genres = Cache::remember('home_genres_v4', 300, function () {
                 return Genre::where('is_active', 1)
                     ->where('songs_count', '>', 0)
                     ->with(['iconMedia'])
                     ->orderBy('songs_count', 'desc')
-                    ->limit(8)
+                    ->limit(15)
                     ->get();
             });
 
-            // 🔥 CACHE: Radios (5 min) - 8 items max
-            $radios = Cache::remember('home_radios_v3', 300, function () {
+            // 🔥 CACHE: Radios (5 min) - 10 items max
+            $radios = Cache::remember('home_radios_v4', 300, function () {
                 return Radio::where('is_active', 1)
                     ->with(['logoMedia'])
-                    ->limit(8)
+                    ->limit(10)
                     ->get();
             });
 
-            // 🔥 CACHE: Sectors (5 min) - 8 items max
-            $sectors = Cache::remember('home_sectors_v3', 300, function () {
+            // 🔥 CACHE: Sectors (5 min) - 10 items max
+            $sectors = Cache::remember('home_sectors_v4', 300, function () {
                 return Sector::where('is_active', 1)
                     ->with(['iconMedia'])
-                    ->limit(8)
+                    ->limit(10)
                     ->get();
             });
 

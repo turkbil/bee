@@ -17,6 +17,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- 🔇 CONSOLE FILTER - Suppress tracking/marketing noise --}}
+    <script>
+    (function(){const p=[/yandex/i,/attestation/i,/topics/i,/googletagmanager/i,/facebook/i,/ERR_BLOCKED_BY_CLIENT/i];const s=m=>!m?false:p.some(x=>x.test(m));const e=console.error;console.error=function(){const m=Array.from(arguments).join(' ');if(!s(m))e.apply(console,arguments);};const w=console.warn;console.warn=function(){const m=Array.from(arguments).join(' ');if(!s(m))w.apply(console,arguments);};const l=console.log;console.log=function(){const m=Array.from(arguments).join(' ');if(!s(m))l.apply(console,arguments);};})();
+    </script>
+
     {{-- User Auth for Frontend JS --}}
     @auth
         <meta name="user-id" content="{{ auth()->id() }}">
@@ -32,11 +37,23 @@
 
     <title>@yield('title', 'Muzibu - İşletmenize Yasal ve Telifsiz Müzik')</title>
 
+    {{-- Performance: DNS Prefetch & Preconnect --}}
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {{-- Performance: Preload Critical Fonts (FontAwesome) --}}
+    <link rel="preload" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/webfonts/fa-solid-900.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/webfonts/fa-light-300.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/webfonts/fa-regular-400.woff2') }}" as="font" type="font/woff2" crossorigin>
+
     {{-- Tailwind CSS - Tenant Aware (tenant-1001.css) --}}
     <link rel="stylesheet" href="{{ tenant_css() }}">
 
     {{-- FontAwesome Pro 7.1.0 (Local) --}}
-    <link rel="stylesheet" href="{{ asset('admin-assets/libs/fontawesome-pro@7.1.0/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}">
 
     {{-- Alpine.js provided by Livewire --}}
 
@@ -52,8 +69,24 @@
 
     @livewireStyles
 
-    {{-- PWA Manifest --}}
+    {{-- Favicon - Tenant-aware dynamic route --}}
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    {{-- PWA Manifest (2025 Best Practice) --}}
     <link rel="manifest" href="{{ route('manifest') }}">
+
+    {{-- Apple Touch Icon (iOS/Safari) - Uses favicon as fallback --}}
+    <link rel="apple-touch-icon" href="/favicon.ico">
+
+    {{-- Theme Color for Mobile Browser Bar (Tenant-aware) --}}
+    @php
+        $themeColor = setting('site_theme_color') ?: '#000000';
+        $themeColorLight = setting('site_theme_color_light') ?: '#ffffff';
+        $themeColorDark = setting('site_theme_color_dark') ?: '#1a202c';
+    @endphp
+    <meta name="theme-color" content="{{ $themeColor }}">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="{{ $themeColorLight }}">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="{{ $themeColorDark }}">
 
     {{-- Custom Styles --}}
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-layout.css') }}">
@@ -415,6 +448,19 @@
         };
     </script>
 
+    {{-- 🤖 Universal Schema Auto-Render (Dynamic for ALL modules) --}}
+    {{-- SKIP if Controller already shared metaTags with schemas (prevents duplicates) --}}
+    @php
+        $sharedMetaTags = view()->getShared()['metaTags'] ?? null;
+        $hasControllerSchemas = $sharedMetaTags && isset($sharedMetaTags['schemas']) && !empty($sharedMetaTags['schemas']);
+    @endphp
+    @if(!$hasControllerSchemas && isset($item) && is_object($item) && method_exists($item, 'getUniversalSchemas'))
+        {!! \App\Services\SEOService::getAllSchemas($item) !!}
+    @endif
+
+    {{-- 🎯 Marketing Platforms Auto-Loader (GTM, GA4, Facebook, Yandex, LinkedIn, TikTok, Clarity) --}}
+    <x-marketing.auto-platforms />
+
     @yield('styles')
 
 </head>
@@ -460,13 +506,17 @@
             window.playSector ? window.playSector($event.detail.sectorId) : $store.player.playSector($event.detail.sectorId);
         }
       ">
+    {{-- 🎯 GTM Body Snippet (No-Script Fallback) --}}
+    <x-marketing.gtm-body />
+
     {{-- Hidden Audio Elements --}}
     <audio id="hlsAudio" x-ref="hlsAudio" class="hidden"></audio>
     <audio id="hlsAudioNext" class="hidden"></audio>
 
     @php
         // 🚀 HYBRID: PHP initial value + Alpine SPA updates
-        // Sağ sidebar gösterilecek route'lar (music pages + my-playlists + dashboard)
+        // Sağ sidebar gösterilecek route'lar (music pages + dashboard)
+        // Mobilde (<768px) GİZLİ, Tablet+ (768px+) GÖRÜNÜR
         $showRightSidebar = in_array(Route::currentRouteName(), [
             'dashboard',
             'muzibu.home',
@@ -487,18 +537,19 @@
             'muzibu.favorites',
             'muzibu.my-playlists',
             'muzibu.corporate-playlists',
+            'muzibu.listening-history',
         ]);
 
         // Grid class'ları - PHP initial, Alpine SPA override
-        // ⚡ SAĞ SIDEBAR SADECE LG+ (1024px+) ekranlarda görünür (tablet'te GİZLİ)
-        $gridColsWithSidebar = 'lg:grid-cols-[220px_1fr_280px] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]';
+        // ⚡ SAĞ SIDEBAR MD+ (768px+) ekranlarda görünür (sadece mobilde GİZLİ)
+        $gridColsWithSidebar = 'md:grid-cols-[1fr_280px] lg:grid-cols-[220px_1fr_280px] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]';
         $gridColsNoSidebar = 'lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr] 2xl:grid-cols-[220px_1fr]';
         $initialGridCols = $showRightSidebar ? $gridColsWithSidebar : $gridColsNoSidebar;
     @endphp
 
     {{-- Main App Grid - Hybrid: PHP initial + Alpine SPA updates --}}
-    {{-- md (768px+): gap ve padding başlar --}}
-    {{-- lg (1024px+): sol sidebar + sağ sidebar (varsa) görünür --}}
+    {{-- md (768px+): gap, padding, sağ sidebar başlar --}}
+    {{-- lg (1024px+): sol sidebar da görünür --}}
     <div
         id="main-app-grid"
         class="grid grid-rows-[56px_1fr_auto] grid-cols-1 {{ $initialGridCols }} h-[100dvh] w-full gap-0 md:gap-3 px-0 pb-0 pt-0 md:px-3 md:pt-3"
@@ -514,12 +565,12 @@
 
         @include('themes.muzibu.components.main-content')
 
-        {{-- Right Sidebar - LG+ screens (1024px+), Hybrid: PHP initial + Alpine SPA --}}
-        {{-- TABLET'TE GİZLİ (768px-1023px), SADECE DESKTOP'TA GÖSTER (1024px+) --}}
-        {{-- 1024px+: Her iki sidebar da görünür --}}
+        {{-- Right Sidebar - MD+ screens (768px+), Hybrid: PHP initial + Alpine SPA --}}
+        {{-- SADECE MOBİLDE GİZLİ (<768px), TABLET VE DESKTOP'TA GÖSTER (768px+) --}}
+        {{-- 768px+: Sağ sidebar görünür, 1024px+: Her iki sidebar da görünür --}}
         <aside
-            class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl {{ $showRightSidebar ? 'hidden lg:block' : 'hidden' }}"
-            x-bind:class="$store.sidebar?.rightSidebarVisible ? 'lg:block' : 'hidden'"
+            class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl {{ $showRightSidebar ? 'hidden md:block' : 'hidden' }}"
+            x-bind:class="$store.sidebar?.rightSidebarVisible ? 'md:block' : 'hidden'"
         >
             @include('themes.muzibu.components.sidebar-right')
         </aside>

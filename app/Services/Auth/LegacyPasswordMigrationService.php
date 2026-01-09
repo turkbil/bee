@@ -44,13 +44,15 @@ class LegacyPasswordMigrationService
     }
 
     /**
-     * MD5 hash mi kontrol et
+     * Legacy hash mi kontrol et (MD5 veya SHA1)
      * MD5 = 32 karakter hexadecimal string
+     * SHA1 = 40 karakter hexadecimal string
      * bcrypt = 60 karakter, $2y$ ile başlar
      */
     public function isLegacyHash(string $hash): bool
     {
-        return strlen($hash) === 32 && ctype_xdigit($hash);
+        $length = strlen($hash);
+        return ($length === 32 || $length === 40) && ctype_xdigit($hash);
     }
 
     /**
@@ -74,8 +76,19 @@ class LegacyPasswordMigrationService
             return null;
         }
 
-        // MD5 kontrolü
-        if (md5($plainPassword) !== $storedHash) {
+        // Hash tipine göre kontrol et
+        $hashLength = strlen($storedHash);
+        $isValid = false;
+
+        if ($hashLength === 32) {
+            // MD5 kontrolü
+            $isValid = md5($plainPassword) === $storedHash;
+        } elseif ($hashLength === 40) {
+            // SHA1 kontrolü
+            $isValid = sha1($plainPassword) === $storedHash;
+        }
+
+        if (!$isValid) {
             return false;
         }
 
@@ -84,17 +97,19 @@ class LegacyPasswordMigrationService
         $user->save();
 
         // Log tut (takip için)
-        Log::channel('single')->info('Legacy MD5 password migrated to bcrypt', [
+        $hashType = strlen($storedHash) === 32 ? 'MD5' : 'SHA1';
+        Log::channel('single')->info("Legacy {$hashType} password migrated to bcrypt", [
             'tenant_id' => tenant()->id,
             'user_id' => $user->getAuthIdentifier(),
             'user_email' => $user->email ?? 'N/A',
+            'hash_type' => $hashType,
         ]);
 
         return true;
     }
 
     /**
-     * Kaç kullanıcı hala MD5 kullanıyor? (İstatistik)
+     * Kaç kullanıcı hala legacy hash kullanıyor? (İstatistik)
      *
      * Kullanım: app(LegacyPasswordMigrationService::class)->getRemainingLegacyCount()
      */
@@ -104,7 +119,7 @@ class LegacyPasswordMigrationService
             return 0;
         }
 
-        return \App\Models\User::whereRaw('LENGTH(password) = 32')->count();
+        return \App\Models\User::whereRaw('LENGTH(password) IN (32, 40)')->count();
     }
 
     /**
@@ -119,14 +134,18 @@ class LegacyPasswordMigrationService
         }
 
         $total = \App\Models\User::count();
-        $legacy = \App\Models\User::whereRaw('LENGTH(password) = 32')->count();
-        $migrated = \App\Models\User::whereRaw('LENGTH(password) > 32')->count();
+        $md5Count = \App\Models\User::whereRaw('LENGTH(password) = 32')->count();
+        $sha1Count = \App\Models\User::whereRaw('LENGTH(password) = 40')->count();
+        $legacy = $md5Count + $sha1Count;
+        $migrated = \App\Models\User::whereRaw('LENGTH(password) = 60')->count();
 
         return [
             'enabled' => true,
             'tenant_id' => tenant()->id,
             'total_users' => $total,
-            'legacy_md5' => $legacy,
+            'legacy_md5' => $md5Count,
+            'legacy_sha1' => $sha1Count,
+            'legacy_total' => $legacy,
             'migrated_bcrypt' => $migrated,
             'percentage' => $total > 0 ? round(($migrated / $total) * 100, 2) : 0,
             'ready_to_remove' => $legacy === 0,

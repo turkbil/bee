@@ -20,7 +20,10 @@ class ArtistController extends Controller
                 $q->where('is_active', 1);
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(200);
+            ->paginate(40);
+
+        // Set custom pagination view
+        $artists->setPath(request()->url());
 
         return view('themes.muzibu.artists.index', compact('artists'));
     }
@@ -74,7 +77,7 @@ class ArtistController extends Controller
                 });
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(200);
+            ->paginate(40);
         $html = view('themes.muzibu.partials.artists-grid', compact('artists'))->render();
 
         return response()->json(['html' => $html, 'meta' => ['title' => 'Sanatçılar - Muzibu', 'description' => 'En popüler sanatçıları keşfedin']])

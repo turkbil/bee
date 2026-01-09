@@ -1,4 +1,4 @@
-@props(['sector', 'preview' => false, 'compact' => false])
+@props(['sector', 'preview' => false, 'compact' => false, 'index' => 0])
 
 {{-- Muzibu Sector Card Component --}}
 {{-- Usage: <x-muzibu.sector-card :sector="$sector" :compact="true" /> --}}
@@ -67,7 +67,7 @@
             <img src="{{ thumb($heroMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
-                 loading="lazy">
+                 loading="{{ $index < 4 ? 'eager' : 'lazy' }}">
         @else
             <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                 <span class="text-5xl">🎭</span>

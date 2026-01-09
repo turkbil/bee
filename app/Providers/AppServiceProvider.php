@@ -252,6 +252,44 @@ class AppServiceProvider extends ServiceProvider
         // 🔗 OTOMATIK STORAGE LINK DÜZELTME - Migration sonrası
         $this->registerMigrationHooks();
 
+        // 🔧 SPATIE MEDIA LIBRARY - Auto Fix File Permissions
+        // Problem: Queue worker (root) creates files with root:root ownership
+        // Solution: Auto fix ownership after media is saved
+        \Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAddedEvent::class;
+        Event::listen(
+            \Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAddedEvent::class,
+            function ($event) {
+                try {
+                    $filePath = $event->media->getPath();
+                    if (file_exists($filePath)) {
+                        // Fix file ownership: tuufi.com_:psaserv
+                        @chown($filePath, 'tuufi.com_');
+                        @chgrp($filePath, 'psaserv');
+                        @chmod($filePath, 0644);
+
+                        // Fix directory ownership (parent folder)
+                        $directory = dirname($filePath);
+                        if (is_dir($directory)) {
+                            @chown($directory, 'tuufi.com_');
+                            @chgrp($directory, 'psaserv');
+                            @chmod($directory, 0755);
+                        }
+
+                        \Illuminate\Support\Facades\Log::debug('📁 Media permissions fixed', [
+                            'media_id' => $event->media->id,
+                            'file' => basename($filePath),
+                            'directory_fixed' => is_dir($directory),
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::warning('⚠️ Media permission fix failed', [
+                        'media_id' => $event->media->id ?? 'unknown',
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+        );
+
         // 🛡️ STORAGE & MEDYA KORUMA
         // ClearAll.php → DISABLED (renamed to .DISABLED)
         // Dangerous commands blocked via CLAUDE.md rules

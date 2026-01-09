@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Modülü - Kapsamlı Schema.org Implementation Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100">
+    <div class="gradient-bg min-h-screen py-8 px-4">
+        <div class="max-w-7xl mx-auto">
+
+            <!-- Header -->
+            <header class="mb-12 text-center">
+                <div class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-semibold mb-4">
+                    PLANLAMA RAPORU
+                </div>
+                <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    Muzibu Modülü<br>Schema.org Implementation
+                </h1>
+                <p class="text-slate-400 text-lg">
+                    Google Rich Results Uyumlu Yapılandırılmış Veri Planlaması
+                </p>
+                <div class="mt-6 text-sm text-slate-500">
+                    <span class="font-semibold">Tarih:</span> 9 Ocak 2026 |
+                    <span class="font-semibold">Versiyon:</span> v1 |
+                    <span class="font-semibold">Modül:</span> Muzibu
+                </div>
+            </header>
+
+            <!-- Executive Summary -->
+            <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-400">📋 Özet</h2>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-3 text-green-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            Muzibu müzik platformunun tüm içerikleri (şarkılar, albümler, sanatçılar, playlist'ler vb.)
+                            Google'ın anlayabileceği özel bir formata dönüştürülecek. Böylece Google arama sonuçlarında
+                            müzikleriniz daha güzel görünecek, yıldız puanları gösterilecek ve kullanıcılar şarkılarınızı
+                            daha kolay bulacak.
+                        </p>
+                        <div class="bg-green-900/30 rounded p-4 text-sm">
+                            <p class="font-semibold mb-2">Kullanıcıya Faydası:</p>
+                            <ul class="space-y-1 text-slate-400">
+                                <li>✓ Google'da şarkılar yıldızlı görünür</li>
+                                <li>✓ Albüm bilgileri zenginleştirilmiş gösterilir</li>
+                                <li>✓ Sanatçı sayfaları Google'da öne çıkar</li>
+                                <li>✓ Arama sonuçlarında tıklama oranı artar</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-3 text-blue-400">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            Blog modülünde kullanılan <code class="bg-slate-700 px-2 py-1 rounded">HasUniversalSchemas</code>
+                            trait pattern'i Muzibu modülünün tüm model'lerine uygulanacak. Her model için uygun schema.org
+                            type'ları implement edilecek.
+                        </p>
+                        <div class="bg-blue-900/30 rounded p-4 text-sm">
+                            <p class="font-semibold mb-2">Teknik Stack:</p>
+                            <ul class="space-y-1 text-slate-400 font-mono text-xs">
+                                <li>• HasUniversalSchemas trait</li>
+                                <li>• HasSeo trait (mevcut)</li>
+                                <li>• JSON-LD format</li>
+                                <li>• Schema.org vocabulary</li>
+                                <li>• Google Rich Results API</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-3 text-purple-400">📊 Kapsam</h3>
+                    <div class="grid md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-800/50 rounded p-4 text-center">
+                            <div class="text-3xl font-bold text-purple-400">7</div>
+                            <div class="text-slate-400 mt-1">Model</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-4 text-center">
+                            <div class="text-3xl font-bold text-pink-400">9</div>
+                            <div class="text-slate-400 mt-1">Schema Type</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-4 text-center">
+                            <div class="text-3xl font-bold text-blue-400">3</div>
+                            <div class="text-slate-400 mt-1">Database Migration</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mevcut Durum Analizi -->
+            <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-400">🔍 Mevcut Durum Analizi</h2>
+
+                <div class="space-y-6">
+                    <!-- Blog Modülü Pattern -->
+                    <div class="bg-green-900/10 border border-green-800 rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-green-400">✅ Referans Pattern: Blog Modülü</h3>
+                        <p class="text-slate-300 mb-4">
+                            Blog modülü zaten HasUniversalSchemas trait'ini kullanıyor ve başarıyla çalışıyor.
+                            Bu pattern Muzibu modülüne adapte edilecek.
+                        </p>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Blog.php'deki Kullanım:</p>
+                            <pre class="text-xs text-green-300 overflow-x-auto"><code>use HasUniversalSchemas;
+
+// Database'de mevcut
+protected $fillable = ['faq_data', 'howto_data'];
+protected $casts = ['faq_data' => 'array', 'howto_data' => 'array'];
+
+// Schema metodları
+public function getAllSchemas(): array {
+    return [
+        'blogposting' => $this->getSchemaMarkup(),
+        'breadcrumb' => $this->getBreadcrumbSchema(),
+        'faq' => $this->getFaqSchema(),
+        'howto' => $this->getHowToSchema(),
+    ];
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Muzibu Model'lerinin Durumu -->
+                    <div class="bg-blue-900/10 border border-blue-800 rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-400">📦 Muzibu Model'lerinin Durumu</h3>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-700">
+                                        <th class="text-left py-3 px-4 text-slate-400 font-semibold">Model</th>
+                                        <th class="text-left py-3 px-4 text-slate-400 font-semibold">HasSeo</th>
+                                        <th class="text-left py-3 px-4 text-slate-400 font-semibold">HasUniversalSchemas</th>
+                                        <th class="text-left py-3 px-4 text-slate-400 font-semibold">faq/howto Fields</th>
+                                        <th class="text-left py-3 px-4 text-slate-400 font-semibold">Schema Method</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-300">
+                                    <tr class="border-b border-slate-700/50">
+                                        <td class="py-3 px-4 font-mono text-purple-400">Song</td>
+                                        <td class="py-3 px-4">✅ Var</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4 text-xs">getSeoFallbackSchemaMarkup()</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-700/50">
+                                        <td class="py-3 px-4 font-mono text-purple-400">Album</td>
+                                        <td class="py-3 px-4">✅ Var</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4 text-xs">getSeoFallbackSchemaMarkup()</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-700/50">
+                                        <td class="py-3 px-4 font-mono text-purple-400">Artist</td>
+                                        <td class="py-3 px-4">✅ Var</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4 text-xs">getSeoFallbackSchemaMarkup()</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-700/50">
+                                        <td class="py-3 px-4 font-mono text-purple-400">Playlist</td>
+                                        <td class="py-3 px-4">✅ Var</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4 text-xs">❌ Yok</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-700/50">
+                                        <td class="py-3 px-4 font-mono text-purple-400">Genre</td>
+                                        <td class="py-3 px-4">✅ Var</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4 text-xs">getSeoFallbackSchemaMarkup()</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-700/50">
+                                        <td class="py-3 px-4 font-mono text-purple-400">Sector</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4 text-xs">❌ Yok</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 font-mono text-purple-400">Radio</td>
+                                        <td class="py-3 px-4">✅ Var</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4">❌ Yok</td>
+                                        <td class="py-3 px-4 text-xs">getSeoFallbackSchemaMarkup()</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4 bg-slate-900/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2"><strong>Özet:</strong></p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• <strong>6/7</strong> model HasSeo trait kullanıyor (temel schema desteği var)</li>
+                                <li>• <strong>0/7</strong> model HasUniversalSchemas trait kullanıyor</li>
+                                <li>• <strong>0/7</strong> model'de faq_data/howto_data field'ları yok</li>
+                                <li>• Playlist model'inde schema method eksik</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schema Mapping -->
+            <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-400">🗺️ Schema Type Mapping</h2>
+                <p class="text-slate-400 mb-6">
+                    Her Muzibu model'i için uygun schema.org type ve özellikler belirlendi.
+                </p>
+
+                <div class="space-y-6">
+                    <!-- Song Schema -->
+                    <div class="bg-slate-900/50 border border-purple-700 rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-purple-400">🎵 Song Model</h3>
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                MusicRecording
+                            </span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Database Fields:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• title (JSON multilang)</li>
+                                    <li>• lyrics (JSON multilang)</li>
+                                    <li>• duration (integer, seconds)</li>
+                                    <li>• album_id (FK → albums)</li>
+                                    <li>• genre_id (FK → genres)</li>
+                                    <li>• play_count (integer)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Relations:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• album() → Album</li>
+                                    <li>• genre() → Genre</li>
+                                    <li>• artist() (through album)</li>
+                                    <li>• playlists() (many-to-many)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Schema.org JSON-LD Örneği:</p>
+                            <pre class="text-xs text-purple-300 overflow-x-auto"><code>{
+  "@context": "https://schema.org",
+  "@type": "MusicRecording",
+  "name": "Şarkı Başlığı",
+  "duration": "PT180S",
+  "url": "https://muzibu.com.tr/songs/sarki-basligi",
+  "image": "https://cdn.muzibu.com.tr/covers/song.jpg",
+  "byArtist": {
+    "@type": "MusicGroup",
+    "name": "Sanatçı Adı",
+    "url": "https://muzibu.com.tr/artists/sanatci-adi"
+  },
+  "inAlbum": {
+    "@type": "MusicAlbum",
+    "name": "Albüm Adı",
+    "url": "https://muzibu.com.tr/albums/album-adi"
+  },
+  "genre": "Pop",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.5",
+    "reviewCount": 120,
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+}</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Ek Schema'lar:</p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• <strong>BreadcrumbList:</strong> Ana Sayfa → Şarkılar → Şarkı Detay</li>
+                                <li>• <strong>FAQPage:</strong> Şarkı hakkında SSS (opsiyonel)</li>
+                                <li>• <strong>HowTo:</strong> Şarkıyı nasıl dinlerim? (opsiyonel)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Album Schema -->
+                    <div class="bg-slate-900/50 border border-pink-700 rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-pink-400">💿 Album Model</h3>
+                            <span class="bg-pink-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                MusicAlbum
+                            </span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Database Fields:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• title (JSON multilang)</li>
+                                    <li>• description (JSON multilang)</li>
+                                    <li>• artist_id (FK → artists)</li>
+                                    <li>• songs_count (cached)</li>
+                                    <li>• total_duration (cached)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Relations:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• artist() → Artist</li>
+                                    <li>• songs() → Song[]</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Schema.org JSON-LD Örneği:</p>
+                            <pre class="text-xs text-pink-300 overflow-x-auto"><code>{
+  "@context": "https://schema.org",
+  "@type": "MusicAlbum",
+  "name": "Albüm Başlığı",
+  "description": "Albüm açıklaması",
+  "url": "https://muzibu.com.tr/albums/album-basligi",
+  "image": "https://cdn.muzibu.com.tr/covers/album.jpg",
+  "byArtist": {
+    "@type": "MusicGroup",
+    "name": "Sanatçı Adı",
+    "url": "https://muzibu.com.tr/artists/sanatci-adi"
+  },
+  "numTracks": 12,
+  "track": [
+    {
+      "@type": "MusicRecording",
+      "name": "Şarkı 1",
+      "duration": "PT180S",
+      "position": 1
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": 85
+  }
+}</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Ek Schema'lar:</p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• <strong>BreadcrumbList:</strong> Ana Sayfa → Albümler → Albüm Detay</li>
+                                <li>• <strong>FAQPage:</strong> Albüm hakkında SSS</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Artist Schema -->
+                    <div class="bg-slate-900/50 border border-blue-700 rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-blue-400">🎤 Artist Model</h3>
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                MusicGroup / Person
+                            </span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Database Fields:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• title (JSON multilang)</li>
+                                    <li>• bio (JSON multilang)</li>
+                                    <li>• albums_count (cached)</li>
+                                    <li>• songs_count (cached)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Relations:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• albums() → Album[]</li>
+                                    <li>• songs() (through albums)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Schema.org JSON-LD Örneği:</p>
+                            <pre class="text-xs text-blue-300 overflow-x-auto"><code>{
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  "name": "Sanatçı Adı",
+  "description": "Sanatçı biyografisi",
+  "url": "https://muzibu.com.tr/artists/sanatci-adi",
+  "image": "https://cdn.muzibu.com.tr/photos/artist.jpg",
+  "genre": ["Pop", "Rock"],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": 230
+  },
+  "album": [
+    {
+      "@type": "MusicAlbum",
+      "name": "Albüm 1",
+      "url": "https://muzibu.com.tr/albums/album-1"
+    }
+  ]
+}</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Ek Schema'lar:</p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• <strong>BreadcrumbList:</strong> Ana Sayfa → Sanatçılar → Sanatçı Detay</li>
+                                <li>• <strong>FAQPage:</strong> Sanatçı hakkında SSS</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Playlist Schema -->
+                    <div class="bg-slate-900/50 border border-green-700 rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-green-400">📋 Playlist Model</h3>
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                MusicPlaylist
+                            </span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Database Fields:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• title (JSON multilang)</li>
+                                    <li>• description (JSON multilang)</li>
+                                    <li>• user_id (FK → users)</li>
+                                    <li>• is_public (boolean)</li>
+                                    <li>• songs_count (cached)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Relations:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• songs() (many-to-many)</li>
+                                    <li>• user() → User</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Schema.org JSON-LD Örneği:</p>
+                            <pre class="text-xs text-green-300 overflow-x-auto"><code>{
+  "@context": "https://schema.org",
+  "@type": "MusicPlaylist",
+  "name": "Playlist Başlığı",
+  "description": "Playlist açıklaması",
+  "url": "https://muzibu.com.tr/playlists/playlist-basligi",
+  "numTracks": 25,
+  "track": [
+    {
+      "@type": "MusicRecording",
+      "name": "Şarkı 1",
+      "position": 1
+    }
+  ]
+}</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Ek Schema'lar:</p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• <strong>BreadcrumbList:</strong> Ana Sayfa → Playlist'ler → Playlist Detay</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Genre Schema -->
+                    <div class="bg-slate-900/50 border border-yellow-700 rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-yellow-400">🎸 Genre Model</h3>
+                            <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                DefinedTerm
+                            </span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Database Fields:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• title (JSON multilang)</li>
+                                    <li>• description (JSON multilang)</li>
+                                    <li>• songs_count (cached)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Relations:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• songs() → Song[]</li>
+                                    <li>• playlists() (polymorphic)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Schema.org JSON-LD Örneği:</p>
+                            <pre class="text-xs text-yellow-300 overflow-x-auto"><code>{
+  "@context": "https://schema.org",
+  "@type": "DefinedTerm",
+  "name": "Pop",
+  "description": "Popüler müzik türü",
+  "url": "https://muzibu.com.tr/genres/pop",
+  "inDefinedTermSet": {
+    "@type": "DefinedTermSet",
+    "name": "Müzik Türleri"
+  }
+}</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Ek Schema'lar:</p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• <strong>BreadcrumbList:</strong> Ana Sayfa → Türler → Tür Detay</li>
+                                <li>• <strong>CollectionPage:</strong> Genre kategorisindeki şarkılar</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Radio Schema -->
+                    <div class="bg-slate-900/50 border border-red-700 rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-red-400">📻 Radio Model</h3>
+                            <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                RadioStation
+                            </span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Database Fields:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• title (JSON multilang)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-400 mb-2 font-semibold">Relations:</p>
+                                <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                    <li>• sectors() (many-to-many)</li>
+                                    <li>• playlists() (polymorphic)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Schema.org JSON-LD Örneği:</p>
+                            <pre class="text-xs text-red-300 overflow-x-auto"><code>{
+  "@context": "https://schema.org",
+  "@type": "RadioStation",
+  "name": "Radyo Adı",
+  "url": "https://muzibu.com.tr/radios/radyo-adi",
+  "image": "https://cdn.muzibu.com.tr/logos/radio.jpg",
+  "broadcastServiceTier": "free"
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Sector Schema -->
+                    <div class="bg-slate-900/50 border border-orange-700 rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-orange-400">🏢 Sector Model</h3>
+                            <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                DefinedTerm (Custom)
+                            </span>
+                        </div>
+
+                        <div class="bg-orange-900/20 border border-orange-800 rounded p-4">
+                            <p class="text-sm text-orange-300">
+                                <strong>Not:</strong> Sector, iş sektörü kategorisi olduğu için müzik ile ilgili değil.
+                                Bu model için genel DefinedTerm kullanılacak veya schema implementasyonu opsiyonel olabilir.
+                            </p>
+                        </div>
+
+                        <div class="mt-4 bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Schema.org JSON-LD Örneği:</p>
+                            <pre class="text-xs text-orange-300 overflow-x-auto"><code>{
+  "@context": "https://schema.org",
+  "@type": "DefinedTerm",
+  "name": "Otel",
+  "description": "Otelcilik sektörü",
+  "inDefinedTermSet": {
+    "@type": "DefinedTermSet",
+    "name": "İş Sektörleri"
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Implementation Adımları -->
+            <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-400">🚀 Implementation Adımları</h2>
+
+                <div class="space-y-6">
+                    <!-- Adım 1: Database Migration -->
+                    <div class="bg-slate-900/50 border border-blue-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                                1
+                            </div>
+                            <h3 class="text-xl font-bold text-blue-400">Database Migration Oluştur</h3>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-3">
+                                Song, Album, Artist, Playlist model'lerine <code class="bg-slate-700 px-2 py-1 rounded text-sm">faq_data</code>
+                                ve <code class="bg-slate-700 px-2 py-1 rounded text-sm">howto_data</code> field'larını ekle.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Migration Dosya Konumu:</p>
+                            <pre class="text-xs text-blue-300 overflow-x-auto mb-4"><code>Modules/Muzibu/database/migrations/2026_01_09_add_schema_fields_to_muzibu_tables.php
+Modules/Muzibu/database/migrations/tenant/2026_01_09_add_schema_fields_to_muzibu_tables.php</code></pre>
+
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Migration SQL:</p>
+                            <pre class="text-xs text-green-300 overflow-x-auto"><code>// muzibu_songs tablosu
+ALTER TABLE muzibu_songs
+ADD COLUMN faq_data JSON NULL AFTER lyrics,
+ADD COLUMN howto_data JSON NULL AFTER faq_data;
+
+// muzibu_albums tablosu
+ALTER TABLE muzibu_albums
+ADD COLUMN faq_data JSON NULL AFTER description,
+ADD COLUMN howto_data JSON NULL AFTER faq_data;
+
+// muzibu_artists tablosu
+ALTER TABLE muzibu_artists
+ADD COLUMN faq_data JSON NULL AFTER bio,
+ADD COLUMN howto_data JSON NULL AFTER faq_data;
+
+// muzibu_playlists tablosu
+ALTER TABLE muzibu_playlists
+ADD COLUMN faq_data JSON NULL AFTER description,
+ADD COLUMN howto_data JSON NULL AFTER faq_data;</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-yellow-900/20 border border-yellow-800 rounded p-4">
+                            <p class="text-sm text-yellow-300">
+                                <strong>⚠️ Kritik:</strong> Migration dosyası hem central hem tenant klasörüne eklenecek!
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Adım 2: Model'lere Trait Ekle -->
+                    <div class="bg-slate-900/50 border border-purple-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-purple-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                                2
+                            </div>
+                            <h3 class="text-xl font-bold text-purple-400">Model'lere HasUniversalSchemas Trait Ekle</h3>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-3">
+                                Her model'e <code class="bg-slate-700 px-2 py-1 rounded text-sm">use HasUniversalSchemas;</code> ekle
+                                ve <code class="bg-slate-700 px-2 py-1 rounded text-sm">$fillable</code> /
+                                <code class="bg-slate-700 px-2 py-1 rounded text-sm">$casts</code> array'lerini güncelle.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Örnek: Song.php</p>
+                            <pre class="text-xs text-purple-300 overflow-x-auto"><code>use App\Traits\HasUniversalSchemas;
+
+class Song extends BaseModel implements TranslatableEntity, HasMedia
+{
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, ...;
+
+    protected $fillable = [
+        // ... mevcut field'lar
+        'faq_data',
+        'howto_data',
+    ];
+
+    protected $casts = [
+        // ... mevcut cast'lar
+        'faq_data' => 'array',
+        'howto_data' => 'array',
+    ];
+}</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Uygulanacak Model'ler:</p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>✓ Song.php</li>
+                                <li>✓ Album.php</li>
+                                <li>✓ Artist.php</li>
+                                <li>✓ Playlist.php</li>
+                                <li>⚠️ Genre.php (opsiyonel - kategori sayfası)</li>
+                                <li>⚠️ Radio.php (opsiyonel - detay sayfası yok)</li>
+                                <li>❌ Sector.php (gerek yok)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Adım 3: Schema Method'ları Implement Et -->
+                    <div class="bg-slate-900/50 border border-green-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                                3
+                            </div>
+                            <h3 class="text-xl font-bold text-green-400">Schema Method'ları Implement Et</h3>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-3">
+                                Her model'de <code class="bg-slate-700 px-2 py-1 rounded text-sm">getAllSchemas()</code>
+                                ve <code class="bg-slate-700 px-2 py-1 rounded text-sm">getBreadcrumbSchema()</code> method'larını override et.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Örnek: Song.php</p>
+                            <pre class="text-xs text-green-300 overflow-x-auto"><code>/**
+ * Tüm schema'ları al (MusicRecording + Universal schemas)
+ */
+public function getAllSchemas(): array
+{
+    $schemas = [];
+
+    // 1. MusicRecording Schema (Ana içerik)
+    $songSchema = $this->getSchemaMarkup();
+    if ($songSchema) {
+        $schemas['musicrecording'] = $songSchema;
+    }
+
+    // 2. Breadcrumb Schema
+    $breadcrumbSchema = $this->getBreadcrumbSchema();
+    if ($breadcrumbSchema) {
+        $schemas['breadcrumb'] = $breadcrumbSchema;
+    }
+
+    // 3. FAQ Schema (varsa)
+    $faqSchema = $this->getFaqSchema();
+    if ($faqSchema) {
+        $schemas['faq'] = $faqSchema;
+    }
+
+    // 4. HowTo Schema (varsa)
+    $howtoSchema = $this->getHowToSchema();
+    if ($howtoSchema) {
+        $schemas['howto'] = $howtoSchema;
+    }
+
+    return $schemas;
+}
+
+/**
+ * Generate BreadcrumbList Schema for Song
+ * Override from HasUniversalSchemas trait
+ */
+public function getBreadcrumbSchema(): ?array
+{
+    $locale = app()->getLocale();
+    $breadcrumbs = [];
+    $position = 1;
+
+    // 1. Home
+    $breadcrumbs[] = [
+        '@type' => 'ListItem',
+        'position' => $position++,
+        'name' => __('Ana Sayfa'),
+        'item' => url('/')
+    ];
+
+    // 2. Şarkılar Ana Sayfa
+    $breadcrumbs[] = [
+        '@type' => 'ListItem',
+        'position' => $position++,
+        'name' => __('Şarkılar'),
+        'item' => url('/songs')
+    ];
+
+    // 3. Current Song
+    $breadcrumbs[] = [
+        '@type' => 'ListItem',
+        'position' => $position,
+        'name' => $this->getTranslated('title', $locale),
+        'item' => $this->getUrl($locale)
+    ];
+
+    return [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => $breadcrumbs
+    ];
+}</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Her Model İçin:</p>
+                            <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                <li>• Song: getAllSchemas() + getBreadcrumbSchema()</li>
+                                <li>• Album: getAllSchemas() + getBreadcrumbSchema()</li>
+                                <li>• Artist: getAllSchemas() + getBreadcrumbSchema()</li>
+                                <li>• Playlist: getAllSchemas() + getBreadcrumbSchema()</li>
+                                <li>• Genre: getAllSchemas() + getBreadcrumbSchema()</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Adım 4: View'lerde Schema Render -->
+                    <div class="bg-slate-900/50 border border-pink-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                                4
+                            </div>
+                            <h3 class="text-xl font-bold text-pink-400">View'lerde Schema JSON-LD Render Et</h3>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-3">
+                                Her detay sayfasında (<code class="bg-slate-700 px-2 py-1 rounded text-sm">show.blade.php</code>)
+                                <code class="bg-slate-700 px-2 py-1 rounded text-sm">&lt;head&gt;</code> içinde schema JSON-LD'yi ekle.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Örnek: songs/show.blade.php</p>
+                            <pre class="text-xs text-pink-300 overflow-x-auto"><code>@section('head')
+    @parent
+
+    {{-- Schema.org JSON-LD --}}
+    @php
+        $schemas = $song->getAllSchemas();
+    @endphp
+
+    @foreach($schemas as $key => $schema)
+        <script type="application/ld+json">
+            {!! json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+        </script>
+    @endforeach
+@endsection</code></pre>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Güncellenecek View Dosyaları:</p>
+                            <ul class="text-sm text-slate-300 space-y-1 font-mono text-xs">
+                                <li>• Modules/Muzibu/resources/views/songs/show.blade.php</li>
+                                <li>• Modules/Muzibu/resources/views/albums/show.blade.php</li>
+                                <li>• Modules/Muzibu/resources/views/artists/show.blade.php</li>
+                                <li>• Modules/Muzibu/resources/views/playlists/show.blade.php</li>
+                                <li>• Modules/Muzibu/resources/views/genres/show.blade.php</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Adım 5: Test & Validation -->
+                    <div class="bg-slate-900/50 border border-yellow-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-yellow-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                                5
+                            </div>
+                            <h3 class="text-xl font-bold text-yellow-400">Google Rich Results Test</h3>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-3">
+                                Her sayfa için Google Rich Results Test ile doğrula.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded p-4 mb-4">
+                            <p class="text-sm text-slate-400 mb-2 font-semibold">Test URL:</p>
+                            <a href="https://search.google.com/test/rich-results" target="_blank"
+                               class="text-blue-400 hover:text-blue-300 text-sm break-all">
+                                https://search.google.com/test/rich-results
+                            </a>
+                        </div>
+
+                        <div class="bg-blue-900/20 border border-blue-800 rounded p-4">
+                            <p class="text-sm text-blue-400 font-semibold mb-2">Test Edilecek Sayfalar:</p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>✓ https://muzibu.com.tr/songs/ornek-sarki</li>
+                                <li>✓ https://muzibu.com.tr/albums/ornek-album</li>
+                                <li>✓ https://muzibu.com.tr/artists/ornek-sanatci</li>
+                                <li>✓ https://muzibu.com.tr/playlists/ornek-playlist</li>
+                                <li>✓ https://muzibu.com.tr/genres/pop</li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-4 bg-green-900/20 border border-green-800 rounded p-4">
+                            <p class="text-sm text-green-400 font-semibold mb-2">Beklenen Sonuçlar:</p>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>✓ MusicRecording schema valid</li>
+                                <li>✓ MusicAlbum schema valid</li>
+                                <li>✓ MusicGroup schema valid</li>
+                                <li>✓ BreadcrumbList schema valid</li>
+                                <li>✓ FAQPage schema valid (varsa)</li>
+                                <li>✓ AggregateRating görünür</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Migration Kod Örnekleri -->
+            <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-400">💻 Migration Kod Örneği</h2>
+
+                <div class="bg-slate-900/50 rounded-lg p-6">
+                    <p class="text-sm text-slate-400 mb-3 font-semibold">
+                        Modules/Muzibu/database/migrations/2026_01_09_add_schema_fields_to_muzibu_tables.php
+                    </p>
+                    <pre class="text-xs text-green-300 overflow-x-auto"><code>&lt;?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // muzibu_songs tablosu
+        if (Schema::hasTable('muzibu_songs')) {
+            Schema::table('muzibu_songs', function (Blueprint $table) {
+                if (!Schema::hasColumn('muzibu_songs', 'faq_data')) {
+                    $table->json('faq_data')->nullable()->after('lyrics');
+                }
+                if (!Schema::hasColumn('muzibu_songs', 'howto_data')) {
+                    $table->json('howto_data')->nullable()->after('faq_data');
+                }
+            });
+        }
+
+        // muzibu_albums tablosu
+        if (Schema::hasTable('muzibu_albums')) {
+            Schema::table('muzibu_albums', function (Blueprint $table) {
+                if (!Schema::hasColumn('muzibu_albums', 'faq_data')) {
+                    $table->json('faq_data')->nullable()->after('description');
+                }
+                if (!Schema::hasColumn('muzibu_albums', 'howto_data')) {
+                    $table->json('howto_data')->nullable()->after('faq_data');
+                }
+            });
+        }
+
+        // muzibu_artists tablosu
+        if (Schema::hasTable('muzibu_artists')) {
+            Schema::table('muzibu_artists', function (Blueprint $table) {
+                if (!Schema::hasColumn('muzibu_artists', 'faq_data')) {
+                    $table->json('faq_data')->nullable()->after('bio');
+                }
+                if (!Schema::hasColumn('muzibu_artists', 'howto_data')) {
+                    $table->json('howto_data')->nullable()->after('faq_data');
+                }
+            });
+        }
+
+        // muzibu_playlists tablosu
+        if (Schema::hasTable('muzibu_playlists')) {
+            Schema::table('muzibu_playlists', function (Blueprint $table) {
+                if (!Schema::hasColumn('muzibu_playlists', 'faq_data')) {
+                    $table->json('faq_data')->nullable()->after('description');
+                }
+                if (!Schema::hasColumn('muzibu_playlists', 'howto_data')) {
+                    $table->json('howto_data')->nullable()->after('faq_data');
+                }
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        if (Schema::hasTable('muzibu_songs')) {
+            Schema::table('muzibu_songs', function (Blueprint $table) {
+                $table->dropColumn(['faq_data', 'howto_data']);
+            });
+        }
+
+        if (Schema::hasTable('muzibu_albums')) {
+            Schema::table('muzibu_albums', function (Blueprint $table) {
+                $table->dropColumn(['faq_data', 'howto_data']);
+            });
+        }
+
+        if (Schema::hasTable('muzibu_artists')) {
+            Schema::table('muzibu_artists', function (Blueprint $table) {
+                $table->dropColumn(['faq_data', 'howto_data']);
+            });
+        }
+
+        if (Schema::hasTable('muzibu_playlists')) {
+            Schema::table('muzibu_playlists', function (Blueprint $table) {
+                $table->dropColumn(['faq_data', 'howto_data']);
+            });
+        }
+    }
+};</code></pre>
+                </div>
+
+                <div class="mt-6 bg-yellow-900/20 border border-yellow-800 rounded p-4">
+                    <p class="text-sm text-yellow-300 mb-2">
+                        <strong>⚠️ Kritik Hatırlatma:</strong>
+                    </p>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Bu dosyayı hem <code class="bg-slate-700 px-2 py-1 rounded text-xs">migrations/</code> hem de
+                            <code class="bg-slate-700 px-2 py-1 rounded text-xs">migrations/tenant/</code> klasörüne kopyala!</li>
+                        <li>• Central migration: <code class="bg-slate-700 px-2 py-1 rounded text-xs">php artisan migrate --force</code></li>
+                        <li>• Tenant migration: <code class="bg-slate-700 px-2 py-1 rounded text-xs">php artisan tenants:migrate --force</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Test Checklist -->
+            <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-400">✅ Test Checklist</h2>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-green-400 mb-3">📝 Migration Test</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Migration dosyaları hem central hem tenant klasöründe oluşturuldu</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Central migration başarıyla çalıştırıldı</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Tenant migration başarıyla çalıştırıldı</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Database'de faq_data ve howto_data field'ları mevcut</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-blue-400 mb-3">🔧 Model Test</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Song model'e HasUniversalSchemas trait eklendi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Album model'e HasUniversalSchemas trait eklendi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Artist model'e HasUniversalSchemas trait eklendi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Playlist model'e HasUniversalSchemas trait eklendi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>$fillable ve $casts array'leri güncellendi</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-purple-400 mb-3">📐 Schema Method Test</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Song: getAllSchemas() ve getBreadcrumbSchema() implement edildi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Album: getAllSchemas() ve getBreadcrumbSchema() implement edildi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Artist: getAllSchemas() ve getBreadcrumbSchema() implement edildi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Playlist: getAllSchemas() ve getBreadcrumbSchema() implement edildi</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-pink-400 mb-3">🎨 View Test</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>songs/show.blade.php'de schema JSON-LD eklendi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>albums/show.blade.php'de schema JSON-LD eklendi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>artists/show.blade.php'de schema JSON-LD eklendi</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>playlists/show.blade.php'de schema JSON-LD eklendi</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-yellow-400 mb-3">🌐 Google Rich Results Test</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Song detay sayfası test edildi (MusicRecording schema valid)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Album detay sayfası test edildi (MusicAlbum schema valid)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Artist detay sayfası test edildi (MusicGroup schema valid)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>Playlist detay sayfası test edildi (MusicPlaylist schema valid)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>BreadcrumbList schema tüm sayfalarda valid</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <input type="checkbox" class="mt-1">
+                                <span>AggregateRating (yıldızlar) görünüyor</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Riskler ve Dikkat Edilecek Noktalar -->
+            <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-400">⚠️ Riskler ve Dikkat Edilecek Noktalar</h2>
+
+                <div class="space-y-4">
+                    <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-red-400 mb-3">🔴 Kritik Riskler</h3>
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-500 font-bold text-xl">•</span>
+                                <div>
+                                    <p class="font-semibold">Migration'lar hem central hem tenant klasöründe olmalı!</p>
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        Unutulursa sistem çöker. Her iki migration'ı da çalıştır.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-500 font-bold text-xl">•</span>
+                                <div>
+                                    <p class="font-semibold">Bu production sistemi! Backup al!</p>
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        Migration öncesi database backup zorunlu.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-500 font-bold text-xl">•</span>
+                                <div>
+                                    <p class="font-semibold">JSON field'lar nullable olmalı!</p>
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        faq_data ve howto_data opsiyonel, null olabilir.
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-yellow-400 mb-3">⚠️ Orta Seviye Riskler</h3>
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-500 font-bold text-xl">•</span>
+                                <div>
+                                    <p class="font-semibold">Multi-language JSON field desteği</p>
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        faq_data ve howto_data JSON field'larında çoklu dil desteği olmalı.
+                                        HasUniversalSchemas trait bunu otomatik yapar.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-500 font-bold text-xl">•</span>
+                                <div>
+                                    <p class="font-semibold">Performance: Schema hesaplama maliyeti</p>
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        getAllSchemas() her sayfa yüklenişinde çalışır. Cache düşün (gelecekte).
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-blue-400 mb-3">💡 Best Practices</h3>
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-500 font-bold text-xl">•</span>
+                                <div>
+                                    <p class="font-semibold">Test her model için ayrı ayrı yap</p>
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        Song implement et → test et → Album'e geç.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-500 font-bold text-xl">•</span>
+                                <div>
+                                    <p class="font-semibold">Google Rich Results Test her zaman güncel değil</p>
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        Bazen "hata yok" gösterir ama Google'da görünmeyebilir. Sabırlı ol.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-500 font-bold text-xl">•</span>
+                                <div>
+                                    <p class="font-semibold">faq_data ve howto_data opsiyonel</p>
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        Kullanıcı doldurmak istemiyorsa boş bırakabilir, schema yine de çalışır.
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Beklenen Sonuçlar -->
+            <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-400">🎯 Beklenen Sonuçlar</h2>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-green-400">✅ SEO Kazançları</h3>
+                        <ul class="space-y-2 text-slate-300 text-sm">
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-500">▶</span>
+                                <span>Google arama sonuçlarında şarkılar yıldızlı görünür</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-500">▶</span>
+                                <span>Albüm bilgileri zenginleştirilmiş (track count, duration)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-500">▶</span>
+                                <span>Sanatçı sayfaları Google Knowledge Graph'te çıkabilir</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-500">▶</span>
+                                <span>Breadcrumb (ekmek kırıntısı) yolu görünür</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-500">▶</span>
+                                <span>FAQ sayfaları "Sık Sorulan Sorular" olarak Google'da öne çıkar</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-400">📈 Kullanıcı Deneyimi</h3>
+                        <ul class="space-y-2 text-slate-300 text-sm">
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-500">▶</span>
+                                <span>Arama sonuçlarında tıklama oranı (CTR) artar</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-500">▶</span>
+                                <span>Kullanıcılar şarkıları daha kolay bulur</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-500">▶</span>
+                                <span>Google Assistant ve voice search desteği artar</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-500">▶</span>
+                                <span>Müzik platformu olarak profesyonel görünüm</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-500">▶</span>
+                                <span>Google Discover'da öne çıkma şansı artar</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-purple-900/20 border border-purple-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">📊 Teknik Kazançlar</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-500">▶</span>
+                            <span>Google Search Console'da Rich Results raporları gelir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-500">▶</span>
+                            <span>Schema.org standardına uyum (future-proof)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-500">▶</span>
+                            <span>Diğer arama motorları (Bing, Yandex) de destekler</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-500">▶</span>
+                            <span>API entegrasyonları için yapılandırılmış veri hazır</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="text-center py-8 border-t border-slate-700">
+                <p class="text-slate-500 text-sm mb-2">
+                    Bu rapor Claude AI tarafından oluşturulmuştur.
+                </p>
+                <p class="text-slate-600 text-xs">
+                    Muzibu Modülü - Schema.org Implementation Planı | v1 | 9 Ocak 2026
+                </p>
+            </footer>
+
+        </div>
+    </div>
+</body>
+</html>

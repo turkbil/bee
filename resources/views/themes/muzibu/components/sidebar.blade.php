@@ -55,13 +55,10 @@
                                     <div class="w-10 h-10 bg-gradient-to-br from-muzibu-coral to-green-600 rounded-full flex items-center justify-center shadow-lg">
                                         <i class="fas fa-user text-white text-sm"></i>
                                     </div>
+                                    {{-- 🔴 TEK KAYNAK: isPremium() (subscription_expires_at > now) --}}
                                     @if(auth()->user()->isPremium())
                                         <div class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg border-2 border-black">
                                             <i class="fas fa-crown text-yellow-900 text-xs"></i>
-                                        </div>
-                                    @elseif(auth()->user()->isTrialActive())
-                                        <div class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg border-2 border-black">
-                                            <i class="fas fa-gift text-purple-900 text-xs"></i>
                                         </div>
                                     @endif
                                 </div>
@@ -70,21 +67,16 @@
                                         {{ auth()->user()->name }}
                                         @if(auth()->user()->isPremium())
                                             <i class="fas fa-crown text-yellow-400 text-xs ml-1"></i>
-                                        @elseif(auth()->user()->isTrialActive())
-                                            <i class="fas fa-gift text-purple-400 text-xs ml-1"></i>
                                         @endif
                                     </div>
+                                    {{-- 🔴 TEK KAYNAK: isPremium() --}}
                                     @if(auth()->user()->isPremium())
                                         <div class="text-xs text-muzibu-coral-light">
                                             {{ tenant_trans('front.premium') }}
                                         </div>
-                                    @elseif(auth()->user()->isTrialActive())
-                                        <div class="text-xs text-yellow-400">
-                                            Deneme
-                                        </div>
                                     @else
                                         <div class="text-xs text-gray-400">
-                                            Üye
+                                            Ücretsiz Üye
                                         </div>
                                     @endif
                                 </div>

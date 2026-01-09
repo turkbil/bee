@@ -1389,7 +1389,10 @@ class CorporateFrontController extends Controller
             ->withCount(['songs' => fn($q) => $q->where('is_active', 1)])
             ->withSum(['songs' => fn($q) => $q->where('is_active', 1)], 'duration')
             ->orderBy('muzibu_playlistables.position')
-            ->get();
+            ->paginate(40);
+
+        // Set custom pagination view
+        $playlists->setPath(request()->url());
 
         return view('themes.muzibu.corporate.playlists', [
             'corporate' => $corporate,
@@ -1434,7 +1437,7 @@ class CorporateFrontController extends Controller
             ->withCount(['songs' => fn($q) => $q->where('is_active', 1)])
             ->withSum(['songs' => fn($q) => $q->where('is_active', 1)], 'duration')
             ->orderBy('muzibu_playlistables.position')
-            ->get();
+            ->paginate(40);
 
         $html = view('themes.muzibu.partials.corporate-playlists-content', [
             'corporate' => $corporate,

@@ -132,18 +132,23 @@
     {{-- ============================================== --}}
     <div class="hidden lg:block flex-shrink-0 p-3"
          x-data="{
+            isPremium: window.muzibuPlayerConfig?.currentUser?.is_premium || false,
             get currentUser() {
                 return window.muzibuPlayerConfig?.currentUser || null;
             },
             get memberType() {
                 const lang = window.muzibuPlayerConfig?.frontLang?.sidebar || {};
-                if (!this.currentUser?.is_premium) {
-                    return lang.free_member || 'Ücretsiz Üye';
+                // 🔴 TEK KAYNAK: is_premium (reaktif)
+                if (this.isPremium) {
+                    return lang.premium_member || 'Premium Üye';
                 }
-                if (this.currentUser?.is_trial) {
-                    return lang.trial_member || 'Deneme Üyesi';
-                }
-                return lang.premium_member || 'Premium Üye';
+                return lang.free_member || 'Ücretsiz Üye';
+            },
+            init() {
+                // 🔔 Premium değişikliğini dinle (player'dan event gelir)
+                window.addEventListener('user:premium-changed', (e) => {
+                    this.isPremium = e.detail.is_premium;
+                });
             }
          }">
 
@@ -158,15 +163,12 @@
             <div class="relative z-10">
                 {{-- User Row - Avatar + Full Name --}}
                 <div class="flex items-center gap-3 mb-3">
-                    {{-- Avatar: Premium=Crown, Trial=Gift, Free=Letter --}}
+                    {{-- Avatar: Premium=Crown, Free=Letter --}}
                     <div class="w-10 h-10 flex-shrink-0 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
-                        <template x-if="currentUser?.is_premium && !currentUser?.is_trial">
+                        <template x-if="isPremium">
                             <i class="fas fa-crown text-yellow-300 text-base"></i>
                         </template>
-                        <template x-if="currentUser?.is_trial">
-                            <i class="fas fa-gift text-yellow-300 text-base"></i>
-                        </template>
-                        <template x-if="!currentUser?.is_premium">
+                        <template x-if="!isPremium">
                             <span class="text-white font-bold text-sm" x-text="currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'"></span>
                         </template>
                     </div>
@@ -211,18 +213,23 @@
     {{-- ============================================== --}}
     <div class="lg:hidden flex-shrink-0 p-3 bg-[#0d0d0d]"
          x-data="{
+            isPremium: window.muzibuPlayerConfig?.currentUser?.is_premium || false,
             get currentUser() {
                 return window.muzibuPlayerConfig?.currentUser || null;
             },
             get memberType() {
                 const lang = window.muzibuPlayerConfig?.frontLang?.sidebar || {};
-                if (!this.currentUser?.is_premium) {
-                    return lang.free_member || 'Ücretsiz Üye';
+                // 🔴 TEK KAYNAK: is_premium (reaktif)
+                if (this.isPremium) {
+                    return lang.premium_member || 'Premium Üye';
                 }
-                if (this.currentUser?.is_trial) {
-                    return lang.trial_member || 'Deneme Üyesi';
-                }
-                return lang.premium_member || 'Premium Üye';
+                return lang.free_member || 'Ücretsiz Üye';
+            },
+            init() {
+                // 🔔 Premium değişikliğini dinle (player'dan event gelir)
+                window.addEventListener('user:premium-changed', (e) => {
+                    this.isPremium = e.detail.is_premium;
+                });
             }
          }">
 
@@ -237,15 +244,12 @@
             <div class="relative z-10">
                 {{-- User Row - Avatar + Full Name --}}
                 <div class="flex items-center gap-3 mb-3">
-                    {{-- Avatar: Premium=Crown, Trial=Gift, Free=Letter --}}
+                    {{-- Avatar: Premium=Crown, Free=Letter --}}
                     <div class="w-10 h-10 flex-shrink-0 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
-                        <template x-if="currentUser?.is_premium && !currentUser?.is_trial">
+                        <template x-if="isPremium">
                             <i class="fas fa-crown text-yellow-300 text-base"></i>
                         </template>
-                        <template x-if="currentUser?.is_trial">
-                            <i class="fas fa-gift text-yellow-300 text-base"></i>
-                        </template>
-                        <template x-if="!currentUser?.is_premium">
+                        <template x-if="!isPremium">
                             <span class="text-white font-bold text-sm" x-text="currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'"></span>
                         </template>
                     </div>

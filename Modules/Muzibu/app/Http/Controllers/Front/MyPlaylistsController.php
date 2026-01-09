@@ -19,7 +19,10 @@ class MyPlaylistsController extends Controller
             ->with('coverMedia') // ✅ Eager load cover media
             ->withCount('songs')
             ->latest()
-            ->paginate(200);
+            ->paginate(40);
+
+        // Set custom pagination view
+        $playlists->setPath(request()->url());
 
         return response()
             ->view('themes.muzibu.playlists.my-playlists', compact('playlists'))
@@ -34,7 +37,7 @@ class MyPlaylistsController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $playlists = Playlist::where('user_id', auth()->id())->where('is_system', false)->with('coverMedia')->withCount('songs')->latest()->paginate(200);
+        $playlists = Playlist::where('user_id', auth()->id())->where('is_system', false)->with('coverMedia')->withCount('songs')->latest()->paginate(40);
         $html = view('themes.muzibu.partials.my-playlists-grid', compact('playlists'))->render();
         return response()->json(['html' => $html, 'meta' => ['title' => 'Çalma Listelerim - Muzibu', 'description' => 'Oluşturduğunuz çalma listeleri']])
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')

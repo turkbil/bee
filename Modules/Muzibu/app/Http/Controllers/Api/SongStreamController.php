@@ -79,11 +79,11 @@ class SongStreamController extends Controller
             // 🔐 DEVICE LIMIT CHECK - DISABLED (DeviceService kapalı)
             // Not: DeviceService ve timeout kapatıldı, token bazlı kontrol yapılmıyor
 
-            // 🚫 Normal üye (premium veya trial değil) → Subscription sayfasına yönlendir
-            // 🔥 FIX: isPremiumOrTrial() helper kullanılıyor
+            // 🚫 Ücretsiz üye → Subscription sayfasına yönlendir
+            // 🔴 TEK KAYNAK: isPremium() (subscription_expires_at > now)
             // 🚀 SMART CACHE: 5 dakikalık cache ile balance (güvenlik vs performans)
             // Event-based invalidation: Subscription değişince cache temizlenir
-            if (!$user->isPremiumOrTrial()) {
+            if (!$user->isPremium()) {
                 return response()->json([
                     'status' => 'subscription_required',
                     'redirect' => '/subscription/plans',
@@ -505,45 +505,30 @@ class SongStreamController extends Controller
     }
 
     /**
-     * Get subscription data for user (trial, premium, dates)
-     * 🔥 Frontend'e subscription bilgileri gönder
-     * 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+     * Get subscription data for user
+     * 🔴 TEK KAYNAK: users.subscription_expires_at
+     * - Gelecekte ise = Premium
+     * - Trial ayrımı YOK
      */
     protected function getSubscriptionData($user): array
     {
         if (!$user) {
             return [
                 'is_premium' => false,
-                'trial_ends_at' => null,
                 'subscription_ends_at' => null,
             ];
         }
 
-        // 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
-        $expiresAt = $user->subscription_expires_at;
-        $hasPremium = $expiresAt && $expiresAt->isFuture();
+        // 🔴 FRESH DB kontrolü (model stale olabilir)
+        $freshExpiry = DB::table('users')
+            ->where('id', $user->id)
+            ->value('subscription_expires_at');
 
-        if (!$hasPremium) {
-            return [
-                'is_premium' => false,
-                'trial_ends_at' => null,
-                'subscription_ends_at' => null,
-            ];
-        }
-
-        // Trial kontrolü: Aktif trial subscription var mı?
-        $trialSubscription = $user->subscriptions()
-            ->where('status', 'trial')
-            ->whereNotNull('trial_ends_at')
-            ->where('trial_ends_at', '>', now())
-            ->first();
-
-        $isTrial = $trialSubscription !== null;
+        $isPremium = $freshExpiry && Carbon::parse($freshExpiry)->isFuture();
 
         return [
-            'is_premium' => true,
-            'trial_ends_at' => $isTrial ? $trialSubscription->trial_ends_at->toIso8601String() : null,
-            'subscription_ends_at' => $expiresAt->toIso8601String(),
+            'is_premium' => $isPremium,
+            'subscription_ends_at' => $freshExpiry,
         ];
     }
 

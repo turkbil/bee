@@ -188,7 +188,7 @@
                             'from-red-500 to-red-700',
                         ];
                     @endphp
-                    @foreach($genres as $index => $genre)
+                    @foreach($genres->take(15) as $index => $genre)
                     @php
                         $slugJson = @json_decode($genre->slug);
                         $slug = $slugJson && isset($slugJson->tr) ? $slugJson->tr : $genre->slug;
@@ -204,6 +204,18 @@
                         <h3 class="text-xl font-bold text-white relative z-10">{{ $title }}</h3>
                     </a>
                     @endforeach
+
+                    {{-- Tüm Türler Kartı (16. sıra - Ters Kontrast) --}}
+                    <a
+                        href="/genres"
+                        class="h-32 bg-gradient-to-br from-white to-gray-100 rounded-lg p-4 flex items-center justify-center cursor-pointer shadow-2xl hover:shadow-spotify-green/50 transition-all relative overflow-hidden group card-shine animate-scale-in"
+                        style="animation-delay: 450ms"
+                    >
+                        <div class="text-center">
+                            <i class="fas fa-th text-3xl text-spotify-dark mb-2 group-hover:scale-110 transition-transform"></i>
+                            <h3 class="text-xl font-bold text-spotify-dark">Tüm Türler</h3>
+                        </div>
+                    </a>
                 </div>
             </div>
             @endif

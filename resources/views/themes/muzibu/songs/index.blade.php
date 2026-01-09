@@ -31,7 +31,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         {{-- Pagination --}}
         @if($songs->hasPages())
             <div class="mt-8">
-                {{ $songs->links() }}
+                {{ $songs->links('themes.muzibu.partials.pagination') }}
             </div>
         @endif
     @else

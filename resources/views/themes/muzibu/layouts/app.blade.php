@@ -466,8 +466,9 @@
 
     @php
         // 🚀 HYBRID: PHP initial value + Alpine SPA updates
-        // Sağ sidebar gösterilecek route'lar (music pages + my-playlists)
+        // Sağ sidebar gösterilecek route'lar (music pages + my-playlists + dashboard)
         $showRightSidebar = in_array(Route::currentRouteName(), [
+            'dashboard',
             'muzibu.home',
             'muzibu.songs.index',
             'muzibu.songs.show',
@@ -486,18 +487,18 @@
             'muzibu.favorites',
             'muzibu.my-playlists',
             'muzibu.corporate-playlists',
-            'muzibu.listening-history',
         ]);
 
         // Grid class'ları - PHP initial, Alpine SPA override
-        $gridColsWithSidebar = 'md:grid-cols-[1fr_280px] lg:grid-cols-[220px_1fr_280px] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]';
+        // ⚡ SAĞ SIDEBAR SADECE LG+ (1024px+) ekranlarda görünür (tablet'te GİZLİ)
+        $gridColsWithSidebar = 'lg:grid-cols-[220px_1fr_280px] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]';
         $gridColsNoSidebar = 'lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr] 2xl:grid-cols-[220px_1fr]';
         $initialGridCols = $showRightSidebar ? $gridColsWithSidebar : $gridColsNoSidebar;
     @endphp
 
     {{-- Main App Grid - Hybrid: PHP initial + Alpine SPA updates --}}
-    {{-- md (768px+): gap ve padding başlar, sağ sidebar görünür --}}
-    {{-- lg (1024px+): sol sidebar da görünür --}}
+    {{-- md (768px+): gap ve padding başlar --}}
+    {{-- lg (1024px+): sol sidebar + sağ sidebar (varsa) görünür --}}
     <div
         id="main-app-grid"
         class="grid grid-rows-[56px_1fr_auto] grid-cols-1 {{ $initialGridCols }} h-[100dvh] w-full gap-0 md:gap-3 px-0 pb-0 pt-0 md:px-3 md:pt-3"
@@ -513,12 +514,12 @@
 
         @include('themes.muzibu.components.main-content')
 
-        {{-- Right Sidebar - MD+ screens (768px+), Hybrid: PHP initial + Alpine SPA --}}
-        {{-- 768px-1023px: Sol sidebar gizli, sağ sidebar görünür --}}
+        {{-- Right Sidebar - LG+ screens (1024px+), Hybrid: PHP initial + Alpine SPA --}}
+        {{-- TABLET'TE GİZLİ (768px-1023px), SADECE DESKTOP'TA GÖSTER (1024px+) --}}
         {{-- 1024px+: Her iki sidebar da görünür --}}
         <aside
-            class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl {{ $showRightSidebar ? 'hidden md:block' : 'hidden' }}"
-            x-bind:class="$store.sidebar?.rightSidebarVisible ? 'md:block' : 'hidden'"
+            class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl {{ $showRightSidebar ? 'hidden lg:block' : 'hidden' }}"
+            x-bind:class="$store.sidebar?.rightSidebarVisible ? 'lg:block' : 'hidden'"
         >
             @include('themes.muzibu.components.sidebar-right')
         </aside>
@@ -686,24 +687,9 @@
                 @php
                     $user = auth()->user();
 
-                    // 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+                    // 🔴 TEK KAYNAK: users.subscription_expires_at
                     $subscriptionExpiresAt = $user->subscription_expires_at;
-                    $hasActiveSubscription = $subscriptionExpiresAt && $subscriptionExpiresAt->isFuture();
-
-                    // Trial kontrolü: Aktif trial subscription var mı?
-                    $trialSubscription = $user->subscriptions()
-                        ->where('status', 'trial')
-                        ->whereNotNull('trial_ends_at')
-                        ->where('trial_ends_at', '>', now())
-                        ->first();
-
-                    $isTrial = $trialSubscription !== null;
-                    $trialEndsAt = $isTrial ? $trialSubscription->trial_ends_at->toIso8601String() : null;
-
-                    // 🔴 subscription_ends_at = users.subscription_expires_at (TOPLAM SÜRE)
-                    $subscriptionEndsAt = $hasActiveSubscription
-                        ? $subscriptionExpiresAt->toIso8601String()
-                        : null;
+                    $subscriptionEndsAt = $subscriptionExpiresAt?->toIso8601String();
 
                     // 🔥 Device limit (backend'den al - 3-tier hierarchy)
                     $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
@@ -713,10 +699,8 @@
                 id: {{ $user->id }},
                 name: "{{ $user->name }}",
                 email: "{{ $user->email }}",
-                is_premium: {{ $user->isPremiumOrTrial() ? 'true' : 'false' }},
-                is_trial: {{ $isTrial ? 'true' : 'false' }},
+                is_premium: {{ $user->isPremium() ? 'true' : 'false' }},
                 is_root: {{ $user->hasRole('root') ? 'true' : 'false' }},
-                trial_ends_at: {!! $trialEndsAt ? '"' . $trialEndsAt . '"' : 'null' !!},
                 subscription_ends_at: {!! $subscriptionEndsAt ? '"' . $subscriptionEndsAt . '"' : 'null' !!}
             }
             @else

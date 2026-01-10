@@ -91,8 +91,19 @@ async function playGenres(genreId) {
         // 🔀 SHUFFLE SONGS - Rastgele sıralama
         const shuffledSongs = shuffleArray(data.songs);
 
-        // Load shuffled songs into queue and play
-        player.queue = shuffledSongs;
+        // 🚫 DUPLICATE CONTROL - Remove already played songs from queue
+        const uniqueSongIds = new Set();
+        const uniqueSongs = shuffledSongs.filter(song => {
+            const songId = song.song_id || song.id;
+            if (uniqueSongIds.has(songId)) {
+                return false; // Skip duplicate
+            }
+            uniqueSongIds.add(songId);
+            return true;
+        });
+
+        // Load unique shuffled songs into queue and play
+        player.queue = uniqueSongs;
         player.queueIndex = 0;
 
         // 🎸 Set play context to 'genre'
@@ -164,8 +175,62 @@ async function playPlaylist(playlistId) {
         // 🔀 SHUFFLE SONGS - Rastgele sıralama
         const shuffledSongs = shuffleArray(data.playlist.songs);
 
-        // Load shuffled songs into queue and play
-        player.queue = shuffledSongs;
+        // 🚫 DUPLICATE CONTROL - Remove already played songs from queue
+        // Get unique songs (filter by song_id)
+        const uniqueSongIds = new Set();
+        const uniqueSongs = shuffledSongs.filter(song => {
+            const songId = song.song_id || song.id;
+            if (uniqueSongIds.has(songId)) {
+                return false; // Skip duplicate
+            }
+            uniqueSongIds.add(songId);
+            return true;
+        });
+
+        // 🎯 MINIMUM 15 SONGS - Genre'den doldur
+        const MIN_QUEUE_SIZE = 15;
+        let finalQueue = [...uniqueSongs];
+
+        if (finalQueue.length < MIN_QUEUE_SIZE) {
+            // Son şarkının genre_id'sini al
+            const lastSong = finalQueue[finalQueue.length - 1];
+            const genreId = lastSong?.genre_id;
+
+            if (genreId) {
+                console.log(`[PlayPlaylist] Queue has ${finalQueue.length} songs, fetching from genre ${genreId} to reach ${MIN_QUEUE_SIZE}`);
+
+                try {
+                    // Genre API'den şarkı çek
+                    const genreResponse = await fetch(`/api/muzibu/genres/${genreId}/songs`);
+                    if (genreResponse.ok) {
+                        const genreData = await genreResponse.json();
+                        const genreSongs = genreData.songs || [];
+
+                        // Shuffle genre songs
+                        const shuffledGenreSongs = shuffleArray(genreSongs);
+
+                        // Genre şarkılarından sadece queue'da olmayanları ekle
+                        for (const song of shuffledGenreSongs) {
+                            if (finalQueue.length >= MIN_QUEUE_SIZE) break;
+
+                            const songId = song.song_id || song.id;
+                            if (!uniqueSongIds.has(songId)) {
+                                uniqueSongIds.add(songId);
+                                finalQueue.push(song);
+                                console.log(`[PlayPlaylist] Added song ${songId} from genre, queue size: ${finalQueue.length}`);
+                            }
+                        }
+                    }
+                } catch (genreError) {
+                    console.warn('[PlayPlaylist] Genre fill failed:', genreError);
+                }
+            }
+        }
+
+        console.log(`[PlayPlaylist] Final queue size: ${finalQueue.length} songs`);
+
+        // Load unique shuffled songs into queue and play
+        player.queue = finalQueue;
         player.queueIndex = 0;
 
         // 🎵 Set play context to 'playlist'
@@ -237,8 +302,54 @@ async function playAlbum(albumId) {
         // 🔀 SHUFFLE SONGS - Rastgele sıralama
         const shuffledSongs = shuffleArray(data.album.songs);
 
-        // Load shuffled songs into queue and play
-        player.queue = shuffledSongs;
+        // 🚫 DUPLICATE CONTROL - Remove already played songs from queue
+        const uniqueSongIds = new Set();
+        const uniqueSongs = shuffledSongs.filter(song => {
+            const songId = song.song_id || song.id;
+            if (uniqueSongIds.has(songId)) {
+                return false; // Skip duplicate
+            }
+            uniqueSongIds.add(songId);
+            return true;
+        });
+
+        // 🎯 MINIMUM 15 SONGS - Genre'den doldur
+        const MIN_QUEUE_SIZE = 15;
+        let finalQueue = [...uniqueSongs];
+
+        if (finalQueue.length < MIN_QUEUE_SIZE) {
+            const lastSong = finalQueue[finalQueue.length - 1];
+            const genreId = lastSong?.genre_id;
+
+            if (genreId) {
+                console.log(`[PlayAlbum] Queue has ${finalQueue.length} songs, fetching from genre ${genreId}`);
+
+                try {
+                    const genreResponse = await fetch(`/api/muzibu/genres/${genreId}/songs`);
+                    if (genreResponse.ok) {
+                        const genreData = await genreResponse.json();
+                        const genreSongs = genreData.songs || [];
+                        const shuffledGenreSongs = shuffleArray(genreSongs);
+
+                        for (const song of shuffledGenreSongs) {
+                            if (finalQueue.length >= MIN_QUEUE_SIZE) break;
+                            const songId = song.song_id || song.id;
+                            if (!uniqueSongIds.has(songId)) {
+                                uniqueSongIds.add(songId);
+                                finalQueue.push(song);
+                            }
+                        }
+                    }
+                } catch (genreError) {
+                    console.warn('[PlayAlbum] Genre fill failed:', genreError);
+                }
+            }
+        }
+
+        console.log(`[PlayAlbum] Final queue size: ${finalQueue.length} songs`);
+
+        // Load unique shuffled songs into queue and play
+        player.queue = finalQueue;
         player.queueIndex = 0;
 
         // 💿 Set play context to 'album'
@@ -310,8 +421,52 @@ async function playRadio(radioId) {
         // 🔀 SHUFFLE SONGS
         const shuffledSongs = shuffleArray(data.songs);
 
+        // 🚫 DUPLICATE CONTROL
+        const uniqueSongIds = new Set();
+        const uniqueSongs = shuffledSongs.filter(song => {
+            const songId = song.song_id || song.id;
+            if (uniqueSongIds.has(songId)) return false;
+            uniqueSongIds.add(songId);
+            return true;
+        });
+
+        // 🎯 MINIMUM 15 SONGS - Genre'den doldur
+        const MIN_QUEUE_SIZE = 15;
+        let finalQueue = [...uniqueSongs];
+
+        if (finalQueue.length < MIN_QUEUE_SIZE) {
+            const lastSong = finalQueue[finalQueue.length - 1];
+            const genreId = lastSong?.genre_id;
+
+            if (genreId) {
+                console.log(`[PlayRadio] Queue has ${finalQueue.length} songs, fetching from genre ${genreId}`);
+
+                try {
+                    const genreResponse = await fetch(`/api/muzibu/genres/${genreId}/songs`);
+                    if (genreResponse.ok) {
+                        const genreData = await genreResponse.json();
+                        const genreSongs = genreData.songs || [];
+                        const shuffledGenreSongs = shuffleArray(genreSongs);
+
+                        for (const song of shuffledGenreSongs) {
+                            if (finalQueue.length >= MIN_QUEUE_SIZE) break;
+                            const songId = song.song_id || song.id;
+                            if (!uniqueSongIds.has(songId)) {
+                                uniqueSongIds.add(songId);
+                                finalQueue.push(song);
+                            }
+                        }
+                    }
+                } catch (genreError) {
+                    console.warn('[PlayRadio] Genre fill failed:', genreError);
+                }
+            }
+        }
+
+        console.log(`[PlayRadio] Final queue size: ${finalQueue.length} songs`);
+
         // Load shuffled songs into queue and play
-        player.queue = shuffledSongs;
+        player.queue = finalQueue;
         player.queueIndex = 0;
 
         // 📻 Set play context to 'radio' (queue butonunu gizlemek için)
@@ -383,8 +538,54 @@ async function playSector(sectorId) {
         // 🔀 SHUFFLE SONGS - Rastgele sıralama
         const shuffledSongs = shuffleArray(data.songs);
 
-        // Load shuffled songs into queue and play
-        player.queue = shuffledSongs;
+        // 🚫 DUPLICATE CONTROL - Remove already played songs from queue
+        const uniqueSongIds = new Set();
+        const uniqueSongs = shuffledSongs.filter(song => {
+            const songId = song.song_id || song.id;
+            if (uniqueSongIds.has(songId)) {
+                return false; // Skip duplicate
+            }
+            uniqueSongIds.add(songId);
+            return true;
+        });
+
+        // 🎯 MINIMUM 15 SONGS - Genre'den doldur
+        const MIN_QUEUE_SIZE = 15;
+        let finalQueue = [...uniqueSongs];
+
+        if (finalQueue.length < MIN_QUEUE_SIZE) {
+            const lastSong = finalQueue[finalQueue.length - 1];
+            const genreId = lastSong?.genre_id;
+
+            if (genreId) {
+                console.log(`[PlaySector] Queue has ${finalQueue.length} songs, fetching from genre ${genreId}`);
+
+                try {
+                    const genreResponse = await fetch(`/api/muzibu/genres/${genreId}/songs`);
+                    if (genreResponse.ok) {
+                        const genreData = await genreResponse.json();
+                        const genreSongs = genreData.songs || [];
+                        const shuffledGenreSongs = shuffleArray(genreSongs);
+
+                        for (const song of shuffledGenreSongs) {
+                            if (finalQueue.length >= MIN_QUEUE_SIZE) break;
+                            const songId = song.song_id || song.id;
+                            if (!uniqueSongIds.has(songId)) {
+                                uniqueSongIds.add(songId);
+                                finalQueue.push(song);
+                            }
+                        }
+                    }
+                } catch (genreError) {
+                    console.warn('[PlaySector] Genre fill failed:', genreError);
+                }
+            }
+        }
+
+        console.log(`[PlaySector] Final queue size: ${finalQueue.length} songs`);
+
+        // Load unique shuffled songs into queue and play
+        player.queue = finalQueue;
         player.queueIndex = 0;
 
         // 🏢 Set play context to 'sector'
@@ -532,8 +733,19 @@ window.playContent = async function(type, id, options = {}) {
                     });
                 }
 
+                // 🚫 DUPLICATE CONTROL - Remove already played songs from queue
+                const uniqueSongIds = new Set();
+                const uniqueSongs = songs.filter(song => {
+                    const songId = song.song_id || song.id;
+                    if (uniqueSongIds.has(songId)) {
+                        return false; // Skip duplicate
+                    }
+                    uniqueSongIds.add(songId);
+                    return true;
+                });
+
                 // Queue'yu yeni şarkılarla değiştir ve çalmaya başla
-                player.queue = songs;
+                player.queue = uniqueSongs;
                 player.queueIndex = 0;
                 await player.playSongFromQueue(0);
 

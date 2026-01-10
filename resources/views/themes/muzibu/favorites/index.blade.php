@@ -126,7 +126,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
-                        <x-muzibu.genre-card :genre="$favorite->favoritable" :preview="true" />
+                        <x-muzibu.genre-card :genre="$favorite->favoritable" :preview="false" />
                     @endif
                 @endforeach
             </div>
@@ -136,7 +136,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
-                        <x-muzibu.sector-card :sector="$favorite->favoritable" :preview="true" />
+                        <x-muzibu.sector-card :sector="$favorite->favoritable" :preview="false" />
                     @endif
                 @endforeach
             </div>
@@ -146,7 +146,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
-                        <x-muzibu.radio-card :radio="$favorite->favoritable" :preview="true" />
+                        <x-muzibu.radio-card :radio="$favorite->favoritable" :preview="false" />
                     @endif
                 @endforeach
             </div>

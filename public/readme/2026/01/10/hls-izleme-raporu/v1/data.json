@@ -1,0 +1,29 @@
+[
+    {
+        "timestamp": "2026-01-10 18:12:34",
+        "total": 28211,
+        "completed": 6426,
+        "remaining": 21785,
+        "percentage": 22.78,
+        "queue": 15142,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-10 17:31:45",
+        "total": 28211,
+        "completed": 6407,
+        "remaining": 21804,
+        "percentage": 22.71,
+        "queue": 18618,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-10 17:28:12",
+        "total": 28211,
+        "completed": 6400,
+        "remaining": 21811,
+        "percentage": 22.69,
+        "queue": 20414,
+        "workers": 20
+    }
+]

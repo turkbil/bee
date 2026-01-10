@@ -1,34 +1,95 @@
 @extends('themes.muzibu.layouts.app')
 
-@section('module_content')
-<div class="min-h-screen bg-gray-900 text-white p-8">
-    <div class="max-w-7xl mx-auto">
-        <h1 class="text-4xl font-bold mb-8">Muzibu - Telifsiz Müzik Platformu</h1>
+@section('title', 'Muzibu - Ana Sayfa')
 
-        <p class="text-xl text-gray-300 mb-12">
-            İşletmeniz için yasal ve telifsiz müzik çözümü
-        </p>
+@section('content')
+{{-- 🎯 Reset sidebar to homepage state --}}
+<script>
+if (window.Alpine && window.Alpine.store('sidebar')) {
+    window.Alpine.store('sidebar').reset();
+}
+document.addEventListener('alpine:init', () => {
+    setTimeout(() => {
+        if (window.Alpine && window.Alpine.store('sidebar')) {
+            window.Alpine.store('sidebar').reset();
+        }
+    }, 100);
+});
+</script>
 
-        {{-- Placeholder Content --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <i class="fas fa-music text-green-500 text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">25.000+ Şarkı</h3>
-                <p class="text-gray-400">Geniş müzik kütüphanesi</p>
-            </div>
+<div class="px-6 py-4">
 
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <i class="fas fa-shield-check text-green-500 text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">100% Yasal</h3>
-                <p class="text-gray-400">Telif cezası riski yok</p>
-            </div>
+{{-- Quick Access Cards - Türler (Spotify Style - 2 rows, Horizontal Scroll) --}}
+@if(isset($genres) && $genres->count() > 0)
+<x-muzibu.horizontal-scroll-section :grid-mode="true">
+    @foreach($genres->take(15) as $index => $genre)
+        <x-muzibu.genre-quick-card :genre="$genre" :index="$index" />
+    @endforeach
 
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <i class="fas fa-store text-green-500 text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">İşletmeler İçin</h3>
-                <p class="text-gray-400">Cafe, restoran, mağaza</p>
+    {{-- Tüm Türler Kartı (16. sıra - Diğer kartlarla aynı tasarım) --}}
+    <a href="/genres" data-spa class="genre-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16 relative">
+        {{-- Icon (Sol taraf - 64x64 kare) --}}
+        <div class="w-16 h-16 flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+            <i class="fas fa-th text-2xl text-white/90"></i>
+        </div>
+
+        {{-- Title (Sağ taraf) --}}
+        <div class="flex-1 min-w-0 pr-4">
+            <h3 class="font-semibold text-white text-sm truncate">
+                Tüm Türler
+            </h3>
+        </div>
+
+        {{-- Arrow Icon - HOVER'DA GÖRÜNÜR --}}
+        <div class="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white">
+                <i class="fas fa-arrow-right text-xs"></i>
             </div>
         </div>
-    </div>
+    </a>
+</x-muzibu.horizontal-scroll-section>
+@endif
+
+{{-- Çalma Listeleri (Spotify Style) --}}
+@if(isset($featuredPlaylists) && $featuredPlaylists->count() > 0)
+<x-muzibu.horizontal-scroll-section title="Çalma Listeleri" icon="fa-list-music" viewAllUrl="/playlists">
+    @foreach($featuredPlaylists as $playlist)
+        <x-muzibu.playlist-card :playlist="$playlist" :preview="true" :compact="true" :index="$loop->index" />
+    @endforeach
+</x-muzibu.horizontal-scroll-section>
+@endif
+
+{{-- Yeni Albümler (Horizontal Scroll - Spotify Style) --}}
+@if(isset($newReleases) && $newReleases->count() > 0)
+<x-muzibu.horizontal-scroll-section title="Albümler" icon="fa-microphone-lines" viewAllUrl="/albums">
+    @foreach($newReleases as $album)
+        <x-muzibu.album-card :album="$album" :preview="true" :compact="true" :index="$loop->index" />
+    @endforeach
+</x-muzibu.horizontal-scroll-section>
+@endif
+
+{{-- Radyolar --}}
+@if(isset($radios) && $radios->count() > 0)
+<x-muzibu.horizontal-scroll-section title="Radyolar" icon="fa-radio" viewAllUrl="/radios">
+    @foreach($radios as $radio)
+        <x-muzibu.radio-card :radio="$radio" :compact="true" :index="$loop->index" />
+    @endforeach
+</x-muzibu.horizontal-scroll-section>
+@endif
+
+{{-- Sektörler --}}
+@if(isset($sectors) && $sectors->count() > 0)
+<x-muzibu.horizontal-scroll-section title="Sektörler" icon="fa-building" viewAllUrl="/sectors">
+    @foreach($sectors as $sector)
+        <x-muzibu.sector-card :sector="$sector" :preview="true" :compact="true" :index="$loop->index" />
+    @endforeach
+</x-muzibu.horizontal-scroll-section>
+@endif
+
+
 </div>
+
+{{-- Footer (Sadece ana sayfada gösterilir) --}}
+@include('themes.muzibu.components.footer')
+
 @endsection

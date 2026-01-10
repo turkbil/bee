@@ -5,6 +5,7 @@ namespace Modules\Muzibu\App\Models;
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
+use App\Traits\HasUniversalSchemas;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Modules\Muzibu\App\Traits\HasPlaylistDistribution;
 
 class Radio extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasPlaylistDistribution;
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasPlaylistDistribution;
 
     protected $table = 'muzibu_radios';
     protected $primaryKey = 'radio_id';
@@ -223,7 +224,7 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackImage(): ?string
     {
-        return $this->media?->getUrl() ?? null;
+        return $this->getFirstMediaUrl('hero') ?? null;
     }
 
     public function getSeoFallbackSchemaMarkup(): ?array
@@ -332,5 +333,128 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     public function getScoutKeyName()
     {
         return 'radio_id';
+    }
+
+    // ========================================
+    // 🎤 Schema.org Implementation
+    // ========================================
+
+    /**
+     * Get all schemas for this radio (RadioStation + FAQ + HowTo)
+     *
+     * Note: Radio has no detail page, so breadcrumb is minimal
+     *
+     * @return array
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. RadioStation Schema (Primary)
+        $radioStationSchema = $this->getRadioStationSchema();
+        if ($radioStationSchema) {
+            $schemas['radioStation'] = $radioStationSchema;
+        }
+
+        // 2. FAQ Schema (from HasUniversalSchemas trait)
+        $faqSchema = $this->getFaqSchema();
+        if ($faqSchema) {
+            $schemas['faq'] = $faqSchema;
+        }
+
+        // 3. HowTo Schema (from HasUniversalSchemas trait)
+        $howtoSchema = $this->getHowToSchema();
+        if ($howtoSchema) {
+            $schemas['howto'] = $howtoSchema;
+        }
+
+        // Note: No breadcrumb - Radio has no detail page (getUrl() returns null)
+
+        return $schemas;
+    }
+
+    /**
+     * Generate RadioStation Schema
+     *
+     * @return array|null
+     */
+    protected function getRadioStationSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $name = $this->getTranslated('title', $locale);
+
+        if (!$name) {
+            return null;
+        }
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'RadioStation',
+            'name' => $name,
+        ];
+
+        // Description
+        $description = $this->getSeoFallbackDescription();
+        if ($description) {
+            $schema['description'] = $description;
+        }
+
+        // Radio logo
+        $heroMedia = $this->getFirstMedia('hero');
+        if ($heroMedia) {
+            $schema['image'] = thumb($heroMedia, 800, 800, ['quality' => 90]);
+        }
+
+        // Broadcast genres (from sectors)
+        $sectors = $this->sectors()->where('is_active', true)->limit(5)->get();
+        if ($sectors->count() > 0) {
+            $genreList = [];
+            foreach ($sectors as $sector) {
+                $sectorTitle = $sector->getTranslated('title', $locale);
+                if ($sectorTitle) {
+                    $genreList[] = $sectorTitle;
+                }
+            }
+            if (!empty($genreList)) {
+                $schema['genre'] = $genreList;
+            }
+        }
+
+        // Total playlists count
+        $playlistsCount = $this->playlists()->count();
+        if ($playlistsCount > 0) {
+            $schema['numberOfEpisodes'] = $playlistsCount; // Using 'numberOfEpisodes' as playlist count
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Get universal schemas (FAQ, HowTo)
+     * Breadcrumb is not included because Radio has no detail page
+     *
+     * @return string|null
+     */
+    public function getUniversalSchemas(): ?string
+    {
+        $schemas = [];
+
+        // FAQ Schema
+        $faqSchema = $this->getFaqSchema();
+        if ($faqSchema) {
+            $schemas[] = json_encode($faqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+
+        // HowTo Schema
+        $howtoSchema = $this->getHowToSchema();
+        if ($howtoSchema) {
+            $schemas[] = json_encode($howtoSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+
+        if (empty($schemas)) {
+            return null;
+        }
+
+        return implode("\n", array_map(fn($s) => '<script type="application/ld+json">' . $s . '</script>', $schemas));
     }
 }

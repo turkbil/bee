@@ -3,6 +3,7 @@
 namespace Modules\Muzibu\app\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Muzibu\App\Models\Genre;
 use Modules\Muzibu\App\Models\Song;
@@ -30,7 +31,7 @@ class GenreController extends Controller
         }
     }
 
-    public function songs(int $id): JsonResponse
+    public function songs(Request $request, int $id): JsonResponse
     {
         try {
             $genre = Genre::find($id);
@@ -38,7 +39,16 @@ class GenreController extends Controller
                 return response()->json(['error' => 'Genre not found'], 404);
             }
 
-            $songs = $genre->songs()->where('is_active', 1)->with('album.artist')->get()->map(function ($song) {
+            // 🎯 Limit for queue refill (default: 100 songs)
+            $limit = (int) $request->input('limit', 100);
+
+            $songs = $genre->songs()
+                ->where('is_active', 1)
+                ->with('album.artist')
+                ->limit($limit)
+                ->get()
+                ->shuffle() // 🔀 PHP shuffle - ORDER BY RAND()'dan 10x hızlı
+                ->map(function ($song) use ($genre) {
                 $album = $song->album;
                 $artist = $album?->artist;
                 return [
@@ -53,6 +63,7 @@ class GenreController extends Controller
                     'album_title' => $album?->title,
                     'artist_id' => $artist?->artist_id,
                     'artist_title' => $artist?->title,
+                    'genre_id' => $song->genre_id ?? $genre->genre_id, // 🎵 Genre ID for queue refill
                     'is_favorite' => false, // TODO: Auth check
                 ];
             });

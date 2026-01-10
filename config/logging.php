@@ -116,6 +116,18 @@ return [
             'permission' => 0666,
         ],
 
+        // 🎵 PLAYER ERRORS - Sadece Tenant 1001 (Muzibu) player hatalarını tut (ERROR ve üstü)
+        // DİĞER TENANT'LAR ETKİLENMEZ!
+        'player-errors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/player-errors.log'),
+            'level' => 'error', // Sadece ERROR, CRITICAL, ALERT, EMERGENCY
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0666,
+            // NOT: Sadece tenant()->id === 1001 için kullanılmalı
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

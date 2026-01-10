@@ -2,7 +2,7 @@
 @include('muzibu::admin.helper')
 
 @section('pretitle')
-Sertifika Yonetimi
+Belge Yonetimi
 @endsection
 
 @section('content')

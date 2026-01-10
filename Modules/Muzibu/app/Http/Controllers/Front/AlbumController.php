@@ -49,8 +49,11 @@ class AlbumController extends Controller
         // ⭐ SEO için model'i share et (HasSeo trait otomatik çalışır)
         view()->share('currentModel', $album);
 
+        // ⭐ Schema.org için item variable (HasUniversalSchemas trait)
+        $item = $album;
+
         return response()
-            ->view('themes.muzibu.albums.show', compact('album', 'songs'))
+            ->view('themes.muzibu.albums.show', compact('album', 'songs', 'item'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0');

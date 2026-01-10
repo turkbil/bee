@@ -20,10 +20,8 @@
             <div
                 class="spa-content-wrapper"
                 id="spaContent"
-                x-show="!isLoading"
             >
-                {{ $slot ?? '' }}
-                @yield('content')
+                {{ $mainContent ?? '' }}
             </div>
         </div>
     </div>

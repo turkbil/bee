@@ -22,37 +22,6 @@
    @endif
    data-sector-id="{{ $sector->sector_id }}"
    data-context-type="sector"
-   x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
-       id: {{ $sector->sector_id }},
-       title: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}',
-       cover_url: '{{ $sector->iconMedia ? thumb($sector->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-       is_favorite: {{ is_favorited('sector', $sector->sector_id) ? 'true' : 'false' }}
-   })"
-   x-data="{
-       touchTimer: null,
-       touchStartPos: { x: 0, y: 0 }
-   }"
-   x-on:touchstart="
-       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
-       touchTimer = setTimeout(() => {
-           if (navigator.vibrate) navigator.vibrate(50);
-           $store.contextMenu.openContextMenu({
-               clientX: $event.touches[0].clientX,
-               clientY: $event.touches[0].clientY
-           }, 'sector', {
-               id: {{ $sector->sector_id }},
-               title: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}',
-               cover_url: '{{ $sector->iconMedia ? thumb($sector->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-               is_favorite: {{ is_favorited('sector', $sector->sector_id) ? 'true' : 'false' }}
-           });
-       }, 500);
-   "
-   x-on:touchend="clearTimeout(touchTimer)"
-   x-on:touchmove="
-       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 ||
-                    Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
-       if (moved) clearTimeout(touchTimer);
-   "
    class="group rounded-lg transition-all duration-300 relative overflow-hidden border-2 border-muzibu-gray @if($compact) flex-shrink-0 w-[190px] p-3 bg-transparent hover:bg-white/10 @else bg-muzibu-gray hover:bg-spotify-black px-4 pt-4 @endif">
 
     {{-- Hover Shimmer/Buz Efekti --}}
@@ -73,12 +42,6 @@
                 <span class="text-5xl">🎭</span>
             </div>
         @endif
-
-        {{-- Play Button - Spotify Style Bottom Right --}}
-        <button x-on:click.stop.prevent="window.playContent('sector', {{ $sector->sector_id }})"
-                class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
-            <i class="fas fa-play ml-1"></i>
-        </button>
 
         {{-- Favorite + Menu Buttons (Top-right, hover only) --}}
         <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>

@@ -196,85 +196,15 @@
     </div>
 </div>
 
-<script>
-function certificateForm() {
-    return {
-        skipCorrection: {{ ($savedForm['skip_correction'] ?? false) ? 'true' : 'false' }},
-        memberName: '',
-        taxOffice: '',
-        taxNumber: '',
-        address: '',
-
-        init() {
-            // Load saved form data
-            this.memberName = {!! json_encode(old('member_name', $savedForm['member_name'] ?? '')) !!};
-            this.taxOffice = {!! json_encode(old('tax_office', $savedForm['tax_office'] ?? '')) !!};
-            this.taxNumber = {!! json_encode(old('tax_number', $savedForm['tax_number'] ?? '')) !!};
-            this.address = {!! json_encode(old('address', $savedForm['address'] ?? '')) !!};
-        },
-
-        correctText(text) {
-            if (!text) return text;
-
-            // Slash etrafindaki bosluklari temizle (  /  -> /)
-            text = text.replace(/\s*\/\s*/g, '/');
-
-            // Turkce buyuk harf donusumu
-            const toUpperTR = (char) => {
-                if (char === 'i') return 'İ';
-                if (char === 'ı') return 'I';
-                return char.toUpperCase();
-            };
-
-            // Turkce kucuk harf donusumu
-            const toLowerTR = (char) => {
-                if (char === 'I') return 'ı';
-                if (char === 'İ') return 'i';
-                return char.toLowerCase();
-            };
-
-            // Title case uygula - karakter karakter isle
-            let result = '';
-            let capitalizeNext = true;
-
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-
-                // Bosluk, yeni satir, nokta, iki nokta, slash sonrasi buyuk harf
-                if (char === ' ' || char === '\n' || char === '\r') {
-                    result += char;
-                    capitalizeNext = true;
-                } else if (char === '.' || char === ':' || char === '/') {
-                    result += char;
-                    capitalizeNext = true;
-                } else if (capitalizeNext) {
-                    result += toUpperTR(char);
-                    capitalizeNext = false;
-                } else {
-                    result += toLowerTR(char);
-                }
-            }
-
-            return result;
-        },
-
-        formatMemberName() {
-            // Sadece skipCorrection FALSE ise duzelt
-            if (!this.skipCorrection) {
-                this.memberName = this.correctText(this.memberName);
-            }
-        },
-
-        formatTaxOffice() {
-            // Vergi dairesi her zaman duzeltilir
-            this.taxOffice = this.correctText(this.taxOffice);
-        },
-
-        formatAddress() {
-            // Adres her zaman duzeltilir
-            this.address = this.correctText(this.address);
-        }
-    }
-}
-</script>
 @endsection
+
+{{-- ✅ certificateForm defined globally in app.blade.php - Works with SPA! --}}
+<script>
+window.certificateFormData = {
+    skipCorrection: {{ ($savedForm['skip_correction'] ?? false) ? 'true' : 'false' }},
+    memberName: {!! json_encode(old('member_name', $savedForm['member_name'] ?? '')) !!},
+    taxOffice: {!! json_encode(old('tax_office', $savedForm['tax_office'] ?? '')) !!},
+    taxNumber: {!! json_encode(old('tax_number', $savedForm['tax_number'] ?? '')) !!},
+    address: {!! json_encode(old('address', $savedForm['address'] ?? '')) !!}
+};
+</script>

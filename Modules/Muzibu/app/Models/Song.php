@@ -5,6 +5,7 @@ namespace Modules\Muzibu\App\Models;
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
+use App\Traits\HasUniversalSchemas;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Modules\ReviewSystem\App\Traits\HasReviews;
 
 class Song extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable;
 
     protected $table = 'muzibu_songs';
     protected $primaryKey = 'song_id';
@@ -387,30 +388,6 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         return $schema;
-    }
-
-    /**
-     * Tüm schema'ları al (MusicRecording + Breadcrumb + FAQ)
-     */
-    public function getAllSchemas(): array
-    {
-        $schemas = [];
-
-        // 1. MusicRecording Schema (Ana içerik)
-        $songSchema = $this->getSchemaMarkup();
-        if ($songSchema) {
-            $schemas['musicrecording'] = $songSchema;
-        }
-
-        // 2. Breadcrumb Schema (varsa)
-        if (method_exists($this, 'getBreadcrumbSchema')) {
-            $breadcrumbSchema = $this->getBreadcrumbSchema();
-            if ($breadcrumbSchema) {
-                $schemas['breadcrumb'] = $breadcrumbSchema;
-            }
-        }
-
-        return $schemas;
     }
 
     /**
@@ -818,5 +795,219 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
                 $song->color_hash = self::generateColorHash($title ?: 'Untitled');
             }
         });
+    }
+
+    // ========================================
+    // 🎵 Schema.org Implementation
+    // ========================================
+
+    /**
+     * Get all schemas for this song (MusicRecording + Breadcrumb + FAQ + HowTo)
+     *
+     * @return array
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. MusicRecording Schema (Primary)
+        $musicRecordingSchema = $this->getMusicRecordingSchema();
+        if ($musicRecordingSchema) {
+            $schemas['musicRecording'] = $musicRecordingSchema;
+        }
+
+        // 2. Breadcrumb Schema
+        $breadcrumbSchema = $this->getBreadcrumbSchema();
+        if ($breadcrumbSchema) {
+            $schemas['breadcrumb'] = $breadcrumbSchema;
+        }
+
+        // 3. FAQ Schema (from HasUniversalSchemas trait)
+        $faqSchema = $this->getFaqSchema();
+        if ($faqSchema) {
+            $schemas['faq'] = $faqSchema;
+        }
+
+        // 4. HowTo Schema (from HasUniversalSchemas trait)
+        $howtoSchema = $this->getHowToSchema();
+        if ($howtoSchema) {
+            $schemas['howto'] = $howtoSchema;
+        }
+
+        return $schemas;
+    }
+
+    /**
+     * Generate MusicRecording Schema
+     *
+     * @return array|null
+     */
+    protected function getMusicRecordingSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $title = $this->getTranslated('title', $locale);
+
+        if (!$title) {
+            return null;
+        }
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'MusicRecording',
+            'name' => $title,
+            'url' => $this->getUrl($locale),
+        ];
+
+        // Duration (ISO 8601 format: PT3M45S)
+        if ($this->duration) {
+            $minutes = floor($this->duration / 60);
+            $seconds = $this->duration % 60;
+            $schema['duration'] = sprintf('PT%dM%dS', $minutes, $seconds);
+        }
+
+        // Cover image
+        $coverUrl = $this->getCoverUrl(1200, 1200);
+        if ($coverUrl) {
+            $schema['image'] = $coverUrl;
+        }
+
+        // Lyrics
+        $lyrics = $this->getTranslated('lyrics', $locale);
+        if ($lyrics) {
+            $schema['lyrics'] = [
+                '@type' => 'CreativeWork',
+                'text' => $lyrics
+            ];
+        }
+
+        // Genre
+        if ($this->genre) {
+            $genreName = $this->genre->getTranslated('name', $locale);
+            if ($genreName) {
+                $schema['genre'] = $genreName;
+            }
+        }
+
+        // Album
+        if ($this->album) {
+            $albumTitle = $this->album->getTranslated('title', $locale);
+            if ($albumTitle) {
+                $schema['inAlbum'] = [
+                    '@type' => 'MusicAlbum',
+                    'name' => $albumTitle,
+                    'url' => $this->album->getUrl($locale)
+                ];
+            }
+        }
+
+        // Artist (through album)
+        if ($this->artist) {
+            $artistName = $this->artist->getTranslated('name', $locale);
+            if ($artistName) {
+                $schema['byArtist'] = [
+                    '@type' => 'MusicGroup',
+                    'name' => $artistName,
+                    'url' => $this->artist->getUrl($locale)
+                ];
+            }
+        }
+
+        // Aggregate rating (from HasReviews trait)
+        if (method_exists($this, 'reviews')) {
+            $reviewCount = $this->reviews()->count();
+            if ($reviewCount > 0) {
+                $avgRating = $this->reviews()->avg('rating');
+                $schema['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => round($avgRating, 1),
+                    'reviewCount' => $reviewCount,
+                    'bestRating' => 5,
+                    'worstRating' => 1
+                ];
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Generate BreadcrumbList Schema
+     *
+     * Structure: Home → Müzikler → Genre (if exists) → Album (if exists) → Current Song
+     *
+     * @return array|null
+     */
+    public function getBreadcrumbSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $breadcrumbs = [];
+        $position = 1;
+
+        // 1. Home
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => __('Ana Sayfa'),
+            'item' => url('/')
+        ];
+
+        // 2. Müzikler Ana Sayfa
+        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Muzibu', 'songs.index');
+        $songsIndexUrl = $locale === get_tenant_default_locale()
+            ? url("/{$moduleSlug}")
+            : url("/{$locale}/{$moduleSlug}");
+
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => 'Müzikler',
+            'item' => $songsIndexUrl
+        ];
+
+        // 3. Genre (varsa)
+        if ($this->genre) {
+            $genreName = $this->genre->getTranslated('name', $locale);
+            $genreSlug = $this->genre->getTranslated('slug', $locale);
+
+            if ($genreName && $genreSlug) {
+                $genreUrl = $locale === get_tenant_default_locale()
+                    ? url("/genre/{$genreSlug}")
+                    : url("/{$locale}/genre/{$genreSlug}");
+
+                $breadcrumbs[] = [
+                    '@type' => 'ListItem',
+                    'position' => $position++,
+                    'name' => $genreName,
+                    'item' => $genreUrl
+                ];
+            }
+        }
+
+        // 4. Album (varsa)
+        if ($this->album) {
+            $albumTitle = $this->album->getTranslated('title', $locale);
+            if ($albumTitle) {
+                $breadcrumbs[] = [
+                    '@type' => 'ListItem',
+                    'position' => $position++,
+                    'name' => $albumTitle,
+                    'item' => $this->album->getUrl($locale)
+                ];
+            }
+        }
+
+        // 5. Current Song
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position,
+            'name' => $this->getTranslated('title', $locale),
+            'item' => $this->getUrl($locale)
+        ];
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $breadcrumbs
+        ];
     }
 }

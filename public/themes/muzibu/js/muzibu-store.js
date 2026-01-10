@@ -528,18 +528,8 @@ document.addEventListener('alpine:init', () => {
                     { icon: 'fa-music', label: 'Türe Git', action: 'goToDetail' }
                 ],
                 sector: [
-                    // Çal
-                    { icon: 'fa-play', label: 'Çal', action: 'play' },
-                    // Sıraya Ekle
-                    { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
-                    { divider: true },
-                    // Favorilerime Ekle
-                    { icon: 'fa-heart', label: data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle', action: 'toggleFavorite' },
-                    { divider: true },
-                    // Puan Ver
-                    { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
-                    // Detaya Git
-                    { icon: 'fa-compass', label: 'Sektöre Git', action: 'goToDetail' }
+                    // Favorilerime Ekle (Sadece bu seçenek)
+                    { icon: 'fa-heart', label: data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle', action: 'toggleFavorite' }
                 ],
                 radio: [
                     // Çal
@@ -1349,7 +1339,7 @@ document.addEventListener('alpine:init', () => {
         rightSidebarVisible: (() => {
             const path = window.location.pathname;
             const routes = [
-                '/', '/home',
+                '/', '/home', '/dashboard',
                 '/songs', '/albums', '/artists', '/playlists',
                 '/genres', '/sectors', '/radios', '/search',
                 '/muzibu/favorites',
@@ -1365,7 +1355,7 @@ document.addEventListener('alpine:init', () => {
 
         // Routes where right sidebar should be visible
         _rightSidebarRoutes: [
-            '/', '/home',
+            '/', '/home', '/dashboard',
             '/songs', '/albums', '/artists', '/playlists',
             '/genres', '/sectors', '/radios', '/search',
             '/muzibu/favorites',
@@ -1642,7 +1632,10 @@ document.addEventListener('alpine:init', () => {
 
             const newCount = Math.min(this.previewDisplayCount + 20, 100);
             this.previewDisplayCount = newCount;
-            this.previewTracks = this.previewAllTracks.slice(0, newCount);
+
+            // ✅ Calculate offset based on current page (for pagination)
+            const pageOffset = (this.previewCurrentPage - 1) * 100;
+            this.previewTracks = this.previewAllTracks.slice(pageOffset, pageOffset + newCount);
         },
 
         /**

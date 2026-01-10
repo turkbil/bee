@@ -57,8 +57,11 @@ class ArtistController extends Controller
         // ⭐ SEO için model'i share et (HasSeo trait otomatik çalışır)
         view()->share('currentModel', $artist);
 
+        // ⭐ Schema.org için item variable (HasUniversalSchemas trait)
+        $item = $artist;
+
         return response()
-            ->view('themes.muzibu.artists.show', compact('artist', 'albums', 'songs'))
+            ->view('themes.muzibu.artists.show', compact('artist', 'albums', 'songs', 'item'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0');

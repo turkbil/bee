@@ -10,14 +10,14 @@
                             <i class="fas fa-search"></i>
                         </span>
                         <input type="text" wire:model.live="search" class="form-control"
-                            placeholder="Sertifika ara...">
+                            placeholder="Belge ara...">
                     </div>
                 </div>
 
                 <!-- Gecerlilik Filtre -->
                 <div class="col-md-2">
                     <select wire:model.live="validFilter" class="form-select">
-                        <option value="">Tum Sertifikalar</option>
+                        <option value="">Tum Belgelar</option>
                         <option value="1">Gecerli</option>
                         <option value="0">Iptal Edilmis</option>
                     </select>
@@ -46,7 +46,7 @@
                 <div class="col-md-2 text-end">
                     <a href="{{ route('admin.muzibu.certificate.manage') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-1"></i>
-                        Yeni Sertifika
+                        Yeni Belge
                     </a>
                 </div>
             </div>
@@ -56,9 +56,9 @@
             <div class="alert alert-warning mx-3">
                 <div class="d-flex align-items-center justify-content-between">
                     <span>
-                        <strong>{{ count($selectedIds) }}</strong> sertifika secildi
+                        <strong>{{ count($selectedIds) }}</strong> belge secildi
                     </span>
-                    <button type="button" wire:click="bulkDelete" wire:confirm="Secili sertifikalari silmek istediginize emin misiniz?"
+                    <button type="button" wire:click="bulkDelete" wire:confirm="Secili belgelari silmek istediginize emin misiniz?"
                         class="btn btn-danger btn-sm">
                         <i class="fas fa-trash me-1"></i>
                         Secilenleri Sil
@@ -83,7 +83,7 @@
                                 @endif
                             </th>
                             <th wire:click="sortBy('certificate_code')" style="cursor: pointer">
-                                Sertifika Kodu
+                                Belge Kodu
                                 @if($sortField === 'certificate_code')
                                     <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                 @endif
@@ -186,7 +186,7 @@
                                         <i class="fa-solid fa-{{ $cert->is_valid ? 'toggle-on' : 'toggle-off' }} {{ $cert->is_valid ? 'link-success' : 'link-danger' }} fa-lg"></i>
                                     </a>
                                     <a href="javascript:void(0);" wire:click="deleteCertificate({{ $cert->id }})"
-                                        wire:confirm="Bu sertifikayi silmek istediginize emin misiniz?"
+                                        wire:confirm="Bu belgeyi silmek istediginize emin misiniz?"
                                         data-bs-toggle="tooltip" data-bs-placement="top"
                                         title="Sil"
                                         style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
@@ -202,14 +202,14 @@
                                     <div class="empty-img">
                                         <i class="fas fa-certificate fa-3x text-muted"></i>
                                     </div>
-                                    <p class="empty-title">Sertifika bulunamadi</p>
+                                    <p class="empty-title">Belge bulunamadi</p>
                                     <p class="empty-subtitle text-muted">
-                                        Henuz hic sertifika olusturulmamis veya arama kriterlerinize uygun sertifika yok.
+                                        Henuz hic belge olusturulmamis veya arama kriterlerinize uygun belge yok.
                                     </p>
                                     <div class="empty-action">
                                         <a href="{{ route('admin.muzibu.certificate.manage') }}" class="btn btn-primary">
                                             <i class="fas fa-plus me-1"></i>
-                                            Yeni Sertifika Olustur
+                                            Yeni Belge Olustur
                                         </a>
                                     </div>
                                 </div>
@@ -224,7 +224,7 @@
             @if($certificates->hasPages())
             <div class="card-footer d-flex align-items-center">
                 <p class="m-0 text-muted">
-                    Toplam <strong>{{ $certificates->total() }}</strong> sertifika
+                    Toplam <strong>{{ $certificates->total() }}</strong> belge
                 </p>
                 <div class="ms-auto">
                     {{ $certificates->links() }}

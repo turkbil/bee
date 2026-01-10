@@ -9,8 +9,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Modules\Muzibu\App\Models\Song;
-use Modules\SEO\app\Models\SeoSetting;
-use OpenAI\Laravel\Facades\OpenAI;
+use Modules\SeoManagement\App\Models\SeoSetting;
+use Modules\AI\App\Services\OpenAIService;
 
 class GenerateSongSEO implements ShouldQueue
 {
@@ -75,6 +75,12 @@ class GenerateSongSEO implements ShouldQueue
             // Generate SEO with OpenAI GPT-4
             $seoData = $this->generateSEO($context);
 
+            // Debug: Log generated SEO data
+            Log::info("SEO Generation: AI Response", [
+                'song_id' => $this->songId,
+                'seo_data' => $seoData,
+            ]);
+
             // Create or update SEO setting
             SeoSetting::updateOrCreate(
                 [
@@ -82,15 +88,17 @@ class GenerateSongSEO implements ShouldQueue
                     'seoable_id' => $this->songId,
                 ],
                 [
-                    'meta_title' => $seoData['meta_title'],
-                    'meta_description' => $seoData['meta_description'],
-                    'meta_keywords' => $seoData['meta_keywords'],
+                    'meta_title' => $seoData['meta_title'] ?? null,
+                    'meta_description' => $seoData['meta_description'] ?? null,
+                    'meta_keywords' => $seoData['meta_keywords'] ?? null,
                 ]
             );
 
             Log::info("SEO Generation: Success", [
                 'song_id' => $this->songId,
-                'title' => $songTitle
+                'title' => $songTitle,
+                'has_title' => !empty($seoData['meta_title']),
+                'has_description' => !empty($seoData['meta_description']),
             ]);
 
         } catch (\Exception $e) {
@@ -130,17 +138,21 @@ Türkçe ve SEO-friendly yaz. Sadece JSON formatında döndür:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => 'gpt-4',
-            'messages' => [
-                ['role' => 'system', 'content' => 'Sen bir müzik platformu SEO uzmanısın. Şarkı metadata\'sından SEO oluşturursun.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
+        // OpenAIService kullan
+        $openAI = new OpenAIService();
+
+        $messages = [
+            ['role' => 'system', 'content' => 'Sen bir müzik platformu SEO uzmanısın. Şarkı metadata\'sından SEO oluşturursun.'],
+            ['role' => 'user', 'content' => $prompt],
+        ];
+
+        // OpenAIService returns array with 'response' key
+        $result = $openAI->generateCompletionStream($messages, null, [
             'temperature' => 0.7,
             'max_tokens' => 500,
         ]);
 
-        $content = $response->choices[0]->message->content ?? '';
+        $content = $result['response'] ?? '';
 
         // Parse JSON response
         $jsonStart = strpos($content, '{');

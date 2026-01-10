@@ -4,6 +4,7 @@ namespace Modules\Muzibu\App\Models;
 
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
+use App\Traits\HasUniversalSchemas;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,7 +16,7 @@ use Modules\Muzibu\App\Traits\HasPlaylistDistribution;
 
 class Sector extends BaseModel implements HasMedia
 {
-    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasPlaylistDistribution;
+    use Sluggable, HasTranslations, HasUniversalSchemas, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasPlaylistDistribution;
 
     protected $table = 'muzibu_sectors';
     protected $primaryKey = 'sector_id';
@@ -207,5 +208,140 @@ class Sector extends BaseModel implements HasMedia
     public function getScoutKeyName()
     {
         return 'sector_id';
+    }
+
+    // ========================================
+    // 🎤 Schema.org Implementation
+    // ========================================
+
+    /**
+     * Get all schemas for this sector (DefinedTerm + Breadcrumb + FAQ + HowTo)
+     *
+     * @return array
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. DefinedTerm Schema (Primary)
+        $definedTermSchema = $this->getDefinedTermSchema();
+        if ($definedTermSchema) {
+            $schemas['definedTerm'] = $definedTermSchema;
+        }
+
+        // 2. Breadcrumb Schema
+        $breadcrumbSchema = $this->getBreadcrumbSchema();
+        if ($breadcrumbSchema) {
+            $schemas['breadcrumb'] = $breadcrumbSchema;
+        }
+
+        // 3. FAQ Schema (from HasUniversalSchemas trait)
+        $faqSchema = $this->getFaqSchema();
+        if ($faqSchema) {
+            $schemas['faq'] = $faqSchema;
+        }
+
+        // 4. HowTo Schema (from HasUniversalSchemas trait)
+        $howtoSchema = $this->getHowToSchema();
+        if ($howtoSchema) {
+            $schemas['howto'] = $howtoSchema;
+        }
+
+        return $schemas;
+    }
+
+    /**
+     * Generate DefinedTerm Schema (for Sector taxonomy)
+     *
+     * @return array|null
+     */
+    protected function getDefinedTermSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $name = $this->getTranslated('title', $locale);
+
+        if (!$name) {
+            return null;
+        }
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'DefinedTerm',
+            'name' => $name,
+            'url' => $this->getUrl($locale),
+            'inDefinedTermSet' => [
+                '@type' => 'DefinedTermSet',
+                'name' => 'Music Sectors'
+            ]
+        ];
+
+        // Description
+        $description = $this->getTranslated('description', $locale);
+        if ($description) {
+            $schema['description'] = strip_tags($description);
+        }
+
+        // Sector icon/image
+        $heroMedia = $this->getFirstMedia('hero');
+        if ($heroMedia) {
+            $schema['image'] = thumb($heroMedia, 800, 800, ['quality' => 90]);
+        }
+
+        // Number of radios in this sector
+        $radiosCount = $this->radios()->where('is_active', true)->count();
+        if ($radiosCount > 0) {
+            $schema['termCode'] = (string) $radiosCount . ' radios';
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Generate BreadcrumbList Schema
+     *
+     * Structure: Home → Sectors → Current Sector
+     *
+     * @return array|null
+     */
+    public function getBreadcrumbSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $breadcrumbs = [];
+        $position = 1;
+
+        // 1. Home
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => __('Ana Sayfa'),
+            'item' => url('/')
+        ];
+
+        // 2. Sectors Ana Sayfa
+        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Muzibu', 'sectors.index');
+        $sectorsIndexUrl = $locale === get_tenant_default_locale()
+            ? url("/{$moduleSlug}")
+            : url("/{$locale}/{$moduleSlug}");
+
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => 'Sektörler',
+            'item' => $sectorsIndexUrl
+        ];
+
+        // 3. Current Sector
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position,
+            'name' => $this->getTranslated('title', $locale),
+            'item' => $this->getUrl($locale)
+        ];
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $breadcrumbs
+        ];
     }
 }

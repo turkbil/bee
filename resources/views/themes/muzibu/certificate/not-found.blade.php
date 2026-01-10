@@ -1,6 +1,6 @@
 @extends('themes.muzibu.layouts.app')
 
-@section('title', 'Geçersiz Sertifika - Muzibu')
+@section('title', 'Geçersiz Belge - Muzibu')
 
 @section('content')
 <div class="min-h-screen py-10 sm:py-16">
@@ -11,7 +11,7 @@
             <div class="w-24 h-24 mx-auto mb-5 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-2xl shadow-red-500/40">
                 <i class="fas fa-times text-white text-4xl"></i>
             </div>
-            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Geçersiz Sertifika</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Geçersiz Belge</h1>
             <p class="text-red-400 font-medium">Bu belge doğrulanamadı</p>
         </div>
 
@@ -39,7 +39,7 @@
                     </tr>
                     <tr>
                         <td class="text-slate-500 py-2 pr-4 align-top">3.</td>
-                        <td class="text-slate-300 py-2">Sertifika iptal edilmiş veya geçersiz kılınmış olabilir</td>
+                        <td class="text-slate-300 py-2">Belge iptal edilmiş veya geçersiz kılınmış olabilir</td>
                     </tr>
                     <tr>
                         <td class="text-slate-500 py-2 pr-4 align-top">4.</td>
@@ -60,7 +60,7 @@
                         <strong class="text-red-400">Dikkat:</strong>
                         Bu belgenin geçersiz olması, ilgili kişi veya kuruluşun Muzibu Premium üyeliğinin
                         bulunmadığı veya sona erdiği anlamına gelebilir. Şüpheli durumlarda belge sahibinden
-                        güncel bir sertifika talep ediniz.
+                        güncel bir belge talep ediniz.
                     </p>
                 </div>
             </div>

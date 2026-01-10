@@ -148,9 +148,17 @@ const MenuBuilder = {
 
     /**
      * 🏢 Sector için menu itemları
+     * ⚠️ SADECE Favorilere Ekle - Çal ve Sıraya Ekle YOK
      */
     getSectorMenuItems(data) {
-        return this.getGenreMenuItems(data); // Aynı genre ile
+        const items = [];
+
+        // Favorilere Ekle/Çıkar (dynamic icon) - SADECE BU SEÇENEK
+        const favoriteLabel = data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle';
+        const favoriteIconPrefix = data.is_favorite ? 'fas' : 'far';
+        items.push({ icon: 'fa-heart', iconPrefix: favoriteIconPrefix, label: favoriteLabel, action: 'toggleFavorite' });
+
+        return items;
     },
 
     /**

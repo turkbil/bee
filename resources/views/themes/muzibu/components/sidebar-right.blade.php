@@ -207,8 +207,21 @@
                                             });
                                             const data = await resp.json();
                                             if(data.success) {
+                                                // 1. Anında DOM'dan kaldır (kullanıcı beklemeden görsün)
+                                                $store.sidebar.previewTracks = $store.sidebar.previewTracks.filter(t => t.id !== track.id);
+
+                                                // 2. Toplam sayıyı güncelle
+                                                if ($store.sidebar.previewTotalCount) {
+                                                    $store.sidebar.previewTotalCount--;
+                                                }
+
+                                                // 3. Toast göster
                                                 Alpine.store('toast').show('Şarkı çıkarıldı', 'success');
+
+                                                // 4. Background'da cache güncelle (veritabanıyla senkronize et)
                                                 $store.sidebar.refreshPreview();
+                                            } else {
+                                                Alpine.store('toast').show(data.message || 'Şarkı çıkarılamadı', 'error');
                                             }
                                         }
                                     })"

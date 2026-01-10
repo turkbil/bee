@@ -483,7 +483,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/dashboard', function () {
-    // ThemeService ile tema-aware dashboard view
+    // Tenant kontrolü - Muzibu için özel dashboard controller
+    if (tenant() && tenant()->id === 1001) {
+        // Muzibu DashboardController'a yönlendir
+        return app(\Modules\Muzibu\App\Http\Controllers\Front\DashboardController::class)->index(request());
+    }
+
+    // Diğer tenant'lar için tema-aware dashboard view
     $themeService = app(\App\Services\ThemeService::class);
     $theme = $themeService->getActiveTheme();
     $themeName = $theme ? $theme->name : 'simple';
@@ -751,19 +757,19 @@ Route::middleware([InitializeTenancy::class, 'site'])
             });
 
         // Catch-all route'ları - prefix olmayan - sadece content route'ları için
-        // Regex ile admin, api vb. system route'larını hariç tut
+        // Regex ile admin, api, system ve MUZIBU route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors)[^/]+$');
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors|playlists|albums|genres|sectors|radios|artists|songs|muzibu|corporate)[^/]+$');
 
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors|playlists|albums|genres|sectors|radios|artists|songs|muzibu|corporate)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$');
 
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription|test-errors|playlists|albums|genres|sectors|radios|artists|songs|muzibu|corporate)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$')
          ->where('slug3', '[^/]+');
     });

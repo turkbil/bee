@@ -96,11 +96,13 @@ class PlaylistController extends Controller
                     'song_title' => $song->title,
                     'song_slug' => $song->slug,
                     'duration' => $song->duration,
-                    'hls_path' => $song->hls_path,                    'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
+                    'hls_path' => $song->hls_path,
+                    'lyrics' => $song->lyrics,
+                    'genre_id' => $song->genre_id, // 🎵 Genre ID for auto-refill
                     'album_id' => $album?->album_id,
                     'album_title' => $album?->title,
                     'album_slug' => $album?->slug,
-                    'album_cover' => $song->getCoverUrl(120, 120), // 🎨 Song cover (fallback to album)
+                    'album_cover' => $song->getCoverUrl(120, 120),
                     'artist_id' => $artist?->artist_id,
                     'artist_title' => $artist?->title,
                     'artist_slug' => $artist?->slug,
@@ -486,6 +488,18 @@ class PlaylistController extends Controller
 
             $playlist->save();
 
+            // 🔥 KRİTİK: Redis cache'i temizle (playlist güncellendi!)
+            $tenantId = tenant() ? tenant()->id : 'default';
+            $cacheKey = "muzibu:playlist:{$tenantId}:{$id}";
+            \Cache::forget($cacheKey);
+
+            // 🔥 KRİTİK: Response Cache'i temizle (my-playlists sayfası güncel görsün!)
+            try {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            } catch (\Exception $e) {
+                \Log::warning('Response cache clear failed', ['error' => $e->getMessage()]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Playlist güncellendi',
@@ -538,6 +552,18 @@ class PlaylistController extends Controller
             }
 
             $playlist->delete();
+
+            // 🔥 KRİTİK: Redis cache'i temizle (playlist silindi!)
+            $tenantId = tenant() ? tenant()->id : 'default';
+            $cacheKey = "muzibu:playlist:{$tenantId}:{$id}";
+            \Cache::forget($cacheKey);
+
+            // 🔥 KRİTİK: Response Cache'i temizle (my-playlists sayfası güncel görsün!)
+            try {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            } catch (\Exception $e) {
+                \Log::warning('Response cache clear failed', ['error' => $e->getMessage()]);
+            }
 
             return response()->json([
                 'success' => true,

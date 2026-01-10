@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Muzibu Sertifika - {{ $certificate->certificate_code }}</title>
+    <title>Muzibu Belge - {{ $certificate->certificate_code }}</title>
     <style>
         @page { margin: 0; size: A4 landscape; }
         body { font-family: 'DejaVu Sans', sans-serif; margin: 10mm; background: #fff; }

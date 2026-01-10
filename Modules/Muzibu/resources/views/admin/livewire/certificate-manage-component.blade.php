@@ -5,7 +5,7 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Sertifika Bilgileri</h3>
+                        <h3 class="card-title">Belge Bilgileri</h3>
                     </div>
                     <div class="card-body">
                         <!-- Kullanici Secimi -->
@@ -42,7 +42,7 @@
 
                         <!-- Uye Adi (Sirket/Kisi) -->
                         <div class="mb-3">
-                            <label class="form-label required">Uye Adi (Sertifikada Gorunecek)</label>
+                            <label class="form-label required">Uye Adi (Belgeda Gorunecek)</label>
                             <input type="text" wire:model="member_name"
                                 class="form-control @error('member_name') is-invalid @enderror"
                                 placeholder="Sirket adi veya kisi adi">
@@ -132,22 +132,22 @@
                         <div class="mb-3">
                             <label class="form-check form-switch">
                                 <input type="checkbox" wire:model="is_valid" class="form-check-input">
-                                <span class="form-check-label">Sertifika Gecerli</span>
+                                <span class="form-check-label">Belge Gecerli</span>
                             </label>
-                            <div class="form-text">Kapatilirsa sertifika iptal edilir</div>
+                            <div class="form-text">Kapatilirsa belge iptal edilir</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sertifika Bilgileri (Sadece Edit) -->
+                <!-- Belge Bilgileri (Sadece Edit) -->
                 @if($certificateId && $this->certificate)
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Sertifika Detaylari</h3>
+                        <h3 class="card-title">Belge Detaylari</h3>
                     </div>
                     <div class="card-body">
                         <div class="mb-2">
-                            <strong>Sertifika Kodu:</strong>
+                            <strong>Belge Kodu:</strong>
                             <span class="badge bg-warning-lt">{{ $this->certificate->certificate_code }}</span>
                         </div>
                         <div class="mb-2">

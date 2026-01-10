@@ -1,6 +1,6 @@
 @extends('themes.muzibu.layouts.app')
 
-@section('title', 'Sertifika Doğrulama - Muzibu')
+@section('title', 'Belge Doğrulama - Muzibu')
 
 @php
     $hasGap = false;
@@ -28,7 +28,7 @@
 <div class="min-h-screen py-6 sm:py-10">
     <div class="max-w-2xl mx-auto px-4">
 
-        {{-- Doğrulanmış Sertifika Header --}}
+        {{-- Doğrulanmış Belge Header --}}
         @if($isCurrentlyActive)
         <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-5 mb-4 shadow-lg shadow-green-900/30">
             <div class="flex items-center justify-between">
@@ -37,7 +37,7 @@
                         <i class="fas fa-certificate text-white text-2xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-white">Doğrulanmış Sertifika</h1>
+                        <h1 class="text-xl font-bold text-white">Doğrulanmış Belge</h1>
                         <p class="text-green-100 text-sm">QR kod ile resmi belge doğrulaması yapıldı</p>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-white">Üyelik Pasif</h1>
-                        <p class="text-amber-100 text-sm">Bu sertifikanın üyeliği şu anda aktif değil</p>
+                        <p class="text-amber-100 text-sm">Bu belgenın üyeliği şu anda aktif değil</p>
                     </div>
                 </div>
                 <div class="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/20 rounded-lg">
@@ -80,7 +80,7 @@
             <div class="px-8 pt-8 pb-8">
                 <div class="flex items-center justify-between">
                     <div class="flex-1">
-                        <h1 class="text-4xl font-semibold text-white mb-2 tracking-wide">Üyelik Sertifikası</h1>
+                        <h1 class="text-4xl font-semibold text-white mb-2 tracking-wide">Üyelik Belgesı</h1>
                         <p class="text-slate-400 text-sm">Muzibu Kurumsal Premium Üyelik</p>
                     </div>
                     {{-- Crown Badge --}}
@@ -197,10 +197,10 @@
         <div class="mt-4 bg-slate-900/50 rounded-lg p-6">
             <div class="text-xs text-slate-500 tracking-widest mb-4">YASAL BİLGİLENDİRME</div>
             <div class="space-y-3 text-sm text-slate-400 leading-relaxed">
-                <p>I. İşbu sertifika münhasıran <strong class="cert-mono text-slate-300">{{ $certificate->member_name }}</strong> adına düzenlenmiş olup üçüncü şahıslara devredilemez.</p>
-                <p>II. Sertifika yalnızca yukarıda belirtilen adresteki işletme için geçerlidir.</p>
-                <p>III. Üyelik sona erdiğinde veya iptal edildiğinde sertifika geçerliliğini kaybeder.</p>
-                <p>IV. Muzibu A.Ş., önceden bildirimde bulunmaksızın sertifikayı iptal etme hakkını saklı tutar.</p>
+                <p>I. İşbu belge münhasıran <strong class="cert-mono text-slate-300">{{ $certificate->member_name }}</strong> adına düzenlenmiş olup üçüncü şahıslara devredilemez.</p>
+                <p>II. Belge yalnızca yukarıda belirtilen adresteki işletme için geçerlidir.</p>
+                <p>III. Üyelik sona erdiğinde veya iptal edildiğinde belge geçerliliğini kaybeder.</p>
+                <p>IV. Muzibu A.Ş., önceden bildirimde bulunmaksızın belgeyı iptal etme hakkını saklı tutar.</p>
             </div>
         </div>
 

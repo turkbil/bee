@@ -86,8 +86,19 @@ class UserManageComponent extends Component
            $this->inputs['email'] = $user->email;
            $this->inputs['is_active'] = $user->is_active;
            $this->inputs['email_verified_at'] = $user->email_verified_at ? true : false;
-           $this->inputs['role_id'] = $user->roles->first() ? $user->roles->first()->name : null;
-           $this->previousRole = $this->inputs['role_id']; // Önceki rolü sakla
+
+           // Rol bilgisini yükle
+           $roleFromDb = $user->roles->first();
+           $this->inputs['role_id'] = $roleFromDb ? $roleFromDb->name : null;
+           $this->previousRole = $this->inputs['role_id'];
+
+           // Debug log
+           Log::debug('🔍 MOUNT - User role loaded', [
+               'user_id' => $id,
+               'roles_count' => $user->roles->count(),
+               'first_role' => $roleFromDb ? $roleFromDb->toArray() : null,
+               'role_id_set' => $this->inputs['role_id']
+           ]);
            
            $permissions = DB::table('model_has_permissions')
                ->where('model_id', $id)
@@ -614,7 +625,7 @@ class UserManageComponent extends Component
                 'message' => $message,
                 'type' => 'success',
             ]);
-    
+
             if ($resetForm && !$this->userId) {
                 $this->reset(['inputs', 'temporaryImages', 'modulePermissions', 'modulePermissionCounts']);
                 $this->inputs = [
@@ -626,6 +637,22 @@ class UserManageComponent extends Component
                     'permissions' => []
                 ];
                 $this->loadAvailableModules();
+            } else if ($this->userId) {
+                // Düzenleme işleminden sonra kullanıcı verilerini tekrar yükle
+                $updatedUser = User::with(['roles'])->findOrFail($this->userId);
+                $this->inputs['role_id'] = $updatedUser->roles->first() ? $updatedUser->roles->first()->name : null;
+                $this->previousRole = $this->inputs['role_id'];
+
+                // Eğer editor rolü varsa modül izinlerini tekrar yükle
+                if ($this->inputs['role_id'] === 'editor') {
+                    $this->loadUserModulePermissions($updatedUser);
+                    $this->calculateModulePermissionCounts();
+                }
+
+                Log::debug('User data reloaded after save', [
+                    'user_id' => $this->userId,
+                    'role_id' => $this->inputs['role_id']
+                ]);
             }
     
         } catch (\Exception $e) {

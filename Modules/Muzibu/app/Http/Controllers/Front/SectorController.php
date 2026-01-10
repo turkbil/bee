@@ -64,7 +64,10 @@ class SectorController extends Controller
             ->orderBy('muzibu_playlists.created_at', 'desc')
             ->get();
 
-        return view('themes.muzibu.sectors.show', compact('sector', 'radios', 'playlists'));
+        // ⭐ Schema.org için item variable (HasUniversalSchemas trait)
+        $item = $sector;
+
+        return view('themes.muzibu.sectors.show', compact('sector', 'radios', 'playlists', 'item'));
     }
 
     public function apiIndex()

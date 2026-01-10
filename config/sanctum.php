@@ -115,7 +115,9 @@ return [
     'middleware' => [
         'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
         'encrypt_cookies' => Illuminate\Cookie\Middleware\EncryptCookies::class,
-        'validate_csrf_token' => Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        // 🔧 Custom CSRF middleware - api/* exception listesi var (VerifyCsrfToken.php)
+        // API route'ları CSRF'den muaf (RESTful standart), auth sanctum/session ile korunur
+        'validate_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
     ],
 
 ];

@@ -69,14 +69,18 @@
 
     @livewireStyles
 
-    {{-- Favicon - Tenant-aware dynamic route --}}
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    {{-- Favicon (Browser Tab Icon) - SettingManagement'tan çek (İxtif gibi) --}}
+    @php $favicon = setting('site_favicon'); @endphp
+    @if($favicon && $favicon !== 'Favicon yok')
+        <link rel="icon" type="image/x-icon" href="{{ cdn($favicon) }}">
+        <link rel="apple-touch-icon" href="{{ cdn($favicon) }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="apple-touch-icon" href="{{ asset('favicon.ico') }}">
+    @endif
 
     {{-- PWA Manifest (2025 Best Practice) --}}
     <link rel="manifest" href="{{ route('manifest') }}">
-
-    {{-- Apple Touch Icon (iOS/Safari) - Uses favicon as fallback --}}
-    <link rel="apple-touch-icon" href="/favicon.ico">
 
     {{-- Theme Color for Mobile Browser Bar (Tenant-aware) --}}
     @php
@@ -194,6 +198,324 @@
                     } catch (error) {
                         window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message, type: 'error' } }));
                     } finally { this.creating = false; }
+                }
+            };
+        };
+
+        // 🎯 playlistEditor - My Playlist edit page with drag & drop (SPA compatible)
+        window.playlistEditor = function() {
+            return {
+                playlistId: window.playlistEditData?.playlistId,
+                title: window.playlistEditData?.title,
+                description: window.playlistEditData?.description,
+                isPublic: window.playlistEditData?.isPublic,
+                songs: window.playlistEditData?.songs || [],
+                saving: false,
+
+                initEditor() {
+                    if (this.$refs.songList && window.Sortable) {
+                        new Sortable(this.$refs.songList, {
+                            animation: 150,
+                            ghostClass: 'opacity-50',
+                            onEnd: (evt) => {
+                                const movedItem = this.songs[evt.oldIndex];
+                                this.songs.splice(evt.oldIndex, 1);
+                                this.songs.splice(evt.newIndex, 0, movedItem);
+                                this.saveSongOrder();
+                            }
+                        });
+                    }
+                },
+
+                async savePlaylist() {
+                    this.saving = true;
+                    try {
+                        const response = await fetch(`/api/muzibu/playlists/${this.playlistId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
+                            },
+                            body: JSON.stringify({
+                                title: this.title,
+                                description: this.description,
+                                is_public: this.isPublic
+                            })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            if (window.Alpine?.store('toast')) {
+                                window.Alpine.store('toast').show('Playlist güncellendi', 'success');
+                            }
+                            setTimeout(() => {
+                                if (window.muzibuRouter) {
+                                    window.muzibuRouter.navigateTo('/muzibu/my-playlists');
+                                } else {
+                                    window.location.href = '/muzibu/my-playlists';
+                                }
+                            }, 1000);
+                        } else {
+                            if (window.Alpine?.store('toast')) {
+                                window.Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
+                            }
+                            this.saving = false;
+                        }
+                    } catch (err) {
+                        console.error('Playlist save error:', err);
+                        if (window.Alpine?.store('toast')) {
+                            window.Alpine.store('toast').show('Bağlantı hatası', 'error');
+                        }
+                        this.saving = false;
+                    }
+                },
+
+                async removeSong(songId) {
+                    if (!confirm('Bu şarkıyı playlist\'ten çıkarmak istediğinize emin misiniz?')) return;
+                    try {
+                        const response = await fetch(`/api/muzibu/playlists/${this.playlistId}/remove-song/${songId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
+                            }
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            this.songs = this.songs.filter(s => s.song_id !== songId);
+                            if (window.Alpine?.store('toast')) {
+                                window.Alpine.store('toast').show('Şarkı çıkarıldı', 'success');
+                            }
+                        } else {
+                            if (window.Alpine?.store('toast')) {
+                                window.Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Song remove error:', err);
+                        if (window.Alpine?.store('toast')) {
+                            window.Alpine.store('toast').show('Bağlantı hatası', 'error');
+                        }
+                    }
+                },
+
+                async saveSongOrder() {
+                    const songPositions = this.songs.map((song, index) => ({
+                        song_id: song.song_id,
+                        position: index + 1
+                    }));
+                    try {
+                        const response = await fetch(`/api/muzibu/playlists/${this.playlistId}/reorder`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
+                            },
+                            body: JSON.stringify({ song_positions: songPositions })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            if (window.Alpine?.store('toast')) {
+                                window.Alpine.store('toast').show('Sıralama kaydedildi', 'success');
+                            }
+                        } else {
+                            if (window.Alpine?.store('toast')) {
+                                window.Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Reorder error:', err);
+                        if (window.Alpine?.store('toast')) {
+                            window.Alpine.store('toast').show('Bağlantı hatası', 'error');
+                        }
+                    }
+                }
+            };
+        };
+
+        // 🎯 certificateForm - Certificate form with text correction (SPA compatible)
+        window.certificateForm = function() {
+            return {
+                skipCorrection: window.certificateFormData?.skipCorrection ?? false,
+                memberName: window.certificateFormData?.memberName ?? '',
+                taxOffice: window.certificateFormData?.taxOffice ?? '',
+                taxNumber: window.certificateFormData?.taxNumber ?? '',
+                address: window.certificateFormData?.address ?? '',
+
+                init() {
+                    // Data already loaded from certificateFormData
+                },
+
+                correctText(text) {
+                    if (!text) return text;
+                    text = text.replace(/\s*\/\s*/g, '/');
+                    const toUpperTR = (char) => {
+                        if (char === 'i') return 'İ';
+                        if (char === 'ı') return 'I';
+                        return char.toUpperCase();
+                    };
+                    const toLowerTR = (char) => {
+                        if (char === 'I') return 'ı';
+                        if (char === 'İ') return 'i';
+                        return char.toLowerCase();
+                    };
+                    let result = '';
+                    let capitalizeNext = true;
+                    for (let i = 0; i < text.length; i++) {
+                        const char = text[i];
+                        if (char === ' ' || char === '\n' || char === '\r') {
+                            result += char;
+                            capitalizeNext = true;
+                        } else if (char === '.' || char === ':' || char === '/') {
+                            result += char;
+                            capitalizeNext = true;
+                        } else if (capitalizeNext) {
+                            result += toUpperTR(char);
+                            capitalizeNext = false;
+                        } else {
+                            result += toLowerTR(char);
+                        }
+                    }
+                    return result;
+                },
+
+                formatMemberName() {
+                    if (!this.skipCorrection) {
+                        this.memberName = this.correctText(this.memberName);
+                    }
+                },
+
+                formatTaxOffice() {
+                    this.taxOffice = this.correctText(this.taxOffice);
+                },
+
+                formatAddress() {
+                    this.address = this.correctText(this.address);
+                }
+            }
+        };
+
+        // 🎯 corporateIndexApp - Corporate landing page (/corporate) with join & create forms
+        window.corporateIndexApp = function() {
+            return {
+                // Join with code
+                code: '',
+                loading: false,
+
+                // Create corporate
+                companyName: '',
+                createCode: '',
+                creating: false,
+                codeAvailable: null,
+                codeError: '',
+                checkingCode: false,
+                checkCodeTimer: null,
+
+                get createCodeValid() {
+                    return this.createCode.length === 8 && this.codeAvailable === true;
+                },
+
+                async joinWithCode() {
+                    if (this.code.length !== 8) return;
+                    this.loading = true;
+                    try {
+                        const response = await fetch('/corporate/join', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({ corporate_code: this.code })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: data.message, type: 'success' }
+                            }));
+                            setTimeout(() => {
+                                window.location.href = data.redirect || '/corporate/my-corporate';
+                            }, 1000);
+                        } else {
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: data.message, type: 'error' }
+                            }));
+                        }
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', {
+                            detail: { message: 'Bir hata oluştu', type: 'error' }
+                        }));
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                validateCreateCode() {
+                    if (this.createCode.length !== 8) {
+                        this.codeAvailable = null;
+                        this.codeError = '';
+                        return;
+                    }
+                    clearTimeout(this.checkCodeTimer);
+                    this.checkingCode = true;
+                    this.codeError = '';
+                    this.checkCodeTimer = setTimeout(async () => {
+                        try {
+                            const response = await fetch('/api/corporate/check-code?code=' + this.createCode, {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                }
+                            });
+                            const data = await response.json();
+                            this.codeAvailable = data.available;
+                            this.codeError = data.available ? '' : 'Bu kod zaten kullanımda';
+                        } catch (error) {
+                            this.codeError = 'Kontrol edilemedi';
+                            this.codeAvailable = null;
+                        } finally {
+                            this.checkingCode = false;
+                        }
+                    }, 500);
+                },
+
+                async createCorporate() {
+                    if (this.companyName.length < 2 || !this.createCodeValid) return;
+                    this.creating = true;
+                    try {
+                        const response = await fetch('/api/corporate/create', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                company_name: this.companyName,
+                                corporate_code: this.createCode
+                            })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: data.message, type: 'success' }
+                            }));
+                            setTimeout(() => {
+                                window.location.href = data.redirect || '/corporate/dashboard';
+                            }, 1000);
+                        } else {
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: data.message, type: 'error' }
+                            }));
+                        }
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', {
+                            detail: { message: 'Bir hata oluştu', type: 'error' }
+                        }));
+                    } finally {
+                        this.creating = false;
+                    }
                 }
             };
         };
@@ -454,7 +776,7 @@
         $sharedMetaTags = view()->getShared()['metaTags'] ?? null;
         $hasControllerSchemas = $sharedMetaTags && isset($sharedMetaTags['schemas']) && !empty($sharedMetaTags['schemas']);
     @endphp
-    @if(!$hasControllerSchemas && isset($item) && is_object($item) && method_exists($item, 'getUniversalSchemas'))
+    @if(!$hasControllerSchemas && isset($item) && is_object($item) && method_exists($item, 'getAllSchemas'))
         {!! \App\Services\SEOService::getAllSchemas($item) !!}
     @endif
 
@@ -518,7 +840,8 @@
         // Sağ sidebar gösterilecek route'lar (music pages + dashboard)
         // Mobilde (<768px) GİZLİ, Tablet+ (768px+) GÖRÜNÜR
         $showRightSidebar = in_array(Route::currentRouteName(), [
-            'dashboard',
+            'dashboard',           // Diğer tenant'lar için
+            'muzibu.dashboard',    // Muzibu için (ASIL ROUTE!)
             'muzibu.home',
             'muzibu.songs.index',
             'muzibu.songs.show',
@@ -563,7 +886,31 @@
         {{-- Mobile Menu Overlay - Grid içinde (sidebar ile aynı stacking context) --}}
         <div class="muzibu-mobile-overlay" onclick="toggleMobileMenu()"></div>
 
-        @include('themes.muzibu.components.main-content')
+        {{-- MAIN CONTENT --}}
+        <main class="muzibu-main row-start-2 relative overflow-hidden">
+            <div class="overflow-y-auto h-full relative">
+                {{-- V3: Turuncu → Kırmızı → Bordo - Yatay Animasyonlu + Dark Altta --}}
+                <div class="absolute top-0 left-0 right-0 h-[250px] rounded-t-lg pointer-events-none overflow-hidden">
+                    {{-- Animated layer (Soldan sağa renk kayması) --}}
+                    <div class="absolute top-0 left-0 w-[200%] h-full animate-gradient-horizontal"></div>
+                    {{-- Dark overlay (Altta sabit) --}}
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent via-black/50 to-[#121212]"></div>
+                </div>
+
+                {{-- Content (Gradient ile birlikte scroll yapar) --}}
+                <div class="relative z-10">
+                    {{-- 🚀 SPA Loading Skeleton --}}
+                    <div x-show="isLoading" x-cloak class="spa-loading-skeleton">
+                        @include('themes.muzibu.partials.loading-skeleton')
+                    </div>
+
+                    {{-- 🚀 SPA Content Wrapper --}}
+                    <div class="spa-content-wrapper" id="spaContent">
+                        @yield('content')
+                    </div>
+                </div>
+            </div>
+        </main>
 
         {{-- Right Sidebar - MD+ screens (768px+), Hybrid: PHP initial + Alpine SPA --}}
         {{-- SADECE MOBİLDE GİZLİ (<768px), TABLET VE DESKTOP'TA GÖSTER (768px+) --}}

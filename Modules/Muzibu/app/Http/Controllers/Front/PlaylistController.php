@@ -14,11 +14,12 @@ class PlaylistController extends Controller
      */
     public function index()
     {
-        // Only show SYSTEM playlists with at least 1 active song
+        // Only show SYSTEM playlists with at least 1 active song (exclude radio playlists)
         $playlists = Playlist::with('coverMedia')
             ->where('is_active', 1)
             ->where('is_public', 1)
             ->where('is_system', 1)
+            ->where('is_radio', 0)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
             })
@@ -59,7 +60,10 @@ class PlaylistController extends Controller
         // ⭐ SEO için model'i share et (HasSeo trait otomatik çalışır)
         view()->share('currentModel', $playlist);
 
-        return view('themes.muzibu.playlists.show', compact('playlist', 'songs'));
+        // ⭐ Schema.org için item variable (HasUniversalSchemas trait)
+        $item = $playlist;
+
+        return view('themes.muzibu.playlists.show', compact('playlist', 'songs', 'item'));
     }
 
     /**
@@ -67,11 +71,12 @@ class PlaylistController extends Controller
      */
     public function apiIndex()
     {
-        // Only show SYSTEM playlists with at least 1 active song
+        // Only show SYSTEM playlists with at least 1 active song (exclude radio playlists)
         $playlists = Playlist::with('coverMedia')
             ->where('is_active', 1)
             ->where('is_public', 1)
             ->where('is_system', 1)
+            ->where('is_radio', 0)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
             })

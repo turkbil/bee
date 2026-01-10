@@ -34,17 +34,6 @@
 
     {{-- Actions --}}
     <div class="flex items-center justify-center sm:justify-start gap-4 mb-6 sm:mb-8">
-        <button @click="
-            $store.player.setPlayContext({
-                type: 'sector',
-                id: {{ $sector->sector_id }},
-                name: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}'
-            });
-            playSector({{ $sector->sector_id }});
-        " class="w-12 h-12 sm:w-14 sm:h-14 bg-muzibu-coral hover:bg-opacity-90 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all">
-            <i class="fas fa-play text-white text-lg sm:text-xl ml-1"></i>
-        </button>
-
         <div @click.stop>
             <x-common.favorite-button :model="$sector" />
         </div>

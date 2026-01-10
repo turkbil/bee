@@ -5,6 +5,7 @@ namespace Modules\Muzibu\App\Models;
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
+use App\Traits\HasUniversalSchemas;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Modules\Muzibu\App\Traits\HasCachedCounts;
 
 class Artist extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasReviews, Searchable, HasCachedCounts;
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, SoftDeletes, HasReviews, Searchable, HasCachedCounts;
 
     protected $table = 'muzibu_artists';
     protected $primaryKey = 'artist_id';
@@ -214,7 +215,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackImage(): ?string
     {
-        return $this->media?->getUrl() ?? null;
+        return $this->getFirstMediaUrl('hero') ?? null;
     }
 
     public function getSeoFallbackSchemaMarkup(): ?array
@@ -245,30 +246,6 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         return $schema;
-    }
-
-    /**
-     * Tüm schema'ları al (MusicGroup + Breadcrumb)
-     */
-    public function getAllSchemas(): array
-    {
-        $schemas = [];
-
-        // 1. MusicGroup Schema
-        $artistSchema = $this->getSchemaMarkup();
-        if ($artistSchema) {
-            $schemas['musicgroup'] = $artistSchema;
-        }
-
-        // 2. Breadcrumb Schema
-        if (method_exists($this, 'getBreadcrumbSchema')) {
-            $breadcrumbSchema = $this->getBreadcrumbSchema();
-            if ($breadcrumbSchema) {
-                $schemas['breadcrumb'] = $breadcrumbSchema;
-            }
-        }
-
-        return $schemas;
     }
 
     /**
@@ -373,5 +350,170 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     public function getScoutKeyName()
     {
         return 'artist_id';
+    }
+
+    // ========================================
+    // 🎤 Schema.org Implementation
+    // ========================================
+
+    /**
+     * Get all schemas for this artist (MusicGroup + Breadcrumb + FAQ + HowTo)
+     *
+     * @return array
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. MusicGroup Schema (Primary)
+        $musicGroupSchema = $this->getMusicGroupSchema();
+        if ($musicGroupSchema) {
+            $schemas['musicGroup'] = $musicGroupSchema;
+        }
+
+        // 2. Breadcrumb Schema
+        $breadcrumbSchema = $this->getBreadcrumbSchema();
+        if ($breadcrumbSchema) {
+            $schemas['breadcrumb'] = $breadcrumbSchema;
+        }
+
+        // 3. FAQ Schema (from HasUniversalSchemas trait)
+        $faqSchema = $this->getFaqSchema();
+        if ($faqSchema) {
+            $schemas['faq'] = $faqSchema;
+        }
+
+        // 4. HowTo Schema (from HasUniversalSchemas trait)
+        $howtoSchema = $this->getHowToSchema();
+        if ($howtoSchema) {
+            $schemas['howto'] = $howtoSchema;
+        }
+
+        return $schemas;
+    }
+
+    /**
+     * Generate MusicGroup Schema
+     *
+     * @return array|null
+     */
+    protected function getMusicGroupSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $name = $this->getTranslated('title', $locale); // NOT: Artist'te title var, name yok!
+
+        if (!$name) {
+            return null;
+        }
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'MusicGroup',
+            'name' => $name,
+            'url' => $this->getUrl($locale),
+        ];
+
+        // Bio/Description
+        $bio = $this->getTranslated('bio', $locale);
+        if ($bio) {
+            $schema['description'] = strip_tags($bio);
+        }
+
+        // Artist photo
+        $heroMedia = $this->getFirstMedia('hero');
+        if ($heroMedia) {
+            $schema['image'] = thumb($heroMedia, 1200, 1200, ['quality' => 90]);
+        }
+
+        // Number of albums
+        $albumsCount = $this->getAlbumsCountAttribute();
+        if ($albumsCount > 0) {
+            $schema['numAlbums'] = $albumsCount;
+
+            // Album list (first 10 albums for schema)
+            $albums = $this->albums()->where('is_active', true)->limit(10)->get();
+            if ($albums->count() > 0) {
+                $albumList = [];
+                foreach ($albums as $album) {
+                    $albumTitle = $album->getTranslated('title', $locale);
+                    if ($albumTitle) {
+                        $albumList[] = [
+                            '@type' => 'MusicAlbum',
+                            'name' => $albumTitle,
+                            'url' => $album->getUrl($locale)
+                        ];
+                    }
+                }
+                if (!empty($albumList)) {
+                    $schema['album'] = $albumList;
+                }
+            }
+        }
+
+        // Aggregate rating (from HasReviews trait)
+        if (method_exists($this, 'reviews')) {
+            $reviewCount = $this->reviews()->count();
+            if ($reviewCount > 0) {
+                $avgRating = $this->reviews()->avg('rating');
+                $schema['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => round($avgRating, 1),
+                    'reviewCount' => $reviewCount,
+                    'bestRating' => 5,
+                    'worstRating' => 1
+                ];
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Generate BreadcrumbList Schema
+     *
+     * Structure: Home → Artists → Current Artist
+     *
+     * @return array|null
+     */
+    public function getBreadcrumbSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $breadcrumbs = [];
+        $position = 1;
+
+        // 1. Home
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => __('Ana Sayfa'),
+            'item' => url('/')
+        ];
+
+        // 2. Artists Ana Sayfa
+        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Muzibu', 'artists.index');
+        $artistsIndexUrl = $locale === get_tenant_default_locale()
+            ? url("/{$moduleSlug}")
+            : url("/{$locale}/{$moduleSlug}");
+
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => 'Sanatçılar',
+            'item' => $artistsIndexUrl
+        ];
+
+        // 3. Current Artist
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position,
+            'name' => $this->getTranslated('title', $locale),
+            'item' => $this->getUrl($locale)
+        ];
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $breadcrumbs
+        ];
     }
 }

@@ -59,7 +59,10 @@ class GenreController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('themes.muzibu.genres.show', compact('genre', 'playlists'));
+        // ⭐ Schema.org için item variable (HasUniversalSchemas trait)
+        $item = $genre;
+
+        return view('themes.muzibu.genres.show', compact('genre', 'playlists', 'item'));
     }
 
     public function apiIndex()

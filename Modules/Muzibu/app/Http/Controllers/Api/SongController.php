@@ -89,36 +89,38 @@ class SongController extends Controller
     public function popular(Request $request): JsonResponse
     {
         try {
-            $limit = $request->input('limit', 20);
+            $limit = min($request->input('limit', 20), 50); // Max 50
 
-            // 🚀 CACHE: Get popular songs from Redis (30min TTL)
-            $cachedSongs = $this->cacheService->getPopularSongs($limit);
+            // 🔥 Direct query with eager loading - model accessors work correctly
+            $songs = Song::where('is_active', 1)
+                ->whereNotNull('hls_path')
+                ->with(['album.artist'])
+                ->orderBy('play_count', 'desc')
+                ->limit($limit)
+                ->get()
+                ->map(function ($song) {
+                    $album = $song->album;
+                    $artist = $album?->artist;
 
-            // ✅ Format songs with cover URLs (120x120)
-            $songs = collect($cachedSongs)->map(function ($songData) {
-                $song = Song::hydrate([$songData])->first(); // Hydrate from cached array
-                $album = $song->album;
-                $artist = $album?->artist;
+                    return [
+                        'song_id' => $song->song_id,
+                        'song_title' => $song->title,
+                        'song_slug' => $song->slug,
+                        'duration' => $song->duration,
+                        'hls_path' => $song->hls_path,
+                        'lyrics' => $song->lyrics,
+                        'cover_url' => $song->getCoverUrl(120, 120),
+                        'album_cover' => $song->getCoverUrl(120, 120),
+                        'album_id' => $album?->album_id,
+                        'album_title' => $album?->title,
+                        'album_slug' => $album?->slug,
+                        'artist_id' => $artist?->artist_id,
+                        'artist_title' => $artist?->title,
+                        'artist_slug' => $artist?->slug,
+                    ];
+                });
 
-                return [
-                    'song_id' => $song->song_id,
-                    'song_title' => $song->title,
-                    'song_slug' => $song->slug,
-                    'duration' => $song->duration,
-                    'hls_path' => $song->hls_path,
-                    'lyrics' => $song->lyrics,
-                    'cover_url' => $song->getCoverUrl(120, 120), // ✅ 120x120
-                    'album_cover' => $song->getCoverUrl(120, 120), // ✅ Compatibility
-                    'album_id' => $album?->album_id,
-                    'album_title' => $album?->title,
-                    'album_slug' => $album?->slug,
-                    'artist_id' => $artist?->artist_id,
-                    'artist_title' => $artist?->title,
-                    'artist_slug' => $artist?->slug,
-                ];
-            });
-
-            return response()->json($songs);
+            return response()->json(['success' => true, 'songs' => $songs]);
 
         } catch (\Exception $e) {
             \Log::error('Popular songs error:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);

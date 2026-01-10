@@ -5,6 +5,7 @@ namespace Modules\Muzibu\App\Models;
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
+use App\Traits\HasUniversalSchemas;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +19,7 @@ use Modules\Muzibu\App\Traits\HasCachedCounts;
 
 class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable, HasCachedCounts;
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable, HasCachedCounts;
 
     protected $table = 'muzibu_playlists';
     protected $primaryKey = 'playlist_id';
@@ -698,7 +699,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackImage(): ?string
     {
-        return $this->media?->getUrl() ?? null;
+        return $this->getFirstMediaUrl('hero') ?? null;
     }
 
     public function getSeoFallbackSchemaMarkup(): ?array
@@ -730,30 +731,6 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         return $schema;
-    }
-
-    /**
-     * Tüm schema'ları al (MusicPlaylist + Breadcrumb)
-     */
-    public function getAllSchemas(): array
-    {
-        $schemas = [];
-
-        // 1. MusicPlaylist Schema
-        $playlistSchema = $this->getSchemaMarkup();
-        if ($playlistSchema) {
-            $schemas['musicplaylist'] = $playlistSchema;
-        }
-
-        // 2. Breadcrumb Schema
-        if (method_exists($this, 'getBreadcrumbSchema')) {
-            $breadcrumbSchema = $this->getBreadcrumbSchema();
-            if ($breadcrumbSchema) {
-                $schemas['breadcrumb'] = $breadcrumbSchema;
-            }
-        }
-
-        return $schemas;
     }
 
     /**
@@ -865,5 +842,186 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     public function getScoutKeyName()
     {
         return 'playlist_id';
+    }
+
+    // ========================================
+    // 🎶 Schema.org Implementation
+    // ========================================
+
+    /**
+     * Get all schemas for this playlist (MusicPlaylist + Breadcrumb + FAQ + HowTo)
+     *
+     * @return array
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. MusicPlaylist Schema (Primary)
+        $musicPlaylistSchema = $this->getMusicPlaylistSchema();
+        if ($musicPlaylistSchema) {
+            $schemas['musicPlaylist'] = $musicPlaylistSchema;
+        }
+
+        // 2. Breadcrumb Schema
+        $breadcrumbSchema = $this->getBreadcrumbSchema();
+        if ($breadcrumbSchema) {
+            $schemas['breadcrumb'] = $breadcrumbSchema;
+        }
+
+        // 3. FAQ Schema (from HasUniversalSchemas trait)
+        $faqSchema = $this->getFaqSchema();
+        if ($faqSchema) {
+            $schemas['faq'] = $faqSchema;
+        }
+
+        // 4. HowTo Schema (from HasUniversalSchemas trait)
+        $howtoSchema = $this->getHowToSchema();
+        if ($howtoSchema) {
+            $schemas['howto'] = $howtoSchema;
+        }
+
+        return $schemas;
+    }
+
+    /**
+     * Generate MusicPlaylist Schema
+     *
+     * @return array|null
+     */
+    protected function getMusicPlaylistSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $title = $this->getTranslated('title', $locale);
+
+        if (!$title) {
+            return null;
+        }
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'MusicPlaylist',
+            'name' => $title,
+            'url' => $this->getUrl($locale),
+        ];
+
+        // Description
+        $description = $this->getTranslated('description', $locale);
+        if ($description) {
+            $schema['description'] = strip_tags($description);
+        }
+
+        // Cover image
+        $heroMedia = $this->getFirstMedia('hero');
+        if ($heroMedia) {
+            $schema['image'] = thumb($heroMedia, 1200, 1200, ['quality' => 90]);
+        }
+
+        // Number of tracks
+        $songsCount = $this->getSongsCountAttribute();
+        if ($songsCount > 0) {
+            $schema['numTracks'] = $songsCount;
+
+            // Track list (first 20 songs for schema)
+            $songs = $this->songs()->where('muzibu_songs.is_active', true)->limit(20)->get();
+            if ($songs->count() > 0) {
+                $trackList = [];
+                foreach ($songs as $index => $song) {
+                    $songTitle = $song->getTranslated('title', $locale);
+                    if ($songTitle) {
+                        $trackList[] = [
+                            '@type' => 'MusicRecording',
+                            'position' => $index + 1,
+                            'name' => $songTitle,
+                            'url' => $song->getUrl($locale),
+                            'duration' => $song->duration ? sprintf('PT%dM%dS', floor($song->duration / 60), $song->duration % 60) : null
+                        ];
+                    }
+                }
+                if (!empty($trackList)) {
+                    $schema['track'] = $trackList;
+                }
+            }
+        }
+
+        // Total duration
+        $totalDuration = $this->getTotalDurationAttribute();
+        if ($totalDuration > 0) {
+            $hours = floor($totalDuration / 3600);
+            $minutes = floor(($totalDuration % 3600) / 60);
+            $seconds = $totalDuration % 60;
+
+            if ($hours > 0) {
+                $schema['duration'] = sprintf('PT%dH%dM%dS', $hours, $minutes, $seconds);
+            } else {
+                $schema['duration'] = sprintf('PT%dM%dS', $minutes, $seconds);
+            }
+        }
+
+        // Aggregate rating (from HasReviews trait)
+        if (method_exists($this, 'reviews')) {
+            $reviewCount = $this->reviews()->count();
+            if ($reviewCount > 0) {
+                $avgRating = $this->reviews()->avg('rating');
+                $schema['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => round($avgRating, 1),
+                    'reviewCount' => $reviewCount,
+                    'bestRating' => 5,
+                    'worstRating' => 1
+                ];
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Generate BreadcrumbList Schema
+     *
+     * Structure: Home → Playlists → Current Playlist
+     *
+     * @return array|null
+     */
+    public function getBreadcrumbSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $breadcrumbs = [];
+        $position = 1;
+
+        // 1. Home
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => __('Ana Sayfa'),
+            'item' => url('/')
+        ];
+
+        // 2. Playlists Ana Sayfa
+        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Muzibu', 'playlists.index');
+        $playlistsIndexUrl = $locale === get_tenant_default_locale()
+            ? url("/{$moduleSlug}")
+            : url("/{$locale}/{$moduleSlug}");
+
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => 'Çalma Listeleri',
+            'item' => $playlistsIndexUrl
+        ];
+
+        // 3. Current Playlist
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position,
+            'name' => $this->getTranslated('title', $locale),
+            'item' => $this->getUrl($locale)
+        ];
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $breadcrumbs
+        ];
     }
 }

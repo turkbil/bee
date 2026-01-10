@@ -274,6 +274,13 @@ class PlaylistService
 
             DB::commit();
 
+            // 🔥 KRİTİK: Response Cache'i temizle (my-playlists sayfasına yeni playlist eklensin!)
+            try {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            } catch (\Exception $e) {
+                Log::warning('Response cache clear failed', ['error' => $e->getMessage()]);
+            }
+
             // 🎨 MUZIBU: Otomatik playlist kapağı oluştur (Muzibu'ya özel job - insansız görseller)
             // İlk şarkı başlığını da ekle (AI için daha iyi context)
             $firstSong = $playlist->songs()->first();
@@ -374,10 +381,23 @@ class PlaylistService
                 'updated_at' => now(),
             ]);
 
+            // 🔥 KRİTİK: Redis cache'i temizle (yeni şarkı eklendi!)
+            $tenantId = tenant() ? tenant()->id : 'default';
+            $cacheKey = "muzibu:playlist:{$tenantId}:{$playlistId}";
+            \Cache::forget($cacheKey);
+
+            // 🔥 KRİTİK: Response Cache'i temizle (my-playlists sayfasında şarkı sayısı güncel görsün!)
+            try {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            } catch (\Exception $e) {
+                Log::warning('Response cache clear failed', ['error' => $e->getMessage()]);
+            }
+
             Log::info('Song added to playlist', [
                 'playlist_id' => $playlistId,
                 'song_id' => $songId,
                 'position' => $maxPosition + 1,
+                'cache_cleared' => $cacheKey,
             ]);
 
             return [
@@ -423,9 +443,22 @@ class PlaylistService
             // Şarkıyı çıkar (cache count'ları da güncelle)
             $playlist->detachSongWithCache($songId);
 
+            // 🔥 KRİTİK: Redis cache'i temizle (yoksa preview'de eski data görünür!)
+            $tenantId = tenant() ? tenant()->id : 'default';
+            $cacheKey = "muzibu:playlist:{$tenantId}:{$playlistId}";
+            \Cache::forget($cacheKey);
+
+            // 🔥 KRİTİK: Response Cache'i temizle (my-playlists sayfasında şarkı sayısı güncel görsün!)
+            try {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            } catch (\Exception $e) {
+                Log::warning('Response cache clear failed', ['error' => $e->getMessage()]);
+            }
+
             Log::info('Song removed from playlist', [
                 'playlist_id' => $playlistId,
                 'song_id' => $songId,
+                'cache_cleared' => $cacheKey,
             ]);
 
             return [
@@ -479,9 +512,22 @@ class PlaylistService
 
             DB::commit();
 
+            // 🔥 KRİTİK: Redis cache'i temizle (sıralama değişti!)
+            $tenantId = tenant() ? tenant()->id : 'default';
+            $cacheKey = "muzibu:playlist:{$tenantId}:{$playlistId}";
+            \Cache::forget($cacheKey);
+
+            // 🔥 KRİTİK: Response Cache'i temizle (tutarlılık için)
+            try {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            } catch (\Exception $e) {
+                Log::warning('Response cache clear failed', ['error' => $e->getMessage()]);
+            }
+
             Log::info('Playlist songs reordered', [
                 'playlist_id' => $playlistId,
                 'song_count' => count($songPositions),
+                'cache_cleared' => $cacheKey,
             ]);
 
             return [

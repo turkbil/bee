@@ -3,6 +3,7 @@
 @section('title', __('muzibu::front.corporate.title'))
 
 @section('content')
+{{-- ✅ corporateIndexApp defined globally in app.blade.php - Works with SPA! --}}
 <div class="min-h-screen" x-data="corporateIndexApp()">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
@@ -170,9 +171,9 @@
                     </div>
                     <form @submit.prevent="createCorporate()" class="space-y-4">
                         <div>
-                            <label class="block text-sm text-gray-400 mb-2">Sirket / Isletme Adi</label>
+                            <label class="block text-sm text-gray-400 mb-2">Şirket / İşletme Adı</label>
                             <input type="text" x-model="companyName"
-                                   placeholder="Ornek Teknoloji A.S."
+                                   placeholder="Örnek Teknoloji A.Ş."
                                    maxlength="100"
                                    class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
                         </div>
@@ -199,13 +200,13 @@
                                 <p x-show="codeError" x-text="codeError" class="text-red-400 text-xs"></p>
                             </div>
                             <p class="text-xs text-purple-400 mt-1">
-                                <i class="fas fa-info-circle mr-1"></i>Bu kod ile calisanlariniz size katilabilir
+                                <i class="fas fa-info-circle mr-1"></i>Bu kod ile çalışanlarınız size katılabilir
                             </p>
                         </div>
                         <button type="submit" :disabled="companyName.length < 2 || !createCodeValid || creating"
                                 class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition">
                             <span x-show="!creating"><i class="fas fa-crown mr-2"></i>{{ __('muzibu::front.corporate.create_corporate') }}</span>
-                            <span x-show="creating"><i class="fas fa-spinner fa-spin mr-2"></i>Olusturuluyor...</span>
+                            <span x-show="creating"><i class="fas fa-spinner fa-spin mr-2"></i>Oluşturuluyor...</span>
                         </button>
                     </form>
                 </div>
@@ -215,144 +216,4 @@
 
     </div>
 </div>
-
-@push('scripts')
-<script>
-function corporateIndexApp() {
-    return {
-        // Join with code
-        code: '',
-        loading: false,
-
-        // Create corporate
-        companyName: '',
-        createCode: '',
-        creating: false,
-        codeAvailable: null,
-        codeError: '',
-        checkingCode: false,
-        checkCodeTimer: null,
-
-        get createCodeValid() {
-            return this.createCode.length === 8 && this.codeAvailable === true;
-        },
-
-        async joinWithCode() {
-            if (this.code.length !== 8) return;
-
-            this.loading = true;
-
-            try {
-                const response = await fetch('/corporate/join', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ corporate_code: this.code })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message, type: 'success' }
-                    }));
-                    setTimeout(() => {
-                        window.location.href = data.redirect || '/corporate/my-corporate';
-                    }, 1000);
-                } else {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message, type: 'error' }
-                    }));
-                }
-            } catch (error) {
-                window.dispatchEvent(new CustomEvent('toast', {
-                    detail: { message: 'Bir hata oluştu', type: 'error' }
-                }));
-            } finally {
-                this.loading = false;
-            }
-        },
-
-        validateCreateCode() {
-            if (this.createCode.length !== 8) {
-                this.codeAvailable = null;
-                this.codeError = '';
-                return;
-            }
-
-            // Debounce: 500ms bekle
-            clearTimeout(this.checkCodeTimer);
-            this.checkingCode = true;
-            this.codeError = '';
-
-            this.checkCodeTimer = setTimeout(async () => {
-                try {
-                    const response = await fetch('/api/corporate/check-code?code=' + this.createCode, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
-                    });
-
-                    const data = await response.json();
-
-                    this.codeAvailable = data.available;
-                    this.codeError = data.available ? '' : 'Bu kod zaten kullanımda';
-                } catch (error) {
-                    this.codeError = 'Kontrol edilemedi';
-                    this.codeAvailable = null;
-                } finally {
-                    this.checkingCode = false;
-                }
-            }, 500);
-        },
-
-        async createCorporate() {
-            if (this.companyName.length < 2 || !this.createCodeValid) return;
-
-            this.creating = true;
-
-            try {
-                const response = await fetch('/api/corporate/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        company_name: this.companyName,
-                        corporate_code: this.createCode
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message, type: 'success' }
-                    }));
-                    setTimeout(() => {
-                        window.location.href = data.redirect || '/corporate/dashboard';
-                    }, 1000);
-                } else {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message, type: 'error' }
-                    }));
-                }
-            } catch (error) {
-                window.dispatchEvent(new CustomEvent('toast', {
-                    detail: { message: 'Bir hata oluştu', type: 'error' }
-                }));
-            } finally {
-                this.creating = false;
-            }
-        }
-    }
-}
-</script>
-@endpush
 @endsection

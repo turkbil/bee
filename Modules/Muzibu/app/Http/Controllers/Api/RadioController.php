@@ -52,10 +52,12 @@ class RadioController extends Controller
                     'song_slug' => $song->slug,
                     'duration' => $song->duration,
                     'hls_path' => $song->hls_path,
+                    'cover_url' => $song->getCoverUrl(120, 120),
                     'album_id' => $album?->album_id,
                     'album_title' => $album?->title,
                     'artist_id' => $artist?->artist_id,
                     'artist_title' => $artist?->title,
+                    'genre_id' => $song->genre_id, // 🎵 Genre ID for queue refill
                 ];
             })->values();
 

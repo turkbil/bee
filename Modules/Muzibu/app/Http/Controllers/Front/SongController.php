@@ -50,7 +50,10 @@ class SongController extends Controller
         // ⭐ SEO için model'i share et (HasSeo trait otomatik çalışır)
         view()->share('currentModel', $song);
 
-        return view('themes.muzibu.songs.show', compact('song', 'relatedSongs'));
+        // ⭐ Schema.org için item variable (HasUniversalSchemas trait)
+        $item = $song;
+
+        return view('themes.muzibu.songs.show', compact('song', 'relatedSongs', 'item'));
     }
 
     /**

@@ -30,7 +30,7 @@
         @else
             {{-- Generic Error --}}
             <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">
-                Sertifika Oluşturulamıyor
+                Belge Oluşturulamıyor
             </h1>
             <p class="text-gray-400 mb-8">
                 Bir hata oluştu. Lütfen daha sonra tekrar deneyin.

@@ -205,19 +205,17 @@ class MuzibuServiceProvider extends ServiceProvider
     /**
      * Load web routes dynamically for all Muzibu tenant domains
      * ⚡ Cache optimization: Domain list cached to prevent DB query on every request
-     * 🌍 Portable: Tenant ID from config (ENV override supported)
      */
     protected function loadWebRoutes(): void
     {
         try {
-            $tenantId = config('muzibu.tenant_id', 1001);
-            $cacheTTL = config('muzibu.domain_cache_ttl', 3600);
-            $cacheKey = "muzibu_tenant_{$tenantId}_domains_web";
+            $cacheKey = 'muzibu_tenant_1001_domains_web';
+            $cacheTTL = 3600; // 1 hour
 
             // Cache'den al veya DB'den çek
-            $domains = \Illuminate\Support\Facades\Cache::remember($cacheKey, $cacheTTL, function() use ($tenantId) {
+            $domains = \Illuminate\Support\Facades\Cache::remember($cacheKey, $cacheTTL, function() {
                 return \Illuminate\Support\Facades\DB::connection('mysql')->table('domains')
-                    ->where('tenant_id', $tenantId)
+                    ->where('tenant_id', 1001)
                     ->pluck('domain')
                     ->toArray();
             });
@@ -236,12 +234,11 @@ class MuzibuServiceProvider extends ServiceProvider
             // Fallback to direct DB query if cache fails
             \Illuminate\Support\Facades\Log::warning('Muzibu web routes: Domain cache failed, using direct DB', [
                 'error' => $e->getMessage(),
-                'tenant_id' => config('muzibu.tenant_id', 1001)
+                'tenant_id' => 1001
             ]);
 
-            $tenantId = config('muzibu.tenant_id', 1001);
             $domains = \Illuminate\Support\Facades\DB::connection('mysql')->table('domains')
-                ->where('tenant_id', $tenantId)
+                ->where('tenant_id', 1001)
                 ->pluck('domain')
                 ->toArray();
 
@@ -261,19 +258,17 @@ class MuzibuServiceProvider extends ServiceProvider
     /**
      * Load API routes dynamically for all Muzibu tenant domains
      * ⚡ Cache optimization: Domain list cached to prevent DB query on every request
-     * 🌍 Portable: Tenant ID from config (ENV override supported)
      */
     protected function loadApiRoutes(): void
     {
         try {
-            $tenantId = config('muzibu.tenant_id', 1001);
-            $cacheTTL = config('muzibu.domain_cache_ttl', 3600);
-            $cacheKey = "muzibu_tenant_{$tenantId}_domains_api";
+            $cacheKey = 'muzibu_tenant_1001_domains_api';
+            $cacheTTL = 3600; // 1 hour
 
             // Cache'den al veya DB'den çek
-            $domains = \Illuminate\Support\Facades\Cache::remember($cacheKey, $cacheTTL, function() use ($tenantId) {
+            $domains = \Illuminate\Support\Facades\Cache::remember($cacheKey, $cacheTTL, function() {
                 return \Illuminate\Support\Facades\DB::connection('mysql')->table('domains')
-                    ->where('tenant_id', $tenantId)
+                    ->where('tenant_id', 1001)
                     ->pluck('domain')
                     ->toArray();
             });
@@ -281,12 +276,11 @@ class MuzibuServiceProvider extends ServiceProvider
             // Fallback to direct DB query if cache fails
             \Illuminate\Support\Facades\Log::warning('Muzibu API routes: Domain cache failed, using direct DB', [
                 'error' => $e->getMessage(),
-                'tenant_id' => config('muzibu.tenant_id', 1001)
+                'tenant_id' => 1001
             ]);
 
-            $tenantId = config('muzibu.tenant_id', 1001);
             $domains = \Illuminate\Support\Facades\DB::connection('mysql')->table('domains')
-                ->where('tenant_id', $tenantId)
+                ->where('tenant_id', 1001)
                 ->pluck('domain')
                 ->toArray();
         }

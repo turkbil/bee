@@ -218,19 +218,19 @@ return [
         'muzibu-supervisor' => [
             'connection' => 'redis',
             'queue' => [
+                'muzibu_tenant_1001_hls',   // Tenant 1001 HLS conversion - ÖNCELİK!
+                'muzibu_hls',               // HLS conversion (generic)
                 'muzibu-abuse-scan',        // Abuse detection scanning
                 'muzibu_my_playlist',       // Playlist cover generation (Leonardo AI)
                 'muzibu_isolated',          // Bulk operations, translations
-                'muzibu_hls',               // HLS conversion (generic)
                 'muzibu_seo',               // SEO generation (OpenAI GPT-4)
-                'muzibu_tenant_1001_hls',   // Tenant 1001 HLS conversion
             ],
-            'balance' => 'auto',
+            'balance' => false,  // 🔥 DISABLED: Tüm worker'lar SADECE muzibu_tenant_1001_hls işlesin!
             'autoScalingStrategy' => 'time',
-            'minProcesses' => 6,  // 🚀 ARTTIRILDI: 2 → 4 → 6 (daha fazla aktif worker)
+            'minProcesses' => 20,  // 🚀 MAXIMUM: HLS için tüm worker'ları kullan
             'maxProcesses' => 20, // 🚀 ARTTIRILDI: 6 → 12 → 20 (184 AI görsel + HLS için)
             'maxTime' => 0,
-            'maxJobs' => 2000,    // 🚀 ARTTIRILDI: 200 → 300 → 2000 (MAXIMUM POWER!)
+            'maxJobs' => 5000,    // 🚀 ARTTIRILDI: 2000 → 5000 (daha az restart)
             'memory' => 512,      // Memory artırıldı (HLS + AI için)
             'tries' => 2,
             'timeout' => 600, // 10 dakika - HLS conversion için
@@ -275,9 +275,9 @@ return [
                 'memory' => 256, // 🔧 OPTIMIZED: 512 → 256 (memory tasarrufu)
             ],
             'muzibu-supervisor' => [
-                'maxProcesses' => 3,
-                'minProcesses' => 1,
-                'memory' => 256,
+                'maxProcesses' => 20, // 🚀 INCREASED: 3 → 20 (for 2,797 jobs - 897 HLS + 900 AI + 1000 SEO)
+                'minProcesses' => 6,  // 🚀 INCREASED: 1 → 6 (always ready workers)
+                'memory' => 512,      // 🚀 INCREASED: 256 → 512 (HLS + AI memory needs)
                 'timeout' => 600,
             ],
             'background-supervisor' => [

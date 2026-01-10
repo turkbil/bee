@@ -77,7 +77,8 @@ class AlbumController extends Controller
                     'song_title' => $song->title,
                     'song_slug' => $song->slug,
                     'duration' => $song->duration,
-                    'hls_path' => $song->hls_path,                    'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
+                    'hls_path' => $song->hls_path,
+                    'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
                     'album_id' => $album->album_id,
                     'album_title' => $album->title,
                     'album_slug' => $album->slug,
@@ -85,6 +86,7 @@ class AlbumController extends Controller
                     'artist_id' => $album->artist?->artist_id,
                     'artist_title' => $album->artist?->title,
                     'artist_slug' => $album->artist?->slug,
+                    'genre_id' => $song->genre_id, // 🎵 Genre ID for queue refill
                 ];
             });
 

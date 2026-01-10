@@ -145,12 +145,11 @@
                             <!-- Normal Üye -->
                             <div class="col-md-6 mb-3">
                                 <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ !in_array($inputs['role_id'], ['editor', 'admin', 'root']) ? 'active border border-3 border-primary' : '' }}">
-                                    <input type="radio" 
-                                        name="role" 
-                                        value="user" 
-                                        id="role-user" 
-                                        {{ !in_array($inputs['role_id'], ['editor', 'admin', 'root']) ? 'checked' : '' }}
-                                        wire:model="inputs.role_id"
+                                    <input type="radio"
+                                        name="role"
+                                        value="user"
+                                        id="role-user"
+                                        wire:model.live="inputs.role_id"
                                         class="form-selectgroup-input role-radio">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
@@ -169,12 +168,11 @@
                             <!-- Editör -->
                             <div class="col-md-6 mb-3">
                                 <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'editor' ? 'active border border-3 border-primary' : '' }}">
-                                    <input type="radio" 
-                                        name="role" 
-                                        value="editor" 
-                                        id="role-editor" 
-                                        {{ $inputs['role_id'] === 'editor' ? 'checked' : '' }}
-                                        wire:model="inputs.role_id"
+                                    <input type="radio"
+                                        name="role"
+                                        value="editor"
+                                        id="role-editor"
+                                        wire:model.live="inputs.role_id"
                                         class="form-selectgroup-input role-radio">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
@@ -193,12 +191,11 @@
                             <!-- Admin -->
                             <div class="col-md-6 mb-3">
                                 <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'admin' ? 'active border border-3 border-primary' : '' }}">
-                                    <input type="radio" 
-                                        name="role" 
-                                        value="admin" 
-                                        id="role-admin" 
-                                        {{ $inputs['role_id'] === 'admin' ? 'checked' : '' }}
-                                        wire:model="inputs.role_id"
+                                    <input type="radio"
+                                        name="role"
+                                        value="admin"
+                                        id="role-admin"
+                                        wire:model.live="inputs.role_id"
                                         class="form-selectgroup-input role-radio">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
@@ -218,12 +215,11 @@
                             @if(auth()->user()->hasRole('root'))
                             <div class="col-md-6 mb-3">
                                 <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'root' ? 'active border border-3 border-primary' : '' }}">
-                                    <input type="radio" 
-                                        name="role" 
-                                        value="root" 
-                                        id="role-root" 
-                                        {{ $inputs['role_id'] === 'root' ? 'checked' : '' }}
-                                        wire:model="inputs.role_id"
+                                    <input type="radio"
+                                        name="role"
+                                        value="root"
+                                        id="role-root"
+                                        wire:model.live="inputs.role_id"
                                         class="form-selectgroup-input role-radio">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">

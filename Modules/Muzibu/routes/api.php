@@ -30,20 +30,116 @@ use Modules\Muzibu\app\Http\Controllers\Front\SearchController;
 Route::prefix('muzibu')->group(function () {
 
     // 🔍 DEBUG LOG ENDPOINT - Player debug bilgilerini server'a gönder
+    // 🔓 CSRF Bypass: Analytics endpoint, kritik değil, guest kullanıcı log'u
+    // 🛡️ SECURITY: GET istekleri 404 döndürür (endpoint'in varlığını gizler)
     Route::post('/debug-log', function (\Illuminate\Http\Request $request) {
+        // ⚠️ SADECE TENANT 1001 (Muzibu) için loglama
+        if (tenant()->id !== 1001) {
+            return response()->json(['logged' => false], 404);
+        }
+
         $data = $request->all();
         $userId = auth('sanctum')->id() ?? auth('web')->id() ?? 'guest';
+        $action = $data['action'] ?? 'unknown';
 
-        \Illuminate\Support\Facades\Log::channel('single')->info('🎵 PLAYER DEBUG', [
+        // 🎯 SADECE PREMIUM KULLANICILARIN LOGLARINI TOPA (üye olmayanlar zaten dinleyemiyor)
+        $isPremium = $data['user']['is_premium'] ?? false;
+        if (!$isPremium) {
+            return response()->json(['logged' => false, 'reason' => 'non_premium']);
+        }
+
+        // 📋 ENHANCED Log Payload - Maksimum detay (nokta vurus için!)
+        $logData = [
+            // 🏢 Tenant & User
+            'tenant_id' => tenant()->id,
             'user_id' => $userId,
-            'action' => $data['action'] ?? 'unknown',
-            'data' => $data,
+            'action' => $action,
+
+            // 🎵 Song Info (frontend'den gelen)
+            'song' => $data['song'] ?? null,
+
+            // 👤 User Info (frontend'den gelen)
+            'user' => $data['user'] ?? null,
+
+            // 🎮 Player State (frontend'den gelen)
+            'player_state' => $data['player_state'] ?? null,
+
+            // 🌐 Browser Info (frontend'den gelen)
+            'browser' => $data['browser'] ?? null,
+
+            // 📊 Error Details (varsa)
+            'error' => $data['error'] ?? null,
+            'exception' => $data['exception'] ?? null,
+            'stack' => $data['stack'] ?? null,
+            'http_code' => $data['http_code'] ?? null,
+            'url' => $data['url'] ?? null,
+
+            // 🔧 Additional Context (frontend'den gelen diğer data)
+            'additional_data' => array_diff_key($data, [
+                'action' => true,
+                'song' => true,
+                'user' => true,
+                'player_state' => true,
+                'browser' => true,
+                'error' => true,
+                'exception' => true,
+                'stack' => true,
+                'http_code' => true,
+                'url' => true,
+                'timestamp' => true,
+            ]),
+
+            // 🌍 Request Info
             'ip' => $request->ip(),
-            'user_agent' => substr($request->userAgent(), 0, 100)
-        ]);
+            'user_agent' => substr($request->userAgent(), 0, 150),
+            'referer' => $request->header('Referer'),
+            'timestamp' => now()->toISOString(),
+        ];
+
+        // 🔴 HATA TESPİTİ - Sadece hatalar player-errors.log'a gider
+        $errorKeywords = [
+            'error', 'failed', 'blocked', 'invalid', 'timeout',
+            'notSupported', 'notFound', 'refused', 'rejected',
+            'unauthorized', 'forbidden', 'unavailable', 'crash'
+        ];
+
+        $isError = false;
+
+        // 1. Action adında hata keyword'ü var mı?
+        foreach ($errorKeywords as $keyword) {
+            if (stripos($action, $keyword) !== false) {
+                $isError = true;
+                break;
+            }
+        }
+
+        // 2. Data içinde error/exception var mı?
+        if (isset($data['error']) || isset($data['exception']) || isset($data['message'])) {
+            $isError = true;
+        }
+
+        // 🎯 LOG ROUTING
+        if ($isError) {
+            // ❌ HATA → player-errors.log (ERROR level)
+            \Illuminate\Support\Facades\Log::channel('player-errors')->error('🎵 PLAYER ERROR', $logData);
+        } else {
+            // ✅ Normal → laravel.log (INFO level, minimal)
+            // Sadece önemli action'ları logluyoruz (spam önleme)
+            $importantActions = [
+                'scriptLoaded', 'playSongStart', 'refillAttempt',
+                'contextCreated', 'nextTrack', 'onTrackEnded'
+            ];
+
+            if (in_array($action, $importantActions)) {
+                \Illuminate\Support\Facades\Log::channel('single')->info('🎵 PLAYER DEBUG', $logData);
+            }
+            // Diğer normal action'lar hiç loglanmaz (trackHit, mediaSessionUpdate vb.)
+        }
 
         return response()->json(['logged' => true]);
-    })->name('api.muzibu.debug-log');
+    })->name('api.muzibu.debug-log')
+      ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+    Route::get('/debug-log', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
 
     // Search - Meilisearch powered
     Route::get('/search', [SearchController::class, 'search'])
@@ -122,22 +218,36 @@ Route::prefix('muzibu')->group(function () {
             ->name('api.muzibu.songs.play')
             ->middleware('throttle.user:api');
         // 📊 ABUSE DETECTION SYSTEM - 3 aşamalı tracking
+        // 🔓 CSRF Bypass: Analytics endpoint, auth:sanctum korumalı (premium güvenliği sağlanıyor)
+        // 🛡️ SECURITY: GET istekleri 404 döndürür (endpoint'in varlığını gizler)
+
         // 1️⃣ track-start: Şarkı başlar başlamaz kayıt oluştur (play_id al)
         Route::post('/{id}/track-start', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackStart'])
             ->name('api.muzibu.songs.track-start')
-            ->middleware(['auth:sanctum', 'throttle.user:api']);
+            ->middleware(['auth:sanctum', 'throttle.user:api'])
+            ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+        Route::get('/{id}/track-start', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
+
         // 2️⃣ track-hit: 30 saniye sonra play_count artır (hits için)
         Route::post('/{id}/track-hit', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackHit'])
             ->name('api.muzibu.songs.track-hit')
-            ->middleware(['auth:sanctum', 'throttle.user:api']);
+            ->middleware(['auth:sanctum', 'throttle.user:api'])
+            ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+        Route::get('/{id}/track-hit', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
+
         // 3️⃣ track-end: Şarkı bitince/skip olunca güncelle
         Route::post('/{id}/track-end', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackEnd'])
             ->name('api.muzibu.songs.track-end')
-            ->middleware(['auth:sanctum', 'throttle.user:api']);
+            ->middleware(['auth:sanctum', 'throttle.user:api'])
+            ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+        Route::get('/{id}/track-end', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
+
         // 📌 track-progress: Backwards compatibility (redirects to track-start)
         Route::post('/{id}/track-progress', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackProgress'])
             ->name('api.muzibu.songs.track-progress')
-            ->middleware(['auth:sanctum', 'throttle.user:api']);
+            ->middleware(['auth:sanctum', 'throttle.user:api'])
+            ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+        Route::get('/{id}/track-progress', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
     });
 
     // Genres - General API throttle
@@ -200,6 +310,9 @@ Route::prefix('muzibu')->group(function () {
     });
 
     // Queue Refill - Context-based infinite queue system
+    // 🎯 Tenant 1001 only - Muzibu player infinite queue için
+    // 🛡️ SECURITY: throttle.user:api rate limiting aktif
+    // ℹ️ CSRF: api/* exception (VerifyCsrfToken.php + sanctum.php config)
     Route::post('/queue/refill', [QueueRefillController::class, 'refill'])
         ->name('api.muzibu.queue.refill')
         ->middleware('throttle.user:api');

@@ -108,21 +108,37 @@ function safeAudioCleanup(audio) {
 // Bu sayede Network tab'da gerçek m3u8 URL'si görünmez
 async function createHlsBlobUrl(originalUrl) {
     try {
+        // 🔧 FIX: /api/ prefix varsa /hls/ ile değiştir (HLS conversion geçiş dönemi)
+        // HLS şarkılar: /hls/muzibu/songs/{id}/...
+        // MP3 şarkılar: /api/muzibu/songs/{id}/serve (blob'a çevrilmez, direkt kullanılır)
+        let fixedUrl = originalUrl;
+        if (fixedUrl.includes('/api/muzibu/songs/') && fixedUrl.includes('.m3u8')) {
+            fixedUrl = fixedUrl.replace('/api/muzibu/songs/', '/hls/muzibu/songs/');
+            console.warn('🔧 HLS URL FIX: /api/ → /hls/', originalUrl, '→', fixedUrl);
+            serverLog('hlsUrlFixed', { original: originalUrl, fixed: fixedUrl });
+        }
+
         // 1. m3u8 içeriğini fetch et
-        const response = await fetch(originalUrl);
+        const response = await fetch(fixedUrl);
         if (!response.ok) {
             console.warn('🔒 Blob URL: m3u8 fetch failed, using original URL');
-            return originalUrl;
+            return fixedUrl;
         }
         let m3u8Content = await response.text();
 
-        // 2. Base URL'yi çıkar (segment'ler için)
-        const urlObj = new URL(originalUrl);
+        // 2. Base URL'yi çıkar (segment'ler için) - MUTLAKA /hls/ prefix ile olmalı
+        const urlObj = new URL(fixedUrl);
         const baseUrl = urlObj.origin + urlObj.pathname.substring(0, urlObj.pathname.lastIndexOf('/') + 1);
         const queryString = urlObj.search; // ?token=...&expires=...&sig=...
 
+        // 🛡️ VALIDATION: Base URL /hls/ ile başlamalı, /api/ olmamalı
+        if (!baseUrl.includes('/hls/muzibu/songs/')) {
+            console.error('🚫 INVALID HLS BASE URL:', baseUrl, '(should contain /hls/muzibu/songs/)');
+            serverLog('hlsBaseUrlInvalid', { baseUrl: baseUrl, originalUrl: originalUrl });
+        }
+
         // 3. Relative segment URL'lerini absolute yap
-        // segment-000.ts?... → https://domain.com/api/.../segment-000.ts?...
+        // segment-000.ts → https://domain.com/hls/muzibu/songs/{id}/segment-000.ts?token=...
         m3u8Content = m3u8Content.replace(
             /(segment-\d+\.ts)(\?[^\s\n]*)?/g,
             (match, segment, query) => {
@@ -133,9 +149,17 @@ async function createHlsBlobUrl(originalUrl) {
         );
 
         // 4. Key URL'yi de absolute yap (/ ile başlıyorsa)
+        // Hem /api/ hem /hls/ prefix'lerini destekle (geçiş dönemi)
         m3u8Content = m3u8Content.replace(
-            /URI="(\/api\/[^"]+)"/g,
-            (match, path) => `URI="${urlObj.origin}${path}"`
+            /URI="(\/(?:api|hls)\/[^"]+)"/g,
+            (match, path) => {
+                // 🔧 FIX: /api/ prefix varsa /hls/ ile değiştir
+                let fixedPath = path;
+                if (fixedPath.includes('/api/muzibu/songs/')) {
+                    fixedPath = fixedPath.replace('/api/muzibu/songs/', '/hls/muzibu/songs/');
+                }
+                return `URI="${urlObj.origin}${fixedPath}"`;
+            }
         );
 
         // 5. Blob oluştur
@@ -204,9 +228,64 @@ function decryptStreamData(response) {
     return response;
 }
 
-// 🔍 SERVER DEBUG LOG - Kritik bilgileri server'a gönder
+// 🔍 SERVER DEBUG LOG - Kritik bilgileri server'a gönder (ENHANCED)
 function serverLog(action, data = {}) {
     try {
+        // 🎯 Alpine store'dan player state bilgilerini topla
+        const store = Alpine?.store('player');
+        const currentSong = store?.currentSong || null;
+        const currentUser = store?.currentUser || null;
+        const audio = store?.audio || null;
+
+        // 📦 ENHANCED PAYLOAD - Maksimum detay
+        const payload = {
+            action,
+            ...data, // Gönderilen özel data
+            timestamp: new Date().toISOString(),
+
+            // 🎵 Song Info (varsa)
+            ...(currentSong && {
+                song: {
+                    id: currentSong.song_id,
+                    title: currentSong.song_title?.tr || currentSong.song_title?.en || 'Unknown',
+                    artist: currentSong.artist_title?.tr || currentSong.artist_title?.en || null,
+                    album_id: currentSong.album_id || null,
+                    genre_id: currentSong.genre_id || null,
+                }
+            }),
+
+            // 👤 User Info
+            user: {
+                id: currentUser?.id || 'guest',
+                is_premium: currentUser?.is_premium || false,
+                is_root: currentUser?.is_root || false,
+            },
+
+            // 🎮 Player State (varsa)
+            ...(store && {
+                player_state: {
+                    is_playing: store.isPlaying || false,
+                    current_time: audio?.currentTime || 0,
+                    duration: store.duration || 0,
+                    volume: store.volume || 1,
+                    is_muted: store.isMuted || false,
+                    queue_length: store.queue?.length || 0,
+                    queue_index: store.queueIndex || 0,
+                    repeat_mode: store.repeatMode || 'off',
+                    shuffle_enabled: store.isShuffleEnabled || false,
+                }
+            }),
+
+            // 🌐 Browser Info
+            browser: {
+                user_agent: navigator.userAgent.substring(0, 150),
+                platform: navigator.platform,
+                language: navigator.language,
+                online: navigator.onLine,
+                screen: `${screen.width}x${screen.height}`,
+            }
+        };
+
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
         fetch('/api/muzibu/debug-log', {
             method: 'POST',
@@ -214,9 +293,11 @@ function serverLog(action, data = {}) {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken || ''
             },
-            body: JSON.stringify({ action, ...data, timestamp: new Date().toISOString() })
+            body: JSON.stringify(payload)
         }).catch(() => {}); // Sessizce başarısız ol
-    } catch (e) {}
+    } catch (e) {
+        // Hata loglama hatası olsa bile sessiz kal
+    }
 }
 
 // 🔍 SCRIPT LOAD LOG - Script yüklendiğini server'a bildir
@@ -1524,163 +1605,133 @@ function muzibuApp() {
                 // 🔓 Guard'ı serbest bırak
                 this._nextTrackInProgress = false;
             } else {
-                console.log('🟣 nextTrack: NO next song, trying auto-refill');
-                // 🔄 AUTO-REFILL: Queue bitti, yeni şarkılar çekmeyi dene (infinite loop)
-                if (this.currentUser?.is_root) {
-                    this.showToast('🔄 Queue bitti, refill deneniyor...', 'warning');
-                }
+                // 🎵 QUEUE ENDED: Queue bitti, son şarkının GENRE'sine göre benzer şarkılar ekle
+                console.log('🟣 nextTrack: Queue ended - adding similar songs by genre');
 
-                const muzibuStore = Alpine.store('muzibu') || Alpine.store('player');
-                let hasContext = muzibuStore?.getPlayContext();
-
-                // 🔧 FIX: Context yoksa, mevcut şarkıdan oluştur!
-                if (!hasContext && this.currentSong) {
-                    let albumId = this.currentSong.album_id;
-                    let genreId = this.currentSong.genre_id;
-
-                    // 🍎 FIX: album_id/genre_id yoksa API'den çek!
-                    if (!albumId && !genreId && this.currentSong.song_id) {
-                        serverLog('fetchingSongDetails', { songId: this.currentSong.song_id });
-                        try {
-                            const response = await fetch(`/api/muzibu/songs/${this.currentSong.song_id}`);
-                            if (response.ok) {
-                                const songData = await response.json();
-                                if (songData.song) {
-                                    albumId = songData.song.album_id;
-                                    genreId = songData.song.genre_id;
-                                    // Şarkıya da ekle (gelecek için)
-                                    this.currentSong.album_id = albumId;
-                                    this.currentSong.genre_id = genreId;
-                                    serverLog('songDetailsFetched', { albumId, genreId });
-                                }
-                            }
-                        } catch (e) {
-                            serverLog('songDetailsFetchError', { error: e.message });
-                        }
-                    }
-
-                    // 🔍 SERVER LOG
-                    serverLog('autoCreateContext', {
-                        albumId: albumId,
-                        genreId: genreId,
-                        currentSong: this.currentSong
-                    });
-
-                    if (albumId) {
-                        const contextObj = { type: 'album', id: albumId, name: 'Album', offset: 0, source: 'auto_fallback' };
-                        if (muzibuStore) muzibuStore.playContext = contextObj;
-                        try { localStorage.setItem('muzibu_play_context', JSON.stringify(contextObj)); } catch(e) {}
-                        hasContext = contextObj;
-                        serverLog('contextCreated', { context: contextObj });
-                    } else if (genreId) {
-                        const contextObj = { type: 'genre', id: genreId, name: 'Genre', offset: 0, source: 'auto_fallback' };
-                        if (muzibuStore) muzibuStore.playContext = contextObj;
-                        try { localStorage.setItem('muzibu_play_context', JSON.stringify(contextObj)); } catch(e) {}
-                        hasContext = contextObj;
-                        serverLog('contextCreated', { context: contextObj });
-                    } else {
-                        serverLog('noContextData', { message: 'currentSong has no album_id or genre_id' });
-                    }
-                }
+                // Son şarkının genre_id'sini al
+                const lastSong = this.queue[this.queue.length - 1] || this.currentSong;
+                let genreId = lastSong?.genre_id;
 
                 // 🔍 SERVER LOG
-                serverLog('refillAttempt', {
-                    hasContext: !!hasContext,
-                    contextType: hasContext?.type,
-                    contextId: hasContext?.id,
-                    hasMuzibuStore: !!muzibuStore,
-                    hasRefillQueue: typeof muzibuStore?.refillQueue === 'function'
+                serverLog('queueEndedGenreRefill', {
+                    queueIndex: this.queueIndex,
+                    queueLength: this.queue?.length,
+                    lastSongId: lastSong?.song_id,
+                    genreId: genreId
                 });
 
-                if (muzibuStore && typeof muzibuStore.refillQueue === 'function' && hasContext) {
+                // Genre ID yoksa API'den çek
+                if (!genreId && lastSong?.song_id) {
                     try {
-                        const newSongs = await muzibuStore.refillQueue(0, 15);
-
-                        // 🔍 SERVER LOG
-                        serverLog('refillResult', {
-                            newSongsCount: newSongs?.length || 0,
-                            firstSongId: newSongs?.[0]?.song_id,
-                            firstSongTitle: newSongs?.[0]?.title
-                        });
-
-                        if (this.currentUser?.is_root) {
-                            this.showToast(`🔄 Refill: ${newSongs?.length || 0} şarkı`, 'info');
+                        const response = await fetch(`/api/muzibu/songs/${lastSong.song_id}`);
+                        if (response.ok) {
+                            const songData = await response.json();
+                            genreId = songData.song?.genre_id;
+                            if (lastSong) lastSong.genre_id = genreId;
                         }
+                    } catch (e) {
+                        console.error('Genre fetch error:', e);
+                    }
+                }
 
-                        if (newSongs && newSongs.length > 0) {
-                            // 🛡️ DUPLICATE FILTER: Mevcut şarkı + kendi aralarındaki duplicate'leri filtrele
-                            const currentSongId = this.currentSong?.song_id;
-                            const seenIds = new Set(currentSongId ? [currentSongId] : []);
-                            const uniqueSongs = newSongs.filter(s => {
-                                if (seenIds.has(s.song_id)) return false;
-                                seenIds.add(s.song_id);
-                                return true;
-                            });
+                // Genre varsa, o türden şarkılar çek ve queue'ya EKLE
+                if (genreId) {
+                    // 🛡️ DUPLICATE KONTROLÜ: Mevcut queue'daki TÜM şarkı ID'lerini topla
+                    const existingIds = new Set();
+                    if (this.queue && this.queue.length > 0) {
+                        this.queue.forEach(s => {
+                            // Tüm olası ID field'larını ekle
+                            const id1 = s.song_id;
+                            const id2 = s.id;
+                            if (id1) existingIds.add(String(id1));
+                            if (id2) existingIds.add(String(id2));
+                        });
+                    }
 
-                            // 🔍 SERVER LOG
-                            serverLog('refillFiltered', {
-                                originalCount: newSongs.length,
-                                filteredCount: uniqueSongs.length,
-                                filteredSongId: currentSongId
-                            });
+                    console.log('🔍 DUPLICATE CHECK - Existing IDs:', Array.from(existingIds));
 
-                            if (uniqueSongs.length > 0) {
-                                this.queue = uniqueSongs;
-                                this.queueIndex = 0;
+                    // 🔄 Offset ile dene (ilk 20'de duplicate varsa, sonraki 20'yi dene)
+                    let uniqueSongs = [];
+                    let offset = 0;
+                    const maxAttempts = 5; // 5 deneme yap (100 şarkı tara)
 
-                                // 🔍 SERVER LOG
-                                serverLog('refillPlaying', {
-                                    newQueueLength: uniqueSongs.length,
-                                    playingSongId: uniqueSongs[0]?.song_id,
-                                    playingSongTitle: uniqueSongs[0]?.title
+                    for (let attempt = 0; attempt < maxAttempts && uniqueSongs.length === 0; attempt++) {
+                        try {
+                            const response = await fetch(`/api/muzibu/genres/${genreId}/songs?limit=20&offset=${offset}`);
+                            if (response.ok) {
+                                const data = await response.json();
+                                const newSongs = data.songs || [];
+
+                                console.log('🔍 Genre songs fetched:', newSongs.map(s => ({ id: s.id, song_id: s.song_id, title: s.title })));
+
+                                if (newSongs.length === 0) break; // Genre'de daha fazla şarkı yok
+
+                                // Duplicate filtrele (TÜM ID field'larını kontrol et)
+                                uniqueSongs = newSongs.filter(s => {
+                                    const id1 = s.song_id ? String(s.song_id) : null;
+                                    const id2 = s.id ? String(s.id) : null;
+
+                                    // Herhangi bir ID eşleşirse duplicate
+                                    const isDuplicate = (id1 && existingIds.has(id1)) || (id2 && existingIds.has(id2));
+
+                                    if (isDuplicate) {
+                                        console.log('🚫 DUPLICATE filtered:', s.title, 'id:', id1 || id2);
+                                    }
+
+                                    return !isDuplicate;
                                 });
 
-                                await this.playSongFromQueue(0);
-                                this._nextTrackInProgress = false;
-                                return;
+                                serverLog('genreRefillAttempt', {
+                                    attempt: attempt + 1,
+                                    offset: offset,
+                                    fetchedCount: newSongs.length,
+                                    uniqueCount: uniqueSongs.length,
+                                    existingIdsCount: existingIds.size
+                                });
+
+                                console.log('🔍 Unique songs after filter:', uniqueSongs.length);
+
+                                offset += 20;
                             }
-                        }
-                    } catch (error) {
-                        console.error('❌ Auto-refill failed:', error);
-                        // 🔍 SERVER LOG
-                        serverLog('refillError', { error: error.message });
-
-                        // 🛡️ EMERGENCY: Refill hata verdi, emergency queue yükle
-                        console.warn('⚠️ Refill failed, trying emergency queue...');
-                        await this.loadEmergencyQueue();
-                        if (this.queue.length > 0) {
-                            await this.playSongFromQueue(0);
-                            this._nextTrackInProgress = false;
-                            return;
+                        } catch (e) {
+                            console.error('Genre refill error:', e);
+                            break;
                         }
                     }
+
+                    if (uniqueSongs.length > 0) {
+                        // Queue'ya EKLE (üzerine yazma!)
+                        this.queue = [...this.queue, ...uniqueSongs];
+
+                        // Yeni eklenen ID'leri de existingIds'e ekle (sonraki refill için)
+                        uniqueSongs.forEach(s => {
+                            if (s.song_id) existingIds.add(String(s.song_id));
+                            if (s.id) existingIds.add(String(s.id));
+                        });
+
+                        // Sonraki şarkıya geç
+                        this.queueIndex++;
+                        await this.playSongFromQueue(this.queueIndex);
+
+                        serverLog('genreRefillSuccess', {
+                            addedCount: uniqueSongs.length,
+                            newQueueLength: this.queue.length
+                        });
+
+                        this._nextTrackInProgress = false;
+                        return;
+                    }
+                }
+
+                // Genre bulunamadı veya tüm şarkılar duplicate - queue başına dön
+                console.log('🟣 No unique genre songs found, restarting queue');
+                if (this.queue && this.queue.length > 0) {
+                    this.queueIndex = 0;
+                    await this.playSongFromQueue(0);
+                    this.showToast(this.frontLang?.messages?.queue_restarted || 'Oynatma listesi baştan başladı', 'info');
                 } else {
-                    // 🔍 SERVER LOG
-                    serverLog('refillSkipped', { reason: 'no store or function or context' });
-
-                    // 🛡️ EMERGENCY: Context yok, emergency queue yükle (silent)
-                    await this.loadEmergencyQueue();
-                    if (this.queue.length > 0) {
-                        await this.playSongFromQueue(0);
-                        this._nextTrackInProgress = false;
-                        return;
-                    }
+                    this.isPlaying = false;
                 }
-
-                // 🛡️ SON ÇARE: Hala boşsa emergency queue'yu bir kez daha dene
-                if (this.queue.length === 0 || this.queueIndex >= this.queue.length) {
-                    // Silent last attempt - emergency queue handles logging
-                    await this.loadEmergencyQueue();
-                    if (this.queue.length > 0) {
-                        await this.playSongFromQueue(0);
-                        this._nextTrackInProgress = false;
-                        return;
-                    }
-                }
-
-                // Gerçekten hiçbir şey yüklenemedi - durmak zorunda
-                console.error('❌ ALL QUEUE LOAD ATTEMPTS FAILED - stopping playback');
-                this.isPlaying = false;
 
                 // 🔓 Guard'ı serbest bırak
                 this._nextTrackInProgress = false;
@@ -2910,15 +2961,62 @@ function muzibuApp() {
 
             try {
                 const response = await fetch(`/api/muzibu/playlists/${id}`);
-                const playlist = await response.json();
+                const data = await response.json();
 
-                if (playlist.songs && playlist.songs.length > 0) {
+                // API response: { playlist: { songs: [...] } }
+                const playlist = data.playlist || data;
+                const songs = playlist.songs || [];
+
+                if (songs.length > 0) {
                     // 🧹 Clean queue from null/undefined songs
-                    this.queue = this.cleanQueue(playlist.songs);
+                    this.queue = this.cleanQueue(songs);
 
                     if (this.queue.length === 0) {
                         this.showToast(this.frontLang?.messages?.playlist_no_playable_songs || 'No playable songs in this playlist', 'error');
                         return;
+                    }
+
+                    // 🎵 MINIMUM 15 ŞARKI: Playlist az şarkılıysa genre'den tamamla
+                    const MIN_QUEUE_SIZE = 15;
+                    if (this.queue.length < MIN_QUEUE_SIZE) {
+                        const lastSong = this.queue[this.queue.length - 1];
+                        const genreId = lastSong?.genre_id;
+
+                        if (genreId) {
+                            console.log('🎵 Queue < 15, filling from genre:', genreId);
+
+                            // Mevcut şarkı ID'lerini topla
+                            const existingIds = new Set();
+                            this.queue.forEach(s => {
+                                if (s.song_id) existingIds.add(String(s.song_id));
+                            });
+
+                            // Genre'den şarkı çek
+                            try {
+                                const genreResponse = await fetch(`/api/muzibu/genres/${genreId}/songs?limit=50&offset=0`);
+                                if (genreResponse.ok) {
+                                    const genreData = await genreResponse.json();
+                                    const genreSongs = genreData.songs || [];
+
+                                    // Duplicate filtrele
+                                    const uniqueSongs = genreSongs.filter(s => {
+                                        const songId = String(s.song_id || '');
+                                        return songId && !existingIds.has(songId);
+                                    });
+
+                                    // Gerektiği kadar ekle
+                                    const needed = MIN_QUEUE_SIZE - this.queue.length;
+                                    const toAdd = uniqueSongs.slice(0, needed);
+
+                                    if (toAdd.length > 0) {
+                                        this.queue = [...this.queue, ...toAdd];
+                                        console.log('🎵 Added', toAdd.length, 'songs from genre. Queue now:', this.queue.length);
+                                    }
+                                }
+                            } catch (e) {
+                                console.error('Genre fill error:', e);
+                            }
+                        }
                     }
 
                     // 🎯 Preload first song in queue

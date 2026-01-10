@@ -51,6 +51,8 @@ module.exports = {
                 'spotify-gray': '#282828',
                 // Muzibu custom colors
                 'muzibu-coral': '#ff7f50',
+                'muzibu-coral-light': '#ff9966',
+                'muzibu-coral-dark': '#ff6347',
                 'muzibu-gray': '#1a1a1a',
                 'muzibu-gray-light': '#282828',
                 'muzibu-text-gray': '#B3B3B3',
@@ -156,8 +158,16 @@ module.exports = {
         'bg-purple-500/10', 'bg-purple-500/20', 'text-purple-300', 'text-purple-400', 'border-purple-500/30',
         'hover:bg-purple-500/10', 'hover:bg-purple-500/20',
         // Orange variants
-        'from-orange-500', 'from-orange-600', 'to-orange-500', 'ring-orange-500',
+        'from-orange-400', 'from-orange-500', 'from-orange-600', 'to-orange-500', 'ring-orange-500',
         'border-orange-500/50', 'text-orange-400', 'text-orange-500',
+        // Red variants
+        'from-red-400', 'to-red-500',
+        // Pink variants
+        'from-pink-400', 'to-pink-500',
+        // Purple variants
+        'to-purple-500',
+        // Footer gradient colors (muzibu-coral variants)
+        'from-muzibu-coral', 'via-muzibu-coral-light', 'to-muzibu-coral-dark',
         // Gradient from/via/to variants (right sidebar dynamic gradients)
         'from-orange-500/40', 'via-orange-500/20', 'to-transparent',
         'from-green-500/40', 'via-green-500/20',

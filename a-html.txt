@@ -1,107 +1,569 @@
-spot-player.js?v=1767641660:564 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
-spot-player.js?v=1767641660:568 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
-spot-player.js?v=1767641660:570 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
-spot-player.js?v=1767641660:56 🎙️ SpotPlayer: Initializing...
-spot-player.js?v=1767641660:83 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
-spot-player.js?v=1767641660:93 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 1, corporate_id: 1, branch_id: 1, spot_is_paused: false, …}
-spot-player.js?v=1767641660:171 🎙️ SpotPlayer: Starting polling (every 300s)...
-spot-player.js?v=1767641660:72 🎙️ SpotPlayer: Enabled. Songs between: 1, Current count: 0
-player-core.js?v=1767707648:604 🔍 PRELOAD API Response: {song_title: 'No Destruction', streamData_song_duration_raw: '02:11', streamData_song_duration_seconds_raw: undefined, song_duration_raw: 131, song_duration_seconds_raw: undefined}
-player-core.js?v=1767707648:695 🔍 After merge - duration: 131 animatedDuration: 131 currentSong: undefined
-player-core.js?v=1767707648:675 🎬 PRELOAD Duration set (after nextTick): 131 131
-player-core.js?v=1767707648:6203 🚀 Starting preload for: Pure Romance
-player-core.js?v=1767707648:3612 💾 Using CACHED stream: No Destruction
-player-core.js?v=1767707648:4604 ⚠️ WAITING - Veri bekleniyor! {currentTime: '0.0', readyState: 0, networkState: 2}
-audio.onwaiting @ player-core.js?v=1767707648:4604
-waiting
-(anonymous) @ player-core.js?v=1767707648:4211
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.filterAndSortMediaOptions @ level-controller.ts:291
-r.onManifestLoaded @ level-controller.ts:152
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.handleTrackOrLevelPlaylist @ playlist-loader.ts:478
-onSuccess @ playlist-loader.ts:314
-e.readystatechange @ xhr-loader.ts:231
-XMLHttpRequest.send
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-e.load @ playlist-loader.ts:347
-e.onManifestLoading @ playlist-loader.ts:154
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.loadSource @ hls.ts:389
-playHlsStream @ player-core.js?v=1767707648:4139
-loadAndPlaySong @ player-core.js?v=1767707648:3837
-await in loadAndPlaySong
-playSongFromQueue @ player-core.js?v=1767707648:3705
-togglePlayPause @ player-core.js?v=1767707648:887
-[Alpine] togglePlayPause() @ VM33794:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-player-core.js?v=1767707648:4147 🔄 Buffer stall detected, HLS auto-recovering...
-player-core.js?v=1767707648:6312 ✅ Preload READY: Pure Romance
-player-core.js?v=1767707648:4506 🚀 PRELOAD TRIGGER at 2s: {song: 'No Destruction', duration: 131.210644, currentTime: 2.238396, _nextSongPreloaded: false}
-player-core.js?v=1767707648:6199 ⏩ Preload SKIPPED - already ready: Pure Romance
-player-core.js?v=1767707648:4519 🎙️ SPOT PRELOAD at 2s (fresh stream): {song: 'No Destruction', currentTime: '2.2s'}
-spot-player.js?v=1767641660:279 🎙️ SpotPlayer: Preloading spot...
-spot-player.js?v=1767641660:314 🎙️ SpotPlayer: Spot preloaded: ikstif, ikstif
-player-core.js?v=1767707648:4538 🔵 onended fired (normal path) {isCrossfading: false, isPlaying: true, audioId: 'hlsAudio'}
-player-core.js?v=1767707648:4548 🔵 Calling onTrackEnded from onended (normal)
-player-core.js?v=1767707648:2154 🟢 onTrackEnded called {isPlaying: true, isPlayingSpot: undefined}
-player-core.js?v=1767707648:2177 🟢 onTrackEnded proceeding to nextTrack
-player-core.js?v=1767707648:2198 🎙️ Spot check: {hasMuzibuSpotPlayer: true, isEnabled: true, listenedDuration: 131.124544}
-spot-player.js?v=1767641660:241 🎙️ SpotPlayer: Song counted. Progress: 1/1
-spot-player.js?v=1767641660:245 🎙️ SpotPlayer: Time for a spot!
-player-core.js?v=1767707648:2208 🎙️ Spot time! Fetching and playing spot...
-spot-player.js?v=1767641660:358 🎙️ SpotPlayer: Using preloaded spot (gapless)
-spot-player.js?v=1767641660:390 🎙️ SpotPlayer: Playing spot: ikstif, ikstif
-player-core.js?v=1767707648:2211 🎙️ Playing spot: ikstif, ikstif
-player-core.js?v=1767707648:2244 🎙️ playSpotAudio: Using PRELOADED audio (gapless)
-player-core.js?v=1767707648:2251 🎙️ playSpotAudio: ikstif, ikstif https://muzibu.com.tr/storage/tenant1001/2182/ikstif-ikstif.mp3
-player-core.js?v=1767707648:2348 🎙️ Spot playing...
-player-core.js?v=1767707648:2306 🎙️ Spot playing: Preloading next song at 3s...
-player-core.js?v=1767707648:6199 ⏩ Preload SKIPPED - already ready: Pure Romance
-player-core.js?v=1767707648:2315 🎙️ Spot ended, continuing to next track
-spot-player.js?v=1767641660:480 🎙️ SpotPlayer: Spot ended normally
-player-core.js?v=1767707648:2381 🎙️ playNextFromQueue: Resuming music after spot
-player-core.js?v=1767707648:2395 🎙️ Using preloaded song after spot (gapless): Pure Romance
-player-core.js?v=1767707648:3171 ⚡ Using PRELOADED song (gapless): Pure Romance
-player-core.js?v=1767707648:3489 🚀 PRELOAD TRIGGER at 2s (HLS.js preloaded): {song: 'Pure Romance', duration: 217, currentTime: 2.147089, _nextSongPreloaded: false}
-player-core.js?v=1767707648:6203 🚀 Starting preload for: No Going Back
-player-core.js?v=1767707648:3502 🎙️ SPOT PRELOAD at 2s (HLS.js preloaded): {song: 'Pure Romance', currentTime: '2.1s'}
-spot-player.js?v=1767641660:279 🎙️ SpotPlayer: Preloading spot...
-spot-player.js?v=1767641660:314 🎙️ SpotPlayer: Spot preloaded: İxtif 1 
-player-core.js?v=1767707648:6312 ✅ Preload READY: No Going Back
-player-core.js?v=1767707648:3237 ⚠️ WAITING (preloaded) - Veri bekleniyor! {audioId: 'hlsAudioNext', currentTime: '39.8'}
-preloadedAudio.onwaiting @ player-core.js?v=1767707648:3237
-player-core.js?v=1767707648:3360 🔄 Buffer stall detected (preloaded), HLS auto-recovering...
-player-core.js?v=1767707648:3237 ⚠️ WAITING (preloaded) - Veri bekleniyor! {audioId: 'hlsAudioNext', currentTime: '39.9'}
-preloadedAudio.onwaiting @ player-core.js?v=1767707648:3237
-waiting
-e._tryNudgeBuffer @ gap-controller.ts:348
-e._tryFixBufferStall @ gap-controller.ts:210
-e.poll @ gap-controller.ts:164
-r.checkBuffer @ stream-controller.ts:936
-r.onTickEnd @ stream-controller.ts:211
-r.doTick @ stream-controller.ts:206
-e.tick @ task-loop.ts:106
-setInterval
-e.setInterval @ task-loop.ts:68
-r.startLoad @ stream-controller.ts:127
-(anonymous) @ hls.ts:402
-e.startLoad @ hls.ts:401
-playSongFromQueue @ player-core.js?v=1767707648:3347
-playNextFromQueue @ player-core.js?v=1767707648:2400
-spotAudio.onended @ player-core.js?v=1767707648:2329
+🛑 DUR!
+ ⛔ YETKİSİZ ERİŞİM TESPİT EDİLDİ ⛔
+ 
+ Bu alan izleniyor. Erişimin kayıt altına alındı.
+ Yetkisiz erişim suçtur.
+ 
+ 📋 SENİN BİLGİLERİN (SUNUCUYA KAYDEDİLDİ):
+ ╔══════════════════════════════════════════════════════════╗
+ ║  📅 Tarih/Saat    : 10.01.2026 14:28:51
+ ║  🌐 Tarayıcı      : Google Chrome
+ ║  💻 İşletim Sis.  : macOS
+ ║  🖥️  Platform      : MacIntel
+ ║  📐 Ekran Çözün.  : 1440x900 30bit
+ ║  ⚙️  CPU Çekirdek  : 8 çekirdek 8GB RAM
+ ║  🌍 Dil           : tr
+ ║  🕐 Saat Dilimi   : Europe/Istanbul
+ ║  📡 Bağlantı      : Çevrimiçi
+ ║  🍪 Çerez Durumu  : Aktif
+ ╚══════════════════════════════════════════════════════════╝
+ 🔴 SENİN IP ADRESİN: 159.146.9.164
+ ⚠️ Bu bilgiler yasal işlemlerde delil olarak kullanılabilir.
+ 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
+ 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
+ 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
+ 🎙️ SpotPlayer: Initializing...
+ 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+ 🎙️ SpotPlayer: Settings response: Object
+ 🎙️ SpotPlayer: Disabled or no corporate account
+ 🔍 PRELOAD API Response: Object
+ 🔍 After merge - duration: 206 animatedDuration: 206 currentSong: undefined
+ 🎬 PRELOAD Duration set (after nextTick): 206 206
+/api/ai/v1/assistant/chat:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Quick Actions HTTP Error: 419 {
+    "message": "CSRF token mismatch.",
+    "exception": "Symfony\\Component\\HttpKernel\\Exception\\HttpException",
+    "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php",
+    "line": 674,
+    "trace": [
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php",
+            "line": 617,
+            "function": "prepareException",
+            "class": "Illuminate\\Foundation\\Exceptions\\Handler",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php",
+            "line": 51,
+            "function": "render",
+            "class": "Illuminate\\Foundation\\Exceptions\\Handler",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 224,
+            "function": "handleException",
+            "class": "Illuminate\\Routing\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php",
+            "line": 120,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php",
+            "line": 63,
+            "function": "handleStatefulRequest",
+            "class": "Illuminate\\Session\\Middleware\\StartSession",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 219,
+            "function": "handle",
+            "class": "Illuminate\\Session\\Middleware\\StartSession",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php",
+            "line": 36,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 219,
+            "function": "handle",
+            "class": "Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php",
+            "line": 74,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 219,
+            "function": "handle",
+            "class": "Illuminate\\Cookie\\Middleware\\EncryptCookies",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php",
+            "line": 61,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 201,
+            "function": "Laravel\\Sanctum\\Http\\Middleware\\{closure}",
+            "class": "Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 137,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php",
+            "line": 25,
+            "function": "then",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 219,
+            "function": "handle",
+            "class": "Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful",
+            
+console.error @ (index):10
+/api/ai/v1/assistant/chat:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Quick Actions HTTP Error: 419 {
+    "message": "CSRF token mismatch.",
+    "exception": "Symfony\\Component\\HttpKernel\\Exception\\HttpException",
+    "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php",
+    "line": 674,
+    "trace": [
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php",
+            "line": 617,
+            "function": "prepareException",
+            "class": "Illuminate\\Foundation\\Exceptions\\Handler",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php",
+            "line": 51,
+            "function": "render",
+            "class": "Illuminate\\Foundation\\Exceptions\\Handler",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 224,
+            "function": "handleException",
+            "class": "Illuminate\\Routing\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php",
+            "line": 120,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php",
+            "line": 63,
+            "function": "handleStatefulRequest",
+            "class": "Illuminate\\Session\\Middleware\\StartSession",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 219,
+            "function": "handle",
+            "class": "Illuminate\\Session\\Middleware\\StartSession",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php",
+            "line": 36,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 219,
+            "function": "handle",
+            "class": "Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php",
+            "line": 74,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 219,
+            "function": "handle",
+            "class": "Illuminate\\Cookie\\Middleware\\EncryptCookies",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php",
+            "line": 61,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 201,
+            "function": "Laravel\\Sanctum\\Http\\Middleware\\{closure}",
+            "class": "Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 137,
+            "function": "Illuminate\\Pipeline\\{closure}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php",
+            "line": 25,
+            "function": "then",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/var/www/vhosts/muzibu.com.tr/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 219,
+            "function": "handle",
+            "class": "Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful",
+            
+console.error @ (index):10
+ 🌐 Fetching FRESH stream: Hacia Días Mejores
+/api/muzibu/songs/32059/track-start:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+ 🔒 Blob URL created (original URL hidden from DevTools)
+ ⏳ WAITING (initial load): 0
+ 🚀 PRELOAD TRIGGER at 2s: Object
+ 🚀 Starting preload for: Agua de Beber
+ ✅ Preload READY: Agua de Beber
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/songs/23391/track-start:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/songs/22287/track-start:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+ 🟣 nextTrack entered Object
+ 🟣 nextTrack: NO next song, trying auto-refill
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+ ❌ ALL QUEUE LOAD ATTEMPTS FAILED - stopping playback
+console.error @ (index):10
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ Queue refill error: 
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+ ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+(index):10 🌐 Fetching FRESH stream: Kanadı Kırık Kuş
+/api/muzibu/songs/22287/track-start:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+(index):10 🟢 onTrackEnded called Object
+(index):10 🟢 onTrackEnded proceeding to nextTrack
+(index):10 🎙️ Spot check: Object
+(index):10 🟢 Calling nextTrack(true)
+(index):10 🟣 nextTrack entered Object
+(index):10 🟣 nextTrack: NO next song, trying auto-refill
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.nextTrack (player-core.js?v=1768005148:1621:42)
+console.error @ (index):10
+(index):10 ❌ ALL QUEUE LOAD ATTEMPTS FAILED - stopping playback
+console.error @ (index):10
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/debug-log:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+/api/muzibu/queue/refill:1  Failed to load resource: the server responded with a status of 419 ()
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+muzibu-store.js?v=1767998341:289  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+refillQueue @ muzibu-store.js?v=1767998341:289
+checkAndRefillQueue @ player-core.js?v=1768005148:6877
+(anonymous) @ player-core.js?v=1768005148:6800
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+refillQueue @ muzibu-store.js?v=1767998341:353
+await in refillQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6877
+(anonymous) @ player-core.js?v=1768005148:6800
+player-core.js?v=1768005148:1393  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+loadEmergencyQueue @ player-core.js?v=1768005148:1393
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800
+player-core.js?v=1768005148:1438  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+loadEmergencyQueue @ player-core.js?v=1768005148:1438
+await in loadEmergencyQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+loadEmergencyQueue @ player-core.js?v=1768005148:1469
+await in loadEmergencyQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800
+muzibu-store.js?v=1767998341:289  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+refillQueue @ muzibu-store.js?v=1767998341:289
+checkAndRefillQueue @ player-core.js?v=1768005148:6877
+(anonymous) @ player-core.js?v=1768005148:6800
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+refillQueue @ muzibu-store.js?v=1767998341:353
+await in refillQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6877
+(anonymous) @ player-core.js?v=1768005148:6800
+player-core.js?v=1768005148:1393  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+loadEmergencyQueue @ player-core.js?v=1768005148:1393
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800
+player-core.js?v=1768005148:1438  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+loadEmergencyQueue @ player-core.js?v=1768005148:1438
+await in loadEmergencyQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+loadEmergencyQueue @ player-core.js?v=1768005148:1469
+await in loadEmergencyQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800
+muzibu-store.js?v=1767998341:289  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+refillQueue @ muzibu-store.js?v=1767998341:289
+checkAndRefillQueue @ player-core.js?v=1768005148:6877
+(anonymous) @ player-core.js?v=1768005148:6800
+(index):10 ❌ Queue refill error: Error: HTTP error! status: 419
+    at Proxy.refillQueue (muzibu-store.js?v=1767998341:308:27)
+    at async Proxy.checkAndRefillQueue (player-core.js?v=1768005148:6877:38)
+console.error @ (index):10
+refillQueue @ muzibu-store.js?v=1767998341:353
+await in refillQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6877
+(anonymous) @ player-core.js?v=1768005148:6800
+player-core.js?v=1768005148:1393  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+loadEmergencyQueue @ player-core.js?v=1768005148:1393
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800
+player-core.js?v=1768005148:1438  POST https://muzibu.com.tr/api/muzibu/queue/refill 419
+loadEmergencyQueue @ player-core.js?v=1768005148:1438
+await in loadEmergencyQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800
+(index):10 ❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!
+console.error @ (index):10
+loadEmergencyQueue @ player-core.js?v=1768005148:1469
+await in loadEmergencyQueue
+checkAndRefillQueue @ player-core.js?v=1768005148:6899
+await in checkAndRefillQueue
+(anonymous) @ player-core.js?v=1768005148:6800

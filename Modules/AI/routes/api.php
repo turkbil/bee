@@ -30,19 +30,26 @@ Route::prefix('ai/v1')
         ->middleware(['throttle:60,1']); // 60 requests per minute
     
     // 💬 Public Chat Endpoints (Rate limited)
+    // 🛡️ SECURITY: GET istekleri 404 döndürür (endpoint'in varlığını gizler)
     Route::post('/chat', [PublicAIController::class, 'publicChat'])
         ->name('chat.public');
+    Route::get('/chat', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
 
     // 🎯 Public Feature Access (Rate limited)
+    // 🛡️ SECURITY: GET istekleri 404 döndürür (endpoint'in varlığını gizler)
     Route::post('/feature/{slug}', [PublicAIController::class, 'publicFeature'])
         ->name('feature.public');
+    Route::get('/feature/{slug}', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
 
     // 🛍️ Shop Assistant Endpoints (NO rate limiting, NO credit cost)
+    // 🛡️ SECURITY: GET istekleri 404 döndürür (endpoint'in varlığını gizler)
     Route::post('/shop-assistant/chat', [PublicAIController::class, 'shopAssistantChat'])
         ->name('shop-assistant.chat');
+    Route::get('/shop-assistant/chat', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
 
     Route::post('/shop-assistant/chat-stream', [PublicAIController::class, 'shopAssistantChatStream'])
         ->name('shop-assistant.chat-stream');
+    Route::get('/shop-assistant/chat-stream', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
 
     Route::get('/shop-assistant/history', [PublicAIController::class, 'getConversationHistory'])
         ->name('shop-assistant.history');
@@ -50,8 +57,12 @@ Route::prefix('ai/v1')
     // 🤖 MODULAR ASSISTANT (Tenant-aware, supports multiple module types)
     // Automatically routes to correct module based on tenant configuration
     // ✅ GUEST ACCESS: Anyone can chat, but actions require authentication
+    // 🔓 CSRF Bypass: Guest access endpoint, kritik işlem yok
+    // 🛡️ SECURITY: GET istekleri 404 döndürür (endpoint'in varlığını gizler)
     Route::post('/assistant/chat', [PublicAIController::class, 'assistantChat'])
-        ->name('assistant.chat');
+        ->name('assistant.chat')
+        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+    Route::get('/assistant/chat', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
 
     // 🎵 AI PLAYLIST ACTIONS (Tenant 1001 - Muzibu)
     // ⚠️ AUTHENTICATION REQUIRED: Only logged-in users can create playlists
@@ -79,8 +90,10 @@ Route::prefix('ai/v1')
         ->middleware(['throttle:120,1']); // 120 requests per minute
 
     // 🗑️ Delete Conversation (Admin/Testing - NO AUTH for now, NO throttle like shop-assistant)
+    // 🛡️ SECURITY: GET/POST istekleri 404 döndürür (endpoint'in varlığını gizler)
     Route::delete('/conversation/{conversationId}', [PublicAIController::class, 'deleteConversation'])
         ->name('conversation.delete');
+    Route::match(['get', 'post'], '/conversation/{conversationId}', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
 
     // 📚 Knowledge Base Endpoints (Public access, cached)
     Route::get('/knowledge-base', [PublicAIController::class, 'getKnowledgeBase'])
@@ -93,10 +106,12 @@ Route::prefix('ai/v1')
 
     // 👤 Authenticated User Endpoints (Requires authentication)
     Route::middleware(['auth:sanctum'])->group(function () {
-        
+
         // 💬 Authenticated User Chat (Full features)
+        // 🛡️ SECURITY: GET istekleri 404 döndürür (endpoint'in varlığını gizler)
         Route::post('/chat/user', [PublicAIController::class, 'userChat'])
             ->name('chat.user');
+        Route::get('/chat/user', fn() => abort(404))->middleware('throttle:60,1'); // 🛡️ Security: Hide endpoint
         
         // 💰 Credit Management
         Route::get('/credits/balance', [PublicAIController::class, 'getCreditBalance'])

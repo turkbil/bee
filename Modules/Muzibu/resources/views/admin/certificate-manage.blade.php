@@ -2,7 +2,7 @@
 @include('muzibu::admin.helper')
 
 @section('pretitle')
-{{ $certificateId ? 'Sertifika Duzenle' : 'Yeni Sertifika' }}
+{{ $certificateId ? 'Belge Duzenle' : 'Yeni Belge' }}
 @endsection
 
 @section('content')

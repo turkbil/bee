@@ -79,10 +79,32 @@ class ConvertToHLSJob implements ShouldQueue
             $playlistPath = $tenantStoragePath . '/playlist.m3u8';
             $segmentPattern = $tenantStoragePath . '/segment-%03d.ts';
 
-            // 🔓 UNENCRYPTED HLS - No encryption (for better browser compatibility)
-            // Reason: HLS.js had internal exceptions with encrypted key loading
-            // Security: URL protection via rate limiting and nginx access control
-            // Note: encryption_key and encryption_iv fields in DB remain unused
+            // 🔐 ENCRYPTED HLS - AES-128 encryption for content protection
+            // Key files will be created in HLS folder
+            // Authorization system will be implemented later
+
+            // Generate unique encryption key (16 bytes for AES-128)
+            $encryptionKey = random_bytes(16);
+            $keyPath = $tenantStoragePath . '/enc.key';
+            file_put_contents($keyPath, $encryptionKey);
+            chmod($keyPath, 0644);
+
+            // Create key info file for FFmpeg
+            // Format:
+            // Line 1: Key URI (used in playlist.m3u8)
+            // Line 2: Key file path (for FFmpeg to read)
+            // Line 3: IV (optional, we use default)
+            $keyUri = url('storage/muzibu/hls/' . $song->song_id . '/enc.key');
+            $keyInfoPath = $tenantStoragePath . '/enc.keyinfo';
+            $keyInfoContent = $keyUri . "\n" . $keyPath . "\n";
+            file_put_contents($keyInfoPath, $keyInfoContent);
+            chmod($keyInfoPath, 0644);
+
+            Log::info('Muzibu HLS Encryption: Key files created', [
+                'song_id' => $song->song_id,
+                'key_path' => $keyPath,
+                'key_info_path' => $keyInfoPath
+            ]);
 
             // 🎵 Get original bitrate from file (preserve quality)
             $bitrate = $song->getBitrate(); // Auto-extracts if not set, fallback to 256kbps
@@ -100,23 +122,24 @@ class ConvertToHLSJob implements ShouldQueue
                 'lowpass=f=14000'                           // Low-pass 14kHz
             ]);
 
-            // FFmpeg command for UNENCRYPTED HLS conversion + Ultimate Edition filters
+            // FFmpeg command for ENCRYPTED HLS conversion + Ultimate Edition filters
             // Options:
             // -map 0:a = only audio stream (skip album art/video)
             // -c:a aac = AAC encoding (required for filters)
             // -b:a {bitrate}k = preserve original bitrate
             // -af = audio filters (Ultimate Edition)
+            // -hls_key_info_file = encryption key info file (ENABLES AES-128)
             // -start_number 0 = start segment numbering from 0
             // -hls_time 10 = 10 second segments
             // -hls_list_size 0 = include all segments in playlist
-            // -hls_segment_filename = segment file naming pattern (CRITICAL!)
+            // -hls_segment_filename = segment file naming pattern
             // -f hls = output format HLS
-            // Note: -hls_key_info_file REMOVED (no encryption)
             $command = sprintf(
-                'ffmpeg -i %s -map 0:a -c:a aac -b:a %dk -af %s -start_number 0 -hls_time 10 -hls_list_size 0 -hls_segment_filename %s -f hls %s 2>&1',
+                'ffmpeg -i %s -map 0:a -c:a aac -b:a %dk -af %s -hls_key_info_file %s -start_number 0 -hls_time 10 -hls_list_size 0 -hls_segment_filename %s -f hls %s 2>&1',
                 escapeshellarg($inputPath),
                 $bitrate,
                 escapeshellarg($audioFilters),
+                escapeshellarg($keyInfoPath),
                 escapeshellarg($segmentPattern),
                 escapeshellarg($playlistPath)
             );

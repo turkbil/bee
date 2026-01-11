@@ -3,7 +3,7 @@
 {{-- 🎯 Rotating messages, bubble animations, pulse effects --}}
 <div
     x-data="$store.tenant1001AI"
-    class="fixed bottom-28 md:bottom-32 right-4 md:right-6 lg:right-8 z-[35]"
+    class="fixed bottom-28 md:bottom-32 right-4 md:right-6 lg:right-8 z-[65]"
     x-cloak
 >
     {{-- Floating Button (when closed) --}}
@@ -20,21 +20,21 @@
                 // Desktop messages (3-4 words max)
                 desktopMessages: [
                     'Sorunuz mu var? 🎵',
-                    'Şarkı arıyorsunuz? 🎤',
-                    'Radyo dinle 📻',
-                    'Sektör önerisi? 🎶',
+                    'Şarkı mı arıyorsunuz? 🎤',
+                    'Radyo dinlemek ister misiniz? 📻',
+                    'Sektör önerisi alır mısınız? 🎶',
                     'Playlist yardımı? 🎧',
-                    'Albüm keşfet 🌟',
-                    'Hadi konuşalım! 💬'
+                    'Albüm keşfedelim mi? 🌟',
+                    'Size nasıl yardımcı olabilirim? 💬'
                 ],
                 // Mobile messages (2-3 words max)
                 mobileMessages: [
-                    'Sorunuz var? 🎵',
-                    'Şarkı mı? 🎤',
-                    'Radyo? 📻',
-                    'Sektör? 🎶',
+                    'Sorunuz mu var? 🎵',
+                    'Şarkı mı arıyorsunuz? 🎤',
+                    'Radyo dinleyelim mi? 📻',
+                    'Sektör önerisi? 🎶',
                     'Playlist? 🎧',
-                    'Konuşalım! 💬'
+                    'Yardımcı olabilir miyim? 💬'
                 ],
                 currentIndex: 0,
                 currentMessage: 'Merhaba! 🎵',
@@ -141,7 +141,7 @@
         </button>
     </div>
 
-    {{-- Chat Window - Opens above button like iXtif --}}
+    {{-- Chat Window - Opens above button, bottom aligned with button --}}
     <div
         x-show="isOpen"
         x-transition:enter="transition ease-out duration-200"
@@ -152,9 +152,9 @@
         x-transition:leave-end="opacity-0 scale-95"
         :style="{
             height: isMinimized ? '56px' : '480px',
-            maxHeight: 'calc(100vh - 200px)'
+            maxHeight: 'calc(100vh - 8rem)'
         }"
-        class="absolute bottom-24 right-0 w-96 max-w-[calc(100vw-2rem)] bg-muzibu-gray rounded-2xl shadow-2xl border border-muzibu-gray-light overflow-hidden flex flex-col"
+        class="absolute bottom-0 right-0 w-96 max-w-[calc(100vw-2rem)] bg-muzibu-gray rounded-2xl shadow-2xl border border-muzibu-gray-light overflow-hidden flex flex-col"
     >
         {{-- Header --}}
         <div class="bg-gradient-to-r from-muzibu-coral/20 to-pink-500/20 border-b border-muzibu-gray-light px-4 py-3 flex items-center justify-between">
@@ -272,14 +272,17 @@
                 </form>
             </div>
 
-            {{-- Footer Credit --}}
+            {{-- Footer Disclaimer --}}
             <div class="border-t border-muzibu-gray-light px-4 py-2 bg-muzibu-gray-light/30">
-                <p class="text-center text-xs text-muzibu-text-gray">
-                    Bu AI
+                <p class="text-center text-xs text-muzibu-text-gray leading-relaxed">
+                    Bu yapay zeka sohbet robotudur. Hatalar olabilir,
+                    yapay zekanın öğrenimi devam etmektedir.
+                </p>
+                <p class="text-center text-xs text-muzibu-text-gray mt-1">
                     <a href="https://www.turkbilisim.com.tr" target="_blank" class="text-muzibu-coral hover:text-pink-400 transition-colors">
                         Türk Bilişim
                     </a>
-                    tarafından Muzibu için özel olarak hazırlanmıştır.
+                    tarafından Muzibu için geliştirilmiştir.
                 </p>
             </div>
         </div>

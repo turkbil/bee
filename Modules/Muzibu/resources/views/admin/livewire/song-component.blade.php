@@ -129,7 +129,7 @@
                 <!-- Ortadaki Loading -->
                 <div class="col position-relative">
                     <div wire:loading
-                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, filterArtist, filterGenre, filterAlbum, filterHls, detailedView"
+                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, toggleFeatured, filterArtist, filterGenre, filterAlbum, filterHls, detailedView"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
                         <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
@@ -219,6 +219,9 @@
                                     wire:click="sortBy('play_count')">
                                     {{ __('muzibu::admin.song.play_count') }}
                                 </button>
+                            </th>
+                            <th class="text-center" style="width: 70px">
+                                <i class="fas fa-star text-warning" title="Öne Çıkan"></i>
                             </th>
                             <th class="text-center" style="width: 70px">
                                 {{ __('muzibu::admin.song.status') }}
@@ -321,6 +324,26 @@
                                 @endif
                                 <td class="text-center">
                                     <span class="small">{{ $song->play_count ?? 0 }}</span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <button wire:click="toggleFeatured({{ $song->song_id }})"
+                                        class="btn btn-icon btn-sm ps-1 pe-2 bg-transparent"
+                                        data-bs-toggle="tooltip"
+                                        title="{{ $song->is_featured ? __('muzibu::admin.song.featured') : __('muzibu::admin.song.not_featured') }}">
+                                        <!-- Loading Durumu -->
+                                        <div wire:loading wire:target="toggleFeatured({{ $song->song_id }})"
+                                            class="spinner-border spinner-border-sm">
+                                        </div>
+                                        <!-- Normal Durum: Featured/Not Featured İkonları -->
+                                        <div wire:loading.remove
+                                            wire:target="toggleFeatured({{ $song->song_id }})">
+                                            @if ($song->is_featured)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @else
+                                                <i class="far fa-star text-muted"></i>
+                                            @endif
+                                        </div>
+                                    </button>
                                 </td>
                                 <td class="text-center align-middle">
                                     <button wire:click="toggleActive({{ $song->song_id }})"
@@ -427,7 +450,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ $detailedView ? 10 : 6 }}" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 11 : 7 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.song.no_songs_found') }}</p>
                                         <p class="empty-subtitle">

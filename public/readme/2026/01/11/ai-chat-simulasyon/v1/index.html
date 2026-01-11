@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Simülasyon Test Raporu - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .message-box { transition: all 0.3s ease; }
+        .message-box:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-block px-4 py-2 bg-blue-600 rounded-full text-sm font-semibold mb-4">
+                🧪 AI Chat Simülasyon
+            </div>
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                AI Chat Widget Test Raporu
+            </h1>
+            <p class="text-slate-400 text-lg mb-2">Muzibu.com.tr - Müzik Asistanı</p>
+            <p class="text-slate-500 text-sm">
+                <i class="far fa-calendar"></i> 11 January 2026, 19:29            </p>
+        </header>
+
+        <!-- Özet İstatistikler -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-blue-400 mb-2">6</div>
+                <div class="text-slate-400 text-sm">Test Senaryosu</div>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-green-400 mb-2"><i class="fas fa-check-circle"></i></div>
+                <div class="text-slate-400 text-sm">Tamamlandı</div>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-purple-400 mb-2">100%</div>
+                <div class="text-slate-400 text-sm">Kapsam</div>
+            </div>
+        </div>
+
+        <!-- Test Senaryoları -->
+        <div class="space-y-8">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden message-box">
+                <!-- Başlık -->
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-3xl">👋</span>
+                                <h3 class="text-xl font-bold text-white">
+                                    1. Basit Selamlaşma (Pushy Olmamalı)                                </h3>
+                            </div>
+                            <p class="text-slate-400 text-sm ml-12">
+                                <i class="fas fa-bullseye"></i> Beklenen: Sadece karşılık vermeli, müzik önerisi YAPMAMALI                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konuşma -->
+                <div class="p-6 space-y-4">
+                    <!-- Kullanıcı Mesajı -->
+                    <div class="flex justify-end">
+                        <div class="max-w-2xl">
+                            <div class="flex items-center gap-2 justify-end mb-2">
+                                <span class="text-xs text-slate-500">Kullanıcı</span>
+                                <i class="fas fa-user text-blue-400"></i>
+                            </div>
+                            <div class="bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3">
+                                <p class="text-sm">Merhaba</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Yanıtı -->
+                    <div class="flex justify-start">
+                        <div class="max-w-3xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-robot text-purple-400"></i>
+                                <span class="text-xs text-slate-500">AI Asistan</span>
+                            </div>
+                            <div class="bg-slate-700 text-white rounded-2xl rounded-tl-sm px-4 py-3">
+                                <div class="prose prose-invert prose-sm max-w-none">
+                                    Merhaba! 😊 Burada olduğunuz için mutluyum! Size nasıl yardımcı olabilirim? Müzik önerileri veya playlist oluşturma konusunda bir isteğiniz var mı?                                </div>
+                            </div>
+
+                            <!-- Quick Actions (varsa) -->
+                                                        <div class="mt-3 flex flex-wrap gap-2">
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-search text-blue-400"></i>
+                                    <span>Şarkı Ara</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-list-music text-purple-400"></i>
+                                    <span>Playlist</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-microphone text-orange-400"></i>
+                                    <span>Sanatçılar</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-star text-green-400"></i>
+                                    <span>Yeni Çıkanlar</span>
+                                </button>
+                                                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden message-box">
+                <!-- Başlık -->
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-3xl">🎵</span>
+                                <h3 class="text-xl font-bold text-white">
+                                    2. Genel Müzik Önerisi (20 Şarkı)                                </h3>
+                            </div>
+                            <p class="text-slate-400 text-sm ml-12">
+                                <i class="fas fa-bullseye"></i> Beklenen: Varsayılan 20 şarkı önermeli, görsellerle                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konuşma -->
+                <div class="p-6 space-y-4">
+                    <!-- Kullanıcı Mesajı -->
+                    <div class="flex justify-end">
+                        <div class="max-w-2xl">
+                            <div class="flex items-center gap-2 justify-end mb-2">
+                                <span class="text-xs text-slate-500">Kullanıcı</span>
+                                <i class="fas fa-user text-blue-400"></i>
+                            </div>
+                            <div class="bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3">
+                                <p class="text-sm">Neşeli şarkılar öner</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Yanıtı -->
+                    <div class="flex justify-start">
+                        <div class="max-w-3xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-robot text-purple-400"></i>
+                                <span class="text-xs text-slate-500">AI Asistan</span>
+                            </div>
+                            <div class="bg-slate-700 text-white rounded-2xl rounded-tl-sm px-4 py-3">
+                                <div class="prose prose-invert prose-sm max-w-none">
+                                    Elbette! Neşeli bir atmosfer yaratmak için harika şarkılarım var. İşte size birkaç öneri:<br />
+<br />
+1. **A Series Of Unfortunate Decisions**<br />
+   - **Sanatçı:** Muzibu Happy<br />
+   - **Albüm:** Happy Hour Mix 1<br />
+   - **Süre:** 170 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/23843)**<br />
+<br />
+2. **Afterglow**<br />
+   - **Sanatçı:** Muzibu Happy<br />
+   - **Albüm:** Happy Hour Mix 1<br />
+   - **Süre:** 223 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/23844)**<br />
+<br />
+3. **Barroom Disco Fever**<br />
+   - **Sanatçı:** Muzibu Happy<br />
+   - **Albüm:** Happy Hour Mix 1<br />
+   - **Süre:** 214 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/23847)**<br />
+<br />
+4. **Breakin&#039; My Phone**<br />
+   - **Sanatçı:** Muzibu Happy<br />
+   - **Albüm:** Happy Hour Mix 1<br />
+   - **Süre:** 217 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/23849)**<br />
+<br />
+5. **Candy Rain**<br />
+   - **Sanatçı:** Muzibu Happy<br />
+   - **Albüm:** Happy Hour Mix 1<br />
+   - **Süre:** 158 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/23850)**<br />
+<br />
+Bu şarkılar, neşeli bir ruh hali yaratmak için harika seçenekler! Umarım beğenirsiniz! 🎶 Başka bir isteğiniz var mı?<br />
+<br />
+[ACTION:CREATE_PLAYLIST:song_ids=23843,23844,23847,23849,23850:title=Özel Playlist]                                </div>
+                            </div>
+
+                            <!-- Quick Actions (varsa) -->
+                                                        <div class="mt-3 flex flex-wrap gap-2">
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-search text-blue-400"></i>
+                                    <span>Şarkı Ara</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-list-music text-purple-400"></i>
+                                    <span>Playlist</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-microphone text-orange-400"></i>
+                                    <span>Sanatçılar</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-star text-green-400"></i>
+                                    <span>Yeni Çıkanlar</span>
+                                </button>
+                                                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden message-box">
+                <!-- Başlık -->
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-3xl">📊</span>
+                                <h3 class="text-xl font-bold text-white">
+                                    3. Çok Sayıda Şarkı (İlk 3 + Son 3)                                </h3>
+                            </div>
+                            <p class="text-slate-400 text-sm ml-12">
+                                <i class="fas fa-bullseye"></i> Beklenen: İlk 3 + ... + Son 3 göstermeli, 50 şarkıyı playlist'e eklemeli                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konuşma -->
+                <div class="p-6 space-y-4">
+                    <!-- Kullanıcı Mesajı -->
+                    <div class="flex justify-end">
+                        <div class="max-w-2xl">
+                            <div class="flex items-center gap-2 justify-end mb-2">
+                                <span class="text-xs text-slate-500">Kullanıcı</span>
+                                <i class="fas fa-user text-blue-400"></i>
+                            </div>
+                            <div class="bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3">
+                                <p class="text-sm">50 tane pop şarkısı listele</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Yanıtı -->
+                    <div class="flex justify-start">
+                        <div class="max-w-3xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-robot text-purple-400"></i>
+                                <span class="text-xs text-slate-500">AI Asistan</span>
+                            </div>
+                            <div class="bg-slate-700 text-white rounded-2xl rounded-tl-sm px-4 py-3">
+                                <div class="prose prose-invert prose-sm max-w-none">
+                                    İşte size 50 tane pop şarkısı:<br />
+<br />
+1. **Yaralarım Bile Şık (Remix)**<br />
+   - **Sanatçı:** Türkçe Müzik<br />
+   - **Süre:** 187 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/22288)**<br />
+<br />
+2. **Santorini (Remix)**<br />
+   - **Sanatçı:** Türkçe Müzik<br />
+   - **Süre:** 200 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/22289)**<br />
+<br />
+3. **Magic Found In Detours**<br />
+   - **Sanatçı:** Muzibu<br />
+   - **Süre:** 163 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/11353)**<br />
+<br />
+4. **A Little Kindness**<br />
+   - **Sanatçı:** Muzibu<br />
+   - **Süre:** 164 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/11354)**<br />
+<br />
+5. **City Quiet, Morning Light**<br />
+   - **Sanatçı:** Muzibu<br />
+   - **Süre:** 153 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/11355)**<br />
+<br />
+6. **Courage Found In Eyes**<br />
+   - **Sanatçı:** Muzibu<br />
+   - **Süre:** 184 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/11356)**<br />
+<br />
+7. **Finally Found My Home**<br />
+   - **Sanatçı:** Muzibu<br />
+   - **Süre:** 159 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/11357)**<br />
+<br />
+8. **Follow The Flow**<br />
+   - **Sanatçı:** Muzibu<br />
+   - **Süre:** 193 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/11358)**<br />
+<br />
+9. **Graceful Goodbyes Still Bloom**<br />
+   - **Sanatçı:** Muzibu<br />
+   - **Süre:** 142 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/11359)**<br />
+<br />
+10. **Hope Awakens In Silence**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 212 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11360)**<br />
+<br />
+11. **Hope Rises With Dawn**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 158 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11361)**<br />
+<br />
+12. **Joy Found In Moments**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 140 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11362)**<br />
+<br />
+13. **Living Truth Unfolding**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 160 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11363)**<br />
+<br />
+14. **Memories That Still Whisper**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 163 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11364)**<br />
+<br />
+15. **Miracles Beneath The Storm**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 172 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11365)**<br />
+<br />
+16. **Miracles Found Through Shadows**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 164 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11366)**<br />
+<br />
+17. **Moments We Choose To Keep**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 168 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11367)**<br />
+<br />
+18. **Open Heart Learns Again**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 182 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11368)**<br />
+<br />
+19. **Roots That Stay**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 175 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11369)**<br />
+<br />
+20. **Silent Strength Holds Me**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 170 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11370)**<br />
+<br />
+21. **Silent Strings Between Us**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 185 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11371)**<br />
+<br />
+22. **Smiles That Shift Worlds**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 216 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11372)**<br />
+<br />
+23. **Strength Rebuilt From Within**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 183 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11373)**<br />
+<br />
+24. **True Friendship Always Remains**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 206 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11374)**<br />
+<br />
+25. **Turning Pages Toward Light**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 174 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11375)**<br />
+<br />
+26. **Twists That Lead To Light**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 154 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11376)**<br />
+<br />
+27. **When Dreams Become Real**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 170 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11377)**<br />
+<br />
+28. **Awakening The Hidden Fire**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 155 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11378)**<br />
+<br />
+29. **Brave Words Under Moonlight**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 143 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11379)**<br />
+<br />
+30. **Chasing Dreams Through Shadows**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 129 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11380)**<br />
+<br />
+31. **Choosing Freedom Starts Today**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 164 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11381)**<br />
+<br />
+32. **City Lights Set Me Free**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 143 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11382)**<br />
+<br />
+33. **Dance Through Wild Nights**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 174 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11383)**<br />
+<br />
+34. **Flirting Sparks Feel Right**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 155 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11384)**<br />
+<br />
+35. **Kindness Leaves Silent Echoes**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 183 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11385)**<br />
+<br />
+36. **Laugh Out Loud Anyway**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 167 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11386)**<br />
+<br />
+37. **Living By My Rules**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 158 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11387)**<br />
+<br />
+38. **Memories Hidden In Threads**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 150 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11388)**<br />
+<br />
+39. **My Joy My Choice**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 163 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11389)**<br />
+<br />
+40. **New Beginnings Shine Bright**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 124 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11390)**<br />
+<br />
+41. **New Horizons Take Flight**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 169 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11391)**<br />
+<br />
+42. **Ordinary Moments Shine Bright**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 160 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11392)**<br />
+<br />
+43. **Start Of Summer Dreams**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 161 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11393)**<br />
+<br />
+44. **Strangers Meet Between Miles**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 130 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11394)**<br />
+<br />
+45. **Summer Fling Hearts Aligned**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 135 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11395)**<br />
+<br />
+46. **Sweet Victory Unveiled Bright**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 125 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11396)**<br />
+<br />
+47. **Trust Grows In New Light**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 146 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11397)**<br />
+<br />
+48. **Twilight Echoes Bring Us**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 154 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11398)**<br />
+<br />
+49. **Unplanned Moments Make Magic**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 159 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11399)**<br />
+<br />
+50. **Unplanned Nights Feel Right**<br />
+    - **Sanatçı:** Muzibu<br />
+    - **Süre:** 167 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/11400)**<br />
+<br />
+Bu pop şarkıları ile güzel bir müzik keyfi yaşayabilirsiniz! Başka bir isteğiniz var mı? 🎶<br />
+<br />
+[ACTION:CREATE_PLAYLIST:song_ids=22288,22289,11353,11354,11355,11356,11357,11358,11359,11360,11361,11362,11363,11364,11365,11366,11367,11368,11369,11370,11371,11372,11373,11374,11375,11376,11377,11378,11379,11380,11381,11382,11383,11384,11385,11386,11387,11388,11389,11390,11391,11392,11393,11394,11395,11396,11397,11398,11399,11400:title=Pop Müzikleri]                                </div>
+                            </div>
+
+                            <!-- Quick Actions (varsa) -->
+                                                        <div class="mt-3 flex flex-wrap gap-2">
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-search text-blue-400"></i>
+                                    <span>Şarkı Ara</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-list-music text-purple-400"></i>
+                                    <span>Playlist</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-microphone text-orange-400"></i>
+                                    <span>Sanatçılar</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-star text-green-400"></i>
+                                    <span>Yeni Çıkanlar</span>
+                                </button>
+                                                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden message-box">
+                <!-- Başlık -->
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-3xl">🎧</span>
+                                <h3 class="text-xl font-bold text-white">
+                                    4. Playlist Oluşturma                                </h3>
+                            </div>
+                            <p class="text-slate-400 text-sm ml-12">
+                                <i class="fas fa-bullseye"></i> Beklenen: Şarkılarla playlist oluşturmalı, ACTION tag olmalı                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konuşma -->
+                <div class="p-6 space-y-4">
+                    <!-- Kullanıcı Mesajı -->
+                    <div class="flex justify-end">
+                        <div class="max-w-2xl">
+                            <div class="flex items-center gap-2 justify-end mb-2">
+                                <span class="text-xs text-slate-500">Kullanıcı</span>
+                                <i class="fas fa-user text-blue-400"></i>
+                            </div>
+                            <div class="bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3">
+                                <p class="text-sm">Romantik bir playlist oluştur</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Yanıtı -->
+                    <div class="flex justify-start">
+                        <div class="max-w-3xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-robot text-purple-400"></i>
+                                <span class="text-xs text-slate-500">AI Asistan</span>
+                            </div>
+                            <div class="bg-slate-700 text-white rounded-2xl rounded-tl-sm px-4 py-3">
+                                <div class="prose prose-invert prose-sm max-w-none">
+                                    Harika bir seçim! İşte romantik bir atmosfer yaratacak bir playlist önerisi:<br />
+<br />
+### Romantik Playlist<br />
+**Açıklama:** Aşk dolu anlarınızı daha da özel kılacak, yumuşak melodiler ve duygusal sözlerle dolu romantik bir playlist.<br />
+<br />
+1. **Romantic Pantomime** - Chill House<br />
+   - **Süre:** 196 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/31136)**<br />
+<br />
+2. **La Vie en Rose** - Édith Piaf<br />
+   - **Süre:** 140 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/12345)**<br />
+<br />
+3. **Perfect** - Ed Sheeran<br />
+   - **Süre:** 263 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/12346)**<br />
+<br />
+4. **Can&#039;t Help Falling in Love** - Elvis Presley<br />
+   - **Süre:** 193 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/12347)**<br />
+<br />
+5. **All of Me** - John Legend<br />
+   - **Süre:** 268 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/12348)**<br />
+<br />
+6. **Your Song** - Elton John<br />
+   - **Süre:** 240 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/12349)**<br />
+<br />
+7. **At Last** - Etta James<br />
+   - **Süre:** 182 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/12350)**<br />
+<br />
+8. **Unchained Melody** - The Righteous Brothers<br />
+   - **Süre:** 201 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/12351)**<br />
+<br />
+9. **I Will Always Love You** - Whitney Houston<br />
+   - **Süre:** 274 saniye<br />
+   - **[▶️ Çal](https://muzibu.com.tr/play/song/12352)**<br />
+<br />
+10. **Something** - The Beatles<br />
+    - **Süre:** 182 saniye<br />
+    - **[▶️ Çal](https://muzibu.com.tr/play/song/12353)**<br />
+<br />
+Bu romantik playlist ile güzel anlar geçirebilirsiniz! 🎶 Başka bir isteğiniz var mı?<br />
+<br />
+[ACTION:CREATE_PLAYLIST:song_ids=31136,12345,12346,12347,12348,12349,12350,12351,12352,12353:title=Özel Playlist]                                </div>
+                            </div>
+
+                            <!-- Quick Actions (varsa) -->
+                                                        <div class="mt-3 flex flex-wrap gap-2">
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-search text-blue-400"></i>
+                                    <span>Şarkı Ara</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-list-music text-purple-400"></i>
+                                    <span>Playlist</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-microphone text-orange-400"></i>
+                                    <span>Sanatçılar</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-star text-green-400"></i>
+                                    <span>Yeni Çıkanlar</span>
+                                </button>
+                                                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden message-box">
+                <!-- Başlık -->
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-3xl">💰</span>
+                                <h3 class="text-xl font-bold text-white">
+                                    5. Abonelik Fiyatları (4000 TRY Kontrolü)                                </h3>
+                            </div>
+                            <p class="text-slate-400 text-sm ml-12">
+                                <i class="fas fa-bullseye"></i> Beklenen: Yıllık plan 4000 TRY olarak görünmeli (400 DEĞİL!)                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konuşma -->
+                <div class="p-6 space-y-4">
+                    <!-- Kullanıcı Mesajı -->
+                    <div class="flex justify-end">
+                        <div class="max-w-2xl">
+                            <div class="flex items-center gap-2 justify-end mb-2">
+                                <span class="text-xs text-slate-500">Kullanıcı</span>
+                                <i class="fas fa-user text-blue-400"></i>
+                            </div>
+                            <div class="bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3">
+                                <p class="text-sm">Premium üyelik fiyatları nedir?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Yanıtı -->
+                    <div class="flex justify-start">
+                        <div class="max-w-3xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-robot text-purple-400"></i>
+                                <span class="text-xs text-slate-500">AI Asistan</span>
+                            </div>
+                            <div class="bg-slate-700 text-white rounded-2xl rounded-tl-sm px-4 py-3">
+                                <div class="prose prose-invert prose-sm max-w-none">
+                                    Premium üyelik fiyatları şu şekildedir:<br />
+<br />
+### Premium Aylık<br />
+- **Açıklama:** Dilediğiniz zaman iptal edilebilen esnek bir üyelik.<br />
+- **Fiyat:** 600 TRY (30 gün)<br />
+<br />
+### Premium Yıllık<br />
+- **Açıklama:** 12 ay boyunca sabit fiyatla avantajlı üyelik.<br />
+- **Fiyat:** 400 TRY (365 gün)<br />
+<br />
+Daha fazla bilgi için [Üyelik Planları](https://muzibu.com.tr/subscription/plans) sayfasını ziyaret edebilirsiniz. Başka bir sorunuz var mı? 🎵                                </div>
+                            </div>
+
+                            <!-- Quick Actions (varsa) -->
+                                                        <div class="mt-3 flex flex-wrap gap-2">
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-search text-blue-400"></i>
+                                    <span>Şarkı Ara</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-list-music text-purple-400"></i>
+                                    <span>Playlist</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-microphone text-orange-400"></i>
+                                    <span>Sanatçılar</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-star text-green-400"></i>
+                                    <span>Yeni Çıkanlar</span>
+                                </button>
+                                                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden message-box">
+                <!-- Başlık -->
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-3xl">❌</span>
+                                <h3 class="text-xl font-bold text-white">
+                                    6. İlgisiz Konu (Reddetmeli)                                </h3>
+                            </div>
+                            <p class="text-slate-400 text-sm ml-12">
+                                <i class="fas fa-bullseye"></i> Beklenen: Müzik asistanı olduğunu belirtip nazikçe reddetmeli                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konuşma -->
+                <div class="p-6 space-y-4">
+                    <!-- Kullanıcı Mesajı -->
+                    <div class="flex justify-end">
+                        <div class="max-w-2xl">
+                            <div class="flex items-center gap-2 justify-end mb-2">
+                                <span class="text-xs text-slate-500">Kullanıcı</span>
+                                <i class="fas fa-user text-blue-400"></i>
+                            </div>
+                            <div class="bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3">
+                                <p class="text-sm">Bugün hava nasıl?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Yanıtı -->
+                    <div class="flex justify-start">
+                        <div class="max-w-3xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-robot text-purple-400"></i>
+                                <span class="text-xs text-slate-500">AI Asistan</span>
+                            </div>
+                            <div class="bg-slate-700 text-white rounded-2xl rounded-tl-sm px-4 py-3">
+                                <div class="prose prose-invert prose-sm max-w-none">
+                                    Üzgünüm, hava durumu hakkında güncel bilgi veremiyorum. Ancak müzikle ilgili her türlü sorunuz veya isteğiniz için buradayım! Başka bir konuda yardımcı olabilir miyim? 🎶                                </div>
+                            </div>
+
+                            <!-- Quick Actions (varsa) -->
+                                                        <div class="mt-3 flex flex-wrap gap-2">
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-search text-blue-400"></i>
+                                    <span>Şarkı Ara</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-list-music text-purple-400"></i>
+                                    <span>Playlist</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-microphone text-orange-400"></i>
+                                    <span>Sanatçılar</span>
+                                </button>
+                                                                <button class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs transition-colors">
+                                    <i class="fas fa-star text-green-400"></i>
+                                    <span>Yeni Çıkanlar</span>
+                                </button>
+                                                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+                    </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>
+                <i class="fas fa-robot"></i> Test otomasyonu ile gerçekleştirildi
+            </p>
+            <p class="mt-2">
+                AI Chat Widget - Muzibu.com.tr
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

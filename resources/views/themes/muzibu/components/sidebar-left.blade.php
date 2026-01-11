@@ -79,26 +79,30 @@
                 }
             }
 
-            // Fiyatlandırma link gösterilsin mi?
+            // Fiyatlandırma link gösterilsin mi? (Footer mantığı ile aynı - 30 gün kuralı)
             $showPricingLink = false;
-            $pricingLinkText = trans('muzibu::front.sidebar.pricing');
+            $pricingLinkText = '';
+
             if (auth()->guest()) {
-                // Üye değilse göster
+                // Üye değilse → "Fiyatlandırma"
                 $showPricingLink = true;
-            } elseif (auth()->user() && !auth()->user()->is_premium) {
-                // Premium değilse göster
-                $showPricingLink = true;
-            } elseif (auth()->user() && auth()->user()->is_premium) {
-                // Premium ise üyelik bitiş tarihini kontrol et
-                $subscription = auth()->user()->subscription;
-                if ($subscription && $subscription->ends_at) {
-                    $daysLeft = now()->diffInDays($subscription->ends_at, false);
-                    if ($daysLeft < 7 && $daysLeft >= 0) {
-                        // 7 günden az kaldıysa "Üyeliğini Uzat" olarak göster
-                        $showPricingLink = true;
-                        $pricingLinkText = trans('muzibu::front.sidebar.extend_membership');
-                    }
+                $pricingLinkText = trans('muzibu::front.sidebar.pricing');
+            } elseif (auth()->check()) {
+                $user = auth()->user();
+                $isPremium = $user->isPremium(); // METHOD kullan (property değil)
+                $expiresAt = $user->subscription_expires_at;
+                $daysRemaining = $expiresAt ? now()->diffInDays($expiresAt, false) : null;
+
+                if (!$isPremium) {
+                    // Premium değilse "Premium Ol"
+                    $showPricingLink = true;
+                    $pricingLinkText = 'Premium Ol';
+                } elseif ($isPremium && $daysRemaining !== null && $daysRemaining <= 30) {
+                    // Premium ve 30 gün veya daha az kalmışsa "Üyeliğini Uzat"
+                    $showPricingLink = true;
+                    $pricingLinkText = trans('muzibu::front.sidebar.extend_membership');
                 }
+                // 30 günden fazla kalmışsa link gösterilmez
             }
         @endphp
 

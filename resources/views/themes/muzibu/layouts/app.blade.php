@@ -852,11 +852,10 @@
 
     @php
         // 🚀 HYBRID: PHP initial value + Alpine SPA updates
-        // Sağ sidebar gösterilecek route'lar (music pages + dashboard)
+        // Sağ sidebar gösterilecek route'lar (music pages - dashboard HARİÇ)
         // Mobilde (<768px) GİZLİ, Tablet+ (768px+) GÖRÜNÜR
         $showRightSidebar = in_array(Route::currentRouteName(), [
-            'dashboard',           // Diğer tenant'lar için
-            'muzibu.dashboard',    // Muzibu için (ASIL ROUTE!)
+            // Dashboard sayfasında sağ sidebar KAPALI
             'muzibu.home',
             'muzibu.songs.index',
             'muzibu.songs.show',

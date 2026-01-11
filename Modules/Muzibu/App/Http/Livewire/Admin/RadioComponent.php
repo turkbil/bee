@@ -163,6 +163,39 @@ class RadioComponent extends Component
         }
     }
 
+    public function toggleFeatured(int $id): void
+    {
+        try {
+            $radio = Radio::find($id);
+
+            if (!$radio) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('muzibu::admin.radio_not_found'),
+                    'type' => 'error',
+                ]);
+                return;
+            }
+
+            $radio->is_featured = !$radio->is_featured;
+            $radio->save();
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => $radio->is_featured
+                    ? __('muzibu::admin.radio.featured') . ' olarak işaretlendi'
+                    : __('muzibu::admin.radio.not_featured') . ' olarak işaretlendi',
+                'type' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
     public function render(): \Illuminate\Contracts\View\View
     {
         $filters = [

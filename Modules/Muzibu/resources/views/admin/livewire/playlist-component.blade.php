@@ -80,7 +80,7 @@
                 <!-- Ortadaki Loading -->
                 <div class="col position-relative">
                     <div wire:loading
-                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, filterSector, showSystemPlaylists"
+                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, toggleFeatured, filterSector, showSystemPlaylists"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
                         <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
@@ -160,6 +160,9 @@
                             @if($detailedView)
                                 <th class="text-center" style="min-width: 150px">{{ __('muzibu::admin.sectors') }}</th>
                             @endif
+                            <th class="text-center" style="width: 70px">
+                                <i class="fas fa-star text-warning" title="Öne Çıkan"></i>
+                            </th>
                             <th class="text-center" style="width: 70px">
                                 {{ __('muzibu::admin.playlist.status') }}
                             </th>
@@ -252,6 +255,26 @@
                                     </td>
                                 @endif
                                 <td class="text-center align-middle">
+                                    <button wire:click="toggleFeatured({{ $playlist->playlist_id }})"
+                                        class="btn btn-icon btn-sm ps-1 pe-2 bg-transparent"
+                                        data-bs-toggle="tooltip"
+                                        title="{{ $playlist->is_featured ? __('muzibu::admin.playlist.featured') : __('muzibu::admin.playlist.not_featured') }}">
+                                        <!-- Loading Durumu -->
+                                        <div wire:loading wire:target="toggleFeatured({{ $playlist->playlist_id }})"
+                                            class="spinner-border spinner-border-sm">
+                                        </div>
+                                        <!-- Normal Durum: Featured/Not Featured İkonları -->
+                                        <div wire:loading.remove
+                                            wire:target="toggleFeatured({{ $playlist->playlist_id }})">
+                                            @if ($playlist->is_featured)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @else
+                                                <i class="far fa-star text-muted"></i>
+                                            @endif
+                                        </div>
+                                    </button>
+                                </td>
+                                <td class="text-center align-middle">
                                     <button wire:click="toggleActive({{ $playlist->playlist_id }})"
                                         class="btn btn-icon btn-sm ps-1 pe-2 {{ $playlist->is_active ? 'bg-transparent' : 'text-red bg-transparent' }}">
                                         <!-- Loading Durumu -->
@@ -308,7 +331,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ $detailedView ? 8 : 7 }}" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 9 : 8 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.playlist.no_playlists_found') }}</p>
                                         <p class="empty-subtitle">

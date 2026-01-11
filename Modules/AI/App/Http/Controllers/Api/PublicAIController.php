@@ -10,8 +10,8 @@ declare(strict_types=1);
  * Bu controller modüler AI asistan sistemini yönetir. System prompt'lar ŞU SIRALAMAYLA oluşturulur:
  *
  * 1️⃣ **TENANT-SPECIFIC PROMPT (EN ÖNEMLİ!)**
- *    - Tenant 2/3 (ixtif.com): Tenant2PromptService → FULL ultra detaylı kurallar
- *    - Tenant 1001 (muzibu.com): Tenant1001PromptService → Müzik kuralları
+ *    - Her tenant kendi klasöründe: Modules/AI/App/Services/Tenant{ID}/PromptService.php
+ *    - Örnek: Tenant2/PromptService.php, Tenant1001/PromptService.php
  *    ⚠️ Bu prompt'lar ÖNCELİKLİDİR! Override etme!
  *
  * 2️⃣ **MODÜL CONTEXT**
@@ -24,74 +24,59 @@ declare(strict_types=1);
  *    - Temel yönlendirmeler
  *
  * ═══════════════════════════════════════════════════════════════════════════════════
- * 🔒 PROMPTBUILDER SİSTEMİ - OTOMATİK KORUMA (2025-12-20)
+ * 🔒 TENANT SERVICE FACTORY - OTOMATİK YÜKLEME
  * ═══════════════════════════════════════════════════════════════════════════════════
  *
- * ⚡ **MERKEZİ KONTROL:** App\Services\AI\PromptBuilder
+ * ⚡ **MERKEZİ KONTROL:** Modules\AI\App\Services\TenantServiceFactory
  *
- * Tüm tenant prompt'ları ARTIK merkezi PromptBuilder üzerinden yönetiliyor.
- * Bu sayede yanlış prompt servisi kullanımı OTOMATIK engelleniyor!
+ * Tüm tenant servisleri OTOMATIK yükleniyor:
+ * - TenantServiceFactory::getPromptService() → Tenant{ID}/PromptService
+ * - TenantServiceFactory::getProductSearchService() → Tenant{ID}/ProductSearchService
+ * - TenantServiceFactory::processResponse() → Tenant{ID}/ResponseProcessor
  *
- * 📋 **CONFIG MAPPING:** config/ai-tenants.php
- * ```php
- * 'prompt_services' => [
- *     2 => Tenant2PromptService::class,
- *     3 => Tenant2PromptService::class,
- *     1001 => Tenant1001PromptService::class,
- * ]
+ * 📂 **KLASÖR YAPISI:**
  * ```
- *
- * 🔍 **RUNTIME VALIDATION:**
- * - Minimum prompt uzunluğu kontrolü (1000+ karakter)
- * - Tenant 2/3 için kritik keyword kontrolü ("ULTRA KRİTİK", "KRİTİK KURAL")
- * - Validation başarısızsa → Log + Fallback
- *
- * 🧪 **OTOMATIK TESTLER:**
- * ```bash
- * php artisan test Modules/AI/tests/Unit/PromptBuilderTest.php
- * php artisan test Modules/AI/tests/Unit/ShopSearchServicePromptTest.php
+ * Modules/AI/App/Services/
+ * ├── Tenant2/                    (ixtif.com)
+ * │   ├── PromptService.php
+ * │   └── ProductSearchService.php
+ * ├── Tenant1001/                 (muzibu.com.tr)
+ * │   ├── PromptService.php
+ * │   ├── ProductSearchService.php
+ * │   ├── ResponseProcessor.php
+ * │   └── SubscriptionHelper.php
+ * └── Tenant/                     (Default/Fallback)
+ *     └── DefaultPromptService.php
  * ```
  *
  * ═══════════════════════════════════════════════════════════════════════════════════
  * 📖 YENİ TENANT EKLEME KILAVUZU
  * ═══════════════════════════════════════════════════════════════════════════════════
  *
- * 1️⃣ **Prompt Service Oluştur:**
- *    Modules/AI/app/Services/Tenant/TenantXPromptService.php
- *    - getPromptAsString(): string metodu ZORUNLU!
- *    - Ultra detaylı kurallar yaz (minimum 5000+ karakter)
+ * 1️⃣ **Klasör Oluştur:**
+ *    Modules/AI/App/Services/Tenant{ID}/
  *
- * 2️⃣ **Config Ekle:**
- *    config/ai-tenants.php → 'prompt_services' array'ine ekle
- *    ```php
- *    X => \Modules\AI\App\Services\Tenant\TenantXPromptService::class,
- *    ```
+ * 2️⃣ **Servisler Oluştur:**
+ *    - PromptService.php (implements TenantPromptServiceInterface)
+ *    - ProductSearchService.php (opsiyonel)
+ *    - ResponseProcessor.php (opsiyonel - post-processing için)
  *
- * 3️⃣ **Test Yaz:**
- *    Modules/AI/tests/Unit/TenantXPromptTest.php
- *    - Prompt uzunluk kontrolü
- *    - Kritik keyword kontrolü
- *    - PromptBuilder entegrasyonu
+ * 3️⃣ **Namespace:**
+ *    namespace Modules\AI\App\Services\Tenant{ID};
  *
  * 4️⃣ **Config Cache Yenile:**
  *    ```bash
- *    php artisan config:clear && php artisan config:cache
- *    ```
- *
- * 5️⃣ **Test Çalıştır:**
- *    ```bash
- *    php artisan test --filter=TenantXPromptTest
+ *    php artisan config:clear && php artisan cache:clear
  *    ```
  *
  * ═══════════════════════════════════════════════════════════════════════════════════
  * 🔥 ASLA YAPMA!
  * ═══════════════════════════════════════════════════════════════════════════════════
  *
- * ❌ Tenant-specific prompt'un üzerine generic "yardımcı, nazik" gibi ifadeler ekleme!
- * ❌ ShopSearchService'de Tenant2ProductSearchService kullanma (PromptBuilder kullan!)
- * ❌ buildModularSystemPrompt()'ta tenant kurallarını override etme!
- * ❌ Config'e eklemeden yeni tenant prompt servisi kullanma!
- * ❌ PromptBuilder'ı bypass etme (direkt service çağırma)!
+ * ❌ Bu global dosyaya tenant-specific kod ekleme!
+ * ❌ Tenant ID kontrolü (if tenant('id') == X) yapma - TenantServiceFactory kullan!
+ * ❌ Hardcode domain/email/telefon yazma - settings'ten çek!
+ * ❌ Tenant-specific örnekler ekleme (forklift, şarkı vb.)!
  *
  * ═══════════════════════════════════════════════════════════════════════════════════
  * ✅ DOĞRU YAPILANMA
@@ -138,32 +123,35 @@ declare(strict_types=1);
  * ═══════════════════════════════════════════════════════════════════════════════════
  *
  * Core:
- * - app/Services/AI/PromptBuilder.php (Merkezi kontrol)
+ * - Modules/AI/App/Services/TenantServiceFactory.php (Merkezi kontrol)
  * - config/ai-tenants.php (Tenant mapping)
  *
- * Prompt Services:
- * - Modules/AI/app/Services/Tenant/Tenant2PromptService.php
- * - Modules/AI/app/Services/Tenant/Tenant1001PromptService.php
+ * Tenant Services (her tenant kendi klasöründe):
+ * - Modules/AI/App/Services/Tenant2/PromptService.php
+ * - Modules/AI/App/Services/Tenant2/ProductSearchService.php
+ * - Modules/AI/App/Services/Tenant1001/PromptService.php
+ * - Modules/AI/App/Services/Tenant1001/ProductSearchService.php
+ * - Modules/AI/App/Services/Tenant1001/ResponseProcessor.php
  *
  * Module Services:
- * - Modules/AI/app/Services/Assistant/Modules/ShopSearchService.php
- * - Modules/AI/app/Services/Assistant/Modules/MusicSearchService.php
- *
- * Tests:
- * - Modules/AI/tests/Unit/PromptBuilderTest.php
- * - Modules/AI/tests/Unit/ShopSearchServicePromptTest.php
+ * - Modules/AI/App/Services/Assistant/Modules/ShopSearchService.php
+ * - Modules/AI/App/Services/Assistant/Modules/MusicSearchService.php
  *
  * ═══════════════════════════════════════════════════════════════════════════════════
  * 🗓️ CHANGELOG
  * ═══════════════════════════════════════════════════════════════════════════════════
  *
+ * 2026-01-11:
+ * - ✅ Tenant klasör yapısı düzenlendi (Tenant{ID}/ formatı)
+ * - ✅ TenantServiceFactory güncellendi (otomatik servis yükleme)
+ * - ✅ ResponseProcessor eklendi (post-processing desteği)
+ * - ✅ Eski dosyalar .backup uzantısıyla arşivlendi
+ * - ✅ Global dosyalardan tenant-specific kodlar temizlendi
+ *
  * 2025-12-20:
  * - ✅ PromptBuilder sistemi eklendi (merkezi kontrol)
  * - ✅ config/ai-tenants.php oluşturuldu (tenant mapping)
- * - ✅ Runtime validation eklendi (ShopSearchService, PublicAIController)
- * - ✅ Otomatik testler yazıldı (18 test, %100 coverage)
- * - ✅ ShopSearchService artık PromptBuilder kullanıyor
- * - ✅ buildModularSystemPrompt validation eklendi
+ * - ✅ Runtime validation eklendi
  *
  * 2025-12-19:
  * - ✅ Tenant2PromptService entegrasyonu düzeltildi
@@ -812,16 +800,16 @@ class PublicAIController extends Controller
             $searchQuery = $validated['message'];
 
             try {
-                // 🔍 PRODUCT SEARCH (Tenant-specific or generic)
+                // 🔍 PRODUCT SEARCH (Tenant-aware via TenantServiceFactory)
                 $tenantId = tenant('id');
 
-                if ($tenantId == 2 || $tenantId == 3) {
-                    // 🏢 Tenant 2/3: iXtif (endüstriyel ekipman)
-                    // Kategori bilgileri tenant-specific (transpalet, forklift, reach truck, vb.)
-                    $productSearchService = app(\Modules\AI\App\Services\Tenant\Tenant2ProductSearchService::class);
-                    \Log::info('🏢 Using Tenant2ProductSearchService', ['tenant_id' => $tenantId]);
+                // TenantServiceFactory otomatik olarak doğru servisi yükler
+                $productSearchService = \Modules\AI\App\Services\TenantServiceFactory::getProductSearchService();
+
+                if ($productSearchService) {
+                    \Log::info('🏢 Using Tenant-specific ProductSearchService', ['tenant_id' => $tenantId]);
                 } else {
-                    // 🌍 Generic: Tüm diğer 10000 tenant
+                    // Yoksa generic service kullan
                     $productSearchService = app(\App\Services\AI\ProductSearchService::class);
                     \Log::info('🌍 Using Generic ProductSearchService', ['tenant_id' => $tenantId]);
                 }
@@ -835,100 +823,21 @@ class PublicAIController extends Controller
                 $smartSearchResults = $productSearchService->searchProducts($searchQuery);
                 $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
 
-                // 🆕 iXTİF ÖZEL: Fiyat sorgusu detection (en ucuz, en pahalı)
-                $isPriceQuery = false;
+                // 🎯 TENANT-AWARE: Fiyat sorgusu kontrolü
+                // Her tenant kendi fiyat sorgusu mantığını uygular
+                $priceQueryResult = \Modules\AI\App\Services\TenantServiceFactory::handlePriceQuery($validated['message'], 5);
 
-                if (tenant('id') == 2 || tenant('id') == 3) { // iXtif tenants
-                    $lowerMessage = mb_strtolower($validated['message']);
-                    // Fiyat kelimesi geçiyorsa veya en ucuz/pahalı sorgusu varsa
-                    $isPriceQuery = preg_match('/(fiyat|kaç\s*para|ne\s*kadar|maliyet|ücret|tutar|en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage);
-
-                    // Eğer fiyat sorgusu ise ve ürün adı varsa, o ürünü ara
-                    $searchForProduct = false;
-                    if ($isPriceQuery && !preg_match('/(en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage)) {
-                        // Spesifik ürün fiyatı soruluyor (örn: "F4 fiyatı", "CPD18TVL fiyatı")
-                        $searchForProduct = true;
-                    }
-                }
-
-                // Normal search (ürün başlığı/kategori araması)
-                $smartSearchResults = $productSearchService->searchProducts($searchQuery);
-                $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
-
-                // 🆕 iXTİF ÖZEL: Fiyat sorgusunda direkt DB'den getir (Meilisearch'te fiyat sync sorunu var)
-                if ($isPriceQuery) {
-                    \Log::info('🔍 iXtif Price Query - Fetching from DB', [
-                        'query' => $validated['message'],
+                if ($priceQueryResult !== null) {
+                    \Log::info('💰 Tenant Price Query Handler Used', [
                         'tenant_id' => tenant('id'),
-                        'searchForProduct' => $searchForProduct ?? false
+                        'products_found' => $priceQueryResult['count'] ?? 0,
+                        'search_layer' => $priceQueryResult['search_layer'] ?? 'unknown'
                     ]);
 
-                    // Yedek Parça kategorisini atla (ID: 44 - Çatal Kılıf)
-                    $isCheapest = preg_match('/(en\s+ucuz|en\s+uygun)/i', mb_strtolower($validated['message']));
-
-                    $query = \Modules\Shop\App\Models\ShopProduct::whereNotNull('base_price')
-                        ->where('base_price', '>', 0)
-                        ->where('category_id', '!=', 44); // Yedek parça HARİÇ
-
-                    // Eğer spesifik ürün fiyatı soruluyorsa, ürün adını ara
-                    if ($searchForProduct) {
-                        // Mesajdan ürün kodlarını çıkar (F4, CPD18TVL, EFL181 gibi)
-                        preg_match_all('/\b([A-Z]{1,3}\d{1,3}[A-Z]*\d*[A-Z]*)\b/i', $validated['message'], $matches);
-
-                        if (!empty($matches[1])) {
-                            $query->where(function($q) use ($matches, $validated) {
-                                foreach ($matches[1] as $productCode) {
-                                    $q->orWhere('title', 'LIKE', '%' . $productCode . '%')
-                                      ->orWhere('sku', 'LIKE', '%' . $productCode . '%');
-                                }
-                                // Ayrıca tam mesajı da ara (örn: "transpalet" kelimesi)
-                                $keywords = ['transpalet', 'forklift', 'istif'];
-                                foreach ($keywords as $keyword) {
-                                    if (stripos($validated['message'], $keyword) !== false) {
-                                        $q->orWhere('title', 'LIKE', '%' . $keyword . '%');
-                                    }
-                                }
-                            });
-                        } else {
-                            // Ürün kodu bulunamadı, genel arama yap
-                            $query->where('title', 'LIKE', '%' . str_replace(['fiyat', 'fiyatı', 'kaç', 'para', 'ne kadar'], '', $validated['message']) . '%');
-                        }
-                    }
-
-                    $query
-                        // SIRALAMA ÖNCELİĞİ: Homepage → Stok → Sort Order → Fiyat
-                        ->orderByRaw('show_on_homepage DESC, homepage_sort_order ASC')
-                        ->orderBy('current_stock', 'desc')
-                        ->orderBy('sort_order', 'asc');
-
-                    // Fiyat sıralaması en sonda
-                    if ($isCheapest) {
-                        $query->orderBy('base_price', 'asc');
-                    } else {
-                        $query->orderBy('base_price', 'desc');
-                    }
-
-                    $products = $query->limit(5)->get();
-
-                    // Format products for AI
-                    $formattedProducts = $products->map(function($p) {
-                        return [
-                            'title' => $p->getTranslated('title', app()->getLocale()),
-                            'slug' => $p->getTranslated('slug', app()->getLocale()),
-                            'base_price' => $p->base_price,
-                            'currency' => $p->currency ?? 'TRY', // USD, TRY, EUR
-                            'current_stock' => $p->current_stock ?? 0,
-                            'show_on_homepage' => $p->show_on_homepage ?? 0,
-                            'homepage_sort_order' => $p->homepage_sort_order ?? 999, // Homepage sıralaması
-                            'sort_order' => $p->sort_order ?? 0, // Kategori içi sıralama
-                            'category_id' => $p->category_id,
-                        ];
-                    })->toArray();
-
                     $smartSearchResults = [
-                        'products' => $formattedProducts,
-                        'count' => count($formattedProducts),
-                        'search_layer' => 'ixtif_price_query',
+                        'products' => $priceQueryResult['products'],
+                        'count' => $priceQueryResult['count'],
+                        'search_layer' => $priceQueryResult['search_layer'] ?? \Modules\AI\App\Services\TenantServiceFactory::getSearchLayerName(),
                         'tenant_id' => tenant('id')
                     ];
                 }
@@ -1001,31 +910,6 @@ class PublicAIController extends Controller
                 'smart_search_products_count' => $smartSearchResults['count'] ?? 0,
                 'user_sentiment' => $userSentiment['tone'] ?? 'neutral',
             ]);
-
-            // 🔍 DEBUG: Log AI context URLs to check if they're correct (especially "i" starting products)
-            if (!empty($aiContext['context']['modules']['shop']['all_products'])) {
-                // İlk 5 ürünü logla, özellikle "i" ile başlayanları
-                $productsToLog = array_slice($aiContext['context']['modules']['shop']['all_products'], 0, 5);
-                $iStartingProducts = [];
-
-                foreach ($productsToLog as $product) {
-                    $title = is_array($product['title']) ? json_encode($product['title']) : $product['title'];
-                    if (stripos($title, 'ixtif') !== false || stripos($title, 'İXTİF') !== false) {
-                        $iStartingProducts[] = [
-                            'title' => $title,
-                            'url' => $product['url'] ?? 'N/A',
-                            'slug_starts_with_i' => str_starts_with(basename($product['url'] ?? ''), 'i'),
-                        ];
-                    }
-                }
-
-                if (!empty($iStartingProducts)) {
-                    \Log::info('🔍 AI Context - Products with "i" check', [
-                        'count' => count($iStartingProducts),
-                        'products' => $iStartingProducts,
-                    ]);
-                }
-            }
 
             // Call AI service with enhanced system prompt + conversation history
             // 🔄 AUTOMATIC FALLBACK CHAIN: GPT-4o-mini → Claude-Haiku → DeepSeek
@@ -1150,22 +1034,8 @@ class PublicAIController extends Controller
                 }
             }
 
-            // 🔍 DEBUG: Log AI response BEFORE post-processing
-            \Log::info('🤖 AI Response BEFORE post-processing', [
-                'response_preview' => mb_substr($aiResponseText, 0, 500),
-                'contains_ixtif' => str_contains($aiResponseText, 'ixtif'),
-                'contains_xtif' => str_contains($aiResponseText, 'xtif'),
-            ]);
-
             // 🔧 POST-PROCESSING: Fix broken URLs in AI response (context-aware)
             $aiResponseText = $this->fixBrokenUrls($aiResponseText, $aiContext);
-
-            // 🔍 DEBUG: Log AI response AFTER post-processing
-            \Log::info('✅ AI Response AFTER post-processing', [
-                'response_preview' => mb_substr($aiResponseText, 0, 500),
-                'contains_ixtif' => str_contains($aiResponseText, 'ixtif'),
-                'contains_xtif' => str_contains($aiResponseText, 'xtif'),
-            ]);
 
             // Format response for compatibility
             $aiResponse = [
@@ -1495,12 +1365,12 @@ class PublicAIController extends Controller
         $prompts[] = "**Ürün Adı** [LINK:shop:slug-buraya]";
         $prompts[] = "";
         $prompts[] = "**✅ DOĞRU:**";
-        $prompts[] = "**Litef EPT15** [LINK:shop:litef-ept15]";
+        $prompts[] = "**Ürün Adı** [LINK:shop:urun-slug]";
         $prompts[] = "";
         $prompts[] = "**❌ YANLIŞ:**";
-        $prompts[] = "[Litef EPT15](https://ixtif.com/shop/...) ← Markdown YASAK!";
-        $prompts[] = "<a href=\"...\">Litef EPT15</a> ← HTML link YASAK!";
-        $prompts[] = "**[Litef EPT15](url)** ← Bu format YASAK!";
+        $prompts[] = "[Ürün Adı](https://domain.com/shop/...) ← Markdown YASAK!";
+        $prompts[] = "<a href=\"...\">Ürün Adı</a> ← HTML link YASAK!";
+        $prompts[] = "**[Ürün Adı](url)** ← Bu format YASAK!";
         $prompts[] = "";
         $prompts[] = "## 🎯 ROL";
         $prompts[] = "";
@@ -2169,8 +2039,8 @@ class PublicAIController extends Controller
      * 🔧 Fix broken URLs in AI response (Post-processing) - CONTEXT-AWARE V2
      *
      * AI sometimes generates wrong URLs by missing characters:
-     * - Wrong: http://laravel.test/shopxtif-cpd15tvl... (missing "/" and "i")
-     * - Correct: http://laravel.test/shop/ixtif-cpd15tvl...
+     * - Wrong: http://domain.com/shopproduct-slug... (missing "/")
+     * - Correct: http://domain.com/shop/product-slug...
      *
      * Solution: Match AI's broken URLs with correct URLs from context
      *
@@ -2547,7 +2417,7 @@ class PublicAIController extends Controller
         $correctWhatsAppLink = "https://wa.me/{$cleanWhatsapp}";
 
         // Pattern: [WHATSAPP_NUMBER](WRONG_LINK)
-        // Örnek: [0501 005 67 58](https://ixtif.com/shop/...)
+        // Örnek: [0501 005 67 58](https://domain.com/shop/...)
         // Düzelt: [0501 005 67 58](https://wa.me/905010056758)
         $pattern = '/\[([0-9\s]+)\]\(https?:\/\/[^\)]+\/shop\/[^\)]+\)/i';
         $replacement = "[$1]({$correctWhatsAppLink})";
@@ -3151,6 +3021,12 @@ class PublicAIController extends Controller
             ]);
             $systemPrompt = $this->buildModularSystemPrompt($combinedContext, $combinedPromptRules);
 
+            // 🔥 DEBUG: System prompt'u logla (pricing kontrolü için)
+            \Log::info('🔍 FULL SYSTEM PROMPT', [
+                'system_prompt_length' => strlen($systemPrompt),
+                'system_prompt' => $systemPrompt,  // FULL prompt'u logla
+            ]);
+
             // Prepare messages for AI
             $aiMessages = [
                 ['role' => 'system', 'content' => $systemPrompt]
@@ -3185,13 +3061,19 @@ class PublicAIController extends Controller
             ]);
 
             $aiResponse = $aiService->ask($aiMessages, false, [
-                'max_tokens' => 500,  // Uzun sorular için yeterli alan
-                'temperature' => 0.5,  // Dengeli (prompt'a uygun davransın)
+                'max_tokens' => 3000,  // Uzun playlist'ler için yeterli alan (50+ şarkı)
+                'temperature' => 0.1,  // ÇOK DÜŞÜK - Prompt kurallarına KESİNLİKLE uymalı! (pricing, playlist isimleri)
             ]);
 
             if (empty($aiResponse)) {
                 throw new \Exception('Empty AI response');
             }
+
+            // ═══════════════════════════════════════════════════════════════
+            // 🔥 TENANT-AWARE POST-PROCESSING
+            // ═══════════════════════════════════════════════════════════════
+            // Her tenant kendi ResponseProcessor'ını kullanır (Tenant1001/ResponseProcessor.php vb.)
+            $aiResponse = \Modules\AI\App\Services\TenantServiceFactory::processResponse($aiResponse, $validated['message']);
 
             // Save messages
             $conversation->messages()->create([

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Leonardo AI: 8-10 Token Boyut Karşılaştırması</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .image-container img {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-2 border-purple-500 rounded-full px-8 py-3 mb-4">
+                <span class="text-purple-400 font-bold text-lg">📊 8-10 TOKEN BOYUT KARŞILAŞTIRMASI</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+                3 Farklı Boyut Test Edildi
+            </h1>
+            <p class="text-xl text-slate-400">
+                Aynı AI Model (Lucid Origin) - 8, 9 ve 10 Token Seçenekleri
+            </p>
+        </header>
+
+        <!-- Özet Karşılaştırma Tablosu -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6">💰 Fiyat & Özellik Karşılaştırması</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="border-b-2 border-slate-600">
+                        <tr>
+                            <th class="pb-3 text-slate-400 font-semibold">Özellik</th>
+                            <th class="pb-3 text-green-400 font-semibold text-center">1280x800<br>EN UCUZ ✅</th>
+                            <th class="pb-3 text-yellow-400 font-semibold text-center">1344x832<br>ORTA</th>
+                            <th class="pb-3 text-orange-400 font-semibold text-center">1472x832<br>ESKİ STANDART</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 text-slate-300">Token/Görsel</td>
+                            <td class="py-3 text-center text-green-400 font-bold text-2xl">8</td>
+                            <td class="py-3 text-center text-yellow-400 font-bold text-xl">9</td>
+                            <td class="py-3 text-center text-orange-400 font-bold text-xl">10</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">13,080 Şarkı</td>
+                            <td class="py-3 text-center text-green-400 font-bold">104,640 kredi</td>
+                            <td class="py-3 text-center text-yellow-400 font-bold">117,720 kredi</td>
+                            <td class="py-3 text-center text-orange-400 font-bold">130,800 kredi</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">vs 832x512 (3 token)</td>
+                            <td class="py-3 text-center text-green-400 font-bold">2.7x pahalı</td>
+                            <td class="py-3 text-center text-yellow-400 font-bold">3x pahalı</td>
+                            <td class="py-3 text-center text-orange-400 font-bold">3.3x pahalı</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">vs 1664x1024 (14 token)</td>
+                            <td class="py-3 text-center text-green-400 font-bold">%43 tasarruf</td>
+                            <td class="py-3 text-center text-yellow-400 font-bold">%36 tasarruf</td>
+                            <td class="py-3 text-center text-orange-400 font-bold">%29 tasarruf</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Dosya Boyutu (ortalama)</td>
+                            <td class="py-3 text-center text-green-400">~596 KB</td>
+                            <td class="py-3 text-center text-yellow-400">~674 KB</td>
+                            <td class="py-3 text-center text-orange-400">~862 KB</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Format</td>
+                            <td class="py-3 text-center text-green-400">Yatay (16:10)</td>
+                            <td class="py-3 text-center text-yellow-400">Yatay (13:8)</td>
+                            <td class="py-3 text-center text-orange-400">Yatay (13:8)</td>
+                        </tr>
+                        <tr class="bg-green-900/20">
+                            <td class="py-3 text-slate-300 font-bold">Önerim</td>
+                            <td class="py-3 text-center text-green-400 font-bold text-2xl">✅</td>
+                            <td class="py-3 text-center text-slate-500">-</td>
+                            <td class="py-3 text-center text-slate-500">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 1280x800 Örnekler -->
+        <div class="mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-green-400">✅ 1280x800 (EN UCUZ - 8 token)</h2>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-green-400">8 token/görsel</div>
+                    <div class="text-sm text-slate-400">%43 tasarruf (vs 1664x1024)</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-green-500">
+                    <div class="p-4 bg-green-900/30">
+                        <h3 class="font-bold text-white">Kazooline Warp Banter</h3>
+                        <p class="text-xs text-slate-400">1280x800 | 705 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16915/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16915/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Kazooline Warp Banter" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-green-500">
+                    <div class="p-4 bg-green-900/30">
+                        <h3 class="font-bold text-white">Minuit Sans Réponse</h3>
+                        <p class="text-xs text-slate-400">1280x800 | 571 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16916/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16916/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Minuit Sans Réponse" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-green-500">
+                    <div class="p-4 bg-green-900/30">
+                        <h3 class="font-bold text-white">Dried Rose Whispers</h3>
+                        <p class="text-xs text-slate-400">1280x800 | 518 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16917/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16917/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Dried Rose Whispers" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 1344x832 Örnekler -->
+        <div class="mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-yellow-400">📐 1344x832 (ORTA - 9 token)</h2>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-yellow-400">9 token/görsel</div>
+                    <div class="text-sm text-slate-400">%36 tasarruf (vs 1664x1024)</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-yellow-500">
+                    <div class="p-4 bg-yellow-900/30">
+                        <h3 class="font-bold text-white">Gentle Stillness Of Light</h3>
+                        <p class="text-xs text-slate-400">1344x832 | 616 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16921/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16921/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Gentle Stillness Of Light" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-yellow-500">
+                    <div class="p-4 bg-yellow-900/30">
+                        <h3 class="font-bold text-white">Era Più Bello Ricordare</h3>
+                        <p class="text-xs text-slate-400">1344x832 | 710 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16922/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16922/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Era Più Bello Ricordare" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-yellow-500">
+                    <div class="p-4 bg-yellow-900/30">
+                        <h3 class="font-bold text-white">Frozen Petals</h3>
+                        <p class="text-xs text-slate-400">1344x832 | 779 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16923/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16923/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Frozen Petals" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 1472x832 Örnekler -->
+        <div class="mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-orange-400">📏 1472x832 (ESKİ STANDART - 10 token)</h2>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-orange-400">10 token/görsel</div>
+                    <div class="text-sm text-slate-400">%29 tasarruf (vs 1664x1024)</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-orange-500">
+                    <div class="p-4 bg-orange-900/30">
+                        <h3 class="font-bold text-white">Paint Over the Cracks</h3>
+                        <p class="text-xs text-slate-400">1472x832 | 862 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16914/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16914/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Paint Over the Cracks" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Karar Zamanı -->
+        <div class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-4 border-purple-500 rounded-lg p-10 mb-12">
+            <h2 class="text-4xl font-bold text-center text-white mb-8">🎯 Karar Zamanı!</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="bg-gradient-to-br from-green-900/70 to-emerald-900/70 rounded-lg p-8 border-4 border-green-500">
+                    <div class="text-center mb-4">
+                        <div class="text-5xl mb-2">✅</div>
+                        <h3 class="text-2xl font-bold text-green-400 mb-2">1280x800</h3>
+                        <p class="text-sm text-slate-300">16:10 Format</p>
+                    </div>
+                    <div class="space-y-3 text-white">
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Token/Görsel:</span>
+                            <span class="font-bold text-green-400">8</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>13,080 Şarkı:</span>
+                            <span class="font-bold text-green-400">104,640</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Dosya:</span>
+                            <span class="font-bold text-green-400">~596 KB</span>
+                        </div>
+                        <div class="bg-green-900/50 rounded p-4 text-center mt-4">
+                            <p class="font-bold text-lg">EN UCUZ! 🚀</p>
+                            <p class="text-sm mt-2">Optimal maliyet/kalite dengesi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-yellow-900/70 to-amber-900/70 rounded-lg p-8 border-4 border-yellow-500">
+                    <div class="text-center mb-4">
+                        <div class="text-5xl mb-2">📐</div>
+                        <h3 class="text-2xl font-bold text-yellow-400 mb-2">1344x832</h3>
+                        <p class="text-sm text-slate-300">13:8 Format</p>
+                    </div>
+                    <div class="space-y-3 text-white">
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Token/Görsel:</span>
+                            <span class="font-bold text-yellow-400">9</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>13,080 Şarkı:</span>
+                            <span class="font-bold text-yellow-400">117,720</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Dosya:</span>
+                            <span class="font-bold text-yellow-400">~674 KB</span>
+                        </div>
+                        <div class="bg-yellow-900/50 rounded p-4 text-center mt-4">
+                            <p class="font-bold text-lg">ORTA YATAY</p>
+                            <p class="text-sm mt-2">Denge seçeneği</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-900/70 to-red-900/70 rounded-lg p-8 border-4 border-orange-500">
+                    <div class="text-center mb-4">
+                        <div class="text-5xl mb-2">📏</div>
+                        <h3 class="text-2xl font-bold text-orange-400 mb-2">1472x832</h3>
+                        <p class="text-sm text-slate-300">13:8 Format</p>
+                    </div>
+                    <div class="space-y-3 text-white">
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Token/Görsel:</span>
+                            <span class="font-bold text-orange-400">10</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>13,080 Şarkı:</span>
+                            <span class="font-bold text-orange-400">130,800</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Dosya:</span>
+                            <span class="font-bold text-orange-400">~862 KB</span>
+                        </div>
+                        <div class="bg-orange-900/50 rounded p-4 text-center mt-4">
+                            <p class="font-bold text-lg">ESKİ STANDART</p>
+                            <p class="text-sm mt-2">Daha büyük, daha pahalı</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>🤖 Bu karşılaştırma Claude Code (Sonnet 4.5) tarafından hazırlandı</p>
+            <p class="mt-2">Muzibu.com.tr - Leonardo AI Boyut Testleri (8-10 Token)</p>
+            <p class="mt-2 text-xs">12 Ocak 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

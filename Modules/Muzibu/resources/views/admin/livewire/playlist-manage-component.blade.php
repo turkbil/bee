@@ -110,17 +110,13 @@
                                         <div class="col-5">
                                             <label class="form-label small">Tüm Sektörler</label>
                                             <div class="listbox" id="available-sectors">
-                                                @if(isset($this->activeSectors))
-                                                    @foreach($this->activeSectors as $sector)
-                                                        @if(!in_array($sector->sector_id, $inputs['sector_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $sector->sector_id }}"
-                                                                data-title="{{ strtolower($sector->getTranslated('title', app()->getLocale())) }}">
-                                                                {{ $sector->getTranslated('title', app()->getLocale()) }}
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
+                                                @foreach($this->availableSectors as $sector)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $sector->sector_id }}"
+                                                        data-title="{{ strtolower($sector->getTranslated('title', app()->getLocale())) }}">
+                                                        {{ $sector->getTranslated('title', app()->getLocale()) }}
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
 
@@ -138,17 +134,13 @@
                                         <div class="col-5">
                                             <label class="form-label small">Seçilen Sektörler</label>
                                             <div class="listbox" id="selected-sectors">
-                                                @if(isset($this->activeSectors))
-                                                    @foreach($this->activeSectors as $sector)
-                                                        @if(in_array($sector->sector_id, $inputs['sector_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $sector->sector_id }}"
-                                                                data-title="{{ strtolower($sector->getTranslated('title', app()->getLocale())) }}">
-                                                                {{ $sector->getTranslated('title', app()->getLocale()) }}
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
+                                                @foreach($this->selectedSectors as $sector)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $sector->sector_id }}"
+                                                        data-title="{{ strtolower($sector->getTranslated('title', app()->getLocale())) }}">
+                                                        {{ $sector->getTranslated('title', app()->getLocale()) }}
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
@@ -184,17 +176,13 @@
                                         <div class="col-5">
                                             <label class="form-label small">Tüm Radyolar</label>
                                             <div class="listbox" id="available-radios">
-                                                @if(isset($this->activeRadios))
-                                                    @foreach($this->activeRadios as $radio)
-                                                        @if(!in_array($radio->radio_id, $inputs['radio_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $radio->radio_id }}"
-                                                                data-title="{{ strtolower($radio->getTranslated('title', app()->getLocale())) }}">
-                                                                {{ $radio->getTranslated('title', app()->getLocale()) }}
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
+                                                @foreach($this->availableRadios as $radio)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $radio->radio_id }}"
+                                                        data-title="{{ strtolower($radio->getTranslated('title', app()->getLocale())) }}">
+                                                        {{ $radio->getTranslated('title', app()->getLocale()) }}
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
 
@@ -212,17 +200,13 @@
                                         <div class="col-5">
                                             <label class="form-label small">Seçilen Radyolar</label>
                                             <div class="listbox" id="selected-radios">
-                                                @if(isset($this->activeRadios))
-                                                    @foreach($this->activeRadios as $radio)
-                                                        @if(in_array($radio->radio_id, $inputs['radio_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $radio->radio_id }}"
-                                                                data-title="{{ strtolower($radio->getTranslated('title', app()->getLocale())) }}">
-                                                                {{ $radio->getTranslated('title', app()->getLocale()) }}
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
+                                                @foreach($this->selectedRadios as $radio)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $radio->radio_id }}"
+                                                        data-title="{{ strtolower($radio->getTranslated('title', app()->getLocale())) }}">
+                                                        {{ $radio->getTranslated('title', app()->getLocale()) }}
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
@@ -261,17 +245,13 @@
                                         <div class="col-5">
                                             <label class="form-label small">Tüm Türler</label>
                                             <div class="listbox" id="available-genres">
-                                                @if(isset($this->activeGenres))
-                                                    @foreach($this->activeGenres as $genre)
-                                                        @if(!in_array($genre->genre_id, $inputs['genre_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $genre->genre_id }}"
-                                                                data-title="{{ strtolower($genre->getTranslated('title', app()->getLocale())) }}">
-                                                                {{ $genre->getTranslated('title', app()->getLocale()) }}
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
+                                                @foreach($this->availableGenres as $genre)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $genre->genre_id }}"
+                                                        data-title="{{ strtolower($genre->getTranslated('title', app()->getLocale())) }}">
+                                                        {{ $genre->getTranslated('title', app()->getLocale()) }}
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
 
@@ -289,17 +269,13 @@
                                         <div class="col-5">
                                             <label class="form-label small">Seçilen Türler</label>
                                             <div class="listbox" id="selected-genres">
-                                                @if(isset($this->activeGenres))
-                                                    @foreach($this->activeGenres as $genre)
-                                                        @if(in_array($genre->genre_id, $inputs['genre_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $genre->genre_id }}"
-                                                                data-title="{{ strtolower($genre->getTranslated('title', app()->getLocale())) }}">
-                                                                {{ $genre->getTranslated('title', app()->getLocale()) }}
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
+                                                @foreach($this->selectedGenres as $genre)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $genre->genre_id }}"
+                                                        data-title="{{ strtolower($genre->getTranslated('title', app()->getLocale())) }}">
+                                                        {{ $genre->getTranslated('title', app()->getLocale()) }}
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
@@ -338,20 +314,16 @@
                                         <div class="col-5">
                                             <label class="form-label small">Tüm Kurumlar</label>
                                             <div class="listbox" id="available-corporates">
-                                                @if(isset($this->activeCorporates))
-                                                    @foreach($this->activeCorporates as $corporate)
-                                                        @if(!in_array($corporate->id, $inputs['corporate_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $corporate->id }}"
-                                                                data-title="{{ strtolower($corporate->company_name) }}">
-                                                                {{ $corporate->company_name }}
-                                                                @if($corporate->branch_name)
-                                                                    <small class="text-muted">- {{ $corporate->branch_name }}</small>
-                                                                @endif
-                                                            </div>
+                                                @foreach($this->availableCorporates as $corporate)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $corporate->id }}"
+                                                        data-title="{{ strtolower($corporate->company_name) }}">
+                                                        {{ $corporate->company_name }}
+                                                        @if($corporate->branch_name)
+                                                            <small class="text-muted">- {{ $corporate->branch_name }}</small>
                                                         @endif
-                                                    @endforeach
-                                                @endif
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
 
@@ -369,20 +341,16 @@
                                         <div class="col-5">
                                             <label class="form-label small">Seçilen Kurumlar</label>
                                             <div class="listbox" id="selected-corporates">
-                                                @if(isset($this->activeCorporates))
-                                                    @foreach($this->activeCorporates as $corporate)
-                                                        @if(in_array($corporate->id, $inputs['corporate_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $corporate->id }}"
-                                                                data-title="{{ strtolower($corporate->company_name) }}">
-                                                                {{ $corporate->company_name }}
-                                                                @if($corporate->branch_name)
-                                                                    <small class="text-muted">- {{ $corporate->branch_name }}</small>
-                                                                @endif
-                                                            </div>
+                                                @foreach($this->selectedCorporates as $corporate)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $corporate->id }}"
+                                                        data-title="{{ strtolower($corporate->company_name) }}">
+                                                        {{ $corporate->company_name }}
+                                                        @if($corporate->branch_name)
+                                                            <small class="text-muted">- {{ $corporate->branch_name }}</small>
                                                         @endif
-                                                    @endforeach
-                                                @endif
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
@@ -466,8 +434,23 @@
                             </div>
                         @endforeach
 
-                        <!-- 4. Aktif/Pasif -->
+                        <!-- 4. Öne Çıkan & Aktif/Pasif -->
                         <div class="row mb-3 mt-4">
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_featured" name="is_featured" wire:model="inputs.is_featured"
+                                        value="1"
+                                        {{ isset($inputs['is_featured']) && $inputs['is_featured'] ? 'checked' : '' }} />
+
+                                    <div class="state p-warning p-on ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.featured') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.not_featured') }}</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-12 col-md-6 col-lg-3">
                                 <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                     <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Şifreleme Sistemi - Sonraki Faz Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-medium">📋 Planlama</span>
+                <span class="bg-slate-700 text-slate-300 px-3 py-1 rounded text-xs">Sonraki Faz</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-3">🔐 HLS Şifreleme Sistemi - Gelecek Faz Planı</h1>
+            <p class="text-slate-400 text-lg">Muzibu Müzik Platformu - AES-128 Şifreleme Uygulaması</p>
+            <div class="flex gap-4 mt-3 text-sm text-slate-400">
+                <span>📅 11 Ocak 2026</span>
+                <span>🎵 28,203 HLS Dosyası</span>
+                <span>⏱️ ~6 Saat İşlem Süresi</span>
+            </div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                📝 Basit Anlatım (Herkes İçin)
+            </h3>
+            <div class="space-y-4 text-slate-200">
+                <p><strong>Ne Yaptık?</strong></p>
+                <p>Müzik dosyalarını çalmak için kullandığımız HLS (parçalı müzik sistemi) dosyalarına şifreleme sistemi ekledik. Artık yeni eklenen şarkılar otomatik olarak şifreli HLS dosyası olarak kaydediliyor.</p>
+
+                <p><strong>Neden Önemli?</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>🔒 Müzik dosyalarını kopyalamak zorlaşır</li>
+                    <li>🛡️ İçerik koruması sağlanır</li>
+                    <li>💰 Premium sistemi için altyapı hazır olur</li>
+                    <li>⚡ İleride kullanıcı bazlı erişim kontrolü eklenebilir</li>
+                </ul>
+
+                <p><strong>Şu Anda Ne Durumda?</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>✅ Şifreleme sistemi yazıldı ve test edildi</li>
+                    <li>✅ Yeni eklenen şarkılar otomatik şifreleniyor</li>
+                    <li>⏸️ Mevcut 28,203 şarkı hala şifresiz (karar bekleniyor)</li>
+                    <li>⏸️ Yetkilendirme sistemi henüz eklenmedi (sonraki aşama)</li>
+                </ul>
+
+                <p><strong>Ne Karar Vereceğiz?</strong></p>
+                <p>Mevcut 28,203 şarkının HLS dosyalarını yeniden oluşturup şifreleyecek miyiz? Bu işlem yaklaşık 6 saat sürecek ve tüm HLS dosyalarını yeniden üretecek.</p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
+                🔧 Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+            <div class="space-y-4 text-slate-200">
+                <div>
+                    <p class="font-semibold text-blue-300 mb-2">Şifreleme Yöntemi:</p>
+                    <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                        <li><strong>Algoritma:</strong> AES-128 (Symmetric Encryption)</li>
+                        <li><strong>Key Size:</strong> 16 bytes (128 bit)</li>
+                        <li><strong>IV:</strong> Default (0x00000000000000000000000000000000)</li>
+                        <li><strong>Encryption Timing:</strong> FFmpeg encoding sırasında (post-processing değil!)</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-blue-300 mb-2">Oluşturulan Dosyalar:</p>
+                    <ul class="list-disc list-inside space-y-1 ml-4 text-sm font-mono">
+                        <li><code>storage/muzibu/hls/[song_id]/enc.key</code> - 16 byte encryption key</li>
+                        <li><code>storage/muzibu/hls/[song_id]/enc.keyinfo</code> - FFmpeg key info (geçici)</li>
+                        <li><code>storage/muzibu/hls/[song_id]/playlist.m3u8</code> - #EXT-X-KEY tag ile</li>
+                        <li><code>storage/muzibu/hls/[song_id]/segment-*.ts</code> - AES-128 encrypted segments</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-blue-300 mb-2">Değişen Dosya:</p>
+                    <p class="text-sm font-mono bg-slate-800 p-3 rounded">Modules/Muzibu/app/Jobs/ConvertToHLSJob.php</p>
+                    <ul class="list-disc list-inside space-y-1 ml-4 text-sm mt-2">
+                        <li>Line 82-145: Encryption key generation eklendi</li>
+                        <li>FFmpeg parametresi: <code>-hls_key_info_file</code> eklendi</li>
+                        <li>Key URI format: <code>https://muzibu.com.tr/storage/muzibu/hls/[song_id]/enc.key</code></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-blue-300 mb-2">FFmpeg Komutu (Değişiklik):</p>
+                    <div class="bg-slate-800 p-4 rounded text-xs font-mono overflow-x-auto">
+                        <p class="text-red-400 mb-2">// ESKI (Şifresiz):</p>
+                        <p class="text-slate-400 mb-4">ffmpeg -i input.mp3 -map 0:a -c:a aac -b:a 128k -hls_time 10 -f hls playlist.m3u8</p>
+
+                        <p class="text-green-400 mb-2">// YENİ (Şifreli):</p>
+                        <p class="text-slate-200">ffmpeg -i input.mp3 -map 0:a -c:a aac -b:a 128k <span class="text-yellow-400">-hls_key_info_file enc.keyinfo</span> -hls_time 10 -f hls playlist.m3u8</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-blue-300 mb-2">Playlist Örneği (m3u8):</p>
+                    <div class="bg-slate-800 p-4 rounded text-xs font-mono overflow-x-auto">
+                        <pre class="text-slate-300">#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXT-X-MEDIA-SEQUENCE:0
+<span class="text-yellow-400">#EXT-X-KEY:METHOD=AES-128,URI="https://muzibu.com.tr/storage/muzibu/hls/10000/enc.key",IV=0x00000000000000000000000000000000</span>
+#EXTINF:10.005333,
+segment-000.ts
+#EXTINF:9.994667,
+segment-001.ts
+#EXT-X-ENDLIST</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mevcut Durum -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                📊 Mevcut Durum
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-green-900/30 border border-green-700 rounded p-4">
+                    <div class="text-green-400 font-semibold mb-2">✅ Tamamlanan İşlemler</div>
+                    <ul class="text-sm space-y-2 text-slate-300">
+                        <li>• ConvertToHLSJob.php şifreleme kodu eklendi</li>
+                        <li>• Encryption key generation sistemi hazır</li>
+                        <li>• FFmpeg parametreleri güncellendi</li>
+                        <li>• Test edildi ve çalıştığı doğrulandı (song 13512)</li>
+                        <li>• Horizon worker'lar yeni kod ile çalışıyor (202 worker)</li>
+                        <li>• Yeni şarkılar otomatik şifrelenmeye başladı</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded p-4">
+                    <div class="text-yellow-400 font-semibold mb-2">⏸️ Bekleyen İşlemler</div>
+                    <ul class="text-sm space-y-2 text-slate-300">
+                        <li>• 28,203 mevcut HLS dosyası hala şifresiz</li>
+                        <li>• Yetkilendirme sistemi (middleware) eklenmedi</li>
+                        <li>• Premium kullanıcı kontrolü yok</li>
+                        <li>• Enc.key URL'leri herkese açık (henüz)</li>
+                        <li>• Re-encoding kararı verilmedi (~6 saat)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-4 bg-slate-700/50 rounded p-4">
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <div class="text-3xl font-bold text-blue-400">28,203</div>
+                        <div class="text-sm text-slate-400">Toplam HLS Dosyası</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-yellow-400">1</div>
+                        <div class="text-sm text-slate-400">Şifreli HLS (Test)</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-green-400">~6 saat</div>
+                        <div class="text-sm text-slate-400">Tahmini İşlem Süresi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sonraki Faz Adımları -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-purple-400 mb-4 flex items-center gap-2">
+                🚀 Sonraki Faz Adımları
+            </h3>
+            <div class="space-y-6">
+                <!-- Adım 1 -->
+                <div class="border-l-4 border-purple-600 pl-4">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">1</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Karar Verme: Mevcut HLS'leri Yeniden Şifrele</h4>
+                            <p class="text-slate-300 text-sm mb-3">28,203 şarkının HLS dosyalarını şifreli olarak yeniden üretmek gerekecek.</p>
+
+                            <div class="bg-slate-800 rounded p-3 space-y-2 text-sm">
+                                <p class="text-slate-400 font-semibold">İşlem Adımları:</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 ml-4">
+                                    <li>Tüm HLS klasörlerini sil: <code>storage/tenant1001/app/public/muzibu/hls/*/</code></li>
+                                    <li>Database'de <code>hls_path</code> kolonunu NULL yap (28,203 kayıt)</li>
+                                    <li>28,203 ConvertToHLSJob dispatch et (queue'ye at)</li>
+                                    <li>Horizon monitoring ile takip et</li>
+                                    <li>Tahmini süre: ~6 saat (135 worker ile)</li>
+                                </ul>
+                            </div>
+
+                            <div class="mt-3 bg-yellow-900/30 border border-yellow-700 rounded p-3">
+                                <p class="text-yellow-400 text-sm font-semibold mb-1">⚠️ Risk:</p>
+                                <ul class="text-slate-300 text-xs space-y-1 ml-4">
+                                    <li>• 6 saat boyunca site yavaşlayabilir (Horizon yoğunluğu)</li>
+                                    <li>• Bazı MP3 dosyaları silinmiş olabilir (HLS üretilemez)</li>
+                                    <li>• İşlem sırasında bazı şarkılar geçici olarak çalışmayabilir</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="border-l-4 border-purple-600 pl-4">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">2</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Yetkilendirme Sistemi (Middleware)</h4>
+                            <p class="text-slate-300 text-sm mb-3">Enc.key dosyalarına erişimi kontrol eden middleware ekle.</p>
+
+                            <div class="bg-slate-800 rounded p-3 space-y-2 text-sm">
+                                <p class="text-slate-400 font-semibold">Yapılacaklar:</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 ml-4">
+                                    <li>Middleware oluştur: <code>CheckHLSKeyAccess.php</code></li>
+                                    <li>Route ekle: <code>GET /storage/muzibu/hls/{song_id}/enc.key</code></li>
+                                    <li>Kontroller:
+                                        <ul class="list-circle list-inside ml-6 mt-1 text-xs">
+                                            <li>Kullanıcı giriş yapmış mı?</li>
+                                            <li>Premium aboneliği var mı?</li>
+                                            <li>Rate limiting (DDoS koruması)</li>
+                                            <li>IP bazlı kara liste</li>
+                                        </ul>
+                                    </li>
+                                    <li>Response: Binary key file (16 bytes)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-700 rounded p-3 mt-3">
+                                <p class="text-slate-400 text-xs font-semibold mb-2">Örnek Kod:</p>
+                                <pre class="text-xs text-slate-300 overflow-x-auto"><code>Route::get('/storage/muzibu/hls/{songId}/enc.key', function ($songId) {
+    // Kullanıcı kontrolü
+    if (!auth()->check()) {
+        abort(401, 'Unauthorized');
+    }
+
+    // Premium kontrolü (isteğe bağlı)
+    if (!auth()->user()->isPremium()) {
+        abort(403, 'Premium membership required');
+    }
+
+    // Key dosyasını döndür
+    $keyPath = storage_path("app/public/muzibu/hls/{$songId}/enc.key");
+    return response()->file($keyPath);
+})->middleware(['web', 'auth', 'throttle:60,1']);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="border-l-4 border-purple-600 pl-4">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">3</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Premium Kullanıcı Kontrolü</h4>
+                            <p class="text-slate-300 text-sm mb-3">Ücretsiz kullanıcılara düşük kalite, premium kullanıcılara tam kalite HLS sun.</p>
+
+                            <div class="bg-slate-800 rounded p-3 space-y-2 text-sm">
+                                <p class="text-slate-400 font-semibold">Strateji:</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 ml-4">
+                                    <li><strong>Ücretsiz:</strong> 64kbps AAC HLS (şifresiz veya şifreli, enc.key açık)</li>
+                                    <li><strong>Premium:</strong> 320kbps AAC HLS (şifreli, enc.key middleware korumalı)</li>
+                                    <li>Player'da otomatik kalite seçimi (kullanıcı durumuna göre)</li>
+                                    <li>Database: <code>hls_path_low</code> ve <code>hls_path_high</code> kolonları ekle</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="border-l-4 border-purple-600 pl-4">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">4</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Monitoring & Analytics</h4>
+                            <p class="text-slate-300 text-sm mb-3">Enc.key erişim logları ve şüpheli aktivite takibi.</p>
+
+                            <div class="bg-slate-800 rounded p-3 space-y-2 text-sm">
+                                <p class="text-slate-400 font-semibold">Takip Edilecekler:</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 ml-4">
+                                    <li>Enc.key istekleri (IP, kullanıcı, timestamp)</li>
+                                    <li>Şüpheli aktivite: Çok fazla key isteği (scraping)</li>
+                                    <li>Başarısız yetkilendirme denemeleri</li>
+                                    <li>Günlük/haftalık rapor (Dashboard widget)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Önemli Notlar -->
+        <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-red-400 mb-4 flex items-center gap-2">
+                ⚠️ Önemli Notlar ve Riskler
+            </h3>
+            <div class="space-y-4 text-slate-200">
+                <div>
+                    <p class="font-semibold text-red-300 mb-2">❌ Post-Encryption ÇALIŞMAZ!</p>
+                    <p class="text-sm text-slate-300">Mevcut şifresiz .ts dosyalarının üstüne enc.key eklemek işe yaramaz. Şifreleme FFmpeg encoding sırasında yapılmalı. Test folder 10000'de bu kanıtlandı (fake encryption).</p>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-red-300 mb-2">🔄 Re-Encoding Zorunlu</p>
+                    <p class="text-sm text-slate-300">28,203 HLS dosyasını şifrelemek için tek yol: Tüm HLS'leri silip yeniden üretmek (~6 saat süre).</p>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-red-300 mb-2">🗑️ Silinen MP3'ler</p>
+                    <p class="text-sm text-slate-300">Bazı şarkıların MP3 dosyaları silinmiş olabilir. Bu şarkılar için HLS üretilemeyecek. Manuel kontrol gerekebilir.</p>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-red-300 mb-2">⚡ Sistem Yükü</p>
+                    <p class="text-sm text-slate-300">28,203 job aynı anda queue'ye girecek. Horizon 135 worker ile sürekli çalışacak. Site performansı geçici olarak etkilenebilir.</p>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-red-300 mb-2">🔒 Enc.Key Erişimi</p>
+                    <p class="text-sm text-slate-300">Şu anda enc.key dosyaları herkese açık URL'de. Middleware eklenmeden gerçek koruma sağlanmaz. Sadece content scraping zorlaşır.</p>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-red-300 mb-2">🎯 Horizon Restart</p>
+                    <p class="text-sm text-slate-300">Kod değişikliğinden sonra mutlaka Horizon restart gerekli. Eski worker'lar eski kodu çalıştırır!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Sonuçları -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                🧪 Test Sonuçları
+            </h3>
+            <div class="space-y-4">
+                <div class="bg-green-900/30 border border-green-700 rounded p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-green-400 text-2xl">✅</span>
+                        <span class="font-semibold text-green-300">Test 1: Yeni HLS Şifreleme (Song 13512) - BAŞARILI</span>
+                    </div>
+                    <ul class="text-sm space-y-1 text-slate-300 ml-6">
+                        <li>• ConvertToHLSJob dispatch edildi</li>
+                        <li>• enc.key (16 bytes) oluşturuldu</li>
+                        <li>• enc.keyinfo oluşturuldu</li>
+                        <li>• playlist.m3u8 #EXT-X-KEY tag'i eklendi</li>
+                        <li>• 16 segment .ts dosyası şifreli üretildi</li>
+                        <li>• Test klasörü sonradan temizlendi</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-700 rounded p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-red-400 text-2xl">❌</span>
+                        <span class="font-semibold text-red-300">Test 2: Post-Encryption (Folder 10000) - BAŞARISIZ</span>
+                    </div>
+                    <ul class="text-sm space-y-1 text-slate-300 ml-6">
+                        <li>• Mevcut şifresiz HLS'e enc.key eklendi</li>
+                        <li>• playlist.m3u8'e #EXT-X-KEY tag'i eklendi</li>
+                        <li>• SONUÇ: .ts dosyaları şifrelenmediği için çalışmaz</li>
+                        <li>• Player .ts'leri decrypt etmeye çalışır → hata/garbled audio</li>
+                        <li>• Folder 10000 "fake encrypted" olarak bırakıldı (inceleme için)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/30 border border-blue-700 rounded p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-blue-400 text-2xl">ℹ️</span>
+                        <span class="font-semibold text-blue-300">Sonuç: FFmpeg Encoding Şart</span>
+                    </div>
+                    <p class="text-sm text-slate-300 ml-6">Şifreleme mutlaka FFmpeg encoding sırasında yapılmalı. Post-processing olarak enc.key eklemek işe yaramaz. Re-encoding zorunlu.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karar Noktaları -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-purple-300 mb-4 flex items-center gap-2">
+                🎯 Karar Noktaları
+            </h3>
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded p-4">
+                    <p class="font-semibold text-white mb-2">1️⃣ 28,203 HLS'i Şimdi Mi Şifreleyelim?</p>
+                    <div class="grid grid-cols-2 gap-4 mt-3">
+                        <div class="bg-green-900/30 border border-green-700 rounded p-3">
+                            <p class="text-green-400 font-semibold text-sm mb-2">✅ EVET</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>• Tüm içerik korunur</li>
+                                <li>• Premium sistemi hazır olur</li>
+                                <li>• ~6 saat bekle, işlem bitsin</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/30 border border-red-700 rounded p-3">
+                            <p class="text-red-400 font-semibold text-sm mb-2">❌ HAYIR</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>• Eski şarkılar şifresiz kalır</li>
+                                <li>• Sadece yeni şarkılar şifreli</li>
+                                <li>• İsteğe bağlı: İleride yapılabilir</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded p-4">
+                    <p class="font-semibold text-white mb-2">2️⃣ Yetkilendirme Sistemini Ne Zaman Ekleyelim?</p>
+                    <ul class="text-sm text-slate-300 space-y-2 ml-4">
+                        <li>• <strong>Öncelik 1:</strong> Re-encoding bittikten sonra (şifreleme tamamlanınca)</li>
+                        <li>• <strong>Öncelik 2:</strong> Premium sistemi aktif edilmeden önce</li>
+                        <li>• <strong>Tavsiye:</strong> Şifreleme + Yetkilendirme aynı anda deploy edilebilir</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded p-4">
+                    <p class="font-semibold text-white mb-2">3️⃣ Premium Kalite Farklılaştırması?</p>
+                    <ul class="text-sm text-slate-300 space-y-2 ml-4">
+                        <li>• <strong>Seçenek 1:</strong> Ücretsiz 64kbps, Premium 320kbps (iki HLS versiyonu)</li>
+                        <li>• <strong>Seçenek 2:</strong> Ücretsiz 30 saniye preview, Premium tam şarkı</li>
+                        <li>• <strong>Seçenek 3:</strong> Ücretsiz reklam arası, Premium reklamsız (gelecek özellik)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>🤖 Claude AI ile oluşturuldu - Muzibu HLS Şifreleme Sistemi</p>
+            <p class="mt-2">📅 11 Ocak 2026 - Sonraki Faz Planlama Raporu</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\App\Services\Tenant;
+namespace Modules\AI\App\Services\Tenant1001;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
  * @package Modules\AI\App\Services\Tenant
  * @version 1.0
  */
-class Tenant1001SubscriptionHelper
+class SubscriptionHelper
 {
     /**
      * Kullanıcının abonelik durumunu döndürür
@@ -198,37 +198,116 @@ class Tenant1001SubscriptionHelper
 
     /**
      * Abonelik paketlerini listele (AI'ya context için)
+     * Database'den gerçek fiyatları çeker (tenant-aware)
      *
      * @return array
      */
     public static function getAvailablePlans(): array
     {
-        // Database'den subscription plans çek (tenant-aware)
-        // Şimdilik static, sonra DB'den çekilecek
-        return [
-            [
-                'name' => 'Ücretsiz',
-                'price' => '0 TL',
-                'duration' => 'Süresiz',
-                'features' => self::getFreeFeatures(),
-            ],
-            [
-                'name' => 'Aylık Premium',
-                'price' => '29.90 TL',
-                'duration' => '1 Ay',
-                'features' => self::getPremiumFeatures(),
-            ],
-            [
-                'name' => 'Yıllık Premium',
-                'price' => '299 TL',
-                'duration' => '12 Ay',
-                'features' => array_merge(self::getPremiumFeatures(), ['🎁 2 ay hediye!']),
-            ],
+        $plans = [];
+
+        // Ücretsiz plan (her zaman var)
+        $plans[] = [
+            'name' => 'Ücretsiz',
+            'price' => '0 TL',
+            'duration' => 'Süresiz',
+            'features' => self::getFreeFeatures(),
+            'price_with_tax' => '0 TL',
+            'price_without_tax' => '0 TL',
+            'tax_info' => 'KDV yok',
         ];
+
+        try {
+            // Database'den aktif ve public planları çek (tenant-aware)
+            $dbPlans = \Modules\Subscription\App\Models\SubscriptionPlan::active()
+                ->public()
+                ->ordered()
+                ->get();
+
+            foreach ($dbPlans as $plan) {
+                // Trial planları atla (deneme üyeliği AI'da gösterilmez)
+                if ($plan->is_trial) {
+                    continue;
+                }
+
+                // Her cycle için ayrı plan göster
+                $sortedCycles = $plan->getSortedCycles();
+
+                foreach ($sortedCycles as $cycleKey => $cycle) {
+                    // Fiyat bilgilerini al
+                    $basePrice = $plan->getCycleBasePrice($cycleKey); // KDV Hariç
+                    $priceWithTax = $plan->getCyclePriceWithTax($cycleKey); // KDV Dahil
+                    $taxRate = $plan->tax_rate ?? 20.0;
+
+                    // Cycle adını Türkçeleştir
+                    $cycleName = $cycleKey;
+                    $duration = $cycle['duration_days'] ?? 30;
+
+                    if ($cycleKey === 'aylik') {
+                        $cycleName = 'Aylık';
+                    } elseif ($cycleKey === 'yillik') {
+                        $cycleName = 'Yıllık';
+                    } elseif ($cycleKey === '15-gunluk') {
+                        $cycleName = '15 Günlük';
+                    } elseif ($cycleKey === '6-aylik') {
+                        $cycleName = '6 Aylık';
+                    } else {
+                        // Genel format: "30 Günlük", "90 Günlük"
+                        $cycleName = $duration . ' Günlük';
+                    }
+
+                    // Plan adı: "Premium Aylık", "Premium Yıllık"
+                    $planName = $plan->titleText . ' - ' . $cycleName;
+
+                    // Özellikler
+                    $features = self::getPremiumFeatures();
+
+                    // Yıllık plan için ekstra bonus
+                    if ($cycleKey === 'yillik') {
+                        $features[] = '🎁 En avantajlı seçenek!';
+                    }
+
+                    $plans[] = [
+                        'name' => $planName,
+                        'price' => number_format($basePrice, 0, '', '') . ' TRY',  // AI için: "4000 TRY" (binlik ayraç YOK!)
+                        'price_with_tax' => number_format($priceWithTax, 0, '', '') . ' TRY',
+                        'price_without_tax' => number_format($basePrice, 0, '', '') . ' TRY',
+                        'tax_info' => 'KDV %' . $taxRate . ' (' . number_format($priceWithTax - $basePrice, 0, '', '') . ' TRY)',
+                        'duration' => $duration . ' gün',
+                        'features' => $features,
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            // Hata durumunda fallback (statik bilgi - gerçek fiyatlar!)
+            \Log::error('Tenant1001SubscriptionHelper::getAvailablePlans error: ' . $e->getMessage());
+
+            $plans[] = [
+                'name' => 'Premium - Aylık',
+                'price' => '600 TRY',  // Gerçek fiyat (binlik ayraç YOK!)
+                'price_with_tax' => '720 TRY',
+                'price_without_tax' => '600 TRY',
+                'tax_info' => 'KDV %20 (120 TRY)',
+                'duration' => '30 gün',
+                'features' => self::getPremiumFeatures(),
+            ];
+
+            $plans[] = [
+                'name' => 'Premium - Yıllık',
+                'price' => '4000 TRY',  // Gerçek fiyat (binlik ayraç YOK!)
+                'price_with_tax' => '4800 TRY',
+                'price_without_tax' => '4000 TRY',
+                'tax_info' => 'KDV %20 (800 TRY)',
+                'duration' => '365 gün',
+                'features' => array_merge(self::getPremiumFeatures(), ['🎁 En avantajlı seçenek!']),
+            ];
+        }
+
+        return $plans;
     }
 
     /**
-     * Abonelik paketlerini AI context formatında döndür
+     * Abonelik paketlerini AI context formatında döndür (Card Format)
      *
      * @return string
      */
@@ -236,14 +315,36 @@ class Tenant1001SubscriptionHelper
     {
         $plans = self::getAvailablePlans();
         $context = "**ABONELİK PAKETLERİ:**\n\n";
+        $context .= "*Tüm paketlerimiz aşağıda card formatında listelenmiştir. Fiyatlar KDV dahil ve KDV hariç olarak ayrıca belirtilmiştir.*\n\n";
+        $context .= "---\n\n";
 
         foreach ($plans as $plan) {
-            $context .= "### {$plan['name']} - {$plan['price']}/{$plan['duration']}\n";
+            // Card başlık
+            $context .= "### 🎵 {$plan['name']}\n\n";
+
+            // Fiyat bilgisi (KDV Dahil vurgulanır)
+            if (isset($plan['price_with_tax']) && $plan['price'] !== '0 TL') {
+                $context .= "**💰 Fiyat:**\n";
+                $context .= "- **KDV Dahil:** {$plan['price_with_tax']}\n";
+                $context .= "- KDV Hariç: {$plan['price_without_tax']}\n";
+                $context .= "- {$plan['tax_info']}\n\n";
+            } else {
+                $context .= "**💰 Fiyat:** {$plan['price']}\n\n";
+            }
+
+            // Süre
+            $context .= "**⏱️ Süre:** {$plan['duration']}\n\n";
+
+            // Özellikler
+            $context .= "**✨ Özellikler:**\n";
             foreach ($plan['features'] as $feature) {
                 $context .= "- {$feature}\n";
             }
-            $context .= "\n";
+
+            $context .= "\n---\n\n";
         }
+
+        $context .= "*Premium paketlerimiz hakkında daha fazla bilgi için [buraya tıklayın](/pricing).*\n";
 
         return $context;
     }

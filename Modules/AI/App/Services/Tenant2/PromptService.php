@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\App\Services\Tenant;
+namespace Modules\AI\App\Services\Tenant2;
 
 use Modules\AI\App\Contracts\TenantPromptServiceInterface;
 
@@ -21,7 +21,7 @@ use Modules\AI\App\Contracts\TenantPromptServiceInterface;
  * @package Modules\AI\App\Services\Tenant
  * @version 2.1
  */
-class Tenant2PromptService implements TenantPromptServiceInterface
+class PromptService implements TenantPromptServiceInterface
 {
     /**
      * Tenant 2/3 specific prompt'u oluştur

@@ -1336,6 +1336,8 @@ document.addEventListener('alpine:init', () => {
 
         // 🚀 Right sidebar visibility (dynamic based on route)
         // Initial value calculated from current path
+        // 2 SÜTUN (sidebar YOK): /dashboard, /corporate, /profile, /subscription, /my-certificate, /cart
+        // 3 SÜTUN (sidebar VAR): Müzik sayfaları (songs, albums, playlists, genres, sectors, radios, search, favorites, vb.)
         rightSidebarVisible: (() => {
             const path = window.location.pathname;
             const routes = [
@@ -1344,9 +1346,8 @@ document.addEventListener('alpine:init', () => {
                 '/genres', '/sectors', '/radios', '/search',
                 '/muzibu/favorites',
                 '/muzibu/my-playlists',
-                '/muzibu/listening-history',
-                '/profile',
-                '/corporate'
+                '/muzibu/corporate-playlists',
+                '/muzibu/listening-history'
             ];
             return routes.some(route => {
                 if (route === '/') return path === '/';
@@ -1354,17 +1355,16 @@ document.addEventListener('alpine:init', () => {
             });
         })(),
 
-        // Routes where right sidebar should be visible
-        // NOTE: /dashboard and /muzibu/corporate-playlists should NOT show sidebar
+        // Routes where right sidebar should be visible (3 sütun layout)
+        // 2 SÜTUN SAYFALAR (bu listede OLMAYAN): /dashboard, /corporate, /profile, /subscription, /my-certificate, /cart
         _rightSidebarRoutes: [
             '/', '/home',
             '/songs', '/albums', '/artists', '/playlists',
             '/genres', '/sectors', '/radios', '/search',
             '/muzibu/favorites',
             '/muzibu/my-playlists',
-            '/muzibu/listening-history',
-            '/profile',
-            '/corporate'
+            '/muzibu/corporate-playlists',
+            '/muzibu/listening-history'
         ],
 
         /**
@@ -1380,6 +1380,42 @@ document.addEventListener('alpine:init', () => {
             });
 
             this.rightSidebarVisible = shouldShow;
+
+            // 🔧 FIX: Update grid class to prevent class conflicts after SPA navigation
+            this._updateGridClass(shouldShow);
+        },
+
+        /**
+         * 🔧 Update grid class manually to fix class conflicts
+         * PHP adds initial grid class, but SPA navigation doesn't remove it
+         * This causes Tailwind class conflicts where both 2-col and 3-col classes exist
+         */
+        _updateGridClass(showSidebar) {
+            const mainGrid = document.querySelector('#main-app-grid');
+            if (!mainGrid) return;
+
+            // Grid class definitions (must match app.blade.php layout)
+            const gridWithSidebar = [
+                'md:grid-cols-[1fr_280px]',
+                'lg:grid-cols-[220px_1fr_280px]',
+                'xl:grid-cols-[220px_1fr_320px]',
+                '2xl:grid-cols-[220px_1fr_360px]'
+            ];
+            const gridNoSidebar = [
+                'lg:grid-cols-[220px_1fr]',
+                'xl:grid-cols-[220px_1fr]',
+                '2xl:grid-cols-[220px_1fr]'
+            ];
+
+            // Remove all grid column classes first
+            mainGrid.classList.remove(...gridWithSidebar, ...gridNoSidebar);
+
+            // Add correct classes based on sidebar visibility
+            if (showSidebar) {
+                mainGrid.classList.add(...gridWithSidebar);
+            } else {
+                mainGrid.classList.add(...gridNoSidebar);
+            }
         },
 
         // Preview mode (for list page hover)

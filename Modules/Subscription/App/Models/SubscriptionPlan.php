@@ -173,11 +173,6 @@ class SubscriptionPlan extends BaseModel
             return $cycle['price_type'];
         }
 
-        // Plan-level default varsa kullan
-        if (isset($this->default_price_type)) {
-            return $this->default_price_type;
-        }
-
         // Global default: without_tax (Muzibu mevcut fiyatlar KDV hariç)
         return 'without_tax';
     }

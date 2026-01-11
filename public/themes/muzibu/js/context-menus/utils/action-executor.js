@@ -12,8 +12,6 @@ const ActionExecutor = {
      * @param {object} data - Content data
      */
     async execute(type, action, data) {
-        console.log(`🎯 ActionExecutor: type=${type}, action=${action}, id=${data.id}`);
-
         // Type'a göre action handler'ı seç
         const actionHandlers = {
             song: window.SongActions,

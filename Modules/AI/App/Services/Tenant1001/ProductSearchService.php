@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\App\Services\Tenant;
+namespace Modules\AI\App\Services\Tenant1001;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
@@ -25,7 +25,7 @@ use Modules\Muzibu\App\Models\Radio;
  * @package Modules\AI\App\Services\Tenant
  * @version 1.0
  */
-class Tenant1001ProductSearchService
+class ProductSearchService
 {
     protected string $locale;
 
@@ -442,12 +442,23 @@ class Tenant1001ProductSearchService
             // Şarkı play linki
             $playUrl = url("/play/song/{$song->song_id}");
 
+            // Görsel URL (album cover veya default)
+            $imageUrl = '';
+            if ($song->album && $song->album->getFirstMediaUrl('images')) {
+                $imageUrl = $song->album->getFirstMediaUrl('images');
+            } elseif ($song->getFirstMediaUrl('images')) {
+                $imageUrl = $song->getFirstMediaUrl('images');
+            }
+
             $context .= "### {$count}. {$title}\n";
             $context .= "- Sanatçı: {$artistName}\n";
             $context .= "- Albüm: {$albumName}\n";
             $context .= "- Süre: {$song->duration} saniye\n";
             $context .= "- Tür: {$genreName}\n";
             $context .= "- Song ID: {$song->song_id}\n";
+            if (!empty($imageUrl)) {
+                $context .= "- Görsel: {$imageUrl}\n";
+            }
             $context .= "- **▶️ Çal:** {$playUrl}\n";
             $context .= "\n";
         }

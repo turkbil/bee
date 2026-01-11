@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\AI\App\Services\Tenant;
+namespace Modules\AI\App\Services\Tenant2;
 
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
@@ -26,7 +26,7 @@ use App\Services\AI\HybridSearchService;
  * @package Modules\AI\App\Services\Tenant
  * @version 2.0
  */
-class Tenant2ProductSearchService
+class ProductSearchService
 {
     protected string $locale;
     protected HybridSearchService $hybridSearch;
@@ -1386,6 +1386,107 @@ Transpalet kategorisinde 2 ton yoksa:
         }
 
         return '';
+    }
+
+    /**
+     * 🎯 FİYAT SORGUSU İŞLEYİCİ
+     *
+     * iXTİF için özel fiyat sorgusu mantığı.
+     * "en ucuz forklift", "fiyat listesi" gibi sorgularda çağrılır.
+     *
+     * @param string $userMessage Kullanıcı mesajı
+     * @param int $limit Sonuç limiti
+     * @return array|null Fiyat sorgusu ise sonuçlar, değilse null
+     */
+    public function handlePriceQuery(string $userMessage, int $limit = 5): ?array
+    {
+        $lowerMessage = mb_strtolower($userMessage);
+
+        // Fiyat sorgusu mu kontrol et
+        if (!preg_match('/(fiyat|kaç\s*para|ne\s*kadar|maliyet|ücret|tutar|en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage)) {
+            return null; // Fiyat sorgusu değil
+        }
+
+        Log::info('🔍 Tenant2 Price Query Handler', [
+            'query' => mb_substr($userMessage, 0, 100),
+        ]);
+
+        // Spesifik ürün fiyatı mı genel liste mi?
+        $searchForProduct = !preg_match('/(en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage);
+        $isCheapest = preg_match('/(en\s+ucuz|en\s+uygun)/i', $lowerMessage);
+
+        // Yedek Parça kategorisini atla (ID: 44 - Çatal Kılıf)
+        $query = \Modules\Shop\App\Models\ShopProduct::whereNotNull('base_price')
+            ->where('base_price', '>', 0)
+            ->where('category_id', '!=', 44); // Yedek parça HARİÇ
+
+        // Spesifik ürün fiyatı soruluyorsa, ürün adını ara
+        if ($searchForProduct) {
+            // Mesajdan ürün kodlarını çıkar (F4, CPD18TVL, EFL181 gibi)
+            preg_match_all('/\b([A-Z]{1,3}\d{1,3}[A-Z]*\d*[A-Z]*)\b/i', $userMessage, $matches);
+
+            if (!empty($matches[1])) {
+                $query->where(function($q) use ($matches, $userMessage) {
+                    foreach ($matches[1] as $productCode) {
+                        $q->orWhere('title', 'LIKE', '%' . $productCode . '%')
+                          ->orWhere('sku', 'LIKE', '%' . $productCode . '%');
+                    }
+                    // Ayrıca tam mesajı da ara (örn: "transpalet" kelimesi)
+                    $keywords = ['transpalet', 'forklift', 'istif'];
+                    foreach ($keywords as $keyword) {
+                        if (stripos($userMessage, $keyword) !== false) {
+                            $q->orWhere('title', 'LIKE', '%' . $keyword . '%');
+                        }
+                    }
+                });
+            } else {
+                // Ürün kodu bulunamadı, genel arama yap
+                $cleanedMessage = preg_replace('/(fiyat|fiyatı|kaç|para|ne kadar)/i', '', $userMessage);
+                $query->where('title', 'LIKE', '%' . trim($cleanedMessage) . '%');
+            }
+        }
+
+        // SIRALAMA ÖNCELİĞİ: Homepage → Stok → Sort Order → Fiyat
+        $query
+            ->orderByRaw('show_on_homepage DESC, homepage_sort_order ASC')
+            ->orderBy('current_stock', 'desc')
+            ->orderBy('sort_order', 'asc');
+
+        // Fiyat sıralaması en sonda
+        if ($isCheapest) {
+            $query->orderBy('base_price', 'asc');
+        } else {
+            $query->orderBy('base_price', 'desc');
+        }
+
+        $products = $query->limit($limit)->get();
+
+        // Format products for AI
+        $formattedProducts = $products->map(function($p) {
+            return [
+                'title' => $p->getTranslated('title', app()->getLocale()),
+                'slug' => $p->getTranslated('slug', app()->getLocale()),
+                'base_price' => $p->base_price,
+                'currency' => $p->currency ?? 'TRY',
+                'current_stock' => $p->current_stock ?? 0,
+                'show_on_homepage' => $p->show_on_homepage ?? 0,
+                'homepage_sort_order' => $p->homepage_sort_order ?? 999,
+                'sort_order' => $p->sort_order ?? 0,
+                'category_id' => $p->category_id,
+            ];
+        })->toArray();
+
+        Log::info('✅ Tenant2 Price Query Results', [
+            'count' => count($formattedProducts),
+            'is_cheapest' => $isCheapest,
+        ]);
+
+        return [
+            'products' => $formattedProducts,
+            'count' => count($formattedProducts),
+            'search_layer' => 'tenant2_price_query',
+            'is_price_query' => true,
+        ];
     }
 
     /**

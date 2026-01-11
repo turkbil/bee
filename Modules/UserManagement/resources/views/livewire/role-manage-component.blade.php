@@ -86,21 +86,53 @@
                     <!-- İzinler -->
                     <div class="tab-pane fade" id="tabs-2">
                         <h4 class="mb-3">Rol İzinleri</h4>
-                        
+
                         @if(!$role->isBaseRole())
-                        <div class="row">
-                            @foreach($permissions as $permission)
-                            <div class="col-md-4 mb-3">
-                                <label class="form-check">
-                                    <input type="checkbox" 
-                                        wire:model="selectedPermissions" 
-                                        value="{{ $permission->id }}" 
-                                        class="form-check-input">
-                                    <span class="form-check-label">{{ $permission->name }}</span>
-                                </label>
-                            </div>
-                            @endforeach
+                        @if($shouldShowPermissions && count($groupedPermissions) > 0)
+                        <div class="mb-3">
+                            <input type="text"
+                                wire:model.live="permissionSearch"
+                                class="form-control"
+                                placeholder="İzin ara...">
                         </div>
+
+                        @foreach($groupedPermissions as $group => $permissions)
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="card-title d-flex align-items-center mb-0">
+                                    <label class="form-check me-2">
+                                        <input type="checkbox"
+                                            class="form-check-input"
+                                            wire:click="toggleGroupPermissions('{{ $group }}')"
+                                            @if($this->isGroupSelected($group)) checked @endif>
+                                    </label>
+                                    <span class="text-capitalize">{{ $group }}</span>
+                                    <span class="badge bg-blue ms-2">{{ count($permissions) }}</span>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @foreach($permissions as $permission)
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-check">
+                                            <input type="checkbox"
+                                                wire:model="inputs.permissions"
+                                                value="{{ $permission->name }}"
+                                                class="form-check-input">
+                                            <span class="form-check-label">{{ str_replace($group . '.', '', $permission->name) }}</span>
+                                        </label>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                        @else
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            İzin bulunamadı.
+                        </div>
+                        @endif
                         @else
                         <div class="alert alert-warning">
                             <i class="fas fa-exclamation-triangle me-2"></i>

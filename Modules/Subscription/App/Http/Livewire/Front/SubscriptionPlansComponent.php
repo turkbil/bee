@@ -17,6 +17,7 @@ class SubscriptionPlansComponent extends Component
     public $isPremium = false;
     public $isGuest = true;
     public $trialDays = 0;
+    public $daysLeft = 0;
 
     public function mount()
     {
@@ -31,12 +32,12 @@ class SubscriptionPlansComponent extends Component
             // Premium kontrolü
             if ($expiresAt && $expiresAt->isFuture()) {
                 $this->isPremium = true;
+                $this->daysLeft = (int) now()->diffInDays($expiresAt, false);
 
                 // 30 günden fazla süresi varsa planları gösterme
-                $daysLeft = (int) now()->diffInDays($expiresAt, false);
-                if ($daysLeft > 30) {
+                if ($this->daysLeft > 30) {
                     $this->hasEnoughSubscription = true;
-                    $this->remainingDays = $daysLeft;
+                    $this->remainingDays = $this->daysLeft;
                     $this->expiresAt = $expiresAt->format('d.m.Y');
                     $this->plans = collect(); // Boş collection
                     return;
@@ -219,6 +220,7 @@ class SubscriptionPlansComponent extends Component
             'isGuest' => $this->isGuest,
             'trialDays' => $this->trialDays,
             'userHasUsedTrial' => $this->userHasUsedTrial,
+            'daysLeft' => $this->daysLeft,
         ])->layout($layoutPath);
     }
 }

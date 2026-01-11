@@ -109,17 +109,13 @@
                                         <div class="col-5">
                                             <label class="form-label small">Tüm Çalma Listeleri</label>
                                             <div class="listbox" id="available-playlists">
-                                                @if(isset($this->activePlaylists))
-                                                    @foreach($this->activePlaylists as $playlist)
-                                                        @if(!in_array($playlist->playlist_id, $inputs['playlist_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $playlist->playlist_id }}"
-                                                                data-title="{{ strtolower($playlist->getTranslated('title', app()->getLocale())) }}">
-                                                                {{ $playlist->getTranslated('title', app()->getLocale()) }}
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
+                                                @foreach($this->availablePlaylists as $playlist)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $playlist->playlist_id }}"
+                                                        data-title="{{ strtolower($playlist->getTranslated('title', app()->getLocale())) }}">
+                                                        {{ $playlist->getTranslated('title', app()->getLocale()) }}
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
 
@@ -137,17 +133,13 @@
                                         <div class="col-5">
                                             <label class="form-label small">Seçilen Çalma Listeleri</label>
                                             <div class="listbox" id="selected-playlists">
-                                                @if(isset($this->activePlaylists))
-                                                    @foreach($this->activePlaylists as $playlist)
-                                                        @if(in_array($playlist->playlist_id, $inputs['playlist_ids'] ?? []))
-                                                            <div class="listbox-item"
-                                                                data-value="{{ $playlist->playlist_id }}"
-                                                                data-title="{{ strtolower($playlist->getTranslated('title', app()->getLocale())) }}">
-                                                                {{ $playlist->getTranslated('title', app()->getLocale()) }}
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
+                                                @foreach($this->selectedPlaylists as $playlist)
+                                                    <div class="listbox-item"
+                                                        data-value="{{ $playlist->playlist_id }}"
+                                                        data-title="{{ strtolower($playlist->getTranslated('title', app()->getLocale())) }}">
+                                                        {{ $playlist->getTranslated('title', app()->getLocale()) }}
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
@@ -184,18 +176,35 @@
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
-                        <!-- Aktif/Pasif - sadece bir kere -->
-                        <div class="mb-3 mt-4">
-                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
-                                    value="1"
-                                    {{ !isset($inputs['is_active']) || $inputs['is_active'] ? 'checked' : '' }} />
+                        <!-- Öne Çıkan & Aktif/Pasif -->
+                        <div class="row mb-3 mt-4">
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_featured" name="is_featured" wire:model="inputs.is_featured"
+                                        value="1"
+                                        {{ isset($inputs['is_featured']) && $inputs['is_featured'] ? 'checked' : '' }} />
 
-                                <div class="state p-success p-on ms-2">
-                                    <label>{{ __('muzibu::admin.radio.active') }}</label>
+                                    <div class="state p-warning p-on ms-2">
+                                        <label>{{ __('muzibu::admin.radio.featured') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.radio.not_featured') }}</label>
+                                    </div>
                                 </div>
-                                <div class="state p-danger p-off ms-2">
-                                    <label>{{ __('muzibu::admin.radio.inactive') }}</label>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
+                                        value="1"
+                                        {{ !isset($inputs['is_active']) || $inputs['is_active'] ? 'checked' : '' }} />
+
+                                    <div class="state p-success p-on ms-2">
+                                        <label>{{ __('muzibu::admin.radio.active') }}</label>
+                                    </div>
+                                    <div class="state p-danger p-off ms-2">
+                                        <label>{{ __('muzibu::admin.radio.inactive') }}</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -186,23 +186,28 @@ class MusicSearchService implements ModuleSearchInterface
      */
     public function getPromptRules(): string
     {
-        return "
-## MÜZİK ASSISTANT KURALLARI
+        // 🔥 KRİTİK FİX: PromptBuilder kullan (Tenant1001PromptService'ten ultra detaylı kurallar gelsin!)
+        // Bu sayede pricing ve playlist isimlendirme kuralları AI'ya ulaşır!
 
-1. **Şarkı Önerme:**
-   - Kullanıcı zevkine göre öner
-   - Tür/mood bazlı filtreleme yap
-   - Sanatçı bilgisi ver
+        $tenantId = tenant('id');
 
-2. **Playlist:**
-   - Tema bazlı playlist oluştur
-   - Süre belirt
-   - Çeşitlilik sağla
+        if (!$tenantId) {
+            \Log::warning('⚠️ MusicSearchService::getPromptRules() - No tenant context!');
+            return "## MÜZİK ASSISTANT KURALLARI\n\nKullanıcı müzik sorusu sorduğunda yardımcı ol.";
+        }
 
-3. **Ton:**
-   - Eğlenceli ve samimi ol
-   - Müzik terminolojisi kullan
-";
+        // PromptBuilder ile tenant-specific prompt al
+        $prompt = \App\Services\AI\PromptBuilder::buildSystemPrompt($tenantId, '');
+
+        // Validation
+        if (!\App\Services\AI\PromptBuilder::validate($prompt, $tenantId)) {
+            \Log::warning("⚠️ MusicSearchService::getPromptRules() - Prompt validation WARNING for tenant {$tenantId}");
+            // Devam et (fallback olarak minimal prompt)
+        } else {
+            \Log::info("✅ MusicSearchService::getPromptRules() - Prompt validated for tenant {$tenantId}");
+        }
+
+        return $prompt;
     }
 
     /**

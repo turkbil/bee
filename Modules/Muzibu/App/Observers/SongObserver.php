@@ -6,6 +6,8 @@ use Modules\Muzibu\App\Models\Song;
 use Modules\Muzibu\App\Models\Album;
 use Modules\Muzibu\App\Models\Genre;
 use Modules\Muzibu\App\Models\Artist;
+use Modules\Muzibu\App\Models\Playlist;
+use Modules\Muzibu\App\Models\Sector;
 
 /**
  * SongObserver
@@ -47,9 +49,11 @@ class SongObserver
         if ($wasActive && !$isActive) {
             // Song was deactivated
             $this->decrementCounts($song);
+            $this->recalculatePlaylistAndSectorCounts($song); // Playlist ve Sector count'larını güncelle
         } elseif (!$wasActive && $isActive) {
             // Song was activated
             $this->incrementCounts($song);
+            $this->recalculatePlaylistAndSectorCounts($song); // Playlist ve Sector count'larını güncelle
         } elseif ($isActive) {
             // Song is still active - check if duration changed
             $oldDuration = (int) $song->getOriginal('duration');
@@ -104,6 +108,7 @@ class SongObserver
     {
         if ($song->is_active) {
             $this->decrementCounts($song);
+            $this->recalculatePlaylistAndSectorCounts($song); // Playlist ve Sector count'larını güncelle
         }
 
         // Activity log - silinen kaydın başlığını sakla
@@ -119,6 +124,7 @@ class SongObserver
     {
         if ($song->is_active) {
             $this->incrementCounts($song);
+            $this->recalculatePlaylistAndSectorCounts($song); // Playlist ve Sector count'larını güncelle
         }
 
         // Activity log
@@ -134,6 +140,7 @@ class SongObserver
     {
         if ($song->is_active) {
             $this->decrementCounts($song);
+            $this->recalculatePlaylistAndSectorCounts($song); // Playlist ve Sector count'larını güncelle
         }
 
         // Activity log - kalıcı silme
@@ -320,6 +327,50 @@ class SongObserver
             if ($newGenre) {
                 $newGenre->incrementCachedCount('songs_count');
                 $newGenre->incrementCachedCount('total_duration', $duration);
+            }
+        }
+    }
+
+    /**
+     * Recalculate Playlist and Sector counts when song is_active changes
+     *
+     * Song is_active değiştiğinde veya silindiğinde, ilgili Playlist ve Sector count'larını
+     * recalculate eder. PlaylistSongObserver sadece attach/detach'i yakalar, is_active değişikliğini
+     * yakalayamaz, bu yüzden burada manuel recalculate ediyoruz.
+     */
+    protected function recalculatePlaylistAndSectorCounts(Song $song): void
+    {
+        // İlgili Playlist'leri bul ve recalculate et
+        $playlistIds = \DB::table('muzibu_playlist_song')
+            ->where('song_id', $song->song_id)
+            ->pluck('playlist_id')
+            ->unique()
+            ->toArray();
+
+        if (empty($playlistIds)) {
+            return;
+        }
+
+        foreach ($playlistIds as $playlistId) {
+            $playlist = Playlist::find($playlistId);
+            if ($playlist) {
+                $playlist->recalculateCachedCounts();
+            }
+        }
+
+        // İlgili Sector'leri bul ve recalculate et
+        // Sector, Playlist üzerinden bağlı (muzibu_playlistables tablosu)
+        $sectorIds = \DB::table('muzibu_playlistables')
+            ->whereIn('playlist_id', $playlistIds)
+            ->where('playlistable_type', Sector::class)
+            ->pluck('playlistable_id')
+            ->unique()
+            ->toArray();
+
+        foreach ($sectorIds as $sectorId) {
+            $sector = Sector::find($sectorId);
+            if ($sector) {
+                $sector->recalculateCachedCounts();
             }
         }
     }

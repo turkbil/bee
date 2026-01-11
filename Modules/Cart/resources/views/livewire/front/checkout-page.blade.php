@@ -865,13 +865,26 @@
                         </div>
                     @else
                         {{-- Adres Yok Mesajı --}}
-                        <div @click="showNewShippingForm = true"
-                             class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 mb-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200">
-                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 mb-3">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
                                 <i class="fa-solid fa-info-circle mr-2"></i>
                                 Henüz teslimat adresi eklenmedi.
-                                <span class="underline ml-1">Adres Ekle</span>
                             </p>
+                            <div class="flex gap-2">
+                                <button @click="showShippingList = !showShippingList"
+                                        @if($userAddresses->count() === 0) disabled @endif
+                                        class="text-sm transition-colors duration-200
+                                            {{ $userAddresses->count() === 0
+                                                ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                : 'text-blue-600 dark:text-blue-400 hover:underline cursor-pointer' }}">
+                                    <i class="fa-solid fa-list mr-1"></i>Adres Seç ({{ $userAddresses->count() }})
+                                </button>
+                                <span class="text-gray-400">|</span>
+                                <button @click="showNewShippingForm = true"
+                                        class="text-sm text-green-600 dark:text-green-400 hover:underline">
+                                    <i class="fa-solid fa-plus mr-1"></i>Yeni Adres Ekle
+                                </button>
+                            </div>
                         </div>
                     @endif
                     @error('shipping_address_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -1247,7 +1260,11 @@
                             </p>
                             <div class="flex gap-2">
                                 <button @click="showBillingList = !showBillingList"
-                                        class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                                        @if($userAddresses->count() === 0) disabled @endif
+                                        class="text-sm transition-colors duration-200
+                                            {{ $userAddresses->count() === 0
+                                                ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                : 'text-blue-600 dark:text-blue-400 hover:underline cursor-pointer' }}">
                                     <i class="fa-solid fa-list mr-1"></i>Adres Seç ({{ $userAddresses->count() }})
                                 </button>
                                 <span class="text-gray-400">|</span>
@@ -1502,19 +1519,19 @@
 
                     {{-- Validation Errors Summary --}}
                     @if ($errors->any())
-                        <div class="px-5 pb-4">
+                        <div class="px-5 pb-4 pt-4">
                             <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl p-4">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div class="w-8 h-8 bg-red-100 dark:bg-red-900/40 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <i class="fa-solid fa-exclamation text-red-500 dark:text-red-400 text-sm"></i>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-6 h-6 bg-red-100 dark:bg-red-900/40 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-exclamation text-red-500 dark:text-red-400 text-xs"></i>
                                     </div>
-                                    <p class="text-sm font-medium text-red-700 dark:text-red-300">Eksik bilgiler var</p>
+                                    <p class="text-sm font-semibold text-red-700 dark:text-red-300">Eksik bilgiler var</p>
                                 </div>
-                                <ul class="space-y-1.5 pl-11">
+                                <ul class="space-y-2">
                                     @foreach ($errors->all() as $error)
-                                        <li class="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
-                                            <i class="fa-solid fa-circle text-[4px] text-red-400 dark:text-red-500"></i>
-                                            {{ $error }}
+                                        <li class="text-sm text-red-600 dark:text-red-400 flex items-start gap-2">
+                                            <i class="fa-solid fa-circle text-[4px] text-red-400 dark:text-red-500 mt-1.5"></i>
+                                            <span class="flex-1">{{ $error }}</span>
                                         </li>
                                     @endforeach
                                 </ul>

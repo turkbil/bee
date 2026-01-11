@@ -20,7 +20,7 @@
                 <!-- Ortadaki Loading -->
                 <div class="col position-relative">
                     <div wire:loading
-                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
+                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, toggleFeatured"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
                         <div class="small mb-2">{{ __('admin.updating') }}</div>
@@ -100,6 +100,9 @@
                             @if($detailedView)
                             <th class="text-center" style="min-width: 150px">{{ __('muzibu::admin.sectors') }}</th>
                             @endif
+                            <th class="text-center" style="width: 70px">
+                                <i class="fas fa-star text-warning" title="Öne Çıkan"></i>
+                            </th>
                             <th class="text-center" style="width: 70px">
                                 {{ __('muzibu::admin.radio.status') }}
                             </th>
@@ -194,6 +197,26 @@
                                 </td>
                                 @endif
                                 <td class="text-center align-middle">
+                                    <button wire:click="toggleFeatured({{ $radio->radio_id }})"
+                                        class="btn btn-icon btn-sm ps-1 pe-2 bg-transparent"
+                                        data-bs-toggle="tooltip"
+                                        title="{{ $radio->is_featured ? __('muzibu::admin.radio.featured') : __('muzibu::admin.radio.not_featured') }}">
+                                        <!-- Loading Durumu -->
+                                        <div wire:loading wire:target="toggleFeatured({{ $radio->radio_id }})"
+                                            class="spinner-border spinner-border-sm">
+                                        </div>
+                                        <!-- Normal Durum: Featured/Not Featured İkonları -->
+                                        <div wire:loading.remove
+                                            wire:target="toggleFeatured({{ $radio->radio_id }})">
+                                            @if ($radio->is_featured)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @else
+                                                <i class="far fa-star text-muted"></i>
+                                            @endif
+                                        </div>
+                                    </button>
+                                </td>
+                                <td class="text-center align-middle">
                                     <button wire:click="toggleActive({{ $radio->radio_id }})"
                                         class="btn btn-icon btn-sm ps-1 pe-2 {{ $radio->is_active ? 'bg-transparent' : 'text-red bg-transparent' }}">
                                         <!-- Loading Durumu -->
@@ -244,7 +267,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ $detailedView ? 9 : 8 }}" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 10 : 9 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.radio.no_radios_found') }}</p>
                                         <p class="empty-subtitle">

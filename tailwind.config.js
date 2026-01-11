@@ -181,6 +181,7 @@ module.exports = {
         'xl:right-20', 'xl:right-24',
         'top-[56px]', 'md:top-[68px]',
         'bottom-28', 'md:bottom-32',
+        'z-[65]', 'z-[60]', 'z-[35]',
     ],
 
     theme: {

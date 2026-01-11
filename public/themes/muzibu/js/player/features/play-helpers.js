@@ -227,7 +227,6 @@ async function playPlaylist(playlistId) {
             }
         }
 
-        console.log(`[PlayPlaylist] Final queue size: ${finalQueue.length} songs`);
 
         // Load unique shuffled songs into queue and play
         player.queue = finalQueue;
@@ -346,7 +345,6 @@ async function playAlbum(albumId) {
             }
         }
 
-        console.log(`[PlayAlbum] Final queue size: ${finalQueue.length} songs`);
 
         // Load unique shuffled songs into queue and play
         player.queue = finalQueue;
@@ -463,7 +461,6 @@ async function playRadio(radioId) {
             }
         }
 
-        console.log(`[PlayRadio] Final queue size: ${finalQueue.length} songs`);
 
         // Load shuffled songs into queue and play
         player.queue = finalQueue;
@@ -582,7 +579,6 @@ async function playSector(sectorId) {
             }
         }
 
-        console.log(`[PlaySector] Final queue size: ${finalQueue.length} songs`);
 
         // Load unique shuffled songs into queue and play
         player.queue = finalQueue;

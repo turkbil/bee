@@ -166,6 +166,7 @@ class SubscriptionPlanManageComponent extends Component
                 'en' => $cycleData['label_en'] ?? $cycleData['label_tr'] ?? '',
             ],
             'price' => (float) ($cycleData['price'] ?? 0),
+            'price_type' => $cycleData['price_type'] ?? 'without_tax', // KDV Hariç/Dahil
             'compare_price' => !empty($cycleData['compare_price']) ? (float) $cycleData['compare_price'] : null,
             'duration_days' => (int) ($cycleData['duration_days'] ?? 30),
             'trial_days' => !empty($cycleData['trial_days']) ? (int) $cycleData['trial_days'] : null,
@@ -202,6 +203,7 @@ class SubscriptionPlanManageComponent extends Component
                 'en' => $cycleData['label_en'] ?? $cycleData['label_tr'] ?? '',
             ],
             'price' => (float) ($cycleData['price'] ?? 0),
+            'price_type' => $cycleData['price_type'] ?? 'without_tax', // KDV Hariç/Dahil
             'compare_price' => !empty($cycleData['compare_price']) ? (float) $cycleData['compare_price'] : null,
             'duration_days' => (int) ($cycleData['duration_days'] ?? 30),
             'trial_days' => !empty($cycleData['trial_days']) ? (int) $cycleData['trial_days'] : null,

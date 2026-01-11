@@ -92,12 +92,6 @@
         <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
             {{ $genre->getTranslation('title', app()->getLocale()) }}
         </h3>
-        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
-            @if(isset($genre->playlists_count) && $genre->playlists_count > 0)
-                {{ $genre->playlists_count }} playlist
-            @else
-                &nbsp;
-            @endif
-        </p>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">&nbsp;</p>
     </div>
 </a>

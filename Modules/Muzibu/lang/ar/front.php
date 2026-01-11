@@ -54,35 +54,79 @@ return [
         'sector' => 'قطاع',
         'no_sectors' => 'لا توجد قطاعات',
 
-        // Player Controls
+        // Favorites
+        'favorites' => 'المفضلة',
+        'my_favorites' => 'مفضلاتي',
+
+        // Legacy (backward compatibility)
+        'muzibus' => 'الموسيقى',
+        'all_muzibus' => 'جميع الموسيقى',
+        'homemuzibu' => 'الصفحة الرئيسية',
+    ],
+
+    'player' => [
+        // Controls
         'play' => 'تشغيل',
         'pause' => 'إيقاف مؤقت',
         'stop' => 'إيقاف',
         'next_song' => 'الأغنية التالية',
         'previous_song' => 'الأغنية السابقة',
         'listen' => 'استماع',
-        'now_playing' => 'يتم التشغيل الآن',
-        'queue' => 'قائمة الانتظار',
 
-        // Actions
+        // Queue
+        'queue' => 'قائمة الانتظار',
+        'now_playing' => 'يتم التشغيل الآن',
+        'show_queue' => 'إظهار قائمة الانتظار',
+        'hide_queue' => 'إخفاء قائمة الانتظار',
+        'next_songs' => 'الأغاني التالية',
+        'clear_queue' => 'مسح قائمة الانتظار',
+        'drag_to_sort' => 'اسحب لإعادة الترتيب',
+        'queue_empty' => 'قائمة الانتظار فارغة',
+        'queue_empty_description' => 'انتقل إلى قائمة تشغيل أو ألبوم لإضافة أغاني',
+        'click_to_play' => 'انقر على الأغاني للتشغيل',
+        'quick_access' => 'وصول سريع',
+        'remove_from_queue' => 'إزالة من قائمة الانتظار',
+        'drag' => 'اسحب',
+
+        // Queue Actions & Messages
+        'added_to_queue' => 'تمت إضافة :count أغنية إلى قائمة الانتظار',
+        'added_to_queue_next' => 'تمت إضافة :count أغنية للتشغيل التالي',
+        'added_with_duplicates_removed' => 'تمت إضافة :count أغنية (تمت إزالة :removed مكررة)',
+        'added_next_with_duplicates_removed' => 'تمت إضافة :count أغنية كتالي (تمت إزالة :removed مكررة)',
+        'song_not_found_to_add' => 'لم يتم العثور على الأغنية للإضافة',
+        'queue_add_error' => 'خطأ في الإضافة إلى قائمة الانتظار',
+
+        // Favorites
         'add_to_favorites' => 'إضافة إلى المفضلة',
         'remove_from_favorites' => 'إزالة من المفضلة',
         'added_to_favorites' => 'تمت الإضافة إلى المفضلة',
         'removed_from_favorites' => 'تمت الإزالة من المفضلة',
+
+        // Playlist
         'add_to_playlist' => 'إضافة إلى قائمة التشغيل',
+
+        // Share & Download
         'share' => 'مشاركة',
         'download' => 'تحميل',
+
+        // Progress
+        'song_progress' => 'تقدم الأغنية',
+
+        // Lyrics
+        'show_lyrics' => 'عرض كلمات الأغنية',
+        'no_lyrics' => 'لا توجد كلمات',
+
+        // Volume & UI
+        'mute' => 'كتم الصوت',
+        'unmute' => 'إلغاء كتم الصوت',
+        'volume' => 'مستوى الصوت',
+        'max_volume' => 'الصوت 100%',
 
         // Info
         'duration' => 'المدة',
         'release_date' => 'تاريخ الإصدار',
         'track_count' => 'عدد الأغاني',
         'popularity' => 'الشعبية',
-
-        // Legacy (backward compatibility)
-        'muzibus' => 'الموسيقى',
-        'all_muzibus' => 'جميع الموسيقى',
-        'homemuzibu' => 'الصفحة الرئيسية',
     ],
 
     'messages' => [

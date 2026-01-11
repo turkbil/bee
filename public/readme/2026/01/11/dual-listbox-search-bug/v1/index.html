@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Listbox Arama Sorunu - Kritik Bug Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .code-block { background: #1e293b; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .code-block code { color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .highlight { background: #fef3c7; padding: 0.125rem 0.375rem; border-radius: 0.25rem; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+
+        <!-- Header -->
+        <header class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-600 text-white text-sm font-semibold rounded-full">🐛 KRİTİK BUG</span>
+                <span class="px-3 py-1 bg-slate-800 text-slate-300 text-sm rounded-full">11 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                Dual Listbox Arama Sorunu
+            </h1>
+            <p class="text-xl text-slate-400">
+                Soldan sağa taşınan item'lar arama yapılınca kayboluyor
+            </p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                📝 Basit Anlatım (Herkes İçin)
+            </h3>
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-green-400">Sorun nedir?</strong><br>
+                    Admin panelde radyo, playlist, sektör gibi yerlerde "soldan sağa seçim yapma" sistemi var.
+                    Kullanıcı sol taraftan bir şey seçip sağ tarafa taşıyor. Sonra başka bir şey aramak için
+                    arama kutusuna yazıyor. <span class="highlight text-slate-900">O anda daha önce seçtiği şeyler
+                    kayboluyor!</span>
+                </p>
+
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-green-400">Örnek senaryo:</strong><br>
+                    Radyo oluştururken 5 tane playlist seçtin → Sağ tarafa taşıdın → Tamam güzel!<br>
+                    Sonra 6. playlist'i bulmak için arama yaptın → <span class="text-red-400 font-bold">
+                    İlk 5 playlist kayboldu!</span>
+                </p>
+
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-green-400">Neden önemli?</strong><br>
+                    Kullanıcı radyo oluştururken 20 tane playlist seçmiş olabilir. Aramak istediğinde
+                    hepsi uçuyor ve baştan seçmek zorunda kalıyor. Bu <strong>kullanılamaz</strong> bir deneyim.
+                </p>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 mt-4">
+                    <p class="text-sm text-slate-400 mb-2"><strong>Etkilenen Sayfalar:</strong></p>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li><code class="text-blue-400">admin/muzibu/radio/manage</code> - Radyo yönetimi (playlist seçimi)</li>
+                        <li><code class="text-blue-400">admin/muzibu/playlist/manage</code> - Playlist yönetimi (sektör, radyo, tür, kurum seçimi)</li>
+                        <li><code class="text-blue-400">admin/muzibu/song/manage</code> - Şarkı yönetimi (muhtemelen varsa)</li>
+                        <li><code class="text-blue-400">admin/muzibu/sector/manage</code> - Sektör yönetimi (muhtemelen varsa)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                🔧 Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Sorunun Kök Nedeni -->
+                <div>
+                    <h4 class="text-lg font-semibold text-blue-400 mb-3">🎯 Sorunun Kök Nedeni</h4>
+                    <div class="bg-slate-800/50 rounded-lg p-4 space-y-3">
+                        <p class="text-slate-300 leading-relaxed">
+                            Dual listbox sistemi <strong>hybrid</strong> bir yapı:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 ml-4">
+                            <li><strong class="text-yellow-400">Livewire (Backend):</strong> Veritabanından data çekiyor, arama yapıyor</li>
+                            <li><strong class="text-yellow-400">JavaScript (Frontend):</strong> DOM manipülasyonu yapıyor (soldan sağa taşıma)</li>
+                            <li><strong class="text-red-400">SORUN:</strong> İki sistem senkronize değil!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Akış Diyagramı -->
+                <div>
+                    <h4 class="text-lg font-semibold text-blue-400 mb-3">📊 Hatalı Akış</h4>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <pre class="text-sm text-slate-300"><code>1️⃣ Kullanıcı "Playlist A" seçti
+   → JavaScript: DOM'da soldan sağa taşıdı ✅
+   → JavaScript: @this.set('inputs.playlist_ids', [1]) gönderdi ✅
+   → Livewire: $inputs['playlist_ids'] = [1] ✅
+
+2️⃣ Kullanıcı "Playlist B"yi aramak için "search" yazdı
+   → Livewire: $playlistSearch = "search" değişti
+   → Livewire: activePlaylists() computed property tetiklendi
+   → Livewire: Sadece "search" içeren playlist'leri getir
+   → Livewire: RENDER! (Blade yeniden render edildi)
+
+3️⃣ Blade Render Sırasında:
+   @foreach($this->activePlaylists as $playlist)
+       // activePlaylists() sadece arama sonuçlarını döndürüyor
+       // "Playlist A" arama sonucunda YOK!
+       // Blade "Playlist A"yı görmüyor
+       // Sağ tarafta render edilemiyor
+   @endforeach
+
+4️⃣ SONUÇ:
+   ❌ "Playlist A" kayboldu! (Arama sonucunda olmadığı için render edilmedi)
+   ❌ Kullanıcı "Playlist A"yı görmüyor
+   ❌ Tekrar aramak zorunda kalıyor</code></pre>
+                    </div>
+                </div>
+
+                <!-- Mevcut Kod -->
+                <div>
+                    <h4 class="text-lg font-semibold text-blue-400 mb-3">📄 Mevcut Kod (Hatalı)</h4>
+
+                    <p class="text-sm text-slate-400 mb-2">
+                        <strong>Dosya:</strong> <code>RadioManageComponent.php</code>
+                    </p>
+                    <div class="code-block">
+                        <code>#[Computed]
+public function activePlaylists()
+{
+    $query = \Modules\Muzibu\App\Models\Playlist::where('is_active', true);
+
+    // ❌ SORUN: Sadece arama sonuçlarını döndürüyor
+    if (!empty($this->playlistSearch)) {
+        $locale = app()->getLocale();
+        $search = strtolower($this->playlistSearch);
+
+        $query->where(function($q) use ($search, $locale) {
+            $q->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, ?))) LIKE ?",
+                ["$.{$locale}", "%{$search}%"]);
+        });
+    }
+
+    return $query->orderBy('title->tr')->get();
+    // ❌ Seçili item'lar arama sonucunda yoksa render edilmiyor!
+}</code>
+                    </div>
+
+                    <p class="text-sm text-slate-400 mb-2 mt-4">
+                        <strong>Dosya:</strong> <code>radio-manage-component.blade.php</code>
+                    </p>
+                    <div class="code-block">
+                        <code>&lt;!-- Sol Taraf: Mevcut Listeler --&gt;
+&lt;div class="listbox" id="available-playlists"&gt;
+    @foreach($this->activePlaylists as $playlist)
+        @if(!in_array($playlist->playlist_id, $inputs['playlist_ids'] ?? []))
+            &lt;div class="listbox-item"&gt;{{ $playlist->title }}&lt;/div&gt;
+        @endif
+    @endforeach
+&lt;/div&gt;
+
+&lt;!-- Sağ Taraf: Seçilen Listeler --&gt;
+&lt;div class="listbox" id="selected-playlists"&gt;
+    @foreach($this->activePlaylists as $playlist)
+        @if(in_array($playlist->playlist_id, $inputs['playlist_ids'] ?? []))
+            &lt;!-- ❌ SORUN: activePlaylists'te yoksa burası boş kalıyor! --&gt;
+            &lt;div class="listbox-item"&gt;{{ $playlist->title }}&lt;/div&gt;
+        @endif
+    @endforeach
+&lt;/div&gt;</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                ✨ Çözüm Stratejisi
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Ana Çözüm -->
+                <div>
+                    <h4 class="text-lg font-semibold text-purple-400 mb-3">🎯 Ana Çözüm</h4>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <p class="text-slate-300 mb-3">
+                            <code>activePlaylists()</code> computed property'sini <strong>iki ayrı property'ye</strong> böl:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 ml-4">
+                            <li><code class="text-green-400">availablePlaylists()</code> → Arama sonuçları (seçilmemiş olanlar)</li>
+                            <li><code class="text-green-400">selectedPlaylists()</code> → Seçili olanlar (her zaman render et)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Yeni Kod -->
+                <div>
+                    <h4 class="text-lg font-semibold text-purple-400 mb-3">📝 Yeni Kod (Düzeltilmiş)</h4>
+
+                    <p class="text-sm text-slate-400 mb-2">
+                        <strong>Backend:</strong> <code>RadioManageComponent.php</code>
+                    </p>
+                    <div class="code-block">
+                        <code>// ✅ ÇÖZÜM 1: Seçilmemiş olanlar (arama sonuçları)
+#[Computed]
+public function availablePlaylists()
+{
+    $query = \Modules\Muzibu\App\Models\Playlist::where('is_active', true);
+
+    // Seçilenleri hariç tut
+    if (!empty($this->inputs['playlist_ids'])) {
+        $query->whereNotIn('playlist_id', $this->inputs['playlist_ids']);
+    }
+
+    // Arama filtresi
+    if (!empty($this->playlistSearch)) {
+        $locale = app()->getLocale();
+        $search = strtolower($this->playlistSearch);
+
+        $query->where(function($q) use ($search, $locale) {
+            $q->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, ?))) LIKE ?",
+                ["$.{$locale}", "%{$search}%"]);
+        });
+    }
+
+    return $query->orderBy('title->tr')->get();
+}
+
+// ✅ ÇÖZÜM 2: Seçili olanlar (her zaman göster)
+#[Computed]
+public function selectedPlaylists()
+{
+    if (empty($this->inputs['playlist_ids'])) {
+        return collect([]);
+    }
+
+    // Seçili playlist'leri ID'ye göre getir
+    return \Modules\Muzibu\App\Models\Playlist::whereIn('playlist_id', $this->inputs['playlist_ids'])
+        ->orderBy('title->tr')
+        ->get();
+}</code>
+                    </div>
+
+                    <p class="text-sm text-slate-400 mb-2 mt-4">
+                        <strong>Frontend:</strong> <code>radio-manage-component.blade.php</code>
+                    </p>
+                    <div class="code-block">
+                        <code>&lt;!-- Sol Taraf: Mevcut Listeler (Seçilmemiş + Arama Sonuçları) --&gt;
+&lt;div class="listbox" id="available-playlists"&gt;
+    @foreach($this->availablePlaylists as $playlist)
+        &lt;div class="listbox-item"
+            data-value="{{ $playlist->playlist_id }}"&gt;
+            {{ $playlist->getTranslated('title', app()->getLocale()) }}
+        &lt;/div&gt;
+    @endforeach
+&lt;/div&gt;
+
+&lt;!-- Sağ Taraf: Seçilen Listeler (Her Zaman Göster) --&gt;
+&lt;div class="listbox" id="selected-playlists"&gt;
+    @foreach($this->selectedPlaylists as $playlist)
+        &lt;!-- ✅ ÇÖZÜM: Seçililer her zaman render ediliyor --&gt;
+        &lt;div class="listbox-item"
+            data-value="{{ $playlist->playlist_id }}"&gt;
+            {{ $playlist->getTranslated('title', app()->getLocale()) }}
+        &lt;/div&gt;
+    @endforeach
+&lt;/div&gt;</code>
+                    </div>
+                </div>
+
+                <!-- Avantajlar -->
+                <div>
+                    <h4 class="text-lg font-semibold text-purple-400 mb-3">🎁 Çözümün Avantajları</h4>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 ml-4">
+                            <li><strong class="text-green-400">✅ Seçililer kaybolmaz:</strong> Her zaman sağ tarafta render edilir</li>
+                            <li><strong class="text-green-400">✅ Arama çalışır:</strong> Sol taraf sadece arama sonuçlarını gösterir</li>
+                            <li><strong class="text-green-400">✅ Performans:</strong> Seçilmemişler filtrelenir, gereksiz data yok</li>
+                            <li><strong class="text-green-400">✅ UX:</strong> Kullanıcı istediği kadar arama yapabilir, seçimleri korunur</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Etkilenen Dosyalar -->
+        <div class="bg-orange-900/20 border border-orange-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                📁 Düzeltilmesi Gereken Dosyalar
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Radio -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-orange-400 mb-3">
+                        🎵 Radio Modülü
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>
+                            <code class="text-blue-400">Modules/Muzibu/App/Http/Livewire/Admin/RadioManageComponent.php</code>
+                            <ul class="ml-6 mt-1 space-y-1 text-xs text-slate-400">
+                                <li>• <code>activePlaylists()</code> → <code>availablePlaylists()</code> + <code>selectedPlaylists()</code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <code class="text-blue-400">Modules/Muzibu/resources/views/admin/livewire/radio-manage-component.blade.php</code>
+                            <ul class="ml-6 mt-1 space-y-1 text-xs text-slate-400">
+                                <li>• <code>$this->activePlaylists</code> → <code>$this->availablePlaylists</code> ve <code>$this->selectedPlaylists</code></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Playlist -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-orange-400 mb-3">
+                        📋 Playlist Modülü
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>
+                            <code class="text-blue-400">Modules/Muzibu/App/Http/Livewire/Admin/PlaylistManageComponent.php</code>
+                            <ul class="ml-6 mt-1 space-y-1 text-xs text-slate-400">
+                                <li>• <code>activeSectors()</code> → <code>availableSectors()</code> + <code>selectedSectors()</code></li>
+                                <li>• <code>activeRadios()</code> → <code>availableRadios()</code> + <code>selectedRadios()</code></li>
+                                <li>• <code>activeGenres()</code> → <code>availableGenres()</code> + <code>selectedGenres()</code></li>
+                                <li>• <code>activeCorporates()</code> → <code>availableCorporates()</code> + <code>selectedCorporates()</code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <code class="text-blue-400">Modules/Muzibu/resources/views/admin/livewire/playlist-manage-component.blade.php</code>
+                            <ul class="ml-6 mt-1 space-y-1 text-xs text-slate-400">
+                                <li>• Tüm <code>$this->active*</code> referanslarını <code>$this->available*</code> ve <code>$this->selected*</code> olarak ayır</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Diğer Modüller -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-orange-400 mb-3">
+                        🔍 Kontrol Edilmesi Gereken Diğer Modüller
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>
+                            <code class="text-blue-400">SongManageComponent.php</code>
+                            <span class="text-slate-400 text-xs ml-2">(varsa playlist/album/artist seçimi)</span>
+                        </li>
+                        <li>
+                            <code class="text-blue-400">SectorManageComponent.php</code>
+                            <span class="text-slate-400 text-xs ml-2">(varsa playlist seçimi)</span>
+                        </li>
+                        <li>
+                            <code class="text-blue-400">AlbumManageComponent.php</code>
+                            <span class="text-slate-400 text-xs ml-2">(varsa song seçimi)</span>
+                        </li>
+                    </ul>
+                    <p class="text-xs text-slate-400 mt-3">
+                        💡 Tüm dual listbox kullanan component'lerde aynı pattern uygulanmalı!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Senaryosu -->
+        <div class="bg-cyan-900/20 border border-cyan-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                🧪 Test Senaryosu
+            </h3>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-cyan-400 mb-3">1️⃣ Test Adımları</h4>
+                    <ol class="list-decimal list-inside space-y-2 text-slate-300 ml-4">
+                        <li>Admin panel → Radyo oluştur sayfasına git</li>
+                        <li>Sol taraftan 5 playlist seç → Sağ tarafa taşı</li>
+                        <li>Arama kutusuna "test" yaz</li>
+                        <li><strong class="text-green-400">✅ BEKLENEN:</strong> Sağ tarafta 5 playlist hala görünüyor</li>
+                        <li><strong class="text-red-400">❌ MEVCUT:</strong> Sağ taraf boşaldı (5 playlist kayboldu)</li>
+                        <li>Aramayı temizle</li>
+                        <li><strong class="text-green-400">✅ BEKLENEN:</strong> Sol tarafta tüm playlist'ler, sağ tarafta 5 seçili</li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-cyan-400 mb-3">2️⃣ Test Sayfaları</h4>
+                    <ul class="list-disc list-inside space-y-2 text-slate-300 ml-4">
+                        <li><code class="text-blue-400">muzibu.com.tr/admin/muzibu/radio/manage</code></li>
+                        <li><code class="text-blue-400">muzibu.com.tr/admin/muzibu/playlist/manage</code></li>
+                        <li><code class="text-blue-400">muzibu.com.tr/admin/muzibu/song/manage</code> (varsa)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-cyan-400 mb-3">3️⃣ Başarı Kriterleri</h4>
+                    <ul class="list-disc list-inside space-y-2 text-slate-300 ml-4">
+                        <li><strong class="text-green-400">✅</strong> Arama yapılınca seçili item'lar kaybolmamalı</li>
+                        <li><strong class="text-green-400">✅</strong> Sol taraf sadece seçilmemiş item'ları göstermeli</li>
+                        <li><strong class="text-green-400">✅</strong> Sağ taraf her zaman seçili item'ları göstermeli</li>
+                        <li><strong class="text-green-400">✅</strong> Kaydet butonuna basınca seçili item'lar database'e yazılmalı</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>🤖 Claude AI tarafından oluşturuldu - 11 Ocak 2026</p>
+        </footer>
+
+    </div>
+</body>
+</html>

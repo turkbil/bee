@@ -166,7 +166,7 @@ async function createHlsBlobUrl(originalUrl) {
         const blob = new Blob([m3u8Content], { type: 'application/x-mpegurl' });
         const blobUrl = URL.createObjectURL(blob);
 
-        console.log('🔒 Blob URL created (original URL hidden from DevTools)');
+        // Blob URL created
         return blobUrl;
     } catch (error) {
         console.warn('🔒 Blob URL creation failed, using original:', error.message);
@@ -851,15 +851,6 @@ function muzibuApp() {
                 const streamDataRaw = await streamResponse.json();
                 const streamData = decryptStreamData(streamDataRaw); // 🔒 Decrypt
 
-                // 🔍 Debug: API response'u logla
-                console.log('🔍 PRELOAD API Response:', {
-                    song_title: song.song_title?.tr || song.song_title?.en || song.song_title,
-                    streamData_song_duration_raw: streamData.song?.duration,
-                    streamData_song_duration_seconds_raw: streamData.song?.duration_seconds,
-                    song_duration_raw: song.duration,
-                    song_duration_seconds_raw: song.duration_seconds
-                });
-
                 // 🚀 URL'i cache'le (HLS instance oluşturmadan)
                 // Play basınca playSongFromQueue bu cache'i kullanarak yeni HLS oluşturur
                 if (!this.streamUrlCache) {
@@ -923,10 +914,8 @@ function muzibuApp() {
                     // Alpine.js reactivity: Zorla DOM güncellemesi
                     if (this.$nextTick) {
                         this.$nextTick(() => {
-                            console.log('🎬 PRELOAD Duration set (after nextTick):', this.duration, this.animatedDuration);
+                            // Duration set (after nextTick)
                         });
-                    } else {
-                        console.log('🎬 PRELOAD Duration set:', this.duration, this.animatedDuration);
                     }
                 } else {
                     console.warn('⚠️ PRELOAD: Duration bilgisi YOK!', {
@@ -941,9 +930,6 @@ function muzibuApp() {
                     this.currentSong = { ...this.currentSong, ...streamData.song };
                 }
                 this.updatePlayerColors();
-
-                // 🔍 Debug: Merge sonrası duration kontrolü
-                console.log('🔍 After merge - duration:', this.duration, 'animatedDuration:', this.animatedDuration, 'currentSong:', this.currentSong?.song_title?.tr || this.currentSong?.song_title?.en);
 
                 this.isPlaying = false;
                 this.isSongLoading = false;
@@ -1546,11 +1532,11 @@ function muzibuApp() {
         },
 
         async nextTrack(fromNaturalEnd = false) {
-            console.log('🟣 nextTrack entered', { fromNaturalEnd, queueIndex: this.queueIndex, queueLength: this.queue?.length });
+            // nextTrack entered
 
             // 🛡️ CONCURRENT GUARD: Zaten bir geçiş devam ediyorsa engelle
             if (this._nextTrackInProgress) {
-                console.log('🟣 nextTrack BLOCKED - already in progress');
+                // nextTrack BLOCKED - already in progress
                 return;
             }
             this._nextTrackInProgress = true;
@@ -1559,7 +1545,7 @@ function muzibuApp() {
             const now = Date.now();
             const timeSinceLast = this._lastNextTrackTime ? (now - this._lastNextTrackTime) : null;
             if (this._lastNextTrackTime && timeSinceLast < 300) {
-                console.log('🟣 nextTrack BLOCKED - too fast', { timeSinceLast });
+                // nextTrack BLOCKED - too fast
                 this._nextTrackInProgress = false;
                 return;
             }
@@ -1589,7 +1575,7 @@ function muzibuApp() {
             });
 
             if (this.queueIndex < this.queue.length - 1) {
-                console.log('🟣 nextTrack: has next song, playing index', this.queueIndex + 1);
+                // nextTrack: has next song
                 this.queueIndex++;
                 await this.playSongFromQueue(this.queueIndex);
 
@@ -1807,7 +1793,7 @@ function muzibuApp() {
         toggleMute() {
             this.isMuted = !this.isMuted;
             const targetVolume = this.isMuted ? 0 : this.volume / 100;
-            console.log('🔊 toggleMute:', { isMuted: this.isMuted, targetVolume, hasHls: !!this.hls, hasHowl: !!this.howl });
+            // toggleMute
 
             if (this.howl) {
                 this.howl.mute(this.isMuted);
@@ -1820,12 +1806,12 @@ function muzibuApp() {
             if (audio1) {
                 audio1.muted = this.isMuted;
                 audio1.volume = targetVolume;
-                console.log('🔊 hlsAudio volume set:', audio1.volume);
+                // hlsAudio volume set
             }
             if (audio2) {
                 audio2.muted = this.isMuted;
                 audio2.volume = targetVolume;
-                console.log('🔊 hlsAudioNext volume set:', audio2.volume);
+                // hlsAudioNext volume set
             }
         },
 
@@ -2946,7 +2932,7 @@ function muzibuApp() {
             }
         },
 
-        async playPlaylist(id) {
+        async playPlaylist(id, shuffle = false) {
             // 🚫 PREMIUM CHECK
             if (!this.isLoggedIn) {
                 this.showToast(this.frontLang?.auth?.login_required || 'Login required to listen', 'warning');
@@ -2970,6 +2956,11 @@ function muzibuApp() {
                 if (songs.length > 0) {
                     // 🧹 Clean queue from null/undefined songs
                     this.queue = this.cleanQueue(songs);
+
+                    // 🎲 SHUFFLE: sistem=1 playlistler karışık çalar
+                    if (shuffle) {
+                        this.queue = this.shuffleArray([...this.queue]);
+                    }
 
                     if (this.queue.length === 0) {
                         this.showToast(this.frontLang?.messages?.playlist_no_playable_songs || 'No playable songs in this playlist', 'error');
@@ -3518,7 +3509,7 @@ function muzibuApp() {
             // 🚀 INSTANT PLAY: Preloaded HLS instance'ı doğrudan kullan
             // HLS.js preload (hls != null) VEYA Safari native preload (isSafariNative = true)
             if (this._preloadedNext && this._preloadedNext.songId === song.song_id && this._preloadedNext.ready && (this._preloadedNext.hls || this._preloadedNext.isSafariNative)) {
-                console.log('⚡ Using PRELOADED song (gapless):', song.song_title);
+                // Using PRELOADED song (gapless)
                 const preloaded = this._preloadedNext;
                 const preloadedHls = preloaded.hls;
                 const preloadedAudioId = preloaded.audioId;
@@ -3588,13 +3579,9 @@ function muzibuApp() {
                         const isEarlyWaiting = preloadedAudio.readyState < 2;
 
                         if (isEarlyWaiting) {
-                            console.log('⏳ WAITING (preloaded initial load):', preloadedAudio.readyState);
+                            // WAITING (preloaded initial load)
                         } else {
-                            console.warn('⚠️ WAITING (preloaded) - Buffer hole!', {
-                                audioId: preloadedAudio.id,
-                                currentTime: preloadedAudio.currentTime?.toFixed(1),
-                                readyState: preloadedAudio.readyState
-                            });
+                            // WAITING (preloaded) - Buffer hole
                         }
                     };
 
@@ -3622,9 +3609,7 @@ function muzibuApp() {
                     };
 
                     preloadedAudio.onabort = function() {
-                        console.warn('⚠️ ABORT (preloaded) - Yükleme iptal!', {
-                            audioId: preloadedAudio.id
-                        });
+                        // Silent - Normal preload abort behavior
                     };
 
                     // 🍎 Safari Native vs HLS.js path
@@ -3659,12 +3644,6 @@ function muzibuApp() {
 
                             // 🚀 INSTANT PRELOAD: Şarkı başladığında hemen sonraki şarkıyı yükle
                             if (!self._nextSongPreloaded && currentTime >= 2) {
-                                console.log('🚀 PRELOAD TRIGGER at 2s (Safari preloaded):', {
-                                    song: self.currentSong?.song_title,
-                                    duration: self.duration,
-                                    currentTime: currentTime,
-                                    _nextSongPreloaded: self._nextSongPreloaded
-                                });
                                 self._nextSongPreloaded = true;
                                 self.preloadNextSong();
                             }
@@ -3844,12 +3823,6 @@ function muzibuApp() {
 
                             // 🚀 INSTANT PRELOAD: Şarkı başladığında hemen sonraki şarkıyı yükle
                             if (!self._nextSongPreloaded && currentTime >= 2) {
-                                console.log('🚀 PRELOAD TRIGGER at 2s (HLS.js preloaded):', {
-                                    song: self.currentSong?.song_title,
-                                    duration: self.duration,
-                                    currentTime: currentTime,
-                                    _nextSongPreloaded: self._nextSongPreloaded
-                                });
                                 self._nextSongPreloaded = true;
                                 self.preloadNextSong();
                             }
@@ -3967,10 +3940,9 @@ function muzibuApp() {
                 // 🚀 CHECK CACHE FIRST - instant playback if cached!
                 const cached = this.getCachedStream(song.song_id);
                 if (cached) {
-                    console.log('💾 Using CACHED stream:', song.song_title);
                     data = cached;
                 } else {
-                    console.log('🌐 Fetching FRESH stream:', song.song_title);
+                    // Fetching FRESH stream
                     // Fetch from API if not cached (🔐 401 kontrolü ile)
                     const response = await this.authenticatedFetch(`/api/muzibu/songs/${song.song_id}/stream`);
 
@@ -4875,12 +4847,6 @@ onplay: function() {
 
                     // 🚀 INSTANT PRELOAD: Şarkı başladığında hemen sonraki şarkıyı yükle
                     if (!self._nextSongPreloaded && currentTime >= 2) {
-                        console.log('🚀 PRELOAD TRIGGER at 2s:', {
-                            song: self.currentSong?.song_title,
-                            duration: self.duration,
-                            currentTime: currentTime,
-                            _nextSongPreloaded: self._nextSongPreloaded
-                        });
                         self._nextSongPreloaded = true;
                         self.preloadNextSong();
                     }
@@ -4977,15 +4943,9 @@ onplay: function() {
                     const isEarlyWaiting = audio.readyState < 2; // 0: HAVE_NOTHING, 1: HAVE_METADATA
 
                     if (isEarlyWaiting) {
-                        // Manifest/metadata yüklenirken normal, sessiz log
-                        console.log('⏳ WAITING (initial load):', audio.readyState);
+                        // Manifest/metadata yüklenirken normal
                     } else {
-                        // Oynatma sırasında buffer sorunu - gerçek sorun
-                        console.warn('⚠️ WAITING - Buffer hole detected!', {
-                            currentTime: audio.currentTime?.toFixed(1),
-                            readyState: audio.readyState,
-                            networkState: audio.networkState
-                        });
+                        // Oynatma sırasında buffer sorunu - sessiz
                         if (self.currentUser?.is_root) {
                             self.showToast('⏳ Buffer yükleniyor...', 'info');
                         }
@@ -5016,10 +4976,7 @@ onplay: function() {
                 };
 
                 audio.onabort = function() {
-                    console.warn('⚠️ ABORT - Yükleme iptal edildi!');
-                    if (self.currentUser?.is_root) {
-                        self.showToast('⚠️ ABORT - Yükleme iptal!', 'warning');
-                    }
+                    // Silent - Normal abort behavior
                 };
 
                 audio.onemptied = function() {
@@ -6569,7 +6526,7 @@ onplay: function() {
         async preloadNextSong() {
             // Zaten preload işlemi devam ediyorsa çık
             if (this._preloadNextInProgress) {
-                console.log('⏩ Preload SKIPPED - already in progress');
+                // Preload SKIPPED - already in progress
                 return;
             }
 
@@ -6581,11 +6538,11 @@ onplay: function() {
 
             // Zaten bu şarkı preload edilmişse çık
             if (this._preloadedNext && this._preloadedNext.songId === nextSong.song_id && this._preloadedNext.ready) {
-                console.log('⏩ Preload SKIPPED - already ready:', nextSong.song_title);
+                // Preload SKIPPED - already ready
                 return;
             }
 
-            console.log('🚀 Starting preload for:', nextSong.song_title);
+            // Starting preload
 
             // Önceki preload'u temizle (farklı şarkıysa)
             this._cleanupPreloadedNext();
@@ -6695,7 +6652,7 @@ onplay: function() {
                             self._preloadedNext.ready = true;
                             self._preloadNextInProgress = false;
 
-                            console.log('✅ Preload READY:', nextSong.song_title);
+                            // Preload READY
 
                             // 🛑 İlk segment yüklendi, DURDUR (bandwidth tasarrufu)
                             // startLoad() ile devam ettirilecek
@@ -6754,7 +6711,7 @@ onplay: function() {
                         if (self._preloadedNext && self._preloadedNext.songId === nextSong.song_id && !self._preloadedNext.ready) {
                             self._preloadedNext.ready = true;
                             self._preloadNextInProgress = false;
-                            console.log('✅ Preload READY (Safari):', nextSong.song_title);
+                            // Preload READY (Safari)
                             // 🛑 Pause to stop further buffering (save bandwidth)
                             try {
                                 nextAudio.pause();

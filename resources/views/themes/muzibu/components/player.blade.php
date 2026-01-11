@@ -281,7 +281,10 @@
 
     {{-- Volume Control - Twitter Style (Vertical Hover) --}}
     <div class="relative" x-data="{ showVolumeSlider: false, isDragging: false, volumeTimeout: null }"
-         @mouseleave="if (!isDragging) { volumeTimeout = setTimeout(() => { showVolumeSlider = false; }, 500) }">
+         @mouseleave="clearTimeout(volumeTimeout); volumeTimeout = setTimeout(() => { if (!isDragging) { showVolumeSlider = false; } }, 200)"
+         @pointerup.window="isDragging = false; if($refs.volumeTrack) { try { $refs.volumeTrack.releasePointerCapture($event.pointerId) } catch(e) {} }; clearTimeout(volumeTimeout); volumeTimeout = setTimeout(() => { showVolumeSlider = false; }, 200)"
+         @pointercancel.window="isDragging = false; if($refs.volumeTrack) { try { $refs.volumeTrack.releasePointerCapture($event.pointerId) } catch(e) {} }; showVolumeSlider = false; clearTimeout(volumeTimeout)"
+         @click.outside="showVolumeSlider = false; isDragging = false; clearTimeout(volumeTimeout)">
         {{-- Volume Button --}}
         <button class="w-8 h-8 text-white/60 hover:text-white flex items-center justify-center transition-colors"
                 @click="toggleMute()"
@@ -299,15 +302,19 @@
              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
              x-transition:leave-end="opacity-0 scale-95 translate-y-2"
              @mouseenter="clearTimeout(volumeTimeout)"
-             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 rounded-lg px-3 pt-3 pb-2.5 shadow-2xl z-50 select-none flex flex-col items-center"
+             @mouseleave="clearTimeout(volumeTimeout); volumeTimeout = setTimeout(() => { if (!isDragging) { showVolumeSlider = false; } }, 200)"
+             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 rounded-lg px-3 pt-3 pb-2.5 shadow-2xl z-[9999] select-none flex flex-col items-center"
              style="background: #18181b; border: 1px solid rgba(255,255,255,0.1);">
 
             {{-- Vertical Track --}}
             <div class="volume-track h-32 w-2 my-2 bg-white/10 rounded-full relative cursor-pointer select-none"
-                 @mousedown="isDragging = true; try { $el.setPointerCapture($event.pointerId) } catch(e) {}"
-                 @mouseup="isDragging = false; try { $el.releasePointerCapture($event.pointerId) } catch(e) {}"
+                 x-ref="volumeTrack"
+                 @pointerdown="isDragging = true; clearTimeout(volumeTimeout); try { $el.setPointerCapture($event.pointerId) } catch(e) {}"
+                 @pointerup="isDragging = false; try { $el.releasePointerCapture($event.pointerId) } catch(e) {}; clearTimeout(volumeTimeout); volumeTimeout = setTimeout(() => { showVolumeSlider = false; }, 200)"
+                 @pointercancel="isDragging = false; try { $el.releasePointerCapture($event.pointerId) } catch(e) {}; showVolumeSlider = false"
+                 @lostpointercapture="isDragging = false"
                  @click="const rect = $el.getBoundingClientRect(); const clickY = $event.clientY - rect.top; const newVolume = Math.max(0, Math.min(100, 100 - (clickY / rect.height * 100))); updateVolume(newVolume);"
-                 @mousemove="if (isDragging) { const rect = $el.getBoundingClientRect(); const moveY = $event.clientY - rect.top; const newVolume = Math.max(0, Math.min(100, 100 - (moveY / rect.height * 100))); updateVolume(newVolume); }">
+                 @pointermove="if (isDragging) { const rect = $el.getBoundingClientRect(); const moveY = $event.clientY - rect.top; const newVolume = Math.max(0, Math.min(100, 100 - (moveY / rect.height * 100))); updateVolume(newVolume); }">
                 {{-- Fill (bottom to top) - Beyaz --}}
                 <div class="absolute bottom-0 w-full bg-white/90 rounded-full transition-all pointer-events-none"
                      :style="`height: ${isMuted ? 0 : volume}%`"></div>

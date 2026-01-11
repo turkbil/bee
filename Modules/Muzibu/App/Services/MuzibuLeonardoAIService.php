@@ -201,8 +201,9 @@ SYSTEM;
             return null;
         }
 
-        $width = $options['width'] ?? 1472;
-        $height = $options['height'] ?? 832;
+        // 🧪 TEST MODE 2: 512x512 KARE (%75 kredi tasarrufu!)
+        $width = $options['width'] ?? 512;
+        $height = $options['height'] ?? 512;
 
         Log::info('🎵 Muzibu Leonardo AI: Free imagination mode (Music Platform)', [
             'title' => $title,

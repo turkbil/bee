@@ -233,6 +233,39 @@ class SongComponent extends Component
         }
     }
 
+    public function toggleFeatured(int $id): void
+    {
+        try {
+            $song = Song::find($id);
+
+            if (!$song) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('muzibu::admin.song_not_found'),
+                    'type' => 'error',
+                ]);
+                return;
+            }
+
+            $song->is_featured = !$song->is_featured;
+            $song->save();
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => $song->is_featured
+                    ? __('muzibu::admin.song.featured') . ' olarak işaretlendi'
+                    : __('muzibu::admin.song.not_featured') . ' olarak işaretlendi',
+                'type' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
     public function bulkConvertToHls(): void
     {
         if (empty($this->selectedItems)) {

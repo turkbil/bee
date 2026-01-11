@@ -97,6 +97,14 @@ return [
         'remove_from_queue' => 'Sıradan Çıkar',
         'drag' => 'Sürükle',
 
+        // Queue Actions & Messages
+        'added_to_queue' => ':count şarkı sıraya eklendi',
+        'added_to_queue_next' => ':count şarkı sırada bir sonraki olarak eklendi',
+        'added_with_duplicates_removed' => ':count şarkı eklendi (:removed tekrar kaldırıldı)',
+        'added_next_with_duplicates_removed' => ':count şarkı sonraki olarak eklendi (:removed tekrar kaldırıldı)',
+        'song_not_found_to_add' => 'Eklenecek şarkı bulunamadı',
+        'queue_add_error' => 'Sıraya eklenirken hata oluştu',
+
         // Favorites
         'add_to_favorites' => 'Favorilere ekle',
         'remove_from_favorites' => 'Favorilerden çıkar',
@@ -136,18 +144,6 @@ return [
         'no_results' => 'Sonuç bulunamadı',
         'try_different' => 'Sonuç bulunamadı. Farklı bir kelime deneyin.',
         'view_all_results' => 'Tüm :count sonucu gör',
-    ],
-
-    'sidebar' => [
-        // Tabs
-        'most_played' => 'En çok dinlenenler',
-        'newly_added' => 'Yeni eklenenler',
-        'trending' => 'Yükselişte olanlar',
-        'popular' => 'Popüler',
-        'new' => 'Yeni',
-
-        // Status
-        'song_loading' => 'Şarkı yükleniyor...',
     ],
 
     'user' => [

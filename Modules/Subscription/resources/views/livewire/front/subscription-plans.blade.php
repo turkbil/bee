@@ -355,6 +355,8 @@
                                 @foreach($cycles as $cycleKey => $cycle)
                                     @php
                                         $price = $cycle['price'] ?? 0;
+                                        $priceType = $plan->getCyclePriceType($cycleKey); // 'with_tax' veya 'without_tax'
+                                        $priceWithTax = $plan->getCyclePriceWithTax($cycleKey); // KDV dahil fiyat
                                         $comparePrice = $cycle['compare_price'] ?? null;
                                         $durationDays = $cycle['duration_days'] ?? 30;
                                         $monthlyPrice = $durationDays > 0 ? round(($price / $durationDays) * 30) : $price;
@@ -385,25 +387,47 @@
                                                 <span class="text-lg text-gray-400 ml-1">TL</span>
                                             </div>
 
-                                            {{-- 2. KDV Satırı --}}
-                                            <p class="text-sm text-gray-400 mt-1">
-                                                <span class="text-white/70">+ KDV</span>
-                                                <span class="text-gray-600 mx-1">/</span>
-                                                @if($durationDays <= 31)
-                                                    <span>Ay</span>
-                                                @elseif($durationDays <= 366)
-                                                    <span>Yıl</span>
-                                                @else
-                                                    <span>{{ $durationDays }} Gün</span>
-                                                @endif
-                                            </p>
+                                            {{-- 2. KDV Satırı (Dinamik) --}}
+                                            @if($priceType === 'with_tax')
+                                                <p class="text-sm text-gray-400 mt-1">
+                                                    <span class="text-white/70">(KDV Dahil)</span>
+                                                    <span class="text-gray-600 mx-1">/</span>
+                                                    @if($durationDays <= 31)
+                                                        <span>Ay</span>
+                                                    @elseif($durationDays <= 366)
+                                                        <span>Yıl</span>
+                                                    @else
+                                                        <span>{{ $durationDays }} Gün</span>
+                                                    @endif
+                                                </p>
+                                            @else
+                                                <p class="text-sm text-gray-400 mt-1">
+                                                    <span class="text-white/70">+ KDV</span>
+                                                    <span class="text-gray-600 mx-1">/</span>
+                                                    @if($durationDays <= 31)
+                                                        <span>Ay</span>
+                                                    @elseif($durationDays <= 366)
+                                                        <span>Yıl</span>
+                                                    @else
+                                                        <span>{{ $durationDays }} Gün</span>
+                                                    @endif
+                                                </p>
+                                                <p class="text-xs text-gray-500 mt-1">
+                                                    Toplam: <span class="text-white/70 font-semibold">{{ number_format($priceWithTax, 2, ',', '.') }} TL</span>
+                                                </p>
+                                            @endif
 
                                             {{-- 3. Compare Price + Aylık Karşılık (sadece yıllık için) --}}
                                             @if($comparePrice)
                                             <div class="mt-3 space-y-1">
                                                 <div class="flex items-center gap-3">
                                                     <span class="text-sm text-gray-500 line-through">
-                                                        {{ number_format($comparePrice, 0, ',', '.') }} TL + KDV
+                                                        {{ number_format($comparePrice, 0, ',', '.') }} TL
+                                                        @if($priceType === 'with_tax')
+                                                            (KDV Dahil)
+                                                        @else
+                                                            + KDV
+                                                        @endif
                                                     </span>
                                                     <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                                                         %{{ $discount }} TASARRUF
@@ -411,7 +435,13 @@
                                                 </div>
                                                 @if($durationDays > 31)
                                                 <p class="text-sm text-gray-500">
-                                                    Aylık yalnızca <span class="text-white font-semibold">{{ number_format($monthlyPrice, 0, ',', '.') }} TL</span> + KDV'ye denk gelir
+                                                    Aylık yalnızca <span class="text-white font-semibold">{{ number_format($monthlyPrice, 0, ',', '.') }} TL</span>
+                                                    @if($priceType === 'with_tax')
+                                                        (KDV Dahil)
+                                                    @else
+                                                        + KDV
+                                                    @endif
+                                                    'ye denk gelir
                                                 </p>
                                                 @endif
                                             </div>
@@ -472,6 +502,8 @@
                             {{-- CTA Button - Her Zaman En Altta --}}
                             <div class="mt-auto pt-4">
                                 @foreach($cycles as $cycleKey => $cycle)
+                                    {{-- 7 günden fazla kalan premium üyelere buton gösterme --}}
+                                    @if(!(!$isTrial && $isPremium && $daysLeft >= 7))
                                     <div x-show="selectedCycle[{{ $plan->subscription_plan_id }}] === '{{ $cycleKey }}'">
                                         <button
                                             @if($isTrial)
@@ -510,6 +542,7 @@
                                             </span>
                                         </button>
                                     </div>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>

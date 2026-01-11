@@ -18,11 +18,11 @@ return [
     */
     'prompt_services' => [
         // Tenant 2 & 3: İxtif (Endüstriyel Ekipman)
-        2 => \Modules\AI\App\Services\Tenant\Tenant2PromptService::class,
-        3 => \Modules\AI\App\Services\Tenant\Tenant2PromptService::class,
+        2 => \Modules\AI\App\Services\Tenant2\PromptService::class,
+        3 => \Modules\AI\App\Services\Tenant2\PromptService::class,
 
         // Tenant 1001: Muzibu (Müzik Platformu)
-        1001 => \Modules\AI\App\Services\Tenant\Tenant1001PromptService::class,
+        1001 => \Modules\AI\App\Services\Tenant1001\PromptService::class,
 
         // Diğer tenant'lar eklenebilir:
         // 1002 => \Modules\AI\App\Services\Tenant\Tenant1002PromptService::class,

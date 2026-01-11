@@ -1086,7 +1086,8 @@ sudo rm "ekran-goruntusu.png"
 **⚡ Tailwind/View değişikliğinden SONRA otomatik yap:**
 
 ```bash
-# 1. Cache temizle
+# 1. Cache temizle (Redis dahil)
+php artisan cache:clear
 php artisan view:clear
 php artisan responsecache:clear
 
@@ -1101,6 +1102,7 @@ npm run prod
 **Kullanıcı "değişiklikler yansımadı" derse:**
 
 ```bash
+# Laravel cache + Redis cache temizler (Session'ları KORUR!)
 php artisan cache:clear && \
 php artisan config:clear && \
 php artisan route:clear && \
@@ -1111,6 +1113,16 @@ curl -s -k https://ixtif.com/opcache-reset.php && \
 php artisan config:cache && \
 php artisan route:cache
 ```
+
+**✅ GÜVENLİ:**
+- `php artisan cache:clear` → Redis cache'ini temizler ama session'lara dokunmaz
+- Kullanıcılar logout OLMAZ
+- Queue job'lar korunur
+
+**❌ ASLA KULLANMA:**
+- `redis-cli FLUSHALL` → TÜM kullanıcıları logout yapar!
+- `redis-cli FLUSHDB` → Session'ları silme riski!
+- Redis'i manuel temizleme → Laravel'a bırak!
 
 ### 🗑️ DOSYA TEMİZLEME
 

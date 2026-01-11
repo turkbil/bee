@@ -94,6 +94,9 @@ module.exports = {
     // muzibu icin ek safelist
     safelist: [
         ...baseConfig.safelist,
+        // Sidebar Featured System - Custom sizes & colors (2026-01-11)
+        'text-[9px]', 'text-[11px]',
+        'text-red-400', 'text-red-500',
         // Subscription Plans Page - onemli!
         'bg-sub-coral', 'hover:bg-sub-coral-hover', 'text-sub-coral',
         'bg-sub-dark', 'bg-sub-darker',

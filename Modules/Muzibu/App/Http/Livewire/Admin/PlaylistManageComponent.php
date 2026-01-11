@@ -56,9 +56,14 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
     }
 
     #[Computed]
-    public function activeSectors()
+    public function availableSectors()
     {
         $query = \Modules\Muzibu\App\Models\Sector::where('is_active', true);
+
+        // Seçili olanları hariç tut
+        if (!empty($this->inputs['sector_ids'])) {
+            $query->whereNotIn('sector_id', $this->inputs['sector_ids']);
+        }
 
         // Search filter
         if (!empty($this->sectorSearch)) {
@@ -73,9 +78,26 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
     }
 
     #[Computed]
-    public function activeRadios()
+    public function selectedSectors()
+    {
+        if (empty($this->inputs['sector_ids'])) {
+            return collect([]);
+        }
+
+        return \Modules\Muzibu\App\Models\Sector::whereIn('sector_id', $this->inputs['sector_ids'])
+            ->orderBy('title->tr')
+            ->get();
+    }
+
+    #[Computed]
+    public function availableRadios()
     {
         $query = \Modules\Muzibu\App\Models\Radio::where('is_active', true);
+
+        // Seçili olanları hariç tut
+        if (!empty($this->inputs['radio_ids'])) {
+            $query->whereNotIn('radio_id', $this->inputs['radio_ids']);
+        }
 
         // Search filter
         if (!empty($this->radioSearch)) {
@@ -90,9 +112,26 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
     }
 
     #[Computed]
-    public function activeGenres()
+    public function selectedRadios()
+    {
+        if (empty($this->inputs['radio_ids'])) {
+            return collect([]);
+        }
+
+        return \Modules\Muzibu\App\Models\Radio::whereIn('radio_id', $this->inputs['radio_ids'])
+            ->orderBy('title->tr')
+            ->get();
+    }
+
+    #[Computed]
+    public function availableGenres()
     {
         $query = \Modules\Muzibu\App\Models\Genre::where('is_active', true);
+
+        // Seçili olanları hariç tut
+        if (!empty($this->inputs['genre_ids'])) {
+            $query->whereNotIn('genre_id', $this->inputs['genre_ids']);
+        }
 
         // Search filter
         if (!empty($this->genreSearch)) {
@@ -107,10 +146,27 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
     }
 
     #[Computed]
-    public function activeCorporates()
+    public function selectedGenres()
+    {
+        if (empty($this->inputs['genre_ids'])) {
+            return collect([]);
+        }
+
+        return \Modules\Muzibu\App\Models\Genre::whereIn('genre_id', $this->inputs['genre_ids'])
+            ->orderBy('title->tr')
+            ->get();
+    }
+
+    #[Computed]
+    public function availableCorporates()
     {
         $query = \Modules\Muzibu\App\Models\MuzibuCorporateAccount::where('is_active', true)
             ->whereNull('parent_id'); // Sadece ana firmalar (şubeler değil)
+
+        // Seçili olanları hariç tut
+        if (!empty($this->inputs['corporate_ids'])) {
+            $query->whereNotIn('id', $this->inputs['corporate_ids']);
+        }
 
         // Search filter
         if (!empty($this->corporateSearch)) {
@@ -122,6 +178,18 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         }
 
         return $query->orderBy('company_name')->get();
+    }
+
+    #[Computed]
+    public function selectedCorporates()
+    {
+        if (empty($this->inputs['corporate_ids'])) {
+            return collect([]);
+        }
+
+        return \Modules\Muzibu\App\Models\MuzibuCorporateAccount::whereIn('id', $this->inputs['corporate_ids'])
+            ->orderBy('company_name')
+            ->get();
     }
 
     protected $listeners = [

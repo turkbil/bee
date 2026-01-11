@@ -40,13 +40,16 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     protected $fillable = [
         'title',
         'slug',
+        'description',
         'media_id',
+        'is_featured',
         'is_active',
     ];
 
     protected $casts = [
         // NOT: title, slug CAST'LANMAMALI!
         // HasTranslations trait bunları otomatik yönetiyor
+        'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -56,7 +59,7 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Çevrilebilir alanlar
      */
-    protected $translatable = ['title', 'slug'];
+    protected $translatable = ['title', 'slug', 'description'];
 
     /**
      * ID accessor - radio_id'yi id olarak döndür
@@ -80,6 +83,14 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Öne çıkan radyoları getir
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
     }
 
     /**
@@ -246,6 +257,7 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     {
         return [
             'title' => 'text',
+            'description' => 'html',
             'slug' => 'auto',
         ];
     }

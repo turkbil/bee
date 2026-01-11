@@ -47,9 +47,14 @@ class RadioManageComponent extends Component implements AIContentGeneratable
     }
 
     #[Computed]
-    public function activePlaylists()
+    public function availablePlaylists()
     {
         $query = \Modules\Muzibu\App\Models\Playlist::where('is_active', true);
+
+        // Seçili olanları hariç tut
+        if (!empty($this->inputs['playlist_ids'])) {
+            $query->whereNotIn('playlist_id', $this->inputs['playlist_ids']);
+        }
 
         // Search filtreleme
         if (!empty($this->playlistSearch)) {
@@ -69,6 +74,18 @@ class RadioManageComponent extends Component implements AIContentGeneratable
         }
 
         return $query->orderBy('title->tr')->get();
+    }
+
+    #[Computed]
+    public function selectedPlaylists()
+    {
+        if (empty($this->inputs['playlist_ids'])) {
+            return collect([]);
+        }
+
+        return \Modules\Muzibu\App\Models\Playlist::whereIn('playlist_id', $this->inputs['playlist_ids'])
+            ->orderBy('title->tr')
+            ->get();
     }
 
     protected $listeners = [

@@ -36,7 +36,7 @@ class SubscriptionCartBridge
         $displayInfo = $this->getSubscriptionDisplayInfo($plan, $cycle);
 
         // Fiyat bilgileri
-        $priceInfo = $this->getSubscriptionPriceInfo($plan, $cycle);
+        $priceInfo = $this->getSubscriptionPriceInfo($plan, $cycle, $cycleKey);
 
         // Abonelik bilgileri
         $subscriptionInfo = $this->getSubscriptionInfo($plan, $cycle, $cycleKey, $autoRenew);
@@ -66,8 +66,32 @@ class SubscriptionCartBridge
         // Cycle label
         $cycleLabel = $cycle['label']['tr'] ?? $cycle['label']['en'] ?? 'Bilinmeyen';
 
-        // Item title (Plan adı + Cycle)
-        $itemTitle = $plan->getTranslated('title', app()->getLocale()) . ' - ' . $cycleLabel;
+        // Item title - Kullanıcı durumuna göre (checkout sidebar için)
+        if (!auth()->check()) {
+            // 1. Üye değilse → "Fiyatlandırma"
+            $planTitle = 'Fiyatlandırma';
+        } elseif (!auth()->user()->is_premium) {
+            // 2. Üye ama premium değilse → "Premium Ol"
+            $planTitle = 'Premium Ol';
+        } else {
+            // 3. Premium üye ve 7 günden az kaldıysa → "Üyeliğini Uzat"
+            $subscription = auth()->user()->subscription;
+            if ($subscription && $subscription->ends_at) {
+                $daysLeft = now()->diffInDays($subscription->ends_at, false);
+
+                if ($daysLeft < 7 && $daysLeft >= 0) {
+                    $planTitle = 'Üyeliğini Uzat';
+                } else {
+                    // 7 günden fazla kaldıysa da "Üyeliğini Uzat" (buton zaten gizli ama sepette olabilir)
+                    $planTitle = 'Üyeliğini Uzat';
+                }
+            } else {
+                // Subscription yok ama premium (edge case) → Premium Ol
+                $planTitle = 'Premium Ol';
+            }
+        }
+
+        $itemTitle = $planTitle . ' - ' . $cycleLabel;
 
         // Image (subscription planlarında görsel yoksa default icon kullan)
         $itemImage = null;
@@ -93,16 +117,11 @@ class SubscriptionCartBridge
      *
      * @param SubscriptionPlan $plan
      * @param array $cycle
+     * @param string $cycleKey
      * @return array
      */
-    protected function getSubscriptionPriceInfo(SubscriptionPlan $plan, array $cycle): array
+    protected function getSubscriptionPriceInfo(SubscriptionPlan $plan, array $cycle, string $cycleKey): array
     {
-        // Cycle key'i al
-        $cycleKey = $cycle['key'] ?? null;
-
-        if (!$cycleKey) {
-            throw new \Exception('Cycle key bulunamadı');
-        }
 
         // Model accessor kullan - price_type'a göre otomatik hesaplar
         $basePrice = $plan->getCycleBasePrice($cycleKey); // KDV hariç fiyat (Cart için)

@@ -53,8 +53,6 @@ window.MuzibuSpotPlayer = (function() {
      * Sayfa yüklendiğinde çağrılmalı
      */
     async function init() {
-        console.log('🎙️ SpotPlayer: Initializing...');
-
         try {
             // localStorage'dan sayacı yükle
             loadCounter();
@@ -69,11 +67,7 @@ window.MuzibuSpotPlayer = (function() {
             console.error('🎙️ SpotPlayer: INIT ERROR!', e);
         }
 
-        if (state.enabled) {
-            console.log(`🎙️ SpotPlayer: Enabled. Songs between: ${state.songsBetween}, Current count: ${state.songsPlayed}`);
-        } else {
-            console.log('🎙️ SpotPlayer: Disabled or no corporate account');
-        }
+        // SpotPlayer status checked
     }
 
     /**
@@ -81,7 +75,6 @@ window.MuzibuSpotPlayer = (function() {
      */
     async function fetchSettings() {
         try {
-            console.log('🎙️ SpotPlayer: Fetching settings from /api/spot/settings...');
             const response = await fetch('/api/spot/settings', {
                 credentials: 'include',
                 headers: {
@@ -91,7 +84,6 @@ window.MuzibuSpotPlayer = (function() {
             });
 
             const data = await response.json();
-            console.log('🎙️ SpotPlayer: Settings response:', data);
 
             state.enabled = data.enabled === true;
             state.isPaused = data.spot_is_paused === true;
@@ -562,16 +554,11 @@ window.MuzibuSpotPlayer = (function() {
 
 })();
 
-console.log('🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer:', typeof window.MuzibuSpotPlayer);
-
 // Auto-init when DOM is ready
 if (document.readyState === 'loading') {
-    console.log('🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...');
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...');
         MuzibuSpotPlayer.init();
     });
 } else {
-    console.log('🎙️ SpotPlayer: DOM ready, calling init() immediately...');
     MuzibuSpotPlayer.init();
 }

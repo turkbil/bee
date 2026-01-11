@@ -13,10 +13,11 @@ use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
 use Modules\Muzibu\App\Traits\HasPlaylistDistribution;
+use Modules\Muzibu\App\Traits\HasCachedCounts;
 
 class Sector extends BaseModel implements HasMedia
 {
-    use Sluggable, HasTranslations, HasUniversalSchemas, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasPlaylistDistribution;
+    use Sluggable, HasTranslations, HasUniversalSchemas, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasPlaylistDistribution, HasCachedCounts;
 
     protected $table = 'muzibu_sectors';
     protected $primaryKey = 'sector_id';
@@ -347,5 +348,93 @@ class Sector extends BaseModel implements HasMedia
             '@type' => 'BreadcrumbList',
             'itemListElement' => $breadcrumbs
         ];
+    }
+
+    // ========================================
+    // 🎵 HasCachedCounts Implementation
+    // ========================================
+
+    /**
+     * HasCachedCounts configuration
+     * Defines cached count fields and their calculators
+     *
+     * Sector'ün şarkıları playlist'ler üzerinden gelir:
+     * - songs_count: Tüm playlist'lerdeki benzersiz aktif şarkıların toplamı
+     * - total_duration: Tüm playlist'lerdeki aktif şarkıların toplam süresi
+     */
+    protected function getCachedCountsConfig(): array
+    {
+        return [
+            'songs_count' => function() {
+                // Sector'e ait tüm playlist'lerdeki benzersiz şarkıları say
+                $playlistIds = $this->playlists()->pluck('playlist_id')->toArray();
+
+                if (empty($playlistIds)) {
+                    return 0;
+                }
+
+                // Playlist'lerdeki benzersiz şarkı ID'lerini bul
+                $uniqueSongIds = \DB::table('muzibu_playlist_song')
+                    ->whereIn('playlist_id', $playlistIds)
+                    ->join('muzibu_songs', 'muzibu_playlist_song.song_id', '=', 'muzibu_songs.song_id')
+                    ->where('muzibu_songs.is_active', true)
+                    ->distinct()
+                    ->pluck('muzibu_songs.song_id');
+
+                return $uniqueSongIds->count();
+            },
+            'total_duration' => function() {
+                // Sector'e ait tüm playlist'lerdeki benzersiz şarkıların toplam süresini hesapla
+                $playlistIds = $this->playlists()->pluck('playlist_id')->toArray();
+
+                if (empty($playlistIds)) {
+                    return 0;
+                }
+
+                // Playlist'lerdeki benzersiz şarkı ID'lerini bul ve sürelerini topla
+                $totalDuration = \DB::table('muzibu_playlist_song')
+                    ->whereIn('playlist_id', $playlistIds)
+                    ->join('muzibu_songs', 'muzibu_playlist_song.song_id', '=', 'muzibu_songs.song_id')
+                    ->where('muzibu_songs.is_active', true)
+                    ->distinct()
+                    ->sum('muzibu_songs.duration');
+
+                return (int) $totalDuration;
+            },
+        ];
+    }
+
+    /**
+     * Songs count accessor (cached)
+     */
+    public function getSongsCountAttribute(): int
+    {
+        return $this->getCachedCount('songs_count');
+    }
+
+    /**
+     * Total duration accessor (cached)
+     */
+    public function getTotalDurationAttribute(): int
+    {
+        return $this->getCachedCount('total_duration');
+    }
+
+    /**
+     * Formatlanmış toplam süre (HH:MM:SS veya MM:SS)
+     */
+    public function getFormattedTotalDuration(): string
+    {
+        $totalSeconds = $this->total_duration;
+
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+
+        if ($hours > 0) {
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+        }
+
+        return sprintf('%02d:%02d', $minutes, $seconds);
     }
 }

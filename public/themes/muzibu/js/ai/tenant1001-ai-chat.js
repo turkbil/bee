@@ -213,43 +213,162 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        // Parse markdown to HTML (simple version)
+        /**
+         * Format duration: seconds → "Xdk YYsn"
+         * @param {number} seconds - Duration in seconds
+         * @returns {string} Formatted duration (e.g., "2dk 46sn")
+         */
+        formatDuration(seconds) {
+            if (!seconds || seconds <= 0) return '0sn';
+
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+
+            if (minutes === 0) {
+                return `${secs}sn`;
+            }
+
+            return secs > 0 ? `${minutes}dk ${secs}sn` : `${minutes}dk`;
+        },
+
+        /**
+         * Escape HTML special characters to prevent XSS and HTML injection
+         * @param {string} text - Text to escape
+         * @returns {string} Escaped text safe for HTML content
+         */
+        escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        },
+
+        /**
+         * Escape string for use in JavaScript code (onclick, etc.)
+         * @param {string} text - Text to escape
+         * @returns {string} Escaped text safe for JavaScript strings
+         */
+        escapeJs(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/\\/g, '\\\\')  // Backslash first!
+                .replace(/'/g, "\\'")     // Single quote
+                .replace(/"/g, '\\"')     // Double quote
+                .replace(/\n/g, '\\n')    // Newline
+                .replace(/\r/g, '\\r')    // Carriage return
+                .replace(/\t/g, '\\t');   // Tab
+        },
+
+        // Parse markdown to HTML (improved version with song table support)
         parseMarkdown(text) {
             if (!text) return '';
 
             let html = text;
 
-            // 🎵 MARKDOWN LİNK PARSE (Şarkı çalma için button'a çevir)
-            // 1. "Çal" linklerini HTML button'a çevir (tekil şarkı önerileri için)
-            html = html.replace(/\[Çal\]\(([^)]+)\)/g,
-                '<button onclick="window.location.href=\'$1\'" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md ml-2"><i class="fas fa-play text-xs"></i> Çal</button>');
+            // 🎵 SPECIAL: Detect and parse song list FIRST (before any markdown)
+            // Pattern: "1. **Song Title** - Artist (duration) [Çal](url)"
+            const songListRegex = /(\d+)\.\s+\*\*(.+?)\*\*\s+-\s+(.+?)\s+\((\d+)\s*saniye\)\s+\[(?:▶️\s*)?Çal\]\((https?:\/\/[^\/]+\/play\/song\/(\d+))\)/gm;
+            let songMatches = [];
+            let match;
 
-            // 2. Diğer markdown linkler: [text](url) → <a> tag
-            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-400 hover:text-blue-300 underline">$1</a>');
+            while ((match = songListRegex.exec(html)) !== null) {
+                songMatches.push({
+                    fullMatch: match[0],
+                    number: match[1],
+                    title: match[2],
+                    artist: match[3],
+                    seconds: parseInt(match[4]),
+                    url: match[5],
+                    songId: match[6]
+                });
+            }
 
-            // Headers (parse first, before bold/italic to avoid ### conflict with *)
-            // h3 first, then h2, then h1 to avoid ### matching ##
-            html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-            html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-            html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+            // If song list detected, convert to table format
+            if (songMatches.length > 0) {
+                let tableHTML = '<div class="bg-slate-800/30 rounded-xl overflow-hidden my-4"><div class="divide-y divide-slate-700">';
 
-            // Bold: **text** or __text__
+                songMatches.forEach((song) => {
+                    const duration = this.formatDuration(song.seconds);
+                    // Escape for HTML content (text nodes)
+                    const safeTitle = this.escapeHtml(song.title);
+                    const safeArtist = this.escapeHtml(song.artist);
+                    // Escape for JavaScript code (onclick attribute)
+                    const jsUrl = this.escapeJs(song.url);
+                    const safeSongId = parseInt(song.songId); // Number, safe to use directly
+
+                    // Build HTML as single line to prevent \n → <br> conversion inside tags
+                    // Compact design: minimal padding, icon-only button
+                    tableHTML += '<div class="flex items-center gap-2 py-2 px-2 hover:bg-slate-700/30 transition-colors group">' +
+                        '<div class="text-slate-500 font-mono text-xs w-6 flex-shrink-0 text-right">' + song.number + '</div>' +
+                        '<div class="flex-1 min-w-0">' +
+                            '<div class="font-semibold text-white text-sm truncate">' + safeTitle + '</div>' +
+                            '<div class="text-xs text-slate-400 truncate">' + safeArtist + ' • ' + duration + '</div>' +
+                        '</div>' +
+                        '<button type="button" onclick="if(window.playContent){window.playContent(\'song\',' + safeSongId + ')}else{window.location.href=\'' + jsUrl + '\'}" class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors opacity-0 group-hover:opacity-100" title="Çal">' +
+                            '<i class="fas fa-play text-xs"></i>' +
+                        '</button>' +
+                    '</div>';
+                });
+
+                tableHTML += '</div></div>';
+
+                // Remove song list from original text, keep rest
+                songMatches.forEach((song) => {
+                    html = html.replace(song.fullMatch, '');
+                });
+
+                // Insert table after first heading
+                html = html.replace(/(###?\s+.+?\n)/, (match) => {
+                    return match + tableHTML;
+                });
+            }
+
+            // 1. "Çal" linklerini player-entegre button'a çevir (remaining ones)
+            // Compact: icon-only button
+            html = html.replace(/\[(?:▶️\s*)?Çal\]\((https?:\/\/[^\/]+\/play\/song\/(\d+))\)/gi, (match, url, songId) => {
+                const jsUrl = this.escapeJs(url); // JavaScript escape for onclick
+                const safeSongId = parseInt(songId);
+                return `<button type="button" onclick="if(window.playContent){window.playContent('song',${safeSongId})}else{window.location.href='${jsUrl}'}" class="inline-flex items-center justify-center w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors ml-2" title="Çal"><i class="fas fa-play text-xs"></i></button>`;
+            });
+
+            // 2. Süre formatını düzelt: (166 saniye) → (2dk 46sn)
+            html = html.replace(/\((\d+)\s*saniye\)/gi, (match, seconds) => {
+                return `(${this.formatDuration(parseInt(seconds))})`;
+            });
+
+            // 3. Headers
+            html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-bold text-white mb-2">$1</h3>');
+            html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-bold text-white mb-3">$1</h2>');
+            html = html.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold text-white mb-4">$1</h1>');
+
+            // 4. Bold: **text** or __text__
             html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
             html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
 
-            // Italic: *text* or _text_
+            // 5. Italic: *text* or _text_
             html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
             html = html.replace(/_(.+?)_/g, '<em>$1</em>');
 
-            // Line breaks
+            // 6. Markdown images: ![alt](url) → <img> tag (BEFORE links!)
+            html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="w-16 h-16 rounded-lg object-cover my-2" loading="lazy">');
+
+            // 7. Regular lists: - item or * item
+            html = html.replace(/^[\-\*]\s+(.+)$/gm, '<li>$1</li>');
+            html = html.replace(/(<li>.*?<\/li>\s*)+/gs, (match) => {
+                return '<ul class="list-disc ml-6 my-2 space-y-1">' + match + '</ul>';
+            });
+
+            // 8. Other markdown links: [text](url) → <a> tag
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-400 hover:text-blue-300 underline">$1</a>');
+
+            // 9. Line breaks
             html = html.replace(/\n\n/g, '</p><p>');
             html = html.replace(/\n/g, '<br>');
 
-            // Lists: - item or * item
-            html = html.replace(/^[\-\*]\s+(.+)$/gm, '<li>$1</li>');
-            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-
-            // Wrap in paragraph if not already wrapped
+            // 10. Wrap in paragraph if not already wrapped
             if (!html.startsWith('<')) {
                 html = '<p>' + html + '</p>';
             }
@@ -269,10 +388,25 @@ document.addEventListener('alpine:init', () => {
             const playlistMatch = content.match(playlistRegex);
 
             if (playlistMatch) {
+                // 🎯 AUTO TITLE: Markdown'dan başlığı çek (### veya ##)
+                let autoTitle = playlistMatch[2]; // Fallback: ACTION'daki title
+
+                // ### ile başlayan başlık ara (örn: "### Türkçe Pop Playlist")
+                const h3Match = content.match(/^###\s+(.+)$/m);
+                if (h3Match && h3Match[1]) {
+                    autoTitle = h3Match[1].trim();
+                } else {
+                    // ## ile başlayan başlık ara (alternatif)
+                    const h2Match = content.match(/^##\s+(.+)$/m);
+                    if (h2Match && h2Match[1]) {
+                        autoTitle = h2Match[1].trim();
+                    }
+                }
+
                 return {
                     type: 'CREATE_PLAYLIST',
                     songIds: playlistMatch[1].split(',').map(id => parseInt(id)),
-                    title: playlistMatch[2],
+                    title: autoTitle,
                     rawAction: playlistMatch[0]
                 };
             }

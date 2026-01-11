@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Description HTML & Entity Temizleme - Planlama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block bg-blue-900/30 border border-blue-700 px-4 py-2 rounded-full mb-4">
+                <span class="text-blue-400 font-semibold"><i class="fas fa-tools mr-2"></i>Planlama</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Description Field Temizleme
+            </h1>
+            <p class="text-slate-400 text-lg">
+                HTML Tag & Entity Temizleme İşlemi
+            </p>
+            <p class="text-slate-500 text-sm mt-2">
+                <i class="far fa-calendar mr-2"></i>11 Ocak 2026
+            </p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                <i class="fas fa-lightbulb text-yellow-400"></i>
+                <span>Basit Anlatım (Herkes İçin)</span>
+            </h2>
+            <div class="space-y-4">
+                <p class="text-lg leading-relaxed">
+                    Müzik platformunda genre (tür), playlist, album ve sektör sayfalarında açıklamalar bozuk görünüyor.
+                    Ekranda HTML kodları (<code>&lt;p&gt;</code>, <code>&lt;/p&gt;</code>) ve bozuk Türkçe karakterler
+                    (<code>&amp;uuml;</code> gibi) aynen yazılı çıkıyor.
+                </p>
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-4">
+                    <p class="font-semibold text-red-400 mb-2">❌ Şu an nasıl görünüyor:</p>
+                    <code class="text-sm">&lt;p&gt;Lo-Fi m&amp;uuml;zikleriyle huzurlu ve dinlendirici bir atmosfer sunun.&lt;/p&gt;</code>
+                </div>
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                    <p class="font-semibold text-green-400 mb-2">✅ Nasıl olması gerekiyor:</p>
+                    <code class="text-sm">Lo-Fi müzikleriyle huzurlu ve dinlendirici bir atmosfer sunun.</code>
+                </div>
+                <p class="text-lg leading-relaxed">
+                    Bu sorunu düzeltmek için:
+                </p>
+                <ul class="space-y-2 ml-6">
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Veritabanındaki tüm açıklama metinlerini temizleyeceğiz</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>HTML kodlarını (<code>&lt;p&gt;</code>, <code>&lt;/p&gt;</code>) kaldıracağız</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Bozuk karakterleri (ü, ı, ş, ğ, ç, ö gibi) düzelteceğiz</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Temiz, okunabilir metinler elde edeceğiz</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                <i class="fas fa-code text-blue-400"></i>
+                <span>Teknik Detaylar (Geliştiriciler İçin)</span>
+            </h2>
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-cyan-400">📊 Etkilenen Tablolar & Field'ler</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                            <p class="font-semibold text-green-400 mb-2"><i class="fas fa-table mr-2"></i>muzibu_genres</p>
+                            <ul class="text-sm space-y-1 ml-4">
+                                <li><code>description</code> (JSON, translatable)</li>
+                                <li>Diller: tr, en</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                            <p class="font-semibold text-green-400 mb-2"><i class="fas fa-table mr-2"></i>muzibu_playlists</p>
+                            <ul class="text-sm space-y-1 ml-4">
+                                <li><code>description</code> (JSON, translatable)</li>
+                                <li>Diller: tr, en</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                            <p class="font-semibold text-green-400 mb-2"><i class="fas fa-table mr-2"></i>muzibu_albums</p>
+                            <ul class="text-sm space-y-1 ml-4">
+                                <li><code>description</code> (JSON, translatable)</li>
+                                <li>Diller: tr, en</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                            <p class="font-semibold text-green-400 mb-2"><i class="fas fa-table mr-2"></i>muzibu_sectors</p>
+                            <ul class="text-sm space-y-1 ml-4">
+                                <li><code>description</code> (JSON, translatable)</li>
+                                <li>Diller: tr, en</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-cyan-400">🔍 Sorunun Kaynağı</h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                            <p class="font-semibold text-red-400 mb-2">1. HTML Tag Sorunu:</p>
+                            <p class="text-sm mb-2">DB'de description field'leri <code>&lt;p&gt;</code> ve <code>&lt;/p&gt;</code> tagları ile sarılmış halde saklanmış:</p>
+                            <pre class="bg-slate-950 p-3 rounded text-xs overflow-x-auto"><code>"&lt;p&gt;Lo-Fi müzikleriyle huzurlu ve dinlendirici bir atmosfer sunun.&lt;\/p&gt;"</code></pre>
+                        </div>
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                            <p class="font-semibold text-red-400 mb-2">2. HTML Entity Sorunu:</p>
+                            <p class="text-sm mb-2">Türkçe karakterler HTML entity olarak saklanmış:</p>
+                            <ul class="text-xs space-y-1 ml-4">
+                                <li><code>&amp;uuml;</code> → <code>ü</code></li>
+                                <li><code>&amp;ccedil;</code> → <code>ç</code></li>
+                                <li><code>&amp;ouml;</code> → <code>ö</code></li>
+                                <li><code>&amp;Ouml;</code> → <code>Ö</code></li>
+                                <li><code>&amp;Uuml;</code> → <code>Ü</code></li>
+                                <li><code>&amp;Ccedil;</code> → <code>Ç</code></li>
+                                <li><code>&amp;#304;</code> → <code>İ</code></li>
+                                <li><code>&amp;#305;</code> → <code>ı</code></li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                            <p class="font-semibold text-red-400 mb-2">3. View Render Sorunu:</p>
+                            <p class="text-sm mb-2">View'lerde <code>{{ }}</code> kullanılmış (HTML escape eder):</p>
+                            <pre class="bg-slate-950 p-3 rounded text-xs overflow-x-auto"><code>{{ $genre->getTranslation('description', app()->getLocale()) }}</code></pre>
+                            <p class="text-sm mt-2 text-yellow-400"><i class="fas fa-info-circle mr-2"></i>Ancak zaten view'de <code>&lt;p class="text-sm..."&gt;</code> tagi var, bu nedenle DB'den gelen HTML taglarına gerek yok!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-cyan-400">⚙️ Temizleme Algoritması</h3>
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                        <ol class="space-y-3 ml-4">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                                <div class="flex-1">
+                                    <p class="font-semibold">JSON Field Parse Et</p>
+                                    <p class="text-sm text-slate-400">Her bir kayıttaki description JSON'unu parse et, diller için ayrı ayrı işle</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                                <div class="flex-1">
+                                    <p class="font-semibold">HTML Taglarını Kaldır</p>
+                                    <p class="text-sm text-slate-400"><code>strip_tags()</code> fonksiyonu ile tüm HTML taglarını temizle</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                                <div class="flex-1">
+                                    <p class="font-semibold">HTML Entity'leri Decode Et</p>
+                                    <p class="text-sm text-slate-400"><code>html_entity_decode()</code> ile tüm HTML entity'leri düz karaktere çevir</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                                <div class="flex-1">
+                                    <p class="font-semibold">Fazla Boşlukları Temizle</p>
+                                    <p class="text-sm text-slate-400"><code>trim()</code> ve whitespace normalizasyonu</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">5</span>
+                                <div class="flex-1">
+                                    <p class="font-semibold">JSON'a Geri Encode Et</p>
+                                    <p class="text-sm text-slate-400">Temizlenmiş metni JSON formatında DB'ye kaydet</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section class="bg-slate-900/50 border border-slate-700 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-tasks text-orange-400"></i>
+                <span>Yapılacaklar (Adım Adım)</span>
+            </h2>
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            1
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg mb-2">Veritabanı Backup</h3>
+                            <p class="text-slate-400 text-sm mb-2">
+                                Temizlik işleminden ÖNCE güvenlik için backup al
+                            </p>
+                            <pre class="bg-slate-950 p-3 rounded text-xs overflow-x-auto"><code>mysqldump tenant_muzibu_1528d0 muzibu_genres muzibu_playlists muzibu_albums muzibu_sectors > backup-descriptions.sql</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            2
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg mb-2">PHP Script Oluştur (Laravel Command)</h3>
+                            <p class="text-slate-400 text-sm mb-2">
+                                Tüm tablolardaki description field'lerini temizleyecek Laravel command
+                            </p>
+                            <ul class="text-sm space-y-2 ml-4">
+                                <li><i class="fas fa-code text-cyan-400 mr-2"></i><code>app/Console/Commands/CleanDescriptionFieldsCommand.php</code></li>
+                                <li><i class="fas fa-database text-green-400 mr-2"></i>4 tablo için döngü (genres, playlists, albums, sectors)</li>
+                                <li><i class="fas fa-language text-yellow-400 mr-2"></i>Her kayıt için JSON parse, temizle, encode</li>
+                                <li><i class="fas fa-chart-bar text-purple-400 mr-2"></i>İşlem raporu (kaç kayıt temizlendi)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            3
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg mb-2">Script'i Çalıştır</h3>
+                            <p class="text-slate-400 text-sm mb-2">
+                                Tenant context'te command çalıştır
+                            </p>
+                            <pre class="bg-slate-950 p-3 rounded text-xs overflow-x-auto"><code>php artisan muzibu:clean-descriptions --tenant=1001</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            4
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg mb-2">Sonuçları Kontrol Et</h3>
+                            <p class="text-slate-400 text-sm mb-2">
+                                Genre, playlist, album, sector sayfalarını tarayıcıda test et
+                            </p>
+                            <ul class="text-sm space-y-2 ml-4">
+                                <li><i class="fas fa-link text-blue-400 mr-2"></i><code>https://muzibu.com.tr/genres/lo-fi</code></li>
+                                <li><i class="fas fa-link text-blue-400 mr-2"></i><code>https://muzibu.com.tr/playlists/...</code></li>
+                                <li><i class="fas fa-link text-blue-400 mr-2"></i><code>https://muzibu.com.tr/albums/...</code></li>
+                                <li><i class="fas fa-link text-blue-400 mr-2"></i><code>https://muzibu.com.tr/sectors/...</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            5
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg mb-2">Cache Temizle</h3>
+                            <p class="text-slate-400 text-sm mb-2">
+                                View ve response cache'i temizle
+                            </p>
+                            <pre class="bg-slate-950 p-3 rounded text-xs overflow-x-auto"><code>php artisan view:clear && php artisan responsecache:clear</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Riskler & Önlemler -->
+        <section class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                <span>Riskler & Önlemler</span>
+            </h2>
+            <div class="space-y-4">
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-4">
+                    <p class="font-semibold text-red-400 mb-2"><i class="fas fa-times-circle mr-2"></i>Risk: Veri Kaybı</p>
+                    <p class="text-sm">Description field'leri geri döndürülemez şekilde değiştirilecek</p>
+                    <p class="text-green-400 text-sm mt-2"><i class="fas fa-check-circle mr-2"></i>Önlem: Mutlaka backup al!</p>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4">
+                    <p class="font-semibold text-yellow-400 mb-2"><i class="fas fa-exclamation-circle mr-2"></i>Risk: Yanlış Encoding</p>
+                    <p class="text-sm">UTF-8 encoding bozulabilir, Türkçe karakterler kaybolabilir</p>
+                    <p class="text-green-400 text-sm mt-2"><i class="fas fa-check-circle mr-2"></i>Önlem: <code>html_entity_decode()</code> UTF-8 flag ile kullan</p>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4">
+                    <p class="font-semibold text-yellow-400 mb-2"><i class="fas fa-exclamation-circle mr-2"></i>Risk: JSON Bozulması</p>
+                    <p class="text-sm">JSON encode/decode sırasında veri yapısı bozulabilir</p>
+                    <p class="text-green-400 text-sm mt-2"><i class="fas fa-check-circle mr-2"></i>Önlem: <code>JSON_UNESCAPED_UNICODE</code> flag kullan</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beklenen Sonuç -->
+        <section class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                <i class="fas fa-check-circle text-green-400"></i>
+                <span>Beklenen Sonuç</span>
+            </h2>
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-red-900/30 border border-red-700 rounded-lg p-4">
+                        <p class="font-semibold text-red-400 mb-3"><i class="fas fa-times mr-2"></i>Şu Anda (Bozuk)</p>
+                        <pre class="bg-slate-950 p-3 rounded text-xs overflow-x-auto"><code>&lt;p&gt;Lo-Fi m&amp;uuml;zikleriyle huzurlu ve dinlendirici bir atmosfer sunun.&lt;/p&gt;</code></pre>
+                    </div>
+                    <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                        <p class="font-semibold text-green-400 mb-3"><i class="fas fa-check mr-2"></i>Sonrası (Temiz)</p>
+                        <pre class="bg-slate-950 p-3 rounded text-xs overflow-x-auto"><code>Lo-Fi müzikleriyle huzurlu ve dinlendirici bir atmosfer sunun.</code></pre>
+                    </div>
+                </div>
+                <ul class="space-y-2 ml-6">
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Tüm HTML tagları kaldırılmış olacak</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Tüm HTML entity'ler düz karaktere çevrilmiş olacak</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Türkçe karakterler doğru görünecek (ü, ı, ş, ğ, ç, ö)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Sayfalarda açıklamalar temiz ve okunabilir olacak</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>
+                <i class="fas fa-robot mr-2"></i>
+                Bu rapor <a href="https://claude.ai" class="text-cyan-400 hover:text-cyan-300" target="_blank">Claude AI</a> tarafından oluşturuldu
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -307,13 +307,19 @@ class ActivityLogComponent extends Component
         $query = Activity::query()
             ->with(['causer', 'subject'])
             ->when(!$user->isRoot(), function ($query) {
-                $query->whereHas('causer', function ($q) {
-                    $q->where('model_type', User::class)
-                        ->whereDoesntHave('roles', function ($r) {
-                            $r->where('name', 'root');
-                        });
-                })
-                ->orWhereNull('causer_id');
+                $query->where(function ($q) {
+                    // Root olmayan kullanıcıların loglarını göster
+                    $q->where(function ($subQuery) {
+                        $subQuery->where('causer_type', User::class)
+                            ->whereHas('causer', function ($causerQuery) {
+                                $causerQuery->whereDoesntHave('roles', function ($roleQuery) {
+                                    $roleQuery->where('name', 'root');
+                                });
+                            });
+                    })
+                    // Veya sistem logları (causer_id null)
+                    ->orWhereNull('causer_id');
+                });
             });
 
         $query = $this->applySearchFilters($query);

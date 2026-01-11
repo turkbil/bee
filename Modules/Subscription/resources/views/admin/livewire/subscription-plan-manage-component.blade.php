@@ -221,6 +221,7 @@
                                                                         label_tr: cycle.label?.tr || '',
                                                                         label_en: cycle.label?.en || '',
                                                                         price: cycle.price || '',
+                                                                        price_type: cycle.price_type || 'without_tax',
                                                                         compare_price: cycle.compare_price || '',
                                                                         duration_days: cycle.duration_days || 30,
                                                                         trial_days: cycle.trial_days || '',
@@ -284,11 +285,23 @@
                                                                     Fiyatlandırma
                                                                 </h6>
                                                                 <div class="row g-3">
-                                                                    <div :class="@js($inputs['is_trial']) ? 'col-md-4' : 'col-md-6'">
+                                                                    <div :class="@js($inputs['is_trial']) ? 'col-md-3' : 'col-md-4'">
                                                                         <label class="form-label required">Fiyat (₺)</label>
                                                                         <input type="number" class="form-control" x-model="editData.price" step="0.01" placeholder="99.90">
                                                                     </div>
-                                                                    <div :class="@js($inputs['is_trial']) ? 'col-md-4' : 'col-md-6'">
+                                                                    <div :class="@js($inputs['is_trial']) ? 'col-md-3' : 'col-md-4'">
+                                                                        <label class="form-label">Fiyat Tipi</label>
+                                                                        <select class="form-select" x-model="editData.price_type">
+                                                                            <option value="without_tax">KDV Hariç</option>
+                                                                            <option value="with_tax">KDV Dahil</option>
+                                                                        </select>
+                                                                        <small class="form-hint mt-1">
+                                                                            <i class="fas fa-info-circle me-1"></i>
+                                                                            <span x-show="editData.price_type === 'without_tax'">Checkout'ta KDV eklenecek</span>
+                                                                            <span x-show="editData.price_type === 'with_tax'">KDV dahil, ayrıştırılacak</span>
+                                                                        </small>
+                                                                    </div>
+                                                                    <div :class="@js($inputs['is_trial']) ? 'col-md-2' : 'col-md-4'">
                                                                         <label class="form-label">Üstü Çizili Fiyat (₺)</label>
                                                                         <input type="number" class="form-control" x-model="editData.compare_price" step="0.01" placeholder="120.00">
                                                                     </div>
@@ -417,7 +430,7 @@
                                         <span>Fiyatlandırma</span>
                                     </h6>
                                     <div class="row g-3">
-                                        <div :class="@js($inputs['is_trial']) ? 'col-md-4' : 'col-md-6'">
+                                        <div :class="@js($inputs['is_trial']) ? 'col-md-3' : 'col-md-4'">
                                             <label class="form-label required">Fiyat (₺)</label>
                                             <input type="number"
                                                    class="form-control"
@@ -426,7 +439,19 @@
                                                    min="0"
                                                    step="0.01">
                                         </div>
-                                        <div :class="@js($inputs['is_trial']) ? 'col-md-4' : 'col-md-6'">
+                                        <div :class="@js($inputs['is_trial']) ? 'col-md-3' : 'col-md-4'">
+                                            <label class="form-label">Fiyat Tipi</label>
+                                            <select class="form-select" x-model="newCycle.price_type">
+                                                <option value="without_tax">KDV Hariç</option>
+                                                <option value="with_tax">KDV Dahil</option>
+                                            </select>
+                                            <small class="form-hint mt-1">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                <span x-show="newCycle.price_type === 'without_tax'">Checkout'ta KDV eklenecek</span>
+                                                <span x-show="newCycle.price_type === 'with_tax'">KDV dahil, ayrıştırılacak</span>
+                                            </small>
+                                        </div>
+                                        <div :class="@js($inputs['is_trial']) ? 'col-md-2' : 'col-md-4'">
                                             <label class="form-label">
                                                 Üstü Çizili Fiyat (₺)
                                                 <span class="badge bg-secondary ms-1 badge-sm">Opsiyonel</span>
@@ -709,6 +734,7 @@
             newCycle: {
                 label_tr: '',
                 price: '',
+                price_type: 'without_tax', // Default: KDV hariç
                 duration_days: 30,
                 compare_price: '',
                 trial_days: '',

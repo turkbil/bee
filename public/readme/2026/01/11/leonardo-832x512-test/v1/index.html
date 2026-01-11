@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI 832x512 Test Sonuçları - %50 Kredi Tasarrufu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .image-container img {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .image-container img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block bg-blue-900/30 border border-blue-700 rounded-full px-6 py-2 mb-4">
+                <span class="text-blue-400 font-semibold">🧪 TEST RAPORU</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Leonardo AI 832x512 Test
+            </h1>
+            <p class="text-xl text-slate-400">
+                5 Şarkı - %50 Kredi Tasarrufu Değerlendirmesi
+            </p>
+            <p class="text-sm text-slate-500 mt-2">
+                11 Ocak 2026
+            </p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-green-400 mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg">
+                    <strong>Ne Yaptık?</strong><br>
+                    Leonardo AI müzik kapak fotoğrafları için şu anda <strong>1472x832 boyutunda</strong> (geniş-yatay) görseller üretiyoruz.
+                    Her görsel yaklaşık <strong>20 kredi</strong> harcıyor.
+                </p>
+                <p class="text-lg">
+                    Bugün daha küçük boyut olan <strong>832x512</strong> formatını test ettik. Bu format:
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4 text-lg">
+                    <li><strong>%50 daha az kredi</strong> harcıyor (~8-10 kredi/görsel)</li>
+                    <li>Hala <strong>yatay/geniş format</strong> (müzik kapakları için uygun)</li>
+                    <li>Kalite kaybı var mı? <strong>Bunu birlikte değerlendireceğiz!</strong></li>
+                </ul>
+                <p class="text-lg">
+                    <strong>5 farklı şarkı</strong> için yeni boyutta kapak fotoğrafı oluşturduk.
+                    Aşağıda tüm görselleri görebilirsin. <strong>Kalite yeterli mi?</strong> Yoksa eski boyuta (1472x832) geri mi dönelim?
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Değiştirilen Dosya:</h3>
+                    <code class="block bg-slate-800 p-3 rounded text-cyan-400 text-sm">
+                        Modules/Muzibu/App/Services/MuzibuLeonardoAIService.php<br>
+                        Line 204-206: width/height parametreleri
+                    </code>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Eski Ayarlar:</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>Width: <strong>1472px</strong></li>
+                        <li>Height: <strong>832px</strong></li>
+                        <li>Kredi/Görsel: <strong>~20 token</strong></li>
+                        <li>Aspect Ratio: <strong>16:9 (widescreen)</strong></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Yeni Ayarlar (TEST):</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>Width: <strong>832px</strong> (-640px)</li>
+                        <li>Height: <strong>512px</strong> (-320px)</li>
+                        <li>Kredi/Görsel: <strong>~8-10 token</strong> (%50 tasarruf)</li>
+                        <li>Aspect Ratio: <strong>13:8 (geniş yatay)</strong></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Sabit Kalan Parametreler:</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>Model: <strong>leonardo-lucid-origin</strong> (premium kalite)</li>
+                        <li>Alchemy: <strong>false</strong> (kredi tasarrufu)</li>
+                        <li>Ultra: <strong>false</strong> (kredi tasarrufu)</li>
+                        <li>Contrast: <strong>3.5</strong></li>
+                        <li>GPT-4 Prompt Enhancement: <strong>Aktif</strong> (11 altın kural)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Test Edilen Şarkılar:</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>Song ID: 22364, 19189, 15936, 25480, 20410</li>
+                        <li>Queue: muzibu_my_playlist</li>
+                        <li>Job: GenerateSongCover</li>
+                        <li>Tenant: 1001 (muzibu.com.tr)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karşılaştırma Tablosu -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-8 mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6">📊 Karşılaştırma</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="border-b border-slate-600">
+                        <tr>
+                            <th class="pb-3 text-slate-400 font-semibold">Parametre</th>
+                            <th class="pb-3 text-yellow-400 font-semibold">Eski (1472x832)</th>
+                            <th class="pb-3 text-green-400 font-semibold">Yeni (832x512)</th>
+                            <th class="pb-3 text-cyan-400 font-semibold">Fark</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 text-slate-300">Boyut (Width x Height)</td>
+                            <td class="py-3">1472 x 832 px</td>
+                            <td class="py-3">832 x 512 px</td>
+                            <td class="py-3 text-red-400">-640 x -320 px</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Toplam Piksel</td>
+                            <td class="py-3">1,225,504 px</td>
+                            <td class="py-3">426,064 px</td>
+                            <td class="py-3 text-red-400">-65.2%</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Kredi Maliyeti</td>
+                            <td class="py-3">~20 token</td>
+                            <td class="py-3">~8-10 token</td>
+                            <td class="py-3 text-green-400">-50% 💰</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Aspect Ratio</td>
+                            <td class="py-3">16:9 (widescreen)</td>
+                            <td class="py-3">13:8 (geniş yatay)</td>
+                            <td class="py-3 text-yellow-400">Benzer</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Dosya Boyutu (Ort.)</td>
+                            <td class="py-3">~850-950 KB</td>
+                            <td class="py-3">~540-950 KB</td>
+                            <td class="py-3 text-green-400">Daha küçük</td>
+                        </tr>
+                        <tr class="bg-slate-700/30">
+                            <td class="py-3 text-slate-300 font-bold">13,080 Şarkı İçin Maliyet</td>
+                            <td class="py-3 font-bold text-yellow-400">261,600 kredi</td>
+                            <td class="py-3 font-bold text-green-400">117,720 kredi</td>
+                            <td class="py-3 font-bold text-green-400">-143,880 kredi 🎉</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Test Görselleri -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6 text-center">🎨 Test Görselleri (832x512)</h2>
+            <p class="text-center text-slate-400 mb-8">
+                Aşağıdaki 5 görsel <strong>832x512</strong> boyutunda, <strong>~8-10 kredi</strong> harcayarak üretildi.
+                Görsellere tıklayarak büyütebilirsin.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                <!-- Görsel 1: Haru No Kaori -->
+                <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-blue-500 transition">
+                    <div class="p-4 bg-slate-700/50">
+                        <h3 class="text-xl font-bold text-white">1. Haru No Kaori</h3>
+                        <p class="text-sm text-slate-400">Song ID: 22364</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16768/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16768/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg"
+                                 alt="Haru No Kaori"
+                                 class="w-full h-auto"
+                                 loading="lazy">
+                        </a>
+                    </div>
+                    <div class="p-4 bg-slate-700/30">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-400">Dosya Boyutu:</span>
+                                <span class="text-white ml-2 font-semibold">952 KB</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">Çözünürlük:</span>
+                                <span class="text-white ml-2 font-semibold">832x512</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görsel 2: Hatıralarla Dolu Gün -->
+                <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-blue-500 transition">
+                    <div class="p-4 bg-slate-700/50">
+                        <h3 class="text-xl font-bold text-white">2. Hatıralarla Dolu Gün</h3>
+                        <p class="text-sm text-slate-400">Song ID: 19189</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16770/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16770/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg"
+                                 alt="Hatıralarla Dolu Gün"
+                                 class="w-full h-auto"
+                                 loading="lazy">
+                        </a>
+                    </div>
+                    <div class="p-4 bg-slate-700/30">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-400">Dosya Boyutu:</span>
+                                <span class="text-white ml-2 font-semibold">826 KB</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">Çözünürlük:</span>
+                                <span class="text-white ml-2 font-semibold">832x512</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görsel 3: L'Entrée Seule -->
+                <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-blue-500 transition">
+                    <div class="p-4 bg-slate-700/50">
+                        <h3 class="text-xl font-bold text-white">3. L'Entrée Seule</h3>
+                        <p class="text-sm text-slate-400">Song ID: 15936</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16771/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16771/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg"
+                                 alt="L'Entrée Seule"
+                                 class="w-full h-auto"
+                                 loading="lazy">
+                        </a>
+                    </div>
+                    <div class="p-4 bg-slate-700/30">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-400">Dosya Boyutu:</span>
+                                <span class="text-white ml-2 font-semibold">741 KB</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">Çözünürlük:</span>
+                                <span class="text-white ml-2 font-semibold">832x512</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görsel 4: Slide -->
+                <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-blue-500 transition">
+                    <div class="p-4 bg-slate-700/50">
+                        <h3 class="text-xl font-bold text-white">4. Slide</h3>
+                        <p class="text-sm text-slate-400">Song ID: 25480</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16769/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16769/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg"
+                                 alt="Slide"
+                                 class="w-full h-auto"
+                                 loading="lazy">
+                        </a>
+                    </div>
+                    <div class="p-4 bg-slate-700/30">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-400">Dosya Boyutu:</span>
+                                <span class="text-white ml-2 font-semibold">636 KB</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">Çözünürlük:</span>
+                                <span class="text-white ml-2 font-semibold">832x512</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görsel 5: Maze of Torment -->
+                <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-blue-500 transition lg:col-span-2">
+                    <div class="p-4 bg-slate-700/50">
+                        <h3 class="text-xl font-bold text-white">5. Maze of Torment</h3>
+                        <p class="text-sm text-slate-400">Song ID: 20410</p>
+                    </div>
+                    <div class="image-container flex justify-center">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16772/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank" class="w-full lg:w-1/2">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16772/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg"
+                                 alt="Maze of Torment"
+                                 class="w-full h-auto"
+                                 loading="lazy">
+                        </a>
+                    </div>
+                    <div class="p-4 bg-slate-700/30">
+                        <div class="grid grid-cols-2 gap-4 text-sm max-w-md mx-auto">
+                            <div>
+                                <span class="text-slate-400">Dosya Boyutu:</span>
+                                <span class="text-white ml-2 font-semibold">541 KB</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">Çözünürlük:</span>
+                                <span class="text-white ml-2 font-semibold">832x512</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sonuç ve Karar -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 rounded-lg p-8 mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6">🎯 Sonuç ve Karar</h2>
+            <div class="space-y-4 text-slate-300">
+                <div class="bg-slate-800/50 rounded p-4">
+                    <h3 class="text-lg font-semibold text-green-400 mb-2">✅ Avantajlar (832x512)</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li><strong>%50 kredi tasarrufu</strong> (20 token → 8-10 token)</li>
+                        <li><strong>143,880 kredi</strong> tasarrufu (13,080 şarkı için)</li>
+                        <li>Daha küçük dosya boyutu (540-950 KB)</li>
+                        <li>Daha hızlı yüklenme</li>
+                        <li>Daha fazla şarkıya yeter (mevcut kredi ile 2x kapak üretilebilir)</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded p-4">
+                    <h3 class="text-lg font-semibold text-red-400 mb-2">⚠️ Dezavantajlar (832x512)</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>Daha düşük çözünürlük (-640x-320 piksel)</li>
+                        <li>Detay kaybı olabilir (özellikle zoom yapıldığında)</li>
+                        <li>Büyük ekranlarda kalite düşüşü görülebilir</li>
+                        <li>Profesyonel görünüm kaybı riski</li>
+                    </ul>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded p-6 mt-6">
+                    <h3 class="text-xl font-semibold text-yellow-400 mb-3">💡 Karar Senin!</h3>
+                    <p class="text-lg text-white">
+                        Yukarıdaki 5 görseli inceleyip şu soruları cevapla:
+                    </p>
+                    <ul class="list-decimal list-inside space-y-2 mt-4 text-lg">
+                        <li>Kalite kabul edilebilir mi?</li>
+                        <li>Müzik platformu için yeterli mi?</li>
+                        <li>%50 kredi tasarrufu kalite kaybını telafi ediyor mu?</li>
+                    </ul>
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-green-900/30 border border-green-700 rounded p-4">
+                            <h4 class="font-bold text-green-400 mb-2">✅ BEĞENDİM - Devam Et</h4>
+                            <p class="text-sm text-slate-300">
+                                Kalan 13,080 şarkıya 832x512 boyutunda kapak üretelim.
+                                Mevcut kredi ile tümünü bitirebiliriz!
+                            </p>
+                        </div>
+                        <div class="bg-red-900/30 border border-red-700 rounded p-4">
+                            <h4 class="font-bold text-red-400 mb-2">❌ BEĞENMEDİM - Eski Ayara Dön</h4>
+                            <p class="text-sm text-slate-300">
+                                1472x832 boyutuna geri dönelim. Kalite ön planda olsun,
+                                kredi tasarrufu ikinci planda.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>🤖 Bu rapor Claude Code (Sonnet 4.5) tarafından oluşturuldu</p>
+            <p class="mt-2">Muzibu.com.tr - Leonardo AI Test Sistemi</p>
+            <p class="mt-2 text-xs">11 Ocak 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        // Auto-refresh devre dışı (tek seferlik rapor)
+        console.log('Leonardo AI 832x512 Test Report - Ready');
+    </script>
+</body>
+</html>

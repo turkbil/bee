@@ -97,6 +97,14 @@ return [
         'remove_from_queue' => 'Remove from Queue',
         'drag' => 'Drag',
 
+        // Queue Actions & Messages
+        'added_to_queue' => ':count song(s) added to queue',
+        'added_to_queue_next' => ':count song(s) added to play next',
+        'added_with_duplicates_removed' => ':count song(s) added (:removed duplicates removed)',
+        'added_next_with_duplicates_removed' => ':count song(s) added next (:removed duplicates removed)',
+        'song_not_found_to_add' => 'Song not found to add',
+        'queue_add_error' => 'Error adding to queue',
+
         // Favorites
         'add_to_favorites' => 'Add to Favorites',
         'remove_from_favorites' => 'Remove from Favorites',
@@ -136,18 +144,6 @@ return [
         'no_results' => 'No results found',
         'try_different' => 'No results found. Try a different keyword.',
         'view_all_results' => 'View all :count results',
-    ],
-
-    'sidebar' => [
-        // Tabs
-        'most_played' => 'Most Played',
-        'newly_added' => 'Newly Added',
-        'trending' => 'Trending',
-        'popular' => 'Popular',
-        'new' => 'New',
-
-        // Status
-        'song_loading' => 'Loading song...',
     ],
 
     'user' => [

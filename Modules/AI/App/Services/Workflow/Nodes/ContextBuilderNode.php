@@ -92,10 +92,9 @@ class ContextBuilderNode extends BaseNode
                 $originalPrice = null;
             }
 
-            // ✅ BAŞLIK TEMİZLEME: Sayı formatı düzelt (2. Ton → 2 Ton)
-            // Database'de "İXTİF EPT20-20ETC - 2. Ton..." gibi başlıklar var
-            // Türkçe'de sayılarda nokta kullanılmaz: "2 ton" doğru, "2. ton" yanlış
-            $title = preg_replace('/(\d+)\.\s+(Ton|ton)/u', '$1 $2', $title);
+            // ✅ BAŞLIK TEMİZLEME: Tenant-aware formatlama
+            // Her tenant kendi TitleFormatter'ını kullanabilir (Tenant2/TitleFormatter.php vb.)
+            $title = \Modules\AI\App\Services\TenantServiceFactory::formatTitle($title);
 
             // ✅ TEMİZ SUNUM - İkon yok, hardcode yok, stok bilgisi yok
             $productContext .= "### {$title}\n";

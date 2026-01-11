@@ -8,7 +8,7 @@
 {{-- Usage: <x-muzibu.song-simple-row :song="$song" :index="$index" /> --}}
 {{-- Features: Thumbnail, Play overlay, Favorite, 3-Dot menu, Context menu --}}
 
-<div class="group flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
+<div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
      @click="$dispatch('play-song', { songId: {{ $song->song_id }} })"
      x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
          id: {{ $song->song_id }},
@@ -39,11 +39,11 @@
     </div>
 
     {{-- Song Info --}}
-    <div class="flex-1 min-w-0">
-        <h4 class="text-white text-sm font-medium truncate group-hover:text-muzibu-coral transition-colors">
+    <div class="flex-1 min-w-0 overflow-hidden cursor-pointer">
+        <h4 class="text-white text-sm font-medium truncate whitespace-nowrap group-hover:text-muzibu-coral transition-colors">
             {{ $song->getTranslation('title', app()->getLocale()) }}
         </h4>
-        <p class="text-gray-400 text-xs truncate">
+        <p class="text-gray-400 text-xs truncate whitespace-nowrap">
             {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
         </p>
     </div>

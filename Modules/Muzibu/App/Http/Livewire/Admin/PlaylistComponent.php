@@ -191,6 +191,39 @@ class PlaylistComponent extends Component
         }
     }
 
+    public function toggleFeatured(int $id): void
+    {
+        try {
+            $playlist = Playlist::find($id);
+
+            if (!$playlist) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('muzibu::admin.playlist_not_found'),
+                    'type' => 'error',
+                ]);
+                return;
+            }
+
+            $playlist->is_featured = !$playlist->is_featured;
+            $playlist->save();
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => $playlist->is_featured
+                    ? __('muzibu::admin.playlist.featured') . ' olarak işaretlendi'
+                    : __('muzibu::admin.playlist.not_featured') . ' olarak işaretlendi',
+                'type' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
     public function render(): \Illuminate\Contracts\View\View
     {
         $filters = [

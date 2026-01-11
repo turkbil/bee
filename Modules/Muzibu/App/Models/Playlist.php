@@ -47,6 +47,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         'is_system',
         'is_public',
         'is_radio',
+        'is_featured',
         'is_active',
     ];
 
@@ -56,6 +57,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         'is_system' => 'boolean',
         'is_public' => 'boolean',
         'is_radio' => 'boolean',
+        'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -90,6 +92,14 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Öne çıkan playlists'leri getir
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
     }
 
     /**
@@ -143,6 +153,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Şarkılar ilişkisi (many-to-many with position)
+     * using() ile custom Pivot model kullanılır - Observer ile otomatik cache güncelleme
      */
     public function songs()
     {
@@ -153,7 +164,11 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
             'song_id',
             'playlist_id',
             'song_id'
-        )->withPivot('position')->withTimestamps()->orderBy('muzibu_playlist_song.position');
+        )
+        ->using(PlaylistSong::class)
+        ->withPivot('position')
+        ->withTimestamps()
+        ->orderBy('muzibu_playlist_song.position');
     }
 
     /**
@@ -392,7 +407,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
             'playlist_id',
             'playlistable_id',
             'playlist_id',              // Parent key (Playlist PK)
-            'muzibu_corporate_account_id'  // Related key (Corporate PK)
+            'id'                        // Related key (Corporate PK)
         )->withPivot('position')->withTimestamps();
     }
 

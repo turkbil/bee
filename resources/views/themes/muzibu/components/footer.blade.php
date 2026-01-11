@@ -132,6 +132,7 @@
                 <ul class="space-y-2">
                     <li><a href="/muzibu/favorites" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.favorites') }}</a></li>
                     <li><a href="/muzibu/my-playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.sidebar.my_playlists') }}</a></li>
+                    <li><a href="/corporate/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kurumsal</a></li>
                     <li><a href="/muzibu/listening-history" class="text-gray-400 hover:text-muzibu-coral transition-colors">Dinleme Geçmişi</a></li>
                 </ul>
             </div>

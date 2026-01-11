@@ -70,6 +70,7 @@ module.exports = {
             animation: {
                 'shimmer': 'shimmer 2s linear infinite',
                 'shimmer-sweep': 'shimmer-sweep 0.8s ease-out forwards',
+                'gradient-flow': 'gradient-flow 8s ease-in-out infinite',
             },
             keyframes: {
                 shimmer: {
@@ -80,6 +81,11 @@ module.exports = {
                     '0%': { transform: 'translateX(-100%)', opacity: '0' },
                     '20%': { opacity: '1' },
                     '100%': { transform: 'translateX(100%)', opacity: '0' },
+                },
+                'gradient-flow': {
+                    '0%': { backgroundPosition: '0% 50%' },
+                    '50%': { backgroundPosition: '100% 50%' },
+                    '100%': { backgroundPosition: '0% 50%' },
                 },
             },
         }
@@ -165,9 +171,17 @@ module.exports = {
         // Pink variants
         'from-pink-400', 'to-pink-500',
         // Purple variants
-        'to-purple-500',
+        'from-purple-400', 'to-purple-500',
+        // Yellow variants
+        'from-yellow-400',
+        // Cyan/Blue variants (footer stats)
+        'from-cyan-400', 'to-blue-500',
+        // Rose variants (footer stats)
+        'to-rose-500',
         // Footer gradient colors (muzibu-coral variants)
         'from-muzibu-coral', 'via-muzibu-coral-light', 'to-muzibu-coral-dark',
+        // Footer logo animated gradient
+        'footer-logo-gradient', 'animate-gradient-flow', 'premium-btn-gradient',
         // Gradient from/via/to variants (right sidebar dynamic gradients)
         'from-orange-500/40', 'via-orange-500/20', 'to-transparent',
         'from-green-500/40', 'via-green-500/20',
@@ -215,7 +229,16 @@ module.exports = {
     plugins: [
         ...baseConfig.plugins || [],
         // Custom scrollbar-hide utility
-        function({ addUtilities }) {
+        function({ addUtilities, addBase }) {
+            // Keyframes for gradient animation
+            addBase({
+                '@keyframes gradient-flow': {
+                    '0%': { backgroundPosition: '0% 50%' },
+                    '50%': { backgroundPosition: '100% 50%' },
+                    '100%': { backgroundPosition: '0% 50%' }
+                }
+            });
+
             addUtilities({
                 '.scrollbar-hide': {
                     '-ms-overflow-style': 'none',
@@ -223,6 +246,21 @@ module.exports = {
                     '&::-webkit-scrollbar': {
                         display: 'none'
                     }
+                },
+                // Footer logo animated gradient - Coral dominant, multiple colors
+                '.footer-logo-gradient': {
+                    'background': 'linear-gradient(90deg, #ff7f50, #ff6347, #e91e63, #ff7f50, #ff5722, #ec407a, #ff7f50, #ff6347, #9c27b0, #ff7f50)',
+                    'background-size': '400% 100%',
+                    '-webkit-background-clip': 'text',
+                    '-webkit-text-fill-color': 'transparent',
+                    'background-clip': 'text',
+                    'animation': 'gradient-flow 4s ease-in-out infinite'
+                },
+                // Premium button animated gradient - Same colors as sidebar premium card
+                '.premium-btn-gradient': {
+                    'background': 'linear-gradient(135deg, #ff6b6b, #ff5252, #e91e63, #ff6b6b, #ff5252, #e91e63)',
+                    'background-size': '200% 200%',
+                    'animation': 'gradient-flow 3s ease-in-out infinite'
                 }
             })
         }

@@ -32,9 +32,9 @@
 <footer class="bg-muzibu-dark text-white border-t border-white/10 pb-20">
     <div class="max-w-7xl mx-auto px-8 py-12">
 
-        {{-- Logo Ortada Büyük --}}
+        {{-- Logo Ortada Büyük - Animated Gradient --}}
         <div class="text-center mb-12">
-            <h2 class="text-6xl md:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-muzibu-coral via-muzibu-coral-light to-muzibu-coral-dark mb-4">
+            <h2 class="text-6xl md:text-8xl font-black footer-logo-gradient mb-4">
                 muzibu
             </h2>
             <p class="text-xl md:text-2xl text-gray-400 font-semibold">İşletmenize Yasal ve Telifsiz Müzik</p>
@@ -44,22 +44,22 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10 max-w-6xl mx-auto">
             {{-- 1. Şarkı --}}
             <div class="text-center">
-                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-muzibu-coral to-orange-500 mb-2">{{ $songCount }}</div>
+                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-muzibu-coral to-rose-500 mb-2">{{ $songCount }}</div>
                 <div class="text-gray-400">{{ trans('muzibu::front.general.song') }}</div>
             </div>
             {{-- 2. Albüm --}}
             <div class="text-center">
-                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-red-500 mb-2">{{ $albumCount }}</div>
+                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">{{ $albumCount }}</div>
                 <div class="text-gray-400">{{ trans('muzibu::front.general.album') }}</div>
             </div>
             {{-- 3. Çalma Listesi --}}
             <div class="text-center">
-                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-pink-500 mb-2">{{ $playlistCount }}</div>
+                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500 mb-2">{{ $playlistCount }}</div>
                 <div class="text-gray-400">{{ trans('muzibu::front.general.playlist') }}</div>
             </div>
             {{-- 4. Radyo --}}
             <div class="text-center">
-                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-500 mb-2">{{ $radioCount }}</div>
+                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 mb-2">{{ $radioCount }}</div>
                 <div class="text-gray-400">{{ trans('muzibu::front.general.radios') }}</div>
             </div>
         </div>
@@ -82,43 +82,30 @@
                 </ul>
             </div>
 
-            {{-- 2. Kütüphane (Sadece Auth) --}}
-            @auth
+            {{-- 2. Hesap --}}
             <div class="text-center">
                 <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-books text-orange-400"></i>
-                    {{ trans('muzibu::front.sidebar.my_library') }}
-                </h3>
-                <ul class="space-y-2">
-                    <li><a href="/muzibu/favorites" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.favorites') }}</a></li>
-                    <li><a href="/muzibu/listening-history" class="text-gray-400 hover:text-muzibu-coral transition-colors">Son Dinlenenler</a></li>
-                    <li><a href="/muzibu/my-playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.sidebar.my_playlists') }}</a></li>
-                    <li><a href="/my-subscriptions" class="text-gray-400 hover:text-muzibu-coral transition-colors">Aboneliklerim</a></li>
-                    <li><a href="/my-certificate" class="text-gray-400 hover:text-muzibu-coral transition-colors">Premium Belgesi</a></li>
-                </ul>
-            </div>
-            @else
-            <div class="text-center">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-music text-orange-400"></i>
-                    Keşfet
-                </h3>
-                <ul class="space-y-2">
-                    <li><a href="/playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.playlists') }}</a></li>
-                    <li><a href="/albums" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.albums') }}</a></li>
-                </ul>
-            </div>
-            @endauth
-
-            {{-- 3. Hesap --}}
-            <div class="text-center">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-user text-red-400"></i>
+                    <i class="fas fa-user text-muzibu-coral"></i>
                     {{ trans('muzibu::front.general.account') }}
                 </h3>
                 <ul class="space-y-2">
                     @auth
+                        @php
+                            $footerUser = auth()->user();
+                            $footerIsPremium = $footerUser->isPremium();
+                            $footerExpiresAt = $footerUser->subscription_expires_at;
+                            $footerDaysRemaining = $footerExpiresAt ? now()->diffInDays($footerExpiresAt, false) : null;
+                            $footerShowExtend = $footerIsPremium && $footerDaysRemaining !== null && $footerDaysRemaining <= 7 && $footerDaysRemaining >= 0;
+                        @endphp
                         <li><a href="/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Dashboard</a></li>
+                        <li><a href="/my-subscriptions" class="text-gray-400 hover:text-muzibu-coral transition-colors">Aboneliklerim</a></li>
+                        <li><a href="/my-certificate" class="text-gray-400 hover:text-muzibu-coral transition-colors">Premium Belgesi</a></li>
+                        <li><a href="/corporate/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kurumsal</a></li>
+                        @if($footerShowExtend)
+                            <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Üyeliğini Uzat</a></li>
+                        @elseif(!$footerIsPremium)
+                            <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Premium Ol</a></li>
+                        @endif
                         <li>
                             <form method="POST" action="{{ route('logout') }}" class="inline">
                                 @csrf
@@ -130,14 +117,41 @@
                     @else
                         <li><a href="/login" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.login') }}</a></li>
                         <li><a href="/register" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.footer.register') }}</a></li>
+                        <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Planlar & Fiyatlandırma</a></li>
                     @endauth
                 </ul>
             </div>
 
+            {{-- 3. Kitaplığım (Sadece Auth) --}}
+            @auth
+            <div class="text-center">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
+                    <i class="fas fa-book-open text-muzibu-coral"></i>
+                    Kitaplığım
+                </h3>
+                <ul class="space-y-2">
+                    <li><a href="/muzibu/favorites" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.favorites') }}</a></li>
+                    <li><a href="/muzibu/my-playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.sidebar.my_playlists') }}</a></li>
+                    <li><a href="/muzibu/listening-history" class="text-gray-400 hover:text-muzibu-coral transition-colors">Dinleme Geçmişi</a></li>
+                </ul>
+            </div>
+            @else
+            <div class="text-center">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
+                    <i class="fas fa-music text-muzibu-coral"></i>
+                    Keşfet
+                </h3>
+                <ul class="space-y-2">
+                    <li><a href="/playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.playlists') }}</a></li>
+                    <li><a href="/albums" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.albums') }}</a></li>
+                </ul>
+            </div>
+            @endauth
+
             {{-- 4. Yasal --}}
             <div class="text-center">
                 <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-balance-scale text-purple-400"></i>
+                    <i class="fas fa-balance-scale text-muzibu-coral"></i>
                     Yasal
                 </h3>
                 <ul class="space-y-2 text-sm">
@@ -195,13 +209,13 @@
             @endif
             @if($siteEmail)
             <div class="flex items-center gap-2">
-                <i class="fas fa-envelope text-orange-400"></i>
+                <i class="fas fa-envelope text-muzibu-coral"></i>
                 <a href="mailto:{{ $siteEmail }}" class="hover:text-white transition-colors">{{ $siteEmail }}</a>
             </div>
             @endif
             @if($whatsappNumber)
             <div class="flex items-center gap-2">
-                <i class="fab fa-whatsapp text-green-400"></i>
+                <i class="fab fa-whatsapp text-muzibu-coral"></i>
                 <a href="{{ whatsapp_link($whatsappNumber, 'Merhaba, bilgi almak istiyorum') }}" target="_blank" rel="noopener" class="hover:text-white transition-colors">WhatsApp Destek</a>
             </div>
             @endif

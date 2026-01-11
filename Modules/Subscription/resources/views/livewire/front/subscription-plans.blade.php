@@ -287,9 +287,9 @@
                      x-on:mouseenter="hoveredPlan = {{ $plan->subscription_plan_id }}"
                      x-on:mouseleave="hoveredPlan = null">
 
-                    {{-- Featured Badge --}}
+                    {{-- Featured Badge - Çizgiye ortalı --}}
                     @if($isFeatured)
-                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
                         <div class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-sub-coral text-white text-xs font-bold shadow-lg">
                             <i class="fas fa-crown text-yellow-300"></i>
                             <span>EN POPÜLER</span>
@@ -308,7 +308,7 @@
                     @endif
 
                     {{-- Card --}}
-                    <div class="relative h-full rounded-3xl overflow-hidden transition-all duration-500 {{ $isFeatured ? 'gradient-border featured-glow' : 'glass-card glass-card-hover' }} {{ $isFeatured ? 'scale-[1.02] lg:scale-105' : '' }}">
+                    <div class="relative h-full rounded-3xl overflow-hidden transition-all duration-500 {{ $isFeatured ? 'gradient-border featured-glow' : 'glass-card glass-card-hover' }}">
 
                         {{-- Hover Glow Effect --}}
                         <div class="card-glow"></div>
@@ -319,12 +319,14 @@
                         <div class="p-6 sm:p-8 flex flex-col h-full {{ $isFeatured ? 'bg-sub-dark' : '' }}">
 
                             {{-- Plan Name --}}
-                            <div class="mb-2">
-                                <h3 class="text-2xl font-bold text-white mb-1">
+                            <div class="mb-4">
+                                <h3 class="text-xl font-bold text-white mb-1">
                                     {{ $plan->getTranslated('title') }}
                                 </h3>
                                 @if($plan->getTranslated('description'))
-                                <p class="text-sm text-gray-500 line-clamp-2">{{ $plan->getTranslated('description') }}</p>
+                                <p class="text-sm text-gray-500 line-clamp-2">
+                                    {{ $plan->getTranslated('description') }}
+                                </p>
                                 @endif
                             </div>
 
@@ -348,8 +350,8 @@
                             </div>
                             @endif
 
-                            {{-- Price Display --}}
-                            <div class="mb-6">
+                            {{-- Price Display - Simetri için min-height --}}
+                            <div class="mb-6 min-h-[140px]">
                                 @foreach($cycles as $cycleKey => $cycle)
                                     @php
                                         $price = $cycle['price'] ?? 0;
@@ -366,7 +368,7 @@
 
                                         @if($isTrial)
                                             <div class="flex items-baseline gap-2">
-                                                <span class="text-5xl font-black price-gradient-emerald">
+                                                <span class="text-4xl sm:text-5xl font-black price-gradient-emerald">
                                                     ÜCRETSİZ
                                                 </span>
                                             </div>
@@ -375,36 +377,44 @@
                                                 {{ $durationDays }} gün deneme süresi
                                             </p>
                                         @else
-                                            {{-- Compare Price --}}
-                                            @if($comparePrice)
-                                            <div class="flex items-center gap-3 mb-2">
-                                                <span class="text-lg text-gray-500 line-through">
-                                                    {{ number_format($comparePrice, 0, ',', '.') }}₺
-                                                </span>
-                                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                                                    %{{ $discount }} TASARRUF
-                                                </span>
-                                            </div>
-                                            @endif
-
-                                            {{-- Main Price --}}
+                                            {{-- 1. Ana Fiyat --}}
                                             <div class="flex items-baseline gap-1">
-                                                <span class="text-5xl sm:text-6xl font-black price-gradient">
-                                                    {{ number_format($price, 0, ',', '.') }}
+                                                <span class="text-4xl sm:text-5xl font-black price-gradient">
+                                                    {{ number_format($price, 2, ',', '.') }}
                                                 </span>
-                                                <span class="text-2xl price-gradient">₺</span>
+                                                <span class="text-lg text-gray-400 ml-1">TL</span>
                                             </div>
 
-                                            {{-- Tax Info --}}
-                                            @if($plan->tax_rate > 0)
-                                            <p class="text-xs text-gray-500 mt-1">KDV dahil</p>
-                                            @endif
-
-                                            {{-- Monthly Equivalent --}}
-                                            @if($durationDays > 30)
-                                            <p class="text-sm text-gray-500 mt-1">
-                                                <span class="text-white font-semibold">{{ number_format($monthlyPrice, 0, ',', '.') }}₺</span>/ay
+                                            {{-- 2. KDV Satırı --}}
+                                            <p class="text-sm text-gray-400 mt-1">
+                                                <span class="text-white/70">+ KDV</span>
+                                                <span class="text-gray-600 mx-1">/</span>
+                                                @if($durationDays <= 31)
+                                                    <span>Ay</span>
+                                                @elseif($durationDays <= 366)
+                                                    <span>Yıl</span>
+                                                @else
+                                                    <span>{{ $durationDays }} Gün</span>
+                                                @endif
                                             </p>
+
+                                            {{-- 3. Compare Price + Aylık Karşılık (sadece yıllık için) --}}
+                                            @if($comparePrice)
+                                            <div class="mt-3 space-y-1">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-sm text-gray-500 line-through">
+                                                        {{ number_format($comparePrice, 0, ',', '.') }} TL + KDV
+                                                    </span>
+                                                    <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                                        %{{ $discount }} TASARRUF
+                                                    </span>
+                                                </div>
+                                                @if($durationDays > 31)
+                                                <p class="text-sm text-gray-500">
+                                                    Aylık yalnızca <span class="text-white font-semibold">{{ number_format($monthlyPrice, 0, ',', '.') }} TL</span> + KDV'ye denk gelir
+                                                </p>
+                                                @endif
+                                            </div>
                                             @endif
                                         @endif
                                     </div>
@@ -422,9 +432,10 @@
                                     $features = $rawFeatures;
                                 }
                             @endphp
-                            <div class="flex-1 mb-6">
+                            {{-- Features - Sabit min yükseklik (8 özellik için ~250px) --}}
+                            <div class="flex-1 mb-6 min-h-[250px]">
                                 @if(!empty($features))
-                                <div class="space-y-3">
+                                <div>
                                     @foreach($features as $featureIndex => $feature)
                                         @php
                                             // Array ise (nested) skip et
@@ -436,15 +447,22 @@
                                             if (is_string($feature) && str_contains($feature, '|')) {
                                                 [$icon, $text] = explode('|', $feature, 2);
                                             } else {
-                                                $icon = 'fas fa-check';
+                                                $icon = 'fal fa-check';
                                                 $text = is_string($feature) ? $feature : '';
                                             }
+
+                                            // Light ve Solid versiyonları oluştur
+                                            $iconLight = str_replace(['fas ', 'far ', 'fab '], 'fal ', $icon);
+                                            $iconSolid = str_replace(['fal ', 'far ', 'fab '], 'fas ', $icon);
                                         @endphp
-                                        <div class="flex items-start gap-3 text-sm">
-                                            <div class="feature-icon flex-shrink-0 w-5 h-5 rounded-full {{ $isFeatured ? 'bg-sub-coral' : ($isTrial ? 'bg-emerald-500' : 'bg-white/20') }} flex items-center justify-center mt-0.5">
-                                                <i class="{{ $icon }} text-white text-xs"></i>
+                                        <div class="feature-row group/feature flex items-start gap-3 text-sm cursor-default py-2">
+                                            <div class="feature-icon flex-shrink-0 w-5 h-5 flex items-center justify-center mt-0.5 relative">
+                                                {{-- Light icon (default) --}}
+                                                <i class="{{ $iconLight }} {{ $isFeatured ? 'text-sub-coral' : ($isTrial ? 'text-emerald-400' : 'text-gray-400') }} text-base absolute transition-all duration-200 opacity-100 group-hover/feature:opacity-0"></i>
+                                                {{-- Solid icon (hover) --}}
+                                                <i class="{{ $iconSolid }} {{ $isFeatured ? 'text-sub-coral' : ($isTrial ? 'text-emerald-400' : 'text-white') }} text-base absolute transition-all duration-200 opacity-0 group-hover/feature:opacity-100"></i>
                                             </div>
-                                            <span class="text-gray-300">{{ $text }}</span>
+                                            <span class="text-gray-300 group-hover/feature:text-white transition-colors duration-200">{{ $text }}</span>
                                         </div>
                                     @endforeach
                                 </div>
@@ -474,7 +492,17 @@
                                                 @if($isTrial)
                                                     <i class="fas fa-gift mr-2"></i>Ücretsiz Başla
                                                 @else
-                                                    <i class="fas fa-crown mr-2"></i>Üyeliğini Uzat
+                                                    @if($isGuest)
+                                                        @if($trialDays > 0)
+                                                            <i class="fas fa-user-plus mr-2"></i>Üye Ol, {{ $trialDays }} Gün Ücretsiz Dinle
+                                                        @else
+                                                            <i class="fas fa-user-plus mr-2"></i>Üye Ol
+                                                        @endif
+                                                    @elseif(!$isPremium)
+                                                        <i class="fas fa-crown mr-2"></i>Premium Ol
+                                                    @else
+                                                        <i class="fas fa-crown mr-2"></i>Üyeliğini Uzat
+                                                    @endif
                                                 @endif
                                             </span>
                                             <span wire:loading wire:target="{{ $isTrial ? 'startTrial' : 'addToCart' }}({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}'{{ $isTrial ? '' : ', true' }})">

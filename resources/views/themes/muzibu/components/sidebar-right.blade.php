@@ -52,7 +52,7 @@
     }
 </style>
 
-<div class="h-full" x-data="{ songsTab: 'new' }">
+<div class="h-full" x-data="{ featuredTab: 'playlists' }">
 
     {{-- PREVIEW MODE: Premium Card Design (when clicking on list item - WORKS EVERYWHERE) --}}
     <template x-if="$store.sidebar?.previewMode">
@@ -161,7 +161,7 @@
                             });
                         }
                      ">
-                    <template x-for="(track, index) in $store.sidebar.previewTracks" :key="'pl-' + track.id + '-' + index">
+                    <template x-for="track in $store.sidebar.previewTracks" :key="track.id">
                         <div class="group flex items-center gap-2.5 px-3 py-2 hover:bg-white/5 cursor-pointer transition-all playlist-item"
                              @click="$dispatch('play-song', { songId: track.id })">
 
@@ -302,7 +302,7 @@
                             }
                         }
                      ">
-                    <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
+                    <template x-for="track in $store.sidebar.previewTracks" :key="track.id">
                         <div class="group flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
                              @click="$dispatch('play-song', { songId: track.id })"
                              x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', { id: track.id, title: track.title, artist: track.artist, album_id: track.album_id, album_slug: track.album_slug, album_title: track.album_title, album_cover: track.album_cover, is_favorite: track.is_favorite || false })">
@@ -428,7 +428,7 @@
                             }
                         }
                      ">
-                    <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
+                    <template x-for="track in $store.sidebar.previewTracks" :key="track.id">
                         <div class="group flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
                              @click="$dispatch('play-song', { songId: track.id })"
                              x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', { id: track.id, title: track.title, artist: track.artist, album_id: track.album_id, album_slug: track.album_slug, album_title: track.album_title, album_cover: track.album_cover, is_favorite: track.is_favorite || false })">
@@ -592,7 +592,7 @@
 
             {{-- Track List with Thumbnails --}}
             <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent p-2 space-y-0.5">
-                <template x-for="(track, index) in $store.sidebar.tracks" :key="track.id">
+                <template x-for="track in $store.sidebar.tracks" :key="track.id">
                     <div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
                          @click="(($store.sidebar.isDetailPage && $store.sidebar.entityInfo) ? $store.player.setPlayContext({
                              type: $store.sidebar.pageType,
@@ -665,10 +665,12 @@
                 {{-- Gradient Background Layer (Fixed Height, Behind Content) --}}
                 <div class="absolute top-0 left-0 right-0 h-[120px] rounded-t-lg pointer-events-none overflow-hidden">
                     {{-- Color Layer (Dynamic based on active tab) --}}
-                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-muzibu-coral/40 via-muzibu-coral/20 to-transparent"
-                         x-show="songsTab === 'new'"></div>
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-purple-500/40 via-purple-500/20 to-transparent"
+                         x-show="featuredTab === 'playlists'"></div>
                     <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-orange-500/40 via-orange-500/20 to-transparent"
-                         x-show="songsTab === 'popular'"></div>
+                         x-show="featuredTab === 'radios'"></div>
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-muzibu-coral/40 via-muzibu-coral/20 to-transparent"
+                         x-show="featuredTab === 'songs'"></div>
                     {{-- Dark Overlay (Bottom fade to #121212) --}}
                     <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent via-black/30 to-[#121212]"></div>
                 </div>
@@ -676,79 +678,193 @@
                 {{-- Content (Above Gradient) --}}
                 <div class="relative z-10 pt-3 pb-2">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2 px-3">
-                        <template x-if="songsTab === 'popular'">
+                        <template x-if="featuredTab === 'playlists'">
                             <span class="flex items-center gap-2">
-                                <i class="fas fa-fire text-orange-400"></i>
-                                {{ trans('muzibu::front.general.popular_songs') }}
+                                <i class="fas fa-list-music text-purple-400"></i>
+                                Popüler Playlist
                             </span>
                         </template>
-                        <template x-if="songsTab === 'new'">
+                        <template x-if="featuredTab === 'radios'">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-broadcast-tower text-orange-400"></i>
+                                Popüler Radyo
+                            </span>
+                        </template>
+                        <template x-if="featuredTab === 'songs'">
                             <span class="flex items-center gap-2">
                                 <i class="fas fa-star text-muzibu-coral"></i>
-                                {{ trans('muzibu::front.general.new_songs') }}
+                                Popüler Şarkı
                             </span>
                         </template>
                     </h3>
                     <p class="text-xs text-gray-400 mt-1 px-3">
-                        <template x-if="songsTab === 'new'">
-                            <span>{{ trans('muzibu::front.sidebar.newly_added') }}</span>
+                        <template x-if="featuredTab === 'playlists'">
+                            <span>Öne çıkan koleksiyonlar</span>
                         </template>
-                        <template x-if="songsTab === 'popular'">
-                            <span>{{ trans('muzibu::front.sidebar.most_played') }}</span>
+                        <template x-if="featuredTab === 'radios'">
+                            <span>Öne çıkan istasyonlar</span>
+                        </template>
+                        <template x-if="featuredTab === 'songs'">
+                            <span>Öne çıkan parçalar</span>
                         </template>
                     </p>
 
-                    {{-- Tab Headers (2 tabs) - Pill Style: Yeni → Popüler --}}
-                    <div class="flex gap-2 pt-3 px-3">
-                        <button @click="songsTab = 'new'"
-                                class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
-                                :class="songsTab === 'new' ? 'bg-muzibu-coral/20 text-muzibu-coral font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                            <i class="fas fa-star mr-1"></i>{{ trans('muzibu::front.sidebar.new') }}
+                    {{-- Tab Headers (3 tabs) - Pill Style: Playlistler → Radyolar → Şarkılar --}}
+                    <div class="flex gap-1.5 pt-3 px-3">
+                        <button @click="featuredTab = 'playlists'"
+                                class="flex-1 py-2 px-2 text-[11px] font-medium transition-all rounded-full whitespace-nowrap overflow-hidden text-ellipsis"
+                                :class="featuredTab === 'playlists' ? 'bg-purple-500/20 text-purple-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                                style="white-space: nowrap !important;">
+                            <i class="fas fa-list-music text-[9px] mr-1"></i>Playlist
                         </button>
-                        <button @click="songsTab = 'popular'"
-                                class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
-                                :class="songsTab === 'popular' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                            <i class="fas fa-fire mr-1"></i>{{ trans('muzibu::front.sidebar.popular') }}
+                        <button @click="featuredTab = 'radios'"
+                                class="flex-1 py-2 px-2 text-[11px] font-medium transition-all rounded-full whitespace-nowrap overflow-hidden text-ellipsis"
+                                :class="featuredTab === 'radios' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                                style="white-space: nowrap !important;">
+                            <i class="fas fa-broadcast-tower text-[9px] mr-1"></i>Radyo
+                        </button>
+                        <button @click="featuredTab = 'songs'"
+                                class="flex-1 py-2 px-2 text-[11px] font-medium transition-all rounded-full whitespace-nowrap overflow-hidden text-ellipsis"
+                                :class="featuredTab === 'songs' ? 'bg-muzibu-coral/20 text-muzibu-coral font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                                style="white-space: nowrap !important;">
+                            <i class="fas fa-music text-[9px] mr-1"></i>Şarkı
                         </button>
                     </div>
                 </div>
             </div>
 
-            {{-- Song Lists --}}
+            {{-- Tab Content Lists --}}
             <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent px-2 pt-1 pb-2 space-y-0.5">
 
-                {{-- POPULAR SONGS TAB --}}
-                <template x-if="songsTab === 'popular'">
+                {{-- FEATURED PLAYLISTS TAB --}}
+                <template x-if="featuredTab === 'playlists'">
                     <div>
-                        @if(isset($popularSongs) && count($popularSongs) > 0)
-                            @foreach($popularSongs->take(15) as $index => $song)
-                                <x-muzibu.song-simple-row :song="$song" :index="$index" />
+                        @if(isset($featuredPlaylists) && count($featuredPlaylists) > 0)
+                            @foreach($featuredPlaylists as $playlist)
+                                <div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
+                                     @click="playPlaylist({{ $playlist->playlist_id }}, {{ $playlist->sistem == 1 ? 'true' : 'false' }})"
+                                     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', { id: {{ $playlist->playlist_id }}, title: '{{ addslashes($playlist->getTranslated('title', app()->getLocale())) }}', is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}, is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }} })">
+                                    {{-- Thumbnail with Play Overlay --}}
+                                    <div class="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-muzibu-coral to-orange-600">
+                                        @if($playlist->hasMedia('hero'))
+                                            <img src="{{ $playlist->getFirstMediaUrl('hero', 'thumb') }}" alt="{{ $playlist->getTranslated('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fas fa-list-music text-white/50 text-xs"></i>
+                                            </div>
+                                        @endif
+                                        {{-- Play Overlay on Hover --}}
+                                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                            <i class="fas fa-play text-white text-sm"></i>
+                                        </div>
+                                    </div>
+                                    {{-- Info --}}
+                                    <div class="flex-1 min-w-0 overflow-hidden cursor-pointer">
+                                        <h4 class="text-white text-sm font-medium truncate whitespace-nowrap group-hover:text-muzibu-coral transition-colors">
+                                            {{ $playlist->getTranslated('title', app()->getLocale()) }}
+                                        </h4>
+                                        <p class="text-gray-400 text-xs truncate whitespace-nowrap">{{ $playlist->getTurkishFormattedDuration() }}</p>
+                                    </div>
+                                    {{-- Actions (Favorite + Count/3-Dot) - Fixed Width --}}
+                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                        {{-- Favorite Button --}}
+                                        <button @click.stop="$store.favorites.toggle('playlist', {{ $playlist->playlist_id }})"
+                                                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-all"
+                                                x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'text-muzibu-coral opacity-100' : 'text-gray-400 opacity-0 group-hover:opacity-100'">
+                                            <i class="text-sm" x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                                        </button>
+                                        {{-- Icon / 3-Dot Menu --}}
+                                        <div class="w-8 h-8 flex items-center justify-center">
+                                            <div class="text-gray-500 text-xs group-hover:hidden">
+                                                <i class="fas fa-music"></i>
+                                            </div>
+                                            <button @click.stop="$store.contextMenu.openContextMenu($event, 'playlist', { id: {{ $playlist->playlist_id }}, title: '{{ addslashes($playlist->getTranslated('title', app()->getLocale())) }}', is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}, is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }} })"
+                                                    class="hidden group-hover:flex items-center justify-center w-full h-full rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                                <i class="fas fa-ellipsis-v text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
                         @else
                             <div class="text-center py-8 text-gray-500">
-                                <i class="fas fa-music text-2xl mb-2"></i>
-                                <p class="text-xs">{{ trans('muzibu::front.general.no_songs') }}</p>
+                                <i class="fas fa-list-music text-2xl mb-2"></i>
+                                <p class="text-xs">Öne çıkan playlist bulunamadı</p>
                             </div>
                         @endif
                     </div>
                 </template>
 
-                {{-- NEW SONGS TAB --}}
-                <template x-if="songsTab === 'new'">
+                {{-- FEATURED RADIOS TAB --}}
+                <template x-if="featuredTab === 'radios'">
                     <div>
-                        @if(isset($newSongs) && count($newSongs) > 0)
-                            @foreach($newSongs->take(15) as $index => $song)
-                                <x-muzibu.song-simple-row :song="$song" :index="$index" />
+                        @if(isset($featuredRadios) && count($featuredRadios) > 0)
+                            @foreach($featuredRadios as $radio)
+                                <div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
+                                     @click="playRadio({{ $radio->radio_id }})"
+                                     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'radio', { id: {{ $radio->radio_id }}, title: '{{ addslashes($radio->getTranslated('title', app()->getLocale())) }}', is_favorite: {{ is_favorited('radio', $radio->radio_id) ? 'true' : 'false' }} })">
+                                    {{-- Thumbnail with Play Overlay --}}
+                                    <div class="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-muzibu-coral to-orange-600">
+                                        @if($radio->hasMedia('hero'))
+                                            <img src="{{ $radio->getFirstMediaUrl('hero', 'thumb') }}" alt="{{ $radio->getTranslated('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fas fa-broadcast-tower text-white/50 text-xs"></i>
+                                            </div>
+                                        @endif
+                                        {{-- Play Overlay on Hover --}}
+                                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                            <i class="fas fa-play text-white text-sm"></i>
+                                        </div>
+                                    </div>
+                                    {{-- Info --}}
+                                    <div class="flex-1 min-w-0 overflow-hidden cursor-pointer">
+                                        <h4 class="text-white text-sm font-medium truncate whitespace-nowrap group-hover:text-muzibu-coral transition-colors">
+                                            {{ $radio->getTranslated('title', app()->getLocale()) }}
+                                        </h4>
+                                        <p class="text-gray-400 text-xs truncate whitespace-nowrap">Canlı Yayın</p>
+                                    </div>
+                                    {{-- Actions (Favorite + Count/3-Dot) - Fixed Width --}}
+                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                        {{-- Favorite Button --}}
+                                        <button @click.stop="$store.favorites.toggle('radio', {{ $radio->radio_id }})"
+                                                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-all"
+                                                x-bind:class="$store.favorites.isFavorite('radio', {{ $radio->radio_id }}) ? 'text-muzibu-coral opacity-100' : 'text-gray-400 opacity-0 group-hover:opacity-100'">
+                                            <i class="text-sm" x-bind:class="$store.favorites.isFavorite('radio', {{ $radio->radio_id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                                        </button>
+                                        {{-- Icon / 3-Dot Menu --}}
+                                        <div class="w-8 h-8 flex items-center justify-center">
+                                            <div class="text-gray-500 text-xs group-hover:hidden">
+                                                <i class="fas fa-broadcast-tower"></i>
+                                            </div>
+                                            <button @click.stop="$store.contextMenu.openContextMenu($event, 'radio', { id: {{ $radio->radio_id }}, title: '{{ addslashes($radio->getTranslated('title', app()->getLocale())) }}', is_favorite: {{ is_favorited('radio', $radio->radio_id) ? 'true' : 'false' }} })"
+                                                    class="hidden group-hover:flex items-center justify-center w-full h-full rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                                <i class="fas fa-ellipsis-v text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
-                        @elseif(isset($popularSongs) && count($popularSongs) > 10)
-                            {{-- Fallback: Use slice of popularSongs if newSongs not available --}}
-                            @foreach($popularSongs->slice(10)->take(15) as $index => $song)
+                        @else
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-broadcast-tower text-2xl mb-2"></i>
+                                <p class="text-xs">Öne çıkan radyo bulunamadı</p>
+                            </div>
+                        @endif
+                    </div>
+                </template>
+
+                {{-- FEATURED SONGS TAB --}}
+                <template x-if="featuredTab === 'songs'">
+                    <div>
+                        @if(isset($featuredSongs) && count($featuredSongs) > 0)
+                            @foreach($featuredSongs as $index => $song)
                                 <x-muzibu.song-simple-row :song="$song" :index="$index" />
                             @endforeach
                         @else
                             <div class="text-center py-8 text-gray-500">
                                 <i class="fas fa-star text-2xl mb-2"></i>
-                                <p class="text-xs">{{ trans('muzibu::front.messages.no_songs_found') }}</p>
+                                <p class="text-xs">Öne çıkan şarkı bulunamadı</p>
                             </div>
                         @endif
                     </div>

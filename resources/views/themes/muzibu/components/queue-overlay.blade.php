@@ -91,7 +91,7 @@
 <div
     x-show="showQueue"
     @click="showQueue = false"
-    class="fixed inset-0 bg-transparent z-40"
+    class="fixed inset-0 bg-transparent z-[66]"
     style="display: none;"
 ></div>
 
@@ -105,7 +105,7 @@
     x-transition:leave-start="transform translate-x-0"
     x-transition:leave-end="transform translate-x-full"
     style="display: none;"
-    class="fixed top-0 right-0 bottom-0 w-full sm:w-96 bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border-l border-white/5 shadow-2xl z-50 flex flex-col"
+    class="fixed top-0 right-0 bottom-0 w-full sm:w-96 bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border-l border-white/5 shadow-2xl z-[70] flex flex-col"
     x-data="{ startX: 0, currentX: 0, isDragging: false }"
     :style="isDragging && currentX > 0 ? `transform: translateX(${currentX}px)` : ''"
 >
@@ -238,7 +238,7 @@
                     });
                 }
              ">
-            <template x-for="(song, index) in (queue || [])" :key="'queue-' + index + '-' + (song?.song_id || 'song')">
+            <template x-for="(song, index) in (queue || [])" :key="song?.song_id || ('queue-' + index)">
                 <div
                     data-queue-item
                     :data-queue-index="index"

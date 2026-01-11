@@ -59,9 +59,9 @@
             @endif
         </a>
 
-        {{-- Cache Clear Button - Icon Only (Logonun yanında) - SADECE ADMIN/ROOT/EDITOR --}}
+        {{-- Cache Clear Button - Icon Only (Logonun yanında) - SADECE ROOT --}}
         @auth
-            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('root') || auth()->user()->hasRole('editor'))
+            @if(auth()->user()->hasRole('root'))
         <button
             @click="clearCache()"
             class="w-9 h-9 bg-white/5 hover:bg-muzibu-coral/20 rounded-lg flex items-center justify-center text-muzibu-text-gray hover:text-muzibu-coral transition-all duration-300 group"
@@ -402,7 +402,12 @@
                                    @click.prevent="selectItem({...song, _type: 'song'})"
                                    class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 transition-all group">
                                     <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                                        <i class="fas fa-music text-pink-400/60 text-sm"></i>
+                                        <template x-if="song.cover_url">
+                                            <img :src="song.cover_url" :alt="getTitle(song)" class="w-full h-full object-cover">
+                                        </template>
+                                        <template x-if="!song.cover_url">
+                                            <i class="fas fa-music text-pink-400/60 text-sm"></i>
+                                        </template>
                                         <button
                                             @click="playSong(song, $event)"
                                             class="absolute inset-0 bg-muzibu-coral flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
@@ -433,7 +438,12 @@
                                        @click.prevent="selectItem({...album, _type: 'album'})"
                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
                                         <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                                            <i class="fas fa-record-vinyl text-purple-400/60 text-xs"></i>
+                                            <template x-if="album.cover_url">
+                                                <img :src="album.cover_url" :alt="getTitle(album)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!album.cover_url">
+                                                <i class="fas fa-record-vinyl text-purple-400/60 text-xs"></i>
+                                            </template>
                                             <button
                                                 @click="playAlbum(album, $event)"
                                                 class="absolute inset-0 bg-purple-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
@@ -460,8 +470,13 @@
                                     <a href="#"
                                        @click.prevent="selectItem({...artist, _type: 'artist'})"
                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
-                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-user text-blue-400/60 text-xs"></i>
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                            <template x-if="artist.cover_url">
+                                                <img :src="artist.cover_url" :alt="getTitle(artist)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!artist.cover_url">
+                                                <i class="fas fa-user text-blue-400/60 text-xs"></i>
+                                            </template>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(artist)"></div>
@@ -482,7 +497,12 @@
                                        @click.prevent="selectItem({...playlist, _type: 'playlist'})"
                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
                                         <div class="w-8 h-8 rounded bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                                            <i class="fas fa-list-music text-green-400/60 text-xs"></i>
+                                            <template x-if="playlist.cover_url">
+                                                <img :src="playlist.cover_url" :alt="getTitle(playlist)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!playlist.cover_url">
+                                                <i class="fas fa-list-music text-green-400/60 text-xs"></i>
+                                            </template>
                                             <button
                                                 @click="playPlaylist(playlist, $event)"
                                                 class="absolute inset-0 bg-green-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
@@ -510,7 +530,12 @@
                                        @click.prevent="selectItem({...genre, _type: 'genre'})"
                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
                                         <div class="w-8 h-8 rounded bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                                            <i class="fas fa-guitar text-yellow-400/60 text-xs"></i>
+                                            <template x-if="genre.cover_url">
+                                                <img :src="genre.cover_url" :alt="getTitle(genre)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!genre.cover_url">
+                                                <i class="fas fa-guitar text-yellow-400/60 text-xs"></i>
+                                            </template>
                                             <button
                                                 @click="playGenre(genre, $event)"
                                                 class="absolute inset-0 bg-yellow-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
@@ -537,15 +562,13 @@
                                     <a href="#"
                                        @click.prevent="selectItem({...sector, _type: 'sector'})"
                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
-                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                                            <i class="fas fa-building text-orange-400/60 text-xs"></i>
-                                            <button
-                                                @click="playSector(sector, $event)"
-                                                class="absolute inset-0 bg-orange-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
-                                                title="{{ trans('muzibu::front.player.play') }}"
-                                            >
-                                                <i class="fas fa-play text-white text-[10px] ml-0.5"></i>
-                                            </button>
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                            <template x-if="sector.cover_url">
+                                                <img :src="sector.cover_url" :alt="getTitle(sector)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!sector.cover_url">
+                                                <i class="fas fa-building text-orange-400/60 text-xs"></i>
+                                            </template>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(sector)"></div>
@@ -566,7 +589,12 @@
                                        @click.prevent="selectItem({...radio, _type: 'radio'})"
                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
                                         <div class="w-8 h-8 rounded bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                                            <i class="fas fa-broadcast-tower text-red-400/60 text-xs"></i>
+                                            <template x-if="radio.cover_url">
+                                                <img :src="radio.cover_url" :alt="getTitle(radio)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!radio.cover_url">
+                                                <i class="fas fa-broadcast-tower text-red-400/60 text-xs"></i>
+                                            </template>
                                             <button
                                                 @click="playRadio(radio, $event)"
                                                 class="absolute inset-0 bg-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
@@ -620,25 +648,50 @@
             }
         "></div>
 
-        {{-- Premium Button (non-premium only) - SPA Reactive - 🔴 TEK KAYNAK: isPremium (reaktif) --}}
-        <a
-            href="/subscription/plans"
-            x-data="{
-                isPremium: window.muzibuPlayerConfig?.currentUser?.is_premium || false,
-                init() {
-                    window.addEventListener('user:premium-changed', (e) => {
-                        this.isPremium = e.detail.is_premium;
-                    });
-                }
-            }"
-            x-show="isLoggedIn && !isPremium"
-            x-cloak
-            class="hidden sm:flex items-center gap-2 px-4 py-2 border border-muzibu-coral/40 hover:border-muzibu-coral hover:bg-muzibu-coral/10 rounded-full text-muzibu-coral text-sm font-semibold transition-all duration-300"
-        >
-            <i class="fas fa-crown text-xs"></i>
-            <span class="hidden md:inline">{{ trans('muzibu::front.user.go_premium') }}</span>
-            <span class="md:hidden">Premium</span>
-        </a>
+        {{-- Premium / Üyeliğini Uzat Button - SPA Reactive --}}
+        @auth
+            @php
+                $user = auth()->user();
+                $isPremiumPHP = $user->isPremium();
+                $expiresAt = $user->subscription_expires_at;
+                $daysRemaining = $expiresAt ? now()->diffInDays($expiresAt, false) : null;
+                $showExtendHeader = $isPremiumPHP && $daysRemaining !== null && $daysRemaining <= 7 && $daysRemaining >= 0;
+            @endphp
+
+            {{-- Üyeliğini Uzat (Premium + 7 günden az kaldı) --}}
+            @if($showExtendHeader)
+            <a
+                href="/subscription/plans"
+                class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-[#e91e63]/30 hover:opacity-90 premium-btn-gradient"
+            >
+                <i class="fas fa-sync-alt text-xs"></i>
+                <span class="hidden md:inline">{{ trans('muzibu::front.sidebar.extend_membership') }}</span>
+                <span class="md:hidden">Uzat</span>
+            </a>
+            @elseif(!$isPremiumPHP)
+            {{-- Premium Ol (üye değil) --}}
+            <a
+                href="/subscription/plans"
+                class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-[#e91e63]/30 hover:opacity-90 premium-btn-gradient"
+            >
+                <i class="fas fa-crown text-xs"></i>
+                <span class="hidden md:inline">{{ trans('muzibu::front.user.go_premium') }}</span>
+                <span class="md:hidden">Premium</span>
+            </a>
+            @endif
+        @else
+            {{-- Guest - Premium Ol --}}
+            <a
+                href="/subscription/plans"
+                x-show="isLoggedIn"
+                x-cloak
+                class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-[#e91e63]/30 hover:opacity-90 premium-btn-gradient"
+            >
+                <i class="fas fa-crown text-xs"></i>
+                <span class="hidden md:inline">{{ trans('muzibu::front.user.go_premium') }}</span>
+                <span class="md:hidden">Premium</span>
+            </a>
+        @endauth
 
         {{-- 🛒 Cart Icon - Devre dışı (Muzibu'da sepet yok) --}}
 

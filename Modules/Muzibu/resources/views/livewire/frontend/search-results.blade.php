@@ -3,7 +3,7 @@
         {{-- Search Header --}}
         <div class="mb-8">
             <h1 class="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-muzibu-coral via-muzibu-coral-light to-muzibu-coral bg-clip-text text-transparent">
-                Arama Sonuclari
+                Arama Sonuçları
             </h1>
 
             {{-- Search Input --}}
@@ -12,7 +12,7 @@
                 <input
                     type="search"
                     wire:model.live.debounce.300ms="query"
-                    placeholder="Sarki, sanatci, album, playlist ara..."
+                    placeholder="Şarkı, sanatçı, albüm, playlist ara..."
                     class="w-full pl-12 pr-5 py-4 bg-zinc-800/50 hover:bg-zinc-800/70 focus:bg-zinc-800 border border-zinc-700 hover:border-zinc-600 focus:border-muzibu-coral rounded-xl text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-muzibu-coral/30 transition-all"
                     autocomplete="off">
             </div>
@@ -20,7 +20,7 @@
             {{-- Result Count --}}
             @if($totalCount > 0)
                 <div class="mt-4 flex items-center gap-3 text-sm text-zinc-400">
-                    <span><strong class="text-white">{{ number_format($totalCount) }}</strong> sonuc bulundu</span>
+                    <span><strong class="text-white">{{ number_format($totalCount) }}</strong> sonuç bulundu</span>
                     <span class="text-xs text-zinc-500">({{ $responseTime }}ms{{ $fromCache ? ' - cache' : '' }})</span>
                 </div>
             @endif
@@ -30,13 +30,13 @@
         <div class="mb-6 flex flex-wrap gap-2">
             @php
                 $tabs = [
-                    'all' => ['label' => 'Tumu', 'icon' => 'fa-grid-2', 'count' => $totalCount],
-                    'songs' => ['label' => 'Sarkilar', 'icon' => 'fa-music', 'count' => $counts['songs'] ?? 0],
-                    'albums' => ['label' => 'Albumler', 'icon' => 'fa-microphone-lines', 'count' => $counts['albums'] ?? 0],
-                    'artists' => ['label' => 'Sanatcilar', 'icon' => 'fa-microphone', 'count' => $counts['artists'] ?? 0],
+                    'all' => ['label' => 'Tümü', 'icon' => 'fa-grid-2', 'count' => $totalCount],
+                    'songs' => ['label' => 'Şarkılar', 'icon' => 'fa-music', 'count' => $counts['songs'] ?? 0],
+                    'albums' => ['label' => 'Albümler', 'icon' => 'fa-microphone-lines', 'count' => $counts['albums'] ?? 0],
+                    'artists' => ['label' => 'Sanatçılar', 'icon' => 'fa-microphone', 'count' => $counts['artists'] ?? 0],
                     'playlists' => ['label' => 'Playlistler', 'icon' => 'fa-album-collection', 'count' => $counts['playlists'] ?? 0],
-                    'genres' => ['label' => 'Turler', 'icon' => 'fa-guitar', 'count' => $counts['genres'] ?? 0],
-                    'sectors' => ['label' => 'Sektorler', 'icon' => 'fa-building', 'count' => $counts['sectors'] ?? 0],
+                    'genres' => ['label' => 'Türler', 'icon' => 'fa-guitar', 'count' => $counts['genres'] ?? 0],
+                    'sectors' => ['label' => 'Sektörler', 'icon' => 'fa-building', 'count' => $counts['sectors'] ?? 0],
                     'radios' => ['label' => 'Radyolar', 'icon' => 'fa-radio', 'count' => $counts['radios'] ?? 0],
                     'myplaylists' => ['label' => 'Playlistlerim', 'icon' => 'fa-album-collection', 'count' => $counts['myplaylists'] ?? 0],
                 ];
@@ -70,7 +70,7 @@
                     @if($activeTab === 'all')
                         <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <i class="fas fa-music text-muzibu-coral"></i>
-                            Sarkilar
+                            Şarkılar
                         </h2>
                     @endif
                     <div class="bg-zinc-900/50 rounded-xl border border-zinc-800 overflow-hidden">
@@ -87,10 +87,10 @@
                     @if($activeTab === 'all')
                         <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <i class="fas fa-microphone-lines text-muzibu-coral"></i>
-                            Albumler
+                            Albümler
                         </h2>
                     @endif
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         @foreach($albums as $album)
                             <x-muzibu.album-card :album="$album" :preview="true" />
                         @endforeach
@@ -104,10 +104,10 @@
                     @if($activeTab === 'all')
                         <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <i class="fas fa-microphone text-muzibu-coral"></i>
-                            Sanatcilar
+                            Sanatçılar
                         </h2>
                     @endif
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         @foreach($artists as $artist)
                             <x-muzibu.artist-card :artist="$artist" />
                         @endforeach
@@ -124,7 +124,7 @@
                             Playlistler
                         </h2>
                     @endif
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         @foreach($playlists as $playlist)
                             <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
                         @endforeach
@@ -138,10 +138,10 @@
                     @if($activeTab === 'all')
                         <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <i class="fas fa-guitar text-muzibu-coral"></i>
-                            Turler
+                            Türler
                         </h2>
                     @endif
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         @foreach($genres as $genre)
                             <x-muzibu.genre-card :genre="$genre" :preview="true" />
                         @endforeach
@@ -155,10 +155,10 @@
                     @if($activeTab === 'all')
                         <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <i class="fas fa-building text-muzibu-coral"></i>
-                            Sektorler
+                            Sektörler
                         </h2>
                     @endif
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         @foreach($sectors as $sector)
                             <x-muzibu.sector-card :sector="$sector" :preview="true" />
                         @endforeach
@@ -175,7 +175,7 @@
                             Radyolar
                         </h2>
                     @endif
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         @foreach($radios as $radio)
                             <x-muzibu.radio-card :radio="$radio" :preview="true" />
                         @endforeach
@@ -192,7 +192,7 @@
                             Playlistlerim
                         </h2>
                     @endif
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         @foreach($myPlaylists as $playlist)
                             <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
                         @endforeach
@@ -206,9 +206,9 @@
                 <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-zinc-800/50 flex items-center justify-center">
                     <i class="fas fa-search text-3xl text-zinc-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-zinc-300 mb-2">Sonuc bulunamadi</h3>
+                <h3 class="text-xl font-semibold text-zinc-300 mb-2">Sonuç bulunamadı</h3>
                 <p class="text-zinc-500">
-                    "<span class="text-white">{{ $query }}</span>" icin sonuc bulunamadi. Farkli bir arama terimi deneyin.
+                    "<span class="text-white">{{ $query }}</span>" için sonuç bulunamadı. Farklı bir arama terimi deneyin.
                 </p>
             </div>
         @else
@@ -217,9 +217,9 @@
                 <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-muzibu-coral/10 flex items-center justify-center">
                     <i class="fas fa-magnifying-glass text-3xl text-muzibu-coral"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-zinc-300 mb-2">Arama yapmaya baslayin</h3>
+                <h3 class="text-xl font-semibold text-zinc-300 mb-2">Arama yapmaya başlayın</h3>
                 <p class="text-zinc-500">
-                    Sarki, album, sanatci veya playlist arayin
+                    Şarkı, albüm, sanatçı veya playlist arayın
                 </p>
             </div>
         @endif

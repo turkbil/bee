@@ -29,12 +29,14 @@
     $instagramUsername = setting('social_instagram');
     $twitterUsername = setting('social_twitter');
     $youtubeUsername = setting('social_youtube');
+    $tiktokUsername = setting('social_tiktok');
 
     // URL oluştur (eğer zaten URL ise olduğu gibi kullan)
     $facebookUrl = $facebookUsername ? (str_starts_with($facebookUsername, 'http') ? $facebookUsername : 'https://facebook.com/' . $facebookUsername) : null;
     $instagramUrl = $instagramUsername ? (str_starts_with($instagramUsername, 'http') ? $instagramUsername : 'https://instagram.com/' . $instagramUsername) : null;
     $twitterUrl = $twitterUsername ? (str_starts_with($twitterUsername, 'http') ? $twitterUsername : 'https://x.com/' . $twitterUsername) : null;
     $youtubeUrl = $youtubeUsername ? (str_starts_with($youtubeUsername, 'http') ? $youtubeUsername : 'https://youtube.com/@' . $youtubeUsername) : null;
+    $tiktokUrl = $tiktokUsername ? (str_starts_with($tiktokUsername, 'http') ? $tiktokUsername : 'https://tiktok.com/@' . $tiktokUsername) : null;
 @endphp
 
 <footer class="bg-muzibu-dark text-white border-t border-white/10 pb-20">
@@ -209,6 +211,11 @@
             @if($youtubeUrl)
             <a href="{{ $youtubeUrl }}" target="_blank" rel="noopener" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center hover:scale-110 transition-transform">
                 <i class="fab fa-youtube text-lg md:text-xl"></i>
+            </a>
+            @endif
+            @if($tiktokUrl)
+            <a href="{{ $tiktokUrl }}" target="_blank" rel="noopener" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-gray-900 to-pink-500 rounded-2xl flex items-center justify-center hover:scale-110 transition-transform">
+                <i class="fab fa-tiktok text-lg md:text-xl"></i>
             </a>
             @endif
             @if($whatsappNumber)

@@ -1,34 +1,147 @@
 {{-- Muzibu AI Music Assistant Widget --}}
-{{-- 🚀 FIXED: Removed duplicate x-init (Alpine store auto-calls init()) --}}
+{{-- 🎨 Design inspired by iXtif.com AI Chat Widget --}}
+{{-- 🎯 Rotating messages, bubble animations, pulse effects --}}
 <div
     x-data="$store.tenant1001AI"
-    class="fixed bottom-24 right-4 z-[35]"
+    class="fixed bottom-28 md:bottom-32 right-4 md:right-6 lg:right-8 z-[35]"
     x-cloak
 >
     {{-- Floating Button (when closed) --}}
-    <button
+    <div
         x-show="!isOpen"
-        @click="toggle()"
-        class="ai-chat-float-button w-14 h-14 bg-gradient-to-br from-muzibu-coral via-pink-500 to-purple-500 rounded-full shadow-2xl flex items-center justify-center text-white hover:shadow-muzibu-coral/50 transition-all duration-300 group relative overflow-hidden"
-        aria-label="Muzibu Müzik Asistanı"
+        x-transition:enter="transition-opacity ease-out duration-500"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        style="transition-delay: 0.5s;"
     >
-        {{-- Animated gradient overlay --}}
-        <div class="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-transparent animate-gradient-shift"></div>
+        <button
+            @click="toggle()"
+            x-data="{
+                // Desktop messages (3-4 words max)
+                desktopMessages: [
+                    'Sorunuz mu var? 🎵',
+                    'Şarkı arıyorsunuz? 🎤',
+                    'Radyo dinle 📻',
+                    'Sektör önerisi? 🎶',
+                    'Playlist yardımı? 🎧',
+                    'Albüm keşfet 🌟',
+                    'Hadi konuşalım! 💬'
+                ],
+                // Mobile messages (2-3 words max)
+                mobileMessages: [
+                    'Sorunuz var? 🎵',
+                    'Şarkı mı? 🎤',
+                    'Radyo? 📻',
+                    'Sektör? 🎶',
+                    'Playlist? 🎧',
+                    'Konuşalım! 💬'
+                ],
+                currentIndex: 0,
+                currentMessage: 'Merhaba! 🎵',
+                bubbleVisible: true,
 
-        {{-- Pulse rings --}}
-        <span class="absolute inset-0 rounded-full border-2 border-muzibu-coral/30 animate-ping-slow"></span>
-        <span class="absolute inset-0 rounded-full border border-pink-400/20 animate-pulse-ring"></span>
+                init() {
+                    // Set initial message based on screen size
+                    this.updateMessage();
 
-        {{-- Icon with rotation animation --}}
-        <svg class="w-7 h-7 relative z-10 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
-        </svg>
+                    // Animation cycle optimized for mobile:
+                    // - Bubble shows: 1.5s
+                    // - Fade out: 300ms
+                    // - Robot shows: 1.5s (no bubble)
+                    // - Fade in next bubble: 300ms
+                    // Total: 3.6s per cycle
+                    setInterval(() => {
+                        // Show bubble for 1.5s
+                        this.bubbleVisible = true;
 
-        {{-- Active indicator with bounce --}}
-        <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-bounce-subtle shadow-lg shadow-green-400/50"></span>
-    </button>
+                        // Hide bubble after 1.5s
+                        setTimeout(() => {
+                            this.bubbleVisible = false;
 
-    {{-- Chat Window --}}
+                            // Change message while hidden (after fade-out)
+                            setTimeout(() => {
+                                this.currentIndex = (this.currentIndex + 1) % this.getMessages().length;
+                                this.updateMessage();
+                            }, 300);
+                        }, 1500);
+                    }, 3300); // 1.5s visible + 300ms fade + 1.5s robot visible
+                },
+
+                getMessages() {
+                    return window.innerWidth < 1024 ? this.mobileMessages : this.desktopMessages;
+                },
+
+                updateMessage() {
+                    this.currentMessage = this.getMessages()[this.currentIndex];
+                }
+            }"
+            class="relative group"
+            aria-label="Muzibu Müzik Asistanı"
+        >
+            {{-- DESKTOP BUBBLE: Classic top bubble with arrow --}}
+            <div
+                :class="{ 'opacity-0 pointer-events-none': isOpen || !bubbleVisible }"
+                class="absolute z-[101] transition-opacity duration-300 max-lg:hidden
+                       top-[-70px] right-[-10px]"
+                style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
+            >
+                {{-- Bubble Message --}}
+                <div
+                    x-text="currentMessage"
+                    class="bg-white px-5 py-3 rounded-full text-sm font-bold whitespace-nowrap"
+                    style="color: #ff7f50; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"
+                >
+                </div>
+
+                {{-- Bubble Arrow (points down) --}}
+                <div
+                    class="absolute w-0 h-0 bottom-[-10px] right-[39px]"
+                    style="
+                        border-left: 11px solid transparent;
+                        border-right: 11px solid transparent;
+                        border-top: 11px solid white;
+                    "
+                ></div>
+            </div>
+
+            {{-- Main Button with V1 Classic Pulse --}}
+            <div class="relative w-20 h-20 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center group-hover:scale-110 v1-classic-button"
+                 style="background: linear-gradient(135deg, #ff7f50 0%, #ec4899 100%); box-shadow: 0 5px 20px rgba(255, 127, 80, 0.4); z-index: 1;">
+
+                {{-- MOBILE CIRCLE: Overlays robot at EXACT same position, z-index on top --}}
+                <div
+                    :class="{ 'opacity-0 pointer-events-none': isOpen || !bubbleVisible }"
+                    class="lg:hidden absolute inset-0 z-[2] transition-opacity duration-300
+                           w-20 h-20 rounded-full
+                           flex items-center justify-center text-center
+                           bg-white shadow-2xl"
+                    style="padding: 12px; line-height: 1.2;"
+                >
+                    <div
+                        x-text="currentMessage"
+                        class="text-xs font-bold text-center w-full"
+                        style="color: #ff7f50; text-shadow: 0 1px 2px rgba(0,0,0,0.1); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;"
+                    >
+                    </div>
+                </div>
+
+                {{-- Robot SVG Icon - z-index BELOW mobile bubble --}}
+                <svg class="relative z-[1] w-12 h-12 transition-transform group-hover:scale-110 group-hover:rotate-6" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
+                    <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                    <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                    <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                    <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                    <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                    <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                </svg>
+            </div>
+
+            {{-- Active indicator with bounce --}}
+            <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-bounce-subtle shadow-lg shadow-green-400/50"></span>
+        </button>
+    </div>
+
+    {{-- Chat Window - Opens above button like iXtif --}}
     <div
         x-show="isOpen"
         x-transition:enter="transition ease-out duration-200"
@@ -37,8 +150,11 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
-        class="w-96 max-w-[calc(100vw-2rem)] bg-muzibu-gray rounded-2xl shadow-2xl border border-muzibu-gray-light overflow-hidden flex flex-col"
-        :class="isMinimized ? 'h-14' : 'h-[600px] max-h-[calc(100vh-10rem)]'"
+        :style="{
+            height: isMinimized ? '56px' : '480px',
+            maxHeight: 'calc(100vh - 200px)'
+        }"
+        class="absolute bottom-24 right-0 w-96 max-w-[calc(100vw-2rem)] bg-muzibu-gray rounded-2xl shadow-2xl border border-muzibu-gray-light overflow-hidden flex flex-col"
     >
         {{-- Header --}}
         <div class="bg-gradient-to-r from-muzibu-coral/20 to-pink-500/20 border-b border-muzibu-gray-light px-4 py-3 flex items-center justify-between">
@@ -191,44 +307,29 @@
         background: #ff7f50;
     }
 
-    /* 🎨 Modern AI Chat Button Animations */
-    .ai-chat-float-button:hover {
-        transform: scale(1.1) translateY(-2px);
+    /* 🎨 V1 Classic Pulse Animation (from iXtif) */
+    .v1-classic-button::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        border-radius: 50%;
+        background: inherit;
+        z-index: -1;
+        animation: pulse-v1 2s infinite;
     }
 
-    .ai-chat-float-button:active {
-        transform: scale(0.95);
-    }
-
-    /* Gradient shift animation */
-    @keyframes gradient-shift {
-        0%, 100% { transform: translate(-50%, -50%) rotate(0deg); opacity: 0.5; }
-        50% { transform: translate(-50%, -50%) rotate(180deg); opacity: 0.8; }
-    }
-
-    .animate-gradient-shift {
-        animation: gradient-shift 3s ease-in-out infinite;
-    }
-
-    /* Slow ping animation */
-    @keyframes ping-slow {
-        0% { transform: scale(1); opacity: 0.8; }
-        50% { transform: scale(1.1); opacity: 0; }
-        100% { transform: scale(1); opacity: 0; }
-    }
-
-    .animate-ping-slow {
-        animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-
-    /* Pulse ring animation */
-    @keyframes pulse-ring {
-        0%, 100% { transform: scale(1); opacity: 0.6; }
-        50% { transform: scale(1.05); opacity: 0.3; }
-    }
-
-    .animate-pulse-ring {
-        animation: pulse-ring 2s ease-in-out infinite;
+    @keyframes pulse-v1 {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+        50% {
+            transform: scale(1.15);
+            opacity: 0;
+        }
     }
 
     /* Subtle bounce animation */

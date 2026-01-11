@@ -15,7 +15,7 @@
 
     {{-- Context Menu Header - Kompakt Tasarım --}}
     <div class="bg-gradient-to-r from-[#ff7f50] to-[#ff6a3d] text-white px-2 py-1.5 mb-1 rounded mx-1">
-        <div class="text-sm font-black uppercase tracking-wide" x-text="$store.contextMenu.type"></div>
+        <div class="text-sm font-black uppercase tracking-wide" x-text="window.getContextTypeLabel?.($store.contextMenu.type) || $store.contextMenu.type"></div>
         <div class="text-[10px] opacity-80 truncate" x-text="$store.contextMenu.data?.title"></div>
     </div>
 
@@ -82,7 +82,7 @@
              @touchstart="startY = $event.touches[0].clientY; isDragging = true; currentY = 0"
              @touchmove.prevent="if(isDragging) { currentY = Math.max(0, $event.touches[0].clientY - startY); }"
              @touchend="if(currentY > 80) { $store.contextMenu.visible = false; } isDragging = false; currentY = 0;">
-            <div class="text-sm font-black uppercase tracking-wide" x-text="$store.contextMenu.type"></div>
+            <div class="text-sm font-black uppercase tracking-wide" x-text="window.getContextTypeLabel?.($store.contextMenu.type) || $store.contextMenu.type"></div>
             <div class="text-sm opacity-90 truncate mt-0.5" x-text="$store.contextMenu.data?.title"></div>
         </div>
 

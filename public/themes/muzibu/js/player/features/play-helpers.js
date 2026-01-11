@@ -727,7 +727,7 @@ window.playContent = async function(type, id, options = {}) {
                     muzibuStore.setPlayContext({
                         type: 'artist',
                         id: artistId,
-                        name: data.artist?.title || 'Sanatçı',
+                        name: data.artist?.title || 'Muzibu',
                         offset: 0,
                         source: 'artist_click'
                     });

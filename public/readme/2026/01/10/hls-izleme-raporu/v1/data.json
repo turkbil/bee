@@ -1,29 +1,452 @@
 [
     {
-        "timestamp": "2026-01-10 18:12:34",
+        "timestamp": "2026-01-11 06:40:05",
         "total": 28211,
-        "completed": 6426,
-        "remaining": 21785,
-        "percentage": 22.78,
-        "queue": 15142,
+        "completed": 25943,
+        "remaining": 2268,
+        "percentage": 91.96,
+        "queue": 2289,
         "workers": 20
     },
     {
-        "timestamp": "2026-01-10 17:31:45",
+        "timestamp": "2026-01-11 06:34:24",
         "total": 28211,
-        "completed": 6407,
-        "remaining": 21804,
-        "percentage": 22.71,
-        "queue": 18618,
+        "completed": 25338,
+        "remaining": 2873,
+        "percentage": 89.82,
+        "queue": 2894,
         "workers": 20
     },
     {
-        "timestamp": "2026-01-10 17:28:12",
+        "timestamp": "2026-01-11 06:31:07",
         "total": 28211,
-        "completed": 6400,
-        "remaining": 21811,
-        "percentage": 22.69,
-        "queue": 20414,
+        "completed": 25003,
+        "remaining": 3208,
+        "percentage": 88.63,
+        "queue": 3229,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 06:27:23",
+        "total": 28211,
+        "completed": 24604,
+        "remaining": 3607,
+        "percentage": 87.21,
+        "queue": 3628,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 06:26:14",
+        "total": 28211,
+        "completed": 24497,
+        "remaining": 3714,
+        "percentage": 86.83,
+        "queue": 3735,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 06:17:06",
+        "total": 28211,
+        "completed": 23545,
+        "remaining": 4666,
+        "percentage": 83.46,
+        "queue": 4687,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 06:11:21",
+        "total": 28211,
+        "completed": 23032,
+        "remaining": 5179,
+        "percentage": 81.64,
+        "queue": 5200,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 06:07:21",
+        "total": 28211,
+        "completed": 22647,
+        "remaining": 5564,
+        "percentage": 80.28,
+        "queue": 5585,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 06:02:46",
+        "total": 28211,
+        "completed": 22238,
+        "remaining": 5973,
+        "percentage": 78.83,
+        "queue": 5995,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 05:50:15",
+        "total": 28211,
+        "completed": 21219,
+        "remaining": 6992,
+        "percentage": 75.22,
+        "queue": 7015,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 05:41:08",
+        "total": 28211,
+        "completed": 20410,
+        "remaining": 7801,
+        "percentage": 72.35,
+        "queue": 7821,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 05:39:41",
+        "total": 28211,
+        "completed": 20288,
+        "remaining": 7923,
+        "percentage": 71.92,
+        "queue": 7943,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 05:24:41",
+        "total": 28211,
+        "completed": 18877,
+        "remaining": 9334,
+        "percentage": 66.91,
+        "queue": 9345,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 05:09:59",
+        "total": 28211,
+        "completed": 17360,
+        "remaining": 10851,
+        "percentage": 61.54,
+        "queue": 10861,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 05:05:11",
+        "total": 28211,
+        "completed": 16827,
+        "remaining": 11384,
+        "percentage": 59.65,
+        "queue": 11392,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 05:05:08",
+        "total": 28211,
+        "completed": 16824,
+        "remaining": 11387,
+        "percentage": 59.64,
+        "queue": 11394,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:46:59",
+        "total": 28211,
+        "completed": 14829,
+        "remaining": 13382,
+        "percentage": 52.56,
+        "queue": 13381,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:46:58",
+        "total": 28211,
+        "completed": 14827,
+        "remaining": 13384,
+        "percentage": 52.56,
+        "queue": 13383,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:39:21",
+        "total": 28211,
+        "completed": 13997,
+        "remaining": 14214,
+        "percentage": 49.62,
+        "queue": 14213,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:37:39",
+        "total": 28211,
+        "completed": 13851,
+        "remaining": 14360,
+        "percentage": 49.1,
+        "queue": 14359,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:37:08",
+        "total": 28211,
+        "completed": 13806,
+        "remaining": 14405,
+        "percentage": 48.94,
+        "queue": 14404,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:36:38",
+        "total": 28211,
+        "completed": 13756,
+        "remaining": 14455,
+        "percentage": 48.76,
+        "queue": 14454,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:36:07",
+        "total": 28211,
+        "completed": 13696,
+        "remaining": 14515,
+        "percentage": 48.55,
+        "queue": 14514,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:35:37",
+        "total": 28211,
+        "completed": 13634,
+        "remaining": 14577,
+        "percentage": 48.33,
+        "queue": 14576,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:35:21",
+        "total": 28211,
+        "completed": 13606,
+        "remaining": 14605,
+        "percentage": 48.23,
+        "queue": 14604,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:34:50",
+        "total": 28211,
+        "completed": 13564,
+        "remaining": 14647,
+        "percentage": 48.08,
+        "queue": 14659,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:34:20",
+        "total": 28211,
+        "completed": 13493,
+        "remaining": 14718,
+        "percentage": 47.83,
+        "queue": 14715,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:33:49",
+        "total": 28211,
+        "completed": 13443,
+        "remaining": 14768,
+        "percentage": 47.65,
+        "queue": 14765,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:33:19",
+        "total": 28211,
+        "completed": 13387,
+        "remaining": 14824,
+        "percentage": 47.45,
+        "queue": 14821,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:32:48",
+        "total": 28211,
+        "completed": 13332,
+        "remaining": 14879,
+        "percentage": 47.26,
+        "queue": 14877,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:32:18",
+        "total": 28211,
+        "completed": 13295,
+        "remaining": 14916,
+        "percentage": 47.13,
+        "queue": 14926,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:31:47",
+        "total": 28211,
+        "completed": 13226,
+        "remaining": 14985,
+        "percentage": 46.88,
+        "queue": 14981,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:31:16",
+        "total": 28211,
+        "completed": 13165,
+        "remaining": 15046,
+        "percentage": 46.67,
+        "queue": 15042,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:30:46",
+        "total": 28211,
+        "completed": 13101,
+        "remaining": 15110,
+        "percentage": 46.44,
+        "queue": 15107,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:30:15",
+        "total": 28211,
+        "completed": 13046,
+        "remaining": 15165,
+        "percentage": 46.24,
+        "queue": 15161,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:29:45",
+        "total": 28211,
+        "completed": 12994,
+        "remaining": 15217,
+        "percentage": 46.06,
+        "queue": 15213,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:29:14",
+        "total": 28211,
+        "completed": 12940,
+        "remaining": 15271,
+        "percentage": 45.87,
+        "queue": 15266,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:28:44",
+        "total": 28211,
+        "completed": 12891,
+        "remaining": 15320,
+        "percentage": 45.69,
+        "queue": 15315,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:28:13",
+        "total": 28211,
+        "completed": 12836,
+        "remaining": 15375,
+        "percentage": 45.5,
+        "queue": 15366,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:27:42",
+        "total": 28211,
+        "completed": 12780,
+        "remaining": 15431,
+        "percentage": 45.3,
+        "queue": 15422,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:27:12",
+        "total": 28211,
+        "completed": 12721,
+        "remaining": 15490,
+        "percentage": 45.09,
+        "queue": 15481,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:26:41",
+        "total": 28211,
+        "completed": 12664,
+        "remaining": 15547,
+        "percentage": 44.89,
+        "queue": 15542,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:26:11",
+        "total": 28211,
+        "completed": 12606,
+        "remaining": 15605,
+        "percentage": 44.68,
+        "queue": 15596,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:25:40",
+        "total": 28211,
+        "completed": 12553,
+        "remaining": 15658,
+        "percentage": 44.5,
+        "queue": 15649,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:25:10",
+        "total": 28211,
+        "completed": 12495,
+        "remaining": 15716,
+        "percentage": 44.29,
+        "queue": 15707,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:24:39",
+        "total": 28211,
+        "completed": 12435,
+        "remaining": 15776,
+        "percentage": 44.08,
+        "queue": 15769,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:24:09",
+        "total": 28211,
+        "completed": 12381,
+        "remaining": 15830,
+        "percentage": 43.89,
+        "queue": 15821,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:23:38",
+        "total": 28211,
+        "completed": 12334,
+        "remaining": 15877,
+        "percentage": 43.72,
+        "queue": 15867,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:23:08",
+        "total": 28211,
+        "completed": 12284,
+        "remaining": 15927,
+        "percentage": 43.54,
+        "queue": 15916,
+        "workers": 20
+    },
+    {
+        "timestamp": "2026-01-11 04:22:37",
+        "total": 28211,
+        "completed": 12240,
+        "remaining": 15971,
+        "percentage": 43.39,
+        "queue": 15965,
         "workers": 20
     }
 ]

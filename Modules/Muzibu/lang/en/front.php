@@ -131,7 +131,7 @@ return [
     ],
 
     'search' => [
-        'placeholder' => 'Search songs, artists, albums...',
+        'placeholder' => 'Search songs, artists, albums, playlists, radios...',
         'search_failed' => 'Search failed.',
         'no_results' => 'No results found',
         'try_different' => 'No results found. Try a different keyword.',
@@ -317,6 +317,11 @@ return [
         'ads' => 'Ads',
         'my_certificate' => 'My Certificate',
         'create_playlist' => 'Create Playlist',
+
+        // Links
+        'corporate' => 'Corporate',
+        'pricing' => 'Pricing',
+        'extend_membership' => 'Extend Membership',
 
         // Membership
         'free_member' => 'Free Member',

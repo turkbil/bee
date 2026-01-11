@@ -440,6 +440,15 @@ const MuzibuSpaRouter = {
                     // Safely replace content using modern DOM API (prevents script execution)
                     currentMain.replaceChildren(...clonedContent.childNodes);
 
+                    // 🔥 FIX: Initialize Alpine.js on new main content (for x-data, x-bind, etc.)
+                    if (window.Alpine && typeof window.Alpine.initTree === 'function') {
+                        try {
+                            window.Alpine.initTree(currentMain);
+                        } catch (e) {
+                            console.warn('⚠️ Main Alpine.js init failed:', e.message);
+                        }
+                    }
+
                     // 🛡️ CLICK PROTECTION: Set navigation time to prevent accidental clicks
                     MuzibuSpaRouter.lastNavigationTime = Date.now();
 
@@ -474,11 +483,29 @@ const MuzibuSpaRouter = {
 
                             // Replace existing sidebar
                             currentAside.replaceWith(clonedAside);
+
+                            // 🔥 FIX: Initialize Alpine.js on new sidebar
+                            if (window.Alpine && typeof window.Alpine.initTree === 'function') {
+                                try {
+                                    window.Alpine.initTree(clonedAside);
+                                } catch (e) {
+                                    console.warn('⚠️ Sidebar Alpine.js init failed:', e.message);
+                                }
+                            }
                         } else {
                             // Insert new sidebar (before player)
                             const player = document.querySelector('.muzibu-player');
                             if (player && mainGrid) {
                                 mainGrid.insertBefore(clonedAside, player);
+
+                                // 🔥 FIX: Initialize Alpine.js on new sidebar
+                                if (window.Alpine && typeof window.Alpine.initTree === 'function') {
+                                    try {
+                                        window.Alpine.initTree(clonedAside);
+                                    } catch (e) {
+                                        console.warn('⚠️ Sidebar Alpine.js init failed:', e.message);
+                                    }
+                                }
                             } else {
                                 console.error('❌ SPA: Player not found, cannot insert sidebar');
                             }
@@ -501,16 +528,6 @@ const MuzibuSpaRouter = {
                         }
                     }
 
-                    // 🎯 UPDATE GRID LAYOUT: Sync grid classes from new page
-                    const newGrid = doc.querySelector('#main-app-grid');
-                    if (newGrid && mainGrid) {
-                        // Extract grid-cols classes from new page
-                        const newClasses = newGrid.className;
-
-                        // Copy all classes from new grid
-                        mainGrid.className = newClasses;
-                    }
-
                     this.currentPath = url;
 
                     // 🏠 HOMEPAGE NAVIGATION: Reset sidebar to default state
@@ -522,9 +539,18 @@ const MuzibuSpaRouter = {
                         }
                     }
 
-                    // 🚀 UPDATE RIGHT SIDEBAR VISIBILITY: Dynamic based on route
+                    // 🚀 UPDATE RIGHT SIDEBAR VISIBILITY: Force Alpine reactivity
+                    // Problem: If rightSidebarVisible doesn't change, Alpine x-bind:class won't update
+                    // Solution: Toggle value to force reactivity, then set correct value
                     if (window.Alpine?.store('sidebar')) {
-                        window.Alpine.store('sidebar').updateRightSidebarVisibility();
+                        const sidebar = window.Alpine.store('sidebar');
+                        const currentValue = sidebar.rightSidebarVisible;
+
+                        // Force Alpine reactivity by toggling value
+                        sidebar.rightSidebarVisible = !currentValue;
+
+                        // Then set correct value based on route
+                        sidebar.updateRightSidebarVisibility();
                     }
 
                     // 🔥 RE-OBSERVE NEW LINKS: DISABLED (viewport prefetch kapatıldı)

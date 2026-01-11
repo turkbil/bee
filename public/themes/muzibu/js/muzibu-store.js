@@ -1339,13 +1339,14 @@ document.addEventListener('alpine:init', () => {
         rightSidebarVisible: (() => {
             const path = window.location.pathname;
             const routes = [
-                '/', '/home', '/dashboard',
+                '/', '/home',
                 '/songs', '/albums', '/artists', '/playlists',
                 '/genres', '/sectors', '/radios', '/search',
                 '/muzibu/favorites',
                 '/muzibu/my-playlists',
-                '/muzibu/corporate-playlists',
-                '/muzibu/listening-history'
+                '/muzibu/listening-history',
+                '/profile',
+                '/corporate'
             ];
             return routes.some(route => {
                 if (route === '/') return path === '/';
@@ -1354,14 +1355,16 @@ document.addEventListener('alpine:init', () => {
         })(),
 
         // Routes where right sidebar should be visible
+        // NOTE: /dashboard and /muzibu/corporate-playlists should NOT show sidebar
         _rightSidebarRoutes: [
-            '/', '/home', '/dashboard',
+            '/', '/home',
             '/songs', '/albums', '/artists', '/playlists',
             '/genres', '/sectors', '/radios', '/search',
             '/muzibu/favorites',
             '/muzibu/my-playlists',
-            '/muzibu/corporate-playlists',
-            '/muzibu/listening-history'
+            '/muzibu/listening-history',
+            '/profile',
+            '/corporate'
         ],
 
         /**

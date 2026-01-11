@@ -61,6 +61,68 @@
                 </a>
             </nav>
         </div>
+
+        <div class="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-4"></div>
+
+        {{-- Bottom Links - Corporate & Pricing --}}
+        @php
+            // Kurumsal link gösterilsin mi?
+            $showCorporateLink = false;
+            if (auth()->guest()) {
+                // Üye değilse göster
+                $showCorporateLink = true;
+            } else {
+                // Üye ise: Ana şube veya kurumsala bağlı değilse göster
+                $corporateAccount = \Modules\Muzibu\App\Models\MuzibuCorporateAccount::where('user_id', auth()->id())->first();
+                if (!$corporateAccount || $corporateAccount->isMainBranch()) {
+                    $showCorporateLink = true;
+                }
+            }
+
+            // Fiyatlandırma link gösterilsin mi?
+            $showPricingLink = false;
+            $pricingLinkText = trans('muzibu::front.sidebar.pricing');
+            if (auth()->guest()) {
+                // Üye değilse göster
+                $showPricingLink = true;
+            } elseif (auth()->user() && !auth()->user()->is_premium) {
+                // Premium değilse göster
+                $showPricingLink = true;
+            } elseif (auth()->user() && auth()->user()->is_premium) {
+                // Premium ise üyelik bitiş tarihini kontrol et
+                $subscription = auth()->user()->subscription;
+                if ($subscription && $subscription->ends_at) {
+                    $daysLeft = now()->diffInDays($subscription->ends_at, false);
+                    if ($daysLeft < 7 && $daysLeft >= 0) {
+                        // 7 günden az kaldıysa "Üyeliğini Uzat" olarak göster
+                        $showPricingLink = true;
+                        $pricingLinkText = trans('muzibu::front.sidebar.extend_membership');
+                    }
+                }
+            }
+        @endphp
+
+        @if($showCorporateLink || $showPricingLink)
+        <div class="mb-3">
+            <nav class="space-y-1">
+                @if($showCorporateLink)
+                <a href="/corporate" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-building w-5 text-base transition-all duration-200"></i>
+                    <span class="font-medium text-sm">{{ trans('muzibu::front.sidebar.corporate') }}</span>
+                </a>
+                @endif
+
+                @if($showPricingLink)
+                <a href="/subscription/plans" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-tag w-5 text-base transition-all duration-200"></i>
+                    <span class="font-medium text-sm">{{ $pricingLinkText }}</span>
+                </a>
+                @endif
+            </nav>
+        </div>
+        @endif
     </div>
 
     {{-- Anonslar Toggle - Sadece spot'a sahip kurumsal kullanıcılar --}}

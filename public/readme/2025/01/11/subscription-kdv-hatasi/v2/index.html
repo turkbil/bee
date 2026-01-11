@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 ÇİFT KDV HESAPLAMA HATASI - Kapsamlı Analiz + Shop Karşılaştırması</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .code-block { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .gradient-text { background: linear-gradient(135deg, #ef4444, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white min-h-screen">
+
+<!-- Header -->
+<div class="bg-gradient-to-r from-red-600 to-red-700 py-8 px-4 sm:px-6 lg:px-8 shadow-2xl">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                <i class="fas fa-exclamation-triangle text-3xl text-white"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full">KRİTİK HATA</span>
+                    <span class="px-3 py-1 bg-purple-500 text-white text-xs font-bold rounded-full">SHOP KARŞILAŞTIRMASI</span>
+                    <span class="px-3 py-1 bg-white/20 text-white text-xs font-semibold rounded-full">11 Ocak 2025</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-black text-white leading-tight">
+                    ÇİFT KDV HESAPLAMA HATASI
+                </h1>
+                <p class="text-red-100 text-lg mt-1">Kapsamlı Analiz: Subscription vs Shop Modülü Fiyatlandırma Sistemi</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+<!-- Kritik Özet -->
+<div class="bg-red-900/30 border-2 border-red-500 rounded-2xl p-8 mb-8 shadow-2xl">
+    <div class="flex items-start gap-4">
+        <i class="fas fa-bomb text-4xl text-red-400 mt-1"></i>
+        <div class="flex-1">
+            <h2 class="text-2xl font-bold text-red-300 mb-4">⚠️ SORUN ÖZETİ</h2>
+            <div class="space-y-3 text-red-100">
+                <p class="text-lg font-semibold">
+                    Subscription modülünde <span class="text-white bg-red-600 px-2 py-1 rounded">YANLIŞ KDV HESAPLAMA</span> yapılıyor!
+                    Shop modülü ise <span class="text-white bg-green-600 px-2 py-1 rounded">DOĞRU ÇALIŞIYOR</span>.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="bg-red-950/50 border border-red-700 rounded-lg p-4">
+                        <div class="text-sm text-red-300 mb-1">Plan Sayfasında Gösterilen:</div>
+                        <div class="text-2xl font-bold text-white">600 TL <span class="text-red-300">+ KDV</span></div>
+                        <div class="text-sm text-red-400 mt-2">Beklenen: 600 + 120 = <strong>720 TL</strong></div>
+                    </div>
+                    <div class="bg-red-950/50 border border-red-700 rounded-lg p-4">
+                        <div class="text-sm text-red-300 mb-1">Checkout Sayfasında Hesaplanan:</div>
+                        <div class="text-lg text-white">Ara Toplam: <strong>500 TL</strong></div>
+                        <div class="text-lg text-white">KDV (%20): <strong>100 TL</strong></div>
+                        <div class="text-2xl font-bold text-white mt-1">Toplam: 600 TL</div>
+                    </div>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-600 rounded-lg p-4 mt-4">
+                    <p class="text-yellow-200">
+                        <i class="fas fa-calculator mr-2"></i>
+                        <strong>Sorun:</strong> Bridge servis fiyatı "KDV dahil" sanıyor ve ayrıştırıyor (600 ÷ 1.20 = 500 TL).
+                        Sonra Cart tekrar KDV ekliyor (500 × 1.20 = 600 TL). Ama kullanıcıya "600 TL + KDV" gösteriliyor!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Basit Anlatım -->
+<div class="card bg-green-900/20 border border-green-700 rounded-2xl p-8 mb-8 shadow-xl">
+    <h2 class="text-2xl font-bold text-green-300 mb-4 flex items-center gap-3">
+        <i class="fas fa-book-open"></i>
+        📝 Basit Anlatım (Herkes İçin)
+    </h2>
+    <div class="space-y-4 text-gray-300 text-lg leading-relaxed">
+        <p>
+            <strong class="text-white">Sorun Ne?</strong><br>
+            Müşteri premium üyelik satın almak istiyor. Plan sayfasında <strong class="text-green-400">"600 TL + KDV"</strong> yazıyor.
+            Müşteri hesap yapıyor: "600 + %20 KDV = 720 TL ödeyeceğim" diye düşünüyor.
+        </p>
+        <p>
+            Ama sepete eklediğinde checkout sayfasında şöyle görüyor:
+        </p>
+        <div class="bg-slate-800/50 border border-slate-600 rounded-lg p-4 font-mono text-sm">
+            <div>Ara Toplam: <span class="text-white font-bold">500 TL</span></div>
+            <div>KDV (%20): <span class="text-white font-bold">100 TL</span></div>
+            <div class="border-t border-slate-600 mt-2 pt-2">Toplam: <span class="text-green-400 font-bold">600 TL</span></div>
+        </div>
+        <p class="text-yellow-200 bg-yellow-900/20 border border-yellow-700 rounded-lg p-4">
+            <i class="fas fa-question-circle mr-2"></i>
+            <strong>Müşteri Kafası Karışıyor:</strong> "Plan sayfasında 600 TL + KDV diyordu, neden toplam 600 TL oldu? KDV nerede?"
+        </p>
+        <p>
+            <strong class="text-white">Gerçekte Ne Oluyor?</strong><br>
+            Sistem arkada şöyle çalışıyor:
+        </p>
+        <ol class="list-decimal list-inside space-y-2 bg-slate-800/30 border border-slate-600 rounded-lg p-4">
+            <li>Database'de plan fiyatı: <strong class="text-white">600 TL</strong> (yönetici tarafından girilmiş)</li>
+            <li>Bridge servisi bunu "KDV dahil" sanıyor ve böyle hesaplıyor: 600 ÷ 1.20 = <strong class="text-yellow-300">500 TL (KDV hariç)</strong></li>
+            <li>Cart modülü 500 TL'ye %20 KDV ekliyor: 500 + 100 = <strong class="text-green-300">600 TL</strong></li>
+            <li>Müşteriye gösterilen: "600 TL + KDV" (ama gerçekte zaten KDV dahil!)</li>
+        </ol>
+        <div class="bg-red-900/20 border border-red-600 rounded-lg p-4">
+            <p class="text-red-200">
+                <i class="fas fa-times-circle mr-2"></i>
+                <strong>Sonuç:</strong> Müşteri 720 TL bekliyor, 600 TL görüyor. Bu kafayı karıştırıyor ve güven kaybına yol açıyor.
+                Ayrıca fiyat gösterimi <strong>yanıltıcı</strong>! Eğer fiyat zaten KDV dahil ise "600 TL (KDV dahil)" yazmalı.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Shop vs Subscription Karşılaştırması -->
+<div class="card bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-2 border-purple-500 rounded-2xl p-8 mb-8 shadow-2xl">
+    <h2 class="text-2xl font-bold text-purple-300 mb-6 flex items-center gap-3">
+        <i class="fas fa-balance-scale"></i>
+        ⚖️ MODÜL KARŞILAŞTIRMASI: Shop (✅ Doğru) vs Subscription (❌ Hatalı)
+    </h2>
+
+    <!-- Karşılaştırma Tablosu -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b-2 border-purple-500">
+                    <th class="text-left py-4 px-4 text-purple-200">Kriter</th>
+                    <th class="text-left py-4 px-4 text-green-300 bg-green-900/20">
+                        <i class="fas fa-check-circle mr-2"></i>Shop Modülü (Doğru)
+                    </th>
+                    <th class="text-left py-4 px-4 text-red-300 bg-red-900/20">
+                        <i class="fas fa-times-circle mr-2"></i>Subscription Modülü (Hatalı)
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700">
+                <!-- Database Fiyat Yapısı -->
+                <tr>
+                    <td class="py-4 px-4 font-semibold text-white">Database Fiyat Field</td>
+                    <td class="py-4 px-4 bg-green-900/10">
+                        <code class="text-green-300">base_price</code>
+                        <div class="text-xs text-gray-400 mt-1">KDV HARİÇ fiyat</div>
+                    </td>
+                    <td class="py-4 px-4 bg-red-900/10">
+                        <code class="text-red-300">billing_cycles['price']</code>
+                        <div class="text-xs text-gray-400 mt-1">BELİRSİZ (KDV dahil mi hariç mi?)</div>
+                    </td>
+                </tr>
+
+                <!-- Accessor/Helper -->
+                <tr>
+                    <td class="py-4 px-4 font-semibold text-white">Runtime Hesaplama</td>
+                    <td class="py-4 px-4 bg-green-900/10">
+                        <code class="text-green-300">price_with_tax</code> accessor
+                        <div class="text-xs text-gray-400 mt-1">base_price × 1.20</div>
+                    </td>
+                    <td class="py-4 px-4 bg-red-900/10">
+                        <code class="text-red-300">getCyclePriceWithTax()</code>
+                        <div class="text-xs text-gray-400 mt-1">YOK - Bridge'de manuel ayrıştırma</div>
+                    </td>
+                </tr>
+
+                <!-- Bridge Servisi -->
+                <tr>
+                    <td class="py-4 px-4 font-semibold text-white">Bridge Servisi</td>
+                    <td class="py-4 px-4 bg-green-900/10">
+                        <div class="text-green-300 font-mono text-xs mb-1">ShopCartBridge.php</div>
+                        <div class="code-block text-xs">'unit_price' => $product->final_price
+// final_price = base_price (KDV hariç)
+// DOĞRU! Ayrıştırma YOK!</div>
+                    </td>
+                    <td class="py-4 px-4 bg-red-900/10">
+                        <div class="text-red-300 font-mono text-xs mb-1">SubscriptionCartBridge.php</div>
+                        <div class="code-block text-xs">$priceWithTax = $cycle['price'];
+$priceWithoutTax = $priceWithTax / 1.20;
+// ❌ YANLIŞ! KDV dahil sanıyor!</div>
+                    </td>
+                </tr>
+
+                <!-- Cart'a Giden Fiyat -->
+                <tr>
+                    <td class="py-4 px-4 font-semibold text-white">Cart'a Gönderilen Fiyat</td>
+                    <td class="py-4 px-4 bg-green-900/10">
+                        <div class="text-white">1000 TL <span class="text-green-400">(KDV hariç)</span></div>
+                        <div class="text-xs text-gray-400 mt-1">Cart buna KDV ekler → 1200 TL</div>
+                    </td>
+                    <td class="py-4 px-4 bg-red-900/10">
+                        <div class="text-white">500 TL <span class="text-red-400">(ayrıştırılmış!)</span></div>
+                        <div class="text-xs text-gray-400 mt-1">Cart buna KDV ekler → 600 TL</div>
+                    </td>
+                </tr>
+
+                <!-- Checkout Sonuç -->
+                <tr>
+                    <td class="py-4 px-4 font-semibold text-white">Checkout Sonucu</td>
+                    <td class="py-4 px-4 bg-green-900/10">
+                        <div class="text-sm">
+                            <div>Ara Toplam: <strong class="text-white">1000 TL</strong></div>
+                            <div>KDV: <strong class="text-white">200 TL</strong></div>
+                            <div class="text-green-400 font-bold mt-1">Toplam: 1200 TL ✅</div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 bg-red-900/10">
+                        <div class="text-sm">
+                            <div>Ara Toplam: <strong class="text-white">500 TL</strong></div>
+                            <div>KDV: <strong class="text-white">100 TL</strong></div>
+                            <div class="text-red-400 font-bold mt-1">Toplam: 600 TL ❌</div>
+                            <div class="text-xs text-red-300 mt-1">(Beklenen: 720 TL!)</div>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Frontend Gösterim -->
+                <tr>
+                    <td class="py-4 px-4 font-semibold text-white">Frontend Fiyat Gösterimi</td>
+                    <td class="py-4 px-4 bg-green-900/10">
+                        <div class="text-white">1000 TL + KDV</div>
+                        <div class="text-xs text-green-400 mt-1">DOĞRU! 1000 + 200 = 1200 TL</div>
+                    </td>
+                    <td class="py-4 px-4 bg-red-900/10">
+                        <div class="text-white">600 TL + KDV</div>
+                        <div class="text-xs text-red-400 mt-1">YANLIŞ! Checkout'ta 600 TL çıkıyor</div>
+                    </td>
+                </tr>
+
+                <!-- price_display_mode -->
+                <tr>
+                    <td class="py-4 px-4 font-semibold text-white">price_display_mode Field</td>
+                    <td class="py-4 px-4 bg-green-900/10">
+                        <div class="text-green-300">✅ VAR</div>
+                        <div class="text-xs text-gray-400 mt-1">show / hide / request</div>
+                    </td>
+                    <td class="py-4 px-4 bg-yellow-900/10">
+                        <div class="text-yellow-300">⚠️ VAR AMA KULLANILMIYOR!</div>
+                        <div class="text-xs text-gray-400 mt-1">Migration'da var, kod kullanmıyor</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Shop Kod Örneği -->
+    <div class="mt-8 bg-slate-800/50 border border-green-600 rounded-lg p-6">
+        <h3 class="text-lg font-bold text-green-300 mb-4 flex items-center gap-2">
+            <i class="fas fa-check-double"></i>
+            Shop Modülü - Doğru Pattern (Model)
+        </h3>
+        <div class="space-y-4">
+            <div>
+                <div class="text-sm text-gray-400 mb-2">ShopProduct.php (Satır 1357-1366)</div>
+                <div class="code-block">/**
+ * KDV dahil fiyat hesaplama (Runtime calculation)
+ * base_price (KDV hariç) üzerinden hesaplanır
+ */
+public function getPriceWithTaxAttribute(): float
+{
+    if (!$this->base_price) {
+        return 0.0;
+    }
+
+    $taxRate = $this->tax_rate ?? 20.0;
+
+    // ✅ DOĞRU: base_price KDV hariç, runtime'da KDV ekleniyor
+    return (float) ($this->base_price * (1 + $taxRate / 100));
+}</div>
+            </div>
+
+            <div>
+                <div class="text-sm text-gray-400 mb-2">ShopCartBridge.php (Satır 112-119)</div>
+                <div class="code-block">protected function getProductPriceInfo(ShopProduct $product): array
+{
+    return [
+        'unit_price' => $product->final_price,  // ✅ final_price = base_price (KDV hariç)
+        'currency' => $product->currency ?? 'TRY',
+        'discount_amount' => 0,
+    ];
+    // ✅ DOĞRU: KDV hariç fiyat Cart'a gönderiliyor, ayrıştırma YOK!
+}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Teknik Detaylar -->
+<div class="card bg-blue-900/20 border border-blue-700 rounded-2xl p-8 mb-8 shadow-xl">
+    <h2 class="text-2xl font-bold text-blue-300 mb-6 flex items-center gap-3">
+        <i class="fas fa-code"></i>
+        🔧 Teknik Detaylar - Subscription Hatası (Geliştiriciler İçin)
+    </h2>
+
+    <!-- Sorunlu Kod Akışı -->
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <i class="fas fa-bug text-red-400"></i>
+            Mevcut Durum (HATA) - 5 Adımda Çift KDV
+        </h3>
+        <div class="space-y-4">
+            <!-- Step 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-r-lg p-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-white mb-2">Database - Subscription Plan</h4>
+                        <p class="text-gray-300 text-sm mb-2">Admin panelde cycle price girilir:</p>
+                        <div class="code-block">billing_cycles: {
+  "monthly": {
+    "price": 600,  // ← Bu KDV dahil mi, hariç mi? BELİRSİZ!
+    "label": {"tr": "Aylık"}
+  }
+}</div>
+                        <div class="bg-yellow-900/30 border border-yellow-700 rounded p-3 mt-2 text-sm text-yellow-200">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>Sorun:</strong> Field adı "price" - KDV dahil/hariç belirtilmemiş!
+                            Shop'ta "base_price" kullanıyor (açıkça KDV hariç).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-r-lg p-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-white mb-2">Frontend - subscription-plans.blade.php</h4>
+                        <p class="text-gray-300 text-sm mb-2">Plan sayfasında gösterilen:</p>
+                        <div class="code-block">{{ number_format($price, 2) }} TL
+<span>+ KDV</span>  // ← "600 TL + KDV" gösteriliyor</div>
+                        <p class="text-red-300 text-sm mt-2"><i class="fas fa-exclamation-triangle mr-1"></i> Müşteri 720 TL ödeyeceğini düşünüyor!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-r-lg p-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-white mb-2">Bridge - SubscriptionCartBridge.php (Satır 100-115)</h4>
+                        <p class="text-gray-300 text-sm mb-2">Cart'a eklerken:</p>
+                        <div class="code-block">// Cycle'dan fiyat al (KDV dahil!)  ← ❌ YANLIŞ VARSAYIM!
+$priceWithTax = $cycle['price'] ?? 0;  // 600 TL
+$taxRate = $plan->tax_rate ?? 20;
+
+// Subscription fiyatları KDV DAHİL gelir!
+// KDV'yi ayrıştır
+$priceWithoutTax = $priceWithTax / (1 + ($taxRate / 100));
+// $priceWithoutTax = 600 / 1.20 = 500 TL
+
+return [
+    'unit_price' => $priceWithoutTax,  // ← 500 TL
+    'tax_rate' => $taxRate,  // ← 20%
+];</div>
+                        <div class="bg-red-950/50 border border-red-700 rounded p-3 mt-2">
+                            <p class="text-red-300 text-sm">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                <strong>Ana Hata:</strong> Bridge fiyatı "KDV dahil" sanıp ayrıştırıyor!<br>
+                                <strong>Shop ile fark:</strong> Shop'ta <code>final_price</code> direkt alınıyor (zaten KDV hariç).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-r-lg p-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-white mb-2">Cart - CartItem.php (Satır 170-180)</h4>
+                        <p class="text-gray-300 text-sm mb-2">Sepet hesaplaması (Shop ve Subscription için AYNI):</p>
+                        <div class="code-block">public function recalculate(): void
+{
+    // unit_price = 500 TL (Bridge'den gelen)
+    $this->subtotal = $this->final_price * $this->quantity;
+    // subtotal = 500 * 1 = 500 TL
+
+    $this->tax_amount = $this->subtotal * ($this->tax_rate / 100);
+    // tax_amount = 500 * 0.20 = 100 TL
+
+    $this->total = $this->subtotal + $this->tax_amount;
+    // total = 500 + 100 = 600 TL
+}</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                            <div class="bg-green-900/20 border border-green-600 rounded p-3 text-sm">
+                                <div class="text-green-300 font-semibold mb-1">✅ Shop İçin (Doğru)</div>
+                                <div class="text-gray-300">unit_price: 1000 TL (KDV hariç)</div>
+                                <div class="text-gray-300">KDV: 200 TL</div>
+                                <div class="text-green-400 font-bold">Total: 1200 TL</div>
+                            </div>
+                            <div class="bg-red-900/20 border border-red-700 rounded p-3 text-sm">
+                                <div class="text-red-300 font-semibold mb-1">❌ Subscription İçin (Hatalı)</div>
+                                <div class="text-gray-300">unit_price: 500 TL (ayrıştırılmış!)</div>
+                                <div class="text-gray-300">KDV: 100 TL</div>
+                                <div class="text-red-400 font-bold">Total: 600 TL</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-r-lg p-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">5</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-white mb-2">Checkout - CheckoutPage.php (Satır 299-301)</h4>
+                        <p class="text-gray-300 text-sm mb-2">Müşteriye gösterilen:</p>
+                        <div class="code-block">$this->subtotal = $this->items->sum('subtotal');    // 500 TL
+$this->taxAmount = $this->items->sum('tax_amount');   // 100 TL
+$this->total = $this->subtotal + $this->taxAmount;   // 600 TL</div>
+                        <div class="bg-red-950/50 border border-red-700 rounded p-3 mt-3 text-sm">
+                            <div>Ara Toplam: <strong>500 TL</strong></div>
+                            <div>KDV (%20): <strong>100 TL</strong></div>
+                            <div class="border-t border-red-700 mt-1 pt-1">Toplam: <strong>600 TL</strong></div>
+                        </div>
+                        <p class="text-red-300 text-sm mt-2"><i class="fas fa-times-circle mr-1"></i> Müşteri 720 TL bekliyordu, 600 TL gördü!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dosya Konumları -->
+    <div class="bg-slate-800/30 border border-slate-600 rounded-lg p-6">
+        <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <i class="fas fa-folder-open text-yellow-400"></i>
+            İlgili Dosyalar
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+                <div class="text-red-300 font-semibold mb-2 text-sm">❌ Subscription (Hatalı)</div>
+                <div class="space-y-2 text-sm font-mono">
+                    <div class="flex items-center gap-2 text-gray-300">
+                        <i class="fas fa-file-code text-red-400 text-xs"></i>
+                        <span class="text-xs">SubscriptionCartBridge.php:98-134</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-300">
+                        <i class="fas fa-file-code text-red-400 text-xs"></i>
+                        <span class="text-xs">subscription-plans.blade.php:383-390</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-300">
+                        <i class="fas fa-file-code text-red-400 text-xs"></i>
+                        <span class="text-xs">SubscriptionPlan.php:166-177</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="text-green-300 font-semibold mb-2 text-sm">✅ Shop (Doğru - Referans)</div>
+                <div class="space-y-2 text-sm font-mono">
+                    <div class="flex items-center gap-2 text-gray-300">
+                        <i class="fas fa-file-code text-green-400 text-xs"></i>
+                        <span class="text-xs">ShopCartBridge.php:112-119</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-300">
+                        <i class="fas fa-file-code text-green-400 text-xs"></i>
+                        <span class="text-xs">ShopProduct.php:1357-1366</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-300">
+                        <i class="fas fa-file-code text-green-400 text-xs"></i>
+                        <span class="text-xs">ShopProduct.php:1348-1350</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 space-y-2 text-sm font-mono">
+            <div class="text-blue-300 font-semibold mb-2 text-sm">🔄 Ortak Dosyalar</div>
+            <div class="flex items-center gap-2 text-gray-300">
+                <i class="fas fa-file-code text-blue-400 text-xs"></i>
+                <span class="text-xs">CartService.php:153-233</span>
+            </div>
+            <div class="flex items-center gap-2 text-gray-300">
+                <i class="fas fa-file-code text-blue-400 text-xs"></i>
+                <span class="text-xs">CartItem.php:170-182</span>
+            </div>
+            <div class="flex items-center gap-2 text-gray-300">
+                <i class="fas fa-file-code text-blue-400 text-xs"></i>
+                <span class="text-xs">CheckoutPage.php:299-301</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Çözüm Önerileri -->
+<div class="card bg-emerald-900/20 border border-emerald-600 rounded-2xl p-8 mb-8 shadow-xl">
+    <h2 class="text-2xl font-bold text-emerald-300 mb-6 flex items-center gap-3">
+        <i class="fas fa-wrench"></i>
+        ✅ Çözüm Önerileri (Shop Pattern İle Uyumlu)
+    </h2>
+
+    <!-- Öneri 1 (ÖNERİLEN) -->
+    <div class="mb-8">
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-bold text-xl flex-shrink-0">1</div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-white mb-2">
+                    Shop Pattern'i Kullan: Cycle Price = KDV HARİÇ
+                    <span class="ml-2 px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-full">ÖNERİLEN</span>
+                    <span class="ml-2 px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded-full">SHOP İLE AYNI</span>
+                </h3>
+                <p class="text-gray-300 mb-4">
+                    Database'de cycle price'lar KDV hariç girilir (Shop'taki <code>base_price</code> pattern'i).
+                    Bridge ayrıştırma yapmaz, direkt KDV hariç fiyatı gönderir.
+                </p>
+            </div>
+        </div>
+        <div class="bg-slate-800/50 border border-slate-600 rounded-lg p-6">
+            <h4 class="font-bold text-white mb-3">Değişiklikler:</h4>
+            <div class="space-y-4">
+                <!-- Model Değişikliği (ÖNCELİK 1) -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-emerald-600 text-white text-xs font-bold rounded">ÖNCELİK 1</span>
+                        <i class="fas fa-file-code text-blue-400"></i>
+                        <span class="text-sm font-mono text-gray-400">SubscriptionPlan.php - Accessor Ekle</span>
+                    </div>
+                    <div class="code-block">/**
+ * Belirli bir cycle'ın fiyatını al (KDV hariç - base_price pattern)
+ * Shop modülündeki getFinalPriceAttribute() ile aynı mantık
+ */
+public function getCycleBasePrice(string $cycleKey): ?float
+{
+    $cycles = $this->billing_cycles ?? [];
+    // ✅ Direkt price döndür (KDV hariç - database'de bu şekilde saklanıyor)
+    return isset($cycles[$cycleKey]['price']) ? (float) $cycles[$cycleKey]['price'] : null;
+}
+
+/**
+ * KDV dahil fiyat hesaplama (Runtime - Shop pattern)
+ */
+public function getCyclePriceWithTax(string $cycleKey): ?float
+{
+    $basePrice = $this->getCycleBasePrice($cycleKey);
+    if (!$basePrice) {
+        return null;
+    }
+
+    $taxRate = $this->tax_rate ?? 20.0;
+
+    // ✅ Shop pattern: base_price * (1 + tax_rate / 100)
+    return $basePrice * (1 + $taxRate / 100);
+}</div>
+                </div>
+
+                <!-- Bridge Değişikliği -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-emerald-600 text-white text-xs font-bold rounded">ÖNCELİK 2</span>
+                        <i class="fas fa-file-code text-blue-400"></i>
+                        <span class="text-sm font-mono text-gray-400">SubscriptionCartBridge.php (Satır 98-134)</span>
+                    </div>
+                    <div class="code-block">// ❌ ESKİ KOD (Kaldır - KDV ayrıştırma yapıyor)
+$priceWithTax = $cycle['price'] ?? 0;
+$taxRate = $plan->tax_rate ?? 20;
+$priceWithoutTax = $priceWithTax / (1 + ($taxRate / 100));
+
+return [
+    'unit_price' => $priceWithoutTax,  // ❌ Ayrıştırılmış fiyat
+    'tax_rate' => $taxRate,
+];
+
+// ✅ YENİ KOD (Shop pattern - Ayrıştırma YOK!)
+$basePrice = $plan->getCycleBasePrice($cycleKey);  // KDV hariç fiyat
+
+if (!$basePrice) {
+    throw new \Exception("Cycle fiyatı bulunamadı: {$cycleKey}");
+}
+
+$taxRate = $plan->tax_rate ?? 20.0;
+
+// Shop ile AYNI pattern - log ekle
+Log::info('🛒 SubscriptionCartBridge - Price Info', [
+    'plan_id' => $plan->subscription_plan_id,
+    'cycle_key' => $cycleKey,
+    'base_price' => $basePrice,  // KDV hariç (database'den direkt)
+    'tax_rate' => $taxRate,
+    'price_with_tax' => $basePrice * (1 + $taxRate / 100),  // Sadece log için
+    'note' => 'Price WITHOUT tax - same as Shop base_price pattern',
+]);
+
+return [
+    'unit_price' => $basePrice,  // ✅ KDV hariç (ayrıştırma YOK!)
+    'tax_rate' => $taxRate,
+];</div>
+                </div>
+
+                <!-- Frontend Değişikliği (OPSIYONEL) -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-gray-600 text-white text-xs font-bold rounded">OPSIYONEL</span>
+                        <i class="fas fa-file-code text-blue-400"></i>
+                        <span class="text-sm font-mono text-gray-400">subscription-plans.blade.php (Satır 383-390)</span>
+                    </div>
+                    <div class="code-block">{{-- Değişiklik YOK - zaten doğru gösteriyor --}}
+{{ number_format($price, 2) }} TL
+<span>+ KDV</span>
+
+{{-- Eğer daha net göstermek istersen (Shop gibi): --}}
+{{ number_format($price, 2) }} TL <span class="text-sm text-gray-500">(KDV hariç)</span>
+<div class="text-xs text-gray-500 mt-1">
+    KDV dahil: {{ number_format($price * 1.20, 2) }} TL
+</div></div>
+                </div>
+
+                <!-- Database Örnek -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-database text-yellow-400"></i>
+                        <span class="text-sm font-mono text-gray-400">Database - Admin Panel (DEĞİŞİKLİK YOK)</span>
+                    </div>
+                    <div class="code-block">// Admin panelde plan oluştururken (AYNI KALIYOR):
+billing_cycles: {
+  "monthly": {
+    "price": 600,  // ← KDV HARİÇ fiyat (Shop base_price gibi)
+    "label": {"tr": "Aylık"}
+  }
+}
+
+// ✅ Artık "price" field'i açıkça KDV HARİÇ olarak yorumlanıyor (Shop pattern)</div>
+                </div>
+            </div>
+
+            <!-- Sonuç -->
+            <div class="bg-emerald-900/30 border border-emerald-600 rounded-lg p-4 mt-6">
+                <h4 class="font-bold text-emerald-300 mb-3"><i class="fas fa-check-circle mr-2"></i>Sonuç (Shop İle AYNI):</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div class="bg-emerald-950/50 rounded p-3">
+                        <div class="text-emerald-400 font-semibold mb-1">Database</div>
+                        <div class="text-white">600 TL (KDV hariç)</div>
+                        <div class="text-xs text-gray-400 mt-1">Shop: base_price pattern</div>
+                    </div>
+                    <div class="bg-emerald-950/50 rounded p-3">
+                        <div class="text-emerald-400 font-semibold mb-1">Plan Sayfası</div>
+                        <div class="text-white">600 TL + KDV</div>
+                        <div class="text-xs text-gray-400 mt-1">Shop ile uyumlu</div>
+                    </div>
+                    <div class="bg-emerald-950/50 rounded p-3">
+                        <div class="text-emerald-400 font-semibold mb-1">Checkout</div>
+                        <div class="text-white">600 + 120 = 720 TL</div>
+                        <div class="text-xs text-gray-400 mt-1">DOĞRU! ✅</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Öneri 2 (Alternatif) -->
+    <div>
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-purple-500 text-white rounded-xl flex items-center justify-center font-bold text-xl flex-shrink-0">2</div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-white mb-2">
+                    Alternatif: Cycle Price = KDV DAHİL
+                    <span class="ml-2 px-3 py-1 bg-yellow-600 text-white text-xs font-bold rounded-full">SHOP'TAN FARKLI</span>
+                </h3>
+                <p class="text-gray-300 mb-4">
+                    Database'de cycle price'lar KDV dahil girilir. Bridge ayrıştırma yapar (mevcut kod kalır).
+                    Sadece frontend gösterimi düzeltilir.
+                </p>
+            </div>
+        </div>
+        <div class="bg-slate-800/50 border border-slate-600 rounded-lg p-6">
+            <h4 class="font-bold text-white mb-3">Değişiklikler:</h4>
+            <div class="space-y-4">
+                <!-- Bridge Değişikliği -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-file-code text-blue-400"></i>
+                        <span class="text-sm font-mono text-gray-400">SubscriptionCartBridge.php</span>
+                    </div>
+                    <div class="code-block">// ✅ Mevcut kod KORU (Bridge ayrıştırma yapıyor, bu doğru)
+$priceWithTax = $cycle['price'] ?? 0;  // 600 TL (KDV dahil)
+$priceWithoutTax = $priceWithTax / (1 + ($taxRate / 100));  // 500 TL
+
+return [
+    'unit_price' => $priceWithoutTax,  // 500 TL (KDV hariç)
+    'tax_rate' => $taxRate,  // %20
+];
+
+// ⚠️ ANCAK: price_display_mode kontrolü ekle
+// Eğer admin "KDV dahil göster" seçerse, frontend'i ayarla</div>
+                </div>
+
+                <!-- Frontend Değişikliği -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-file-code text-blue-400"></i>
+                        <span class="text-sm font-mono text-gray-400">subscription-plans.blade.php (Satır 380-420)</span>
+                    </div>
+                    <div class="code-block">{{-- SEÇENEK A: KDV hariç + KDV göster --}}
+@php
+    $basePrice = $price / 1.20;  // KDV'yi ayrıştır
+    $taxAmount = $price - $basePrice;
+@endphp
+<div class="text-4xl font-black">
+    {{ number_format($basePrice, 2) }} TL
+</div>
+<p class="text-sm text-gray-400 mt-1">
+    + KDV ({{ number_format($taxAmount, 2) }} TL)
+    <span class="text-gray-600">= {{ number_format($price, 2) }} TL toplam</span>
+</p>
+
+{{-- VEYA SEÇENEK B: KDV dahil göster --}}
+<div class="text-4xl font-black">
+    {{ number_format($price, 2) }} TL
+</div>
+<p class="text-sm text-gray-400 mt-1">
+    <span class="text-white/70">(KDV dahil)</span>
+</p></div>
+                </div>
+            </div>
+
+            <!-- Sonuç -->
+            <div class="bg-purple-900/30 border border-purple-600 rounded-lg p-4 mt-6">
+                <h4 class="font-bold text-purple-300 mb-3"><i class="fas fa-info-circle mr-2"></i>Sonuç:</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div class="bg-purple-950/50 rounded p-3">
+                        <div class="text-purple-400 font-semibold mb-1">Database</div>
+                        <div class="text-white">600 TL (KDV dahil)</div>
+                    </div>
+                    <div class="bg-purple-950/50 rounded p-3">
+                        <div class="text-purple-400 font-semibold mb-1">Plan Sayfası</div>
+                        <div class="text-white">500 TL + KDV<br><small class="text-gray-400">veya "600 TL KDV dahil"</small></div>
+                    </div>
+                    <div class="bg-purple-950/50 rounded p-3">
+                        <div class="text-purple-400 font-semibold mb-1">Checkout</div>
+                        <div class="text-white">500 + 100 = 600 TL</div>
+                    </div>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded p-3 mt-4 text-sm text-yellow-200">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <strong>Uyarı:</strong> Bu seçenek Shop modülünden FARKLI bir pattern kullanır.
+                    Tutarlılık için <strong>Seçenek 1 önerilir</strong>.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Öncelik ve Öneri -->
+<div class="bg-yellow-900/20 border border-yellow-600 rounded-2xl p-6 mb-8">
+    <h2 class="text-xl font-bold text-yellow-300 mb-4 flex items-center gap-3">
+        <i class="fas fa-star"></i>
+        💡 Hangi Çözümü Seçmeli?
+    </h2>
+    <div class="space-y-3 text-gray-300">
+        <p>
+            <strong class="text-white">Seçenek 1 (KDV Hariç - Shop Pattern) KESİNLİKLE ÖNERİLİR</strong> çünkü:
+        </p>
+        <ul class="list-disc list-inside space-y-2 ml-4">
+            <li><strong class="text-yellow-300">Shop modülü ile AYNI pattern:</strong> <code>base_price</code> (KDV hariç) + <code>price_with_tax</code> (runtime accessor)</li>
+            <li><strong class="text-yellow-300">Kod tutarlılığı:</strong> Tüm modüller aynı fiyatlandırma mantığını kullanır</li>
+            <li><strong class="text-yellow-300">Türkiye standartları:</strong> Fiyatlar genelde "X TL + KDV" gösterilir</li>
+            <li><strong class="text-yellow-300">Admin panel netliği:</strong> "price" = KDV hariç (Shop'taki gibi)</li>
+            <li><strong class="text-yellow-300">Yasal raporlama:</strong> KDV hariç fiyat ayrıştırması kolay</li>
+            <li><strong class="text-yellow-300">İxtif.com uyumluluğu:</strong> Shop modülü (forklift, transpalet) aynı pattern kullanıyor</li>
+        </ul>
+        <div class="bg-emerald-950/30 border border-emerald-700 rounded p-4 mt-4">
+            <p class="text-emerald-100">
+                <i class="fas fa-lightbulb mr-2"></i>
+                <strong>Uygulama Önerisi:</strong> Seçenek 1'i uygula. Model'e accessor ekle, Bridge'i düzelt.
+                Böylece Subscription modülü Shop ile tamamen uyumlu hale gelir. Mevcut database'i değiştirmeye gerek yok,
+                sadece "price" field'inin yorumlanmasını değiştiriyoruz (KDV hariç olarak).
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- İxtif.com (Tenant 2) Analizi -->
+<div class="card bg-cyan-900/20 border border-cyan-600 rounded-2xl p-8 mb-8 shadow-xl">
+    <h2 class="text-2xl font-bold text-cyan-300 mb-4 flex items-center gap-3">
+        <i class="fas fa-building"></i>
+        🏢 İxtif.com (Tenant 2) - Shop Modülü Kullanımı
+    </h2>
+    <div class="space-y-4 text-gray-300">
+        <p>
+            <strong class="text-white">İxtif.com:</strong> Endüstriyel ekipman satışı (forklift, transpalet, istif makinesi)
+        </p>
+        <div class="bg-slate-800/50 border border-cyan-600 rounded-lg p-4">
+            <h3 class="font-bold text-cyan-300 mb-3">Fiyatlandırma Yapısı (Shop Modülü):</h3>
+            <ul class="space-y-2 text-sm">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-database text-cyan-400 mt-1"></i>
+                    <span><strong>Database:</strong> <code>base_price</code> field (KDV hariç)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-code text-cyan-400 mt-1"></i>
+                    <span><strong>Model:</strong> <code>price_with_tax</code> accessor (runtime hesaplama)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-shopping-cart text-cyan-400 mt-1"></i>
+                    <span><strong>Cart:</strong> <code>final_price</code> (base_price - KDV hariç)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                    <span><strong>Sonuç:</strong> Doğru çalışıyor! Çift KDV sorunu YOK.</span>
+                </li>
+            </ul>
+        </div>
+        <div class="bg-emerald-900/20 border border-emerald-600 rounded p-4">
+            <p class="text-emerald-200 text-sm">
+                <i class="fas fa-lightbulb mr-2"></i>
+                <strong>Sonuç:</strong> İxtif.com'da Shop modülü DOĞRU çalışıyor. Subscription modülünü de
+                AYNI pattern'e uyarlarsak, tüm sistem tutarlı hale gelir ve bu KDV hatası tamamen ortadan kalkar.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Ek Kontrol Noktaları -->
+<div class="bg-slate-800/50 border border-slate-600 rounded-2xl p-6 mb-8">
+    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
+        <i class="fas fa-clipboard-check"></i>
+        🔍 Uygulama Sonrası Kontrol Listesi
+    </h2>
+    <div class="space-y-3 text-gray-300 text-sm">
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Model Accessor:</strong> <code>getCycleBasePrice()</code> ve <code>getCyclePriceWithTax()</code> metodları eklenmiş mi?</p>
+        </div>
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Bridge Güncelleme:</strong> <code>SubscriptionCartBridge.php</code> KDV ayrıştırma kodunu kaldırdı mı?</p>
+        </div>
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Log Kontrolü:</strong> Bridge log'unda "Price WITHOUT tax - same as Shop base_price pattern" mesajı var mı?</p>
+        </div>
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Test - Plan Sayfası:</strong> "600 TL + KDV" gösterimi doğru mu?</p>
+        </div>
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Test - Sepete Ekle:</strong> Cart item'da unit_price = 600 TL (KDV hariç) mi?</p>
+        </div>
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Test - Checkout:</strong> Ara Toplam 600 TL, KDV 120 TL, Toplam 720 TL mi?</p>
+        </div>
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Mevcut Planlar:</strong> Database'deki cycle price'lar kontrol edildi mi? (KDV hariç olarak yorumlanıyor artık)</p>
+        </div>
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Admin Döküman:</strong> "Cycle price KDV hariç girilmelidir" notu eklendi mi?</p>
+        </div>
+        <div class="flex items-start gap-3">
+            <i class="fas fa-square-check text-blue-400 mt-1"></i>
+            <p><strong class="text-white">Shop Karşılaştırma:</strong> Subscription ve Shop aynı pattern'i kullanıyor mu?</p>
+        </div>
+    </div>
+</div>
+
+<!-- Özet -->
+<div class="bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl p-8 shadow-2xl">
+    <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <i class="fas fa-list-check"></i>
+        📋 Kapsamlı Özet
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <h3 class="font-bold text-red-300 mb-3"><i class="fas fa-bug mr-2"></i>Sorun</h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-times-circle text-red-400 mt-1 flex-shrink-0"></i>
+                    <span>Bridge fiyatı "KDV dahil" sanıp ayrıştırıyor</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-times-circle text-red-400 mt-1 flex-shrink-0"></i>
+                    <span>Cart tekrar KDV ekliyor (çift hesaplama)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-times-circle text-red-400 mt-1 flex-shrink-0"></i>
+                    <span>Frontend "X TL + KDV" gösteriyor ama checkout'ta farklı</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-times-circle text-red-400 mt-1 flex-shrink-0"></i>
+                    <span>Shop modülü ile pattern uyumsuzluğu</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-times-circle text-red-400 mt-1 flex-shrink-0"></i>
+                    <span>Müşteri kafası karışıyor, güven kaybı</span>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="font-bold text-emerald-300 mb-3"><i class="fas fa-check-circle mr-2"></i>Çözüm (Shop Pattern)</h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-emerald-400 mt-1 flex-shrink-0"></i>
+                    <span>Model'e <code>getCycleBasePrice()</code> accessor ekle</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-emerald-400 mt-1 flex-shrink-0"></i>
+                    <span>Bridge'den KDV ayrıştırma kodunu kaldır</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-emerald-400 mt-1 flex-shrink-0"></i>
+                    <span>Cycle price = KDV hariç (Shop base_price pattern)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-emerald-400 mt-1 flex-shrink-0"></i>
+                    <span>Shop modülü ile tam uyumluluk</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-emerald-400 mt-1 flex-shrink-0"></i>
+                    <span>İxtif.com (Shop) ve Muzibu (Subscription) tutarlı</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Final Karşılaştırma -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-red-900/20 border border-red-600 rounded-lg p-4">
+            <h4 class="font-bold text-red-300 mb-2">❌ Mevcut Durum (Hatalı)</h4>
+            <div class="text-sm space-y-1 text-gray-300">
+                <div>Plan: 600 TL + KDV gösterimi</div>
+                <div>Checkout: 500 + 100 = 600 TL</div>
+                <div class="text-red-400 font-bold">→ Müşteri 720 TL bekledi!</div>
+            </div>
+        </div>
+        <div class="bg-emerald-900/20 border border-emerald-600 rounded-lg p-4">
+            <h4 class="font-bold text-emerald-300 mb-2">✅ Düzeltme Sonrası (Doğru)</h4>
+            <div class="text-sm space-y-1 text-gray-300">
+                <div>Plan: 600 TL + KDV gösterimi</div>
+                <div>Checkout: 600 + 120 = 720 TL</div>
+                <div class="text-emerald-400 font-bold">→ Beklenti ile uyumlu! ✅</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- Footer -->
+<div class="bg-slate-900 border-t border-slate-700 py-6 px-4 text-center">
+    <p class="text-gray-500 text-sm">
+        <i class="fas fa-robot mr-2"></i>
+        Claude AI Code Analizi - 11 Ocak 2025 (v2)
+    </p>
+    <p class="text-gray-600 text-xs mt-2">
+        Subscription & Shop Modül Karşılaştırması - KDV Hesaplama Sistemi - İxtif.com Analizi
+    </p>
+    <div class="mt-3 flex items-center justify-center gap-4 text-xs text-gray-600">
+        <span><i class="fas fa-check-circle text-green-500 mr-1"></i>Shop Pattern Uyumlu</span>
+        <span><i class="fas fa-building text-cyan-500 mr-1"></i>İxtif.com Referanslı</span>
+        <span><i class="fas fa-code text-blue-500 mr-1"></i>Detaylı Kod Örnekleri</span>
+    </div>
+</div>
+
+</body>
+</html>

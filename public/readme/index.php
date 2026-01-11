@@ -79,7 +79,7 @@ function scanReports($dir) {
                             'date' => "$year-$month-$day",
                             'topic' => $topic,
                             'title' => $title,
-                            'url' => $latestVersion['url'], // ✅ Dinamik: En son versiyona git
+                            'url' => "/readme/$year/$month/$day/$topic/", // 🔴 Ana klasör linki (DirectoryIndex ile v1'e yönlenir)
                             'versions' => $versions,
                             'latestModified' => $versions[0]['modified']
                         ];

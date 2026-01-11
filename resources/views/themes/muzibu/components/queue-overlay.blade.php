@@ -156,7 +156,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"></h4>
-                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
+                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Muzibu'"></p>
                 </div>
                 <button
                     @click="toggleLike()"
@@ -278,7 +278,7 @@
                             :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'"
                             x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"
                         ></h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || 'Muzibu'"></p>
                     </div>
 
                     {{-- Duration / Remove Button (Same Position - Toggle on Hover) --}}

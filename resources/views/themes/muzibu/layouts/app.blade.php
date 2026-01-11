@@ -907,6 +907,7 @@
                     {{-- 🚀 SPA Content Wrapper --}}
                     <div class="spa-content-wrapper" id="spaContent">
                         @yield('content')
+                        {{ $slot ?? '' }}
                     </div>
                 </div>
             </div>
@@ -1215,6 +1216,69 @@
                 }
             }, 100);
         });
+
+        // 🌍 CONTEXT MENU TYPE TÜRKÇELEŞTIRME
+        window.getContextTypeLabel = function(type) {
+            const labels = {
+                'song': 'Şarkı',
+                'album': 'Albüm',
+                'playlist': 'Playlist',
+                'my-playlist': 'Playlistim',
+                'genre': 'Tür',
+                'sector': 'Sektör',
+                'radio': 'Radyo',
+                'artist': 'Sanatçı'
+            };
+            return labels[type] || type;
+        };
+
+        // 🔐 SAĞ TUŞ KORUMASI - Sadece root kullanıcı boşluk alanlarda sağ tuşa ulaşabilir
+        document.addEventListener('contextmenu', (e) => {
+            // Root kullanıcı mı kontrol et
+            const isRoot = window.muzibuPlayerConfig?.currentUser?.is_root ?? false;
+
+            // Root kullanıcı ise → Her yerde sağ tuş açık
+            if (isRoot) {
+                return;
+            }
+
+            // Root değil → Context menu'ye sahip elementleri kontrol et
+            const allowedSelectors = [
+                '.song-card',
+                '.album-card',
+                '.playlist-card',
+                '.artist-card',
+                '.genre-card',
+                '.sector-card',
+                '.radio-card',
+                '.song-row',
+                '.song-list-item',
+                '.song-detail-row',
+                '.song-simple-row',
+                '.song-history-row',
+                '.my-playlist-card',
+                '.playlist-quick-card',
+                '.genre-quick-card'
+            ];
+
+            // Tıklanan element veya parent'ları allowed mi?
+            let element = e.target;
+            let isAllowed = false;
+
+            // Parent'lara doğru tara (max 5 level)
+            for (let i = 0; i < 5 && element && element !== document.body; i++) {
+                if (allowedSelectors.some(selector => element.matches?.(selector))) {
+                    isAllowed = true;
+                    break;
+                }
+                element = element.parentElement;
+            }
+
+            // İzinli değilse → Sağ tuşu engelle
+            if (!isAllowed) {
+                e.preventDefault();
+            }
+        }, true); // Capture phase - önce bu çalışır
     </script>
 
     {{-- 🎯 Livewire Navigation Hook - Alpine Re-Init --}}

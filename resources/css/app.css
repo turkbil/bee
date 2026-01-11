@@ -294,6 +294,19 @@
     }
 }
 
+/* Gradient Flow Animation - Muzibu Footer Logo */
+@keyframes gradient-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 /* ===== PROSE SECTION FIX - ZORUNLU STİLLER ===== */
 /* Bu stiller @layer dışında olmalı ki !important çalışsın */
 

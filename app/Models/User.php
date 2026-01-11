@@ -45,7 +45,26 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             config('permission.table_names.model_has_roles'),
             config('permission.column_names.model_morph_key'),
             'role_id'
-        )->where(config('permission.table_names.roles') . '.guard_name', 'web');
+        )->where(config('permission.table_names.roles') . '.guard_name', 'web')
+        ->withoutGlobalScopes(); // 🔴 KRİTİK: Global scope'ları bypass et
+    }
+
+    /**
+     * 🔴 KRİTİK: Spatie Permission cache'ini tamamen temizle
+     * Component'te rol değiştirme sonrası çağrılır
+     */
+    public function flushRoleCache(): void
+    {
+        // 1. Spatie global cache
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
+        // 2. Model relationships
+        $this->unsetRelation('roles');
+        $this->unsetRelation('permissions');
+
+        // 3. Laravel cache
+        \Cache::forget("user_{$this->id}_roles");
+        \Cache::forget("user_{$this->id}_permissions");
     }
 
     /**

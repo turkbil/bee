@@ -173,6 +173,14 @@ module.exports = {
         // Text Utilities (for card components)
         'line-clamp-1', 'line-clamp-2', 'leading-tight', 'leading-snug',
         'h-[48px]', 'h-[52px]', 'h-[60px]',
+
+        // Positioning (AI Chat Widget & Fixed Elements)
+        'right-4', 'right-6', 'right-8', 'right-12', 'right-16', 'right-20', 'right-24',
+        'md:right-3', 'md:right-4', 'md:right-6', 'md:right-8', 'md:right-12', 'md:right-16', 'md:right-20',
+        'lg:right-8', 'lg:right-12', 'lg:right-16', 'lg:right-20', 'lg:right-24',
+        'xl:right-20', 'xl:right-24',
+        'top-[56px]', 'md:top-[68px]',
+        'bottom-28', 'md:bottom-32',
     ],
 
     theme: {

@@ -43,7 +43,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <h4 class="text-base font-bold text-white mb-1" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı'"></h4>
-                        <p class="text-sm text-muzibu-text-gray" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Sanatçı'"></p>
+                        <p class="text-sm text-muzibu-text-gray" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Muzibu'"></p>
                         <p class="text-xs text-muzibu-text-gray/60 mt-1" x-text="currentSong.album_title?.tr || currentSong.album_title?.en || currentSong.album_title || ''"></p>
                     </div>
                 </div>

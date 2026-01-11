@@ -378,7 +378,7 @@
                 <h3 class="text-white font-semibold">Aboneliklerim</h3>
                 <p class="text-gray-400 text-sm">Geçmiş & Ödemeler</p>
             </a>
-            <a href="/my-certificate" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-500/50 rounded-xl transition group" data-spa>
+            <a href="/my-certificate" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-500/50 rounded-xl transition group" data-spa="false">
                 <i class="fas fa-certificate text-2xl text-amber-400 mb-3"></i>
                 <h3 class="text-white font-semibold">{{ __('muzibu::front.certificate.title') }}</h3>
                 <p class="text-gray-400 text-sm">{{ __('muzibu::front.sidebar.my_certificate') }}</p>

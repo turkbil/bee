@@ -94,7 +94,7 @@
             "app/Helpers/CacheHelper.php",
             "app/Helpers/MediaHelper.php",
             "app/Helpers/QrHelper.php",
-            "Modules/Muzibu/app/Helpers/helpers.php",
+            "Modules/Muzibu/App/Helpers/helpers.php",
             "Modules/Muzibu/helpers.php",
             "Modules/MediaManagement/helpers.php"
         ]

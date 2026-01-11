@@ -66,7 +66,7 @@ return array(
     'cc908781867dd803042b960930928b7f' => $baseDir . '/app/Helpers/CacheHelper.php',
     '07ac275da986829f888a465f3856d603' => $baseDir . '/app/Helpers/MediaHelper.php',
     '6a4957d5117ae062bd1439cc23ac7f42' => $baseDir . '/app/Helpers/QrHelper.php',
-    '71043f39ee883afcc01acd394d88a217' => $baseDir . '/Modules/Muzibu/app/Helpers/helpers.php',
+    'e50d64fc93d6c6c24f2e8fe50de017dc' => $baseDir . '/Modules/Muzibu/App/Helpers/helpers.php',
     '6c47e74104cfb12309542f2014b3563a' => $baseDir . '/Modules/Muzibu/helpers.php',
     'f56bbfe669446335e4d3c5c496969794' => $baseDir . '/Modules/MediaManagement/helpers.php',
 );

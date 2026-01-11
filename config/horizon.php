@@ -225,10 +225,10 @@ return [
                 'muzibu_isolated',          // Bulk operations, translations
                 'muzibu_seo',               // SEO generation (OpenAI GPT-4)
             ],
-            'balance' => false,  // 🔥 DISABLED: Tüm worker'lar SADECE muzibu_tenant_1001_hls işlesin!
+            'balance' => 'auto',  // AUTO: Worker'ları queue yoğunluğuna göre dağıt
             'autoScalingStrategy' => 'time',
-            'minProcesses' => 20,  // 🚀 MAXIMUM: HLS için tüm worker'ları kullan
-            'maxProcesses' => 20, // 🚀 ARTTIRILDI: 6 → 12 → 20 (184 AI görsel + HLS için)
+            'minProcesses' => 20,  // 🔧 STABLE: 20 worker (60 sunucuyu patlattı!)
+            'maxProcesses' => 20, // 🔧 STABLE: Güvenli değer
             'maxTime' => 0,
             'maxJobs' => 5000,    // 🚀 ARTTIRILDI: 2000 → 5000 (daha az restart)
             'memory' => 512,      // Memory artırıldı (HLS + AI için)
@@ -275,8 +275,8 @@ return [
                 'memory' => 256, // 🔧 OPTIMIZED: 512 → 256 (memory tasarrufu)
             ],
             'muzibu-supervisor' => [
-                'maxProcesses' => 20, // 🚀 INCREASED: 3 → 20 (for 2,797 jobs - 897 HLS + 900 AI + 1000 SEO)
-                'minProcesses' => 6,  // 🚀 INCREASED: 1 → 6 (always ready workers)
+                'maxProcesses' => 20, // 🔧 STABLE: 20 worker (60 sunucuyu patlattı!)
+                'minProcesses' => 20, // 🔧 STABLE: Tüm worker'ları aktif et
                 'memory' => 512,      // 🚀 INCREASED: 256 → 512 (HLS + AI memory needs)
                 'timeout' => 600,
             ],

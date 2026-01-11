@@ -131,7 +131,7 @@ return [
     ],
 
     'search' => [
-        'placeholder' => 'Şarkı, sanatçı, albüm ara...',
+        'placeholder' => 'Şarkı, sanatçı, albüm, playlist, radyo ara...',
         'search_failed' => 'Arama yapılamadı.',
         'no_results' => 'Sonuç bulunamadı',
         'try_different' => 'Sonuç bulunamadı. Farklı bir kelime deneyin.',
@@ -317,6 +317,11 @@ return [
         'ads' => 'Anonslar',
         'my_certificate' => 'Belgem',
         'create_playlist' => 'Playlist Oluştur',
+
+        // Links
+        'corporate' => 'Kurumsal',
+        'pricing' => 'Fiyatlandırma',
+        'extend_membership' => 'Üyeliğini Uzat',
 
         // Membership
         'free_member' => 'Ücretsiz Üye',

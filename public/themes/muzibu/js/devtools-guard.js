@@ -35,33 +35,22 @@
 
         // DevTools tespit yöntemleri
         detectors: {
-            // Yöntem 1: Pencere boyutu farkı
+            // Yöntem 1: Pencere boyutu farkı (yatay)
             checkWindowSize() {
                 const widthDiff = window.outerWidth - window.innerWidth;
                 const heightDiff = window.outerHeight - window.innerHeight;
                 return widthDiff > 160 || heightDiff > 160;
             },
 
-            // Yöntem 2: Console açık mı? (toString override)
-            checkConsole() {
-                let isOpen = false;
-                const element = new Image();
-                Object.defineProperty(element, 'id', {
-                    get: function() {
-                        isOpen = true;
-                        return '';
-                    }
-                });
-                console.dir(element);
-                return isOpen;
+            // Yöntem 2: Pencere boyutu farkı (dikey)
+            checkWindowSizeVertical() {
+                const threshold = 160;
+                return window.outerHeight - window.innerHeight > threshold;
             },
 
-            // Yöntem 3: Debugger statement timing
-            checkDebugger() {
-                const start = performance.now();
-                debugger; // DevTools açıksa burada duraklar
-                const end = performance.now();
-                return (end - start) > 100; // 100ms'den uzunsa açık
+            // Yöntem 3: Firebug check
+            checkFirebug() {
+                return window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized;
             },
 
             // Yöntem 4: devtools-detect library benzeri
@@ -80,14 +69,14 @@
             return token && token.length > 0;
         },
 
-        // DevTools açık mı kontrol et (4 yöntem)
+        // DevTools açık mı kontrol et (4 yöntem - console spam yok!)
         detectDevTools() {
             let detectedCount = 0;
 
             try {
                 if (this.detectors.checkWindowSize()) detectedCount++;
-                if (this.detectors.checkConsole()) detectedCount++;
-                if (this.detectors.checkDebugger()) detectedCount++;
+                if (this.detectors.checkWindowSizeVertical()) detectedCount++;
+                if (this.detectors.checkFirebug()) detectedCount++;
                 if (this.detectors.checkDevtoolsDetect()) detectedCount++;
             } catch (e) {
                 // Hata olursa false positive olmasın

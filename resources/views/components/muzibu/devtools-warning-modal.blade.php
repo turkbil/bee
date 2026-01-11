@@ -97,50 +97,61 @@
         </div>
     </div>
 
-    {{-- Fill user info on modal show --}}
+    {{-- Fill user info on modal show (no console logs!) --}}
     <script>
-        window.addEventListener('devtools-detected', function() {
-            // Tarih/Saat
-            const now = new Date();
-            document.getElementById('devtools-datetime').textContent =
-                now.toLocaleString('tr-TR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
+        (function() {
+            window.addEventListener('devtools-detected', function() {
+                // Tarih/Saat
+                const now = new Date();
+                const datetimeEl = document.getElementById('devtools-datetime');
+                if (datetimeEl) {
+                    datetimeEl.textContent = now.toLocaleString('tr-TR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                }
 
-            // Browser
-            const ua = navigator.userAgent;
-            let browser = 'Bilinmiyor';
-            if (ua.includes('Chrome')) browser = 'Google Chrome';
-            else if (ua.includes('Firefox')) browser = 'Mozilla Firefox';
-            else if (ua.includes('Safari')) browser = 'Safari';
-            else if (ua.includes('Edge')) browser = 'Microsoft Edge';
-            document.getElementById('devtools-browser').textContent = browser;
+                // Browser
+                const ua = navigator.userAgent;
+                let browser = 'Bilinmiyor';
+                if (ua.includes('Chrome')) browser = 'Google Chrome';
+                else if (ua.includes('Firefox')) browser = 'Mozilla Firefox';
+                else if (ua.includes('Safari')) browser = 'Safari';
+                else if (ua.includes('Edge')) browser = 'Microsoft Edge';
+                const browserEl = document.getElementById('devtools-browser');
+                if (browserEl) browserEl.textContent = browser;
 
-            // OS
-            let os = 'Bilinmiyor';
-            if (ua.includes('Windows')) os = 'Windows';
-            else if (ua.includes('Mac')) os = 'macOS';
-            else if (ua.includes('Linux')) os = 'Linux';
-            else if (ua.includes('Android')) os = 'Android';
-            else if (ua.includes('iOS')) os = 'iOS';
-            document.getElementById('devtools-os').textContent = os;
+                // OS
+                let os = 'Bilinmiyor';
+                if (ua.includes('Windows')) os = 'Windows';
+                else if (ua.includes('Mac')) os = 'macOS';
+                else if (ua.includes('Linux')) os = 'Linux';
+                else if (ua.includes('Android')) os = 'Android';
+                else if (ua.includes('iOS')) os = 'iOS';
+                const osEl = document.getElementById('devtools-os');
+                if (osEl) osEl.textContent = os;
 
-            // Screen
-            document.getElementById('devtools-screen').textContent =
-                `${screen.width}x${screen.height} ${screen.colorDepth}bit`;
+                // Screen
+                const screenEl = document.getElementById('devtools-screen');
+                if (screenEl) {
+                    screenEl.textContent = `${screen.width}x${screen.height} ${screen.colorDepth}bit`;
+                }
 
-            // Language
-            document.getElementById('devtools-lang').textContent = navigator.language;
+                // Language
+                const langEl = document.getElementById('devtools-lang');
+                if (langEl) langEl.textContent = navigator.language;
 
-            // Timezone
-            document.getElementById('devtools-timezone').textContent =
-                Intl.DateTimeFormat().resolvedOptions().timeZone;
-        });
+                // Timezone
+                const tzEl = document.getElementById('devtools-timezone');
+                if (tzEl) {
+                    tzEl.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                }
+            });
+        })();
     </script>
 </div>
 

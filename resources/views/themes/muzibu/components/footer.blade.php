@@ -23,10 +23,18 @@
     $sitePhone = setting('contact_phone_1');
     $siteEmail = setting('contact_email_1');
     $whatsappNumber = setting('contact_whatsapp_1');
-    $facebookUrl = setting('social_facebook');
-    $instagramUrl = setting('social_instagram');
-    $twitterUrl = setting('social_twitter');
-    $youtubeUrl = setting('social_youtube');
+
+    // Sosyal medya URL'leri - Sadece kullanıcı adı girilmişse tam URL'e çevir
+    $facebookUsername = setting('social_facebook');
+    $instagramUsername = setting('social_instagram');
+    $twitterUsername = setting('social_twitter');
+    $youtubeUsername = setting('social_youtube');
+
+    // URL oluştur (eğer zaten URL ise olduğu gibi kullan)
+    $facebookUrl = $facebookUsername ? (str_starts_with($facebookUsername, 'http') ? $facebookUsername : 'https://facebook.com/' . $facebookUsername) : null;
+    $instagramUrl = $instagramUsername ? (str_starts_with($instagramUsername, 'http') ? $instagramUsername : 'https://instagram.com/' . $instagramUsername) : null;
+    $twitterUrl = $twitterUsername ? (str_starts_with($twitterUsername, 'http') ? $twitterUsername : 'https://x.com/' . $twitterUsername) : null;
+    $youtubeUrl = $youtubeUsername ? (str_starts_with($youtubeUsername, 'http') ? $youtubeUsername : 'https://youtube.com/@' . $youtubeUsername) : null;
 @endphp
 
 <footer class="bg-muzibu-dark text-white border-t border-white/10 pb-20">

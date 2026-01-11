@@ -95,16 +95,28 @@
                             $footerIsPremium = $footerUser->isPremium();
                             $footerExpiresAt = $footerUser->subscription_expires_at;
                             $footerDaysRemaining = $footerExpiresAt ? now()->diffInDays($footerExpiresAt, false) : null;
-                            $footerShowExtend = $footerIsPremium && $footerDaysRemaining !== null && $footerDaysRemaining <= 7 && $footerDaysRemaining >= 0;
+
+                            // Link gösterilsin mi kontrolü (30 günden fazla süresi varsa gösterilmez)
+                            $footerShowPricingLink = false;
+                            $footerPricingLinkText = '';
+
+                            if (!$footerIsPremium) {
+                                // Premium değilse "Premium Ol"
+                                $footerShowPricingLink = true;
+                                $footerPricingLinkText = 'Premium Ol';
+                            } elseif ($footerIsPremium && $footerDaysRemaining !== null && $footerDaysRemaining <= 30) {
+                                // Premium ve 30 gün veya daha az kalmışsa "Üyeliğini Uzat"
+                                $footerShowPricingLink = true;
+                                $footerPricingLinkText = 'Üyeliğini Uzat';
+                            }
+                            // 30 günden fazla kalmışsa link gösterilmez
                         @endphp
                         <li><a href="/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Dashboard</a></li>
                         <li><a href="/my-subscriptions" class="text-gray-400 hover:text-muzibu-coral transition-colors">Aboneliklerim</a></li>
                         <li><a href="/my-certificate" class="text-gray-400 hover:text-muzibu-coral transition-colors">Premium Belgesi</a></li>
                         <li><a href="/corporate/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kurumsallist</a></li>
-                        @if($footerShowExtend)
-                            <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Üyeliğini Uzat</a></li>
-                        @elseif(!$footerIsPremium)
-                            <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Premium Ol</a></li>
+                        @if($footerShowPricingLink)
+                            <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">{{ $footerPricingLinkText }}</a></li>
                         @endif
                         <li>
                             <form method="POST" action="{{ route('logout') }}" class="inline">
@@ -117,7 +129,7 @@
                     @else
                         <li><a href="/login" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.login') }}</a></li>
                         <li><a href="/register" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.footer.register') }}</a></li>
-                        <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Planlar & Fiyatlandırma</a></li>
+                        <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Fiyatlandırma</a></li>
                     @endauth
                 </ul>
             </div>

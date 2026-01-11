@@ -100,6 +100,7 @@
                         <li><a href="/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Dashboard</a></li>
                         <li><a href="/my-subscriptions" class="text-gray-400 hover:text-muzibu-coral transition-colors">Aboneliklerim</a></li>
                         <li><a href="/my-certificate" class="text-gray-400 hover:text-muzibu-coral transition-colors">Premium Belgesi</a></li>
+                        <li><a href="/corporate/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kurumsallist</a></li>
                         @if($footerShowExtend)
                             <li><a href="/subscription/plans" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Üyeliğini Uzat</a></li>
                         @elseif(!$footerIsPremium)
@@ -129,9 +130,8 @@
                     Kitaplığım
                 </h3>
                 <ul class="space-y-2">
-                    <li><a href="/muzibu/favorites" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.favorites') }}</a></li>
-                    <li><a href="/muzibu/my-playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.sidebar.my_playlists') }}</a></li>
-                    <li><a href="/corporate/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kurumsal</a></li>
+                    <li><a href="/muzibu/favorites" class="text-gray-400 hover:text-muzibu-coral transition-colors">Favorilerim</a></li>
+                    <li><a href="/muzibu/my-playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">Playlistlerim</a></li>
                     <li><a href="/muzibu/listening-history" class="text-gray-400 hover:text-muzibu-coral transition-colors">Dinleme Geçmişi</a></li>
                 </ul>
             </div>

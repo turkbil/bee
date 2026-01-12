@@ -41,55 +41,60 @@
         transition: stroke 1s ease;
     }
 </style>
-<div class="mobile-player-wrapper row-start-3 col-span-full mx-3 mb-3 px-3 py-2 relative rounded-full shadow-lg">
+<div class="mobile-player-wrapper row-start-3 col-span-full mx-3 my-3 px-3 py-2 relative rounded-full shadow-lg">
 
-    <div class="flex items-center gap-3 relative">
-        {{-- Cover with Progress Ring --}}
-        <div class="relative w-12 h-12 flex-shrink-0">
-            {{-- Progress Ring (Dinamik Gradient) --}}
-            <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 48 48">
-                <defs>
-                    <linearGradient id="mobileRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" class="mobile-gradient-stop1" :style="`stop-color: hsl(${currentSong?.color_hues?.[0] || 30}, 80%, 55%)`"/>
-                        <stop offset="50%" class="mobile-gradient-stop2" :style="`stop-color: hsl(${currentSong?.color_hues?.[1] || 350}, 80%, 55%)`"/>
-                        <stop offset="100%" class="mobile-gradient-stop3" :style="`stop-color: hsl(${currentSong?.color_hues?.[2] || 320}, 80%, 55%)`"/>
-                    </linearGradient>
-                </defs>
-                <circle cx="24" cy="24" r="21" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
-                <circle cx="24" cy="24" r="21" fill="none" stroke="url(#mobileRingGradient)" stroke-width="3"
-                        stroke-linecap="round"
-                        class="progress-ring-gradient"
-                        :stroke-dasharray="132"
-                        :stroke-dashoffset="132 - (132 * progressPercent / 100)"/>
-            </svg>
-            {{-- Album Cover (simple circle) with Coral Fallback --}}
-            <div class="absolute inset-[4px] rounded-full overflow-hidden flex items-center justify-center"
-                 :class="(currentSong?.album_cover || currentSong?.cover_url) ? 'bg-zinc-800' : 'bg-gradient-to-br from-muzibu-coral via-orange-500 to-pink-500'">
-                <img x-ref="mobileCover"
-                     x-show="currentSong?.album_cover || currentSong?.cover_url"
-                     x-effect="const cover = currentSong?.album_cover || currentSong?.cover_url; if(cover && $refs.mobileCover) { $refs.mobileCover.src = (typeof cover === 'string' && cover.startsWith('http')) ? cover : `/thumb/${cover}/100/100`; }"
-                     alt="Cover"
-                     class="absolute inset-0 w-full h-full object-cover">
-                <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-white/80 text-sm"></i>
+    {{-- Grid Layout: 3 alanlar [Cover+Info] [Controls] [Menu] --}}
+    <div class="grid grid-cols-[auto_1fr_auto] items-center gap-2">
+
+        {{-- Sol: Cover + Song Info --}}
+        <div class="flex items-center gap-2 min-w-0">
+            {{-- Cover with Progress Ring --}}
+            <div class="relative w-12 h-12 flex-shrink-0">
+                {{-- Progress Ring (Dinamik Gradient) --}}
+                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 48 48">
+                    <defs>
+                        <linearGradient id="mobileRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" class="mobile-gradient-stop1" :style="`stop-color: hsl(${currentSong?.color_hues?.[0] || 30}, 80%, 55%)`"/>
+                            <stop offset="50%" class="mobile-gradient-stop2" :style="`stop-color: hsl(${currentSong?.color_hues?.[1] || 350}, 80%, 55%)`"/>
+                            <stop offset="100%" class="mobile-gradient-stop3" :style="`stop-color: hsl(${currentSong?.color_hues?.[2] || 320}, 80%, 55%)`"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="24" cy="24" r="21" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
+                    <circle cx="24" cy="24" r="21" fill="none" stroke="url(#mobileRingGradient)" stroke-width="3"
+                            stroke-linecap="round"
+                            class="progress-ring-gradient"
+                            :stroke-dasharray="132"
+                            :stroke-dashoffset="132 - (132 * progressPercent / 100)"/>
+                </svg>
+                {{-- Album Cover (simple circle) with Coral Fallback --}}
+                <div class="absolute inset-[4px] rounded-full overflow-hidden flex items-center justify-center"
+                     :class="(currentSong?.album_cover || currentSong?.cover_url) ? 'bg-zinc-800' : 'bg-gradient-to-br from-muzibu-coral via-orange-500 to-pink-500'">
+                    <img x-ref="mobileCover"
+                         x-show="currentSong?.album_cover || currentSong?.cover_url"
+                         x-effect="const cover = currentSong?.album_cover || currentSong?.cover_url; if(cover && $refs.mobileCover) { $refs.mobileCover.src = (typeof cover === 'string' && cover.startsWith('http')) ? cover : `/thumb/${cover}/100/100`; }"
+                         alt="Cover"
+                         class="absolute inset-0 w-full h-full object-cover">
+                    <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-white/80 text-sm"></i>
+                </div>
+                {{-- Time Badge - Kalan süre --}}
+                <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"
+                     x-text="duration > 0 ? formatTime(Math.max(0, duration - currentTime)) : '0:00'">0:00</div>
             </div>
-            {{-- Time Badge - Kalan süre --}}
-            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"
-                 x-text="duration > 0 ? formatTime(Math.max(0, duration - currentTime)) : '0:00'">0:00</div>
+
+            {{-- Song Info: Title + Artist (Sabit genişlik) --}}
+            <div class="w-[85px]">
+                <p class="text-white text-xs font-medium truncate leading-tight"
+                   x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı Seç'">
+                    Şarkı Seç
+                </p>
+                <p class="text-zinc-400 text-[10px] truncate leading-tight"
+                   x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || '') : ''">
+                </p>
+            </div>
         </div>
 
-        {{-- Song Info: Title + Artist --}}
-        <div class="flex-1 min-w-0 max-w-[140px]">
-            <p class="text-white text-sm font-medium truncate"
-               x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı Seç'">
-                Şarkı Seç
-            </p>
-            <p class="text-zinc-400 text-xs truncate"
-               x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || '') : ''">
-            </p>
-        </div>
-
-        {{-- Controls: Prev, Play/Pause, Next (Absolute Center) --}}
-        <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-0.5 pointer-events-auto">
+        {{-- Orta: Controls (Prev, Play/Pause, Next) - Sağa yaslanmış --}}
+        <div class="flex items-center justify-end gap-0.5">
             <button class="w-9 h-9 text-white/80 flex items-center justify-center active:scale-90 transition-transform"
                     @click="previousTrack()">
                 <i class="fas fa-backward text-sm"></i>
@@ -106,10 +111,10 @@
             </button>
         </div>
 
-        {{-- Three Dots Menu (Right) --}}
-        <button class="w-10 h-10 -mr-1 text-white/60 flex items-center justify-center active:scale-90 transition-transform ml-auto"
+        {{-- Sağ: Three Dots Menu --}}
+        <button class="w-9 h-9 text-white/60 flex items-center justify-center active:scale-90 transition-transform flex-shrink-0"
                 @click.stop="showMobileMenu = !showMobileMenu">
-            <i class="fas fa-ellipsis-v text-lg"></i>
+            <i class="fas fa-ellipsis-v text-base"></i>
         </button>
     </div>
 

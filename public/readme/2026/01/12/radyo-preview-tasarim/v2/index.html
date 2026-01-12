@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radyo Preview Tasarım v2 - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#FF5A5F',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-radio text-white text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-white">Radyo Preview Tasarım v2</h1>
+                <p class="text-slate-400 text-sm">PC'de radyo tıklanınca sağ sidebar gösterimi (Gerçek Verilerle)</p>
+            </div>
+        </div>
+        <div class="bg-green-800/30 border border-green-700 rounded-xl p-4">
+            <p class="text-sm text-green-300">
+                <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                <strong>Düzeltme:</strong> Radio tablosundaki gerçek alanlar kullanıldı. "Tür" field'i YOK, yanlış bilgi kaldırıldı!
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto">
+
+        <!-- 📝 Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-green-400 mb-3 flex items-center gap-2">
+                <i class="fas fa-comment-dots"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-3 text-slate-300">
+                <p><strong>Şu anda:</strong> Ana sayfa veya /radios sayfasında bir radyoya tıkladığınızda direkt çalmaya başlıyor. Sağ tarafta hiçbir şey gösterilmiyor.</p>
+                <p><strong>Yapılacak:</strong> PC/tablet kullanıcıları radyoya tıkladığında:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>✅ Radyo çalmaya başlayacak (şu anki gibi)</li>
+                    <li>✅ Sağ sidebar otomatik açılacak (mobilde kapalı kalacak)</li>
+                    <li>✅ Sağ sidebar'da radyonun görseli, adı, "Canlı Yayın" etiketi görünecek</li>
+                    <li>✅ Radyo açıklaması (varsa) gösterilecek</li>
+                    <li>✅ Kullanıcı hangi radyonun çaldığını görebilecek</li>
+                </ul>
+                <p><strong>Neden önemli?</strong> PC kullanıcıları radyo çalarken hangi radyonun çaldığını göremiyordu. Şimdi sağ tarafta güzel bir kart ile görecekler.</p>
+            </div>
+        </div>
+
+        <!-- 🔧 Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-3 flex items-center gap-2">
+                <i class="fas fa-code"></i>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h3 class="font-semibold text-white mb-2">📊 Radio Model Alanları:</h3>
+                    <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 font-mono text-xs space-y-1">
+                        <p><span class="text-blue-400">radio_id</span> <span class="text-slate-500">(primary key)</span></p>
+                        <p><span class="text-blue-400">title</span> <span class="text-slate-500">(JSON - çoklu dil)</span></p>
+                        <p><span class="text-blue-400">slug</span> <span class="text-slate-500">(JSON - çoklu dil)</span></p>
+                        <p><span class="text-blue-400">description</span> <span class="text-slate-500">(longText - nullable - çoklu dil)</span></p>
+                        <p><span class="text-blue-400">media_id</span> <span class="text-slate-500">(Thumbmaker logo)</span></p>
+                        <p><span class="text-blue-400">is_featured</span> <span class="text-slate-500">(boolean)</span></p>
+                        <p><span class="text-blue-400">is_active</span> <span class="text-slate-500">(boolean)</span></p>
+                        <p class="text-red-400 line-through">genre_id <span class="text-slate-500">(❌ YOK! Radio'nun tür field'i yok)</span></p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white mb-2">🔗 Radio Relationships:</h3>
+                    <ul class="space-y-1 ml-4 text-sm">
+                        <li><i class="fas fa-link text-blue-400 mr-2"></i><code class="bg-slate-800 px-2 py-1 rounded">sectors()</code> - Many-to-many (muzibu_radio_sector)</li>
+                        <li><i class="fas fa-link text-blue-400 mr-2"></i><code class="bg-slate-800 px-2 py-1 rounded">playlists()</code> - HasPlaylistDistribution trait</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white mb-2">📁 Etkilenen Dosyalar:</h3>
+                    <ul class="space-y-1 ml-4 font-mono text-sm text-slate-400">
+                        <li><i class="fas fa-file-code text-orange-400 mr-2"></i>sidebar-right.blade.php</li>
+                        <li><i class="fas fa-file-code text-orange-400 mr-2"></i>muzibu-store.js</li>
+                        <li><i class="fas fa-file-code text-orange-400 mr-2"></i>play-helpers.js</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white mb-2">⚙️ Çalışma Mantığı:</h3>
+                    <ol class="list-decimal list-inside space-y-2 ml-4">
+                        <li>Kullanıcı radio card'a tıklar</li>
+                        <li>Cihaz kontrolü: <code class="bg-slate-800 px-2 py-1 rounded">window.innerWidth >= 768</code></li>
+                        <li><code class="bg-slate-800 px-2 py-1 rounded">$store.sidebar.showRadioPreview(radioData)</code> çağrılır</li>
+                        <li>Sağ sidebar <code class="bg-slate-800 px-2 py-1 rounded">rightSidebarVisible = true</code></li>
+                        <li>Radio preview template render edilir</li>
+                        <li>Radyo çalmaya başlar</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🎨 Tasarım Mockup -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-paintbrush"></i>
+                Tasarım Mockup (Gerçek Verilerle)
+            </h2>
+
+            <!-- Mockup Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- ÖNCESİ -->
+                <div>
+                    <h3 class="text-sm font-semibold text-red-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-times-circle"></i>
+                        Öncesi (Şu An)
+                    </h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 min-h-[400px] flex items-center justify-center">
+                        <div class="text-center text-slate-500">
+                            <i class="fas fa-eye-slash text-4xl mb-3 opacity-50"></i>
+                            <p class="text-sm">Sağ sidebar boş</p>
+                            <p class="text-xs mt-1">Radyo çalarken hiçbir bilgi gösterilmiyor</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SONRASI -->
+                <div>
+                    <h3 class="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Sonrası (Yeni Tasarım - Gerçek Alanlarla)
+                    </h3>
+                    <div class="bg-slate-900 border border-muzibu-coral/40 rounded-xl overflow-hidden min-h-[400px]">
+
+                        <!-- Radio Preview Card -->
+                        <div class="animate-fade-in">
+                            <!-- Large Cover Header with Gradient -->
+                            <div class="relative h-56 overflow-hidden">
+                                <!-- Cover Image -->
+                                <div class="w-full h-full bg-gradient-to-br from-muzibu-coral via-purple-600 to-blue-600 flex items-center justify-center">
+                                    <i class="fas fa-radio text-white/30 text-5xl"></i>
+                                </div>
+
+                                <!-- Gradient Overlay -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+
+                                <!-- Action Buttons -->
+                                <div class="absolute top-3 right-3 flex items-center gap-2">
+                                    <!-- Favorite Button -->
+                                    <button class="w-10 h-10 bg-black/40 hover:bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center transition-all hover:scale-110 text-white">
+                                        <i class="far fa-heart text-sm"></i>
+                                    </button>
+                                    <!-- Play Button -->
+                                    <button class="w-11 h-11 bg-muzibu-coral hover:bg-green-500 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-200">
+                                        <i class="fas fa-pause text-white text-sm"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Radio Info at Bottom -->
+                                <div class="absolute bottom-0 left-0 right-0 p-3">
+                                    <p class="text-[10px] font-bold text-muzibu-coral uppercase tracking-wider">Radio</p>
+                                    <h3 class="text-lg font-bold text-white truncate leading-tight mt-0.5">Radyo Ankara</h3>
+                                    <p class="text-xs text-white/60 mt-1 flex items-center gap-2">
+                                        <span class="inline-flex items-center gap-1">
+                                            <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                                            Canlı Yayın
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Info Section -->
+                            <div class="p-4 space-y-3">
+                                <!-- Playing Now Badge -->
+                                <div class="bg-green-900/30 border border-green-700/50 rounded-lg p-3 flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-green-600/20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-broadcast-tower text-green-400 text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs text-green-400 font-medium">Şu an çalıyor</p>
+                                        <p class="text-sm text-white font-semibold truncate">Radyo Ankara</p>
+                                    </div>
+                                </div>
+
+                                <!-- Radio Description (varsa) -->
+                                <div class="text-sm text-slate-400">
+                                    <p class="line-clamp-3">
+                                        Türkiye'nin en popüler radyo istasyonlarından biri.
+                                        Güncel haberler, müzik ve eğlence programları.
+                                    </p>
+                                </div>
+
+                                <!-- Stats (Sadece gerçek veriler) -->
+                                <div class="bg-slate-800/50 rounded-lg p-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-slate-400">Durum</span>
+                                        <span class="text-sm font-semibold text-green-400 flex items-center gap-1">
+                                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                            Canlı Yayın
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Açıklama -->
+            <div class="mt-6 bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                <h4 class="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                    <i class="fas fa-lightbulb text-yellow-400"></i>
+                    Tasarım Özellikleri (Gerçek Veriler):
+                </h4>
+                <ul class="text-sm text-slate-300 space-y-2">
+                    <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Radio Type Badge:</strong> "Radio" label gösterilir</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Radio Title:</strong> <code class="bg-slate-800 px-2 py-0.5 rounded text-xs">radio.getTranslated('title')</code></li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Radio Cover:</strong> <code class="bg-slate-800 px-2 py-0.5 rounded text-xs">radio.getFirstMediaUrl('hero')</code></li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Description:</strong> <code class="bg-slate-800 px-2 py-0.5 rounded text-xs">radio.getTranslated('description')</code> (varsa göster)</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Canlı Yayın Badge:</strong> Animasyonlu pulse efekti</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Favorite Button:</strong> <code class="bg-slate-800 px-2 py-0.5 rounded text-xs">is_favorited('radio', radio.radio_id)</code></li>
+                    <li><i class="fas fa-times text-red-400 mr-2"></i><strong>Tür/Genre:</strong> Radio'nun genre field'i YOK! (Gösterilmeyecek)</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Sectors:</strong> Gösterilmeyecek (preview'da gereksiz detay)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 📊 Yapılacaklar Listesi -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-tasks"></i>
+                Yapılacaklar (Adım Adım)
+            </h2>
+            <div class="space-y-3">
+                <div class="flex items-start gap-3 bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:border-muzibu-coral transition-colors">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">Sidebar Store Güncelleme</h3>
+                        <p class="text-sm text-slate-400">muzibu-store.js içine <code class="bg-slate-800 px-2 py-0.5 rounded text-xs">showRadioPreview()</code> fonksiyonu ekle</p>
+                        <p class="text-xs text-slate-500 mt-1">
+                            <i class="fas fa-file-code mr-1"></i>
+                            public/themes/muzibu/js/muzibu-store.js
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:border-muzibu-coral transition-colors">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">Play Helper Güncelleme</h3>
+                        <p class="text-sm text-slate-400">playRadio() fonksiyonuna cihaz kontrolü ve preview trigger ekle</p>
+                        <p class="text-xs text-slate-500 mt-1">
+                            <i class="fas fa-file-code mr-1"></i>
+                            public/themes/muzibu/js/player/features/play-helpers.js
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:border-muzibu-coral transition-colors">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">Sidebar Template Güncelleme</h3>
+                        <p class="text-sm text-slate-400">sidebar-right.blade.php'ye Radio preview template ekle</p>
+                        <p class="text-xs text-slate-500 mt-1">
+                            <i class="fas fa-file-code mr-1"></i>
+                            resources/views/themes/muzibu/components/sidebar-right.blade.php
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:border-muzibu-coral transition-colors">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">Test & Cache Temizleme</h3>
+                        <p class="text-sm text-slate-400">PC'de radyo tıklayıp preview alanının açıldığını kontrol et</p>
+                        <p class="text-xs text-slate-500 mt-1">
+                            <i class="fas fa-terminal mr-1"></i>
+                            php artisan view:clear && php artisan responsecache:clear
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⚠️ Önemli Notlar -->
+        <div class="bg-yellow-900/20 border border-yellow-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-yellow-400 mb-3 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle"></i>
+                Önemli Notlar
+            </h2>
+            <ul class="space-y-2 text-slate-300 text-sm">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-mobile-alt text-yellow-400 mt-1"></i>
+                    <span><strong>Mobil:</strong> Preview alanı açılMAYACAK (zaten sidebar mobilde gizli)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-laptop text-yellow-400 mt-1"></i>
+                    <span><strong>PC/Tablet:</strong> Sadece <code class="bg-slate-800 px-2 py-0.5 rounded">window.innerWidth >= 768px</code> için çalışacak</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-database text-yellow-400 mt-1"></i>
+                    <span><strong>Veriler:</strong> Radio model'den gerçek alanlar kullanılacak (title, description, cover)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-times text-yellow-400 mt-1"></i>
+                    <span><strong>Genre/Tür:</strong> Radio'nun genre field'i YOK! Gösterilmeyecek.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-music text-yellow-400 mt-1"></i>
+                    <span><strong>Şarkılar:</strong> Hiçbir değişiklik yapılmayacak (sadece radyolar için)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-list text-yellow-400 mt-1"></i>
+                    <span><strong>Playlist/Album:</strong> Mevcut preview sistemi aynen çalışmaya devam edecek</span>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="max-w-7xl mx-auto mt-8 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+        <p>🤖 Claude Code tarafından oluşturuldu • 12 Ocak 2026 • v2 (Düzeltilmiş)</p>
+    </div>
+
+</body>
+</html>

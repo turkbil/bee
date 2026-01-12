@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radyo Preview Tasarım v5 - Final</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        /* 🎵 Yayın Dalgaları Animasyonu */
+        @keyframes wave-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .wave-ring {
+            animation: wave-pulse 2s ease-out infinite;
+        }
+
+        .wave-ring:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .wave-ring:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        /* 🔴 Canlı Badge Glow */
+        @keyframes live-glow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(239, 68, 68, 0.5), 0 0 20px rgba(239, 68, 68, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.5);
+            }
+        }
+
+        .live-badge {
+            animation: live-glow 2s ease-in-out infinite;
+        }
+
+        /* 📡 Signal Bars Animasyonu */
+        @keyframes signal-bar {
+            0%, 100% {
+                transform: scaleY(0.3);
+            }
+            50% {
+                transform: scaleY(1);
+            }
+        }
+
+        .signal-bar {
+            animation: signal-bar 1.5s ease-in-out infinite;
+        }
+
+        .signal-bar:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .signal-bar:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .signal-bar:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .signal-bar:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        /* 🌊 Ses Dalgası */
+        @keyframes sound-wave {
+            0%, 100% {
+                height: 4px;
+            }
+            50% {
+                height: 20px;
+            }
+        }
+
+        .sound-wave-bar {
+            animation: sound-wave 0.8s ease-in-out infinite;
+        }
+
+        .sound-wave-bar:nth-child(1) { animation-delay: 0s; }
+        .sound-wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .sound-wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .sound-wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .sound-wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+        /* ✨ Shimmer Effect */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .shimmer-bg {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#FF5A5F',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-xl flex items-center justify-center relative">
+                <i class="fas fa-radio text-white text-xl animate-pulse"></i>
+                <div class="absolute inset-0 rounded-xl border-2 border-muzibu-coral animate-ping opacity-50"></div>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-white">Radyo Preview Tasarım v5</h1>
+                <p class="text-slate-400 text-sm">Final - "Şu an çalıyor" düzeltildi ✅</p>
+            </div>
+        </div>
+        <div class="bg-green-800/30 border border-green-700 rounded-xl p-4">
+            <p class="text-sm text-green-300">
+                <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                <strong>v5 Düzeltme:</strong> "Şu an çalıyor" yazısı kaldırıldı (radyo dururken mantıksız olurdu)
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto">
+
+        <!-- 🎨 Tasarım Mockup - FULL PREVIEW -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-tv"></i>
+                Final Preview (v5 - Düzeltilmiş)
+            </h2>
+
+            <!-- FULL PREVIEW -->
+            <div class="max-w-md mx-auto">
+                <div class="bg-slate-900 border border-muzibu-coral/40 rounded-xl overflow-hidden shadow-2xl">
+
+                    <!-- Radio Preview Card -->
+                    <div class="animate-fade-in">
+                        <!-- Large Cover Header with Gradient + Shimmer -->
+                        <div class="relative h-56 overflow-hidden">
+                            <!-- Cover Image -->
+                            <div class="w-full h-full bg-gradient-to-br from-muzibu-coral via-purple-600 to-blue-600 flex items-center justify-center">
+                                <i class="fas fa-radio text-white/30 text-5xl"></i>
+                            </div>
+
+                            <!-- Shimmer Overlay -->
+                            <div class="absolute inset-0 shimmer-bg pointer-events-none"></div>
+
+                            <!-- Gradient Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+
+                            <!-- Yayın Dalgaları (Sol Üst Köşe) -->
+                            <div class="absolute top-3 left-3">
+                                <div class="relative w-12 h-12">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <i class="fas fa-broadcast-tower text-white text-lg drop-shadow-lg"></i>
+                                    </div>
+                                    <div class="wave-ring absolute inset-0 border-2 border-white/60 rounded-full"></div>
+                                    <div class="wave-ring absolute inset-0 border-2 border-white/40 rounded-full"></div>
+                                    <div class="wave-ring absolute inset-0 border-2 border-white/20 rounded-full"></div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="absolute top-3 right-3 flex items-center gap-2">
+                                <!-- Favorite Button -->
+                                <button class="w-10 h-10 bg-black/40 hover:bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center transition-all hover:scale-110 text-white">
+                                    <i class="far fa-heart text-sm"></i>
+                                </button>
+                                <!-- Play Button -->
+                                <button class="w-11 h-11 bg-muzibu-coral hover:bg-green-500 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-200">
+                                    <i class="fas fa-pause text-white text-sm"></i>
+                                </button>
+                            </div>
+
+                            <!-- Radio Info at Bottom -->
+                            <div class="absolute bottom-0 left-0 right-0 p-3">
+                                <p class="text-[10px] font-bold text-muzibu-coral uppercase tracking-wider">Radio</p>
+                                <h3 class="text-lg font-bold text-white truncate leading-tight mt-0.5">Radyo Ankara</h3>
+
+                                <!-- Canlı Yayın Badge (Animasyonlu) -->
+                                <div class="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-red-600 rounded-full live-badge">
+                                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                                    <span class="text-xs text-white font-bold">CANLI YAYIN</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info Section -->
+                        <div class="p-4 space-y-3">
+                            <!-- Radio Title Card (Ses Dalgası İkonuyla) -->
+                            <div class="bg-muzibu-coral/10 border border-muzibu-coral/30 rounded-lg p-3 flex items-center gap-3">
+                                <div class="w-10 h-10 bg-muzibu-coral/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <!-- Ses Dalgası İkon -->
+                                    <div class="flex items-center gap-0.5">
+                                        <div class="sound-wave-bar w-1 bg-muzibu-coral rounded"></div>
+                                        <div class="sound-wave-bar w-1 bg-muzibu-coral rounded"></div>
+                                        <div class="sound-wave-bar w-1 bg-muzibu-coral rounded"></div>
+                                        <div class="sound-wave-bar w-1 bg-muzibu-coral rounded"></div>
+                                        <div class="sound-wave-bar w-1 bg-muzibu-coral rounded"></div>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm text-white font-semibold truncate">Radyo Ankara</p>
+                                    <p class="text-xs text-slate-400">Canlı yayın radyosu</p>
+                                </div>
+                            </div>
+
+                            <!-- Radio Description (Varsa) -->
+                            <div class="text-sm text-slate-400">
+                                <p class="line-clamp-3">
+                                    Türkiye'nin en popüler radyo istasyonlarından biri.
+                                    Güncel haberler, müzik ve eğlence programları.
+                                </p>
+                            </div>
+
+                            <!-- Canlı Yayın Durumu (BÜYÜK, ORTA) -->
+                            <div class="bg-slate-800/50 rounded-lg p-6 flex flex-col items-center justify-center">
+                                <!-- BÜYÜK Animasyonlu Signal Bars -->
+                                <div class="flex items-end gap-2 h-20 mb-3">
+                                    <div class="signal-bar w-4 bg-gradient-to-t from-green-600 to-green-400 rounded-t" style="height: 32px;"></div>
+                                    <div class="signal-bar w-4 bg-gradient-to-t from-green-600 to-green-400 rounded-t" style="height: 48px;"></div>
+                                    <div class="signal-bar w-4 bg-gradient-to-t from-yellow-600 to-yellow-400 rounded-t" style="height: 64px;"></div>
+                                    <div class="signal-bar w-4 bg-gradient-to-t from-red-600 to-red-400 rounded-t" style="height: 80px;"></div>
+                                </div>
+
+                                <!-- Durum Yazısı -->
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                    <span class="text-lg font-bold text-green-400">Canlı Yayında</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Açıklama -->
+            <div class="mt-6 bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                <h4 class="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                    <i class="fas fa-star text-yellow-400"></i>
+                    v5 Değişiklikler:
+                </h4>
+                <ul class="text-sm text-slate-300 space-y-2">
+                    <li>
+                        <i class="fas fa-times text-red-400 mr-2"></i>
+                        <strong>v4:</strong> "Şu an çalıyor" yazısı vardı
+                        <span class="text-slate-500 text-xs ml-2">(Radyo dururken mantıksız olurdu)</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <strong>v5:</strong> Sadece radyo adı + "Canlı yayın radyosu" alt yazısı
+                        <span class="text-slate-500 text-xs ml-2">(Her durumda doğru)</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <strong>Panel Rengi:</strong> Yeşilden → Muzibu coral'a değişti (marka rengi)
+                    </li>
+                    <li>
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <strong>Alt Yazı:</strong> "Canlı yayın radyosu" generic tanım (her zaman geçerli)
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 📊 Karşılaştırma -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-balance-scale"></i>
+                v4 vs v5 Karşılaştırma
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-red-900/20 border border-red-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-times-circle"></i>
+                        v4 Sorunu
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div class="bg-green-900/30 border border-green-700/50 rounded-lg p-2">
+                            <p class="text-xs text-green-400 font-medium">Şu an çalıyor</p>
+                            <p class="text-sm text-white font-semibold">Radyo Ankara</p>
+                        </div>
+                        <p class="text-xs text-slate-400">
+                            <i class="fas fa-exclamation-triangle text-yellow-400 mr-1"></i>
+                            Radyo durursa "şu an çalıyor" yanlış olur!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        v5 Çözümü
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div class="bg-muzibu-coral/10 border border-muzibu-coral/30 rounded-lg p-2">
+                            <p class="text-sm text-white font-semibold">Radyo Ankara</p>
+                            <p class="text-xs text-slate-400">Canlı yayın radyosu</p>
+                        </div>
+                        <p class="text-xs text-slate-400">
+                            <i class="fas fa-check text-green-400 mr-1"></i>
+                            Her durumda doğru (çalarken de dururken de)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📊 Yapılacaklar -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-tasks"></i>
+                Yapılacaklar (Final)
+            </h2>
+            <div class="space-y-3">
+                <div class="flex items-start gap-3 bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">CSS Animasyonları Ekle</h3>
+                        <p class="text-sm text-slate-400">sidebar-right.blade.php başına animasyon CSS'lerini ekle</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">Sidebar Template - Radio Preview</h3>
+                        <p class="text-sm text-slate-400">Radio preview template'i ekle (type === 'Radio' kontrolü)</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">Store & Play Helper</h3>
+                        <p class="text-sm text-slate-400">playRadio() → PC'de sidebar.showRadioPreview() tetikle</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">Test</h3>
+                        <p class="text-sm text-slate-400">PC'de radyo tıkla → Sidebar açılsın, mobilde açılmasın</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ Onay Bekleniyor -->
+        <div class="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-3 flex items-center gap-2">
+                <i class="fas fa-check-double"></i>
+                v5 Final - Onay Bekleniyor
+            </h2>
+            <p class="text-slate-300 mb-4">
+                "Şu an çalıyor" sorunu çözüldü. Artık radyo dururken de mantıklı görünecek.
+            </p>
+            <div class="flex gap-3">
+                <div class="flex-1 bg-green-900/30 border border-green-700 rounded-lg p-4">
+                    <p class="text-lg font-bold text-green-400 mb-1">✅ UYGUNDUR</p>
+                    <p class="text-xs text-slate-400">Bu tasarımla devam et, kodları yaz</p>
+                </div>
+                <div class="flex-1 bg-orange-900/30 border border-orange-700 rounded-lg p-4">
+                    <p class="text-lg font-bold text-orange-400 mb-1">⚠️ DEĞİŞİKLİK</p>
+                    <p class="text-xs text-slate-400">Başka değişiklik istersen söyle</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="max-w-7xl mx-auto mt-8 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+        <p>🤖 Claude Code tarafından oluşturuldu • 12 Ocak 2026 • v5 (Final - Düzeltilmiş)</p>
+    </div>
+
+</body>
+</html>

@@ -1785,6 +1785,39 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
+         * 🎙️ Show radio preview (PC/Tablet only - for live radio broadcast)
+         * Displays radio information in right sidebar when radio is played
+         * @param {Object} radioData - Radio information from API
+         */
+        showRadioPreview(radioData) {
+            // 🎯 SADECE PC/Tablet (768px+) - Mobilde preview GÖSTERME!
+            if (window.innerWidth < 768) {
+                return;
+            }
+
+            // ✅ 768px+ show radio preview in right sidebar
+            this.previewMode = true;
+            this.rightSidebarVisible = true;
+
+            this.previewInfo = {
+                type: 'Radio',
+                id: radioData.radio_id,
+                title: this.getLocalizedTitle(radioData.title),
+                cover: radioData.cover_url || radioData.cover || null,
+                description: this.getLocalizedTitle(radioData.description) || null,
+                subtitle: null, // Radio için subtitle yok
+                is_favorite: radioData.is_favorite || false
+            };
+
+            // Radio preview için track listesi yok (canlı yayın)
+            this.previewTracks = [];
+            this.previewAllTracks = [];
+            this.previewTotalCount = 0;
+            this.previewDisplayCount = 0;
+            this.previewCurrentPage = 1;
+        },
+
+        /**
          * Check if we're on a detail page
          */
         get isDetailPage() {

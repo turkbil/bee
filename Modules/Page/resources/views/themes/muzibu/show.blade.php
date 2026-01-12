@@ -73,12 +73,12 @@
         @endif
         
         <footer class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <a href="{{ $pageIndexUrl }}" 
+            <a href="/"
                class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                {{ __('page::front.general.all_pages') }}
+                Ana Sayfaya Dön
             </a>
         </footer>
     </div>

@@ -50,6 +50,119 @@
     .playlist-item.sortable-chosen {
         background: rgba(255, 107, 107, 0.1) !important;
     }
+
+    /* ========================================
+       🎵 RADIO PREVIEW ANIMATIONS
+       ======================================== */
+
+    /* Yayın Dalgaları Animasyonu */
+    @keyframes wave-pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+    }
+
+    .wave-ring {
+        animation: wave-pulse 2s ease-out infinite;
+    }
+
+    .wave-ring:nth-child(2) {
+        animation-delay: 0.5s;
+    }
+
+    .wave-ring:nth-child(3) {
+        animation-delay: 1s;
+    }
+
+    /* Canlı Badge Glow */
+    @keyframes live-glow {
+        0%, 100% {
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5), 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.5);
+        }
+    }
+
+    .live-badge {
+        animation: live-glow 2s ease-in-out infinite;
+    }
+
+    /* Signal Bars Animasyonu */
+    @keyframes signal-bar {
+        0%, 100% {
+            transform: scaleY(0.3);
+        }
+        50% {
+            transform: scaleY(1);
+        }
+    }
+
+    .signal-bar {
+        animation: signal-bar 1.5s ease-in-out infinite;
+    }
+
+    .signal-bar:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .signal-bar:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .signal-bar:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    .signal-bar:nth-child(4) {
+        animation-delay: 0.6s;
+    }
+
+    /* Ses Dalgası */
+    @keyframes sound-wave {
+        0%, 100% {
+            height: 4px;
+        }
+        50% {
+            height: 20px;
+        }
+    }
+
+    .sound-wave-bar {
+        animation: sound-wave 0.8s ease-in-out infinite;
+    }
+
+    .sound-wave-bar:nth-child(1) { animation-delay: 0s; }
+    .sound-wave-bar:nth-child(2) { animation-delay: 0.1s; }
+    .sound-wave-bar:nth-child(3) { animation-delay: 0.2s; }
+    .sound-wave-bar:nth-child(4) { animation-delay: 0.3s; }
+    .sound-wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+    /* Shimmer Effect */
+    @keyframes shimmer {
+        0% {
+            background-position: -200% center;
+        }
+        100% {
+            background-position: 200% center;
+        }
+    }
+
+    .shimmer-bg {
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 3s linear infinite;
+    }
 </style>
 
 <div class="h-full" x-data="{ featuredTab: 'playlists' }">
@@ -67,9 +180,12 @@
                 </template>
                 <template x-if="!$store.sidebar.previewInfo?.cover">
                     <div class="w-full h-full bg-gradient-to-br from-muzibu-coral via-purple-600 to-blue-600 flex items-center justify-center">
-                        <i class="fas fa-music text-white/30 text-5xl"></i>
+                        <i class="fas fa-music text-white/30 text-5xl" :class="$store.sidebar.previewInfo?.type === 'Radio' ? 'fa-radio' : 'fa-music'"></i>
                     </div>
                 </template>
+
+                {{-- Shimmer Overlay (Radio için) --}}
+                <div class="absolute inset-0 shimmer-bg pointer-events-none" x-show="$store.sidebar.previewInfo?.type === 'Radio'"></div>
 
                 {{-- Gradient Overlay --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
@@ -96,7 +212,16 @@
                        x-text="$store.sidebar.previewInfo?.type || 'Playlist'"></p>
                     <h3 class="text-lg font-bold text-white truncate leading-tight mt-0.5"
                         x-text="$store.sidebar.previewInfo?.title"></h3>
-                    {{-- Playlist/Album: Show duration, Genre/Sector: Show nothing --}}
+
+                    {{-- Radio: Show CANLI badge --}}
+                    <template x-if="$store.sidebar.previewInfo?.type === 'Radio'">
+                        <div class="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-red-600 rounded-full live-badge">
+                            <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                            <span class="text-xs text-white font-bold">CANLI</span>
+                        </div>
+                    </template>
+
+                    {{-- Playlist/Album: Show duration --}}
                     <template x-if="$store.sidebar.previewInfo?.type === 'Playlist' || $store.sidebar.previewInfo?.type === 'Album'">
                         <p class="text-xs text-white/60 mt-1" x-text="$store.sidebar.previewTotalDuration"></p>
                     </template>
@@ -109,6 +234,43 @@
                     <div class="text-center">
                         <i class="fas fa-spinner fa-spin text-muzibu-coral text-xl mb-2"></i>
                         <p class="text-xs text-gray-500">{{ trans('muzibu::front.general.loading') }}</p>
+                    </div>
+                </div>
+            </template>
+
+            {{-- RADIO PREVIEW (Radio için özel içerik) --}}
+            <template x-if="!$store.sidebar.previewLoading && $store.sidebar.previewInfo?.type === 'Radio'">
+                <div class="flex-1 overflow-y-auto bg-slate-900/50 p-6 flex flex-col">
+                    {{-- BÜYÜK Ortalanmış İkon + Radyo Bilgileri --}}
+                    <div class="flex-1 flex flex-col items-center justify-center text-center space-y-6 px-4">
+                        {{-- Animasyonlu Büyük Ses Dalgası İkonu --}}
+                        <div class="relative w-32 h-32">
+                            {{-- Ana İkon Container --}}
+                            <div class="absolute inset-0 bg-muzibu-coral/20 rounded-full flex items-center justify-center">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="sound-wave-bar w-2 bg-muzibu-coral rounded"></div>
+                                    <div class="sound-wave-bar w-2 bg-muzibu-coral rounded"></div>
+                                    <div class="sound-wave-bar w-2 bg-muzibu-coral rounded"></div>
+                                    <div class="sound-wave-bar w-2 bg-muzibu-coral rounded"></div>
+                                    <div class="sound-wave-bar w-2 bg-muzibu-coral rounded"></div>
+                                </div>
+                            </div>
+                            {{-- Animasyonlu Yayın Dalgaları (Dönen Halkalar) --}}
+                            <div class="wave-ring absolute inset-0 border-2 border-muzibu-coral/60 rounded-full"></div>
+                            <div class="wave-ring absolute inset-0 border-2 border-muzibu-coral/40 rounded-full"></div>
+                            <div class="wave-ring absolute inset-0 border-2 border-muzibu-coral/20 rounded-full"></div>
+                        </div>
+
+                        {{-- Radyo Adı --}}
+                        <div class="space-y-2">
+                            <h3 class="text-2xl font-bold text-white" x-text="$store.sidebar.previewInfo.title"></h3>
+                            <p class="text-sm text-slate-400">Canlı yayın radyosu</p>
+                        </div>
+
+                        {{-- Radio Description (Eğer varsa) --}}
+                        <div class="text-sm text-slate-400 max-w-xs" x-show="$store.sidebar.previewInfo.description">
+                            <p class="line-clamp-4" x-text="$store.sidebar.previewInfo.description"></p>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -530,8 +692,8 @@
                 </div>
             </template>
 
-            {{-- Empty State --}}
-            <template x-if="!$store.sidebar.previewLoading && !$store.sidebar.hasPreviewTracks">
+            {{-- Empty State (SADECE Playlist/Album/Genre/Sector için - Radio için gösterme!) --}}
+            <template x-if="!$store.sidebar.previewLoading && !$store.sidebar.hasPreviewTracks && $store.sidebar.previewInfo?.type !== 'Radio'">
                 <div class="flex-1 flex items-center justify-center">
                     <div class="text-center text-gray-500">
                         <i class="fas fa-music text-2xl mb-2"></i>

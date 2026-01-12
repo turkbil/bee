@@ -115,18 +115,19 @@
             </div>
 
             {{-- Modal Body --}}
-            <div class="overflow-y-auto max-h-[calc(90vh-140px)] px-8 py-6">
+            <div class="overflow-y-auto max-h-[calc(90vh-140px)] px-8 pt-6 pb-24">
                 <div x-show="loadingPageContent" class="flex items-center justify-center py-12">
                     <i class="fa-solid fa-spinner fa-spin text-4xl text-mz-500"></i>
                 </div>
                 <div x-show="!loadingPageContent"
-                     class="prose prose-lg max-w-none dark:prose-invert
+                     class="text-white prose prose-lg max-w-none dark:prose-invert
                           prose-headings:text-white
-                          prose-p:text-gray-300
+                          prose-p:text-white
                           prose-a:text-mz-400 hover:prose-a:text-mz-300
                           prose-strong:text-white
-                          prose-ul:text-gray-300
-                          prose-ol:text-gray-300"
+                          prose-ul:text-white
+                          prose-ol:text-white
+                          prose-li:text-white"
                      x-html="pageModalContent">
                 </div>
             </div>

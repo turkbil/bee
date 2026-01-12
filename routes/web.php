@@ -482,6 +482,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Yasal Metinler Sayfası
+Route::middleware(['site'])->get('/yasal-metinler', function () {
+    return view('themes.muzibu.yasal-metinler');
+})->name('legal.documents');
+
 Route::get('/dashboard', function () {
     // Tenant kontrolü - Muzibu için özel dashboard controller
     if (tenant() && tenant()->id === 1001) {

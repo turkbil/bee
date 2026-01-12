@@ -65,6 +65,11 @@ class RadioController extends Controller
                 'radio' => [
                     'radio_id' => $radio->radio_id,
                     'title' => $radio->title,
+                    'slug' => $radio->slug,
+                    'description' => $radio->description,
+                    'cover_url' => $radio->getCoverUrl(400, 400),
+                    'cover' => $radio->getCoverUrl(400, 400),
+                    'is_favorite' => false, // TODO: Implement favorite check
                 ],
                 'songs' => $songs
             ]);

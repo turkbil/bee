@@ -75,7 +75,7 @@
         </div>
 
         {{-- Linkler 4 Sütun --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 max-w-6xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 max-w-6xl mx-auto">
 
             {{-- 1. Keşfet --}}
             <div class="text-center">
@@ -170,21 +170,15 @@
             </div>
             @endauth
 
-            {{-- 4. Yasal --}}
+            {{-- 4. Hızlı Erişim --}}
             <div class="text-center">
                 <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-balance-scale text-muzibu-coral"></i>
-                    Yasal
+                    <i class="fas fa-bolt text-muzibu-coral"></i>
+                    Hızlı Erişim
                 </h3>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="/kvkk-cerez-politikasi" class="text-gray-400 hover:text-muzibu-coral transition-colors">KVKK & Çerez</a></li>
-                    <li><a href="/iletisim-aydinlatma" class="text-gray-400 hover:text-muzibu-coral transition-colors">İletişim Aydınlatması</a></li>
-                    <li><a href="/kullanim-kosullari" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kullanım Koşulları</a></li>
-                    <li><a href="/mesafeli-satis" class="text-gray-400 hover:text-muzibu-coral transition-colors">Mesafeli Satış</a></li>
-                    <li><a href="/kvkk-basvuru-formu" class="text-gray-400 hover:text-muzibu-coral transition-colors">KVKK Başvuru</a></li>
-                    <li><a href="/ticari-ileti-aydinlatma" class="text-gray-400 hover:text-muzibu-coral transition-colors">Ticari İleti</a></li>
-                    <li><a href="/uyelik-kvkk" class="text-gray-400 hover:text-muzibu-coral transition-colors">Üyelik KVKK</a></li>
-                    <li><a href="/whatsapp-kvkk" class="text-gray-400 hover:text-muzibu-coral transition-colors">WhatsApp KVKK</a></li>
+                <ul class="space-y-2">
+                    <li><a href="/iletisim" class="text-gray-400 hover:text-muzibu-coral transition-colors">İletişim</a></li>
+                    <li><a href="/yasal-metinler" class="text-gray-400 hover:text-muzibu-coral transition-colors">Yasal Metinler</a></li>
                 </ul>
             </div>
 

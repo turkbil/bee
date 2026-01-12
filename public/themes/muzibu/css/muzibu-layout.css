@@ -717,7 +717,7 @@
     top: 56px; /* Mobile header altından başla */
     left: 0;
     right: 0;
-    bottom: 72px; /* Player üstünde bitir */
+    bottom: 84px; /* Player üstünde bitir */
     background: rgba(0,0,0,0);
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
@@ -839,7 +839,7 @@
         position: fixed;
         top: 56px; /* Mobile header altından başla */
         left: 0;
-        bottom: 72px; /* Player üstünde bitir */
+        bottom: 84px; /* Player üstünde bitir - player yükseklik + margin */
         width: 280px;
         background: linear-gradient(180deg, #121212 0%, #0a0a0a 100%);
         z-index: 999;

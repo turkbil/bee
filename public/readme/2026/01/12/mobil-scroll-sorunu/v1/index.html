@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobil Scroll Sorunu - Detaylı Analiz ve Çözüm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            900: '#0f1419',
+                            950: '#0a0d14'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .code-block { background: #1e293b; border-left: 4px solid #3b82f6; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 dark">
+    <div class="min-h-screen p-4 sm:p-6 lg:p-8">
+        <!-- Header -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-900/30 text-red-400 text-sm font-semibold rounded-full border border-red-800">
+                    🐛 Kritik Bug
+                </span>
+                <span class="px-3 py-1 bg-orange-900/30 text-orange-400 text-sm font-semibold rounded-full border border-orange-800">
+                    📱 Mobil
+                </span>
+                <span class="px-3 py-1 bg-blue-900/30 text-blue-400 text-sm font-semibold rounded-full border border-blue-800">
+                    🎨 Frontend
+                </span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-red-400 via-orange-400 to-pink-500 bg-clip-text text-transparent">
+                Mobil Scroll Sorunu: Detaylı Analiz
+            </h1>
+
+            <p class="text-xl text-slate-400 mb-4">
+                Albumler sayfasında (ve muhtemelen diğer sayfalarda) mobilde aşağı kaydırma sorunu analizi
+            </p>
+
+            <div class="flex items-center gap-4 text-sm text-slate-500">
+                <span>📅 12 Ocak 2026</span>
+                <span>•</span>
+                <span>⏱️ Analiz Süresi: 45 dakika</span>
+                <span>•</span>
+                <span>🎯 Öncelik: Çok Yüksek</span>
+            </div>
+        </div>
+
+        <!-- Sorun Özeti -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="bg-red-900/20 border border-red-800 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    Sorun Açıklaması
+                </h2>
+                <div class="space-y-3 text-slate-300">
+                    <p class="text-lg font-medium">
+                        📱 <strong>Kullanıcı Şikayeti:</strong> "Aşağı kaydırmak istediğimde herzaman değil ama bazen kaydırmıyor. Aşağı kaymıyor, bunun için sayfa yenilemem gerekiyor. Yeniledikten sonra aşağı kayıyor. 10 kerede 4 kere falan yaşadım bunu."
+                    </p>
+                    <p class="text-lg">
+                        🎯 <strong>Davranış:</strong> Albumler sayfasında (ve muhtemelen diğer sayfalarda da) mobilde aşağı kaydırırken sayfa yukarı kısmını tekrar gösteriyor. Alt içerik görünmüyor.
+                    </p>
+                    <p class="text-lg">
+                        🔄 <strong>Tekrarlama:</strong> Sık değil ama düzenli (10 denemede 4 kere). Sayfa yenilenince geçici olarak düzeliyor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- İki Seviyeli İçerik -->
+        <div class="max-w-6xl mx-auto space-y-8">
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    📝 Basit Anlatım (Herkes İçin)
+                </h2>
+                <div class="space-y-4 text-slate-300 text-lg">
+                    <h3 class="text-xl font-semibold text-white">Ne Oluyor?</h3>
+                    <p>
+                        Telefonda müzik sitesinde gezinirken bazen ekranı aşağı kaydıramıyorsunuz. Parmağınızı aşağı kaydırıyorsunuz ama sayfa yukarı kısmını tekrar gösteriyor, aşağıdaki içerik görünmüyor. Bu sorun her seferinde olmuyor, 10 denemede 4-5 kere yaşanıyor.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-white">Neden Oluyor?</h3>
+                    <p>
+                        <strong>Ana sebep:</strong> Sayfanın scroll (kaydırma) sistemi çok karmaşık ve birbiriyle çakışan birçok katman var. Şöyle düşünün:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li><strong>Body (Ana gövde)</strong> scroll kapalı</li>
+                        <li><strong>Grid (Izgara düzeni)</strong> fixed (sabit) konumda</li>
+                        <li><strong>Main (İçerik alanı)</strong> içinde bir div scroll yapıyor</li>
+                        <li><strong>Mobile menu</strong> açılınca body'yi kilitleyen kod var</li>
+                        <li><strong>Player bar</strong> touch (dokunma) eventlerini yakalıyor</li>
+                        <li><strong>iOS Safari</strong>'de 100dvh (dinamik yükseklik) hesaplaması bazen yanlış</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-white">Neden Bazen Çalışıyor?</h3>
+                    <p>
+                        Sayfaya ilk girdiğinizde veya yenilediğinizde kodlar doğru çalışıyor. Ama bazı durumlar scroll'u bozuyor:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li><strong>Mobile menu açıp kapatınca</strong> → Body scroll kilidi kalabiliyor</li>
+                        <li><strong>Player progress bar'a dokunduğunuzda</strong> → Touch event'leri çakışıyor</li>
+                        <li><strong>Safari adres çubuğu gösterilip gizlenince</strong> → Yükseklik hesaplaması bozuluyor</li>
+                        <li><strong>Playlist modal açılıp kapanınca</strong> → Body overflow kontrolü karışıyor</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-white">Çözüm Nasıl Olacak?</h3>
+                    <p>
+                        Scroll sistemini basitleştireceğiz ve katmanları azaltacağız:
+                    </p>
+                    <ol class="list-decimal list-inside space-y-2 ml-4">
+                        <li>Body'den <code>overflow-hidden</code> kaldırılacak</li>
+                        <li>Grid'den <code>position: fixed</code> kaldırılacak</li>
+                        <li>Main content doğrudan scroll yapacak (nested scroll olmayacak)</li>
+                        <li>iOS için <code>-webkit-overflow-scrolling: touch</code> eklenecek</li>
+                        <li>Mobile menu ve modal'ların body kilitleme sistemi düzeltilecek</li>
+                        <li>Player progress bar touch event'leri <code>stopPropagation</code> ile izole edilecek</li>
+                    </ol>
+
+                    <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4 mt-6">
+                        <h4 class="text-lg font-semibold text-blue-400 mb-2">💡 Özetle</h4>
+                        <p>
+                            Sistem şu anda çok katmanlı bir scroll yapısı kullanıyor ve bu katmanlar bazen birbirini engelliyor. Basitleştirip tek bir scroll sistemiyle çalıştıracağız. Sayfa yenilendiğinde düzelmesinin sebebi de bu - yeni baştan yüklenince kodlar temiz çalışıyor, sonra tekrar karışıyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teknik Detaylar -->
+            <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    </svg>
+                    🔧 Teknik Detaylar (Geliştiriciler İçin)
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Sorun 1 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-xl font-bold text-red-400 mb-3">❌ Sorun #1: Body overflow-hidden (CSS Class)</h3>
+                        <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">resources/views/themes/muzibu/layouts/app.blade.php:786</code></p>
+                        <div class="code-block rounded-lg p-4 mb-3 text-sm overflow-x-auto">
+                            <pre class="text-green-400">&lt;body class="bg-black text-white <span class="text-red-400">overflow-hidden</span>"&gt;</pre>
+                        </div>
+                        <p class="text-slate-300 mb-2"><strong>Etki:</strong> Body scroll baştan kapalı. Tüm scroll main content içindeki div'e bağımlı.</p>
+                        <p class="text-slate-300"><strong>Risk:</strong> CSS class inline style ile override edilse bile class kalıyor, conflict oluşturuyor.</p>
+                    </div>
+
+                    <!-- Sorun 2 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-xl font-bold text-red-400 mb-3">❌ Sorun #2: Grid Fixed Position (Mobil)</h3>
+                        <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">public/themes/muzibu/css/muzibu-layout.css:1301-1307</code></p>
+                        <div class="code-block rounded-lg p-4 mb-3 text-sm overflow-x-auto">
+                            <pre class="text-green-400">@media (max-width: 1023px) {
+    #main-app-grid {
+        <span class="text-red-400">position: fixed;</span>
+        left: 0;
+        right: 0;
+    }
+}</pre>
+                        </div>
+                        <p class="text-slate-300 mb-2"><strong>Etki:</strong> Mobilde grid fixed pozisyonda, scroll framework'ü bozuyor.</p>
+                        <p class="text-slate-300"><strong>Risk:</strong> Fixed element içinde scroll sorunlu, iOS'ta daha da kötü.</p>
+                    </div>
+
+                    <!-- Sorun 3 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-xl font-bold text-red-400 mb-3">❌ Sorun #3: Mobile Menu Body Lock Conflict</h3>
+                        <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">resources/views/themes/muzibu/layouts/app.blade.php:1160-1179</code></p>
+                        <div class="code-block rounded-lg p-4 mb-3 text-sm overflow-x-auto">
+                            <pre class="text-green-400">function toggleMobileMenu() {
+    const isOpen = sidebar.classList.contains('active');
+
+    if (isOpen) {
+        // Close
+        <span class="text-yellow-400">document.body.style.overflow = '';</span>  // ⚠️ Sadece inline style kaldırır
+    } else {
+        // Open
+        <span class="text-red-400">document.body.style.overflow = 'hidden';</span>  // ❌ Body kilitleniyor
+    }
+}</pre>
+                        </div>
+                        <p class="text-slate-300 mb-2"><strong>Etki:</strong> Mobile menu açılınca body kilitleniyor. Kapanınca inline style kaldırılıyor AMA CSS class <code>overflow-hidden</code> kalıyor!</p>
+                        <p class="text-slate-300"><strong>Risk:</strong> Menu açılıp kapandıktan sonra scroll bozuluyor çünkü hem CSS class hem inline style kontrolü var.</p>
+                    </div>
+
+                    <!-- Sorun 4 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-xl font-bold text-red-400 mb-3">❌ Sorun #4: Nested Scroll Containers</h3>
+                        <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">resources/views/themes/muzibu/layouts/app.blade.php:886-909</code></p>
+                        <div class="code-block rounded-lg p-4 mb-3 text-sm overflow-x-auto">
+                            <pre class="text-green-400">&lt;main class="muzibu-main row-start-2 relative <span class="text-red-400">overflow-hidden</span>"&gt;
+    &lt;div class="<span class="text-red-400">overflow-y-auto h-full</span> relative"&gt;
+        &lt;!-- Gradient Background --&gt;
+        &lt;div class="absolute top-0 ... h-[250px]"&gt;&lt;/div&gt;
+
+        &lt;!-- Content (Gradient ile birlikte scroll yapar) --&gt;
+        &lt;div class="relative z-10"&gt;
+            @yield('content')
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/main&gt;</pre>
+                        </div>
+                        <p class="text-slate-300 mb-2"><strong>Etki:</strong> İç içe 3 katman: Body → Main → Scroll Div → Content. Touch event'leri hangi katmanda yakalanacak belirsiz.</p>
+                        <p class="text-slate-300"><strong>Risk:</strong> iOS Safari nested scroll container'larda momentum scroll'u kaybediyor.</p>
+                    </div>
+
+                    <!-- Sorun 5 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-xl font-bold text-red-400 mb-3">❌ Sorun #5: 100dvh iOS Sorunu</h3>
+                        <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">resources/views/themes/muzibu/layouts/app.blade.php:874</code></p>
+                        <div class="code-block rounded-lg p-4 mb-3 text-sm overflow-x-auto">
+                            <pre class="text-green-400">&lt;div id="main-app-grid"
+    class="grid ... <span class="text-red-400">h-[100dvh]</span>"&gt;</pre>
+                        </div>
+                        <p class="text-slate-300 mb-2"><strong>Etki:</strong> Safari'de dvh (Dynamic Viewport Height) adres çubuğu gösterilip gizlenince yeniden hesaplanıyor. Bu sırada scroll position kayboluyor.</p>
+                        <p class="text-slate-300"><strong>Risk:</strong> Kullanıcı aşağı kaydırınca adres çubuğu gizleniyor → dvh değişiyor → scroll position resetleniyor → sayfa yukarı zıplıyor!</p>
+                    </div>
+
+                    <!-- Sorun 6 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-xl font-bold text-red-400 mb-3">❌ Sorun #6: Player Progress Bar Touch Conflict</h3>
+                        <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">resources/views/themes/muzibu/components/player.blade.php:152-162</code></p>
+                        <div class="code-block rounded-lg p-4 mb-3 text-sm overflow-x-auto">
+                            <pre class="text-green-400">&lt;div class="... <span class="text-red-400">touch-none</span>"
+    @touchstart.prevent="..."
+    <span class="text-red-400">@touchmove.prevent</span>="..."
+    @touchend.prevent="..."&gt;</pre>
+                        </div>
+                        <p class="text-slate-300 mb-2"><strong>Etki:</strong> Player progress bar'da <code>touchmove.prevent</code> var. Bu tüm touch event'lerini engelliyor, scroll da etkileniyor.</p>
+                        <p class="text-slate-300"><strong>Risk:</strong> Kullanıcı progress bar yakınında scroll yapmaya çalışırsa touch event preventDefault yüzünden scroll çalışmıyor.</p>
+                    </div>
+
+                    <!-- Sorun 7 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-xl font-bold text-red-400 mb-3">❌ Sorun #7: iOS Momentum Scroll Eksik</h3>
+                        <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">public/themes/muzibu/css/muzibu-layout.css</code></p>
+                        <div class="code-block rounded-lg p-4 mb-3 text-sm overflow-x-auto">
+                            <pre class="text-slate-400">/* ❌ EKSİK: iOS için momentum scroll */
+.muzibu-main > div {
+    overflow-y: auto;
+    <span class="text-red-400">/* -webkit-overflow-scrolling: touch; EKSIK! */</span>
+}</pre>
+                        </div>
+                        <p class="text-slate-300 mb-2"><strong>Etki:</strong> iOS'ta smooth momentum scroll çalışmıyor, scroll hissiyat kötü.</p>
+                        <p class="text-slate-300"><strong>Risk:</strong> Kullanıcı scroll yaparken "yapışkan" hissiyat alıyor, doğal scroll davranışı yok.</p>
+                    </div>
+
+                    <!-- Sorun 8 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-xl font-bold text-red-400 mb-3">❌ Sorun #8: Playlist Modal Body Lock</h3>
+                        <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">resources/views/themes/muzibu/playlists/my-playlists.blade.php:91</code></p>
+                        <div class="code-block rounded-lg p-4 mb-3 text-sm overflow-x-auto">
+                            <pre class="text-green-400">watch(showPlaylistModal, (value) => {
+    <span class="text-red-400">document.body.style.overflow = value ? 'hidden' : '';</span>
+});</pre>
+                        </div>
+                        <p class="text-slate-300 mb-2"><strong>Etki:</strong> Modal açılınca body kilitleniyor, kapanınca inline style kaldırılıyor AMA CSS class <code>overflow-hidden</code> kalıyor.</p>
+                        <p class="text-slate-300"><strong>Risk:</strong> Modal açılıp kapandıktan sonra scroll çalışmıyor çünkü body overflow kontrolü karışık.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Çözüm Adımları -->
+            <div class="bg-emerald-900/20 border border-emerald-800 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    ✅ Çözüm Planı (Step-by-Step)
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Çözüm 1 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">1</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Body overflow-hidden Kaldır</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">app.blade.php:786</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"><span class="text-red-400">-</span> &lt;body class="bg-black text-white <span class="text-red-400">overflow-hidden</span>"&gt;
+<span class="text-green-400">+</span> &lt;body class="bg-black text-white"&gt;</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">Body scroll'u açık bırak, overflow kontrolünü CSS'e bırakma.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 2 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">2</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Grid Fixed Position Kaldır</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">muzibu-layout.css:1301-1307</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"><span class="text-red-400">-</span> @media (max-width: 1023px) {
+<span class="text-red-400">-</span>     #main-app-grid {
+<span class="text-red-400">-</span>         position: fixed;
+<span class="text-red-400">-</span>         left: 0;
+<span class="text-red-400">-</span>         right: 0;
+<span class="text-red-400">-</span>     }
+<span class="text-red-400">-</span> }</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">Grid'i normal flow'da bırak, fixed pozisyon gereksiz.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 3 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">3</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Main Content Scroll Basitleştir</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">app.blade.php:886-909</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"><span class="text-red-400">-</span> &lt;main class="muzibu-main row-start-2 relative overflow-hidden"&gt;
+<span class="text-red-400">-</span>     &lt;div class="overflow-y-auto h-full relative"&gt;
+<span class="text-green-400">+</span> &lt;main class="muzibu-main row-start-2 relative overflow-y-auto"&gt;
+        &lt;!-- Gradient --&gt;
+        &lt;div class="relative z-10"&gt;
+            @yield('content')
+        &lt;/div&gt;
+<span class="text-red-400">-</span>     &lt;/div&gt;
+ &lt;/main&gt;</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">Nested scroll container kaldır, main doğrudan scroll yapsın.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 4 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">4</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">iOS Momentum Scroll Ekle</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">muzibu-layout.css (veya tenant-1001.css)</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"><span class="text-green-400">+</span> .muzibu-main {
+<span class="text-green-400">+</span>     overflow-y: auto;
+<span class="text-green-400">+</span>     -webkit-overflow-scrolling: touch; /* iOS smooth scroll */
+<span class="text-green-400">+</span> }</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">iOS'ta smooth momentum scroll için gerekli.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 5 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">5</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">100dvh → 100vh (iOS Fix)</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">app.blade.php:874</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"><span class="text-red-400">-</span> class="grid ... <span class="text-red-400">h-[100dvh]</span>"
+<span class="text-green-400">+</span> class="grid ... <span class="text-green-400">h-screen</span>" {{-- 100vh daha stabil --}}</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">dvh Safari'de sorunlu, vh daha güvenilir. Ya da CSS'te calc(100vh - env(safe-area-inset-bottom)) kullan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 6 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">6</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Mobile Menu Body Lock Düzelt</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">app.blade.php:1160-1179</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"> function toggleMobileMenu() {
+     const isOpen = sidebar.classList.contains('active');
+
+     if (isOpen) {
+         sidebar.classList.remove('active');
+         overlay.classList.remove('active');
+<span class="text-red-400">-</span>         document.body.style.overflow = '';
+<span class="text-green-400">+</span>         document.body.classList.remove('overflow-hidden');
+     } else {
+         sidebar.classList.add('active');
+         overlay.classList.add('active');
+<span class="text-red-400">-</span>         document.body.style.overflow = 'hidden';
+<span class="text-green-400">+</span>         document.body.classList.add('overflow-hidden');
+     }
+ }</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">CSS class kontrolü kullan, inline style değil. Daha güvenilir.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 7 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">7</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Player Progress Touch Event İzole Et</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">player.blade.php:152-162</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"> &lt;div class="... touch-none"
+<span class="text-red-400">-</span>     @touchmove.prevent="..."
+<span class="text-green-400">+</span>     @touchmove.stop.prevent="..."
+     @touchend.prevent="..."&gt;</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">stop modifier ekleyerek event propagation'ı engelle, sadece progress bar etkilensin.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 8 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">8</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Playlist Modal Body Lock Düzelt</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">my-playlists.blade.php:91</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"> watch(showPlaylistModal, (value) => {
+<span class="text-red-400">-</span>     document.body.style.overflow = value ? 'hidden' : '';
+<span class="text-green-400">+</span>     if (value) {
+<span class="text-green-400">+</span>         document.body.classList.add('overflow-hidden');
+<span class="text-green-400">+</span>     } else {
+<span class="text-green-400">+</span>         document.body.classList.remove('overflow-hidden');
+<span class="text-green-400">+</span>     }
+ });</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">CSS class kontrolü kullan, tüm modal'larda tutarlı olsun.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 9 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">9</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Global Body Lock Helper Oluştur</h3>
+                                <p class="text-slate-300 mb-3"><strong>Dosya:</strong> <code class="text-blue-400">global-helpers.js (veya yeni dosya)</code></p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"><span class="text-green-400">+</span> // 🔒 Body Scroll Lock Helper (Tüm modal/overlay'ler için)
+<span class="text-green-400">+</span> window.bodyScrollLock = {
+<span class="text-green-400">+</span>     lock() {
+<span class="text-green-400">+</span>         document.body.classList.add('overflow-hidden');
+<span class="text-green-400">+</span>     },
+<span class="text-green-400">+</span>     unlock() {
+<span class="text-green-400">+</span>         document.body.classList.remove('overflow-hidden');
+<span class="text-green-400">+</span>     }
+<span class="text-green-400">+</span> };</pre>
+                                </div>
+                                <p class="text-slate-400 mt-2 text-sm">Tüm modal/overlay/menu'lerde aynı helper kullan, tutarlılık sağla.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözüm 10 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-emerald-700/50">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">10</span>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Test & Cache Temizliği</h3>
+                                <p class="text-slate-300 mb-3">Değişikliklerden sonra test adımları:</p>
+                                <div class="code-block rounded-lg p-4 text-sm overflow-x-auto">
+                                    <pre class="text-green-400"># 1. Cache temizle
+php artisan cache:clear
+php artisan view:clear
+php artisan responsecache:clear
+
+# 2. CSS rebuild
+npm run prod
+
+# 3. Test senaryoları:
+# - Albumler sayfasında scroll (mobil)
+# - Mobile menu aç/kapat, sonra scroll
+# - Player progress bar'a dokun, sonra scroll
+# - Playlist modal aç/kapat, sonra scroll
+# - Safari'de scroll (iOS simülatör)
+# - Chrome DevTools mobile mode</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Senaryoları -->
+            <div class="bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    🧪 Test Senaryoları
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-purple-700/50">
+                        <h3 class="text-lg font-semibold text-white mb-3">1️⃣ Temel Scroll Test (En Önemli)</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li>✓ Albumler sayfasına git</li>
+                            <li>✓ Sayfayı yenile</li>
+                            <li>✓ 10 kere yukarı aşağı scroll yap</li>
+                            <li>✓ Her seferinde alt içeriği görmeli</li>
+                            <li>✓ Sayfa yukarı zıplamamalı</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-purple-700/50">
+                        <h3 class="text-lg font-semibold text-white mb-3">2️⃣ Mobile Menu Test</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li>✓ Mobile menu aç</li>
+                            <li>✓ Overlay'e tıklayarak kapat</li>
+                            <li>✓ Scroll yap (çalışmalı)</li>
+                            <li>✓ Tekrar menu aç/kapat</li>
+                            <li>✓ Scroll hala çalışmalı</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-purple-700/50">
+                        <h3 class="text-lg font-semibold text-white mb-3">3️⃣ Player Bar Test</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li>✓ Şarkı çal</li>
+                            <li>✓ Progress bar'a dokun ve kaydır</li>
+                            <li>✓ Sonra sayfa scroll'u yap</li>
+                            <li>✓ Scroll çalışmalı (progress bar event'i izole olmalı)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-purple-700/50">
+                        <h3 class="text-lg font-semibold text-white mb-3">4️⃣ iOS Safari Test (Kritik)</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li>✓ iOS cihaz veya simülatör</li>
+                            <li>✓ Safari'de aç</li>
+                            <li>✓ Scroll yap, adres çubuğu gizlensin</li>
+                            <li>✓ Devam et scroll yapmaya</li>
+                            <li>✓ Sayfa yukarı zıplamamalı</li>
+                            <li>✓ Momentum scroll smooth olmalı</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-purple-700/50">
+                        <h3 class="text-lg font-semibold text-white mb-3">5️⃣ Playlist Modal Test</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li>✓ Playlist modal aç</li>
+                            <li>✓ Modal'ı kapat</li>
+                            <li>✓ Scroll yap (çalışmalı)</li>
+                            <li>✓ Body overflow kilidi kalmamalı</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-purple-700/50">
+                        <h3 class="text-lg font-semibold text-white mb-3">6️⃣ Stres Test (10 Tekrar)</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li>✓ Tüm senaryoları 10 kere tekrarla</li>
+                            <li>✓ Her seferinde scroll çalışmalı</li>
+                            <li>✓ "10 kerede 4 kere" sorunu kalmamalı</li>
+                            <li>✓ Tutarlı davranış göstermeli</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Riskler ve Dikkat Edilecekler -->
+            <div class="bg-amber-900/20 border border-amber-800 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    ⚠️ Riskler ve Dikkat Edilecekler
+                </h2>
+
+                <div class="space-y-4 text-slate-300">
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-amber-700/50">
+                        <h3 class="text-lg font-semibold text-amber-400 mb-2">🔴 Yüksek Risk: Desktop'ta Bozulma</h3>
+                        <p class="mb-2">Body overflow-hidden kaldırınca desktop'ta layout bozulabilir.</p>
+                        <p class="text-sm text-slate-400"><strong>Önlem:</strong> Desktop'ta body'ye <code>overflow-y: auto</code> ekle, mobilde <code>overflow: visible</code> yap.</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-amber-700/50">
+                        <h3 class="text-lg font-semibold text-amber-400 mb-2">🟡 Orta Risk: Grid Layout Değişiklikleri</h3>
+                        <p class="mb-2">Grid fixed position kaldırınca tablet/desktop'ta header/player konumları kayabilir.</p>
+                        <p class="text-sm text-slate-400"><strong>Önlem:</strong> Tablet+ (768px) için sticky position kullan: header <code>sticky top-0</code>, player <code>sticky bottom-0</code>.</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-amber-700/50">
+                        <h3 class="text-lg font-semibold text-amber-400 mb-2">🟡 Orta Risk: Gradient Background</h3>
+                        <p class="mb-2">Nested scroll container kaldırınca gradient background position'ı değişebilir.</p>
+                        <p class="text-sm text-slate-400"><strong>Önlem:</strong> Gradient'i <code>position: fixed</code> yap veya CSS ile main'e background ekle.</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-amber-700/50">
+                        <h3 class="text-lg font-semibold text-amber-400 mb-2">🟢 Düşük Risk: Modal/Overlay Scroll Lock</h3>
+                        <p class="mb-2">Body lock helper tutarlı çalışmazsa modal'lar scroll'u kilitlemiş bırakabilir.</p>
+                        <p class="text-sm text-slate-400"><strong>Önlem:</strong> Helper'da counter mechanism kullan (birden fazla modal açıksa unlock yapma).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Özet ve Sonuç -->
+            <div class="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 border border-indigo-700 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    🎯 Özet ve Sonuç
+                </h2>
+
+                <div class="space-y-4 text-slate-300 text-lg">
+                    <h3 class="text-xl font-semibold text-white">Ana Sorun</h3>
+                    <p>
+                        Mobil scroll sistemi çok katmanlı ve karmaşık. Body overflow kapalı, grid fixed, nested scroll container, iOS dvh sorunu, touch event conflict ve modal body lock'ları birleşince kullanıcı deneyimi bozuluyor.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-white">Kök Sebep</h3>
+                    <p>
+                        <strong>Over-engineering:</strong> Scroll için çok fazla katman ve kontrol mekanizması var. Basit scroll sistemini kompleks hale getirmişiz.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-white">Çözüm Stratejisi</h3>
+                    <p>
+                        <strong>Simplification (Basitleştirme):</strong> Scroll sistemini tek katmana indirgeyeceğiz. Body scroll açık, main content overflow-y: auto, iOS momentum scroll aktif, modal/menu'ler için tutarlı body lock helper.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-white">Beklenen Sonuç</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>✅ Mobilde scroll her zaman çalışacak</li>
+                        <li>✅ iOS Safari'de smooth momentum scroll</li>
+                        <li>✅ Mobile menu/modal scroll'u engellemeyecek</li>
+                        <li>✅ Player bar touch event'leri izole edilecek</li>
+                        <li>✅ "10 kerede 4 kere" sorunu tamamen ortadan kalkacak</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-white">Tahmini Süre</h3>
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-indigo-700/50 mt-2">
+                        <p><strong>Implementation:</strong> 2-3 saat</p>
+                        <p><strong>Testing:</strong> 1-2 saat</p>
+                        <p><strong>Toplam:</strong> 3-5 saat (tek bir oturumda bitirilebilir)</p>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-white mt-6">Next Steps</h3>
+                    <ol class="list-decimal list-inside space-y-2 ml-4">
+                        <li>Kullanıcıdan onay al</li>
+                        <li>Git checkpoint oluştur (geri dönüş için)</li>
+                        <li>Sırayla çözümleri uygula</li>
+                        <li>Her adımda test et</li>
+                        <li>Son test senaryolarını çalıştır</li>
+                        <li>Production'a deploy</li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="max-w-6xl mx-auto mt-12 pt-6 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>🤖 Bu rapor <strong>Claude AI (Sonnet 4.5)</strong> tarafından oluşturuldu</p>
+            <p class="mt-2">
+                <a href="https://claude.ai" target="_blank" class="text-indigo-400 hover:text-indigo-300 hover:underline">Claude AI</a>
+                |
+                <a href="https://muzibu.com.tr" target="_blank" class="text-indigo-400 hover:text-indigo-300 hover:underline">Muzibu.com.tr</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

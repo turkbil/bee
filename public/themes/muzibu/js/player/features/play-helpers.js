@@ -416,6 +416,22 @@ async function playRadio(radioId) {
             return;
         }
 
+        // 🎙️ RADIO PREVIEW (PC/Tablet only)
+        // Show radio info in right sidebar when playing on desktop
+        if (window.innerWidth >= 768 && data.radio) {
+            const sidebarStore = Alpine.store('sidebar');
+            if (sidebarStore && typeof sidebarStore.showRadioPreview === 'function') {
+                sidebarStore.showRadioPreview({
+                    radio_id: radioId,
+                    title: data.radio.title,
+                    cover_url: data.radio.cover_url || data.radio.cover,
+                    cover: data.radio.cover_url || data.radio.cover,
+                    description: data.radio.description,
+                    is_favorite: data.radio.is_favorite
+                });
+            }
+        }
+
         // 🔀 SHUFFLE SONGS
         const shuffledSongs = shuffleArray(data.songs);
 

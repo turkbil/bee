@@ -782,21 +782,6 @@
 
     @yield('styles')
 
-    {{-- 🛡️ DevTools Agresif Koruma - SADECE Tenant 1001 (muzibu.com.tr) --}}
-    @if(tenant() && tenant()->id === 1001)
-        <script src="{{ asset('themes/muzibu/js/devtools-guard.js') }}" defer></script>
-
-        {{-- Admin Whitelist Token (Root/Admin kullanıcılar DevTools kullanabilir) --}}
-        @auth
-            @if(auth()->user()->hasRole(['root', 'admin', 'super-admin']))
-                <script>
-                    // Admin kullanıcılar için whitelist token
-                    localStorage.setItem('devtools_whitelist_token', 'admin_{{ auth()->id() }}_{{ md5(auth()->user()->email) }}');
-                </script>
-            @endif
-        @endauth
-    @endif
-
 </head>
 <body class="bg-black text-white overflow-hidden"
       @play-song.window="playSong($event.detail.songId)"
@@ -1532,11 +1517,6 @@
         }
     });
     </script>
-
-    {{-- 🛡️ DevTools Warning Modal - SADECE Tenant 1001 (muzibu.com.tr) --}}
-    @if(tenant() && tenant()->id === 1001)
-        <x-muzibu.devtools-warning-modal />
-    @endif
 
     @yield('scripts')
     @stack('scripts')

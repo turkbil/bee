@@ -104,7 +104,7 @@
         </h3>
         <p class="text-xs text-gray-400 leading-6 line-clamp-1">
             @if($radio->description)
-                {{ $radio->getTranslation('description', app()->getLocale()) }}
+                {{ clean_html($radio->getTranslation('description', app()->getLocale())) }}
             @else
                 &nbsp;
             @endif

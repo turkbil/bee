@@ -73,7 +73,7 @@
 
                         @if($playlist->description)
                             <p class="text-xs text-gray-500 mt-1 truncate">
-                                {{ $playlist->getTranslation('description', app()->getLocale()) }}
+                                {{ clean_html($playlist->getTranslation('description', app()->getLocale())) }}
                             </p>
                         @endif
                     </a>

@@ -22,7 +22,7 @@
 
             @if($playlist->description)
                 <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-2 line-clamp-2">
-                    {{ $playlist->getTranslation('description', app()->getLocale()) }}
+                    {{ clean_html($playlist->getTranslation('description', app()->getLocale())) }}
                 </p>
             @endif
 

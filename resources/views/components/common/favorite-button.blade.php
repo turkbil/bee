@@ -1,19 +1,17 @@
 @props([
     'model' => null,
     'size' => 'md',      // sm, md, lg
-    'showText' => true,   // Favori text gösterilsin mi?
-    'iconOnly' => false,  // Sadece ikon
+    'showCount' => false, // Favori sayısı gösterilsin mi? (varsayılan kapalı)
 ])
 
 @php
     if (!$model) {
-        return; // Model yoksa render etme
+        return;
     }
 
     $favoritesCount = method_exists($model, 'favoritesCount') ? $model->favoritesCount() : 0;
     $isFavorited = auth()->check() && method_exists($model, 'isFavoritedBy') ? $model->isFavoritedBy(auth()->id()) : false;
-    
-    // Model class ve ID al
+
     $modelClass = get_class($model);
     $modelId = $model->blog_id
         ?? $model->product_id
@@ -27,84 +25,63 @@
         ?? null;
 
     if (!$modelId) {
-        return; // Model ID yoksa render etme
+        return;
     }
 
-    // Size class
+    // Size classes - buton boyutları
     $sizeClasses = [
-        'sm' => [
-            'icon' => 'text-sm',
-            'text' => 'text-xs',
-            'gap' => 'gap-1',
-        ],
-        'md' => [
-            'icon' => 'text-lg',
-            'text' => 'text-sm',
-            'gap' => 'gap-2',
-        ],
-        'lg' => [
-            'icon' => 'text-xl',
-            'text' => 'text-base',
-            'gap' => 'gap-2',
-        ],
+        'sm' => 'w-8 h-8 text-sm',
+        'md' => 'w-10 h-10 text-lg',
+        'lg' => 'w-12 h-12 text-xl',
     ];
 
-    $classes = $sizeClasses[$size] ?? $sizeClasses['md'];
+    $btnSize = $sizeClasses[$size] ?? $sizeClasses['md'];
 @endphp
 
 @auth
-    <div class="flex items-center {{ $classes['gap'] }} cursor-pointer hover:scale-110 transition-transform duration-200"
-         x-data="{
-             favorited: {{ $isFavorited ? 'true' : 'false' }},
-             count: {{ $favoritesCount }},
-             loading: false,
-             toggleFavorite() {
-                 if (this.loading) return;
-                 this.loading = true;
+    <button type="button"
+            class="{{ $btnSize }} bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:scale-110 hover:bg-black/70 transition-all duration-200 shadow-lg"
+            x-data="{
+                favorited: {{ $isFavorited ? 'true' : 'false' }},
+                count: {{ $favoritesCount }},
+                loading: false,
+                toggleFavorite() {
+                    if (this.loading) return;
+                    this.loading = true;
 
-                 fetch('/api/favorites/toggle', {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                         'Accept': 'application/json'
-                     },
-                     body: JSON.stringify({
-                         model_class: '{{ addslashes($modelClass) }}',
-                         model_id: {{ $modelId }}
-                     })
-                 })
-                 .then(response => response.json())
-                 .then(data => {
-                     if (data.success) {
-                         this.favorited = data.data.is_favorited;
-                         this.count = data.data.favorites_count;
-                     }
-                 })
-                 .catch(error => console.error('Favorite error:', error))
-                 .finally(() => this.loading = false);
-             }
-         }"
-         @click="toggleFavorite()"
-         {{ $attributes }}>
-        <i :class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'" 
-           class="{{ $classes['icon'] }} transition-colors"></i>
-        
-        @if($showText && !$iconOnly)
-            <span class="{{ $classes['text'] }} font-medium text-gray-600 dark:text-gray-400" x-text="count + ' favori'"></span>
-        @elseif($iconOnly && $favoritesCount > 0)
-            <span class="{{ $classes['text'] }} font-semibold text-gray-600 dark:text-gray-400" x-text="count"></span>
-        @endif
-    </div>
+                    fetch('/api/favorites/toggle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model_class: '{{ addslashes($modelClass) }}',
+                            model_id: {{ $modelId }}
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.favorited = data.data.is_favorited;
+                            this.count = data.data.favorites_count;
+                        }
+                    })
+                    .catch(error => console.error('Favorite error:', error))
+                    .finally(() => this.loading = false);
+                }
+            }"
+            @click.stop="toggleFavorite()"
+            {{ $attributes }}>
+        <i :class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'"
+           class="transition-colors drop-shadow"></i>
+    </button>
 @else
-    <div class="flex items-center {{ $classes['gap'] }} text-gray-400 dark:text-gray-500 cursor-pointer"
-         @click="window.location.href = '{{ route('login') }}'"
-         {{ $attributes }}>
-        <i class="far fa-heart {{ $classes['icon'] }}"></i>
-        @if($showText && !$iconOnly)
-            <span class="{{ $classes['text'] }} font-medium">{{ $favoritesCount }} favori</span>
-        @elseif($iconOnly && $favoritesCount > 0)
-            <span class="{{ $classes['text'] }} font-semibold">{{ $favoritesCount }}</span>
-        @endif
-    </div>
+    <button type="button"
+            class="{{ $btnSize }} bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:scale-110 hover:bg-black/70 transition-all duration-200 shadow-lg"
+            @click.stop="window.location.href = '{{ route('login') }}'"
+            {{ $attributes }}>
+        <i class="far fa-heart text-white drop-shadow"></i>
+    </button>
 @endauth

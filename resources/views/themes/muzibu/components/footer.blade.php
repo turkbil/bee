@@ -143,32 +143,18 @@
                 </ul>
             </div>
 
-            {{-- 3. Kitaplığım (Sadece Auth) --}}
-            @auth
+            {{-- 3. Kurumsal --}}
             <div class="text-center">
                 <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-book-open text-muzibu-coral"></i>
-                    Kitaplığım
+                    <i class="fas fa-building text-muzibu-coral"></i>
+                    Kurumsal
                 </h3>
                 <ul class="space-y-2">
-                    <li><a href="/muzibu/favorites" class="text-gray-400 hover:text-muzibu-coral transition-colors">Favorilerim</a></li>
-                    <li><a href="/muzibu/my-playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">Playlistlerim</a></li>
-                    <li><a href="/corporate/dashboard" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kurumsallist</a></li>
-                    <li><a href="/muzibu/listening-history" class="text-gray-400 hover:text-muzibu-coral transition-colors">Dinleme Geçmişi</a></li>
+                    <li><a href="/hakkimizda" class="text-gray-400 hover:text-muzibu-coral transition-colors">Hakkımızda</a></li>
+                    <li><a href="/neden-muzibu" class="text-gray-400 hover:text-muzibu-coral transition-colors">Neden Muzibu?</a></li>
+                    <li><a href="/sss" class="text-gray-400 hover:text-muzibu-coral transition-colors">Sıkça Sorulan Sorular</a></li>
                 </ul>
             </div>
-            @else
-            <div class="text-center">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-music text-muzibu-coral"></i>
-                    Keşfet
-                </h3>
-                <ul class="space-y-2">
-                    <li><a href="/playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.playlists') }}</a></li>
-                    <li><a href="/albums" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.albums') }}</a></li>
-                </ul>
-            </div>
-            @endauth
 
             {{-- 4. Hızlı Erişim --}}
             <div class="text-center">

@@ -55,7 +55,7 @@ class PlaylistController extends Controller
             ->with(['artist', 'coverMedia', 'album.coverMedia'])
             ->where('muzibu_songs.is_active', 1)
             ->orderBy('muzibu_playlist_song.position')
-            ->get();
+            ->paginate(100);
 
         // ⭐ SEO için model'i share et (HasSeo trait otomatik çalışır)
         view()->share('currentModel', $playlist);
@@ -117,7 +117,7 @@ class PlaylistController extends Controller
             ->with(['artist', 'coverMedia', 'album.coverMedia'])
             ->where('muzibu_songs.is_active', 1)
             ->orderBy('muzibu_playlist_song.position')
-            ->get();
+            ->paginate(100);
 
         $html = view('themes.muzibu.partials.playlist-detail', compact('playlist', 'songs'))->render();
 

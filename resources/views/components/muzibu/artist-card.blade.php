@@ -39,10 +39,10 @@
                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
        if (moved) clearTimeout(touchTimer);
    "
-   class="group bg-muzibu-gray hover:bg-spotify-black rounded-lg px-4 pt-4 transition-all duration-300 relative overflow-hidden border-2 border-muzibu-gray">
+   class="group bg-muzibu-gray md:hover:bg-spotify-black rounded-lg px-4 pt-4 transition-all duration-300 relative overflow-hidden border-2 border-muzibu-gray touch-manipulation">
 
-    {{-- Hover Shimmer/Buz Efekti --}}
-    <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+    {{-- Hover Shimmer/Buz Efekti - Sadece Desktop --}}
+    <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none hidden md:block">
         <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
     </div>
 
@@ -60,14 +60,14 @@
             </div>
         @endif
 
-        {{-- Play Button - Spotify Style Bottom Right --}}
+        {{-- Play Button - Sadece Desktop Hover --}}
         <button x-on:click.stop.prevent="window.playContent('artist', {{ $artist->artist_id }})"
-                class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+                class="absolute bottom-2 right-2 opacity-0 md:group-hover:opacity-100 transform translate-y-2 md:group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500 pointer-events-none md:pointer-events-auto">
             <i class="fas fa-play ml-1"></i>
         </button>
 
-        {{-- Favorite + Menu Buttons (Top-right, hover only) --}}
-        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
+        {{-- Favorite + Menu Buttons (Top-right) - Sadece Desktop Hover --}}
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 md:group-hover:opacity-100 transition-all pointer-events-none md:pointer-events-auto" x-on:click.stop.prevent>
             {{-- Favorite Button --}}
             <button x-on:click.stop.prevent="$store.favorites.toggle('artist', {{ $artist->artist_id }})"
                     class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all"

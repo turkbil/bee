@@ -75,7 +75,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
                 @if($genre->description)
                     <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-4 sm:mb-6 line-clamp-2 opacity-90">
-                        {{ $genre->getTranslation('description', app()->getLocale()) }}
+                        {{ clean_html($genre->getTranslation('description', app()->getLocale())) }}
                     </p>
                 @endif
 
@@ -99,52 +99,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             <i class="fas fa-play text-white text-xl sm:text-2xl ml-1"></i>
         </button>
 
-        <div x-on:click.stop>
-            @auth
-            <button
-                x-data="{
-                    favorited: {{ is_favorited('genre', $genre->id) ? 'true' : 'false' }},
-                    count: {{ method_exists($genre, 'favoritesCount') ? $genre->favoritesCount() : 0 }},
-                    loading: false,
-                    toggle() {
-                        if (this.loading) return;
-                        this.loading = true;
-                        fetch('/api/favorites/toggle', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                model_class: '{{ addslashes(get_class($genre)) }}',
-                                model_id: {{ $genre->id }}
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.favorited = data.data.is_favorited;
-                                this.count = data.data.favorites_count;
-                            }
-                        })
-                        .catch(error => console.error('Favorite error:', error))
-                        .finally(() => this.loading = false);
-                    }
-                }"
-                x-on:click="toggle()"
-                class="flex items-center gap-2 cursor-pointer hover:scale-110 transition-transform duration-200"
-            >
-                <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-400'" class="text-2xl transition-colors"></i>
-                <span class="text-sm font-medium text-gray-400" x-text="count + ' favori'"></span>
-            </button>
-            @else
-            <a href="{{ route('login') }}" class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
-                <i class="far fa-heart text-2xl"></i>
-                <span class="text-sm font-medium">{{ method_exists($genre, 'favoritesCount') ? $genre->favoritesCount() : 0 }} favori</span>
-            </a>
-            @endauth
-        </div>
+        <x-common.favorite-button :model="$genre" size="lg" />
 
         <button class="text-gray-400 hover:text-white transition-colors" title="Daha fazla">
             <i class="fas fa-ellipsis-h text-2xl"></i>

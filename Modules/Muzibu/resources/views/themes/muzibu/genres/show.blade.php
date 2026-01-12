@@ -22,7 +22,7 @@
 
             @if($genre->description)
                 <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-2 line-clamp-2">
-                    {{ $genre->getTranslation('description', app()->getLocale()) }}
+                    {{ clean_html($genre->getTranslation('description', app()->getLocale())) }}
                 </p>
             @endif
 

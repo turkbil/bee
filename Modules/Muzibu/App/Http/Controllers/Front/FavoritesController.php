@@ -17,15 +17,15 @@ class FavoritesController extends Controller
 
         $userId = auth()->id();
 
-        // Count her tip için
+        // Count her tip için - morphMap alias'ları kullan (veritabanında bu şekilde kayıtlı)
         $modelMap = [
-            'songs' => Song::class,
-            'albums' => Album::class,
-            'playlists' => Playlist::class,
-            'genres' => \Modules\Muzibu\App\Models\Genre::class,
-            'sectors' => \Modules\Muzibu\App\Models\Sector::class,
-            'radios' => \Modules\Muzibu\App\Models\Radio::class,
-            'blogs' => \Modules\Blog\App\Models\Blog::class,
+            'songs' => 'Song',
+            'albums' => 'Album',
+            'playlists' => 'Playlist',
+            'genres' => 'Genre',
+            'sectors' => 'Sector',
+            'radios' => 'Radio',
+            'blogs' => \Modules\Blog\App\Models\Blog::class, // Blog morphMap'te yok, tam path kullan
         ];
 
         $counts = [];
@@ -111,13 +111,14 @@ class FavoritesController extends Controller
             ->latest();
 
         if ($type !== 'all') {
+            // morphMap alias'ları kullan
             $modelMap = [
-                'songs' => Song::class,
-                'albums' => Album::class,
-                'playlists' => Playlist::class,
-                'genres' => \Modules\Muzibu\App\Models\Genre::class,
-                'sectors' => \Modules\Muzibu\App\Models\Sector::class,
-                'radios' => \Modules\Muzibu\App\Models\Radio::class,
+                'songs' => 'Song',
+                'albums' => 'Album',
+                'playlists' => 'Playlist',
+                'genres' => 'Genre',
+                'sectors' => 'Sector',
+                'radios' => 'Radio',
                 'blogs' => \Modules\Blog\App\Models\Blog::class,
             ];
             if (isset($modelMap[$type])) {
@@ -158,8 +159,8 @@ class FavoritesController extends Controller
         $type = $validated['type'];
         $itemId = $validated['id'];
 
-        // 3. Model class mapping
-        $modelMap = [
+        // 3. Model class mapping (tam class path - item bulmak için)
+        $classMap = [
             'song' => Song::class,
             'playlist' => Playlist::class,
             'album' => Album::class,
@@ -169,7 +170,19 @@ class FavoritesController extends Controller
             'blog' => \Modules\Blog\App\Models\Blog::class,
         ];
 
-        $modelClass = $modelMap[$type];
+        // morphMap alias'ları (veritabanına kaydetmek için)
+        $morphMap = [
+            'song' => 'Song',
+            'playlist' => 'Playlist',
+            'album' => 'Album',
+            'genre' => 'Genre',
+            'sector' => 'Sector',
+            'radio' => 'Radio',
+            'blog' => \Modules\Blog\App\Models\Blog::class,
+        ];
+
+        $modelClass = $classMap[$type];
+        $morphAlias = $morphMap[$type];
 
         // 4. Item var mı kontrol et
         $item = $modelClass::find($itemId);
@@ -181,9 +194,9 @@ class FavoritesController extends Controller
             ], 404);
         }
 
-        // 5. Zaten favoride mi kontrol et
+        // 5. Zaten favoride mi kontrol et (morphAlias ile)
         $existing = Favorite::where('user_id', $userId)
-            ->where('favoritable_type', $modelClass)
+            ->where('favoritable_type', $morphAlias)
             ->where('favoritable_id', $itemId)
             ->first();
 
@@ -195,10 +208,10 @@ class FavoritesController extends Controller
             ], 409);
         }
 
-        // 6. Favoriye ekle
+        // 6. Favoriye ekle (morphAlias ile kaydet)
         Favorite::create([
             'user_id' => $userId,
-            'favoritable_type' => $modelClass,
+            'favoritable_type' => $morphAlias,
             'favoritable_id' => $itemId,
         ]);
 

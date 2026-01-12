@@ -696,3 +696,36 @@ if (!function_exists('versioned_asset')) {
         return \App\Helpers\AssetHelper::versioned($path, $secure);
     }
 }
+
+if (!function_exists('clean_html')) {
+    /**
+     * HTML tag'lerini ve entity'lerini temizle
+     * Description gibi alanlarda kullanılır
+     *
+     * @param string|null $text
+     * @return string
+     *
+     * @example
+     * // Blade'de kullanım:
+     * {{ clean_html($playlist->description) }}
+     * // Input: <p class="p1">Dengeli gitar tonları ve yumuşak vokallerle sade ama enerjisi d&uuml;ş&uuml;k olmayan bir atmosfer</p>
+     * // Output: Dengeli gitar tonları ve yumuşak vokallerle sade ama enerjisi düşük olmayan bir atmosfer
+     */
+    function clean_html($text)
+    {
+        if (empty($text)) {
+            return '';
+        }
+
+        // HTML entity'lerini decode et (&uuml; -> ü)
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // HTML tag'lerini kaldır
+        $text = strip_tags($text);
+
+        // Fazla boşlukları temizle
+        $text = preg_replace('/\s+/', ' ', $text);
+
+        return trim($text);
+    }
+}

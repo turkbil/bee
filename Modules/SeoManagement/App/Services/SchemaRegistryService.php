@@ -142,7 +142,11 @@ class SchemaRegistryService
             if (Str::contains($lowerClassName, ['news', 'announcement', 'blog'])) {
                 return 'NewsArticle';
             }
-            if (Str::contains($lowerClassName, ['page', 'content', 'post'])) {
+            // Page modelleri için WebPage kullan (Article değil!)
+            if (Str::contains($lowerClassName, ['page'])) {
+                return 'WebPage';
+            }
+            if (Str::contains($lowerClassName, ['content', 'post'])) {
                 return 'Article';
             }
             if (Str::contains($lowerClassName, ['event'])) {

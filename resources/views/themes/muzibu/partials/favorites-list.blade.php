@@ -143,7 +143,7 @@
                                 </h3>
                                 @if($item->description)
                                     <p class="text-xs text-muzibu-text-gray truncate">
-                                        {{ Str::limit($item->getTranslation('description', app()->getLocale()), 40) }}
+                                        {{ Str::limit(clean_html($item->getTranslation('description', app()->getLocale())), 40) }}
                                     </p>
                                 @endif
                             </a>

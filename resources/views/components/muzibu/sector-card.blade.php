@@ -72,7 +72,7 @@
         </h3>
         <p class="text-xs text-gray-400 leading-6 line-clamp-1">
             @if(isset($sector->description) && !empty($sector->description))
-                {{ $sector->getTranslation('description', app()->getLocale()) ?? '&nbsp;' }}
+                {{ clean_html($sector->getTranslation('description', app()->getLocale())) ?? '&nbsp;' }}
             @else
                 &nbsp;
             @endif

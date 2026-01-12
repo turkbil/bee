@@ -1,4 +1,4 @@
-{{-- 🔄 SPA Loading Overlay - İçerik Alanı Ortasında --}}
+{{-- 🔄 SPA Loading Overlay - Ekran Ortasında --}}
 <div
     x-show="isLoading"
     x-transition:enter="transition ease-out duration-200"
@@ -7,7 +7,7 @@
     x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100 scale-100"
     x-transition:leave-end="opacity-0 scale-90"
-    class="fixed z-[60] bg-black/90 backdrop-blur-md border-2 border-muzibu-coral/40 rounded-xl shadow-2xl shadow-muzibu-coral/20"
+    class="fixed z-[60] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/90 backdrop-blur-md border-2 border-muzibu-coral/40 rounded-xl shadow-2xl shadow-muzibu-coral/20"
     x-cloak
     id="loading-overlay"
 >
@@ -23,49 +23,3 @@
         <span class="text-white text-sm font-semibold">Yükleniyor</span>
     </div>
 </div>
-
-<script>
-// 🎯 Loading Overlay - İçerik alanı ortasında konumlandır
-(function() {
-    function centerLoadingInContent() {
-        var overlay = document.getElementById('loading-overlay');
-        if (!overlay) return;
-
-        // Main content alanını bul
-        var mainContent = document.querySelector('main') || document.querySelector('.muzibu-main-content');
-
-        if (mainContent) {
-            var rect = mainContent.getBoundingClientRect();
-            // Overlay'i main content alanının tam ortasında konumlandır
-            overlay.style.left = (rect.left + rect.width / 2 - overlay.offsetWidth / 2) + 'px';
-            overlay.style.top = (rect.top + rect.height / 2 - overlay.offsetHeight / 2) + 'px';
-        } else {
-            // Fallback: Ekranın ortasında
-            overlay.style.left = '50%';
-            overlay.style.top = '50%';
-            overlay.style.transform = 'translate(-50%, -50%)';
-        }
-    }
-
-    // İlk yüklemede konumlandır
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', centerLoadingInContent);
-    } else {
-        centerLoadingInContent();
-    }
-
-    // Resize olduğunda güncelle
-    window.addEventListener('resize', centerLoadingInContent, { passive: true });
-
-    // Alpine store değiştiğinde güncelle
-    document.addEventListener('alpine:initialized', function() {
-        if (window.Alpine && Alpine.store('player')) {
-            Alpine.effect(function() {
-                if (Alpine.store('player').isLoading) {
-                    setTimeout(centerLoadingInContent, 10);
-                }
-            });
-        }
-    });
-})();
-</script>

@@ -1,0 +1,599 @@
+
+    
+    
+    <script>
+        // 🔇 Suppress storage access errors (browser privacy/extension related)
+        window.addEventListener('unhandledrejection', (event) => {
+            if (event.reason?.message?.includes('Access to storage is not allowed')) {
+                event.preventDefault(); // Suppress console error
+            }
+        });
+
+        // 🌐 Global Alpine defaults (ReferenceError önleme)
+        // Device & Modal
+        window.showKeyboardHelp = window.showKeyboardHelp || false;
+        window.showDeviceSelectionModal = window.showDeviceSelectionModal || false;
+        window.showDeviceLimitWarning = window.showDeviceLimitWarning || false;
+        window.showDeviceLimitModal = window.showDeviceLimitModal || false;
+        window.deviceTerminateLoading = window.deviceTerminateLoading || false;
+        window.activeDevices = window.activeDevices || [];
+        window.deviceLimit = window.deviceLimit || 1;
+
+        // Player state
+        window.isLoading = window.isLoading || false;
+        window.isSongLoading = window.isSongLoading || false;
+        window.isPlaying = window.isPlaying || false;
+        window.currentSong = window.currentSong || null;
+        window.currentTime = window.currentTime || 0;
+        window.duration = window.duration || 0;
+        window.progressPercent = window.progressPercent || 0;
+        window.isLiked = window.isLiked || false;
+
+        // Playback controls
+        window.shuffle = window.shuffle || false;
+        window.repeatMode = window.repeatMode || 'off';
+
+        // Volume & Audio
+        window.volume = window.volume ?? 80;
+        window.isMuted = window.isMuted || false;
+
+        // Stream info
+        window.currentStreamType = window.currentStreamType || 'hls';
+        window.lastFallbackReason = window.lastFallbackReason || null;
+
+        // UI panels & Debug
+        window.showLyrics = window.showLyrics || false;
+        window.showQueue = window.showQueue || false;
+        window.showDebugInfo = window.showDebugInfo || false;
+
+        // Auth (fallback - overwritten by config below)
+        window.isLoggedIn = window.isLoggedIn || false;
+        window.currentUser = window.currentUser || null;
+
+        // Helper functions
+        window.formatTime = window.formatTime || function(sec) {
+            const t = Math.max(0, Math.floor(sec || 0));
+            const m = Math.floor(t / 60);
+            const s = (t % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        };
+
+        // Config for Alpine.js
+        window.muzibuPlayerConfig = {
+            lang: {"queue_title":"\u00c7alma S\u0131ras\u0131","now_playing":"\u015eU AN \u00c7ALIYOR","up_next":"SIRADAK\u0130","songs_count":":count \u015fark\u0131","queue_empty":"\u00c7alma s\u0131ras\u0131 bo\u015f","queue_empty_hint":"Bir \u015fark\u0131 veya playlist \u00e7almaya ba\u015flay\u0131n","no_song_selected":"\u015eark\u0131 se\u00e7ilmedi","untitled":"\u0130simsiz","unknown_artist":"Bilinmeyen Sanat\u00e7\u0131","shuffle":"Kar\u0131\u015f\u0131k \u00c7al","previous":"\u00d6nceki \u015eark\u0131","next":"Sonraki \u015eark\u0131","play":"\u00c7al","pause":"Duraklat","repeat_off":"Tekrar: Kapal\u0131","repeat_one":"Tekrar: Tek \u015eark\u0131","repeat_all":"Tekrar: T\u00fcm\u00fc","add_to_favorites":"Favorilere Ekle\/\u00c7\u0131kar","volume":"Ses Seviyesi","mute":"Sessiz","unmute":"Sesi A\u00e7","login":"Giri\u015f Yap","login_subtitle":"Hesab\u0131n\u0131za giri\u015f yap\u0131n","register":"\u00dccretsiz Ba\u015fla","register_subtitle":"7 g\u00fcn \u00fccretsiz deneme","forgot_password":"\u015eifre S\u0131f\u0131rla","forgot_password_subtitle":"E-posta adresinize link g\u00f6nderilecek","email":"E-posta","email_placeholder":"ornek@email.com","password":"\u015eifre","password_placeholder":"En az 8 karakter","first_name":"Ad","first_name_placeholder":"Ad\u0131n\u0131z","last_name":"Soyad","last_name_placeholder":"Soyad\u0131n\u0131z","phone":"Telefon","remember_me":"Beni Hat\u0131rla","forgot_password_link":"\u015eifremi Unuttum","login_button":"Giri\u015f Yap","register_button":"7 G\u00fcn \u00dccretsiz Ba\u015fla","reset_password_button":"S\u0131f\u0131rlama Linki G\u00f6nder","back_to_login":"Giri\u015f Sayfas\u0131na D\u00f6n","no_account":"Hesab\u0131n\u0131z yok mu?","start_free":"\u00dccretsiz Ba\u015flay\u0131n","have_account":"Zaten hesab\u0131n\u0131z var m\u0131?","login_link":"Giri\u015f Yap\u0131n","min_chars":"En az :count karakter","password_length":"En az 8 karakter","password_uppercase":"B\u00fcy\u00fck harf (A-Z)","password_lowercase":"K\u00fc\u00e7\u00fck harf (a-z)","password_number":"Rakam (0-9)","invalid_email":"Ge\u00e7erli bir e-posta adresi giriniz","email_exists":"Bu e-posta adresi zaten kullan\u0131l\u0131yor","phone_required":"Telefon numaras\u0131 gereklidir","phone_starts_with_5":"Cep telefonu 5 ile ba\u015flamal\u0131d\u0131r","phone_10_digits":"Telefon numaras\u0131 10 haneli olmal\u0131d\u0131r","invalid_operator":"Ge\u00e7ersiz operat\u00f6r kodu","login_success":"Ba\u015far\u0131yla giri\u015f yap\u0131ld\u0131!","login_failed":"Giri\u015f ba\u015far\u0131s\u0131z","register_success":"Hesab\u0131n\u0131z olu\u015fturuldu! 7 g\u00fcnl\u00fck deneme ba\u015flad\u0131.","register_failed":"Kay\u0131t ba\u015far\u0131s\u0131z","reset_link_sent":"\u015eifre s\u0131f\u0131rlama linki e-postan\u0131za g\u00f6nderildi!","reset_link_failed":"E-posta g\u00f6nderilemedi","removed_from_queue":"\u015eark\u0131 kuyruktan kald\u0131r\u0131ld\u0131","queue_updated":"S\u0131ra g\u00fcncellendi","added_to_favorites":"Favorilere eklendi","removed_from_favorites":"Favorilerden kald\u0131r\u0131ld\u0131","random_play_started":"Rastgele \u00e7alma ba\u015flad\u0131!","song_not_found":"\u015eark\u0131 bulunamad\u0131","song_load_failed":"\u015eark\u0131lar y\u00fcklenemedi","album_load_failed":"Alb\u00fcm y\u00fcklenemedi","playlist_load_failed":"Playlist y\u00fcklenemedi","playback_error":"\u00c7alma hatas\u0131","page_load_failed":"Sayfa y\u00fcklenemedi"},
+            frontLang: {"general":{"home":"Ana Sayfa","updated":"G\u00fcncellendi","previous":"\u00d6nceki","next":"Sonraki","read_more":"Devam\u0131n\u0131 Oku","view_all":"T\u00fcm\u00fcn\u00fc G\u00f6r","back":"Geri","loading":"Y\u00fckleniyor...","discover":"Ke\u015ffet","account":"Hesap","login":"Giri\u015f Yap","register":"\u00dcye Ol","logout":"\u00c7\u0131k\u0131\u015f Yap","songs":"\u015eark\u0131lar","all_songs":"T\u00fcm \u015eark\u0131lar","song":"\u015eark\u0131","no_songs":"\u015eark\u0131 Yok","select_song":"\u015eark\u0131 se\u00e7","popular_songs":"Pop\u00fcler \u015eark\u0131lar","new_songs":"Yeni \u015eark\u0131lar","trending_songs":"Trend \u015eark\u0131lar","artists":"Sanat\u00e7\u0131lar","all_artists":"T\u00fcm Sanat\u00e7\u0131lar","artist":"Sanat\u00e7\u0131","no_artists":"Sanat\u00e7\u0131 Yok","albums":"Alb\u00fcmler","all_albums":"T\u00fcm Alb\u00fcmler","album":"Alb\u00fcm","no_albums":"Alb\u00fcm Yok","genres":"T\u00fcrler","all_genres":"T\u00fcm T\u00fcrler","genre":"T\u00fcr","no_genres":"T\u00fcr Yok","playlists":"\u00c7alma Listeleri","all_playlists":"T\u00fcm \u00c7alma Listeleri","playlist":"\u00c7alma Listesi","no_playlists":"\u00c7alma Listesi Yok","radios":"Radyolar","all_radios":"T\u00fcm Radyolar","radio":"Radyo","no_radios":"Radyo Yok","sectors":"Sekt\u00f6rler","all_sectors":"T\u00fcm Sekt\u00f6rler","sector":"Sekt\u00f6r","no_sectors":"Sekt\u00f6r Yok","favorites":"Favorilerim","my_favorites":"Favorilerim","muzibus":"M\u00fczikler","all_muzibus":"T\u00fcm M\u00fczikler","homemuzibu":"Ana Sayfa"},"player":{"play":"\u00c7al","pause":"Duraklat","stop":"Durdur","next_song":"Sonraki \u015eark\u0131","previous_song":"\u00d6nceki \u015eark\u0131","listen":"Dinle","queue":"S\u0131ra","now_playing":"\u015eimdi \u00c7al\u0131n\u0131yor","show_queue":"S\u0131ray\u0131 a\u00e7","hide_queue":"S\u0131ray\u0131 kapat","next_songs":"S\u0131radaki \u015eark\u0131lar","clear_queue":"S\u0131ray\u0131 Temizle","drag_to_sort":"S\u00fcr\u00fckleyerek s\u0131rala","queue_empty":"S\u0131ra Bo\u015f","queue_empty_description":"\u015eark\u0131 eklemek i\u00e7in bir playlist veya alb\u00fcme gidin","click_to_play":"\u015eark\u0131lara t\u0131klayarak \u00e7al","quick_access":"h\u0131zl\u0131 eri\u015fim","remove_from_queue":"S\u0131radan \u00c7\u0131kar","drag":"S\u00fcr\u00fckle","added_to_queue":":count \u015fark\u0131 s\u0131raya eklendi","added_to_queue_next":":count \u015fark\u0131 s\u0131rada bir sonrakine eklendi","added_with_duplicates_removed":":count \u015fark\u0131 s\u0131raya eklendi (:removed duplicate kald\u0131r\u0131ld\u0131)","added_next_with_duplicates_removed":":count \u015fark\u0131 s\u0131raya eklendi (:removed duplicate kald\u0131r\u0131ld\u0131)","song_not_found_to_add":"Eklenecek \u015fark\u0131 bulunamad\u0131","queue_add_error":"S\u0131raya eklenirken hata olu\u015ftu","shuffle":"Kar\u0131\u015ft\u0131r","shuffle_on":"Kar\u0131\u015f\u0131k \u00e7alma aktif","shuffle_off":"Kar\u0131\u015f\u0131k \u00e7alma kapal\u0131","enable_shuffle":"Kar\u0131\u015ft\u0131rmay\u0131 a\u00e7","disable_shuffle":"Kar\u0131\u015ft\u0131rmay\u0131 kapat","repeat":"Tekrarla","enable_repeat":"Tekrarlamay\u0131 a\u00e7","repeat_mode":"Tekrarlama modu","repeat_off":"Tekrarlama kapal\u0131","repeat_all":"T\u00fcm\u00fcn\u00fc tekrarla","repeat_one":"Tek \u015fark\u0131y\u0131 tekrarla","add_to_favorites":"Favorilere ekle","remove_from_favorites":"Favorilerden \u00e7\u0131kar","add_to_playlist":"\u00c7alma Listesine Ekle","share":"Payla\u015f","download":"\u0130ndir","song_progress":"\u015eark\u0131 ilerlemesi","show_lyrics":"\u015eark\u0131 s\u00f6zlerini g\u00f6ster","no_lyrics":"\u015eark\u0131 S\u00f6z\u00fc Yok","mute":"Sesi kapat","unmute":"Sesi a\u00e7","volume":"Ses seviyesi","max_volume":"Ses 100%","show_keyboard_shortcuts":"Klavye k\u0131sayollar\u0131n\u0131 g\u00f6ster","duration":"S\u00fcre","release_date":"Yay\u0131n Tarihi","track_count":"\u015eark\u0131 Say\u0131s\u0131","popularity":"Pop\u00fclerlik"},"search":{"placeholder":"\u015eark\u0131, sanat\u00e7\u0131, alb\u00fcm ara...","search_failed":"Arama yap\u0131lamad\u0131.","no_results":"Sonu\u00e7 bulunamad\u0131","try_different":"Sonu\u00e7 bulunamad\u0131. Farkl\u0131 bir kelime deneyin.","view_all_results":"T\u00fcm :count sonucu g\u00f6r"},"sidebar":{"most_played":"En \u00e7ok dinlenenler","newly_added":"Yeni eklenenler","trending":"Y\u00fckseli\u015fte olanlar","popular":"Pop\u00fcler","new":"Yeni","trend":"Trend","song_loading":"\u015eark\u0131 y\u00fckleniyor...","my_library":"Kitapl\u0131\u011f\u0131m","my_playlists":"Playlistlerim","create_playlist":"Playlist Olu\u015ftur","free_member":"\u00dccretsiz \u00dcye","trial_member":"Deneme \u00dcyesi","premium_member":"Premium \u00dcye","membership_expired":"\u00dcyelik sona erdi","days_hours_left":":days g\u00fcn :hours saat kald\u0131","hours_minutes_left":":hours saat :minutes dk kald\u0131","minutes_left":":minutes dakika kald\u0131","extend_membership":"\u00dcyeli\u011fini Uzat"},"user":{"user":"Kullan\u0131c\u0131","profile":"Profil","settings":"Ayarlar","dashboard":"Kullan\u0131c\u0131 Paneli","admin_panel":"Admin Paneli","premium_member":"Premium \u00dcye","trial_member":"Deneme \u00dcyesi","free_member":"\u00dccretsiz \u00dcye","go_premium":"Premium\u0027a Ge\u00e7","welcome_back":"Tekrar ho\u015f geldin!","welcome_back_name":"Ho\u015f geldin, :name!","welcome_premium":"Ho\u015f geldin, :name! Premium denemen ba\u015flad\u0131.","reset_password":"\u015eifreni s\u0131f\u0131rla","enjoy_music":"M\u00fczi\u011fin keyfini \u00e7\u0131kar","dark_mode_on":"Koyu tema aktif","light_mode_on":"A\u00e7\u0131k tema aktif","full_name":"Ad\u0131n\u0131z Soyad\u0131n\u0131z","terms_of_service":"Kullan\u0131m Ko\u015fullar\u0131"},"subscription":{"unlimited_listening":"S\u0131n\u0131rs\u0131z Dinlemek \u0130\u00e7in \u00dcye Olun!","days_remaining":":days g\u00fcn kald\u0131!","dont_miss_out":"Premium\u0027a ge\u00e7erek s\u0131n\u0131rs\u0131z m\u00fczik keyfini ka\u00e7\u0131rma."},"phone":{"label":"Telefon","turkey":"T\u00fcrkiye","required":"Telefon numaras\u0131 gereklidir","must_be_10_digits":"Telefon numaras\u0131 10 haneli olmal\u0131d\u0131r","too_short":"Telefon numaras\u0131 \u00e7ok k\u0131sa","too_long":"Telefon numaras\u0131 \u00e7ok uzun"},"session":{"terminated":"Oturumunuz Sonland\u0131r\u0131ld\u0131"},"messages":{"no_songs_found":"Hen\u00fcz \u015fark\u0131 eklenmemi\u015f.","no_songs_description":"Bu b\u00f6l\u00fcmde hen\u00fcz hi\u00e7 \u015fark\u0131 yay\u0131nlanmam\u0131\u015f.","song_not_found":"\u015eark\u0131 bulunamad\u0131","songs_loading_failed":"\u015eark\u0131lar y\u00fcklenemedi","no_artists_found":"Hen\u00fcz sanat\u00e7\u0131 eklenmemi\u015f.","no_artists_description":"Bu b\u00f6l\u00fcmde hen\u00fcz hi\u00e7 sanat\u00e7\u0131 yay\u0131nlanmam\u0131\u015f.","no_albums_found":"Hen\u00fcz alb\u00fcm eklenmemi\u015f.","no_albums_description":"Bu b\u00f6l\u00fcmde hen\u00fcz hi\u00e7 alb\u00fcm yay\u0131nlanmam\u0131\u015f.","album_no_playable_songs":"Alb\u00fcmde \u00e7al\u0131nabilir \u015fark\u0131 bulunamad\u0131","album_loading_failed":"Alb\u00fcm y\u00fcklenemedi","no_genres_found":"Hen\u00fcz t\u00fcr eklenmemi\u015f.","no_genres_description":"Bu b\u00f6l\u00fcmde hen\u00fcz hi\u00e7 t\u00fcr yay\u0131nlanmam\u0131\u015f.","genre_no_playable_songs":"T\u00fcrde \u00e7al\u0131nabilir \u015fark\u0131 bulunamad\u0131","genre_loading_failed":"T\u00fcr y\u00fcklenemedi","no_playlists_found":"Hen\u00fcz \u00e7alma listesi eklenmemi\u015f.","no_playlists_description":"Bu b\u00f6l\u00fcmde hen\u00fcz hi\u00e7 \u00e7alma listesi yay\u0131nlanmam\u0131\u015f.","playlist_no_playable_songs":"Playlist\u0027te \u00e7al\u0131nabilir \u015fark\u0131 bulunamad\u0131","playlist_loading_failed":"Playlist y\u00fcklenemedi","playlist_is_empty":"\u00c7alma listesi bo\u015f.","no_radios_found":"Hen\u00fcz radyo eklenmemi\u015f.","no_radios_description":"Bu b\u00f6l\u00fcmde hen\u00fcz hi\u00e7 radyo yay\u0131nlanmam\u0131\u015f.","radio_loading":"Radyo y\u00fckleniyor...","radio_no_playable_songs":"Radyoda \u00e7al\u0131nabilir \u015fark\u0131 bulunamad\u0131","radio_loading_failed":"Radyo y\u00fcklenemedi","no_sectors_found":"Hen\u00fcz sekt\u00f6r eklenmemi\u015f.","no_sectors_description":"Bu b\u00f6l\u00fcmde hen\u00fcz hi\u00e7 sekt\u00f6r yay\u0131nlanmam\u0131\u015f.","sector_no_playable_songs":"Sekt\u00f6rde \u00e7al\u0131nabilir \u015fark\u0131 bulunamad\u0131","sector_loading_failed":"Sekt\u00f6r y\u00fcklenemedi","song_added_to_queue":"\u015eark\u0131 kuyru\u011fa eklendi.","song_added_to_favorites":"\u015eark\u0131 favorilere eklendi.","song_removed_from_favorites":"\u015eark\u0131 favorilerden \u00e7\u0131kar\u0131ld\u0131.","next_song_failed":"Sonraki \u015fark\u0131 y\u00fcklenemedi, mevcut \u015fark\u0131 devam ediyor","popular_songs_playing":"Pop\u00fcler \u015fark\u0131lar \u00e7al\u0131yor!","now_playing":":title \u00e7al\u0131n\u0131yor","song_removed_from_queue":"\u015eark\u0131 kuyruktan kald\u0131r\u0131ld\u0131.","queue_cleared":"\u00c7alma listesi temizlendi.","queue_updated":"S\u0131ra g\u00fcncellendi.","queue_error":"Kuyru\u011fa eklenirken hata olu\u015ftu.","share_link_copied":"Payla\u015f\u0131m linki kopyaland\u0131.","page_loading_failed":"Sayfa y\u00fcklenemedi.","server_error":"Sunucu hatas\u0131.","generic_error":"Bir hata olu\u015ftu.","hls_not_supported":"HLS desteklenmiyor.","hls_fallback":"HLS y\u00fcklenemedi, MP3 ile \u00e7al\u0131n\u0131yor...","playback_error":"\u00c7alma hatas\u0131.","song_loading_failed_next":"\u015eark\u0131 y\u00fcklenemedi, sonrakine ge\u00e7iliyor...","song_loading_failed":"\u015eark\u0131 y\u00fcklenemedi.","song_playing":"\u015eark\u0131 \u00e7al\u0131n\u0131yor.","subscription_expired":"Premium \u00fcyeli\u011finiz sona erdi. Abonelik sayfas\u0131na y\u00f6nlendiriliyorsunuz...","device_limit_reached":"Cihaz limitine ula\u015ft\u0131n\u0131z. M\u00fczik dinlemek i\u00e7in bu cihazdan \u00e7\u0131k\u0131\u015f yap\u0131p tekrar giri\u015f yapabilirsiniz.","devices_logged_out":":count cihaz \u00e7\u0131k\u0131\u015f yapt\u0131r\u0131ld\u0131.","no_muzibus_found":"Hen\u00fcz m\u00fczik eklenmemi\u015f.","no_muzibus_description":"Hen\u00fcz hi\u00e7 m\u00fczik yay\u0131nlanmam\u0131\u015f."},"auth":{"login_required":"\u015eark\u0131 dinlemek i\u00e7in giri\u015f yapmal\u0131s\u0131n\u0131z","premium_required":"\u015eark\u0131 dinlemek i\u00e7in premium \u00fcyelik gereklidir","login_for_features":"T\u00fcm \u00f6zelliklere eri\u015fmek i\u00e7in giri\u015f yap\u0131n"},"admin":{"clear_cache":"Cache Temizle (Admin)"},"footer":{"quick_access":"H\u0131zl\u0131 Eri\u015fim","corporate":"Kurumsal","contact":"\u0130leti\u015fim","live_support":"Canl\u0131 Destek","support":"Destek","all_rights_reserved":"T\u00fcm haklar\u0131 sakl\u0131d\u0131r","register":"Kay\u0131t Ol"},"dashboard":{"title":"Panelim","hello":"Merhaba, :name!","personal_panel":"Ki\u015fisel m\u00fczik paneliniz","discover":"Ke\u015ffet","membership":"\u00dcyelik","trial":"Deneme","premium":"Premium","free":"\u00dccretsiz","listening":"Dinleme","favorite":"Favori","playlist":"Playlist","go_premium":"Premium\u0027a Ge\u00e7","recently_played":"Son Dinlenenler","my_favorites":"Favorilerim","my_playlists":"Playlistlerim","view_all":"T\u00fcm\u00fcn\u00fc G\u00f6r","play_all":"T\u00fcm\u00fcn\u00fc \u00c7al","shuffle":"Kar\u0131\u015ft\u0131r","unknown_artist":"Bilinmeyen","no_songs_yet":"Hen\u00fcz \u015fark\u0131 dinlemediniz","start_discovering":"Ke\u015ffetmeye ba\u015fla","no_favorites_yet":"Hen\u00fcz favori eklemediniz","discover_songs":"\u015eark\u0131 ke\u015ffet","no_playlists_yet":"Hen\u00fcz playlist olu\u015fturmad\u0131n\u0131z","create_playlist":"Playlist Olu\u015ftur","explore":"Ke\u015ffet","new_music":"Yeni m\u00fczikler","profile":"Profil","account_settings":"Hesap ayarlar\u0131","membership_plans":"\u00dcyelik planlar\u0131","genres":"T\u00fcrler","music_genres":"M\u00fczik t\u00fcrleri","days_short":"g","hours_short":"s","minutes_short":"dk","songs_count":":count \u015fark\u0131"},"listening_history":{"title":"Dinleme Ge\u00e7mi\u015fi","description":"Dinledi\u011finiz t\u00fcm \u015fark\u0131lar","back_to_dashboard":"Panelim","no_history_yet":"Hen\u00fcz dinleme ge\u00e7mi\u015finiz yok","no_history_description":"\u015eark\u0131 dinlemeye ba\u015flay\u0131n, ge\u00e7mi\u015finiz burada g\u00f6r\u00fcnecek.","discover":"Ke\u015ffet"},"corporate":{"title":"Kurumsal Muzibu","description":"\u015eirketiniz i\u00e7in \u00f6zel m\u00fczik deneyimi. \u00c7al\u0131\u015fanlar\u0131n\u0131za Muzibu Premium eri\u015fimi sa\u011flay\u0131n.","corporate_member":"Kurumsal \u00dcye","main_branch":"Ana \u015eube","member":"\u00dcye","already_corporate":"Kurumsal \u00dcyesiniz!","already_owner":"Zaten Kurumsal Hesap Sahibisiniz","already_member":"Zaten Bir Kuruma Ba\u011fl\u0131s\u0131n\u0131z","leave_first":"Ba\u015fka bir kuruma kat\u0131lmak i\u00e7in \u00f6nce mevcut kurumunuzdan ayr\u0131lman\u0131z gerekiyor.","management_panel":"Y\u00f6netim Paneli","my_membership":"\u00dcyelik Bilgilerim","bulk_membership":"Toplu \u00dcyelik","bulk_membership_desc":"T\u00fcm \u00e7al\u0131\u015fanlar\u0131n\u0131za tek bir kurumsal kod ile Muzibu Premium eri\u015fimi sa\u011flay\u0131n.","statistics":"\u0130statistikler","statistics_desc":"\u00c7al\u0131\u015fanlar\u0131n\u0131z\u0131n dinleme al\u0131\u015fkanl\u0131klar\u0131 hakk\u0131nda detayl\u0131 raporlar al\u0131n.","easy_management":"Kolay Y\u00f6netim","easy_management_desc":"\u00dcye ekleyin, \u00e7\u0131kar\u0131n. Kurumsal kodunuzu istedi\u011finiz zaman yenileyin.","how_it_works":"Nas\u0131l \u00c7al\u0131\u015f\u0131r?","step_1_title":"Kurumsal Ol","step_1_desc":"\u015eirketiniz i\u00e7in kurumsal hesap olu\u015fturun ve benzersiz bir kod al\u0131n.","step_2_title":"Kodu Payla\u015f","step_2_desc":"Kurumsal kodunuzu \u00e7al\u0131\u015fanlar\u0131n\u0131zla payla\u015farak onlar\u0131 davet edin.","step_3_title":"Birlikte Dinleyin","step_3_desc":"T\u00fcm \u00e7al\u0131\u015fanlar\u0131n\u0131z Muzibu Premium\u0027un tad\u0131n\u0131 \u00e7\u0131kar\u0131yor!","join_with_code":"Kurumsal Kod ile Kat\u0131l","enter_company_code":"\u015eirketinizin kodunu girin","code_placeholder":"8 haneli kurumsal kod","case_insensitive":"B\u00fcy\u00fck\/k\u00fc\u00e7\u00fck harf farketmez","join":"Kat\u0131l","checking":"Kontrol ediliyor...","no_code_question":"Kurumsal kodunuz yok mu?","learn_about_corporate":"Kurumsal Muzibu hakk\u0131nda bilgi al","back_to_dashboard":"Panelime D\u00f6n","create_corporate":"Kurumsal Hesap Olu\u015ftur","apply_for_company":"\u015eirketiniz i\u00e7in ba\u015fvurun","create_corporate_desc":"\u015eirketiniz i\u00e7in kurumsal hesap olu\u015fturmak ve \u00f6zel fiyatland\u0131rma almak i\u00e7in bizimle ileti\u015fime ge\u00e7in.","contact_us":"\u0130leti\u015fime Ge\u00e7","corporate_panel":"Kurumsal Y\u00f6netim Paneli","total_members":"Toplam \u00dcye","total_listening":"Toplam Dinleme","this_week":"Bu Hafta","total_duration":"Toplam S\u00fcre","hours":"saat","corporate_code":"Kurumsal Davet Kodu","share_code_desc":"Bu kodu \u00e7al\u0131\u015fanlar\u0131n\u0131zla payla\u015farak onlar\u0131 kurumunuza davet edin.","copy":"Kopyala","copy_code":"Kodu Kopyala","show_qr":"QR Kod G\u00f6ster","code_copied":"Kod kopyaland\u0131!","new_code_created":"Yeni kod olu\u015fturuldu!","regenerate_code":"Yeni Kod Olu\u015ftur","regenerate_confirm":"Kurumsal kodu yenilemek istedi\u011finize emin misiniz? Eski kod art\u0131k \u00e7al\u0131\u015fmayacak.","corporate_members":"Kurumsal \u00dcyeler","members_count":":count \u00fcye","no_members_yet":"Hen\u00fcz \u00fcye yok","invite_members":"Kurumsal kodunuzu payla\u015farak \u00fcye davet edin.","last_played":"Son Dinlenen","no_listening_yet":"Hen\u00fcz dinleme yok","listening_count":"dinleme","branch_name":"\u015eube Ad\u0131","edit_branch_name":"\u015eube Ad\u0131n\u0131 D\u00fczenle","branch_name_placeholder":"\u015eube ad\u0131 (\u00f6rn: \u0130stanbul Ofisi)","branch_name_updated":"\u015eube ad\u0131 g\u00fcncellendi!","actions":"\u0130\u015flemler","remove_member":"\u00c7\u0131kar","remove_confirm":":name kullan\u0131c\u0131s\u0131n\u0131 kurumsal hesaptan \u00e7\u0131karmak istedi\u011finize emin misiniz?","member_removed":":name kurumsal hesaptan \u00e7\u0131kar\u0131ld\u0131.","my_corporate":"Kurumsal \u00dcyeli\u011fim","connected_company":"Ba\u011fl\u0131 oldu\u011funuz kurum bilgileri","join_date":"Kat\u0131l\u0131m Tarihi","company_owner":"Kurum Sahibi","active":"Aktif","passive":"Pasif","premium_benefits":"Premium Avantajlar\u0131","thanks_to_corporate":"Kurumsal \u00fcyeli\u011finiz sayesinde","unlimited_listening":"S\u0131n\u0131rs\u0131z \u015fark\u0131 dinleme","no_ads":"Reklams\u0131z deneyim","high_quality":"Y\u00fcksek kaliteli ses","unlimited_playlists":"S\u0131n\u0131rs\u0131z playlist olu\u015fturma","go_to_dashboard":"Panelime Git","leave_corporate":"Kurumdan Ayr\u0131l","leave_warning":"Kurumdan ayr\u0131ld\u0131\u011f\u0131n\u0131zda Premium avantajlar\u0131n\u0131z\u0131 kaybedersiniz.","leave_confirm":"Kurumdan ayr\u0131lmak istedi\u011finize emin misiniz?\\n\\nPremium avantajlar\u0131n\u0131z\u0131 kaybedeceksiniz.","left_corporate":":company hesab\u0131ndan ayr\u0131ld\u0131n\u0131z.","joined_corporate":":company hesab\u0131na ba\u015far\u0131yla kat\u0131ld\u0131n\u0131z!","invalid_code":"Ge\u00e7ersiz veya aktif olmayan kurumsal kod.","already_in_corporate":"Zaten bir kurumsal hesaba ba\u011fl\u0131s\u0131n\u0131z.","corporate_not_found":"Kurumsal hesap bulunamad\u0131.","no_permission":"Yetkiniz yok.","member_not_found":"\u00dcye bulunamad\u0131.","no_corporate_to_leave":"Ayr\u0131lacak kurumsal hesap bulunamad\u0131.","error_occurred":"Bir hata olu\u015ftu.","save":"Kaydet","cancel":"\u0130ptal","dashboard":"Panelim"}},
+            isLoggedIn: true,
+            currentUser:                                 {
+                id: 1,
+                name: "Nurullah",
+                email: "nurullah@nurullah.net",
+                is_premium: true,
+                is_root: true,
+                subscription_ends_at: "2026-02-11T16:39:37+03:00"
+            }
+            ,
+            
+            tenantId: 1001,
+            // 🔥 Config values (Muzibu module)
+                            deviceLimit: 5,
+                        sessionPollingInterval: 30000,
+            crossfadeDuration: 7000
+        };
+
+        // 🔐 CSRF Token Auto-Renewal (419 hatası önleme)
+        if (typeof axios !== 'undefined') {
+            // Axios CSRF interceptor
+            axios.interceptors.response.use(
+                response => response,
+                async error => {
+                    // CSRF token mismatch (419)
+                    if (error.response?.status === 419) {
+                        console.warn('🔐 CSRF token expired, refreshing...');
+
+                        try {
+                            // Yeni token al
+                            await axios.get('/sanctum/csrf-cookie');
+
+                            // Meta tag güncelle
+                            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                            if (token) {
+                                axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+                            }
+
+                            // Orijinal isteği tekrar gönder
+                            return axios(error.config);
+                        } catch (refreshError) {
+                            console.error('❌ CSRF token refresh failed:', refreshError);
+                            return Promise.reject(error);
+                        }
+                    }
+                    return Promise.reject(error);
+                }
+            );
+
+            // Initial CSRF token setup
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (token) {
+                axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+                axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            }
+        }
+
+        // Mobile Menu Toggle - Enhanced for Mobile & Tablet
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('leftSidebar');
+            const overlay = document.querySelector('.muzibu-mobile-overlay');
+            const hamburger = document.getElementById('hamburgerIcon');
+            const isOpen = sidebar.classList.contains('active');
+
+            if (isOpen) {
+                // Close
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                if (hamburger) hamburger.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                // Open
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                if (hamburger) hamburger.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('leftSidebar');
+            const overlay = document.querySelector('.muzibu-mobile-overlay');
+            const hamburger = document.getElementById('hamburgerIcon');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            if (hamburger) hamburger.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ESC key to close mobile menu
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('leftSidebar');
+                if (sidebar && sidebar.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            }
+        });
+
+        // Close mobile menu when clicking on nav links (SPA friendly)
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('#leftSidebar a[href]');
+            if (link && window.innerWidth < 1024) {
+                closeMobileMenu();
+            }
+        });
+
+        // Close mobile menu on resize to desktop (fixes overlay stuck bug)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (window.innerWidth >= 1024) {
+                    closeMobileMenu();
+                }
+            }, 100);
+        });
+
+
+        // 🌍 CONTEXT MENU TYPE TÜRKÇELEŞTIRME
+        window.getContextTypeLabel = function(type) {
+            const labels = {
+                'song': 'Şarkı',
+                'album': 'Albüm',
+                'playlist': 'Playlist',
+                'my-playlist': 'Playlistim',
+                'genre': 'Tür',
+                'sector': 'Sektör',
+                'radio': 'Radyo',
+                'artist': 'Sanatçı'
+            };
+            return labels[type] || type;
+        };
+
+        // 🔐 SAĞ TUŞ KORUMASI - Sadece root kullanıcı boşluk alanlarda sağ tuşa ulaşabilir
+        document.addEventListener('contextmenu', (e) => {
+            // Root kullanıcı mı kontrol et
+            const isRoot = window.muzibuPlayerConfig?.currentUser?.is_root ?? false;
+
+            // Root kullanıcı ise → Her yerde sağ tuş açık
+            if (isRoot) {
+                return;
+            }
+
+            // Root değil → Context menu'ye sahip elementleri kontrol et
+            const allowedSelectors = [
+                '.song-card',
+                '.album-card',
+                '.playlist-card',
+                '.artist-card',
+                '.genre-card',
+                '.sector-card',
+                '.radio-card',
+                '.song-row',
+                '.song-list-item',
+                '.song-detail-row',
+                '.song-simple-row',
+                '.song-history-row',
+                '.my-playlist-card',
+                '.playlist-quick-card',
+                '.genre-quick-card'
+            ];
+
+            // Tıklanan element veya parent'ları allowed mi?
+            let element = e.target;
+            let isAllowed = false;
+
+            // Parent'lara doğru tara (max 5 level)
+            for (let i = 0; i < 5 && element && element !== document.body; i++) {
+                if (allowedSelectors.some(selector => element.matches?.(selector))) {
+                    isAllowed = true;
+                    break;
+                }
+                element = element.parentElement;
+            }
+
+            // İzinli değilse → Sağ tuşu engelle
+            if (!isAllowed) {
+                e.preventDefault();
+            }
+        }, true); // Capture phase - önce bu çalışır
+    </script>
+
+    
+    <script>
+        // ✅ FIX: Prevent Alpine.js multiple initialization ($nextTick redefine error)
+        document.addEventListener('livewire:navigated', () => {
+            if (!window.Alpine) return;
+
+            // 🎯 Use Alpine's built-in mutateDom to safely initialize new components
+            // This prevents magic property redefinition errors
+            setTimeout(() => {
+                window.Alpine.mutateDom(() => {
+                    // Only initialize uninitialized elements
+                    document.querySelectorAll('[x-data]:not([data-alpine-initialized])').forEach(el => {
+                        try {
+                            window.Alpine.initTree(el);
+                            el.setAttribute('data-alpine-initialized', 'true');
+                        } catch (e) {
+                            // Silently ignore already initialized elements
+                            if (!e.message?.includes('redefine') && !e.message?.includes('already')) {
+                                console.warn('Alpine init warning:', e.message);
+                            }
+                        }
+                    });
+                });
+            }, 50);
+        });
+
+        // 🎵 Player Store Registration - ULTIMATE FIX (Proxy Pattern - auto-forward everything)
+        // Strategy: Use JavaScript Proxy to auto-forward ALL properties/methods to root $data
+        document.addEventListener('alpine:initialized', () => {
+            const htmlEl = document.querySelector('html');
+
+            // Wait for Alpine to fully initialize the root component
+            setTimeout(() => {
+                const getRootData = () => {
+                    // Try multiple ways to get root data
+                    if (htmlEl._x_dataStack && htmlEl._x_dataStack[0]) {
+                        return htmlEl._x_dataStack[0];
+                    }
+                    // Fallback: Alpine might expose it differently
+                    return window.Alpine?.$data?.(htmlEl);
+                };
+
+                // Create Proxy that forwards everything to root
+                const playerProxy = new Proxy({}, {
+                    get(target, prop) {
+                        const rootData = getRootData();
+                        if (!rootData) {
+                            console.error('❌ Root data not accessible, prop:', prop);
+                            return undefined;
+                        }
+
+                        const value = rootData[prop];
+
+                        // Debug log for missing methods
+                        if (value === undefined && (prop === 'playPlaylist' || prop === 'playAlbum' || prop === 'playGenre')) {
+                            console.error(`❌ Method ${prop} not found in root data. Available methods:`, Object.keys(rootData).filter(k => typeof rootData[k] === 'function'));
+                        }
+
+                        // If it's a function, bind it to root context
+                        if (typeof value === 'function') {
+                            return value.bind(rootData);
+                        }
+
+                        return value;
+                    },
+                    set(target, prop, value) {
+                        const rootData = getRootData();
+                        if (rootData) {
+                            rootData[prop] = value;
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+
+                window.Alpine.store('player', playerProxy);
+            }, 100); // Small delay to ensure Alpine root is ready
+        });
+
+        // Context menu store kontrolü
+        document.addEventListener('alpine:initialized', () => {
+            if (!window.Alpine.store('contextMenu')) {
+                console.error('❌ Context Menu Store not found!');
+            }
+
+            // Player store da kontrol et
+            if (!window.Alpine.store('player')) {
+                console.error('❌ Player Store not found!');
+            }
+        });
+    </script>
+
+        
+    <script src="https://muzibu.com.tr/themes/muzibu/js/context-menu/init.js?v=1764969102"></script>
+    
+        
+    <script>
+        document.addEventListener('alpine:init', () => {
+            if (!Alpine.data('horizontalScroll')) {
+                Alpine.data('horizontalScroll', () => ({
+                    scrollContainer: null,
+                    scrollInterval: null,
+                    init() {
+                        this.scrollContainer = this.$refs.scrollContainer;
+                    },
+                    scrollLeft() {
+                        this.scrollContainer?.scrollBy({ left: -400, behavior: 'smooth' });
+                    },
+                    scrollRight() {
+                        this.scrollContainer?.scrollBy({ left: 400, behavior: 'smooth' });
+                    },
+                    startAutoScroll(direction) {
+                        this.scrollInterval = setInterval(() => {
+                            this.scrollContainer?.scrollBy({ left: direction === 'right' ? 20 : -20 });
+                        }, 50);
+                    },
+                    stopAutoScroll() {
+                        if (this.scrollInterval) {
+                            clearInterval(this.scrollInterval);
+                            this.scrollInterval = null;
+                        }
+                    }
+                }));
+            }
+        });
+    </script>
+    
+    
+    <script>
+    // Register Service Worker for PWA installability
+    if ('serviceWorker' in navigator && document.readyState === 'complete') {
+        try {
+            navigator.serviceWorker.register('/sw.js')
+                .catch((error) => {
+                    // Suppress error from console (likely ad blocker)
+                    if (error.name !== 'InvalidStateError') {
+                        console.error('[PWA] SW registration failed:', error);
+                    }
+                });
+        } catch (e) {
+            // Suppress InvalidStateError silently
+        }
+    } else if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            try {
+                navigator.serviceWorker.register('/sw.js')
+                    .catch((error) => {
+                        if (error.name !== 'InvalidStateError') {
+                            console.error('[PWA] SW registration failed:', error);
+                        }
+                    });
+            } catch (e) {
+                // Suppress InvalidStateError silently
+            }
+        });
+    }
+</script>
+
+    
+    <div x-data="createPlaylistModal()"
+     x-show="open"
+     x-cloak
+     @open-create-playlist.window="openModal()"
+     @open-create-playlist-modal.window="openModal()"
+     @keydown.escape.window="closeModal()"
+     class="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
+
+    
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="closeModal()"></div>
+
+    
+    <div class="relative w-full sm:max-w-md bg-slate-900 border-t sm:border border-white/10 rounded-t-3xl sm:rounded-2xl shadow-2xl"
+         x-data="{ startY: 0, currentY: 0, isDragging: false }"
+         :style="isDragging && currentY > 0 ? `transform: translateY(${currentY}px); opacity: ${Math.max(0.5, 1 - currentY/200)}` : ''"
+         x-show="open"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+         x-transition:leave-end="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
+         @click.stop>
+
+        
+        <div class="sm:hidden flex justify-center pt-3 pb-2 touch-none"
+             style="overscroll-behavior: contain;"
+             @touchstart="startY = $event.touches[0].clientY; isDragging = true; currentY = 0"
+             @touchmove.prevent="if(isDragging) { currentY = Math.max(0, $event.touches[0].clientY - startY); }"
+             @touchend="if(currentY > 80) { closeModal(); } isDragging = false; currentY = 0;">
+            <div class="w-12 h-1.5 bg-zinc-600 rounded-full"></div>
+        </div>
+
+        
+        <div class="flex items-center justify-between px-6 py-4 sm:p-6 border-b border-white/10 touch-none sm:touch-auto"
+             style="overscroll-behavior: contain;"
+             @touchstart="startY = $event.touches[0].clientY; isDragging = true; currentY = 0"
+             @touchmove.prevent="if(isDragging) { currentY = Math.max(0, $event.touches[0].clientY - startY); }"
+             @touchend="if(currentY > 80) { closeModal(); } isDragging = false; currentY = 0;">
+            <h3 class="text-xl font-bold text-white">
+                <i class="fas fa-plus mr-2 text-green-400"></i>
+                Playlist Oluştur
+            </h3>
+            <button @click="closeModal()" class="text-gray-400 hover:text-white transition">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+        </div>
+
+        
+        <form @submit.prevent="createPlaylist()" class="p-6 space-y-4">
+            
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">Çalma Listesi Adı</label>
+                <input type="text" x-model="title" required
+                       placeholder="Playlistinize bir isim verin"
+                       class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition">
+            </div>
+
+            
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">Açıklama (Opsiyonel)</label>
+                <textarea x-model="description" rows="3"
+                          placeholder="Playlist hakkında kısa bir açıklama"
+                          class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition resize-none"></textarea>
+            </div>
+
+            
+            <div>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" x-model="isPublic"
+                           class="w-5 h-5 rounded border-white/20 bg-white/5 text-green-500 focus:ring-green-500 focus:ring-offset-0">
+                    <span class="text-gray-300">Herkese Açık</span>
+                </label>
+                <p class="text-xs text-gray-500 mt-1 ml-8">
+                    Herkese açık playlistler diğer kullanıcılar tarafından görülebilir.
+                </p>
+            </div>
+
+            
+            <div class="flex gap-3 pt-4">
+                <button type="button" @click="closeModal()"
+                        class="flex-1 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition">
+                    İptal
+                </button>
+                <button type="submit" :disabled="loading || !title.trim()"
+                        class="flex-1 py-3 bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition">
+                    <span x-show="!loading">Oluştur</span>
+                    <span x-show="loading"><i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    
+    <script>
+    document.addEventListener('alpine:init', () => {
+        if (!Alpine.data('createPlaylistModal')) {
+            Alpine.data('createPlaylistModal', () => ({
+                open: false,
+                loading: false,
+                title: '',
+                description: '',
+                isPublic: true,
+
+                openModal() {
+                    this.open = true;
+                    this.title = '';
+                    this.description = '';
+                    this.isPublic = true;
+                },
+
+                closeModal() {
+                    this.open = false;
+                },
+
+                async createPlaylist() {
+                    if (!this.title.trim()) return;
+
+                    this.loading = true;
+
+                    try {
+                        const response = await fetch('/api/muzibu/playlists/quick-create', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                title: this.title,
+                                description: this.description,
+                                is_public: this.isPublic,
+                                song_ids: []
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success || data.playlist) {
+                            const newPlaylist = data.playlist || data.data;
+
+                            if (window.$store?.toast) {
+                                window.$store.toast.show('Playlist oluşturuldu!', 'success');
+                            }
+                            this.closeModal();
+
+                            // 🎯 SPA: Dispatch event for playlist-created
+                            window.dispatchEvent(new CustomEvent('playlist-created', {
+                                detail: { playlist: newPlaylist }
+                            }));
+
+                            // 🎯 Check if playlistModal had pending context (song/album adding flow)
+                            const pendingContext = window._playlistModalPendingContext;
+                            if (pendingContext && pendingContext.contentType) {
+                                // Clear pending context
+                                window._playlistModalPendingContext = null;
+
+                                // Reopen playlistModal with the same content
+                                const playlistModal = Alpine.store('playlistModal');
+                                if (playlistModal) {
+                                    setTimeout(() => {
+                                        if (pendingContext.contentType === 'song') {
+                                            playlistModal.showForSong(pendingContext.contentId, pendingContext.contentData);
+                                        } else if (pendingContext.contentType === 'album') {
+                                            playlistModal.showForAlbum(pendingContext.contentId, pendingContext.contentData);
+                                        }
+                                    }, 300);
+                                }
+                            } else {
+                                // No pending context - check if on my-playlists page
+                                const currentPath = window.location.pathname;
+                                if (currentPath.includes('my-playlists')) {
+                                    setTimeout(() => window.location.reload(), 500);
+                                }
+                            }
+                        } else {
+                            throw new Error(data.message || 'Bir hata oluştu');
+                        }
+                    } catch (error) {
+                        if (window.$store?.toast) {
+                            window.$store.toast.show(error.message || 'Bir hata oluştu', 'error');
+                        } else {
+                            alert(error.message || 'Bir hata oluştu');
+                        }
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            }));
+        }
+    });
+    </script>

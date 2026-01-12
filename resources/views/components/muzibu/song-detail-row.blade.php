@@ -123,4 +123,3 @@
         </button>
     </div>
 </div>
-<\!-- TEST: MODULES VERSION -->

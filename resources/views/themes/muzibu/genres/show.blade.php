@@ -1,53 +1,78 @@
 @extends('themes.muzibu.layouts.app')
 
 @section('content')
-<div class="px-4 py-6 sm:px-6 sm:py-8">
-    {{-- Genre Header - Responsive --}}
-    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8">
-        @php
-            $heroMedia = $genre->getFirstMedia('hero');
-            $iconUrl = $heroMedia ? thumb($heroMedia, 300, 300, ['scale' => 1]) : null;
-        @endphp
-        @if($iconUrl)
-            <img src="{{ $iconUrl }}"
+{{-- Hero Section - Full Width Background Image (Spotify Mobile Style) --}}
+<div class="relative overflow-hidden">
+    @php
+        $heroMedia = $genre->getFirstMedia('hero');
+        $heroUrl = $heroMedia ? thumb($heroMedia, 1200, 800, ['scale' => 1]) : null;
+    @endphp
+    {{-- Full Width Background Image --}}
+    @if($heroUrl)
+        <div class="relative w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9]">
+            <img src="{{ $heroUrl }}"
                  alt="{{ $genre->getTranslation('title', app()->getLocale()) }}"
-                 class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 object-cover rounded-lg shadow-2xl flex-shrink-0">
-        @else
-            <div class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center text-4xl sm:text-5xl md:text-6xl shadow-2xl flex-shrink-0">
-                🎸
+                 class="w-full h-full object-cover">
+            {{-- Gradient Overlay --}}
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+
+            {{-- Action Buttons - Top Right --}}
+            <div class="absolute top-4 right-4 flex items-center gap-3">
+                <x-common.favorite-button :model="$genre" size="lg" />
+                {{-- Play Button --}}
+                <button
+                    @click="$dispatch('play-all-songs', { genreId: {{ $genre->genre_id }} })"
+                    class="w-14 h-14 bg-muzibu-coral hover:scale-105 active:scale-95 rounded-full flex items-center justify-center shadow-xl transition-all">
+                    <i class="fas fa-play text-white text-xl ml-1"></i>
+                </button>
             </div>
-        @endif
 
-        <div class="flex-1 w-full sm:min-w-0 text-center sm:text-left pb-0 sm:pb-4">
-            <p class="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">Tür</p>
-            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 truncate">
-                {{ $genre->getTranslation('title', app()->getLocale()) }}
-            </h1>
-
-            @if($genre->description)
-                <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-2 line-clamp-2">
-                    {{ $genre->getTranslation('description', app()->getLocale()) }}
-                </p>
-            @endif
-
-            <p class="text-sm text-gray-400">
-                {{ $playlists->count() }} playlist
-            </p>
+            {{-- Content - Bottom Left --}}
+            <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+                <p class="text-xs font-bold text-muzibu-coral uppercase tracking-widest mb-1">Tür</p>
+                <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white mb-2 leading-tight drop-shadow-lg">
+                    {{ $genre->getTranslation('title', app()->getLocale()) }}
+                </h1>
+                @if($genre->description)
+                    <p class="text-sm text-white/80 mb-2 line-clamp-2 max-w-2xl">
+                        {{ clean_html($genre->getTranslation('description', app()->getLocale())) }}
+                    </p>
+                @endif
+                <p class="text-sm text-white/70">{{ $playlists->count() }} playlist</p>
+            </div>
         </div>
-    </div>
+    @else
+        {{-- Fallback if no hero --}}
+        <div class="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-br from-green-900 to-slate-900">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-8xl">🎸</span>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
 
-    {{-- Actions --}}
-    <div class="flex items-center justify-center sm:justify-start gap-4 mb-6 sm:mb-8">
-        <button class="w-12 h-12 sm:w-14 sm:h-14 bg-muzibu-coral hover:bg-opacity-90 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all">
-            <i class="fas fa-play text-white text-lg sm:text-xl ml-1"></i>
-        </button>
+            {{-- Action Buttons --}}
+            <div class="absolute top-4 right-4 flex items-center gap-3">
+                <x-common.favorite-button :model="$genre" size="lg" />
+                <button
+                    @click="$dispatch('play-all-songs', { genreId: {{ $genre->genre_id }} })"
+                    class="w-14 h-14 bg-muzibu-coral rounded-full flex items-center justify-center shadow-xl">
+                    <i class="fas fa-play text-white text-xl ml-1"></i>
+                </button>
+            </div>
 
-        <div @click.stop>
-            <x-common.favorite-button :model="$genre" />
+            {{-- Content --}}
+            <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+                <p class="text-xs font-bold text-muzibu-coral uppercase tracking-widest mb-1">Tür</p>
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-white mb-2">
+                    {{ $genre->getTranslation('title', app()->getLocale()) }}
+                </h1>
+                <p class="text-sm text-white/70">{{ $playlists->count() }} playlist</p>
+            </div>
         </div>
-    </div>
+    @endif
+</div>
 
-    {{-- PLAYLİSTLER BÖLÜMÜ --}}
+{{-- Playlists Section --}}
+<div class="px-4 sm:px-6 pt-6">
     @if($playlists && $playlists->count() > 0)
         <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
             @foreach($playlists as $playlist)
@@ -55,8 +80,12 @@
             @endforeach
         </div>
     @else
-        <div class="text-center py-12">
-            <p class="text-gray-400">Bu türde henüz playlist yok</p>
+        <div class="text-center py-16 sm:py-20">
+            <div class="mb-6">
+                <i class="fas fa-music text-gray-600 text-5xl sm:text-6xl"></i>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Bu türde henüz playlist yok</h3>
+            <p class="text-sm sm:text-base text-gray-400">Yakında yeni playlistler eklenecek</p>
         </div>
     @endif
 </div>

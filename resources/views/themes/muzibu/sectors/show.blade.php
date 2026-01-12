@@ -1,44 +1,67 @@
 @extends('themes.muzibu.layouts.app')
 
 @section('content')
-<div class="px-4 py-6 sm:px-6 sm:py-8">
-    {{-- Sector Header - Responsive --}}
-    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8">
-        @if($sector->getCoverUrl())
-            <img src="{{ $sector->getCoverUrl(300, 300) }}"
+{{-- Hero Section - Full Width Background Image (Spotify Mobile Style) --}}
+<div class="relative overflow-hidden">
+    @php
+        $heroMedia = $sector->getFirstMedia('hero');
+        $heroUrl = $heroMedia ? thumb($heroMedia, 1200, 800, ['scale' => 1]) : null;
+    @endphp
+    {{-- Full Width Background Image --}}
+    @if($heroUrl)
+        <div class="relative w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9]">
+            <img src="{{ $heroUrl }}"
                  alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
-                 class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 object-cover rounded-lg shadow-2xl flex-shrink-0">
-        @else
-            <div class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center text-4xl sm:text-5xl md:text-6xl shadow-2xl flex-shrink-0">
-                🎭
+                 class="w-full h-full object-cover">
+            {{-- Gradient Overlay --}}
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+
+            {{-- Action Buttons - Top Right --}}
+            <div class="absolute top-4 right-4 flex items-center gap-3">
+                <x-common.favorite-button :model="$sector" size="lg" />
             </div>
-        @endif
 
-        <div class="flex-1 w-full sm:min-w-0 text-center sm:text-left pb-0 sm:pb-4">
-            <p class="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">Sektör</p>
-            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 truncate">
-                {{ $sector->getTranslation('title', app()->getLocale()) }}
-            </h1>
-
-            @if($sector->description)
-                <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-2 line-clamp-2">
-                    {{ $sector->getTranslation('description', app()->getLocale()) }}
-                </p>
-            @endif
-
-            <p class="text-sm text-gray-400">
-                {{ $playlists->count() }} playlist
-            </p>
+            {{-- Content - Bottom Left --}}
+            <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+                <p class="text-xs font-bold text-muzibu-coral uppercase tracking-widest mb-1">Sektör</p>
+                <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white mb-2 leading-tight drop-shadow-lg">
+                    {{ $sector->getTranslation('title', app()->getLocale()) }}
+                </h1>
+                @if($sector->description)
+                    <p class="text-sm text-white/80 mb-2 line-clamp-2 max-w-2xl">
+                        {{ clean_html($sector->getTranslation('description', app()->getLocale())) }}
+                    </p>
+                @endif
+                <p class="text-sm text-white/70">{{ $playlists->count() }} playlist</p>
+            </div>
         </div>
-    </div>
+    @else
+        {{-- Fallback if no hero --}}
+        <div class="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-br from-pink-900 to-slate-900">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-8xl">🎭</span>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
 
-    {{-- Actions --}}
-    <div class="flex items-center justify-center sm:justify-start gap-4 mb-6 sm:mb-8">
-        <div @click.stop>
-            <x-common.favorite-button :model="$sector" />
+            {{-- Action Buttons --}}
+            <div class="absolute top-4 right-4 flex items-center gap-3">
+                <x-common.favorite-button :model="$sector" size="lg" />
+            </div>
+
+            {{-- Content --}}
+            <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+                <p class="text-xs font-bold text-muzibu-coral uppercase tracking-widest mb-1">Sektör</p>
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-white mb-2">
+                    {{ $sector->getTranslation('title', app()->getLocale()) }}
+                </h1>
+                <p class="text-sm text-white/70">{{ $playlists->count() }} playlist</p>
+            </div>
         </div>
-    </div>
+    @endif
+</div>
 
+{{-- Content Section --}}
+<div class="px-4 sm:px-6 pt-6">
     {{-- RADYOLAR BÖLÜMÜ (Üstte) --}}
     @if(isset($radios) && $radios->count() > 0)
         <div class="mb-8 sm:mb-12">
@@ -69,8 +92,12 @@
             </div>
         </div>
     @else
-        <div class="text-center py-12">
-            <p class="text-gray-400">Bu sektörde henüz playlist yok</p>
+        <div class="text-center py-16 sm:py-20">
+            <div class="mb-6">
+                <i class="fas fa-music text-gray-600 text-5xl sm:text-6xl"></i>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Bu sektörde henüz playlist yok</h3>
+            <p class="text-sm sm:text-base text-gray-400">Yakında yeni playlistler eklenecek</p>
         </div>
     @endif
 </div>

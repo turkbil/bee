@@ -2,6 +2,28 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* 📱 iOS/Safari Scroll Fix - Eski cihazlar için */
+html, body {
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overscroll-behavior: none;
+}
+
 /* GRID LAYOUT - Default (XL/XXL - > 1280px) */
 .muzibu-app {
     display: grid;
@@ -239,8 +261,17 @@
     background: #121212;
     padding: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: scroll-position;
+    contain: layout;
+    scroll-behavior: auto;
 }
 
 .muzibu-top-pills {

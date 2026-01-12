@@ -239,6 +239,8 @@
     background: #121212;
     padding: 0;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 .muzibu-top-pills {

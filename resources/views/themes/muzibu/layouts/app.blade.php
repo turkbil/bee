@@ -1217,6 +1217,7 @@
             }, 100);
         });
 
+
         // 🌍 CONTEXT MENU TYPE TÜRKÇELEŞTIRME
         window.getContextTypeLabel = function(type) {
             const labels = {

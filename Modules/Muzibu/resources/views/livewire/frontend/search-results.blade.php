@@ -160,7 +160,7 @@
                     @endif
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         @foreach($sectors as $sector)
-                            <x-muzibu.sector-card :sector="$sector" :preview="true" />
+                            <x-muzibu.sector-card :sector="$sector" :preview="false" />
                         @endforeach
                     </div>
                 </div>

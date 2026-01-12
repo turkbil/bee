@@ -12,7 +12,7 @@ class AlbumController extends Controller
 {
     public function index()
     {
-        // Only show albums with at least 1 active song (alfabetik sıralı)
+        // Only show albums with at least 1 active song (son ekleme tarihine göre)
         $albums = Album::with(['artist', 'coverMedia'])
             ->where('is_active', 1)
             ->whereHas('songs', function($q) {
@@ -21,7 +21,7 @@ class AlbumController extends Controller
             ->withCount(['songs' => function($q) {
                 $q->where('is_active', 1);
             }])
-            ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
+            ->orderBy('created_at', 'desc')
             ->paginate(40);
 
         // Set custom pagination view
@@ -61,7 +61,7 @@ class AlbumController extends Controller
 
     public function apiIndex()
     {
-        // Only show albums with at least 1 active song
+        // Only show albums with at least 1 active song (son ekleme tarihine göre)
         $albums = Album::with(['artist', 'coverMedia'])
             ->where('is_active', 1)
             ->whereHas('songs', function($q) {
@@ -70,7 +70,7 @@ class AlbumController extends Controller
             ->withCount(['songs' => function($q) {
                 $q->where('is_active', 1);
             }])
-            ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
+            ->orderBy('created_at', 'desc')
             ->paginate(40);
         $html = view('themes.muzibu.partials.albums-grid', compact('albums'))->render();
 

@@ -860,6 +860,9 @@ class PublicAIController extends Controller
             }
 
             // Build context options for orchestrator
+            // 🔐 Tenant-aware: Kullanıcı context bilgisi (her tenant kendi helper'ını kullanır)
+            $userSubscriptionContext = \Modules\AI\App\Services\TenantServiceFactory::getUserSubscriptionContext();
+
             $contextOptions = [
                 'product_id' => $validated['product_id'] ?? null,
                 'category_id' => $validated['category_id'] ?? null,
@@ -868,6 +871,7 @@ class PublicAIController extends Controller
                 'user_message' => $validated['message'], // ✅ Pass message for smart search
                 'smart_search_results' => $smartSearchResults, // ✅ Include search results
                 'user_sentiment' => $userSentiment, // ✅ Include sentiment analysis
+                'user_subscription' => $userSubscriptionContext, // 🔐 Tenant-aware abonelik durumu
             ];
 
             // DEBUG: Smart search results

@@ -1,8 +1,13 @@
 <?php
 /**
+ * ⚠️ BU DOSYAYI SİLME! - GOOGLE İÇİN ÖNEMLİ!
+ *
  * Google Shopping Feed Endpoint
  * Google Merchant Center için ürün feed'i oluşturur
  * Her domain için otomatik tenant algılaması yapılır
+ *
+ * URL: /productfeed.php
+ * Kullanım: Google Merchant Center'da feed URL olarak tanımlanır
  */
 
 header('Content-Type: application/xml; charset=utf-8');

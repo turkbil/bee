@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="frame-src https://www.paytr.com; script-src 'self' 'unsafe-inline' https://www.paytr.com;">
     <title>{{ setting('site_title', setting('site_name', config('app.name'))) }} - Ödeme</title>
 
     <style>
@@ -26,7 +28,8 @@
     id="paytriframe"
     frameborder="0"
     scrolling="auto"
-    allow="payment">
+    allow="payment; storage-access; clipboard-write"
+    allowfullscreen>
 </iframe>
 
 <script>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Buton Test Simülasyonu | Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-6xl mx-auto p-6">
+
+        <!-- Header -->
+        <header class="mb-8 text-center">
+            <span class="inline-block px-3 py-1 bg-blue-600 rounded-full text-sm mb-4">Test Simülasyonu</span>
+            <h1 class="text-3xl font-bold mb-2">AI Buton Test Simülasyonu</h1>
+            <p class="text-slate-400">11 Ocak 2026 - Muzibu Tenant 1001</p>
+        </header>
+
+        <!-- Flow Diagram -->
+        <section class="mb-8 bg-slate-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-diagram-project text-purple-400"></i>
+                Sistem Akışı
+            </h2>
+            <div class="flex flex-wrap items-center justify-center gap-4 text-center">
+                <div class="bg-purple-900/30 rounded-lg p-4 min-w-[150px]">
+                    <div class="text-purple-400 text-2xl mb-2"><i class="fas fa-robot"></i></div>
+                    <div class="font-bold">AI (Claude)</div>
+                    <div class="text-xs text-slate-400">Markdown üretir</div>
+                </div>
+                <i class="fas fa-arrow-right text-slate-500"></i>
+                <div class="bg-blue-900/30 rounded-lg p-4 min-w-[150px]">
+                    <div class="text-blue-400 text-2xl mb-2"><i class="fas fa-code"></i></div>
+                    <div class="font-bold">parseMarkdown()</div>
+                    <div class="text-xs text-slate-400">HTML'e çevirir</div>
+                </div>
+                <i class="fas fa-arrow-right text-slate-500"></i>
+                <div class="bg-green-900/30 rounded-lg p-4 min-w-[150px]">
+                    <div class="text-green-400 text-2xl mb-2"><i class="fas fa-eye"></i></div>
+                    <div class="font-bold">Kullanıcı</div>
+                    <div class="text-xs text-slate-400">Tıklanabilir butonlar</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simulation 1: Single Song -->
+        <section class="mb-8 bg-slate-800/50 rounded-xl overflow-hidden">
+            <div class="bg-blue-900/30 px-6 py-3 border-b border-slate-700">
+                <h2 class="font-bold flex items-center gap-2">
+                    <i class="fas fa-music text-blue-400"></i>
+                    Simülasyon 1: Tek Şarkı Önerisi
+                </h2>
+            </div>
+            <div class="p-6 space-y-6">
+
+                <!-- Step 1: AI Output -->
+                <div>
+                    <h3 class="text-sm font-semibold text-purple-400 mb-2">1️⃣ AI Üretir (Markdown):</h3>
+                    <pre class="bg-slate-900 rounded-lg p-4 text-sm overflow-x-auto text-green-400"><code>### 🎵 Aşk Laftan Anlamaz
+🎤 Sezen Aksu • 📀 Gülümse • ⏱️ 4:23 • 🎸 Pop
+
+[▶️](#play-song-123) [❤️](#fav-song-123) [➕](#add-song-123)</code></pre>
+                </div>
+
+                <!-- Step 2: Regex Match -->
+                <div>
+                    <h3 class="text-sm font-semibold text-blue-400 mb-2">2️⃣ JavaScript İşler (Regex):</h3>
+                    <div class="bg-slate-900 rounded-lg p-4 text-sm space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-400">[▶️](#play-song-123)</span>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <code class="text-cyan-400">/\[▶️\]\(#play-song-(\d+)\)/gi</code>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <span class="text-green-400">songId = 123</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-400">[❤️](#fav-song-123)</span>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <code class="text-cyan-400">/\[❤️\]\(#fav-song-(\d+)\)/gi</code>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <span class="text-green-400">songId = 123</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-400">[➕](#add-song-123)</span>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <code class="text-cyan-400">/\[➕\]\(#add-song-(\d+)\)/gi</code>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <span class="text-green-400">songId = 123</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: HTML Output -->
+                <div>
+                    <h3 class="text-sm font-semibold text-green-400 mb-2">3️⃣ Kullanıcı Görür (HTML):</h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h3 class="text-lg font-bold text-white mb-2">🎵 Aşk Laftan Anlamaz</h3>
+                        <p class="text-slate-300 mb-3">🎤 Sezen Aksu • 📀 Gülümse • ⏱️ 4:23 • 🎸 Pop</p>
+                        <div class="flex gap-2">
+                            <button class="inline-flex items-center justify-center w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors" title="Çal">
+                                <i class="fas fa-play text-xs"></i>
+                            </button>
+                            <button class="inline-flex items-center justify-center w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded transition-colors" title="Favorilere Ekle">
+                                <i class="fas fa-heart text-xs"></i>
+                            </button>
+                            <button class="inline-flex items-center justify-center w-8 h-8 bg-green-600 hover:bg-green-700 text-white rounded transition-colors" title="Playlist'e Ekle">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Click Handler -->
+                <div>
+                    <h3 class="text-sm font-semibold text-orange-400 mb-2">4️⃣ Tıklanınca (onclick):</h3>
+                    <div class="bg-slate-900 rounded-lg p-4 text-sm space-y-2">
+                        <div class="flex items-start gap-2">
+                            <span class="bg-blue-600 rounded px-2 py-1 text-xs">▶️</span>
+                            <code class="text-cyan-400">window.playContent('song', 123)</code>
+                            <span class="text-slate-400">→ Player başlar</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="bg-red-600 rounded px-2 py-1 text-xs">❤️</span>
+                            <code class="text-cyan-400">Alpine.store('tenant1001AI').handleAddToFavorites('song', 123)</code>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="bg-green-600 rounded px-2 py-1 text-xs">➕</span>
+                            <code class="text-cyan-400">Alpine.store('tenant1001AI').showAddToPlaylistModal(123)</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simulation 2: Table Format -->
+        <section class="mb-8 bg-slate-800/50 rounded-xl overflow-hidden">
+            <div class="bg-purple-900/30 px-6 py-3 border-b border-slate-700">
+                <h2 class="font-bold flex items-center gap-2">
+                    <i class="fas fa-table text-purple-400"></i>
+                    Simülasyon 2: Tablo Formatında Playlist
+                </h2>
+            </div>
+            <div class="p-6 space-y-6">
+
+                <!-- Step 1: AI Output -->
+                <div>
+                    <h3 class="text-sm font-semibold text-purple-400 mb-2">1️⃣ AI Üretir (Markdown Tablo):</h3>
+                    <pre class="bg-slate-900 rounded-lg p-4 text-sm overflow-x-auto text-green-400"><code>## 🎵 Enerjik Pop Mix | Muzibu AI
+📊 **3 şarkı** • ⏱️ **12 dk** • 🎸 **Pop**
+---
+
+| # | Şarkı | Sanatçı | Süre | |
+|:---:|:---|:---|:---:|:---:|
+| 1 | **Aşk Laftan Anlamaz** | Sezen Aksu | 4:23 | [▶️](#play-song-123) |
+| 2 | **Gülümse** | Sezen Aksu | 3:45 | [▶️](#play-song-124) |
+| 3 | **Firuze** | Sezen Aksu | 5:12 | [▶️](#play-song-125) |</code></pre>
+                </div>
+
+                <!-- Step 2: Processing -->
+                <div>
+                    <h3 class="text-sm font-semibold text-blue-400 mb-2">2️⃣ JavaScript İşler:</h3>
+                    <div class="bg-slate-900 rounded-lg p-4 text-sm space-y-3">
+                        <div>
+                            <span class="text-yellow-400">1. Tablo regex:</span>
+                            <code class="text-cyan-400 ml-2">/^\|(.+)\|$/gm</code>
+                            <span class="text-slate-400 ml-2">→ Her satırı yakalar</span>
+                        </div>
+                        <div>
+                            <span class="text-yellow-400">2. Separator temizle:</span>
+                            <code class="text-cyan-400 ml-2">|:---:|:---|...</code>
+                            <span class="text-slate-400 ml-2">→ Kaldırılır</span>
+                        </div>
+                        <div>
+                            <span class="text-yellow-400">3. [▶️](#play-song-X) → Button:</span>
+                            <code class="text-cyan-400 ml-2">&lt;button onclick="playContent('song',X)"&gt;</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Final Output -->
+                <div>
+                    <h3 class="text-sm font-semibold text-green-400 mb-2">3️⃣ Kullanıcı Görür:</h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h2 class="text-xl font-bold text-white mb-2">🎵 Enerjik Pop Mix | Muzibu AI</h2>
+                        <p class="text-slate-400 mb-4">📊 <strong>3 şarkı</strong> • ⏱️ <strong>12 dk</strong> • 🎸 <strong>Pop</strong></p>
+
+                        <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="px-3 py-2 text-left text-xs font-semibold text-slate-400 border-b border-slate-700 w-10">#</th>
+                                        <th class="px-3 py-2 text-left text-xs font-semibold text-slate-400 border-b border-slate-700">Şarkı</th>
+                                        <th class="px-3 py-2 text-left text-xs font-semibold text-slate-400 border-b border-slate-700">Sanatçı</th>
+                                        <th class="px-3 py-2 text-left text-xs font-semibold text-slate-400 border-b border-slate-700 w-16">Süre</th>
+                                        <th class="px-3 py-2 text-left text-xs font-semibold text-slate-400 border-b border-slate-700 w-12"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="hover:bg-slate-700/30 group">
+                                        <td class="px-3 py-2 text-slate-500">1</td>
+                                        <td class="px-3 py-2 text-white font-medium">Aşk Laftan Anlamaz</td>
+                                        <td class="px-3 py-2 text-slate-300">Sezen Aksu</td>
+                                        <td class="px-3 py-2 text-slate-400">4:23</td>
+                                        <td class="px-3 py-2">
+                                            <button class="w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fas fa-play text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-700/30 group">
+                                        <td class="px-3 py-2 text-slate-500">2</td>
+                                        <td class="px-3 py-2 text-white font-medium">Gülümse</td>
+                                        <td class="px-3 py-2 text-slate-300">Sezen Aksu</td>
+                                        <td class="px-3 py-2 text-slate-400">3:45</td>
+                                        <td class="px-3 py-2">
+                                            <button class="w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fas fa-play text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-700/30 group">
+                                        <td class="px-3 py-2 text-slate-500">3</td>
+                                        <td class="px-3 py-2 text-white font-medium">Firuze</td>
+                                        <td class="px-3 py-2 text-slate-300">Sezen Aksu</td>
+                                        <td class="px-3 py-2 text-slate-400">5:12</td>
+                                        <td class="px-3 py-2">
+                                            <button class="w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fas fa-play text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Function Reference -->
+        <section class="mb-8 bg-slate-800/50 rounded-xl overflow-hidden">
+            <div class="bg-green-900/30 px-6 py-3 border-b border-slate-700">
+                <h2 class="font-bold flex items-center gap-2">
+                    <i class="fas fa-code text-green-400"></i>
+                    JavaScript Fonksiyon Referansı
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="grid md:grid-cols-3 gap-4">
+
+                    <!-- Play -->
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                                <i class="fas fa-play text-xs"></i>
+                            </div>
+                            <span class="font-bold">Play</span>
+                        </div>
+                        <code class="text-xs text-cyan-400 block mb-2">window.playContent('song', ID)</code>
+                        <p class="text-xs text-slate-400">Player'da şarkıyı başlatır. Global player fonksiyonu.</p>
+                    </div>
+
+                    <!-- Favorite -->
+                    <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
+                                <i class="fas fa-heart text-xs"></i>
+                            </div>
+                            <span class="font-bold">Favorite</span>
+                        </div>
+                        <code class="text-xs text-cyan-400 block mb-2">handleAddToFavorites('song', ID)</code>
+                        <p class="text-xs text-slate-400">API çağrısı yapar: POST /api/muzibu/ai/favorite/add</p>
+                    </div>
+
+                    <!-- Add to Playlist -->
+                    <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-green-600 rounded flex items-center justify-center">
+                                <i class="fas fa-plus text-xs"></i>
+                            </div>
+                            <span class="font-bold">Playlist'e Ekle</span>
+                        </div>
+                        <code class="text-xs text-cyan-400 block mb-2">showAddToPlaylistModal(ID)</code>
+                        <p class="text-xs text-slate-400">Global addToPlaylist varsa çağırır, yoksa şarkı sayfasına yönlendirir.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Changes Summary -->
+        <section class="mb-8 bg-slate-800/50 rounded-xl overflow-hidden">
+            <div class="bg-orange-900/30 px-6 py-3 border-b border-slate-700">
+                <h2 class="font-bold flex items-center gap-2">
+                    <i class="fas fa-file-code text-orange-400"></i>
+                    Değiştirilen Dosyalar
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="space-y-3">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2 py-0.5 bg-green-600 rounded text-xs">Eklendi</span>
+                            <code class="text-sm text-cyan-400">tenant1001-ai-chat.js</code>
+                        </div>
+                        <ul class="text-sm text-slate-400 space-y-1 ml-4">
+                            <li>• Hash-based play handler: <code class="text-yellow-400">[▶️](#play-song-ID)</code></li>
+                            <li>• Hash-based fav handler: <code class="text-yellow-400">[❤️](#fav-song-ID)</code></li>
+                            <li>• Hash-based add handler: <code class="text-yellow-400">[➕](#add-song-ID)</code></li>
+                            <li>• Markdown table desteği</li>
+                            <li>• <code class="text-cyan-400">showAddToPlaylistModal()</code> fonksiyonu</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2 py-0.5 bg-blue-600 rounded text-xs">Mevcut</span>
+                            <code class="text-sm text-cyan-400">Tenant1001/PromptService.php</code>
+                        </div>
+                        <p class="text-sm text-slate-400 ml-4">
+                            AI'a icon-only buton formatı öğretildi: <code class="text-yellow-400">[▶️](#play-song-{ID})</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Checklist -->
+        <section class="mb-8 bg-slate-800/50 rounded-xl overflow-hidden">
+            <div class="bg-yellow-900/30 px-6 py-3 border-b border-slate-700">
+                <h2 class="font-bold flex items-center gap-2">
+                    <i class="fas fa-clipboard-check text-yellow-400"></i>
+                    Manuel Test Checklist
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 p-3 bg-slate-900 rounded-lg cursor-pointer hover:bg-slate-800/50">
+                        <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-600">
+                        <span>muzibu.com.tr'de AI chatbot aç</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-900 rounded-lg cursor-pointer hover:bg-slate-800/50">
+                        <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-600">
+                        <span>"Bana enerjik şarkılar öner" yaz</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-900 rounded-lg cursor-pointer hover:bg-slate-800/50">
+                        <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-600">
+                        <span>Şarkı listesi tablo/kart formatında geldi mi?</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-900 rounded-lg cursor-pointer hover:bg-slate-800/50">
+                        <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-600">
+                        <span>▶️ butonu icon-only görünüyor mu?</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-900 rounded-lg cursor-pointer hover:bg-slate-800/50">
+                        <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-600">
+                        <span>▶️ butonuna tıklayınca şarkı çalıyor mu?</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-900 rounded-lg cursor-pointer hover:bg-slate-800/50">
+                        <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-600">
+                        <span>Üye değilken "Dinle" butonu gösterilmiyor mu?</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-4">
+            <p>Claude AI tarafından hazırlandı • 11 Ocak 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

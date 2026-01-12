@@ -52,21 +52,21 @@ class PaymentPageController extends Controller
             ]);
         }
 
-        // PayTR token al
+        // PayTR token al - HER SEFERINDE YENİ TOKEN AL (token'lar kısa ömürlü: 30-120 saniye)
         $paymentIframeUrl = null;
         $error = null;
 
-        if ($payment->gateway_response) {
-            file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] ✅ Token already exists in gateway_response\n", FILE_APPEND);
-            $gatewayResponse = json_decode($payment->gateway_response, true);
-            if (isset($gatewayResponse['token'])) {
-                $paymentIframeUrl = 'https://www.paytr.com/odeme/guvenli/' . $gatewayResponse['token'];
-            }
-        }
+        // ❌ ESKİ YÖNTEM: Eski token'ı kullanma, süresi dolmuş olabilir!
+        // if ($payment->gateway_response) {
+        //     $gatewayResponse = json_decode($payment->gateway_response, true);
+        //     if (isset($gatewayResponse['token'])) {
+        //         $paymentIframeUrl = 'https://www.paytr.com/odeme/guvenli/' . $gatewayResponse['token'];
+        //     }
+        // }
 
-        // Token yoksa yeni al
-        if (!$paymentIframeUrl) {
-            file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] ⚠️  No token found, requesting new one...\n", FILE_APPEND);
+        // ✅ YENİ YÖNTEM: Her payment sayfası açılışında yeni token al
+        file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 🔄 Requesting fresh PayTR token...\n", FILE_APPEND);
+        if (true) { // Her zaman yeni token al
             try {
                 $iframeService = app(PayTRIframeService::class);
 

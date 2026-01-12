@@ -194,8 +194,8 @@ return [
             ],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'minProcesses' => 10,  // 🚀 FULL SPEED: 10 worker minimum
-            'maxProcesses' => 100, // 🚀 FULL SPEED: Max 100 worker (13,080 şarkı için!)
+            'minProcesses' => 3,   // ⚡ SAFE MODE: Rate limit friendly
+            'maxProcesses' => 10,  // ⚡ SAFE MODE: Max 10 worker
             'maxTime' => 0,
             'maxJobs' => 1000,
             'memory' => 512,
@@ -207,10 +207,10 @@ return [
 
     'environments' => [
         'production' => [
-            // 🎨 PHOTO MODE TURBO: 100 worker ile maksimum hız!
+            // ⚡ SAFE MODE: Rate limit friendly
             'muzibu-supervisor' => [
-                'maxProcesses' => 100,
-                'minProcesses' => 10,
+                'maxProcesses' => 10,   // SAFE MODE
+                'minProcesses' => 3,    // SAFE MODE
                 'memory' => 512,
                 'timeout' => 600,
             ],

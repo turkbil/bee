@@ -5,10 +5,16 @@
  * Sadece admin/root kullanıcılar whitelist token ile bypass edebilir
  *
  * TENANT AWARE: Sadece Tenant 1001 (muzibu.com.tr) için aktif!
+ *
+ * ⚠️ GEÇİCİ OLARAK DEVRE DIŞI! (2026-01-11)
+ * Aktif etmek için: 13. satırdaki "return;" satırını sil
  */
 
 (function() {
     'use strict';
+
+    // ⛔ GEÇİCİ OLARAK DEVRE DIŞI - DEBUG İÇİN
+    return;
 
     // 🔐 TENANT KONTROLÜ (Sadece Tenant 1001)
     const currentTenant = window.location.hostname;

@@ -352,4 +352,49 @@ class TenantServiceFactory
 
         return $productSearchService && method_exists($productSearchService, 'handlePriceQuery');
     }
+
+    /**
+     * Tenant'a özel kullanıcı abonelik durumu
+     *
+     * Her tenant kendi SubscriptionHelper'ını kullanabilir:
+     * - Tenant1001/SubscriptionHelper.php (Muzibu - Premium/Free/Guest)
+     *
+     * AI context'e kullanıcı durumu eklemek için kullanılır.
+     * Premium olmayan kullanıcılara playlist/dinle özelliği sunulmamalı.
+     *
+     * @param int|null $tenantId Tenant ID
+     * @return array|null Abonelik durumu veya null
+     */
+    public static function getUserSubscriptionContext(?int $tenantId = null): ?array
+    {
+        $tenantId = $tenantId ?? self::getCurrentTenantId();
+
+        if (!$tenantId) {
+            return null;
+        }
+
+        // Tenant-specific SubscriptionHelper var mı kontrol et
+        $helperClass = "\\Modules\\AI\\App\\Services\\Tenant{$tenantId}\\SubscriptionHelper";
+
+        if (class_exists($helperClass) && method_exists($helperClass, 'getSubscriptionStatus')) {
+            return $helperClass::getSubscriptionStatus(auth()->user());
+        }
+
+        // Yoksa null döndür - subscription helper olmayan tenant'lar için
+        return null;
+    }
+
+    /**
+     * Tenant için SubscriptionHelper var mı kontrol eder
+     *
+     * @param int|null $tenantId
+     * @return bool
+     */
+    public static function hasSubscriptionHelper(?int $tenantId = null): bool
+    {
+        $tenantId = $tenantId ?? self::getCurrentTenantId();
+        $helperClass = "\\Modules\\AI\\App\\Services\\Tenant{$tenantId}\\SubscriptionHelper";
+
+        return class_exists($helperClass);
+    }
 }

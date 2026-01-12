@@ -81,7 +81,7 @@ document.addEventListener('alpine:init', () => {
 @if(isset($sectors) && $sectors->count() > 0)
 <x-muzibu.horizontal-scroll-section title="Sektörler" icon="fa-building" viewAllUrl="/sectors">
     @foreach($sectors as $sector)
-        <x-muzibu.sector-card :sector="$sector" :preview="true" :compact="true" :index="$loop->index" />
+        <x-muzibu.sector-card :sector="$sector" :preview="false" :compact="true" :index="$loop->index" />
     @endforeach
 </x-muzibu.horizontal-scroll-section>
 @endif

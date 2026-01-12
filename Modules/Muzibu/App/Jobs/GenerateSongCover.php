@@ -21,7 +21,7 @@ class GenerateSongCover implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public $timeout = 180; // 3 dakika timeout (Leonardo AI bekleme süresi)
-    public $tries = 1; // Sadece 1 kere dene
+    public $tries = 3; // 3 kere dene (retry)
     public ?int $tenantId = null;
 
     /**

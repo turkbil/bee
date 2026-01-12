@@ -21,12 +21,19 @@ class FaviconController extends Controller
         $tenantId = tenant() ? tenant('id') : 'central';
         $cacheKey = 'favicon_path_' . $tenantId;
 
-        // Cache'den favicon path'i al (24 saat - favicon nadiren değişir)
-        $faviconPath = Cache::remember($cacheKey, 86400, function() {
+        // ✅ FIX: Tenant ID'yi closure içine capture et
+        $faviconPath = Cache::remember($cacheKey, 86400, function() use ($tenantId) {
+            // Closure içinde tenant context'i yeniden başlat
+            if ($tenantId !== 'central' && (!tenant() || tenant()->id != $tenantId)) {
+                $tenant = \App\Models\Tenant::find($tenantId);
+                if ($tenant) {
+                    tenancy()->initialize($tenant);
+                }
+            }
             return $this->getFaviconPath();
         });
 
-        // Dosya yoksa 404 döndür
+        // Dosya yoksa fallback dene
         if (!$faviconPath || !file_exists($faviconPath)) {
             return $this->getDefaultFavicon();
         }
@@ -78,13 +85,20 @@ class FaviconController extends Controller
      */
     private function getDefaultFavicon()
     {
-        $defaultPath = public_path('favicon.ico');
+        // Birkaç olası path dene
+        $paths = [
+            public_path('favicon.ico'),
+            public_path('favicon.ico.backup'),
+            public_path('assets/images/favicon.ico'),
+        ];
 
-        if (file_exists($defaultPath)) {
-            return response()->file($defaultPath, [
-                'Content-Type' => 'image/x-icon',
-                'Cache-Control' => 'public, max-age=86400',
-            ]);
+        foreach ($paths as $path) {
+            if (file_exists($path)) {
+                return response()->file($path, [
+                    'Content-Type' => 'image/x-icon',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]);
+            }
         }
 
         // Default da yoksa 404

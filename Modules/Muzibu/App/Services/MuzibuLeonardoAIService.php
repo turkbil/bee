@@ -30,6 +30,7 @@ class MuzibuLeonardoAIService extends LeonardoAIService
      */
     protected function enhanceWithGPT4Music(string $title): array
     {
+        // ✅ GPT-4 AKTİF - Gelişmiş prompt enhancement çalışıyor
         $openaiKey = config('ai.openai_api_key');
 
         if (empty($openaiKey)) {

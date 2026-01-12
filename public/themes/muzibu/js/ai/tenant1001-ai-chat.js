@@ -334,6 +334,61 @@ document.addEventListener('alpine:init', () => {
                 return `<button type="button" onclick="if(window.playContent){window.playContent('song',${safeSongId})}else{window.location.href='${jsUrl}'}" class="inline-flex items-center justify-center w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors ml-2" title="Çal"><i class="fas fa-play text-xs"></i></button>`;
             });
 
+            // 1b. Hash-based play links: [▶️](#play-song-{ID}) → play button
+            html = html.replace(/\[▶️\]\(#play-song-(\d+)\)/gi, (match, songId) => {
+                const safeSongId = parseInt(songId);
+                return `<button type="button" onclick="if(window.playContent){window.playContent('song',${safeSongId})}" class="inline-flex items-center justify-center w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors" title="Çal"><i class="fas fa-play text-xs"></i></button>`;
+            });
+
+            // 1c. Hash-based favorite links: [❤️](#fav-song-{ID}) → favorites button
+            html = html.replace(/\[❤️\]\(#fav-song-(\d+)\)/gi, (match, songId) => {
+                const safeSongId = parseInt(songId);
+                return `<button type="button" onclick="Alpine.store('tenant1001AI').handleAddToFavorites('song',${safeSongId})" class="inline-flex items-center justify-center w-7 h-7 bg-red-600 hover:bg-red-700 text-white rounded transition-colors" title="Favorilere Ekle"><i class="fas fa-heart text-xs"></i></button>`;
+            });
+
+            // 1d. Hash-based add-to-playlist links: [➕](#add-song-{ID}) → add button
+            html = html.replace(/\[➕\]\(#add-song-(\d+)\)/gi, (match, songId) => {
+                const safeSongId = parseInt(songId);
+                return `<button type="button" onclick="Alpine.store('tenant1001AI').showAddToPlaylistModal(${safeSongId})" class="inline-flex items-center justify-center w-7 h-7 bg-green-600 hover:bg-green-700 text-white rounded transition-colors" title="Playlist'e Ekle"><i class="fas fa-plus text-xs"></i></button>`;
+            });
+
+            // 1e. Markdown table support (basic)
+            // Convert markdown tables to HTML tables with styling
+            const tableRegex = /^\|(.+)\|$/gm;
+            const separatorRegex = /^\|[\s\-:|\s]+\|$/gm;
+
+            if (html.match(tableRegex)) {
+                // Replace separator rows first
+                html = html.replace(separatorRegex, '<!-- table-separator -->');
+
+                // Convert table rows
+                let isFirstRow = true;
+                html = html.replace(tableRegex, (match, content) => {
+                    const cells = content.split('|').map(cell => cell.trim());
+
+                    if (isFirstRow) {
+                        isFirstRow = false;
+                        // Header row
+                        const headerCells = cells.map(cell => `<th class="px-2 py-1 text-left text-xs font-semibold text-slate-400 border-b border-slate-700">${cell}</th>`).join('');
+                        return `<thead><tr>${headerCells}</tr></thead><tbody>`;
+                    } else {
+                        // Body rows
+                        const bodyCells = cells.map(cell => `<td class="px-2 py-1 text-sm text-slate-300">${cell}</td>`).join('');
+                        return `<tr class="hover:bg-slate-700/30">${bodyCells}</tr>`;
+                    }
+                });
+
+                // Remove separator placeholders
+                html = html.replace(/<!-- table-separator -->/g, '');
+
+                // Wrap in table
+                if (html.includes('<thead>')) {
+                    html = html.replace(/<thead>/, '<div class="bg-slate-800/30 rounded-lg overflow-hidden my-3"><table class="w-full text-sm"><thead>');
+                    // Find last </tr> before any non-table content and close tbody/table
+                    html = html.replace(/(<\/tr>)(?![\s\S]*<tr)/, '$1</tbody></table></div>');
+                }
+            }
+
             // 2. Süre formatını düzelt: (166 saniye) → (2dk 46sn)
             html = html.replace(/\((\d+)\s*saniye\)/gi, (match, seconds) => {
                 return `(${this.formatDuration(parseInt(seconds))})`;
@@ -554,6 +609,32 @@ document.addEventListener('alpine:init', () => {
                 console.error('Playlist save error:', error);
                 this.showNotification('Bağlantı hatası. Lütfen tekrar deneyin.', 'error');
             }
+        },
+
+        /**
+         * Show add to playlist modal/dropdown
+         */
+        async showAddToPlaylistModal(songId) {
+            // 1. Check auth
+            if (!this.checkUserAuth()) {
+                this.showNotification('Lütfen önce giriş yapın', 'warning');
+                setTimeout(() => {
+                    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+                }, 1000);
+                return;
+            }
+
+            // 2. If global addToPlaylist function exists, use it
+            if (window.addToPlaylist) {
+                window.addToPlaylist('song', songId);
+                return;
+            }
+
+            // 3. Fallback: Show notification and redirect to song page
+            this.showNotification('Şarkı sayfasından playlist\'e ekleyebilirsiniz', 'info');
+            setTimeout(() => {
+                window.location.href = `/play/song/${songId}`;
+            }, 1500);
         },
 
         /**

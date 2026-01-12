@@ -311,7 +311,7 @@ return [
         'spots_active' => 'Anonslar aktif',
         'spots_paused' => 'Anonslar durduruldu',
         'ads' => 'Anonslar',
-        'my_certificate' => 'Belgem',
+        'my_certificate' => 'Kullanım Belgem',
         'create_playlist' => 'Playlist Oluştur',
 
         // Links
@@ -566,7 +566,7 @@ return [
 
     // Certificate (Sertifika)
     'certificate' => [
-        'title' => 'Premium Sertifikası',
+        'title' => 'Ticari Müzik Kullanım Belgesi',
         'subtitle' => 'Üyelik bilgilerinizi içeren resmi belgenizi oluşturun',
         'premium_member' => 'Premium Üye',
         'active' => 'Aktif',

@@ -117,12 +117,30 @@ class SettingsService
 
     /**
      * Setting değeri al - BULK cache'den
+     * ✅ FIX: image/file/favicon type'lar için media URL döndür
      */
     public function get($key, $default = null)
     {
         try {
             $settings = $this->loadAllSettings();
-            return $settings[$key] ?? $default;
+            $value = $settings[$key] ?? null;
+
+            // Değer varsa direkt dön
+            if ($value !== null && $value !== '') {
+                return $value;
+            }
+
+            // Değer yoksa, bu bir image/file/favicon type olabilir
+            // Setting modelinden media URL'i kontrol et
+            $setting = Setting::where('key', $key)->where('is_active', true)->first();
+            if ($setting && in_array($setting->type, ['image', 'file', 'favicon'])) {
+                $mediaUrl = $setting->getMediaUrl();
+                if ($mediaUrl) {
+                    return $mediaUrl;
+                }
+            }
+
+            return $default;
         } catch (\Exception $e) {
             Log::error("Settings get hatası: " . $e->getMessage(), ['key' => $key]);
             return $default;

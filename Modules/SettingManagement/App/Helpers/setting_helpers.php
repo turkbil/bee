@@ -27,32 +27,44 @@ if (!function_exists('setting')) {
         try {
             // Cache key oluştur
             $cacheKey = 'setting_' . (is_numeric($identifier) ? 'id_' : 'key_') . $identifier;
-            
+
+            // Tenant ID'yi şimdi capture et (closure içinde kullanmak için)
+            $tenantId = tenant() ? tenant()->id : null;
+
             // Tenant varsa tenant prefix ekle
-            if (tenant()) {
-                $cacheKey = 'tenant_' . tenant()->id . '_' . $cacheKey;
+            if ($tenantId) {
+                $cacheKey = 'tenant_' . $tenantId . '_' . $cacheKey;
             }
-            
+
             // Cache'den kontrol et
-            return Cache::remember($cacheKey, 3600, function () use ($identifier, $default) {
+            return Cache::remember($cacheKey, 3600, function () use ($identifier, $default, $tenantId) {
+                // ✅ FIX: Closure içinde tenant context'i yeniden başlat
+                // Redis cache callback'i sırasında tenant context kayboluyor
+                if ($tenantId && (!tenant() || tenant()->id !== $tenantId)) {
+                    $tenant = \App\Models\Tenant::find($tenantId);
+                    if ($tenant) {
+                        tenancy()->initialize($tenant);
+                    }
+                }
+
                 // ID veya KEY ile setting'i central'dan bul
                 if (is_numeric($identifier)) {
                     $setting = Setting::find($identifier);
                 } else {
                     $setting = Setting::where('key', $identifier)->first();
                 }
-                
+
                 // Setting yoksa fallback default döndür
                 if (!$setting) {
                     return $default;
                 }
-                
+
                 // Model'in getValue() metodunu kullan
                 // Bu metod otomatik olarak:
                 // 1. Tenant'ta değer varsa onu döndürür
                 // 2. Yoksa settings tablosundaki default_value döndürür
                 $value = $setting->getValue();
-                
+
                 // Eğer default_value da null ise, fallback default kullan
                 return $value ?? $default;
             });

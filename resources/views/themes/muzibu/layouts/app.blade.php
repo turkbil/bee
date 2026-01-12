@@ -69,15 +69,12 @@
 
     @livewireStyles
 
-    {{-- Favicon (Browser Tab Icon) - SettingManagement'tan çek (İxtif gibi) --}}
-    @php $favicon = setting('site_favicon'); @endphp
-    @if($favicon && $favicon !== 'Favicon yok')
-        <link rel="icon" type="image/x-icon" href="{{ cdn($favicon) }}">
-        <link rel="apple-touch-icon" href="{{ cdn($favicon) }}">
-    @else
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-        <link rel="apple-touch-icon" href="{{ asset('favicon.ico') }}">
-    @endif
+    {{-- Favicon - Settings'den çek, yoksa /favicon.ico fallback --}}
+    @php
+        $faviconUrl = setting('site_favicon') ?: '/favicon.ico';
+    @endphp
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
     {{-- PWA Manifest (2025 Best Practice) --}}
     <link rel="manifest" href="{{ route('manifest') }}">

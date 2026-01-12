@@ -51,6 +51,10 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # 🎯 Favicon.ico - Tenant-aware, Settings'den çek (FaviconController)
+    # public/favicon.ico varsa bile Laravel'e yönlendir
+    RewriteRule ^favicon\.ico$ index.php [L]
+
     # Force rewrite for tenant1001 storage path (bypass symlink check for LiteSpeed phpSuExec)
     # Other tenants are on different servers
     RewriteCond %{REQUEST_URI} ^/storage/tenant1001/

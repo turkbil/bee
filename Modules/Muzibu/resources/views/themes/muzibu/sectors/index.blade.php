@@ -11,7 +11,7 @@
 <section class="px-8 pb-12">
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         @foreach($sectors as $sector)
-            <x-muzibu.sector-card :sector="$sector" :preview="true" />
+            <x-muzibu.sector-card :sector="$sector" :preview="false" />
         @endforeach
     </div>
 </section>

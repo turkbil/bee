@@ -69,14 +69,17 @@
 {{-- Global SEO Meta Tags - Tek Satır --}}
 <x-seo-meta />
 
-{{-- Favicon - Tenant-aware dynamic route --}}
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+{{-- Favicon - Settings'den çek, yoksa /favicon.ico fallback --}}
+    @php
+        $faviconUrl = setting('site_favicon') ?: '/favicon.ico';
+    @endphp
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
 
     {{-- PWA Manifest (2025 Best Practice) --}}
     <link rel="manifest" href="{{ route('manifest') }}">
 
-    {{-- Apple Touch Icon (iOS/Safari) - Uses favicon as fallback --}}
-    <link rel="apple-touch-icon" href="/favicon.ico">
+    {{-- Apple Touch Icon (iOS/Safari) --}}
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
     {{-- Theme Color for Mobile Browser Bar (Tenant-aware) --}}
     @php

@@ -57,7 +57,11 @@
         </div>
 
         <button
-            @click="$store.playlistSelect.show({{ $song->song_id }})"
+            @click="$store.playlistModal.showForSong({{ $song->song_id }}, {
+                title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+                artist: '{{ $song->album && $song->album->artist ? addslashes($song->album->artist->getTranslation('title', app()->getLocale())) : '' }}',
+                cover_url: '{{ $song->getCoverUrl() ? thumb_url($song->getCoverUrl(), 300, 300) : '' }}'
+            })"
             class="group/add w-12 h-12 sm:w-14 sm:h-14 bg-zinc-800 hover:bg-muzibu-coral rounded-full flex items-center justify-center transition-all relative"
             title="Playlist'e Ekle">
             <i class="fas fa-plus text-white text-lg"></i>

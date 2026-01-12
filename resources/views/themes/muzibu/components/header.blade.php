@@ -695,7 +695,8 @@
 
         {{-- 🛒 Cart Icon - Devre dışı (Muzibu'da sepet yok) --}}
 
-        {{-- Notification with badge - SPA Reactive --}}
+        {{-- 🔔 Notification - Devre dışı (İleride kullanılacak) --}}
+        {{--
         <button
             x-show="isLoggedIn"
             x-cloak
@@ -704,6 +705,7 @@
             <i class="far fa-bell text-lg"></i>
             <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-muzibu-coral rounded-full animate-pulse ring-2 ring-black"></span>
         </button>
+        --}}
 
         {{-- User Dropdown - SPA Reactive --}}
         <div x-show="isLoggedIn" x-cloak class="relative" x-data="{

@@ -37,7 +37,11 @@ class PayTRIframeService
             $testMode = setting('paytr_test_mode', false) ? '1' : '0';
 
             // Taksit ayarları (settings'den)
-            $maxInstallment = (int) setting('paytr_max_installment', 0);
+            $maxInstallment = (int) setting('paytr_max_installment', 12);
+            // 🔥 FIX: PayTR max_installment = 0 kabul etmiyor, minimum 1 olmalı
+            if ($maxInstallment < 1) {
+                $maxInstallment = 12; // Default: 12 taksit
+            }
             $noInstallment = 0; // 0 = Taksit seçenekleri göster, 1 = Sadece tek çekim
 
             // Sepet içeriği (PayTR formatı)
@@ -49,7 +53,14 @@ class PayTRIframeService
             $tenantId = tenant()->id ?? 1;
             $strippedPaymentNumber = str_replace(['-', '_', ' '], '', $payment->payment_number);
             $merchantOid = 'T' . $tenantId . $strippedPaymentNumber;
+
+            // 🔥 FIX: PayTR IPv6 desteklemiyor! IPv4'e çevir veya fallback kullan
             $userIp = request()->ip();
+            if (filter_var($userIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                // IPv6 ise fallback IPv4 kullan
+                $userIp = '185.125.190.39'; // Türkiye IP (fallback)
+                \Log::warning('PayTR IPv6 detected, using fallback IPv4', ['original_ip' => request()->ip()]);
+            }
             $email = $userInfo['email'];
             $paymentAmount = (int) ($payment->amount * 100); // Kuruş cinsinden (9.99 TL = 999)
             $currency = setting('paytr_currency', 'TL');
@@ -98,10 +109,18 @@ class PayTRIframeService
                     'amount' => $payment->amount,
                     'test_mode' => $testMode,
                     'currency' => $currency,
+                    'full_post_data' => $postData, // TÜM POST VERİLERİ
                 ]);
-                // 🔥 EXTRA DEBUG: Write to file directly
-                file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 📦 PayTR TOKEN REQUEST: payment_id={$payment->payment_id}, merchant_oid={$merchantOid}, amount={$payment->amount}\n", FILE_APPEND);
+                // 🔥 EXTRA DEBUG: Write FULL POST DATA to file
+                file_put_contents(storage_path('logs/paytr-full-request.log'),
+                    "[" . date('Y-m-d H:i:s') . "] 📦 FULL REQUEST:\n" .
+                    json_encode($postData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n\n",
+                    FILE_APPEND
+                );
             }
+
+            // 🔥 DEBUG: POST verilerini /tmp'ye yaz (her zaman çalışır)
+            file_put_contents('/tmp/paytr-post-data.json', json_encode($postData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
             // PayTR API'sine token için istek gönder
             $ch = curl_init();
@@ -131,12 +150,25 @@ class PayTRIframeService
             if (true || setting('paytr_debug', false)) {
                 Log::info('📥 PayTR iframe token response', ['response' => $response]);
                 // 🔥 EXTRA DEBUG: Write to file directly
-                file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 📥 PayTR TOKEN RESPONSE: " . json_encode($response) . "\n", FILE_APPEND);
+                file_put_contents(storage_path('logs/paytr-full-request.log'),
+                    "[" . date('Y-m-d H:i:s') . "] 📥 RESPONSE:\n" .
+                    json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n" .
+                    "==========================================\n\n",
+                    FILE_APPEND
+                );
             }
 
             if (!$response || $response['status'] !== 'success') {
                 $errorMessage = $response['reason'] ?? 'Bilinmeyen hata';
-                Log::error('❌ PayTR iframe token error', ['reason' => $errorMessage]);
+                Log::error('❌ PayTR iframe token error', [
+                    'reason' => $errorMessage,
+                    'full_response' => $response,
+                    'payment_id' => $payment->payment_id
+                ]);
+                file_put_contents(storage_path('logs/paytr-error.log'),
+                    "[" . date('Y-m-d H:i:s') . "] ERROR RESPONSE: " . json_encode($response, JSON_PRETTY_PRINT) . "\n\n",
+                    FILE_APPEND
+                );
                 return [
                     'success' => false,
                     'message' => 'Ödeme token alınamadı: ' . $errorMessage
@@ -174,27 +206,21 @@ class PayTRIframeService
 
     /**
      * Sepet içeriğini PayTR formatına çevir
+     *
+     * 🔥 KRİTİK: PayTR sepet toplamının payment_amount ile TAM OLARAK eşleşmesini bekler!
+     * KDV, kargo vs dahil TOPLAM tutarı sepette göstermeliyiz.
      */
     private function prepareBasket(array $orderInfo): string
     {
-        $basketItems = [];
-
-        if (isset($orderInfo['items']) && is_array($orderInfo['items'])) {
-            foreach ($orderInfo['items'] as $item) {
-                $basketItems[] = [
-                    $item['name'],
-                    number_format($item['price'], 2, '.', ''),
-                    $item['quantity']
-                ];
-            }
-        } else {
-            // Varsayılan sepet (eğer items yoksa)
-            $basketItems[] = [
+        // 🔥 FIX: Sepet toplamı = Payment amount olmalı (KDV, kargo dahil)
+        // Item'ları ayrı ayrı göndermek yerine tek satır olarak total göster
+        $basketItems = [
+            [
                 $orderInfo['description'] ?? 'Sipariş',
-                number_format($orderInfo['amount'], 2, '.', ''),
+                number_format($orderInfo['amount'], 2, '.', ''), // Total amount (KDV dahil)
                 1
-            ];
-        }
+            ]
+        ];
 
         return base64_encode(json_encode($basketItems));
     }

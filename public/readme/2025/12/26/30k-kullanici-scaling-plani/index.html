@@ -1,1 +1,541 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu 30K Kullanıcı Scaling Planı v2 - CDN Kurulum Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-2 rounded-full text-sm mb-4">
+                <i class="fas fa-server"></i>
+                <span>Scaling Planı v2</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">Muzibu: 30.000 Eşzamanlı Kullanıcı</h1>
+            <p class="text-gray-400">CDN Nedir? Nasıl Kurulur? Sunucuda Ne Yapılır?</p>
+            <p class="text-gray-500 text-sm mt-2">26 Aralık 2025 - v2 (Kurulum Detayları Eklendi)</p>
+        </header>
+
+        <!-- ÖNEMLİ UYARI -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-green-900/60 to-green-800/40 border-2 border-green-500 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-green-400 mb-4 flex items-center gap-3">
+                    <i class="fas fa-check-circle"></i>
+                    EN ÖNEMLİ BİLGİ: Sunucuda Hiçbir Şey Yapmıyorsun!
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-xl p-5">
+                        <h3 class="text-red-400 font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-times-circle"></i>
+                            YAPILMAYACAKLAR
+                        </h3>
+                        <ul class="space-y-2 text-gray-300">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-times text-red-400"></i>
+                                Dosya taşıma / yükleme
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-times text-red-400"></i>
+                                Kod değişikliği
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-times text-red-400"></i>
+                                Nginx / Apache ayarı
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-times text-red-400"></i>
+                                Yeni klasör oluşturma
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-times text-red-400"></i>
+                                HLS dosyalarını başka yere taşıma
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-xl p-5">
+                        <h3 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            YAPILACAKLAR (Sadece 3 Adım)
+                        </h3>
+                        <ul class="space-y-2 text-gray-300">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-400"></i>
+                                Cloudflare hesabı aç
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-400"></i>
+                                Domain'i Cloudflare'e ekle
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-400"></i>
+                                Nameserver'ları değiştir
+                            </li>
+                        </ul>
+                        <p class="text-green-300 mt-4 text-sm font-semibold">
+                            <i class="fas fa-magic mr-1"></i>
+                            Geri kalan her şey OTOMATİK!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 1: CDN NASIL ÇALIŞIR -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-blue-900/40 to-blue-800/20 border border-blue-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-globe"></i>
+                    CDN Nasıl Çalışır? (Basit Anlatım)
+                </h2>
+
+                <!-- Günlük Hayat Örneği -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">
+                        <i class="fas fa-coffee text-yellow-500 mr-2"></i>
+                        Market Örneği
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-red-900/30 border border-red-800/50 rounded-lg p-4">
+                            <h4 class="text-red-400 font-semibold mb-2">❌ CDN Olmadan</h4>
+                            <p class="text-gray-300 text-sm mb-3">
+                                Tek bir market var (senin sunucun). Tüm şehirden insanlar bu markete geliyor.
+                            </p>
+                            <ul class="text-gray-400 text-xs space-y-1">
+                                <li>• Market kalabalık, kuyruk uzun</li>
+                                <li>• Uzak mahalleler geç ulaşıyor</li>
+                                <li>• Market kapasitesi dolunca herkes bekliyor</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-900/30 border border-green-800/50 rounded-lg p-4">
+                            <h4 class="text-green-400 font-semibold mb-2">✅ CDN İle (Cloudflare)</h4>
+                            <p class="text-gray-300 text-sm mb-3">
+                                Her mahallede küçük bir büfe açılıyor. Ürünler ana marketten kopyalanıyor.
+                            </p>
+                            <ul class="text-gray-400 text-xs space-y-1">
+                                <li>• Herkes yakın büfeden alıyor</li>
+                                <li>• Ana market rahat, sadece stok gönderiyor</li>
+                                <li>• 10x daha fazla müşteri karşılanabiliyor</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teknik Akış -->
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">
+                        <i class="fas fa-project-diagram text-blue-500 mr-2"></i>
+                        Teknik Akış (Adım Adım)
+                    </h3>
+
+                    <div class="space-y-4">
+                        <!-- Adım 1 -->
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">1</div>
+                            <div class="flex-1 bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-white font-semibold">Kullanıcı şarkı çalmak istiyor</h4>
+                                <p class="text-gray-400 text-sm">Browser: "muzibu.com.tr/storage/hls/sarki.ts ver bana"</p>
+                            </div>
+                        </div>
+
+                        <!-- Adım 2 -->
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">2</div>
+                            <div class="flex-1 bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-white font-semibold">DNS Cloudflare'i gösteriyor</h4>
+                                <p class="text-gray-400 text-sm">İstek senin sunucuna değil, Cloudflare'e gidiyor</p>
+                            </div>
+                        </div>
+
+                        <!-- Adım 3 -->
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">3</div>
+                            <div class="flex-1 bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-white font-semibold">Cloudflare kontrol ediyor: "Bu dosya bende var mı?"</h4>
+                                <div class="grid md:grid-cols-2 gap-4 mt-3">
+                                    <div class="bg-green-900/30 rounded p-3">
+                                        <span class="text-green-400 font-semibold">EVET (Cache Hit)</span>
+                                        <p class="text-gray-400 text-xs mt-1">Cloudflare doğrudan veriyor. Sunucuna hiç gelmedi!</p>
+                                    </div>
+                                    <div class="bg-yellow-900/30 rounded p-3">
+                                        <span class="text-yellow-400 font-semibold">HAYIR (Cache Miss)</span>
+                                        <p class="text-gray-400 text-xs mt-1">Sunucundan alıyor, kopyalıyor, sonra kullanıcıya veriyor</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Adım 4 -->
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">4</div>
+                            <div class="flex-1 bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-white font-semibold">Sonraki kullanıcılar aynı şarkıyı isterse</h4>
+                                <p class="text-gray-400 text-sm">Artık Cloudflare'de kopyası var → Sunucuna hiç sormuyor → %95 yük azalması</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: CLOUDFLARE KURULUM REHBERİ -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-orange-900/40 to-orange-800/20 border border-orange-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-orange-400 mb-6 flex items-center gap-3">
+                    <i class="fab fa-cloudflare"></i>
+                    Cloudflare Kurulum Rehberi (Adım Adım)
+                </h2>
+
+                <!-- ADIM 1 -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold">1</span>
+                        <h3 class="text-lg font-semibold text-white">Cloudflare Hesabı Aç</h3>
+                        <span class="text-gray-500 text-sm">(2 dakika)</span>
+                    </div>
+                    <div class="ml-11">
+                        <ol class="space-y-2 text-gray-300 list-decimal list-inside">
+                            <li><a href="https://dash.cloudflare.com/sign-up" target="_blank" class="text-orange-400 hover:underline">cloudflare.com</a> adresine git</li>
+                            <li>Email ve şifre ile kayıt ol</li>
+                            <li>Email doğrulama linkine tıkla</li>
+                        </ol>
+                        <div class="mt-3 text-sm text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Ücretsiz plan yeterli, Pro plan ($20/ay) daha iyi performans verir
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADIM 2 -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold">2</span>
+                        <h3 class="text-lg font-semibold text-white">Domain Ekle</h3>
+                        <span class="text-gray-500 text-sm">(3 dakika)</span>
+                    </div>
+                    <div class="ml-11">
+                        <ol class="space-y-2 text-gray-300 list-decimal list-inside">
+                            <li>"Add a Site" butonuna tıkla</li>
+                            <li>Domain gir: <code class="bg-slate-700 px-2 py-1 rounded">muzibu.com.tr</code></li>
+                            <li>Plan seç (Free veya Pro)</li>
+                            <li>Cloudflare mevcut DNS kayıtlarını otomatik tarar</li>
+                            <li>DNS kayıtlarını kontrol et, "Continue" tıkla</li>
+                        </ol>
+                        <div class="mt-4 bg-slate-900/50 rounded-lg p-4">
+                            <h4 class="text-white text-sm font-semibold mb-2">DNS Kayıtları Şöyle Görünmeli:</h4>
+                            <div class="font-mono text-xs space-y-1">
+                                <div class="flex gap-4">
+                                    <span class="text-orange-400 w-12">A</span>
+                                    <span class="text-gray-400 w-32">muzibu.com.tr</span>
+                                    <span class="text-gray-300">→ Sunucu IP</span>
+                                    <span class="text-orange-400 ml-auto">☁️ Proxied</span>
+                                </div>
+                                <div class="flex gap-4">
+                                    <span class="text-orange-400 w-12">A</span>
+                                    <span class="text-gray-400 w-32">www</span>
+                                    <span class="text-gray-300">→ Sunucu IP</span>
+                                    <span class="text-orange-400 ml-auto">☁️ Proxied</span>
+                                </div>
+                            </div>
+                            <p class="text-yellow-400 text-xs mt-3">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                "Proxied" (turuncu bulut) açık olmalı! Kapalıysa CDN çalışmaz.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADIM 3 -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold">3</span>
+                        <h3 class="text-lg font-semibold text-white">Nameserver Değiştir</h3>
+                        <span class="text-gray-500 text-sm">(5 dakika)</span>
+                    </div>
+                    <div class="ml-11">
+                        <p class="text-gray-300 mb-4">Cloudflare sana 2 nameserver verecek. Bunları domain sağlayıcında güncelle:</p>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <h4 class="text-white text-sm font-semibold mb-2">Cloudflare'in Vereceği Nameserver'lar:</h4>
+                            <div class="font-mono text-sm space-y-1">
+                                <div class="text-green-400">ns1.example.ns.cloudflare.com</div>
+                                <div class="text-green-400">ns2.example.ns.cloudflare.com</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4">
+                            <h4 class="text-yellow-400 text-sm font-semibold mb-2">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                Nerede Değiştirilir?
+                            </h4>
+                            <ul class="text-gray-300 text-sm space-y-1">
+                                <li>• Domain'i nereden aldıysan orada (GoDaddy, Namecheap, Natro, İsimtescil vb.)</li>
+                                <li>• "DNS Settings" veya "Nameservers" bölümünde</li>
+                                <li>• Mevcut nameserver'ları sil, Cloudflare'inkileri yaz</li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-4 text-gray-400 text-sm">
+                            <i class="fas fa-clock mr-1"></i>
+                            DNS yayılması 5 dakika - 24 saat sürebilir (genelde 1 saat)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADIM 4 -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold">4</span>
+                        <h3 class="text-lg font-semibold text-white">SSL Ayarları</h3>
+                        <span class="text-gray-500 text-sm">(1 dakika)</span>
+                    </div>
+                    <div class="ml-11">
+                        <p class="text-gray-300 mb-3">Cloudflare Dashboard → SSL/TLS → Overview</p>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-gray-400">SSL Mode:</span>
+                                <span class="bg-green-600 text-white px-3 py-1 rounded font-semibold">Full (Strict)</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mt-2">
+                            Bu ayar sunucunda zaten SSL varsa (Plesk/Let's Encrypt) en güvenli seçenek.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ADIM 5 -->
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold">5</span>
+                        <h3 class="text-lg font-semibold text-white">HLS Cache Ayarı (ÖNEMLİ!)</h3>
+                        <span class="text-gray-500 text-sm">(3 dakika)</span>
+                    </div>
+                    <div class="ml-11">
+                        <p class="text-gray-300 mb-3">Cloudflare Dashboard → Rules → Page Rules → Create Page Rule</p>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <h4 class="text-white text-sm font-semibold mb-3">Page Rule 1: HLS Dosyaları</h4>
+                            <div class="space-y-2 font-mono text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-400 w-20">URL:</span>
+                                    <code class="bg-slate-700 px-2 py-1 rounded text-orange-400">*muzibu.com.tr/storage/*.ts</code>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-400 w-20">Setting:</span>
+                                    <span class="text-green-400">Cache Level: Cache Everything</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-400 w-20">Setting:</span>
+                                    <span class="text-green-400">Edge Cache TTL: 1 month</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <h4 class="text-white text-sm font-semibold mb-3">Page Rule 2: M3U8 Playlist</h4>
+                            <div class="space-y-2 font-mono text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-400 w-20">URL:</span>
+                                    <code class="bg-slate-700 px-2 py-1 rounded text-orange-400">*muzibu.com.tr/storage/*.m3u8</code>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-400 w-20">Setting:</span>
+                                    <span class="text-green-400">Cache Level: Cache Everything</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-400 w-20">Setting:</span>
+                                    <span class="text-green-400">Edge Cache TTL: 1 day</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                            <p class="text-green-400 text-sm">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Bu ayarlarla HLS segment dosyaları Cloudflare'de cache'lenir.
+                                30.000 kullanıcının %95'i sunucuna hiç ulaşmaz!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: SUNUCUDA NE YAPMALI -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-purple-900/40 to-purple-800/20 border border-purple-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-server"></i>
+                    Sunucuda Ne Yapmalı? (Opsiyonel Optimizasyonlar)
+                </h2>
+
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-5 mb-6">
+                    <h3 class="text-green-400 font-semibold mb-2 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Kısa Cevap: HİÇBİR ŞEY!
+                    </h3>
+                    <p class="text-gray-300">
+                        Cloudflare kurulumu sadece DNS değişikliği. Sunucunda hiçbir şey değiştirmene gerek yok.
+                        Aşağıdaki optimizasyonlar isteğe bağlı ve performansı daha da artırır.
+                    </p>
+                </div>
+
+                <!-- Opsiyonel -->
+                <div class="space-y-4">
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-purple-400 font-semibold mb-2 flex items-center gap-2">
+                            <i class="fas fa-plus-circle"></i>
+                            Opsiyonel: Cache Header Ekle (Nginx)
+                        </h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Sunucudan dönen dosyalara cache header eklemek Cloudflare'in işini kolaylaştırır.
+                        </p>
+                        <div class="bg-slate-900 rounded p-4 font-mono text-sm overflow-x-auto">
+                            <div class="text-gray-500"># /etc/nginx/conf.d/cache-headers.conf</div>
+                            <div class="text-green-400 mt-2">location ~* \.(ts|m3u8)$ {</div>
+                            <div class="text-gray-300 ml-4">add_header Cache-Control "public, max-age=31536000";</div>
+                            <div class="text-green-400">}</div>
+                        </div>
+                        <p class="text-yellow-400 text-xs mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Bu opsiyonel! Yapmazsan da Cloudflare çalışır.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-purple-400 font-semibold mb-2 flex items-center gap-2">
+                            <i class="fas fa-plus-circle"></i>
+                            Opsiyonel: Gerçek IP Alma
+                        </h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Cloudflare arkasında kullanıcının gerçek IP'sini görmek için:
+                        </p>
+                        <div class="bg-slate-900 rounded p-4 font-mono text-sm overflow-x-auto">
+                            <div class="text-gray-500"># Laravel'de zaten otomatik çalışıyor</div>
+                            <div class="text-gray-500"># TrustProxies middleware aktif</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: 3 SUNUCU MİMARİSİ -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-cyan-900/40 to-cyan-800/20 border border-cyan-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-cyan-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-project-diagram"></i>
+                    3 Sunucu Mimarisi (30K Kullanıcı)
+                </h2>
+
+                <div class="bg-slate-900 rounded-xl p-6 mb-6 overflow-x-auto">
+                    <pre class="text-sm text-gray-300">
+┌─────────────────────────────────────────────────────────────────┐
+│                      30.000 KULLANICI                           │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     CLOUDFLARE CDN                              │
+│                                                                 │
+│   HLS Segment Cache    │    Static Assets    │   DDoS Shield   │
+│   (%95 burada karşı-   │    CSS, JS, Images  │   Saldırı       │
+│   lanıyor!)            │                     │   Koruması      │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼ (Sadece %5 istek geliyor)
+┌─────────────────────────────────────────────────────────────────┐
+│                     LOAD BALANCER                               │
+│                  (Nginx / HAProxy / Cloudflare LB)              │
+└─────────────────────────────────────────────────────────────────┘
+                    │              │              │
+                    ▼              ▼              ▼
+             ┌──────────┐   ┌──────────┐   ┌──────────┐
+             │  WEB 1   │   │  WEB 2   │   │  WEB 3   │
+             │  Laravel │   │  Laravel │   │  Laravel │
+             │  PHP-FPM │   │  PHP-FPM │   │  PHP-FPM │
+             └──────────┘   └──────────┘   └──────────┘
+                    │              │              │
+                    └──────────────┼──────────────┘
+                                   │
+                    ┌──────────────┼──────────────┐
+                    │              │              │
+                    ▼              ▼              ▼
+             ┌──────────┐   ┌──────────┐   ┌──────────┐
+             │  REDIS   │   │  MySQL   │   │  STORAGE │
+             │  Cache   │   │  Master  │   │  (HLS)   │
+             │  Session │   │  +Slave  │   │  NFS/S3  │
+             └──────────┘   └──────────┘   └──────────┘
+                    </pre>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-cyan-400">%95</div>
+                        <div class="text-gray-400 text-sm">İstek Cloudflare'de karşılanır</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-cyan-400">3</div>
+                        <div class="text-gray-400 text-sm">Web sunucu yeterli</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-cyan-400">$400</div>
+                        <div class="text-gray-400 text-sm">Aylık tahmini maliyet</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KONTROL LİSTESİ -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-yellow-900/40 to-yellow-800/20 border border-yellow-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-yellow-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-clipboard-check"></i>
+                    Cloudflare Kurulum Kontrol Listesi
+                </h2>
+
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 bg-slate-800/50 p-4 rounded-lg cursor-pointer hover:bg-slate-800">
+                        <input type="checkbox" class="w-5 h-5 rounded">
+                        <span class="text-gray-300">Cloudflare hesabı açıldı</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-800/50 p-4 rounded-lg cursor-pointer hover:bg-slate-800">
+                        <input type="checkbox" class="w-5 h-5 rounded">
+                        <span class="text-gray-300">muzibu.com.tr domain eklendi</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-800/50 p-4 rounded-lg cursor-pointer hover:bg-slate-800">
+                        <input type="checkbox" class="w-5 h-5 rounded">
+                        <span class="text-gray-300">DNS kayıtları "Proxied" (turuncu bulut) olarak ayarlandı</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-800/50 p-4 rounded-lg cursor-pointer hover:bg-slate-800">
+                        <input type="checkbox" class="w-5 h-5 rounded">
+                        <span class="text-gray-300">Nameserver'lar Cloudflare'e değiştirildi</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-800/50 p-4 rounded-lg cursor-pointer hover:bg-slate-800">
+                        <input type="checkbox" class="w-5 h-5 rounded">
+                        <span class="text-gray-300">SSL Mode: Full (Strict) ayarlandı</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-800/50 p-4 rounded-lg cursor-pointer hover:bg-slate-800">
+                        <input type="checkbox" class="w-5 h-5 rounded">
+                        <span class="text-gray-300">Page Rule: HLS dosyaları için cache ayarı yapıldı</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-800/50 p-4 rounded-lg cursor-pointer hover:bg-slate-800">
+                        <input type="checkbox" class="w-5 h-5 rounded">
+                        <span class="text-gray-300">Site test edildi, çalışıyor</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
+            <p>Hazırlayan: Claude AI | 26 Aralık 2025</p>
+            <p class="mt-2">Muzibu.com.tr Scaling Planı v2 - Cloudflare Kurulum Rehberi</p>
+        </footer>
+
+    </div>
+</body>
+</html>

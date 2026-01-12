@@ -1,1 +1,530 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Templates - Metadata Saklama Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-8">
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto mb-12">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
+                <i class="fas fa-database text-white text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-1">Design Templates - Metadata Saklama Sistemi</h1>
+                <p class="text-slate-400">Puan, kategori, marka, not verilerini kalıcı ve ortak saklama planı</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-sm">
+            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/30">
+                <i class="fas fa-calendar mr-2"></i>6 Ocak 2026
+            </span>
+            <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full border border-purple-500/30">
+                <i class="fas fa-layer-group mr-2"></i>Planlama
+            </span>
+        </div>
+    </header>
+
+    <!-- Ana İçerik -->
+    <main class="max-w-6xl mx-auto space-y-12">
+
+        <!-- Mevcut Durum -->
+        <section class="bg-slate-900/50 border border-slate-800 rounded-2xl p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fas fa-info-circle text-slate-400 text-xl"></i>
+                <h2 class="text-2xl font-bold text-white">Mevcut Durum</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Basit Anlatım -->
+                <div class="bg-green-900/20 border border-green-800 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-green-400 mb-4">
+                        <i class="fas fa-user-graduate mr-2"></i>Basit Anlatım
+                    </h3>
+                    <div class="space-y-3 text-slate-300">
+                        <p><strong>Şu anda nerede tutuluyor?</strong></p>
+                        <p>Tasarım şablonlarına verdiğiniz puanlar, kategori, marka ve notlar <strong>tarayıcınızın hafızasında</strong> (localStorage) saklanıyor.</p>
+
+                        <p class="mt-4"><strong>Problem nedir?</strong></p>
+                        <ul class="space-y-2 ml-4">
+                            <li><i class="fas fa-times-circle text-red-400 mr-2"></i>Başka tarayıcıdan bakınca görünmüyor</li>
+                            <li><i class="fas fa-times-circle text-red-400 mr-2"></i>Farklı bilgisayardan erişilemiyor</li>
+                            <li><i class="fas fa-times-circle text-red-400 mr-2"></i>Tarayıcı temizlenince kayboluyor</li>
+                            <li><i class="fas fa-times-circle text-red-400 mr-2"></i>Ekip arkadaşlarınız göremez, herkes kendi notunu tutar</li>
+                        </ul>
+
+                        <div class="mt-4 p-3 bg-yellow-900/30 border border-yellow-700/50 rounded-lg">
+                            <p class="text-yellow-300 text-sm">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                <strong>Yani:</strong> Veriler kişisel ve geçici durumda!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-blue-400 mb-4">
+                        <i class="fas fa-code mr-2"></i>Teknik Detaylar
+                    </h3>
+                    <div class="space-y-3 text-slate-300 text-sm font-mono">
+                        <p><strong>Dosya:</strong></p>
+                        <code class="block bg-slate-950 p-2 rounded text-xs">
+                            public/design/templates/index.php
+                        </code>
+
+                        <p class="mt-4"><strong>Saklama Mekanizması:</strong></p>
+                        <code class="block bg-slate-950 p-2 rounded text-xs">
+                            localStorage.setItem('designData', JSON.stringify(designData))
+                        </code>
+
+                        <p class="mt-4"><strong>Veri Yapısı:</strong></p>
+                        <code class="block bg-slate-950 p-3 rounded text-xs whitespace-pre">
+{
+  "kurumsal-anasayfa/v1": {
+    "favorite": true,
+    "rating": 5,
+    "note": "Mükemmel tasarım",
+    "kategori": "saglik",
+    "marka": "Acme Corp"
+  }
+}</code>
+
+                        <p class="mt-4"><strong>Sorun:</strong></p>
+                        <ul class="space-y-1 ml-4 text-xs">
+                            <li><i class="fas fa-bug text-red-400 mr-2"></i>Browser-only (client-side)</li>
+                            <li><i class="fas fa-bug text-red-400 mr-2"></i>Kalıcı değil (cache clear = kayıp)</li>
+                            <li><i class="fas fa-bug text-red-400 mr-2"></i>Paylaşılamaz (user-specific)</li>
+                            <li><i class="fas fa-bug text-red-400 mr-2"></i>Yedekleme yok</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Çözüm Seçenekleri -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fas fa-lightbulb text-yellow-400 text-xl"></i>
+                <h2 class="text-2xl font-bold text-white">Çözüm Seçenekleri</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <!-- ÇÖZÜM 1: JSON Dosyası (ÖNERİLEN) -->
+                <div class="bg-gradient-to-br from-emerald-900/30 to-emerald-800/20 border-2 border-emerald-600 rounded-2xl p-8 relative">
+                    <div class="absolute -top-3 left-6 px-4 py-1 bg-emerald-600 text-white text-xs font-bold rounded-full">
+                        ÖNERİLEN
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="w-14 h-14 bg-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fas fa-file-code text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Merkezi JSON Dosyası</h3>
+                        <p class="text-slate-400 text-sm">Basit, hızlı, kalıcı çözüm</p>
+                    </div>
+
+                    <!-- Basit Anlatım -->
+                    <div class="mb-6 p-4 bg-slate-900/50 rounded-xl">
+                        <h4 class="text-sm font-semibold text-emerald-400 mb-3">
+                            <i class="fas fa-user-graduate mr-2"></i>Nasıl Çalışır?
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fas fa-check-circle text-emerald-400 mr-2"></i>Tek bir JSON dosyası oluşturulur</li>
+                            <li><i class="fas fa-check-circle text-emerald-400 mr-2"></i>Tüm tasarımların bilgileri burada tutulur</li>
+                            <li><i class="fas fa-check-circle text-emerald-400 mr-2"></i>Puan verdiğinizde → dosyaya kaydedilir</li>
+                            <li><i class="fas fa-check-circle text-emerald-400 mr-2"></i>Herkes aynı dosyayı okur → ortak veri</li>
+                        </ul>
+                    </div>
+
+                    <!-- Teknik Detaylar -->
+                    <div class="p-4 bg-slate-900/50 rounded-xl mb-6">
+                        <h4 class="text-sm font-semibold text-blue-400 mb-3">
+                            <i class="fas fa-code mr-2"></i>Teknik Yapı
+                        </h4>
+                        <div class="space-y-3 text-xs font-mono">
+                            <div>
+                                <span class="text-slate-500">Dosya:</span>
+                                <code class="block bg-slate-950 p-2 rounded mt-1">
+                                    public/design/templates/metadata.json
+                                </code>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Kaydetme:</span>
+                                <code class="block bg-slate-950 p-2 rounded mt-1">
+                                    template-metadata.php → POST
+                                </code>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Okuma:</span>
+                                <code class="block bg-slate-950 p-2 rounded mt-1">
+                                    AJAX fetch → metadata.json
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Artılar -->
+                    <div class="space-y-2 mb-4">
+                        <h4 class="text-sm font-semibold text-white">Artılar:</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><i class="fas fa-plus-circle text-emerald-400 mr-2"></i>Basit, hızlı kurulum</li>
+                            <li><i class="fas fa-plus-circle text-emerald-400 mr-2"></i>Tüm kullanıcılar ortak veri görür</li>
+                            <li><i class="fas fa-plus-circle text-emerald-400 mr-2"></i>Yedekleme kolay (1 dosya)</li>
+                            <li><i class="fas fa-plus-circle text-emerald-400 mr-2"></i>Version control ile takip edilebilir</li>
+                            <li><i class="fas fa-plus-circle text-emerald-400 mr-2"></i>Database'e gerek yok</li>
+                        </ul>
+                    </div>
+
+                    <!-- Eksiler -->
+                    <div class="space-y-2">
+                        <h4 class="text-sm font-semibold text-white">Dikkat Edilmesi Gerekenler:</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><i class="fas fa-exclamation-circle text-yellow-400 mr-2"></i>Dosya izinleri (tuufi.com_:psaserv, 644)</li>
+                            <li><i class="fas fa-exclamation-circle text-yellow-400 mr-2"></i>Aynı anda kayıt çakışma riski (race condition)</li>
+                            <li><i class="fas fa-exclamation-circle text-yellow-400 mr-2"></i>Çok büyük veri olursa yavaşlayabilir (şimdilik sorun değil)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ÇÖZÜM 2: Database (İleride) -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-2xl p-8">
+                    <div class="mb-6">
+                        <div class="w-14 h-14 bg-slate-700 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fas fa-database text-slate-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">MySQL Database</h3>
+                        <p class="text-slate-400 text-sm">Daha kapsamlı, profesyonel çözüm</p>
+                    </div>
+
+                    <!-- Basit Anlatım -->
+                    <div class="mb-6 p-4 bg-slate-800/50 rounded-xl">
+                        <h4 class="text-sm font-semibold text-slate-400 mb-3">
+                            <i class="fas fa-user-graduate mr-2"></i>Nasıl Çalışır?
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fas fa-database text-slate-500 mr-2"></i>Veritabanında tablo oluşturulur</li>
+                            <li><i class="fas fa-database text-slate-500 mr-2"></i>Her tasarım için ayrı satır</li>
+                            <li><i class="fas fa-database text-slate-500 mr-2"></i>SQL ile sorgulama yapılır</li>
+                            <li><i class="fas fa-database text-slate-500 mr-2"></i>Güçlü, ölçeklenebilir</li>
+                        </ul>
+                    </div>
+
+                    <!-- Teknik Detaylar -->
+                    <div class="p-4 bg-slate-800/50 rounded-xl mb-6">
+                        <h4 class="text-sm font-semibold text-blue-400 mb-3">
+                            <i class="fas fa-code mr-2"></i>Teknik Yapı
+                        </h4>
+                        <div class="space-y-3 text-xs font-mono">
+                            <div>
+                                <span class="text-slate-500">Tablo:</span>
+                                <code class="block bg-slate-950 p-2 rounded mt-1">
+                                    design_template_metadata
+                                </code>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Kolonlar:</span>
+                                <code class="block bg-slate-950 p-3 rounded mt-1 whitespace-pre">
+template_id (VARCHAR)
+rating (INT)
+kategori (VARCHAR)
+marka (VARCHAR)
+note (TEXT)
+is_favorite (BOOLEAN)</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Artılar -->
+                    <div class="space-y-2 mb-4">
+                        <h4 class="text-sm font-semibold text-white">Artılar:</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><i class="fas fa-plus-circle text-slate-500 mr-2"></i>Çok veri olsa da performanslı</li>
+                            <li><i class="fas fa-plus-circle text-slate-500 mr-2"></i>Gelişmiş sorgulama (en çok puanlanan, vb.)</li>
+                            <li><i class="fas fa-plus-circle text-slate-500 mr-2"></i>Eşzamanlı yazma sorunu yok</li>
+                            <li><i class="fas fa-plus-circle text-slate-500 mr-2"></i>İstatistik raporları kolay</li>
+                        </ul>
+                    </div>
+
+                    <!-- Eksiler -->
+                    <div class="space-y-2">
+                        <h4 class="text-sm font-semibold text-white">Neden Şimdi Değil?</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><i class="fas fa-minus-circle text-red-400 mr-2"></i>Daha karmaşık kurulum</li>
+                            <li><i class="fas fa-minus-circle text-red-400 mr-2"></i>Migration, model, controller gerekli</li>
+                            <li><i class="fas fa-minus-circle text-red-400 mr-2"></i>Şu anda over-engineering olur</li>
+                            <li><i class="fas fa-minus-circle text-red-400 mr-2"></i>JSON çözümü yeterli (30-40 tasarım için)</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 p-3 bg-blue-900/30 border border-blue-700/50 rounded-lg">
+                        <p class="text-blue-300 text-sm">
+                            <i class="fas fa-lightbulb mr-2"></i>
+                            <strong>Not:</strong> İleride 500+ tasarım olursa bu çözüme geçilebilir.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Öneri: JSON Çözümü Detayı -->
+        <section class="bg-gradient-to-br from-emerald-900/20 to-purple-900/20 border border-emerald-600/50 rounded-2xl p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fas fa-rocket text-emerald-400 text-xl"></i>
+                <h2 class="text-2xl font-bold text-white">Önerilen Çözüm: JSON Metadata Sistemi</h2>
+            </div>
+
+            <!-- İki seviyeli içerik -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Basit -->
+                <div class="bg-green-900/20 border border-green-800 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-green-400 mb-4">
+                        <i class="fas fa-user-graduate mr-2"></i>Ne Yapılacak? (Basit Anlatım)
+                    </h3>
+                    <ol class="space-y-3 text-slate-300">
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                            <div>
+                                <strong>JSON dosyası oluşturulacak</strong>
+                                <p class="text-sm text-slate-400 mt-1">Tüm tasarımların puanları, kategorileri bu dosyada tutulacak</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                            <div>
+                                <strong>Kaydetme sistemi kurulacak</strong>
+                                <p class="text-sm text-slate-400 mt-1">Puan verince → otomatik kaydedilecek</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                            <div>
+                                <strong>Sayfa açılışta yüklenecek</strong>
+                                <p class="text-sm text-slate-400 mt-1">Templates sayfası → JSON'dan veriyi çekecek</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                            <div>
+                                <strong>Herkes aynı veriyi görecek</strong>
+                                <p class="text-sm text-slate-400 mt-1">Tüm bilgisayarlardan, tarayıcılardan ortak erişim</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Teknik -->
+                <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-blue-400 mb-4">
+                        <i class="fas fa-code mr-2"></i>Nasıl Yapılacak? (Teknik)
+                    </h3>
+                    <div class="space-y-4 text-sm font-mono">
+                        <div>
+                            <span class="text-slate-400">1. Metadata dosyası:</span>
+                            <code class="block bg-slate-950 p-2 rounded mt-1 text-xs">
+                                public/design/templates/metadata.json
+                            </code>
+                        </div>
+
+                        <div>
+                            <span class="text-slate-400">2. API endpoint (kaydetme):</span>
+                            <code class="block bg-slate-950 p-2 rounded mt-1 text-xs">
+                                template-metadata.php
+                            </code>
+                            <p class="text-xs text-slate-500 mt-1">POST ile metadata.json'a yaz</p>
+                        </div>
+
+                        <div>
+                            <span class="text-slate-400">3. Frontend (index.php):</span>
+                            <ul class="mt-2 space-y-1 text-xs text-slate-400">
+                                <li>• Sayfa açılışta: fetch metadata.json</li>
+                                <li>• Puan ver: AJAX POST → metadata.php</li>
+                                <li>• localStorage siliniyor (artık gereksiz)</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <span class="text-slate-400">4. İzinler:</span>
+                            <code class="block bg-slate-950 p-2 rounded mt-1 text-xs">
+                                chown tuufi.com_:psaserv metadata.json
+                                chmod 644 metadata.json
+                            </code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dosya Yapısı -->
+            <div class="bg-slate-900/50 border border-slate-700 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-white mb-4">
+                    <i class="fas fa-folder-tree mr-2"></i>Dosya Yapısı
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Klasör yapısı -->
+                    <div>
+                        <h4 class="text-sm text-slate-400 mb-3">Klasör Yapısı:</h4>
+                        <code class="block bg-slate-950 p-4 rounded text-xs font-mono text-slate-300 whitespace-pre">
+public/design/templates/
+├── index.php              (mevcut)
+├── template-action.php    (mevcut - silme)
+├── <span class="text-emerald-400">template-metadata.php</span>  (YENİ - kaydetme)
+├── <span class="text-emerald-400">metadata.json</span>          (YENİ - veri)
+├── kurumsal-anasayfa/
+├── madencilik/
+└── ...</code>
+                    </div>
+
+                    <!-- JSON örnek -->
+                    <div>
+                        <h4 class="text-sm text-slate-400 mb-3">metadata.json Örnek:</h4>
+                        <code class="block bg-slate-950 p-4 rounded text-xs font-mono text-slate-300 whitespace-pre">
+{
+  "kurumsal-anasayfa/v1": {
+    "rating": 5,
+    "favorite": true,
+    "kategori": "saglik",
+    "marka": "Koc Holding",
+    "note": "Müthiş tasarım"
+  },
+  "madencilik/v2": {
+    "rating": 4,
+    "kategori": "madencilik",
+    "marka": "Unimad"
+  }
+}</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Neden JSON? -->
+        <section class="bg-slate-900/50 border border-slate-800 rounded-2xl p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fas fa-question-circle text-purple-400 text-xl"></i>
+                <h2 class="text-2xl font-bold text-white">Neden JSON? (Diğer Seçenekler Neden Değil?)</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- TXT -->
+                <div class="p-6 bg-red-900/20 border border-red-800 rounded-xl">
+                    <h3 class="text-lg font-semibold text-red-400 mb-3">
+                        <i class="fas fa-file-alt mr-2"></i>TXT Dosyası
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-4">Düz metin dosyası</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-400"><strong>Neden değil?</strong></p>
+                        <ul class="space-y-1 text-slate-400">
+                            <li><i class="fas fa-times text-red-400 mr-2"></i>Parse etmek zor</li>
+                            <li><i class="fas fa-times text-red-400 mr-2"></i>Yapılandırılmış veri yok</li>
+                            <li><i class="fas fa-times text-red-400 mr-2"></i>JavaScript ile okuma zorlu</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- CSV -->
+                <div class="p-6 bg-orange-900/20 border border-orange-800 rounded-xl">
+                    <h3 class="text-lg font-semibold text-orange-400 mb-3">
+                        <i class="fas fa-file-csv mr-2"></i>CSV Dosyası
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-4">Excel gibi tablo</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-400"><strong>Neden değil?</strong></p>
+                        <ul class="space-y-1 text-slate-400">
+                            <li><i class="fas fa-times text-orange-400 mr-2"></i>İç içe veri zor</li>
+                            <li><i class="fas fa-times text-orange-400 mr-2"></i>Array/object desteği yok</li>
+                            <li><i class="fas fa-times text-orange-400 mr-2"></i>Virgül sorunları</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- JSON -->
+                <div class="p-6 bg-emerald-900/20 border border-emerald-600 rounded-xl">
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-3">
+                        <i class="fas fa-file-code mr-2"></i>JSON Dosyası
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-4">Modern veri formatı</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-400"><strong>Neden en iyi?</strong></p>
+                        <ul class="space-y-1 text-slate-400">
+                            <li><i class="fas fa-check text-emerald-400 mr-2"></i>JavaScript native</li>
+                            <li><i class="fas fa-check text-emerald-400 mr-2"></i>Yapılandırılmış veri</li>
+                            <li><i class="fas fa-check text-emerald-400 mr-2"></i>Oku/yaz basit</li>
+                            <li><i class="fas fa-check text-emerald-400 mr-2"></i>İnsan okunabilir</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonraki Adımlar -->
+        <section class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-600/50 rounded-2xl p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fas fa-tasks text-purple-400 text-xl"></i>
+                <h2 class="text-2xl font-bold text-white">Sonraki Adımlar (Uygulama)</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex gap-4 p-4 bg-slate-900/50 rounded-xl">
+                    <span class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center font-bold">1</span>
+                    <div>
+                        <h3 class="font-semibold text-white mb-1">metadata.json oluştur</h3>
+                        <p class="text-sm text-slate-400">Boş JSON dosyası, izinleri ayarla</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 p-4 bg-slate-900/50 rounded-xl">
+                    <span class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center font-bold">2</span>
+                    <div>
+                        <h3 class="font-semibold text-white mb-1">template-metadata.php yaz</h3>
+                        <p class="text-sm text-slate-400">POST ile JSON'a kaydetme API'si</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 p-4 bg-slate-900/50 rounded-xl">
+                    <span class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center font-bold">3</span>
+                    <div>
+                        <h3 class="font-semibold text-white mb-1">index.php güncelle</h3>
+                        <p class="text-sm text-slate-400">localStorage → JSON fetch sistemine çevir</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 p-4 bg-slate-900/50 rounded-xl">
+                    <span class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center font-bold">4</span>
+                    <div>
+                        <h3 class="font-semibold text-white mb-1">Mevcut localStorage verilerini taşı</h3>
+                        <p class="text-sm text-slate-400">Var olan puanları JSON'a aktar (migration)</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 p-4 bg-slate-900/50 rounded-xl">
+                    <span class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center font-bold">5</span>
+                    <div>
+                        <h3 class="font-semibold text-white mb-1">Test et</h3>
+                        <p class="text-sm text-slate-400">Farklı tarayıcılardan dene, ortak veri kontrolü</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto mt-16 pt-8 border-t border-slate-800">
+        <div class="flex items-center justify-between text-sm text-slate-500">
+            <p><i class="fas fa-robot mr-2"></i>Claude Sonnet 4.5 tarafından hazırlandı</p>
+            <p>6 Ocak 2026</p>
+        </div>
+    </footer>
+
+</body>
+</html>

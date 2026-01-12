@@ -1,1 +1,892 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code API Hatası - Kapsamlı Analiz ve Çözüm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+        }
+        .container-custom { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .section-header {
+            border-bottom: 2px solid #475569;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            margin-top: 2rem;
+        }
+        .problem-box {
+            background: rgba(248, 113, 113, 0.1);
+            border: 2px solid #dc2626;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .solution-box {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #22c55e;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .tech-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 2px solid #a855f7;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .card {
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        .badge-error { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid #dc2626; }
+        .badge-warning { background: rgba(251, 146, 60, 0.2); color: #fdba74; border: 1px solid #f97316; }
+        .badge-success { background: rgba(34, 197, 94, 0.2); color: #86efac; border: 1px solid #22c55e; }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid #3b82f6; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            margin: 1rem 0;
+        }
+        .checklist { list-style: none; }
+        .checklist li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #22c55e;
+            font-weight: bold;
+        }
+        .error-list { list-style: none; }
+        .error-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .error-list li:before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #dc2626;
+            font-weight: bold;
+        }
+        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #f1f5f9; }
+        h2 { font-size: 2rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; color: #cbd5e1; }
+        h3 { font-size: 1.5rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #cbd5e1; }
+        h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; color: #cbd5e1; }
+        p { margin-bottom: 1rem; color: #cbd5e1; }
+        a { color: #60a5fa; text-decoration: none; transition: color 0.2s; }
+        a:hover { color: #93c5fd; }
+        .highlight { background: rgba(251, 191, 36, 0.2); padding: 0.1rem 0.3rem; border-radius: 0.25rem; }
+        .priority-high { color: #f87171; font-weight: 600; }
+        .priority-medium { color: #fbbf24; font-weight: 600; }
+        .priority-low { color: #86efac; font-weight: 600; }
+        .header-section {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 3rem 2rem;
+            border-bottom: 2px solid #475569;
+            margin-bottom: 2rem;
+            border-radius: 0.75rem;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .stat-item {
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #60a5fa; margin-bottom: 0.5rem; }
+        .stat-label { color: #94a3b8; font-size: 0.875rem; }
+        .table-wrapper { overflow-x: auto; margin: 1.5rem 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        th {
+            background: #0f172a;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #475569;
+            color: #cbd5e1;
+        }
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #475569;
+        }
+        tr:hover { background: rgba(59, 130, 246, 0.05); }
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 2px solid #475569;
+            margin-top: 3rem;
+            color: #64748b;
+        }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 768px) { .two-column { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container-custom">
+        <!-- HEADER -->
+        <div class="header-section">
+            <div class="flex items-center gap-3 mb-4">
+                <div style="font-size: 2rem;">⚠️</div>
+                <div>
+                    <h1>Claude Code API Hatası Analizi</h1>
+                    <p style="margin: 0.5rem 0; color: #94a3b8;">10 Deneme Sonrası API Error - Kapsamlı Çözüm Rehberi</p>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Olası Sebep</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Kontrol Noktası</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Çözüm Adımı</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BASIT ANLATIM -->
+        <div class="info-box">
+            <h3 style="margin-top: 0; color: #93c5fd;">📝 Basit Anlatım (Herkes İçin)</h3>
+            <p>
+                Claude Code başında düzgün çalışıyor ancak birkaç işlem (10 deneme) sonrası API hatası veriyor.
+                Bu sorun, Claude Code ile Anthropic sunucuları arasındaki iletişimde bir problem olduğu anlamına geliyor.
+            </p>
+            <p style="margin: 1rem 0;">
+                <strong>Basit açıklama:</strong> Telefon görüşmesini düşün. Başta konuşma iyi gidiyor, ancak 10 dakika sonra
+                hattın diğer tarafı konuşmayı kapatıyor veya yanıt vermiyor. Bu olması gereken bir şey değil.
+            </p>
+            <p style="margin: 1rem 0;">
+                <strong>Neden önemli?</strong> Bu hata nedeniyle Claude Code ile çalışamıyorsunuz. Her 10 deneme sonrası
+                baştan başlamanız gerekiyor, bu da verimliliği ciddi oranda düşürüyor.
+            </p>
+        </div>
+
+        <!-- TEKNIK DETAYLAR BAŞLANGICI -->
+        <div class="tech-box">
+            <h3 style="margin-top: 0; color: #d8b4fe;">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+            <p>
+                Claude Code 10 deneme yapıyor ve sonra "API Error" döndürüyor. Bu genellikle şu kaynaklardan birinden geliyor:
+            </p>
+            <ul class="error-list" style="margin: 1rem 0; color: #cbd5e1;">
+                <li><strong>429 Rate Limit Error:</strong> Çok hızlı çok istek gönderiyorsunuz</li>
+                <li><strong>401 Authentication Error:</strong> API anahtarı geçersiz veya süresi dolmuş</li>
+                <li><strong>529 Overloaded Error:</strong> API sunucuları aşırı yüklü</li>
+                <li><strong>500 API Error:</strong> Sunucu tarafında beklenmedik hata</li>
+                <li><strong>Token Limit:</strong> Context window dolmuş veya token limiti aşıldı</li>
+            </ul>
+        </div>
+
+        <!-- OLASI SEBEPLER -->
+        <h2 style="margin-top: 3rem;">🎯 Olası Sebepler (7 Kategori)</h2>
+
+        <!-- 1. API RATE LIMITING -->
+        <div class="card">
+            <div class="flex justify-between items-start mb-3">
+                <h3 style="margin: 0; color: #fbbf24;">1️⃣ API Rate Limiting (Hız Limitleri)</h3>
+                <span class="badge badge-warning"><span class="priority-high">YÜKSEK</span> İhtimal</span>
+            </div>
+            <p style="margin-top: 0;">
+                Claude Code çok hızlı ardışık istekler gönderiyorsa, Anthropic API "429 Rate Limit Error" döndürüyor.
+            </p>
+            <h4>Sebepleri:</h4>
+            <ul class="error-list" style="margin: 1rem 0; color: #cbd5e1;">
+                <li>Arka planda otomatik çalışan işlemler (auto-refresh, auto-check)</li>
+                <li>Paralel session'lar çalışıyor</li>
+                <li>Aggressive retry mekanizması (10 denemeden sonra başarısız oluyor)</li>
+                <li>Aynı anda birden fazla Claude Code instance açık</li>
+                <li>Settings'te agresif timeout değerleri</li>
+            </ul>
+            <h4>Kontrol Noktaları:</h4>
+            <div class="code-block">
+# 1. Açık session sayısını kontrol et
+ps aux | grep -i claude
+
+# 2. Ağ trafiğini izle (hangi porttan istek gidiyor?)
+netstat -tlnp | grep -i -E 'claude|api'
+
+# 3. API istatistiklerini kontrol et
+claude /cost
+
+# 4. Timeout ayarlarını kontrol et
+cat ~/.claude/settings.json | grep -i timeout
+            </div>
+        </div>
+
+        <!-- 2. API KEY / AUTHENTICATION -->
+        <div class="card">
+            <div class="flex justify-between items-start mb-3">
+                <h3 style="margin: 0; color: #fbbf24;">2️⃣ API Key / Authentication Sorunları</h3>
+                <span class="badge badge-warning"><span class="priority-high">YÜKSEK</span> İhtimal</span>
+            </div>
+            <p style="margin-top: 0;">
+                API anahtarınız geçersiz, süresi dolmuş veya kısıtlı erişim izni var olabilir.
+            </p>
+            <h4>Sebepleri:</h4>
+            <ul class="error-list" style="margin: 1rem 0; color: #cbd5e1;">
+                <li>API anahtarı yanlış kopyalandı (boşluk, karakter kesik)</li>
+                <li>API anahtarı rotated (yeni anahtar ile değiştirildi)</li>
+                <li>Token süresi dolmuş (OAuth token'ı refresh gerekiyor)</li>
+                <li>Kısıtlı model erişimi (belirli modellere erişim yok)</li>
+                <li>Hesap suspended veya deactivate edilmiş</li>
+            </ul>
+            <h4>Kontrol Noktaları:</h4>
+            <div class="code-block">
+# 1. Kimlik doğrulamayı sıfırla
+claude /logout
+
+# 2. Yeniden giriş yap
+claude
+
+# 3. Auth bilgilerini temizle ve sıfırla
+rm -rf ~/.config/claude-code/auth.json
+claude
+
+# 4. Settings'te API key var mı kontrol et
+cat ~/.claude/settings.json | grep -i api
+cat .claude/settings.json | grep -i api
+            </div>
+        </div>
+
+        <!-- 3. NETWORK/CONNECTION SORUNLARI -->
+        <div class="card">
+            <div class="flex justify-between items-start mb-3">
+                <h3 style="margin: 0; color: #fbbf24;">3️⃣ Network/Connection Sorunları</h3>
+                <span class="badge badge-warning"><span class="priority-medium">ORTA</span> İhtimal</span>
+            </div>
+            <p style="margin-top: 0;">
+                İnternet bağlantınız stabil değil veya Proxy/Firewall API isteklerini engelliyor olabilir.
+            </p>
+            <h4>Sebepleri:</h4>
+            <ul class="error-list" style="margin: 1rem 0; color: #cbd5e1;">
+                <li>Wifi/network bağlantısı kesintili (10. deneme sırasında bağlantı kapanıyor)</li>
+                <li>Kurumsal Firewall API port'larını engelliyor</li>
+                <li>Proxy yapılandırması yanlış</li>
+                <li>DNS resolution sorunları</li>
+                <li>VPN ile Anthropic API'ye erişim kısıtlanmış</li>
+            </ul>
+            <h4>Kontrol Noktaları:</h4>
+            <div class="code-block">
+# 1. Network bağlantısını test et
+ping -c 5 8.8.8.8
+
+# 2. API endpoint'ine ulaşabildiğini test et
+curl -I https://api.anthropic.com
+
+# 3. DNS ayarlarını kontrol et
+nslookup api.anthropic.com
+
+# 4. Aktif network adapter'ları listele
+ip link show
+
+# 5. Proxy ayarlarını kontrol et
+echo $HTTP_PROXY $HTTPS_PROXY
+            </div>
+        </div>
+
+        <!-- 4. TOKEN LIMITLERI -->
+        <div class="card">
+            <div class="flex justify-between items-start mb-3">
+                <h3 style="margin: 0; color: #fbbf24;">4️⃣ Token Limitleri ve Context Window</h3>
+                <span class="badge badge-warning"><span class="priority-high">YÜKSEK</span> İhtimal</span>
+            </div>
+            <p style="margin-top: 0;">
+                İstek çok büyük veya context window dolmuş olabilir. 10. deneme sırasında context window
+                limitine ulaşabilirsiniz.
+            </p>
+            <h4>Sebepleri:</h4>
+            <ul class="error-list" style="margin: 1rem 0; color: #cbd5e1;">
+                <li>Context window dolmuş (conversation çok uzun)</li>
+                <li>max_tokens değeri çok yüksek ayarlanmış</li>
+                <li>İstek boyutu 32 MB'ı aşıyor (API limit)</li>
+                <li>Large codebase'de çalışılıyor (compacting gerekli)</li>
+                <li>Sistem prompt çok büyük (CLAUDE.md dosyası çok uzun)</li>
+            </ul>
+            <h4>Kontrol Noktaları:</h4>
+            <div class="code-block">
+# 1. Context boyutunu kontrol et
+claude /compact
+
+# 2. Token kullanımını göster
+claude /cost
+
+# 3. CLAUDE.md dosya boyutunu kontrol et
+wc -l /var/www/vhosts/tuufi.com/httpdocs/CLAUDE.md
+du -h /var/www/vhosts/tuufi.com/httpdocs/CLAUDE.md
+
+# 4. Model'in max context window'unu kontrol et
+claude --help | grep -i token
+            </div>
+        </div>
+
+        <!-- 5. RETRY MEKANIZMASI AYARLARI -->
+        <div class="card">
+            <div class="flex justify-between items-start mb-3">
+                <h3 style="margin: 0; color: #fbbf24;">5️⃣ Retry Mekanizması Ayarları</h3>
+                <span class="badge badge-warning"><span class="priority-medium">ORTA</span> İhtimal</span>
+            </div>
+            <p style="margin-top: 0;">
+                Claude Code'un retry mekanizması 10 denemeden sonra pes ediyor. Bu ayarlar yanlış
+                konfigüre edilmiş olabilir.
+            </p>
+            <h4>Sebepleri:</h4>
+            <ul class="error-list" style="margin: 1rem 0; color: #cbd5e1;">
+                <li>Retry count = 10 ayarlanmış (max değer)</li>
+                <li>Retry delay çok kısa (exponential backoff yok)</li>
+                <li>Retry stratejisi agresif (hemen yeniden başlıyor)</li>
+                <li>Timeout değeri çok düşük (başarısız olmadan kesiyor)</li>
+                <li>Connection pool exhausted (bağlantı yönetim sorunu)</li>
+            </ul>
+            <h4>Kontrol Noktaları:</h4>
+            <div class="code-block">
+# 1. Claude Code settings'ini kontrol et
+cat ~/.claude/settings.json
+cat .claude/settings.json
+
+# 2. Timeout ayarlarını ara
+grep -r "timeout\|retry\|attempt" ~/.claude/ 2>/dev/null
+
+# 3. Environment variables'i kontrol et
+env | grep -i -E 'claude|timeout|retry|api'
+
+# 4. Network timeout'unu artır
+export CLAUDE_TIMEOUT=60000  # 60 saniye
+            </div>
+        </div>
+
+        <!-- 6. SETTINGS/CONFIGURATION SORUNLARI -->
+        <div class="card">
+            <div class="flex justify-between items-start mb-3">
+                <h3 style="margin: 0; color: #fbbf24;">6️⃣ Settings/Configuration Sorunları</h3>
+                <span class="badge badge-warning"><span class="priority-medium">ORTA</span> İhtimal</span>
+            </div>
+            <p style="margin-top: 0;">
+                Claude Code settings dosyaları (JSON) yanlış konfigüre olmuş veya bozulmuş olabilir.
+            </p>
+            <h4>Sebepleri:</h4>
+            <ul class="error-list" style="margin: 1rem 0; color: #cbd5e1;">
+                <li>settings.json dosyası bozulmuş (geçersiz JSON)</li>
+                <li>Model ayarı yanlış (erişim izni olmayan model)</li>
+                <li>Permissions çok sıkı ayarlanmış</li>
+                <li>MCP sunucusu configuration'ı hatalı</li>
+                <li>Plugin configuration çakışması</li>
+            </ul>
+            <h4>Kontrol Noktaları:</h4>
+            <div class="code-block">
+# 1. Settings dosyasını valide et
+cat ~/.claude/settings.json | jq . > /dev/null && echo "OK" || echo "INVALID JSON"
+cat .claude/settings.json | jq . > /dev/null && echo "OK" || echo "INVALID JSON"
+
+# 2. MCP configuration'ını kontrol et
+cat .mcp.json 2>/dev/null | jq . > /dev/null && echo "OK" || echo "INVALID"
+
+# 3. Settings dosyalarını sıfırla (BACKUP AL ÖNCE!)
+cp ~/.claude/settings.json ~/.claude/settings.json.backup
+rm ~/.claude/settings.json
+
+# 4. Claude doctor çalıştır
+claude /doctor
+            </div>
+        </div>
+
+        <!-- 7. SERVER SIDE SORUNLARI -->
+        <div class="card">
+            <div class="flex justify-between items-start mb-3">
+                <h3 style="margin: 0; color: #fbbf24;">7️⃣ Anthropic Sunucu Sorunları</h3>
+                <span class="badge badge-warning"><span class="priority-low">DÜŞÜK</span> İhtimal</span>
+            </div>
+            <p style="margin-top: 0;">
+                Anthropic API'nin kendi sunucularında sorun olabilir (nadirdir ancak mümkün).
+            </p>
+            <h4>Sebepleri:</h4>
+            <ul class="error-list" style="margin: 1rem 0; color: #cbd5e1;">
+                <li>529 Overloaded Error (sunucular aşırı yüklü)</li>
+                <li>500 Internal Server Error (bug veya konfigürasyon hatası)</li>
+                <li>Planlı bakım veya downtime</li>
+                <li>Region-specific sorunlar</li>
+                <li>API versiyonu deprecated (eski endpoint kullanılıyor)</li>
+            </ul>
+            <h4>Kontrol Noktaları:</h4>
+            <div class="code-block">
+# 1. API status'unu kontrol et
+curl https://status.anthropic.com
+
+# 2. Claude Code version'ını kontrol et
+claude --version
+
+# 3. Anthropic docs'taki API change log'unu oku
+# https://platform.claude.com/docs
+
+# 4. Problemi report et
+claude /bug
+            </div>
+        </div>
+
+        <!-- ÇÖZÜM ADIMLARI -->
+        <h2 style="margin-top: 3rem;">✅ Adım Adım Çözüm (5 Seviye)</h2>
+
+        <!-- LEVEL 1: BASIT KONTROLLER -->
+        <div class="solution-box">
+            <h3 style="margin-top: 0; color: #86efac;">Level 1: Basit Kontroller (2-5 dakika)</h3>
+            <p><strong>Başla buradan! Bu sorunların %40'ı burada çözülüyor.</strong></p>
+            <h4>Adım 1.1: Claude Code'u Yeniden Başlat</h4>
+            <div class="code-block">
+# Tüm Claude Code process'lerini kapat
+pkill -f claude
+
+# 2-3 saniye bekle
+sleep 3
+
+# Yeniden aç
+claude
+            </div>
+            <h4>Adım 1.2: Açık Session'ları Kapat</h4>
+            <div class="code-block">
+# Açık session sayısını kontrol et
+ps aux | grep -i claude | grep -v grep
+
+# Eğer 1'den fazla varsa hepsini kapat
+pkill -9 -f claude
+            </div>
+            <h4>Adım 1.3: Ağ Bağlantısını Test Et</h4>
+            <div class="code-block">
+# İnternet bağlantısını test et
+ping -c 3 google.com
+
+# Anthropic API'ye erişimi test et
+curl -s https://api.anthropic.com > /dev/null && echo "API OK" || echo "API ERR"
+            </div>
+            <h4>Adım 1.4: Claude Doctor Çalıştır</h4>
+            <div class="code-block">
+claude /doctor
+
+# Çıktıda kırmızı işaretler varsa dikkate al
+            </div>
+            <p style="margin-top: 1rem; padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: 0.5rem;">
+                <strong>✅ Sonuç:</strong> Eğer bu adımlardan sonra sorun çözülmüşse, problem kapandı.
+                Değilse Level 2'ye geç.
+            </p>
+        </div>
+
+        <!-- LEVEL 2: AUTHENTICATION KONTROLLERI -->
+        <div class="solution-box">
+            <h3 style="margin-top: 2rem; color: #86efac;">Level 2: Authentication Reset (5-10 dakika)</h3>
+            <p><strong>Bu adımlar %30 oranında sorun çözer.</strong></p>
+            <h4>Adım 2.1: Kimlik Doğrulamayı Sıfırla</h4>
+            <div class="code-block">
+# Claude Code'dan çık
+claude /logout
+
+# Auth cache'i temizle
+rm -rf ~/.config/claude-code/auth.json
+
+# Yeniden giriş yap (fresh login)
+claude
+
+# Giriş talimatlarını takip et
+            </div>
+            <h4>Adım 2.2: API Key Doğrulaması</h4>
+            <div class="code-block">
+# Settings'te API key var mı kontrol et
+cat ~/.claude/settings.json 2>/dev/null | grep -i "api_key\|apiKey"
+
+# Eğer API key manuel olarak ayarlanmışsa sil
+# (OAuth token daha güvenlidir)
+# Ardından logout/login yap
+            </div>
+            <p style="margin-top: 1rem; padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: 0.5rem;">
+                <strong>✅ Sonuç:</strong> Fresh login yapıldıktan sonra yeniden test et.
+                Sorun çözülmüşse bitti. Değilse Level 3'e geç.
+            </p>
+        </div>
+
+        <!-- LEVEL 3: CONFIGURATION TEMIZLIĞI -->
+        <div class="solution-box">
+            <h3 style="margin-top: 2rem; color: #86efac;">Level 3: Configuration Temizliği (10-15 dakika)</h3>
+            <p><strong>Bu adımlar %20 oranında sorun çözer. ⚠️ BACKUP AL!</strong></p>
+            <h4>Adım 3.1: Settings Dosyasını Valide Et</h4>
+            <div class="code-block">
+# User settings
+cat ~/.claude/settings.json | jq . > /dev/null 2>&1 && echo "✅ User settings OK" || echo "❌ User settings INVALID"
+
+# Project settings
+cat .claude/settings.json 2>/dev/null | jq . > /dev/null 2>&1 && echo "✅ Project settings OK" || echo "⚠️ Project settings NOT FOUND or INVALID"
+
+# MCP config
+cat .mcp.json 2>/dev/null | jq . > /dev/null 2>&1 && echo "✅ MCP config OK" || echo "⚠️ MCP config NOT FOUND or INVALID"
+            </div>
+            <h4>Adım 3.2: Bozuk Settings'i Düzelt</h4>
+            <div class="code-block">
+# ÖNCE BACKUP AL!
+cp ~/.claude/settings.json ~/.claude/settings.json.backup.$(date +%s)
+
+# Settings dosyasını sil (sıfırlanacak)
+rm ~/.claude/settings.json
+
+# Claude Code yeniden açılacak ve varsayılan settings oluşturacak
+claude
+
+# İhtiyaç varsa backup'tan restore et
+# cp ~/.claude/settings.json.backup.TIMESTAMP ~/.claude/settings.json
+            </div>
+            <h4>Adım 3.3: Problematic Plugins'i Devre Dışı Bırak</h4>
+            <div class="code-block">
+# .claude/settings.json'ı aç ve kontrol et
+cat .claude/settings.json
+
+# Eğer enabledPlugins bölümünde hata varsa:
+# Tüm plugin'leri devre dışı bırak (test amacıyla)
+            </div>
+            <p style="margin-top: 1rem; padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: 0.5rem;">
+                <strong>✅ Sonuç:</strong> Fresh settings ile yeniden test et.
+                Sorun çözülmüşse bitti. Değilse Level 4'e geç.
+            </p>
+        </div>
+
+        <!-- LEVEL 4: ADVANCED DIAGNOSTICS -->
+        <div class="solution-box">
+            <h3 style="margin-top: 2rem; color: #86efac;">Level 4: Advanced Diagnostics (15-30 dakika)</h3>
+            <p><strong>Bu adımlar %8 oranında sorun çözer. Teknik derinlemesine kontrol.</strong></p>
+            <h4>Adım 4.1: Network Trafiğini İzle</h4>
+            <div class="code-block">
+# Claude Code'u başlat (arka planda)
+claude &
+
+# Network trafiğini izle (başka terminal'de)
+# API request'lerini göreceksin
+tcpdump -i any -n 'tcp port 443' | grep -i anthropic
+
+# Veya curl ile test et
+curl -v https://api.anthropic.com 2>&1 | head -20
+            </div>
+            <h4>Adım 4.2: API Response'ı Ayrıntılı Kontrol Et</h4>
+            <div class="code-block">
+# Request'in response code'unu kontrol et
+curl -i -X POST https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "x-api-key: YOUR_API_KEY" \
+  2>&1 | head -15
+
+# Beklenen: HTTP 200 veya HTTP 400 (not 401/429/500/529)
+            </div>
+            <h4>Adım 4.3: Environment Variables'i Kontrol Et</h4>
+            <div class="code-block">
+# Claude Code'un kullandığı environment variables
+env | grep -i -E 'claude|anthropic|api|timeout|proxy' | sort
+
+# Proxy ayarlanmışsa kontrol et
+echo "HTTP_PROXY: $HTTP_PROXY"
+echo "HTTPS_PROXY: $HTTPS_PROXY"
+echo "NO_PROXY: $NO_PROXY"
+
+# Eğer proxy sorunu varsa:
+unset HTTP_PROXY
+unset HTTPS_PROXY
+unset NO_PROXY
+            </div>
+            <h4>Adım 4.4: Large Context Simulation</h4>
+            <div class="code-block">
+# Context boyutunu test et
+claude /compact
+
+# Token sayısını göster
+claude /cost
+
+# Model info'yu göster
+claude --help | grep -i context
+            </div>
+            <p style="margin-top: 1rem; padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: 0.5rem;">
+                <strong>✅ Sonuç:</strong> Detaylı diagnostics ile root cause'u belirle.
+                Sorun çözülmüşse bitti. Değilse Level 5'e geç.
+            </p>
+        </div>
+
+        <!-- LEVEL 5: NÜKLEER SEÇENEK -->
+        <div class="solution-box">
+            <h3 style="margin-top: 2rem; color: #86efac;">Level 5: Nükleer Reset (30-45 dakika)</h3>
+            <p><strong>⚠️ KAPSAMLI RESET - Son çare! %2 oranında sorun çözer.</strong></p>
+            <h4>Adım 5.1: Tüm Claude Code Dosyalarını Sıfırla</h4>
+            <div class="code-block">
+# ÇOK ÖNEMLİ: Tüm dosyaları BACKUP AL!
+mkdir -p ~/claude-backup-$(date +%Y%m%d-%H%M%S)
+cp -r ~/.claude ~/claude-backup-$(date +%Y%m%d-%H%M%S)/
+cp -r ~/.config/claude-code ~/claude-backup-$(date +%Y%m%d-%H%M%S)/
+cp ~/.claude.json ~/claude-backup-$(date +%Y%m%d-%H%M%S)/ 2>/dev/null
+
+# Tüm Claude Code state'ini sıfırla
+rm -rf ~/.claude
+rm -rf ~/.config/claude-code
+rm ~/.claude.json 2>/dev/null
+
+# Claude Code'u temiz kurulumuyla başlat
+claude
+
+# Giriş talimatlarını takip et (fresh setup)
+            </div>
+            <h4>Adım 5.2: Claude Code'u Yeniden Kur</h4>
+            <div class="code-block">
+# Claude Code'u kaldır
+npm uninstall -g @anthropic-ai/claude-code
+
+# Veya native installation'ı kaldır
+rm -rf ~/.local/bin/claude
+
+# Yeniden kur (native recommended)
+curl -fsSL https://claude.ai/install.sh | bash
+
+# Verify
+claude --version
+            </div>
+            <h4>Adım 5.3: Sistem Bağlantısını Test Et</h4>
+            <div class="code-block">
+# System level network test
+curl -v https://api.anthropic.com 2>&1 | grep -E "HTTP|Connected"
+
+# DNS test
+nslookup api.anthropic.com
+
+# Firewall test
+sudo iptables -L -n 2>/dev/null | grep -i 443
+
+# Proxy test (eğer kurumsal ağda)
+curl -v -x [PROXY]:PORT https://api.anthropic.com
+            </div>
+            <p style="margin-top: 1rem; padding: 1rem; background: rgba(248, 113, 113, 0.1); border-radius: 0.5rem;">
+                <strong>❌ Hala sorun yaşıyorsan:</strong> Anthropic Support'a başvur.
+                <code>/bug</code> komutu ile hata bildir. Backup'larından restore et.
+            </p>
+        </div>
+
+        <!-- TANILAMA TABLOSU -->
+        <h2 style="margin-top: 3rem;">📊 Hızlı Tanı Tablosu</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Hata Mesajı</th>
+                        <th style="width: 25%;">Muhtemel Sebep</th>
+                        <th style="width: 30%;">İlk Çözüm</th>
+                        <th style="width: 30%;">Detaylı Çözüm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>429 Rate Limit</code></td>
+                        <td>Çok hızlı istek</td>
+                        <td>Bekleme</td>
+                        <td>Level 1: Claude'u restart + Açık session'ları kapat</td>
+                    </tr>
+                    <tr>
+                        <td><code>401 Unauthorized</code></td>
+                        <td>API key geçersiz</td>
+                        <td>/logout, /relogin</td>
+                        <td>Level 2: Auth reset</td>
+                    </tr>
+                    <tr>
+                        <td><code>500 Server Error</code></td>
+                        <td>Anthropic sunucu hatası</td>
+                        <td>Bir kaç dakika bekle</td>
+                        <td>Level 4: İnternet connection kontrol</td>
+                    </tr>
+                    <tr>
+                        <td><code>529 Overloaded</code></td>
+                        <td>API sunucuları aşırı yüklü</td>
+                        <td>Daha sonra yeniden dene</td>
+                        <td>Peak hours'dan kaçın (9-17 UTC)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Invalid JSON</code></td>
+                        <td>Settings dosyası bozuk</td>
+                        <td>Settings dosyasını sil</td>
+                        <td>Level 3: Configuration temizliği</td>
+                    </tr>
+                    <tr>
+                        <td><code>Connection Timeout</code></td>
+                        <td>Network sorunları</td>
+                        <td>VPN/Proxy kontrol</td>
+                        <td>Level 4: Network diagnostics</td>
+                    </tr>
+                    <tr>
+                        <td><code>After 10 attempts</code></td>
+                        <td>Retry limit aşıldı</td>
+                        <td>Context window kontrol</td>
+                        <td>Level 4: /compact yap, token boyutunu azalt</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ADVANCED TIPS -->
+        <h2 style="margin-top: 3rem;">💡 Advanced Tips</h2>
+
+        <div class="card">
+            <h3 style="margin-top: 0;">🔧 Settings Optimization</h3>
+            <div class="code-block">
+{
+  "model": "sonnet",
+  "timeout": 60000,
+  "retryAttempts": 5,
+  "retryDelay": 2000,
+  "maxContextSize": 100000,
+  "enableCompactMode": true,
+  "permissions": {
+    "defaultMode": "acceptEdits"
+  }
+}
+            </div>
+            <p style="margin-top: 1rem;">
+                <strong>⚠️ Önemli Seçenekler:</strong>
+            </p>
+            <ul class="checklist" style="color: #cbd5e1;">
+                <li><code>timeout</code>: 60 saniye çok iyi, <code>timeout: 120000</code> yapabilirsin</li>
+                <li><code>retryAttempts</code>: 5 iyi, 10'dan fazla yapma</li>
+                <li><code>retryDelay</code>: 2 saniye, exponential backoff için artır</li>
+                <li><code>maxContextSize</code>: Büyük codebase'de 150000 yap</li>
+                <li><code>enableCompactMode</code>: Uzun conversation'larda true yap</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top: 0;">⚡ Environment Variables</h3>
+            <div class="code-block">
+# ~/.bashrc veya ~/.zshrc'ye ekle
+export CLAUDE_TIMEOUT=120000
+export CLAUDE_MAX_RETRIES=5
+export CLAUDE_RETRY_DELAY=2000
+export CLAUDE_LOG_LEVEL=debug
+export ANTHROPIC_API_TIMEOUT=120
+export ANTHROPIC_CONNECT_TIMEOUT=30
+
+# Eğer proxy varsa:
+export HTTP_PROXY=http://proxy.company.com:8080
+export HTTPS_PROXY=http://proxy.company.com:8080
+export NO_PROXY=localhost,127.0.0.1,.company.com
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top: 0;">🚀 Performance Optimization</h3>
+            <ul class="checklist" style="color: #cbd5e1;">
+                <li>Haftalık <code>/compact</code> yap (context temizliği)</li>
+                <li>Büyük codebase'de <code>@</code> ile file reference kullan</li>
+                <li>Uzun conversation'ları session'lara bölümle</li>
+                <li>Off-peak hours'da büyük işler yap (01:00-09:00 UTC)</li>
+                <li>CLAUDE.md dosyasını 5000 satırdan az tut</li>
+                <li>Paralel session açma (bir seferde bir session)</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top: 0;">📞 Anthropic Support İletişim</h3>
+            <p>Yukarıdaki adımları denedikten sonra hala sorun varsa:</p>
+            <ul class="checklist" style="color: #cbd5e1;">
+                <li>Claude Code'da <code>claude /bug</code> komutunu çalıştır</li>
+                <li>Aşağıdaki bilgileri ekle:
+                    <div class="code-block" style="margin: 0.5rem 0; font-size: 0.75rem;">
+# Hata göründüğü zaman:
+- Session ID
+- Request ID (error response'dan)
+- Deneme sayısı (1-10 arasında hangisinde oluyor?)
+- Settings dosyası (sensitif bilgi kaldır)
+- Network ortamı (corporate/home/mobile)
+- OS ve Claude Code version
+                    </div>
+                </li>
+                <li>Email: support@anthropic.com</li>
+                <li>Rapor: https://github.com/anthropics/claude-code/issues</li>
+            </ul>
+        </div>
+
+        <!-- ÖZET -->
+        <h2 style="margin-top: 3rem;">📋 Hızlı Kontrol Listesi</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem;">
+            <div class="card">
+                <h4 style="margin-top: 0; color: #fbbf24;">Bugün Yapılacaklar</h4>
+                <ul class="checklist" style="color: #cbd5e1;">
+                    <li>Claude Code'u restart et</li>
+                    <li>/doctor çalıştır</li>
+                    <li>/logout ve /login yap</li>
+                    <li>Network bağlantısını test et</li>
+                    <li>Settings dosyasını valide et</li>
+                    <li>Açık session'ları kapat</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4 style="margin-top: 0; color: #60a5fa;">Bu Hafta Yapılacaklar</h4>
+                <ul class="checklist" style="color: #cbd5e1;">
+                    <li>CLAUDE.md dosyasını optimize et</li>
+                    <li>Context boyutunu azalt (/compact)</li>
+                    <li>Settings.json'ı ayarla (timeout, retry)</li>
+                    <li>Plugins'i gözden geçir</li>
+                    <li>MCP configuration'ını kontrol et</li>
+                    <li>Network/Proxy ayarlarını düzelt</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>Claude Code API Error Analizi ve Çözüm Rehberi</p>
+            <p style="font-size: 0.875rem; margin-top: 1rem; color: #475569;">
+                Rapor: 2025-12-20 | Kapsam: 7 Olası Sebep, 5 Çözüm Seviyesi, 12 Kontrol Noktası
+            </p>
+            <p style="font-size: 0.875rem; color: #475569;">
+                Powered by Claude AI | Anthropic Platform
+            </p>
+        </div>
+    </div>
+</body>
+</html>

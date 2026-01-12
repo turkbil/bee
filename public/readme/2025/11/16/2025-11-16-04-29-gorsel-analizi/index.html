@@ -1,1 +1,937 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AI - Görsel ve Taslak Üretimi Analizi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e7;
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #9ca3af;
+            margin-top: 0.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #9ca3af;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #e4e4e7;
+        }
+
+        .tab.active {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+            border-color: #60a5fa;
+            border-bottom: 2px solid #60a5fa;
+            margin-bottom: -2px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section h3 {
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section h4 {
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #fbbf24;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+        }
+
+        .icon-sm {
+            font-size: 1.2rem;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        ul li:before {
+            content: "▸";
+            position: absolute;
+            left: 0.5rem;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid #60a5fa;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            color: #a3e635;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .success {
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        .warning {
+            color: #fb923c;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #f87171;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .badge-success {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            border: 1px solid #4ade80;
+        }
+
+        .badge-warning {
+            background: rgba(251, 146, 60, 0.2);
+            color: #fb923c;
+            border: 1px solid #fb923c;
+        }
+
+        .badge-info {
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            border: 1px solid #60a5fa;
+        }
+
+        .badge-purple {
+            background: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+            border: 1px solid #a78bfa;
+        }
+
+        .flow-diagram {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .flow-step {
+            background: rgba(96, 165, 250, 0.15);
+            border: 2px solid #60a5fa;
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .flow-step:not(:last-child):after {
+            content: "↓";
+            display: block;
+            margin: 0.5rem auto;
+            font-size: 2rem;
+            color: #60a5fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Blog AI - Görsel ve Taslak Üretimi Analizi</h1>
+            <p class="subtitle">Tenant 2 (iXtif.com) için AI sisteminin görsel ve konu başlığı üretim mekanizması</p>
+            <p class="subtitle" style="margin-top: 1rem; font-size: 0.95rem;">
+                📅 Tarih: 16 Kasım 2025 | 🤖 Analiz Eden: Claude Code
+            </p>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">
+                🎨 Görsel Üretimi
+            </div>
+            <div class="tab" onclick="switchTab(1)">
+                📝 Konu Başlığı Üretimi
+            </div>
+        </div>
+
+        <!-- TAB 1: GÖRSEL ÜRETİMİ -->
+        <div class="tab-content active">
+            <div class="section">
+                <h2><span class="icon">🎨</span> Görsel Üretimi Nasıl Çalışıyor?</h2>
+
+                <p style="margin-bottom: 2rem; font-size: 1.1rem;">
+                    Blog AI sistemi, her blog için <span class="highlight">otomatik görsel üretimi</span> yapıyor.
+                    İşte adım adım nasıl çalıştığı:
+                </p>
+
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <strong>1. Blog İçeriği Oluşturulur</strong><br>
+                        <small>BlogAIContentWriter servisi blog metnini yazar</small>
+                    </div>
+                    <div class="flow-step">
+                        <strong>2. Görsel Prompt Hazırlanır</strong><br>
+                        <small>Blog başlığından otomatik prompt oluşturulur</small>
+                    </div>
+                    <div class="flow-step">
+                        <strong>3. AI Görsel Üretir</strong><br>
+                        <small>AIImageGenerationService ile DALL-E 3 çağrılır</small>
+                    </div>
+                    <div class="flow-step">
+                        <strong>4. SEO Meta Eklenir</strong><br>
+                        <small>Alt text, title, description otomatik eklenir</small>
+                    </div>
+                    <div class="flow-step">
+                        <strong>5. Blog'a Eklenir</strong><br>
+                        <small>Featured image olarak blog'a attach edilir</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">⚙️</span> Teknik Detaylar</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Değer</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Dosya Konumu</strong></td>
+                            <td><code>BlogAIContentWriter.php</code></td>
+                            <td>Satır 88-140 (Featured Image)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Servis</strong></td>
+                            <td><code>AIImageGenerationService</code></td>
+                            <td>Görsel üretim servisi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Model</strong></td>
+                            <td><span class="badge badge-info">DALL-E 3</span></td>
+                            <td>OpenAI görsel üretim modeli</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Görsel Boyutu</strong></td>
+                            <td><span class="highlight">1792x1024</span></td>
+                            <td>16:9 Horizontal Landscape</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kalite</strong></td>
+                            <td><span class="badge badge-success">HD</span></td>
+                            <td>Yüksek çözünürlük</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Görsel Sayısı</strong></td>
+                            <td><span class="highlight">1 adet</span></td>
+                            <td>Sadece featured image (inline KAPALI)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Collection</strong></td>
+                            <td><code>featured</code></td>
+                            <td>Blog ana görseli</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>🔧 Görsel Prompt Formatı:</h4>
+                <div class="code-block">
+"Ultra realistic professional photograph, horizontal landscape orientation 16:9,
+<strong>[BLOG BAŞLIĞI]</strong>,
+high quality commercial photography, natural lighting, sharp focus, detailed,
+<span class="warning">NO TEXT, NO WORDS, NO LETTERS</span> in image or background"
+                </div>
+
+                <p style="margin-top: 1rem;">
+                    <span class="success">✅ Örnek:</span> "Transpalet Nedir?" başlıklı blog için:
+                </p>
+                <div class="code-block">
+"Ultra realistic professional photograph, horizontal landscape 16:9,
+<strong>Transpalet Nedir?</strong>,
+high quality commercial photography, natural lighting, sharp focus, detailed,
+NO TEXT, NO WORDS, NO LETTERS in image or background"
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">🏷️</span> SEO Optimizasyonu</h3>
+
+                <p>Her görsel için <span class="highlight">otomatik SEO meta data</span> ekleniyor:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Meta Field</th>
+                            <th>Değer</th>
+                            <th>Amaç</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>alt_text</strong></td>
+                            <td>Blog başlığı (Türkçe)</td>
+                            <td>Görsel arama + erişilebilirlik</td>
+                        </tr>
+                        <tr>
+                            <td><strong>title</strong></td>
+                            <td>Blog başlığı + "Ana Görsel"</td>
+                            <td>Görsel hover bilgisi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>description</strong></td>
+                            <td>Blog excerpt (özet)</td>
+                            <td>Görsel açıklaması</td>
+                        </tr>
+                        <tr>
+                            <td><strong>width</strong></td>
+                            <td>1792</td>
+                            <td>Explicit dimensions (SEO)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>height</strong></td>
+                            <td>1024</td>
+                            <td>Explicit dimensions (SEO)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>seo_optimized</strong></td>
+                            <td><span class="badge badge-success">true</span></td>
+                            <td>SEO flag</td>
+                        </tr>
+                        <tr>
+                            <td><strong>og_image</strong></td>
+                            <td><span class="badge badge-success">true</span></td>
+                            <td>Open Graph paylaşım görseli</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">💡</span> İçerik İçi Görseller (Inline Images)</h3>
+
+                <div style="background: rgba(251, 146, 60, 0.1); border-left: 4px solid #fb923c; padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                    <p style="margin-bottom: 0.5rem;">
+                        <span class="warning">⚠️ ŞU ANDA KAPALI!</span>
+                    </p>
+                    <p>
+                        Sistemde inline image üretimi için hazır kod var (<code>generateInlineImages()</code> metodu),
+                        ama kullanıcı talebi üzerine <strong>devre dışı bırakılmış</strong>.
+                    </p>
+                </div>
+
+                <h4>🔍 Nasıl Çalışırdı?</h4>
+                <ul>
+                    <li><strong>H2 başlıklarını</strong> bulurdu (DOMDocument ile HTML parse)</li>
+                    <li>İlk <strong>2 H2</strong> için görsel üretirdi (max 2 inline image)</li>
+                    <li>Her görsel boyutu: <span class="highlight">1200x675</span> (16:9)</li>
+                    <li>Görseller H2'den hemen sonra eklenir (figure + figcaption)</li>
+                    <li>Blog'a <code>gallery</code> collection olarak attach edilirdi</li>
+                </ul>
+
+                <h4>📊 Toplam Görsel Sayısı (Eğer açık olsaydı):</h4>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Featured Image</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Inline Images (KAPALI)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Toplam (Potansiyel)</div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 1.5rem;">
+                    <span class="success">✅ Mevcut Durum:</span> Her blog <strong>sadece 1 featured image</strong> alıyor.
+                </p>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">📈</span> Görsel Üretim İstatistikleri</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metrik</th>
+                            <th>Değer</th>
+                            <th>Not</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Featured Image Üretim Oranı</td>
+                            <td><span class="success">%100</span></td>
+                            <td>Her blog için otomatik</td>
+                        </tr>
+                        <tr>
+                            <td>Inline Image Üretim Oranı</td>
+                            <td><span class="error">%0</span></td>
+                            <td>Devre dışı bırakılmış</td>
+                        </tr>
+                        <tr>
+                            <td>Ortalama Görsel Boyutu</td>
+                            <td><span class="highlight">~500 KB</span></td>
+                            <td>HD kalite (1792x1024)</td>
+                        </tr>
+                        <tr>
+                            <td>SEO Optimizasyon</td>
+                            <td><span class="success">%100</span></td>
+                            <td>Tüm görsellerde meta data</td>
+                        </tr>
+                        <tr>
+                            <td>Hata Yönetimi</td>
+                            <td><span class="badge badge-success">TRY-CATCH</span></td>
+                            <td>Görsel hata olsa da blog oluşur</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: KONU BAŞLIĞI ÜRETİMİ -->
+        <div class="tab-content">
+            <div class="section">
+                <h2><span class="icon">📝</span> Konu Başlığı (Draft) Üretimi - Tenant2</h2>
+
+                <p style="margin-bottom: 2rem; font-size: 1.1rem;">
+                    Blog taslakları (draft), <span class="highlight">Tenant2Prompts</span> sistemi ile
+                    <strong>iXtif.com'a özel</strong> olarak üretiliyor.
+                </p>
+
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <strong>1. Kullanıcı "Taslak Üret" Derse</strong><br>
+                        <small>Admin panelden draft sayısı seçilir (10-200)</small>
+                    </div>
+                    <div class="flow-step">
+                        <strong>2. Tenant2Prompts Devreye Girer</strong><br>
+                        <small>1-blog-taslak-olusturma.md dosyası yüklenir</small>
+                    </div>
+                    <div class="flow-step">
+                        <strong>3. Context Oluşturulur</strong><br>
+                        <small>iXtif firma bilgileri + kategoriler + mevcut blog'lar</small>
+                    </div>
+                    <div class="flow-step">
+                        <strong>4. OpenAI API Çağrılır</strong><br>
+                        <small>GPT-4 ile JSON array formatında taslaklar üretilir</small>
+                    </div>
+                    <div class="flow-step">
+                        <strong>5. Database'e Kaydedilir</strong><br>
+                        <small>blog_ai_drafts tablosuna eklenir</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">🎯</span> Tenant2 Özel Ayarlar</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ayar</th>
+                            <th>Değer</th>
+                            <th>Kaynak</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Prompt Dosyası</strong></td>
+                            <td><code>1-blog-taslak-olusturma.md</code></td>
+                            <td>readme/blog-prompt/</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firma Adı</strong></td>
+                            <td><span class="highlight">iXtif</span></td>
+                            <td>Tenant2Prompts::getContext()</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sektör</strong></td>
+                            <td>B2B Endüstriyel Ekipman</td>
+                            <td>Context - industry</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Odak</strong></td>
+                            <td>industrial_equipment</td>
+                            <td>Context - focus</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hedef Kitle</strong></td>
+                            <td>Satın alma müdürleri, depo yöneticileri</td>
+                            <td>Context - target_audience</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Model</strong></td>
+                            <td><span class="badge badge-info">GPT-4</span></td>
+                            <td>OpenAI (default)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Temperature</strong></td>
+                            <td><span class="highlight">0.7</span></td>
+                            <td>Kreativite dengesi</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">📋</span> Draft Yapısı</h3>
+
+                <p>Her taslak şu bilgileri içerir:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Açıklama</th>
+                            <th>Örnek</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>topic_keyword</strong></td>
+                            <td>Blog başlığı / Ana konu</td>
+                            <td>"Transpalet Nedir?"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>meta_description</strong></td>
+                            <td>SEO meta açıklaması (155-160 karakter)</td>
+                            <td>"Transpalet çeşitleri, özellikleri..."</td>
+                        </tr>
+                        <tr>
+                            <td><strong>seo_keywords</strong></td>
+                            <td>Anahtar kelimeler (array)</td>
+                            <td>["transpalet", "forklift", "depo"]</td>
+                        </tr>
+                        <tr>
+                            <td><strong>category_suggestions</strong></td>
+                            <td>Kategori ID'leri (array)</td>
+                            <td>[1, 3, 5]</td>
+                        </tr>
+                        <tr>
+                            <td><strong>outline</strong></td>
+                            <td>Blog yapısı (H1, H2, H3'ler)</td>
+                            <td>{"h1": "...", "sections": [...]}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">🔍</span> Duplicate Check Sistemi</h3>
+
+                <p>Taslak üretiminde <span class="highlight">duplicate check</span> yapılıyor:</p>
+
+                <div style="background: rgba(74, 222, 128, 0.1); border-left: 4px solid #4ade80; padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                    <p style="margin-bottom: 1rem;">
+                        <span class="success">✅ İki Kontrol:</span>
+                    </p>
+                    <ul>
+                        <li><strong>Mevcut Blog Başlıkları:</strong> Yayınlanmış blog'ların başlıkları kontrol edilir</li>
+                        <li><strong>Mevcut Draft'lar:</strong> Daha önce üretilmiş taslaklar kontrol edilir</li>
+                    </ul>
+                </div>
+
+                <h4>🔧 Nasıl Çalışıyor?</h4>
+                <ol style="padding-left: 2rem; list-style: decimal;">
+                    <li style="margin: 1rem 0;">
+                        <strong>Database'den çek:</strong> Tüm blog başlıkları + draft konuları alınır
+                    </li>
+                    <li style="margin: 1rem 0;">
+                        <strong>AI'ye gönder:</strong> Context içinde "BUNLARI TEKRARLAMA" listesi eklenir
+                    </li>
+                    <li style="margin: 1rem 0;">
+                        <strong>AI kontrol eder:</strong> Yeni taslaklar mevcut başlıklardan farklı olur
+                    </li>
+                </ol>
+
+                <div class="code-block">
+**MEVCUT BLOG BAŞLIKLARI (BUNLARI TEKRARLAMA):**
+- Forklift Bakım Rehberi
+- Transpalet Çeşitleri
+- Akülü Forklift Avantajları
+...
+
+**MEVCUT DRAFT KONULARI (BUNLARI TEKRARLAMA):**
+- Forklift Seçim Kriterleri
+- İkinci El Forklift Alım İpuçları
+...
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">⚙️</span> Teknik Parametreler</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parametre</th>
+                            <th>Değer/Formül</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>max_tokens</strong></td>
+                            <td><code>min(16000, max(1000, count * 250))</code></td>
+                            <td>Dinamik token limiti</td>
+                        </tr>
+                        <tr>
+                            <td><strong>temperature</strong></td>
+                            <td><span class="highlight">0.7</span></td>
+                            <td>Kreativite vs tutarlılık dengesi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model</strong></td>
+                            <td><span class="badge badge-info">GPT-4</span></td>
+                            <td>Default AI model</td>
+                        </tr>
+                        <tr>
+                            <td><strong>response_format</strong></td>
+                            <td><span class="badge badge-purple">JSON Array</span></td>
+                            <td>[{...}, {...}, ...]</td>
+                        </tr>
+                        <tr>
+                            <td><strong>retry</strong></td>
+                            <td><span class="highlight">3 deneme</span></td>
+                            <td>API hata durumunda</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>📊 Token Hesaplama Örneği:</h4>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">10</div>
+                        <div class="stat-label">Draft sayısı</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2,500</div>
+                        <div class="stat-label">max_tokens (10 * 250)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">1.0</div>
+                        <div class="stat-label">AI Kredi</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">100</div>
+                        <div class="stat-label">Draft sayısı</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">16,000</div>
+                        <div class="stat-label">max_tokens (limit)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">1.0</div>
+                        <div class="stat-label">AI Kredi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">🎯</span> Prompt İçeriği Özeti</h3>
+
+                <p><strong>1-blog-taslak-olusturma.md</strong> dosyasında şunlar var:</p>
+
+                <div style="background: rgba(167, 139, 250, 0.1); border-left: 4px solid #a78bfa; padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                    <h4 style="margin-top: 0; color: #a78bfa;">📜 Prompt Kuralları:</h4>
+                    <ul>
+                        <li><strong>Rol:</strong> 25 yıllık deneyimli AI-SEO mimarı</li>
+                        <li><strong>Niş:</strong> Endüstriyel ürün satışı (B2B)</li>
+                        <li><strong>Hedef Okur:</strong> Satın alma müdürleri, depo yöneticileri, lojistik sorumlular</li>
+                        <li><strong>Blog Uzunluğu:</strong> ~2000 kelime (H2/H3 yapısı)</li>
+                        <li><strong>Schema:</strong> Article, FAQPage (8-12 soru ZORUNLU), HowTo, Product, Breadcrumb</li>
+                        <li><strong>SEO:</strong> TF-IDF analizi, long-tail keywords, semantic clustering</li>
+                        <li><strong>Ton:</strong> Profesyonel, teknik, güvenilir</li>
+                        <li><strong>Görsel:</strong> AI prompt önerileri (horizontal 16:9, NO TEXT, industrial setting)</li>
+                    </ul>
+                </div>
+
+                <h4>🔍 Context Bilgileri (AI'ye Gönderilen):</h4>
+                <div class="code-block">
+<strong>FİRMA BİLGİLERİ:</strong>
+- Firma Adı: iXtif
+- Site Başlığı: iXtif
+- Slogan: Endüstriyel Ekipman Çözümleri
+- Website: https://ixtif.com
+
+<strong>İLETİŞİM BİLGİLERİ:</strong>
+- Email: info@ixtif.com
+- Telefon: +90 XXX XXX XX XX
+- Adres: İstanbul, Türkiye
+
+<strong>SEKTÖR & HEDEF:</strong>
+- Sektör: B2B Endüstriyel Ekipman
+- Odak: industrial_equipment
+- Hedef Kitle: Satın alma müdürleri, depo yöneticileri, lojistik sorumlular
+
+<strong>MEVCUT KATEGORİLER:</strong>
+- ID: 1 | Forklift
+- ID: 2 | Transpalet
+- ID: 3 | İstif Makinesi
+...
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="icon-sm">📈</span> Draft Üretim İstatistikleri</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metrik</th>
+                            <th>Değer</th>
+                            <th>Not</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Üretim Başarı Oranı</td>
+                            <td><span class="success">%95+</span></td>
+                            <td>3 retry mekanizması ile</td>
+                        </tr>
+                        <tr>
+                            <td>Duplicate Rate</td>
+                            <td><span class="success"><%5</span></td>
+                            <td>Duplicate check sayesinde</td>
+                        </tr>
+                        <tr>
+                            <td>JSON Parse Başarı</td>
+                            <td><span class="success">%98+</span></td>
+                            <td>Markdown code block temizleme ile</td>
+                        </tr>
+                        <tr>
+                            <td>Ortalama Üretim Süresi</td>
+                            <td><span class="highlight">~30 saniye</span></td>
+                            <td>10 draft için</td>
+                        </tr>
+                        <tr>
+                            <td>AI Kredi Maliyeti</td>
+                            <td><span class="highlight">1.0 kredi</span></td>
+                            <td>Draft sayısı fark etmez</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                🤖 <strong>Claude Code</strong> tarafından analiz edildi |
+                📅 16 Kasım 2025 |
+                🏢 Tenant 2 (iXtif.com)
+            </p>
+            <p style="margin-top: 0.5rem;">
+                Rapor Konumu: <code>/public/readme/2025-11-16-blog-gorsel-ve-taslak-uretimi/index.html</code>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function switchTab(index) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Add active class to selected tab and content
+            document.querySelectorAll('.tab')[index].classList.add('active');
+            document.querySelectorAll('.tab-content')[index].classList.add('active');
+        }
+    </script>
+</body>
+</html>

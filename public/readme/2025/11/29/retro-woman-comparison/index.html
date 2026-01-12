@@ -1,1 +1,584 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1950s Retro Woman - 10 Model Karşılaştırması</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ec4899, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; margin-top: 10px; }
+        h2 {
+            font-size: 1.8rem;
+            margin: 50px 0 25px 0;
+            color: #ec4899;
+        }
+        
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+        }
+        .lightbox.active { display: flex; align-items: center; justify-content: center; }
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 12px;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+            background: rgba(239, 68, 68, 0.8);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-prev, .lightbox-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+            padding: 20px;
+            background: rgba(236, 72, 153, 0.7);
+            border-radius: 8px;
+            user-select: none;
+        }
+        .lightbox-prev { left: 30px; }
+        .lightbox-next { right: 30px; }
+        .lightbox-caption {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 1.2rem;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px 30px;
+            border-radius: 8px;
+        }
+        .lightbox-counter {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .gallery-item {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ec4899;
+            transition: all 0.3s ease;
+        }
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.8);
+        }
+        .gallery-item.budget { border-left-color: #10b981; }
+        .gallery-item.standard { border-left-color: #3b82f6; }
+        .gallery-item.premium { border-left-color: #f97316; }
+        .gallery-item.ultra { border-left-color: #8b5cf6; }
+        
+        .gallery-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ec4899;
+        }
+        .gallery-item.budget .gallery-title { color: #10b981; }
+        .gallery-item.standard .gallery-title { color: #60a5fa; }
+        .gallery-item.premium .gallery-title { color: #f97316; }
+        .gallery-item.ultra .gallery-title { color: #8b5cf6; }
+        
+        .image-container { position: relative; margin-top: 15px; }
+        .image-cost {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 2px solid;
+            z-index: 10;
+        }
+        .image-cost.budget { border-color: #10b981; color: #10b981; }
+        .image-cost.standard { border-color: #60a5fa; color: #60a5fa; }
+        .image-cost.premium { border-color: #f97316; color: #f97316; }
+        .image-cost.ultra { border-color: #8b5cf6; color: #8b5cf6; }
+        
+        .image-preview {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid rgba(236, 72, 153, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .image-preview:hover {
+            border-color: #ec4899;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
+        }
+        
+        .prompt-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .prompt-box h3 { color: #60a5fa; margin-bottom: 15px; }
+        
+        .comparison-table {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .comparison-table th {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 15px;
+            text-align: left;
+            color: #ec4899;
+            font-weight: 600;
+        }
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+        .comparison-table tr:hover { background: rgba(30, 41, 59, 0.6); }
+        
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .rule-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ec4899;
+        }
+        .rule-number {
+            color: #ec4899;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .rule-title {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .rule-content {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <span class="lightbox-prev" onclick="event.stopPropagation(); changeImage(-1)">&#10094;</span>
+        <span class="lightbox-next" onclick="event.stopPropagation(); changeImage(1)">&#10095;</span>
+        <div onclick="event.stopPropagation()">
+            <div class="lightbox-counter" id="lightbox-counter"></div>
+            <img id="lightbox-img" class="lightbox-img" src="" alt="">
+            <div id="lightbox-caption" class="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🎀 1950s Retro Woman - 10 Model Karşılaştırması</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-29 | 
+                🎯 10 Model Test Edildi | 
+                📝 11 Kural Formülü Uygulandı
+            </div>
+        </header>
+
+        <!-- Prompt Analizi -->
+        <section>
+            <h2>📝 Prompt Optimizasyonu - 11 Kural Formülü</h2>
+            
+            <div class="prompt-box">
+                <h3>📋 Orijinal Prompt:</h3>
+                <p style="color: #cbd5e1; line-height: 1.8;">
+                    "A cheerful woman posing in a 1950s retro style. She wears a black polka-dot vintage dress, a red belt, red beaded necklace and earrings, and black gloves. Her hair is styled in classic 50s curls with a headband. She has large white-framed sunglasses. She holds two large black vinyl records, one on each side of her head. Background is a simple pastel blue. Vibrant colors, studio lighting, high-resolution, energetic composition."
+                </p>
+            </div>
+
+            <div class="prompt-box" style="border-color: #10b981; background: rgba(16, 185, 129, 0.1);">
+                <h3 style="color: #10b981;">✅ Optimize Edilmiş Prompt (11 Kural):</h3>
+                <p style="color: #cbd5e1; line-height: 1.8; font-size: 0.95rem;">
+                    Editorial photograph of a cheerful woman in 1950s retro style, holding two large black vinyl records on each side of her head, one hand raised with enthusiasm. Studio setting, afternoon session. Eye-level shot for intimate connection, rule of thirds composition with centered subject. Professional studio softbox lighting from 45-degree angle, high-key setup with 3:1 lighting ratio, pastel blue backdrop. Shot on Canon EOS 5D Mark IV with 85mm f/1.8 lens, shallow depth of field creating smooth bokeh. Inspired by Kodak Ektar 100 film stock for vibrant, saturated colors. Subject wears black polka-dot vintage dress, red belt, red beaded necklace and earrings, black gloves. Classic 50s pin-up curls with headband, large white-framed cat-eye sunglasses. Slight film grain texture, subtle corner vignetting, natural lens characteristics. Joyful and nostalgic mood, energetic and playful emotion. Color grading: saturated vintage aesthetic, lifted shadows, enhanced reds and blues, warm midtones, cinematic color separation.
+                </p>
+            </div>
+
+            <h3 style="color: #ec4899; margin: 30px 0 20px 0;">🎯 11 Kural Analizi:</h3>
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <div class="rule-number">1️⃣</div>
+                    <div class="rule-title">Photo Type</div>
+                    <div class="rule-content">"Editorial photograph of" - Fotoğrafik çıktı yönlendirmesi</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">2️⃣</div>
+                    <div class="rule-title">Subject + Action</div>
+                    <div class="rule-content">Holding vinyl records, hand raised with enthusiasm</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">3️⃣</div>
+                    <div class="rule-title">Environment + Time</div>
+                    <div class="rule-content">Studio setting, afternoon session</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">4️⃣</div>
+                    <div class="rule-title">Camera Angle</div>
+                    <div class="rule-content">Eye-level shot for intimate connection</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">5️⃣</div>
+                    <div class="rule-title">Composition</div>
+                    <div class="rule-content">Rule of thirds, centered subject</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">6️⃣</div>
+                    <div class="rule-title">Lighting</div>
+                    <div class="rule-content">Studio softbox, 45-degree, 3:1 ratio, high-key</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">7️⃣</div>
+                    <div class="rule-title">Camera + Lens</div>
+                    <div class="rule-content">Canon EOS 5D Mark IV, 85mm f/1.8, shallow DoF</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">8️⃣</div>
+                    <div class="rule-title">Film Stock</div>
+                    <div class="rule-content">Kodak Ektar 100 - vibrant saturated colors</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">9️⃣</div>
+                    <div class="rule-title">Imperfections</div>
+                    <div class="rule-content">Film grain, vignetting, natural lens characteristics</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">🔟</div>
+                    <div class="rule-title">Mood + Emotion</div>
+                    <div class="rule-content">Joyful, nostalgic, energetic, playful</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-number">1️⃣1️⃣</div>
+                    <div class="rule-title">Post-Processing</div>
+                    <div class="rule-content">Saturated vintage, lifted shadows, enhanced colors</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Karşılaştırması -->
+        <section>
+            <h2>🖼️ 10 Model Görsel Karşılaştırması</h2>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">
+                Tüm modeller <strong>aynı optimize edilmiş prompt</strong> ile test edildi. 
+                <strong style="color: #10b981;">Görsellere tıklayarak tam boyutta görüntüleyin!</strong>
+            </p>
+
+            <div class="gallery-grid">
+
+                <div class="gallery-item budget">
+                    <div class="gallery-title">⚡ Flux Schnell</div>
+                    <div class="image-container">
+                        <div class="image-cost budget">~2 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/d20b7c1c-ba91-418d-a959-07272b1cf61c/segments/1:1:1/Flux_Schnell_Editorial_photograph_of_a_cheerful_woman_in_1950s_0.jpg" 
+                             alt="⚡ Flux Schnell" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '⚡ Flux Schnell - ~2 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">🎨 Lucid Origin</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">~8 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/ad701769-7fb9-41d5-8b25-7e3704a526be/segments/1:1:1/Lucid_Origin_Editorial_photograph_of_a_cheerful_woman_in_1950s_0.jpg" 
+                             alt="🎨 Lucid Origin" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🎨 Lucid Origin - ~8 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">📸 Lucid Realism</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">~8 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/9eb8d3aa-cdfb-424c-800f-af96a485fed1/segments/1:1:1/Lucid_Realism_Editorial_photograph_of_a_cheerful_woman_in_1950_0.jpg" 
+                             alt="📸 Lucid Realism" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '📸 Lucid Realism - ~8 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item premium">
+                    <div class="gallery-title">🔥 Phoenix 1.0</div>
+                    <div class="image-container">
+                        <div class="image-cost premium">~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/20de98a5-4cff-4ed2-89c4-4fa497b702aa/Phoenix_10_Editorial_photograph_of_a_cheerful_woman_in_1950s_r_0.jpg" 
+                             alt="🔥 Phoenix 1.0" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🔥 Phoenix 1.0 - ~11 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">🎯 Flux Dev</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">~8 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/40cd6c54-05b0-4b63-bc36-ee3b43195571/segments/1:1:1/Flux_Dev_Editorial_photograph_of_a_cheerful_woman_in_1950s_ret_0.jpg" 
+                             alt="🎯 Flux Dev" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🎯 Flux Dev - ~8 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item premium">
+                    <div class="gallery-title">🎬 Leonardo Kino XL</div>
+                    <div class="image-container">
+                        <div class="image-cost premium">~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/b93b13ed-339f-429e-b1be-92567f45c524/Leonardo_Kino_XL_Editorial_photograph_of_a_cheerful_woman_in_1_0.jpg" 
+                             alt="🎬 Leonardo Kino XL" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🎬 Leonardo Kino XL - ~11 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item premium">
+                    <div class="gallery-title">📷 Leonardo Vision XL</div>
+                    <div class="image-container">
+                        <div class="image-cost premium">~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/b664b6f5-50d1-43c8-b147-6e004152fca4/Leonardo_Vision_XL_Editorial_photograph_of_a_cheerful_woman_in_0.jpg" 
+                             alt="📷 Leonardo Vision XL" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '📷 Leonardo Vision XL - ~11 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">⚡ Leonardo Lightning XL</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">~8 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/36315a8b-2365-4333-b8a5-61ad65bb3a48/Leonardo_Lightning_XL_Editorial_photograph_of_a_cheerful_woman_0.jpg" 
+                             alt="⚡ Leonardo Lightning XL" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '⚡ Leonardo Lightning XL - ~8 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item premium">
+                    <div class="gallery-title">🎨 Leonardo Diffusion XL</div>
+                    <div class="image-container">
+                        <div class="image-cost premium">~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/d14d5f9b-561c-4f17-b269-e95fa48e2787/Leonardo_Diffusion_XL_Editorial_photograph_of_a_cheerful_woman_0.jpg" 
+                             alt="🎨 Leonardo Diffusion XL" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🎨 Leonardo Diffusion XL - ~11 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <div class="gallery-item ultra">
+                    <div class="gallery-title">🤖 Nano Banana Pro</div>
+                    <div class="image-container">
+                        <div class="image-cost ultra">~140 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/1f0cd509-6dbf-6280-95ec-4fcf8c88f034/gemini-image-2_Editorial_photograph_of_a_cheerful_woman_in_1950s_retro_style_holding_two_large_-0.jpg" 
+                             alt="🤖 Nano Banana Pro" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🤖 Nano Banana Pro - ~140 credits')"
+                             loading="lazy">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Fiyat Karşılaştırması -->
+        <section>
+            <h2>💰 Fiyat Karşılaştırması</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Maliyet</th>
+                        <th>Kat Farkı</th>
+                        <th>1000 Görsel Maliyeti</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: rgba(16, 185, 129, 0.1);">
+                        <td><strong style="color: #10b981;">Flux Schnell</strong></td>
+                        <td>~2 credits</td>
+                        <td>Baseline (EN UCUZ)</td>
+                        <td>~2,000 credits</td>
+                    </tr>
+                    <tr>
+                        <td>Lucid Origin / Realism</td>
+                        <td>~8 credits</td>
+                        <td>4x daha pahalı</td>
+                        <td>~8,000 credits</td>
+                    </tr>
+                    <tr>
+                        <td>Flux Dev / Lightning XL</td>
+                        <td>~8 credits</td>
+                        <td>4x daha pahalı</td>
+                        <td>~8,000 credits</td>
+                    </tr>
+                    <tr>
+                        <td>Phoenix / Kino / Vision / Diffusion</td>
+                        <td>~11 credits</td>
+                        <td>5.5x daha pahalı</td>
+                        <td>~11,000 credits</td>
+                    </tr>
+                    <tr style="background: rgba(139, 92, 246, 0.1);">
+                        <td><strong style="color: #8b5cf6;">Nano Banana Pro</strong></td>
+                        <td>~140 credits</td>
+                        <td>70x daha pahalı</td>
+                        <td>~140,000 credits</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            🎀 1950s Retro Woman - 10 Model Test | 11 Kural Formülü Uygulandı
+            <br>
+            🤖 Claude AI tarafından oluşturuldu - 2025-11-29
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const images = [
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/d20b7c1c-ba91-418d-a959-07272b1cf61c/segments/1:1:1/Flux_Schnell_Editorial_photograph_of_a_cheerful_woman_in_1950s_0.jpg", caption: "⚡ Flux Schnell - ~2 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/ad701769-7fb9-41d5-8b25-7e3704a526be/segments/1:1:1/Lucid_Origin_Editorial_photograph_of_a_cheerful_woman_in_1950s_0.jpg", caption: "🎨 Lucid Origin - ~8 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/9eb8d3aa-cdfb-424c-800f-af96a485fed1/segments/1:1:1/Lucid_Realism_Editorial_photograph_of_a_cheerful_woman_in_1950_0.jpg", caption: "📸 Lucid Realism - ~8 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/20de98a5-4cff-4ed2-89c4-4fa497b702aa/Phoenix_10_Editorial_photograph_of_a_cheerful_woman_in_1950s_r_0.jpg", caption: "🔥 Phoenix 1.0 - ~11 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/40cd6c54-05b0-4b63-bc36-ee3b43195571/segments/1:1:1/Flux_Dev_Editorial_photograph_of_a_cheerful_woman_in_1950s_ret_0.jpg", caption: "🎯 Flux Dev - ~8 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/b93b13ed-339f-429e-b1be-92567f45c524/Leonardo_Kino_XL_Editorial_photograph_of_a_cheerful_woman_in_1_0.jpg", caption: "🎬 Leonardo Kino XL - ~11 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/b664b6f5-50d1-43c8-b147-6e004152fca4/Leonardo_Vision_XL_Editorial_photograph_of_a_cheerful_woman_in_0.jpg", caption: "📷 Leonardo Vision XL - ~11 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/36315a8b-2365-4333-b8a5-61ad65bb3a48/Leonardo_Lightning_XL_Editorial_photograph_of_a_cheerful_woman_0.jpg", caption: "⚡ Leonardo Lightning XL - ~8 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/d14d5f9b-561c-4f17-b269-e95fa48e2787/Leonardo_Diffusion_XL_Editorial_photograph_of_a_cheerful_woman_0.jpg", caption: "🎨 Leonardo Diffusion XL - ~11 credits"},
+            {src: "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/1f0cd509-6dbf-6280-95ec-4fcf8c88f034/gemini-image-2_Editorial_photograph_of_a_cheerful_woman_in_1950s_retro_style_holding_two_large_-0.jpg", caption: "🤖 Nano Banana Pro - ~140 credits"}
+        ];
+        
+        let currentIndex = 0;
+        
+        function openLightbox(src, caption) {
+            currentIndex = images.findIndex(img => img.src === src);
+            if (currentIndex === -1) currentIndex = 0;
+            showImage();
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function showImage() {
+            const img = document.getElementById('lightbox-img');
+            const caption = document.getElementById('lightbox-caption');
+            const counter = document.getElementById('lightbox-counter');
+            
+            img.style.opacity = '0';
+            setTimeout(() => {
+                img.src = images[currentIndex].src;
+                caption.textContent = images[currentIndex].caption;
+                counter.textContent = `${currentIndex + 1} / ${images.length}`;
+                img.style.opacity = '1';
+            }, 150);
+        }
+        
+        function changeImage(dir) {
+            currentIndex += dir;
+            if (currentIndex >= images.length) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = images.length - 1;
+            showImage();
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        document.addEventListener('keydown', e => {
+            const lb = document.getElementById('lightbox');
+            if (!lb.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            else if (e.key === 'ArrowLeft') changeImage(-1);
+            else if (e.key === 'ArrowRight') changeImage(1);
+        });
+    </script>
+</body>
+</html>

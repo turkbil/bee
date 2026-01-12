@@ -1,1 +1,398 @@
-v4/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abuse Timeline - Tüm Chart Kütüphaneleri Karşılaştırma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- vis-timeline -->
+    <script src="https://unpkg.com/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="https://unpkg.com/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet">
+
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .chart-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(71, 85, 105, 0.5); }
+        .stat-box { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(71, 85, 105, 0.4); }
+
+        /* vis-timeline */
+        .vis-timeline { border: none !important; background: transparent !important; }
+        .vis-item { border-radius: 3px; font-size: 9px; font-weight: 500; min-height: 20px; line-height: 20px; padding: 0 3px; }
+        .vis-item.overlap { background: #ef4444 !important; border-color: #f87171 !important; color: white !important; }
+        .vis-label { color: #e2e8f0 !important; font-weight: 600; font-size: 12px; }
+        .vis-labelset .vis-label { background: rgba(15, 23, 42, 0.95) !important; border-bottom: 1px solid rgba(71, 85, 105, 0.4) !important; }
+        .vis-time-axis .vis-text { color: #94a3b8 !important; fill: #94a3b8 !important; font-size: 10px; }
+        .vis-time-axis .vis-grid.vis-minor { border-color: rgba(71, 85, 105, 0.15) !important; }
+        .vis-time-axis .vis-grid.vis-major { border-color: rgba(71, 85, 105, 0.3) !important; }
+        .vis-panel.vis-background { background: rgba(15, 23, 42, 0.3) !important; }
+        .vis-panel.vis-left { background: rgba(15, 23, 42, 0.95) !important; border-right: 1px solid rgba(71, 85, 105, 0.4) !important; }
+        .vis-foreground .vis-group { border-bottom: 1px solid rgba(71, 85, 105, 0.15) !important; }
+    </style>
+</head>
+<body class="min-h-screen text-white p-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold mb-2">
+                <i class="fas fa-chart-gantt text-blue-400 mr-2"></i>
+                Abuse Timeline - Chart Karşılaştırma
+            </h1>
+            <p class="text-slate-400 text-sm">Nurullah (User #1) - 226 Play - Gerçek Veri</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex justify-center gap-4 mb-6 text-sm">
+            <div class="stat-box rounded px-4 py-2">
+                <span class="text-slate-400">Toplam:</span>
+                <span class="font-bold text-white ml-1">226</span>
+            </div>
+            <div class="stat-box rounded px-4 py-2">
+                <span class="text-slate-400">Chrome:</span>
+                <span class="font-bold text-blue-400 ml-1" id="chromeCount">-</span>
+            </div>
+            <div class="stat-box rounded px-4 py-2">
+                <span class="text-slate-400">Safari:</span>
+                <span class="font-bold text-cyan-400 ml-1" id="safariCount">-</span>
+            </div>
+            <div class="stat-box rounded px-4 py-2">
+                <span class="text-slate-400">Çakışma:</span>
+                <span class="font-bold text-red-400 ml-1" id="overlapCount">-</span>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex justify-center gap-6 mb-6 text-xs">
+            <span class="flex items-center gap-2"><span class="w-4 h-3 rounded" style="background:#4285f4"></span> Chrome</span>
+            <span class="flex items-center gap-2"><span class="w-4 h-3 rounded" style="background:#00d4ff"></span> Safari</span>
+            <span class="flex items-center gap-2"><span class="w-4 h-3 rounded" style="background:#ef4444"></span> Çakışma</span>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="space-y-6">
+
+            <!-- 1. vis-timeline (RECOMMENDED) -->
+            <div class="chart-card rounded-lg p-4 border-2 border-green-500/30">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold text-purple-400">
+                        <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs mr-2">1</span>
+                        vis-timeline
+                        <span class="ml-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">ÖNERİLEN</span>
+                    </h3>
+                    <span class="text-xs text-slate-500"><i class="fas fa-mouse mr-1"></i>Zoom + Pan</span>
+                </div>
+                <div id="visTimeline" style="height: 200px;"></div>
+            </div>
+
+            <!-- 2. ApexCharts -->
+            <div class="chart-card rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold text-blue-400">
+                        <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs mr-2">2</span>
+                        ApexCharts (Range Bar)
+                    </h3>
+                    <span class="text-xs text-slate-500">Tabler.io uyumlu</span>
+                </div>
+                <div id="apexChart" style="height: 250px;"></div>
+            </div>
+
+            <!-- 3. Chart.js -->
+            <div class="chart-card rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold text-green-400">
+                        <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs mr-2">3</span>
+                        Chart.js (Floating Bar)
+                    </h3>
+                    <span class="text-xs text-slate-500">Hafif (~60KB)</span>
+                </div>
+                <div style="height: 250px;">
+                    <canvas id="chartJs"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Comparison -->
+        <div class="chart-card rounded-lg p-4 mt-6">
+            <h3 class="text-lg font-semibold mb-3"><i class="fas fa-balance-scale text-slate-400 mr-2"></i>Karşılaştırma</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-slate-400 border-b border-slate-700">
+                            <th class="text-left py-2">Özellik</th>
+                            <th class="text-center py-2 bg-green-500/10">vis-timeline</th>
+                            <th class="text-center py-2">ApexCharts</th>
+                            <th class="text-center py-2">Chart.js</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Timeline Desteği</td>
+                            <td class="text-center bg-green-500/10 text-green-400 font-bold">Mükemmel</td>
+                            <td class="text-center text-yellow-400">Orta</td>
+                            <td class="text-center text-yellow-400">Orta</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Tarayıcı Grupları</td>
+                            <td class="text-center bg-green-500/10 text-green-400">Native</td>
+                            <td class="text-center text-yellow-400">Manuel</td>
+                            <td class="text-center text-red-400">Yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Zoom/Pan</td>
+                            <td class="text-center bg-green-500/10 text-green-400">Native</td>
+                            <td class="text-center text-green-400">Var</td>
+                            <td class="text-center text-yellow-400">Plugin</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Tooltip</td>
+                            <td class="text-center bg-green-500/10 text-green-400">HTML</td>
+                            <td class="text-center text-green-400">Var</td>
+                            <td class="text-center text-green-400">Var</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-bold">Sonuç</td>
+                            <td class="text-center bg-green-500/10 text-green-400 font-bold">EN UYGUN ✓</td>
+                            <td class="text-center text-yellow-400">İyi</td>
+                            <td class="text-center text-yellow-400">Orta</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-6 text-slate-500 text-xs">
+            Claude AI - 29 Aralık 2025
+        </div>
+    </div>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════════
+    // GERÇEK VERİ - Nurullah (User #1) - Rapor #1 - 226 Play
+    // ═══════════════════════════════════════════════════════════════════
+    const plays = [{"id":371,"browser":"chrome","song":"Bulk Upload Test 2","start":"2025-12-22 21:50:05","end":"2025-12-22 21:53:00"},{"id":372,"browser":"chrome","song":"DAYDREAMING","start":"2025-12-22 21:52:52","end":"2025-12-22 21:55:20"},{"id":373,"browser":"chrome","song":"Test Upload","start":"2025-12-22 23:15:52","end":"2025-12-22 23:18:47"},{"id":374,"browser":"chrome","song":"Faded","start":"2025-12-23 00:04:59","end":"2025-12-23 00:08:24"},{"id":375,"browser":"chrome","song":"Death Of A Bachelor","start":"2025-12-23 00:08:30","end":"2025-12-23 00:10:37"},{"id":376,"browser":"chrome","song":"Death Of A Bachelor","start":"2025-12-23 00:09:01","end":"2025-12-23 00:11:08"},{"id":377,"browser":"chrome","song":"Cupid","start":"2025-12-23 00:10:33","end":"2025-12-23 00:13:10"},{"id":378,"browser":"chrome","song":"Dancin","start":"2025-12-23 00:13:04","end":"2025-12-23 00:16:40"},{"id":379,"browser":"chrome","song":"Dancin","start":"2025-12-23 00:17:13","end":"2025-12-23 00:20:49"},{"id":380,"browser":"chrome","song":"DAYDREAMING","start":"2025-12-23 00:19:19","end":"2025-12-23 00:21:47"},{"id":381,"browser":"chrome","song":"Bulk Upload Test 1","start":"2025-12-23 00:21:41","end":"2025-12-23 00:24:36"},{"id":382,"browser":"chrome","song":"Bulk Upload Test 1","start":"2025-12-23 00:22:12","end":"2025-12-23 00:25:07"},{"id":383,"browser":"chrome","song":"Bulk Upload Test 3","start":"2025-12-23 00:24:31","end":"2025-12-23 00:27:26"},{"id":384,"browser":"chrome","song":"Test Upload","start":"2025-12-23 00:27:20","end":"2025-12-23 00:30:15"},{"id":385,"browser":"chrome","song":"En Su Lugar","start":"2025-12-23 00:30:11","end":"2025-12-23 00:32:49"},{"id":399,"browser":"chrome","song":"Angels","start":"2025-12-25 01:37:46","end":"2025-12-25 01:40:14"},{"id":400,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-25 01:39:45","end":"2025-12-25 01:42:22"},{"id":402,"browser":"chrome","song":"Go","start":"2025-12-25 02:02:35","end":"2025-12-25 02:05:44"},{"id":403,"browser":"chrome","song":"Yalnız Kurt","start":"2025-12-25 02:03:10","end":"2025-12-25 02:06:05"},{"id":412,"browser":"chrome","song":"A Bar Song","start":"2025-12-25 04:35:33","end":"2025-12-25 04:39:03"},{"id":413,"browser":"chrome","song":"Go","start":"2025-12-25 04:37:41","end":"2025-12-25 04:40:50"},{"id":430,"browser":"chrome","song":"A Bar Song","start":"2025-12-26 00:24:32","end":"2025-12-26 00:28:02"},{"id":431,"browser":"chrome","song":"GOD","start":"2025-12-26 00:25:43","end":"2025-12-26 00:28:05"},{"id":432,"browser":"chrome","song":"A Bar Song","start":"2025-12-26 00:26:08","end":"2025-12-26 00:29:38"},{"id":433,"browser":"chrome","song":"A Bar Song","start":"2025-12-26 00:27:07","end":"2025-12-26 00:30:37"},{"id":434,"browser":"chrome","song":"All Night Long","start":"2025-12-26 00:27:57","end":"2025-12-26 00:29:57"},{"id":438,"browser":"chrome","song":"All Night Long","start":"2025-12-26 01:52:45","end":"2025-12-26 01:54:45"},{"id":439,"browser":"chrome","song":"ALONE","start":"2025-12-26 01:54:15","end":"2025-12-26 01:57:10"},{"id":440,"browser":"chrome","song":"Butterflies","start":"2025-12-26 01:57:03","end":"2025-12-26 01:59:06"},{"id":441,"browser":"chrome","song":"Butterflies","start":"2025-12-26 01:57:35","end":"2025-12-26 01:59:38"},{"id":444,"browser":"chrome","song":"Faded","start":"2025-12-26 04:38:08","end":"2025-12-26 04:41:33"},{"id":445,"browser":"chrome","song":"Punchin Bag","start":"2025-12-26 04:40:55","end":"2025-12-26 04:44:15"},{"id":446,"browser":"chrome","song":"Punchin Bag","start":"2025-12-26 04:41:26","end":"2025-12-26 04:44:46"},{"id":447,"browser":"chrome","song":"No Lie","start":"2025-12-26 04:44:09","end":"2025-12-26 04:46:44"},{"id":448,"browser":"chrome","song":"Off We Go","start":"2025-12-26 04:46:39","end":"2025-12-26 04:48:51"},{"id":449,"browser":"chrome","song":"Off We Go","start":"2025-12-26 04:47:10","end":"2025-12-26 04:49:22"},{"id":450,"browser":"chrome","song":"ALMA","start":"2025-12-26 04:48:46","end":"2025-12-26 04:50:50"},{"id":451,"browser":"chrome","song":"How Will I Know","start":"2025-12-26 04:49:03","end":"2025-12-26 04:51:42"},{"id":452,"browser":"chrome","song":"Go","start":"2025-12-26 04:49:40","end":"2025-12-26 04:52:49"},{"id":453,"browser":"chrome","song":"Go","start":"2025-12-26 04:50:11","end":"2025-12-26 04:53:20"},{"id":494,"browser":"chrome","song":"Punchin Bag","start":"2025-12-26 15:12:10","end":"2025-12-26 15:15:30"},{"id":495,"browser":"chrome","song":"Dark Days","start":"2025-12-26 15:12:18","end":"2025-12-26 15:14:36"},{"id":524,"browser":"safari","song":"Gestures","start":"2025-12-27 04:16:28","end":"2025-12-27 04:19:27"},{"id":525,"browser":"safari","song":"Cold Love","start":"2025-12-27 04:18:22","end":"2025-12-27 04:20:25"},{"id":526,"browser":"safari","song":"Cold Love","start":"2025-12-27 04:48:28","end":"2025-12-27 04:50:31"},{"id":527,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-27 04:49:26","end":"2025-12-27 04:52:03"},{"id":531,"browser":"chrome","song":"All Again","start":"2025-12-27 05:42:27","end":"2025-12-27 05:44:53"},{"id":532,"browser":"chrome","song":"Cold Love","start":"2025-12-27 05:43:09","end":"2025-12-27 05:45:12"},{"id":533,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-27 05:43:53","end":"2025-12-27 05:46:30"},{"id":534,"browser":"chrome","song":"Kar Tanesi","start":"2025-12-27 05:46:24","end":"2025-12-27 05:48:50"},{"id":535,"browser":"chrome","song":"Cold Love","start":"2025-12-27 05:47:23","end":"2025-12-27 05:49:26"},{"id":536,"browser":"chrome","song":"Cold Love","start":"2025-12-27 05:49:28","end":"2025-12-27 05:51:31"},{"id":537,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-27 05:50:22","end":"2025-12-27 05:52:59"},{"id":571,"browser":"chrome","song":"Cold Love","start":"2025-12-28 00:43:27","end":"2025-12-28 00:45:30"},{"id":572,"browser":"chrome","song":"After Hours","start":"2025-12-28 00:44:08","end":"2025-12-28 00:46:55"},{"id":573,"browser":"chrome","song":"Go","start":"2025-12-28 00:45:42","end":"2025-12-28 00:48:51"},{"id":574,"browser":"chrome","song":"Kar Tanesi","start":"2025-12-28 00:53:48","end":"2025-12-28 00:56:14"},{"id":575,"browser":"chrome","song":"After Hours","start":"2025-12-28 00:54:16","end":"2025-12-28 00:57:03"},{"id":576,"browser":"chrome","song":"After Hours","start":"2025-12-28 00:55:02","end":"2025-12-28 00:57:49"},{"id":577,"browser":"chrome","song":"Cold Love","start":"2025-12-28 00:55:24","end":"2025-12-28 00:57:27"},{"id":581,"browser":"safari","song":"Cold Love","start":"2025-12-28 02:36:14","end":"2025-12-28 02:38:17"},{"id":582,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-28 02:36:58","end":"2025-12-28 02:39:35"},{"id":586,"browser":"safari","song":"Cold Love","start":"2025-12-28 03:21:13","end":"2025-12-28 03:23:16"},{"id":587,"browser":"safari","song":"Cold Love","start":"2025-12-28 03:23:02","end":"2025-12-28 03:25:05"},{"id":588,"browser":"safari","song":"Cold Love","start":"2025-12-28 03:30:32","end":"2025-12-28 03:32:35"},{"id":589,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:32:26","end":"2025-12-28 03:35:38"},{"id":590,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:35:02","end":"2025-12-28 03:38:14"},{"id":591,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:40:54","end":"2025-12-28 03:44:06"},{"id":592,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:43:46","end":"2025-12-28 03:46:58"},{"id":593,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:59:59","end":"2025-12-28 04:03:11"},{"id":594,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-28 04:01:12","end":"2025-12-28 04:04:07"},{"id":597,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-28 04:13:18","end":"2025-12-28 04:16:13"},{"id":598,"browser":"safari","song":"No Lie","start":"2025-12-28 04:15:48","end":"2025-12-28 04:18:23"},{"id":600,"browser":"safari","song":"Cold Love","start":"2025-12-28 04:28:45","end":"2025-12-28 04:30:48"},{"id":601,"browser":"safari","song":"Cold Love","start":"2025-12-28 04:29:49","end":"2025-12-28 04:31:52"},{"id":602,"browser":"safari","song":"ALMA","start":"2025-12-28 04:30:01","end":"2025-12-28 04:32:05"},{"id":603,"browser":"safari","song":"All Again","start":"2025-12-28 04:31:07","end":"2025-12-28 04:33:33"},{"id":604,"browser":"safari","song":"Give Me the Power","start":"2025-12-28 04:34:53","end":"2025-12-28 04:37:29"},{"id":605,"browser":"safari","song":"All Night Long","start":"2025-12-28 04:35:48","end":"2025-12-28 04:37:48"},{"id":607,"browser":"safari","song":"All Night Long","start":"2025-12-28 04:45:42","end":"2025-12-28 04:47:42"},{"id":608,"browser":"safari","song":"After Hours","start":"2025-12-28 04:45:53","end":"2025-12-28 04:48:40"},{"id":609,"browser":"safari","song":"Afterimage","start":"2025-12-28 04:46:43","end":"2025-12-28 04:49:55"},{"id":640,"browser":"safari","song":"Afterimage","start":"2025-12-29 15:52:42","end":"2025-12-29 15:55:54"},{"id":641,"browser":"safari","song":"Afterimage","start":"2025-12-29 15:55:49","end":"2025-12-29 15:59:01"},{"id":642,"browser":"chrome","song":"Afterimage","start":"2025-12-29 15:56:53","end":"2025-12-29 16:00:05"},{"id":643,"browser":"safari","song":"Cold Love","start":"2025-12-29 15:58:59","end":"2025-12-29 16:01:02"},{"id":645,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 16:03:54","end":"2025-12-29 16:06:31"},{"id":646,"browser":"safari","song":"Kar Tanesi","start":"2025-12-29 16:04:27","end":"2025-12-29 16:06:53"},{"id":648,"browser":"safari","song":"Afterimage","start":"2025-12-29 16:10:15","end":"2025-12-29 16:13:27"},{"id":649,"browser":"safari","song":"Afterimage","start":"2025-12-29 16:11:38","end":"2025-12-29 16:14:50"},{"id":650,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:12:46","end":"2025-12-29 16:14:49"},{"id":651,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 16:14:30","end":"2025-12-29 16:17:07"},{"id":652,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:16:20","end":"2025-12-29 16:19:15"},{"id":653,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:17:26","end":"2025-12-29 16:20:21"},{"id":654,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:19:27","end":"2025-12-29 16:22:22"},{"id":655,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:21:13","end":"2025-12-29 16:24:08"},{"id":656,"browser":"chrome","song":"Kar Tanesi","start":"2025-12-29 16:21:35","end":"2025-12-29 16:24:01"},{"id":657,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:22:04","end":"2025-12-29 16:24:07"},{"id":670,"browser":"safari","song":"All Again","start":"2025-12-29 16:58:59","end":"2025-12-29 17:01:25"},{"id":671,"browser":"safari","song":"You Are Not a Soldier","start":"2025-12-29 17:00:57","end":"2025-12-29 17:04:20"},{"id":672,"browser":"safari","song":"ALONE","start":"2025-12-29 17:02:41","end":"2025-12-29 17:05:36"},{"id":674,"browser":"safari","song":"Angels","start":"2025-12-29 17:08:14","end":"2025-12-29 17:10:42"},{"id":675,"browser":"safari","song":"ASHES & BLOOM","start":"2025-12-29 17:10:11","end":"2025-12-29 17:12:51"},{"id":678,"browser":"chrome","song":"Give Me the Power","start":"2025-12-29 17:18:09","end":"2025-12-29 17:20:45"},{"id":679,"browser":"safari","song":"Give the People","start":"2025-12-29 17:18:20","end":"2025-12-29 17:20:31"},{"id":680,"browser":"safari","song":"Cold Love","start":"2025-12-29 17:20:28","end":"2025-12-29 17:22:31"},{"id":687,"browser":"safari","song":"You Are Not a Soldier","start":"2025-12-29 17:47:46","end":"2025-12-29 17:51:09"},{"id":688,"browser":"chrome","song":"Afterimage","start":"2025-12-29 17:49:18","end":"2025-12-29 17:52:30"},{"id":689,"browser":"safari","song":"ALMA","start":"2025-12-29 17:51:08","end":"2025-12-29 17:53:12"},{"id":690,"browser":"safari","song":"ALONE","start":"2025-12-29 17:53:13","end":"2025-12-29 17:56:08"},{"id":691,"browser":"chrome","song":"Afterimage","start":"2025-12-29 17:54:12","end":"2025-12-29 17:57:24"},{"id":693,"browser":"safari","song":"Angels","start":"2025-12-29 18:07:26","end":"2025-12-29 18:09:54"},{"id":694,"browser":"safari","song":"ASHES & BLOOM","start":"2025-12-29 18:08:31","end":"2025-12-29 18:11:11"},{"id":707,"browser":"safari","song":"ALMA","start":"2025-12-29 18:43:35","end":"2025-12-29 18:45:39"},{"id":708,"browser":"safari","song":"ALONE","start":"2025-12-29 18:45:38","end":"2025-12-29 18:48:33"},{"id":709,"browser":"safari","song":"Amen","start":"2025-12-29 18:48:33","end":"2025-12-29 18:51:10"},{"id":710,"browser":"chrome","song":"ALONE","start":"2025-12-29 18:49:07","end":"2025-12-29 18:52:02"},{"id":711,"browser":"safari","song":"Angels","start":"2025-12-29 18:51:11","end":"2025-12-29 18:53:39"}];
+
+    // ═══════════════════════════════════════════════════════════════════
+    // HELPER FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════════
+    function parseTime(str) {
+        return new Date(str.replace(' ', 'T') + '+03:00');
+    }
+
+    function detectOverlaps(plays) {
+        const overlappingIds = new Set();
+        for (let i = 0; i < plays.length; i++) {
+            for (let j = i + 1; j < plays.length; j++) {
+                const s1 = parseTime(plays[i].start).getTime();
+                const e1 = parseTime(plays[i].end).getTime();
+                const s2 = parseTime(plays[j].start).getTime();
+                const e2 = parseTime(plays[j].end).getTime();
+                if (e1 > s2 && e2 > s1) {
+                    overlappingIds.add(plays[i].id);
+                    overlappingIds.add(plays[j].id);
+                }
+            }
+        }
+        return overlappingIds;
+    }
+
+    const overlappingIds = detectOverlaps(plays);
+
+    // Dinamik tarayıcı listesi
+    const browsers = [...new Set(plays.map(p => p.browser))];
+    const browserColors = {
+        'chrome': '#4285f4',
+        'safari': '#00d4ff',
+        'firefox': '#ff7139',
+        'edge': '#0078d7',
+        'opera': '#ff1b2d',
+        'other': '#9ca3af'
+    };
+    const browserColorsRgba = {
+        'chrome': 'rgba(66,133,244,0.8)',
+        'safari': 'rgba(0,212,255,0.8)',
+        'firefox': 'rgba(255,113,57,0.8)',
+        'edge': 'rgba(0,120,215,0.8)',
+        'opera': 'rgba(255,27,45,0.8)',
+        'other': 'rgba(156,163,175,0.8)'
+    };
+
+    const chromeCount = plays.filter(p => p.browser === 'chrome').length;
+    const safariCount = plays.filter(p => p.browser === 'safari').length;
+
+    document.getElementById('chromeCount').textContent = chromeCount;
+    document.getElementById('safariCount').textContent = safariCount;
+    document.getElementById('overlapCount').textContent = overlappingIds.size;
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 1. VIS-TIMELINE - Dinamik tarayıcı grupları
+    // ═══════════════════════════════════════════════════════════════════
+    const browserIcons = {
+        'chrome': 'fab fa-chrome',
+        'safari': 'fab fa-safari',
+        'firefox': 'fab fa-firefox',
+        'edge': 'fab fa-edge',
+        'opera': 'fab fa-opera',
+        'other': 'fas fa-globe'
+    };
+
+    const visGroups = new vis.DataSet(browsers.map(b => ({
+        id: b,
+        content: `<i class="${browserIcons[b] || 'fas fa-globe'}" style="color:${browserColors[b] || '#9ca3af'}"></i> ${b.charAt(0).toUpperCase() + b.slice(1)}`,
+        style: 'min-height:40px;'
+    })));
+
+    const visItems = new vis.DataSet(plays.map(p => {
+        const isOverlap = overlappingIds.has(p.id);
+        const bgColor = isOverlap ? '#ef4444' : (browserColors[p.browser] || '#9ca3af');
+        const textColor = (p.browser === 'safari' && !isOverlap) ? '#000' : '#fff';
+        return {
+            id: p.id,
+            group: p.browser,
+            content: p.song.substring(0, 12),
+            start: parseTime(p.start),
+            end: parseTime(p.end),
+            style: `background:${bgColor}; border-color:${bgColor}; color:${textColor};`,
+            className: isOverlap ? 'overlap' : '',
+            title: `${p.song}<br>${p.start.split(' ')[1]} - ${p.end.split(' ')[1]}${isOverlap ? '<br><b style="color:#ef4444">ÇAKIŞMA!</b>' : ''}`
+        };
+    }));
+
+    new vis.Timeline(document.getElementById('visTimeline'), visItems, visGroups, {
+        stack: true,
+        zoomMin: 1000 * 60 * 5,
+        zoomMax: 1000 * 60 * 60 * 24,
+        orientation: { axis: 'top' },
+        start: parseTime('2025-12-29 15:50:00'),
+        end: parseTime('2025-12-29 16:30:00')
+    });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 2. APEXCHARTS - Y ekseni: BROWSER (dinamik), X ekseni: ZAMAN
+    // ═══════════════════════════════════════════════════════════════════
+    const apexSeries = browsers.map(browser => ({
+        name: browser.charAt(0).toUpperCase() + browser.slice(1),
+        data: plays.filter(p => p.browser === browser).map(p => ({
+            x: browser.charAt(0).toUpperCase() + browser.slice(1),
+            y: [parseTime(p.start).getTime(), parseTime(p.end).getTime()],
+            fillColor: overlappingIds.has(p.id) ? '#ef4444' : (browserColors[p.browser] || '#9ca3af'),
+            song: p.song
+        }))
+    }));
+
+    new ApexCharts(document.querySelector("#apexChart"), {
+        series: apexSeries,
+        chart: { type: 'rangeBar', height: 250, background: 'transparent', toolbar: { show: true } },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                barHeight: '80%',
+                rangeBarGroupRows: true
+            }
+        },
+        xaxis: {
+            type: 'datetime',
+            min: parseTime('2025-12-29 15:50:00').getTime(),
+            max: parseTime('2025-12-29 16:30:00').getTime(),
+            labels: { style: { colors: '#94a3b8' }, datetimeFormatter: { hour: 'HH:mm', minute: 'HH:mm' } }
+        },
+        yaxis: {
+            labels: { style: { colors: '#94a3b8', fontSize: '12px' } },
+            categories: browsers.map(b => b.charAt(0).toUpperCase() + b.slice(1))
+        },
+        tooltip: {
+            theme: 'dark',
+            custom: function({ seriesIndex, dataPointIndex, w }) {
+                const data = w.config.series[seriesIndex].data[dataPointIndex];
+                return '<div class="p-2"><b>' + data.song + '</b></div>';
+            }
+        },
+        legend: { show: false },
+        grid: { borderColor: 'rgba(71, 85, 105, 0.3)' },
+        theme: { mode: 'dark' }
+    }).render();
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 3. CHART.JS - Y ekseni: BROWSER (dinamik), X ekseni: ZAMAN
+    // ═══════════════════════════════════════════════════════════════════
+    const minTime = parseTime('2025-12-29 15:50:00').getTime();
+    const maxTime = parseTime('2025-12-29 16:30:00').getTime();
+
+    // Filter plays for the view window
+    const filteredPlays = plays.filter(p => {
+        const s = parseTime(p.start).getTime();
+        const e = parseTime(p.end).getTime();
+        return e > minTime && s < maxTime;
+    });
+
+    // Dinamik dataset'ler - her tarayıcı için
+    const chartDatasets = browsers.map(browser => {
+        const browserPlays = filteredPlays.filter(p => p.browser === browser);
+        const browserLabel = browser.charAt(0).toUpperCase() + browser.slice(1);
+        const baseColor = browserColors[browser] || '#9ca3af';
+
+        return {
+            label: browserLabel,
+            data: browserPlays.map(p => ({
+                x: [parseTime(p.start).getTime(), parseTime(p.end).getTime()],
+                y: browserLabel,
+                song: p.song,
+                isOverlap: overlappingIds.has(p.id)
+            })),
+            backgroundColor: browserPlays.map(p =>
+                overlappingIds.has(p.id) ? 'rgba(239,68,68,0.8)' : (browserColorsRgba[browser] || 'rgba(156,163,175,0.8)')
+            ),
+            borderRadius: 3,
+            barPercentage: 0.9
+        };
+    });
+
+    new Chart(document.getElementById('chartJs'), {
+        type: 'bar',
+        data: {
+            labels: browsers.map(b => b.charAt(0).toUpperCase() + b.slice(1)),
+            datasets: chartDatasets
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'time',
+                    min: minTime,
+                    max: maxTime,
+                    time: { unit: 'minute', stepSize: 5, displayFormats: { minute: 'HH:mm' } },
+                    grid: { color: 'rgba(71,85,105,0.3)' },
+                    ticks: { color: '#94a3b8' }
+                },
+                y: {
+                    grid: { color: 'rgba(71,85,105,0.3)' },
+                    ticks: { color: '#94a3b8', font: { size: 12 } }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            return ctx.raw.song || '';
+                        }
+                    }
+                }
+            }
+        }
+    });
+    </script>
+</body>
+</html>

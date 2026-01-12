@@ -1,1 +1,331 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İletişim Widget Tasarım Seçenekleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Hareketli Gradient */
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient 4s ease infinite;
+        }
+
+        /* Dönen Yazı */
+        .rotating-text .text-item { display: none; }
+        .rotating-text .text-item.active { display: block; }
+
+        /* Pulse glow */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(249, 115, 22, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.8); }
+        }
+        .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+        /* Shimmer */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-black text-white mb-4">İletişim Widget Tasarımları</h1>
+            <p class="text-slate-400">Endüstriyel / Erkeksi / Kompakt / Dikkat Çekici</p>
+            <p class="text-orange-500 mt-2">Beğendiğin numarayı söyle, uygulayayım</p>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <!-- TASARIM 1: Brutal Industrial -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="bg-orange-500 text-white font-black px-4 py-2 rounded">1</span>
+                    <span class="text-white font-bold text-xl">BRUTAL INDUSTRIAL</span>
+                </div>
+                <div class="w-72">
+                    <div class="relative overflow-hidden bg-black border-l-4 border-orange-500">
+                        <!-- Hareketli gradient overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-orange-600/10 via-transparent to-orange-600/10 animate-gradient"></div>
+
+                        <div class="relative p-4">
+                            <!-- Büyük Başlık -->
+                            <div class="rotating-text mb-4">
+                                <p class="text-2xl font-black text-white leading-tight text-item active">
+                                    TEKLİF AL<span class="text-orange-500">.</span>
+                                </p>
+                            </div>
+
+                            <!-- Butonlar -->
+                            <div class="space-y-1.5">
+                                <a href="#" class="flex items-center gap-3 bg-zinc-900 hover:bg-orange-600 px-3 py-2 transition-all group">
+                                    <i class="fas fa-phone text-orange-500 group-hover:text-white w-4"></i>
+                                    <span class="text-white text-sm font-mono">0216 755 3 555</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 bg-zinc-900 hover:bg-green-600 px-3 py-2 transition-all group">
+                                    <i class="fab fa-whatsapp text-green-500 group-hover:text-white w-4"></i>
+                                    <span class="text-white text-sm font-mono">0501 005 67 58</span>
+                                </a>
+                                <a href="#" class="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 px-3 py-2.5 transition-all">
+                                    <i class="fas fa-arrow-right text-white"></i>
+                                    <span class="text-white text-sm font-black uppercase">Sizi Arayalım</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASARIM 2: Neon Glow -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="bg-orange-500 text-white font-black px-4 py-2 rounded">2</span>
+                    <span class="text-white font-bold text-xl">NEON GLOW</span>
+                </div>
+                <div class="w-72">
+                    <div class="relative overflow-hidden rounded-lg bg-gradient-to-br from-slate-900 to-slate-800 border border-orange-500/30 pulse-glow">
+                        <div class="p-4">
+                            <!-- Büyük Başlık -->
+                            <div class="text-center mb-4">
+                                <p class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">
+                                    HEMEN ARAYIN
+                                </p>
+                                <p class="text-slate-500 text-xs mt-1">7/24 Destek</p>
+                            </div>
+
+                            <!-- Yan Yana Butonlar -->
+                            <div class="grid grid-cols-2 gap-2 mb-2">
+                                <a href="#" class="flex items-center gap-2 bg-slate-800 hover:bg-blue-600 rounded px-2 py-2 transition-all group border border-slate-700 hover:border-blue-500">
+                                    <i class="fas fa-phone text-blue-400 group-hover:text-white text-xs"></i>
+                                    <span class="text-white text-xs font-semibold truncate">0216 755 3 555</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-2 bg-slate-800 hover:bg-green-600 rounded px-2 py-2 transition-all group border border-slate-700 hover:border-green-500">
+                                    <i class="fab fa-whatsapp text-green-400 group-hover:text-white text-xs"></i>
+                                    <span class="text-white text-xs font-semibold truncate">0501 005 67 58</span>
+                                </a>
+                            </div>
+                            <a href="#" class="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded px-3 py-2 transition-all">
+                                <i class="fas fa-headset text-white text-sm"></i>
+                                <span class="text-white text-sm font-bold">BİZİ ARAYIN</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASARIM 3: Stealth Dark -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="bg-orange-500 text-white font-black px-4 py-2 rounded">3</span>
+                    <span class="text-white font-bold text-xl">STEALTH DARK</span>
+                </div>
+                <div class="w-72">
+                    <div class="relative overflow-hidden rounded-xl bg-zinc-900 border border-zinc-800">
+                        <!-- Üst accent -->
+                        <div class="h-1 bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 animate-gradient"></div>
+
+                        <div class="p-4">
+                            <!-- Başlık -->
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-industry text-white"></i>
+                                </div>
+                                <div>
+                                    <p class="text-lg font-black text-white">İLETİŞİME GEÇ</p>
+                                    <p class="text-zinc-500 text-xs">Uzman ekip</p>
+                                </div>
+                            </div>
+
+                            <!-- Butonlar -->
+                            <div class="space-y-2">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <a href="#" class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg px-3 py-2 transition-all">
+                                        <i class="fas fa-phone text-blue-500 text-sm"></i>
+                                        <span class="text-white text-xs font-medium">Ara</span>
+                                    </a>
+                                    <a href="#" class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg px-3 py-2 transition-all">
+                                        <i class="fab fa-whatsapp text-green-500 text-sm"></i>
+                                        <span class="text-white text-xs font-medium">WhatsApp</span>
+                                    </a>
+                                </div>
+                                <a href="#" class="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 rounded-lg px-3 py-2.5 transition-all">
+                                    <span class="text-white text-sm font-bold">SİZİ ARAYALIM</span>
+                                    <i class="fas fa-chevron-right text-white text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASARIM 4: Minimal Pro -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="bg-orange-500 text-white font-black px-4 py-2 rounded">4</span>
+                    <span class="text-white font-bold text-xl">MINIMAL PRO</span>
+                </div>
+                <div class="w-72">
+                    <div class="relative overflow-hidden rounded-lg bg-slate-900">
+                        <div class="p-4">
+                            <!-- Mega Başlık -->
+                            <p class="text-2xl font-black text-white mb-1">YARDIM MI</p>
+                            <p class="text-2xl font-black text-orange-500 mb-4">LAZIM?</p>
+
+                            <!-- Kompakt Liste -->
+                            <div class="space-y-1">
+                                <a href="#" class="flex items-center justify-between py-2 border-b border-slate-800 hover:border-orange-500 transition-all group">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-phone text-slate-500 group-hover:text-blue-500 text-sm"></i>
+                                        <span class="text-slate-300 group-hover:text-white text-sm">0216 755 3 555</span>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-slate-600 group-hover:text-orange-500 text-xs"></i>
+                                </a>
+                                <a href="#" class="flex items-center justify-between py-2 border-b border-slate-800 hover:border-orange-500 transition-all group">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fab fa-whatsapp text-slate-500 group-hover:text-green-500 text-sm"></i>
+                                        <span class="text-slate-300 group-hover:text-white text-sm">0501 005 67 58</span>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-slate-600 group-hover:text-orange-500 text-xs"></i>
+                                </a>
+                                <a href="#" class="flex items-center justify-between py-2 hover:bg-orange-500 -mx-4 px-4 transition-all group">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-phone-volume text-orange-500 group-hover:text-white text-sm"></i>
+                                        <span class="text-orange-500 group-hover:text-white text-sm font-bold">Geri Arama</span>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-orange-500 group-hover:text-white text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASARIM 5: Heavy Metal -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="bg-orange-500 text-white font-black px-4 py-2 rounded">5</span>
+                    <span class="text-white font-bold text-xl">HEAVY METAL</span>
+                </div>
+                <div class="w-72">
+                    <div class="relative overflow-hidden bg-gradient-to-b from-zinc-800 to-zinc-900 rounded-lg border-2 border-zinc-700">
+                        <!-- Metal texture overlay -->
+                        <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;4&quot; height=&quot;4&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M0 0h4v4H0z&quot; fill=&quot;none&quot;/%3E%3Cpath d=&quot;M0 0h1v1H0z&quot; fill=&quot;white&quot;/%3E%3C/svg%3E');"></div>
+
+                        <div class="relative p-4">
+                            <!-- Header -->
+                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-700">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-cog text-orange-500"></i>
+                                    <span class="text-zinc-400 text-xs uppercase tracking-wider">İletişim</span>
+                                </div>
+                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            </div>
+
+                            <!-- Başlık -->
+                            <p class="text-xl font-black text-white mb-4 tracking-tight">
+                                SİPARİŞ VER<span class="text-orange-500">!</span>
+                            </p>
+
+                            <!-- Butonlar -->
+                            <div class="grid grid-cols-2 gap-2 mb-2">
+                                <a href="#" class="group bg-zinc-800 hover:bg-blue-600 rounded p-2 transition-all border border-zinc-700 hover:border-blue-500">
+                                    <i class="fas fa-phone text-blue-400 group-hover:text-white block text-center mb-1"></i>
+                                    <p class="text-white text-[10px] text-center font-mono">0216 755 3 555</p>
+                                </a>
+                                <a href="#" class="group bg-zinc-800 hover:bg-green-600 rounded p-2 transition-all border border-zinc-700 hover:border-green-500">
+                                    <i class="fab fa-whatsapp text-green-400 group-hover:text-white block text-center mb-1"></i>
+                                    <p class="text-white text-[10px] text-center font-mono">0501 005 67 58</p>
+                                </a>
+                            </div>
+                            <a href="#" class="block bg-orange-600 hover:bg-orange-500 rounded p-2 transition-all text-center border border-orange-500">
+                                <span class="text-white text-sm font-black">FORMU DOLDUR →</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASARIM 6: Terminal -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="bg-orange-500 text-white font-black px-4 py-2 rounded">6</span>
+                    <span class="text-white font-bold text-xl">TERMINAL</span>
+                </div>
+                <div class="w-72">
+                    <div class="relative overflow-hidden rounded-lg bg-black border border-green-900">
+                        <!-- Terminal header -->
+                        <div class="flex items-center gap-2 px-3 py-2 bg-zinc-900 border-b border-zinc-800">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                            <span class="text-zinc-500 text-xs ml-2 font-mono">ixtif.connect</span>
+                        </div>
+
+                        <div class="p-3 font-mono">
+                            <!-- Command style -->
+                            <p class="text-green-500 text-xs mb-2">> İletişime geç_</p>
+                            <p class="text-orange-400 text-lg font-bold mb-3">DESTEK HATTI</p>
+
+                            <div class="space-y-1.5">
+                                <a href="#" class="flex items-center gap-2 text-sm hover:bg-zinc-900 px-2 py-1.5 -mx-2 transition-all group rounded">
+                                    <span class="text-zinc-600">[1]</span>
+                                    <i class="fas fa-phone text-blue-400 text-xs"></i>
+                                    <span class="text-zinc-300 group-hover:text-white">0216 755 3 555</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-2 text-sm hover:bg-zinc-900 px-2 py-1.5 -mx-2 transition-all group rounded">
+                                    <span class="text-zinc-600">[2]</span>
+                                    <i class="fab fa-whatsapp text-green-400 text-xs"></i>
+                                    <span class="text-zinc-300 group-hover:text-white">0501 005 67 58</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-2 text-sm bg-orange-600 hover:bg-orange-500 px-2 py-1.5 -mx-2 transition-all rounded mt-2">
+                                    <span class="text-orange-200">[3]</span>
+                                    <i class="fas fa-arrow-right text-white text-xs"></i>
+                                    <span class="text-white font-bold">GERİ ARAMA</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-16 text-center">
+            <p class="text-slate-500 text-sm">ixtif.com - Endüstriyel Ekipman</p>
+            <p class="text-slate-600 text-xs mt-2">Claude AI - Tasarım Seçenekleri</p>
+        </div>
+    </div>
+
+    <script>
+        // Rotating text animation
+        document.querySelectorAll('.rotating-text').forEach(container => {
+            const items = container.querySelectorAll('.text-item');
+            if (items.length <= 1) return;
+
+            let current = 0;
+            setInterval(() => {
+                items[current].classList.remove('active');
+                current = (current + 1) % items.length;
+                items[current].classList.add('active');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

@@ -1,1 +1,980 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu.com.tr - Kurumsal Müzik Platformu Analiz & Master Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #f59e0b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #374151;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: #fbbf24;
+            margin: 30px 0 20px 0;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: #60a5fa;
+            margin: 20px 0 15px 0;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.7);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card h4 {
+            margin-top: 0;
+            color: #60a5fa;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ec4899;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .plan-item h4 {
+            color: #ec4899;
+            margin-top: 0;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        .tech-comparison {
+            background: rgba(15, 23, 42, 0.7);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .tech-comparison table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .tech-comparison th,
+        .tech-comparison td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .tech-comparison th {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .tech-comparison td {
+            color: #cbd5e1;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(236, 72, 153, 0.1));
+            border: 2px solid #ec4899;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .highlight-box h3 {
+            color: #ec4899;
+            margin-top: 0;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+            color: #cbd5e1;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #cbd5e1;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #cbd5e1;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #cbd5e1;
+        }
+
+        code {
+            background: rgba(15, 23, 42, 0.7);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .module-integration {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .module-integration h5 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .meta { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu.com.tr - Kurumsal Müzik Platformu</h1>
+            <div class="meta">
+                <div class="meta-item">📅 2025-11-24 20:34</div>
+                <div class="meta-item">🎯 Tenant: 1001 (muzibu.com.tr)</div>
+                <div class="meta-item">🏢 Kurumsal Telifsiz Müzik Platformu</div>
+                <div class="meta-item">🎨 Tema: Muzibu (Tailwind + Alpine.js)</div>
+            </div>
+        </header>
+
+        <!-- MEVCUT DURUM ANALİZİ -->
+        <section>
+            <h2>📊 Mevcut Durum Analizi</h2>
+
+            <h3>🎯 Muzibu.com Canlı Platform İncelemesi</h3>
+            <div class="info-box">
+                <strong>Platform Konumlandırması:</strong> İşletmelere özel telif hakkı ödenmiş müzik streaming hizmeti
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📱 Navigasyon Yapısı</h4>
+                    <ul>
+                        <li>Ana Sayfa</li>
+                        <li>Oynatma Listeleri</li>
+                        <li>Favoriler</li>
+                        <li>Albümler</li>
+                        <li>Türler</li>
+                        <li>Sektörler</li>
+                        <li>Radyolar</li>
+                        <li>Fiyatlandırma</li>
+                        <li>Üyelik</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎵 İçerik Organizasyonu</h4>
+                    <ul>
+                        <li>Yeni Çıkanlar</li>
+                        <li>Son Eklenen Oynatma Listeleri</li>
+                        <li>Bu Hafta Popüler</li>
+                        <li>En İyi Öneriler</li>
+                        <li>Türe Göre Koleksiyonlar</li>
+                        <li>Sektörel Radyolar</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎼 Müzik Türleri</h4>
+                    <ul>
+                        <li>Instrumental</li>
+                        <li>Electro</li>
+                        <li>Jazz</li>
+                        <li>Rock</li>
+                        <li>Pop</li>
+                        <li>Funk</li>
+                        <li>Chill & Lo-Fi</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>📻 Konsept Radyolar</h4>
+                    <ul>
+                        <li>Coffee Shop</li>
+                        <li>Jazz Cafe</li>
+                        <li>Retro Pub</li>
+                        <li>Bossa Nova Radio</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Mevcut Kullanıcı Deneyimi:</strong>
+                <ul>
+                    <li>Giriş yapmayan kullanıcılara 30 saniye dinleme sınırı</li>
+                    <li>Modal uyarılar ile üyelik kontrolü</li>
+                    <li>Shuffle (karışık çalma) özelliği</li>
+                    <li>Loop (tekrar çalma) özelliği</li>
+                    <li>Preloading sistemi mevcut</li>
+                </ul>
+            </div>
+
+            <h3>💻 Mevcut Sistem Altyapısı</h3>
+            <div class="module-integration">
+                <h5>📦 Mevcut Modüller (Tenant 1001 için hazır)</h5>
+                <ul>
+                    <li><code>Favorite</code> - Polymorphic favori sistemi (şarkı, albüm, artist, playlist, radio, sektör)</li>
+                    <li><code>ReviewSystem</code> - Rating ve review sistemi</li>
+                    <li><code>Subscription</code> - Üyelik planları ve yönetimi</li>
+                    <li><code>Payment</code> - Ödeme entegrasyonu</li>
+                    <li><code>Cart</code> - Sepet sistemi</li>
+                    <li><code>Mail</code> - Email template sistemi</li>
+                    <li><code>Search</code> - Arama modülü</li>
+                </ul>
+            </div>
+
+            <div class="module-integration">
+                <h5>🎵 Muzibu Modülü - Database Yapısı</h5>
+                <ul>
+                    <li><strong>muzibu_artists</strong> - Sanatçılar (JSON çoklu dil)</li>
+                    <li><strong>muzibu_albums</strong> - Albümler (JSON çoklu dil)</li>
+                    <li><strong>muzibu_songs</strong> - Şarkılar (HLS desteği, duration, play_count)</li>
+                    <li><strong>muzibu_genres</strong> - Türler (JSON çoklu dil)</li>
+                    <li><strong>muzibu_playlists</strong> - Oynatma listeleri (user/system)</li>
+                    <li><strong>muzibu_radios</strong> - Radyo istasyonları</li>
+                    <li><strong>muzibu_sectors</strong> - Sektörler (restaurant, cafe, gym, vb.)</li>
+                    <li><strong>muzibu_playlist_song</strong> - Playlist-şarkı ilişkileri</li>
+                    <li><strong>muzibu_song_plays</strong> - Dinleme istatistikleri</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- GLOBAL PLATFORMLAR ANALİZİ -->
+        <section>
+            <h2>🌍 Global Platformlar - Teknik Analiz</h2>
+
+            <h3>🎧 Spotify - Single Page Application Mimarisi</h3>
+            <div class="tech-comparison">
+                <strong>Kritik Özellikler:</strong>
+                <ul>
+                    <li><strong>SPA Mimarisi:</strong> HTML'de gömülü JSON state yönetimi, sayfa yenilemesi yok</li>
+                    <li><strong>Player Sürekliliği:</strong> Player bileşeni "now_playing_bar" modalında ayrı tutulur</li>
+                    <li><strong>Global State:</strong> playback.current değeri sürekli izlenir</li>
+                    <li><strong>Memory Caching:</strong> entities.items ve entities.saved ile içerik memorize edilir</li>
+                    <li><strong>Async Search:</strong> search.results null'dan başlar, sorgu ile populate edilir</li>
+                    <li><strong>Flex-box UI:</strong> Responsive tasarım için CSS variables kullanımı</li>
+                    <li><strong>Code Splitting:</strong> pip-mini-player gibi ayrı bundle'lar, kritik olmayan JS ertelenir</li>
+                </ul>
+            </div>
+
+            <h3>🍎 Apple Music - Modüler Shelf Yapısı</h3>
+            <div class="tech-comparison">
+                <strong>Kritik Özellikler:</strong>
+                <ul>
+                    <li><strong>Vite Bundler:</strong> Modern browser detection ve optimized kod dağıtımı</li>
+                    <li><strong>Modüler Shelf:</strong> Her bölüm metadata taşır (content type, Adam ID, artwork palette)</li>
+                    <li><strong>Event Tracking:</strong> actionType, impressionIndex, clickLocation ile detaylı analytics</li>
+                    <li><strong>Schema.org:</strong> Yapılandırılmış veri ile SEO optimizasyonu</li>
+                    <li><strong>Kurumsal Yapı:</strong> Organization hiyerarşisi ve sosyal platform entegrasyonları</li>
+                </ul>
+            </div>
+
+            <h3>📺 YouTube Music</h3>
+            <div class="info-box">
+                <strong>Genel Yaklaşım:</strong> Video-first yaklaşımla müzik deneyimi, güçlü öneri algoritması, kullanıcı upload desteği
+            </div>
+        </section>
+
+        <!-- BİZİM FARKIMIZ -->
+        <section>
+            <h2>💎 Muzibu.com.tr'nin Farklılaşma Stratejisi</h2>
+
+            <div class="highlight-box">
+                <h3>🏢 Kurumsal Odak - B2B Model</h3>
+                <ul>
+                    <li><strong>Hedef Kitle:</strong> Bireysel kullanıcılar değil, işletmeler ve kurumlar</li>
+                    <li><strong>Telifsiz Müzik:</strong> İşletmelerin yasal olarak mekan müziği kullanması</li>
+                    <li><strong>Sektörel İçerik:</strong> Cafe, restoran, spor salonu, ofis gibi sektörlere özel playlist/radyolar</li>
+                    <li><strong>Çoklu Cihaz Desteği:</strong> Subscription planlarına göre device limit</li>
+                    <li><strong>Kurumsal Hesaplar:</strong> Şirket bazlı yönetim (muzibu_corporate_accounts tablosu)</li>
+                </ul>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🎯 Sektörel Yaklaşım</h4>
+                    <p>Her sektör için özel içerik küratörlüğü. Restoran için akşam müzikleri, gym için tempo yüksek şarkılar, ofis için ambient müzikler.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🔐 Sadece Üye Erişimi</h4>
+                    <p>Tüm şarkılar sadece ücretli üyeler için. Demo süreleri yok, tam erişim subscription ile.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>📊 İşletme Analitiği</h4>
+                    <p>İşletmelerin hangi müzikleri ne kadar süre çaldığını görebileceği analytics dashboard.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎨 Markalaşma</h4>
+                    <p>Kurumsal müşterilerin kendi playlist'lerini oluşturabilmesi, şube bazlı farklı müzikler.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEKNİK YAPILANMA -->
+        <section>
+            <h2>⚙️ Teknik Yapılanma - Master Plan</h2>
+
+            <h3>🎯 Ana Prensipler</h3>
+            <div class="plan-item">
+                <h4>1. Single Page Application (SPA) <span class="priority priority-critical">KRİTİK</span></h4>
+                <p><strong>Zorunluluk:</strong> Sayfa değişmeden tüm navigasyon, player sürekli çalışmalı</p>
+                <ul>
+                    <li><strong>Alpine.js:</strong> Lightweight reactive framework (theme standartı)</li>
+                    <li><strong>Livewire:</strong> Backend ile senkronizasyon için</li>
+                    <li><strong>History API:</strong> Browser history yönetimi (geri/ileri tuşları)</li>
+                    <li><strong>URL Routing:</strong> Dinamik URL güncelleme (SEO için)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>2. Persistent Audio Player <span class="priority priority-critical">KRİTİK</span></h4>
+                <p><strong>Gereksinim:</strong> Player alt kısımda sabit kalmalı, sayfa değişimleri etkilememeli</p>
+                <ul>
+                    <li><strong>Global Alpine Store:</strong> Player state tüm componentlerde erişilebilir</li>
+                    <li><strong>Audio Element:</strong> HTML5 Audio API ile HLS desteği</li>
+                    <li><strong>Preloading:</strong> Sıradaki şarkı arka planda yüklenmeye başlar</li>
+                    <li><strong>Smooth Transitions:</strong> Şarkılar arası fade in/out efektleri</li>
+                    <li><strong>EQ Ayarları:</strong> Bass, treble, mid kontrolü (Web Audio API)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>3. HLS Streaming Desteği <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <p><strong>Durum:</strong> Bazı şarkılar HLS şifreli, bazıları normal</p>
+                <ul>
+                    <li><strong>HLS.js Library:</strong> Adaptif bitrate streaming</li>
+                    <li><strong>Fallback Mekanizması:</strong> Normal MP3 için native audio, HLS için hls.js</li>
+                    <li><strong>Kalite Kontrolü:</strong> Tüm formatlarda aynı kalite deneyimi</li>
+                    <li><strong>Buffer Yönetimi:</strong> İlk 1-2 segment anında yüklenir (instant playback)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>4. Instant Playback Stratejisi <span class="priority priority-critical">KRİTİK</span></h4>
+                <p><strong>Hedef:</strong> Şarkıya tıklandığında anında çalmaya başlamalı</p>
+                <ul>
+                    <li><strong>Lazy Thumbnail Loading:</strong> Şarkı listesinde görseller lazy load</li>
+                    <li><strong>Eager Audio Preload:</strong> İlk segment preload="metadata" ile hızlı start</li>
+                    <li><strong>Progressive Loading:</strong> Şarkı çalarken diğer segmentler background'da yüklenir</li>
+                    <li><strong>Cache Strategy:</strong> Daha önce çalınan şarkılar browser cache'te tutulur</li>
+                </ul>
+            </div>
+
+            <h3>🏗️ Component Mimarisi</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Layout Component</h4>
+                    <ul>
+                        <li>Sabit header (navigation)</li>
+                        <li>Sabit sidebar (menu)</li>
+                        <li>Dinamik content area</li>
+                        <li>Sabit bottom player</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Player Component</h4>
+                    <ul>
+                        <li>Play/Pause controls</li>
+                        <li>Progress bar</li>
+                        <li>Volume control</li>
+                        <li>Shuffle/Loop buttons</li>
+                        <li>EQ panel (açılır modal)</li>
+                        <li>Queue görüntüleme</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Content Components</h4>
+                    <ul>
+                        <li>Song List (lazy load)</li>
+                        <li>Album Grid</li>
+                        <li>Playlist Cards</li>
+                        <li>Radio Stations</li>
+                        <li>Search Results</li>
+                        <li>Favorites View</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>User Components</h4>
+                    <ul>
+                        <li>My Playlists</li>
+                        <li>Create Playlist Modal</li>
+                        <li>Add to Playlist Modal</li>
+                        <li>Subscription Status</li>
+                        <li>Corporate Dashboard</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZELLİKLER DETAYI -->
+        <section>
+            <h2>🎨 Özellikler - Detaylı Planlama</h2>
+
+            <h3>⭐ Favori Sistemi</h3>
+            <div class="success-box">
+                <strong>✅ Mevcut Modül:</strong> Favorite modülü polymorphic yapıda hazır
+            </div>
+            <div class="plan-item">
+                <h4>Favorilenebilir İçerikler</h4>
+                <ul>
+                    <li>Şarkı (muzibu_songs)</li>
+                    <li>Albüm (muzibu_albums)</li>
+                    <li>Sanatçı (muzibu_artists)</li>
+                    <li>Playlist (muzibu_playlists)</li>
+                    <li>Radyo (muzibu_radios)</li>
+                    <li>Sektör (muzibu_sectors)</li>
+                </ul>
+                <p><strong>Arayüz:</strong> Her içerikte kalp ikonu, tek tık ile favorilere ekle/çıkar</p>
+            </div>
+
+            <h3>📝 Kişisel Playlist Oluşturma</h3>
+            <div class="plan-item">
+                <h4>Kullanıcı Playlist'leri <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <ul>
+                    <li><strong>Playlist Oluştur:</strong> Modal açılır, isim + kapak resmi + açıklama</li>
+                    <li><strong>Şarkı Ekle:</strong> Her şarkıda "Playlist'e Ekle" butonu</li>
+                    <li><strong>Sürükle-Bırak:</strong> Playlist içinde şarkı sırası değiştirme</li>
+                    <li><strong>Playlist Paylaş:</strong> Kurumsal hesaplar arası paylaşım</li>
+                    <li><strong>Kolaboratif Playlist:</strong> Birden fazla kullanıcı ekleyebilir (opsiyonel)</li>
+                </ul>
+                <p><strong>Database:</strong> muzibu_playlists.user_id ile kullanıcıya bağlı, is_system=false</p>
+            </div>
+
+            <h3>🔍 Arama Sistemi</h3>
+            <div class="plan-item">
+                <h4>Global Arama <span class="priority priority-medium">Orta Öncelik</span></h4>
+                <ul>
+                    <li><strong>Instant Search:</strong> Yazdıkça sonuç göster (debounce 300ms)</li>
+                    <li><strong>Kategorize Sonuçlar:</strong> Şarkılar, albümler, sanatçılar, playlist'ler ayrı sekmeler</li>
+                    <li><strong>Fulltext Index:</strong> Database'de search index'ler mevcut (check migration)</li>
+                    <li><strong>Filter Seçenekleri:</strong> Türe göre, sektöre göre, süreye göre filtreleme</li>
+                </ul>
+            </div>
+
+            <h3>🎯 Sektörel İçerik Yönetimi</h3>
+            <div class="plan-item">
+                <h4>Sektör Bazlı Küratörlük <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <ul>
+                    <li><strong>Sektör Seçimi:</strong> Kullanıcı kayıt sırasında veya profilde sektör belirtir</li>
+                    <li><strong>Önerilen İçerik:</strong> Ana sayfada sektörüne uygun playlist/radyolar</li>
+                    <li><strong>Sektör Radyoları:</strong> muzibu_radio_sector tablosu ile radyo-sektör eşleştirme</li>
+                    <li><strong>Playlist Etiketleme:</strong> Admin panel'de playlist'lere sektör atama</li>
+                </ul>
+            </div>
+
+            <h3>📊 Dinleme İstatistikleri</h3>
+            <div class="success-box">
+                <strong>✅ Mevcut Tablo:</strong> muzibu_song_plays hazır
+            </div>
+            <div class="plan-item">
+                <h4>Analytics Dashboard <span class="priority priority-medium">Orta Öncelik</span></h4>
+                <ul>
+                    <li><strong>Kullanıcı İstatistikleri:</strong> En çok dinlediğim şarkılar, türler, sanatçılar</li>
+                    <li><strong>Kurumsal İstatistikler:</strong> Corporate hesaplarda şube bazlı analiz</li>
+                    <li><strong>Popülerlik Skoru:</strong> play_count ile trending şarkılar</li>
+                    <li><strong>Listening Time:</strong> Toplam dinleme süresi tracking</li>
+                </ul>
+            </div>
+
+            <h3>💳 Subscription & Payment</h3>
+            <div class="success-box">
+                <strong>✅ Mevcut Modüller:</strong> Subscription + Payment + Cart modülleri hazır
+            </div>
+            <div class="plan-item">
+                <h4>Üyelik Planları <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <ul>
+                    <li><strong>Plan Yapısı:</strong> Aylık/Yıllık fiyatlandırma</li>
+                    <li><strong>Device Limit:</strong> Plan bazlı cihaz sayısı kısıtı</li>
+                    <li><strong>Deneme Süresi:</strong> trial_days ile ücretsiz deneme</li>
+                    <li><strong>Özellik Kontrolü:</strong> Subscription check middleware ile içerik erişimi</li>
+                    <li><strong>Otomatik Yenileme:</strong> Recurring billing entegrasyonu</li>
+                </ul>
+            </div>
+
+            <h3>🏢 Kurumsal Hesap Yönetimi</h3>
+            <div class="success-box">
+                <strong>✅ Mevcut Tablo:</strong> muzibu_corporate_accounts
+            </div>
+            <div class="plan-item">
+                <h4>Corporate Features <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <ul>
+                    <li><strong>Şube Yönetimi:</strong> Ana hesap + alt şube hesapları</li>
+                    <li><strong>Merkezi Faturalandırma:</strong> Tüm şubeler tek faturada</li>
+                    <li><strong>Kullanıcı Rolleri:</strong> Admin, manager, user rolleri</li>
+                    <li><strong>Playlist Paylaşımı:</strong> Şubeler arası içerik paylaşımı</li>
+                    <li><strong>Raporlama:</strong> Tüm şubeler için birleşik analytics</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SPOTIFY & APPLE MUSIC'TEN İLHAM -->
+        <section>
+            <h2>💡 Büyük Platformlardan Alınacak Özellikler</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🎧 Spotify'dan</h4>
+                    <ul>
+                        <li>Global state player yönetimi</li>
+                        <li>Memory cache stratejisi</li>
+                        <li>Async search yaklaşımı</li>
+                        <li>Flex-box responsive UI</li>
+                        <li>Code splitting optimizasyonu</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🍎 Apple Music'ten</h4>
+                    <ul>
+                        <li>Modüler shelf yapısı</li>
+                        <li>Event tracking sistemi</li>
+                        <li>Artwork color palette extraction</li>
+                        <li>Schema.org SEO yapılandırması</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎵 Müzik Platform Best Practices</h4>
+                    <ul>
+                        <li>Queue yönetimi (sonraki çalan)</li>
+                        <li>Crossfade efektleri</li>
+                        <li>Gapless playback (kesintisiz geçiş)</li>
+                        <li>Keyboard shortcuts (space = play/pause)</li>
+                        <li>Media session API (OS kontrolü)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>➕ Ekstra Fikirler</h4>
+                    <ul>
+                        <li><strong>Mood-based Playlists:</strong> "Sabah Kahvesi", "Akşam Dinlenme"</li>
+                        <li><strong>Tempo Filtering:</strong> BPM bazlı şarkı filtreleme (gym için hızlı tempo)</li>
+                        <li><strong>Voice Control:</strong> "Alexa, restoran müziği çal" entegrasyonu (uzun vade)</li>
+                        <li><strong>Scheduling:</strong> Belirli saatlerde otomatik playlist değişimi</li>
+                        <li><strong>Volume Normalization:</strong> Tüm şarkılar eşit ses seviyesi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- GELİŞTİRME AŞAMALARI -->
+        <section>
+            <h2>🚀 Geliştirme Aşamaları - Roadmap</h2>
+
+            <div class="plan-item">
+                <h4>Faz 1: Core Infrastructure <span class="priority priority-critical">KRİTİK</span></h4>
+                <p><strong>Süre Tahmini:</strong> Ana yapı kurulumu</p>
+                <ul>
+                    <li>Alpine.js SPA router yapısı oluştur</li>
+                    <li>Layout component (header, sidebar, content, player)</li>
+                    <li>Global Alpine store (player state, user state, current page)</li>
+                    <li>HTML5 Audio player component (play/pause, progress, volume)</li>
+                    <li>HLS.js entegrasyonu (adaptif streaming)</li>
+                    <li>History API routing (URL yönetimi)</li>
+                    <li>Authentication middleware (subscription check)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Faz 2: Content Display & Navigation <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <ul>
+                    <li>Ana sayfa (featured content, new releases, popular)</li>
+                    <li>Şarkı listesi component (lazy load, infinite scroll)</li>
+                    <li>Albüm grid component</li>
+                    <li>Sanatçı profil sayfası</li>
+                    <li>Playlist detay sayfası</li>
+                    <li>Radyo istasyonları listesi</li>
+                    <li>Sektör bazlı içerik filtreleme</li>
+                    <li>Tür (genre) bazlı browsing</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Faz 3: User Interaction Features <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <ul>
+                    <li>Favori ekleme/çıkarma (kalp butonu)</li>
+                    <li>Favorilerim sayfası (tüm favoriler)</li>
+                    <li>Playlist oluştur modal</li>
+                    <li>Playlist'e şarkı ekle modal</li>
+                    <li>Playlist içinde şarkı sırası değiştir (drag & drop)</li>
+                    <li>Şarkı kuyruk yönetimi (queue panel)</li>
+                    <li>Shuffle & loop controls</li>
+                    <li>Global arama (instant search)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Faz 4: Player Advanced Features <span class="priority priority-medium">Orta Öncelik</span></h4>
+                <ul>
+                    <li>EQ ayarları modal (bass, mid, treble)</li>
+                    <li>Crossfade ayarları (şarkı geçişleri)</li>
+                    <li>Gapless playback (kesintisiz geçiş)</li>
+                    <li>Preloading optimization (instant start)</li>
+                    <li>Media Session API (OS kontrolü, bildirimler)</li>
+                    <li>Keyboard shortcuts (space, arrow keys)</li>
+                    <li>Volume normalization</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Faz 5: Analytics & Corporate Features <span class="priority priority-medium">Orta Öncelik</span></h4>
+                <ul>
+                    <li>Dinleme istatistikleri dashboard</li>
+                    <li>En çok dinlenen şarkılar/türler</li>
+                    <li>Play count tracking (muzibu_song_plays)</li>
+                    <li>Kurumsal hesap yönetimi</li>
+                    <li>Şube bazlı raporlama</li>
+                    <li>Playlist paylaşımı (şubeler arası)</li>
+                    <li>Kullanıcı rolleri (admin, manager, user)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Faz 6: Subscription & Payment Integration <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <ul>
+                    <li>Subscription plan sayfası</li>
+                    <li>Plan özellikleri karşılaştırma tablosu</li>
+                    <li>Ödeme entegrasyonu (Cart + Payment modülü)</li>
+                    <li>Device limit kontrolü</li>
+                    <li>Deneme süresi yönetimi</li>
+                    <li>Otomatik yenileme (recurring billing)</li>
+                    <li>Fatura oluşturma</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Faz 7: Advanced & Nice-to-Have <span class="priority priority-low">Düşük Öncelik</span></h4>
+                <ul>
+                    <li>Mood-based playlists (sabah, akşam, workout)</li>
+                    <li>Tempo filtering (BPM bazlı arama)</li>
+                    <li>Playlist scheduling (otomatik saat bazlı geçiş)</li>
+                    <li>Social sharing (playlist paylaş)</li>
+                    <li>Voice control entegrasyonu (uzun vade)</li>
+                    <li>Offline mode (PWA cache - çok uzun vade)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TEKNİK DETAYLAR -->
+        <section>
+            <h2>🔧 Teknik Detaylar & Implementation Notları</h2>
+
+            <h3>🎵 Alpine.js SPA Router Yaklaşımı</h3>
+            <div class="info-box">
+                <strong>Alpine.js native router yoktur</strong>, ancak basit bir routing sistemi oluşturabiliriz:
+            </div>
+            <div class="plan-item">
+                <h4>Custom Router Stratejisi</h4>
+                <ul>
+                    <li><strong>x-data="router()":</strong> Global Alpine component olarak router</li>
+                    <li><strong>currentRoute:</strong> Aktif sayfa state'i (home, album, playlist, vb.)</li>
+                    <li><strong>navigate(route):</strong> Sayfa değiştirme fonksiyonu</li>
+                    <li><strong>history.pushState():</strong> URL güncelleme (SEO + back button)</li>
+                    <li><strong>x-show:</strong> Her page component'e x-show="currentRoute === 'album'"</li>
+                    <li><strong>popstate event:</strong> Browser back/forward button dinleme</li>
+                </ul>
+            </div>
+
+            <h3>🎧 Player State Management</h3>
+            <div class="plan-item">
+                <h4>Alpine.store('player', {...})</h4>
+                <ul>
+                    <li><strong>currentSong:</strong> Çalan şarkı objesi (song_id, title, artist, duration)</li>
+                    <li><strong>queue:</strong> Sıradaki şarkılar dizisi</li>
+                    <li><strong>isPlaying:</strong> Boolean (play/pause durumu)</li>
+                    <li><strong>progress:</strong> Şarkı ilerleme yüzdesi (0-100)</li>
+                    <li><strong>volume:</strong> Ses seviyesi (0-100)</li>
+                    <li><strong>shuffle:</strong> Karışık çalma açık/kapalı</li>
+                    <li><strong>repeat:</strong> Tekrar modu (off, one, all)</li>
+                    <li><strong>eq:</strong> EQ ayarları objesi (bass, mid, treble)</li>
+                </ul>
+            </div>
+
+            <h3>📡 HLS Streaming Implementation</h3>
+            <div class="plan-item">
+                <h4>Adaptif Mekanizma</h4>
+                <ul>
+                    <li><strong>Check HLS:</strong> muzibu_songs.hls_enabled field kontrolü</li>
+                    <li><strong>HLS ise:</strong> Hls.js ile HLS stream yükle</li>
+                    <li><strong>Normal ise:</strong> Native audio element ile MP3 çal</li>
+                    <li><strong>Error Handling:</strong> HLS hata verirse fallback to direct URL</li>
+                    <li><strong>Buffer Strategy:</strong> hls.config.maxBufferLength = 30 (30 saniye buffer)</li>
+                </ul>
+            </div>
+
+            <h3>⚡ Performance Optimization</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Lazy Loading</h4>
+                    <ul>
+                        <li>Şarkı görselleri: loading="lazy"</li>
+                        <li>Infinite scroll: IntersectionObserver</li>
+                        <li>Component lazy mount</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Caching</h4>
+                    <ul>
+                        <li>Browser cache headers</li>
+                        <li>Service worker (PWA - opsiyonel)</li>
+                        <li>Alpine store persistence (localStorage)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Code Splitting</h4>
+                    <ul>
+                        <li>Admin JS ayrı bundle</li>
+                        <li>HLS.js sadece gerekirse load</li>
+                        <li>Dynamic import</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Database Optimization</h4>
+                    <ul>
+                        <li>Composite indexes mevcut</li>
+                        <li>Eager loading (with relations)</li>
+                        <li>Query caching (Redis)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- UNUTULMAMASI GEREKENLER -->
+        <section>
+            <h2>⚠️ Kritik Hatırlatmalar</h2>
+
+            <div class="warning-box">
+                <h3>🎯 Tenant-Aware Sistem</h3>
+                <ul>
+                    <li>Muzibu modülü <strong>sadece Tenant 1001 (muzibu.com.tr)</strong> için aktif</li>
+                    <li>Theme "muzibu" sadece Tenant 1001'e atanmış (available_for_tenants)</li>
+                    <li>Tüm frontend kodlar <code>resources/views/themes/muzibu/</code> altında</li>
+                    <li>Global kodlara Muzibu-specific içerik ekleme!</li>
+                    <li>Migration'lar hem central hem tenant/ klasöründe olmalı</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h3>🔐 Subscription Kontrolü</h3>
+                <ul>
+                    <li>Her şarkı çalma isteğinde subscription check</li>
+                    <li>Device limit aşımı kontrolü</li>
+                    <li>Trial süresi dolmuş mu kontrolü</li>
+                    <li>Ödeme geçmişi kontrolü (recurring billing)</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h3>🎨 Tema Standartları</h3>
+                <ul>
+                    <li>Tailwind CSS kullan (ixtif ile alakası yok, sadece kopyalandı)</li>
+                    <li>Alpine.js reactive components</li>
+                    <li>FontAwesome iconlar (fas, far, fab)</li>
+                    <li>Responsive tasarım (mobile-first)</li>
+                    <li>Dark mode desteği (opsiyonel)</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h3>📱 SEO & Accessibility</h3>
+                <ul>
+                    <li>Schema.org structured data (MusicRecording, MusicPlaylist, MusicAlbum)</li>
+                    <li>Meta tags dinamik güncelleme (her sayfa için)</li>
+                    <li>Open Graph tags (sosyal paylaşım)</li>
+                    <li>ARIA labels (screen reader desteği)</li>
+                    <li>Semantic HTML (header, main, nav, article)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section>
+            <h2>🎯 Sonuç & Sonraki Adımlar</h2>
+
+            <div class="highlight-box">
+                <h3>✅ Hazır Olan Altyapı</h3>
+                <ul>
+                    <li>Muzibu modülü database yapısı tamamlanmış</li>
+                    <li>Favorite, Rating, Subscription, Payment modülleri hazır</li>
+                    <li>Tenant 1001 konfigüre edilmiş</li>
+                    <li>Tema yapısı oluşturulmuş (resources/views/themes/muzibu/)</li>
+                    <li>HLS desteği migration'larda hazır</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>🚀 İlk Yapılacaklar</h3>
+                <ol>
+                    <li><strong>Layout Oluştur:</strong> Header, sidebar, player, content bölgeleri</li>
+                    <li><strong>Alpine Router:</strong> SPA navigation sistemi kur</li>
+                    <li><strong>Player Component:</strong> HTML5 Audio + HLS.js entegrasyonu</li>
+                    <li><strong>Ana Sayfa:</strong> Featured content, new releases, popular şarkılar</li>
+                    <li><strong>Şarkı Listesi:</strong> Lazy load + play butonu</li>
+                    <li><strong>Player State:</strong> Global Alpine store ile state yönetimi</li>
+                </ol>
+            </div>
+
+            <div class="success-box">
+                <h3>💎 Başarı Kriterleri</h3>
+                <ul>
+                    <li><strong>Sayfa Değişmez:</strong> Tüm navigasyon SPA içinde</li>
+                    <li><strong>Player Sürekli:</strong> Müzik hiç kesintiye uğramaz</li>
+                    <li><strong>Anında Başlama:</strong> Şarkıya tıkla, 0.5 saniyede çalmaya başla</li>
+                    <li><strong>Smooth Geçişler:</strong> Fade in/out efektleri</li>
+                    <li><strong>HLS Desteği:</strong> Tüm şarkılar aynı kalitede çalışır</li>
+                    <li><strong>Responsive:</strong> Mobil + tablet + desktop mükemmel</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - Muzibu.com.tr Kurumsal Müzik Platformu Master Plan
+            <br>
+            📅 2025-11-24 | 🎯 Tenant 1001 | 🎨 Tailwind + Alpine.js
+        </footer>
+    </div>
+</body>
+</html>

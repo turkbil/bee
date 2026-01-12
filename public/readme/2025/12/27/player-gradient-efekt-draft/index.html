@@ -1,1 +1,395 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Gradient Efekt Alternatifleri - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .animated-gradient {
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+        }
+        .glow-effect {
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        .pulse-glow {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <span class="inline-block px-4 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm font-medium mb-4">
+                <i class="fas fa-palette mr-2"></i>Tasarım Draft
+            </span>
+            <h1 class="text-4xl font-bold mb-3">Player Gradient Efekt Alternatifleri</h1>
+            <p class="text-slate-400 text-lg">Mevcut tasarımı bozmadan uygulayabileceğimiz efektler</p>
+            <p class="text-slate-500 text-sm mt-2">27 Aralık 2025</p>
+        </header>
+
+        <!-- Şarkı Seçici (Demo) -->
+        <div class="text-center mb-8">
+            <p class="text-sm text-slate-400 mb-3">Demo için şarkı seç:</p>
+            <div class="flex flex-wrap justify-center gap-2">
+                <button onclick="setColors(45, 85, 125)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition-colors">
+                    🌞 Yaz Geldi <span class="text-xs text-slate-400">(45,85,125)</span>
+                </button>
+                <button onclick="setColors(220, 260, 300)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition-colors">
+                    ❄️ Kış Masalı <span class="text-xs text-slate-400">(220,260,300)</span>
+                </button>
+                <button onclick="setColors(350, 30, 70)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition-colors">
+                    ❤️ Aşk Şarkısı <span class="text-xs text-slate-400">(350,30,70)</span>
+                </button>
+                <button onclick="setColors(280, 320, 0)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition-colors">
+                    🌙 Gece <span class="text-xs text-slate-400">(280,320,0)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SEÇENEK 1: Border Gradient -->
+        <section class="mb-12" id="option1">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">1</span>
+                <h2 class="text-2xl font-bold">Border Gradient (Şu Anki + Dinamik)</h2>
+                <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded">Önerilen</span>
+            </div>
+            <p class="text-slate-400 mb-4">Mevcut turuncu-pembe border yerine şarkıya özel renk. En minimal değişiklik.</p>
+
+            <!-- Demo Player -->
+            <div class="bg-slate-800 rounded-2xl p-4">
+                <div id="player1" class="mx-3 px-4 py-2.5 relative rounded-full shadow-lg flex items-center gap-4 transition-all duration-1000"
+                     style="background: linear-gradient(#18181b, #18181b) padding-box, linear-gradient(135deg, hsl(45, 80%, 50%), hsl(85, 80%, 50%), hsl(125, 80%, 50%)) border-box; border: 2px solid transparent;">
+                    <!-- Cover -->
+                    <div class="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center">
+                        <i class="fas fa-music text-slate-500"></i>
+                    </div>
+                    <!-- Info -->
+                    <div class="flex-1">
+                        <p class="text-white text-sm font-medium">Yaz Geldi</p>
+                        <p class="text-slate-400 text-xs">Sanatçı Adı</p>
+                    </div>
+                    <!-- Controls -->
+                    <div class="flex items-center gap-2">
+                        <button class="w-8 h-8 text-white/60"><i class="fas fa-backward"></i></button>
+                        <button class="w-10 h-10 text-white"><i class="fas fa-play"></i></button>
+                        <button class="w-8 h-8 text-white/60"><i class="fas fa-forward"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800/50 rounded-lg">
+                <p class="text-sm text-slate-300"><i class="fas fa-code text-cyan-400 mr-2"></i><strong>Değişiklik:</strong> Sadece border gradient CSS değişecek</p>
+                <p class="text-sm text-slate-400 mt-1">Smooth transition: 1s ease ile renk geçişi</p>
+            </div>
+        </section>
+
+        <!-- SEÇENEK 2: Progress Ring -->
+        <section class="mb-12" id="option2">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold">2</span>
+                <h2 class="text-2xl font-bold">Progress Ring Rengi</h2>
+            </div>
+            <p class="text-slate-400 mb-4">Albüm kapağı etrafındaki ilerleme halkası şarkıya göre renk alır.</p>
+
+            <div class="bg-slate-800 rounded-2xl p-6 flex justify-center gap-12">
+                <!-- Mevcut -->
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-2">Mevcut (Turuncu)</p>
+                    <div class="relative w-16 h-16">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                            <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="4"/>
+                            <circle cx="32" cy="32" r="28" fill="none" stroke="#ff8a00" stroke-width="4" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="88"/>
+                        </svg>
+                        <div class="absolute inset-2 rounded-full bg-slate-700"></div>
+                    </div>
+                </div>
+                <!-- Dinamik -->
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-2">Dinamik (Şarkıya Göre)</p>
+                    <div class="relative w-16 h-16">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                            <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="4"/>
+                            <circle id="ring2" cx="32" cy="32" r="28" fill="none" stroke="hsl(45, 80%, 50%)" stroke-width="4" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="88" class="transition-all duration-1000"/>
+                        </svg>
+                        <div class="absolute inset-2 rounded-full bg-slate-700"></div>
+                    </div>
+                </div>
+                <!-- Gradient Ring -->
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-2">Gradient Ring (3 Renk)</p>
+                    <div class="relative w-16 h-16">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                            <defs>
+                                <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" id="ringStop1" style="stop-color: hsl(45, 80%, 50%)"/>
+                                    <stop offset="50%" id="ringStop2" style="stop-color: hsl(85, 80%, 50%)"/>
+                                    <stop offset="100%" id="ringStop3" style="stop-color: hsl(125, 80%, 50%)"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="4"/>
+                            <circle cx="32" cy="32" r="28" fill="none" stroke="url(#ringGradient)" stroke-width="4" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="88"/>
+                        </svg>
+                        <div class="absolute inset-2 rounded-full bg-slate-700"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇENEK 3: Cover Glow -->
+        <section class="mb-12" id="option3">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center font-bold">3</span>
+                <h2 class="text-2xl font-bold">Cover Glow Efekti</h2>
+                <span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded">Premium</span>
+            </div>
+            <p class="text-slate-400 mb-4">Albüm kapağı etrafında şarkıya özel ışıma. Soft ve elegant.</p>
+
+            <div class="bg-slate-800 rounded-2xl p-6 flex justify-center gap-8">
+                <!-- Glow Off -->
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-3">Glow Kapalı</p>
+                    <div class="w-20 h-20 rounded-xl bg-slate-700 flex items-center justify-center">
+                        <i class="fas fa-music text-slate-500 text-2xl"></i>
+                    </div>
+                </div>
+                <!-- Soft Glow -->
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-3">Soft Glow</p>
+                    <div id="glow1" class="w-20 h-20 rounded-xl bg-slate-700 flex items-center justify-center transition-all duration-1000" style="box-shadow: 0 0 30px hsla(45, 80%, 50%, 0.4);">
+                        <i class="fas fa-music text-slate-500 text-2xl"></i>
+                    </div>
+                </div>
+                <!-- Animated Glow -->
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-3">Animated Glow</p>
+                    <div id="glow2" class="w-20 h-20 rounded-xl bg-slate-700 flex items-center justify-center pulse-glow transition-all duration-1000" style="box-shadow: 0 0 40px hsla(45, 80%, 50%, 0.5);">
+                        <i class="fas fa-music text-slate-500 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇENEK 4: Progress Bar -->
+        <section class="mb-12" id="option4">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 bg-pink-600 rounded-full flex items-center justify-center font-bold">4</span>
+                <h2 class="text-2xl font-bold">Progress Bar Gradient</h2>
+            </div>
+            <p class="text-slate-400 mb-4">Desktop player'daki ilerleme çubuğu şarkıya göre renk alır.</p>
+
+            <div class="bg-slate-800 rounded-2xl p-6 space-y-4">
+                <!-- Mevcut -->
+                <div>
+                    <p class="text-xs text-slate-500 mb-2">Mevcut (Turuncu-Pembe)</p>
+                    <div class="h-2 bg-white/20 rounded-full">
+                        <div class="h-full w-1/2 rounded-full bg-gradient-to-r from-orange-500 to-pink-500"></div>
+                    </div>
+                </div>
+                <!-- Dinamik -->
+                <div>
+                    <p class="text-xs text-slate-500 mb-2">Dinamik (3 Renkli)</p>
+                    <div class="h-2 bg-white/20 rounded-full">
+                        <div id="progressBar" class="h-full w-1/2 rounded-full transition-all duration-1000" style="background: linear-gradient(90deg, hsl(45, 80%, 50%), hsl(85, 80%, 50%), hsl(125, 80%, 50%))"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇENEK 5: Arka Plan Blur -->
+        <section class="mb-12" id="option5">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center font-bold">5</span>
+                <h2 class="text-2xl font-bold">Arka Plan Glow/Blur</h2>
+                <span class="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded">Dikkat: Performans</span>
+            </div>
+            <p class="text-slate-400 mb-4">Player bar arkasında hafif renkli blur. Dikkatli kullanılmalı.</p>
+
+            <div class="bg-slate-800 rounded-2xl p-6">
+                <div class="relative">
+                    <!-- Background Glow -->
+                    <div id="bgGlow" class="absolute inset-0 rounded-full blur-2xl opacity-30 transition-all duration-1000" style="background: linear-gradient(135deg, hsl(45, 80%, 50%), hsl(85, 80%, 50%), hsl(125, 80%, 50%))"></div>
+                    <!-- Player -->
+                    <div class="relative mx-3 px-4 py-2.5 rounded-full shadow-lg flex items-center gap-4 bg-zinc-900/90 backdrop-blur-sm border border-white/10">
+                        <div class="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center">
+                            <i class="fas fa-music text-slate-500"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white text-sm font-medium">Şarkı Adı</p>
+                            <p class="text-slate-400 text-xs">Sanatçı</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="w-8 h-8 text-white/60"><i class="fas fa-backward"></i></button>
+                            <button class="w-10 h-10 text-white"><i class="fas fa-play"></i></button>
+                            <button class="w-8 h-8 text-white/60"><i class="fas fa-forward"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-yellow-900/20 border border-yellow-700 rounded-lg">
+                <p class="text-sm text-yellow-400"><i class="fas fa-exclamation-triangle mr-2"></i>Blur efekti mobilde performans sorunu yaratabilir. Test gerekli.</p>
+            </div>
+        </section>
+
+        <!-- SEÇENEK 6: Hareketli Gradient -->
+        <section class="mb-12" id="option6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center font-bold">6</span>
+                <h2 class="text-2xl font-bold">Hareketli Border Gradient</h2>
+                <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded">Şık</span>
+            </div>
+            <p class="text-slate-400 mb-4">Border gradient yavaşça hareket eder. Smooth ve hipnotik.</p>
+
+            <div class="bg-slate-800 rounded-2xl p-4">
+                <div id="player6" class="mx-3 px-4 py-2.5 relative rounded-full shadow-lg flex items-center gap-4 animated-gradient transition-all duration-1000"
+                     style="background: linear-gradient(#18181b, #18181b) padding-box, linear-gradient(135deg, hsl(45, 80%, 50%), hsl(85, 80%, 50%), hsl(125, 80%, 50%), hsl(45, 80%, 50%)) border-box; border: 2px solid transparent; background-size: 200% 200%;">
+                    <div class="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center">
+                        <i class="fas fa-music text-slate-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-white text-sm font-medium">Hareketli Gradient</p>
+                        <p class="text-slate-400 text-xs">Sanatçı Adı</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="w-8 h-8 text-white/60"><i class="fas fa-backward"></i></button>
+                        <button class="w-10 h-10 text-white"><i class="fas fa-play"></i></button>
+                        <button class="w-8 h-8 text-white/60"><i class="fas fa-forward"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kombinasyon Önerileri -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-layer-group text-purple-400 mr-3"></i>
+                Kombinasyon Önerileri
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <!-- Minimal -->
+                <div class="bg-slate-800 rounded-xl p-5 border border-slate-700">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded">Minimal</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Sadece Border</h3>
+                    <p class="text-slate-400 text-sm mb-3">En az değişiklik, en kolay uygulama</p>
+                    <ul class="text-sm space-y-1">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Border gradient</li>
+                        <li class="flex items-center gap-2 text-slate-500"><i class="fas fa-times"></i> Progress ring</li>
+                        <li class="flex items-center gap-2 text-slate-500"><i class="fas fa-times"></i> Cover glow</li>
+                    </ul>
+                </div>
+
+                <!-- Balanced -->
+                <div class="bg-slate-800 rounded-xl p-5 border-2 border-emerald-500/50">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded">Önerilen</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Border + Progress Ring</h3>
+                    <p class="text-slate-400 text-sm mb-3">Dengeli görünüm, performans dostu</p>
+                    <ul class="text-sm space-y-1">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Border gradient (hareketli)</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Progress ring gradient</li>
+                        <li class="flex items-center gap-2 text-slate-500"><i class="fas fa-times"></i> Cover glow</li>
+                    </ul>
+                </div>
+
+                <!-- Full -->
+                <div class="bg-slate-800 rounded-xl p-5 border border-slate-700">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded">Premium</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Full Experience</h3>
+                    <p class="text-slate-400 text-sm mb-3">Maksimum görsel efekt</p>
+                    <ul class="text-sm space-y-1">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Border gradient (hareketli)</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Progress ring gradient</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Cover glow (soft)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Notlar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-code mr-2"></i>Teknik Notlar
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6 text-sm">
+                <div>
+                    <h3 class="font-semibold text-slate-300 mb-2">Smooth Geçiş:</h3>
+                    <ul class="space-y-1 text-slate-400">
+                        <li>• <code class="bg-slate-800 px-1 rounded">transition: all 1s ease</code></li>
+                        <li>• Şarkı değiştiğinde gradient smooth geçiş</li>
+                        <li>• CSS variable ile dinamik renk</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-slate-300 mb-2">Performans:</h3>
+                    <ul class="space-y-1 text-slate-400">
+                        <li>• Border/ring: <span class="text-green-400">Düşük GPU</span></li>
+                        <li>• Blur/glow: <span class="text-yellow-400">Orta GPU</span></li>
+                        <li>• Animasyon: <span class="text-green-400">CSS-only (60fps)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p class="flex items-center justify-center gap-2">
+                <i class="fas fa-robot"></i>
+                Claude AI tarafından hazırlandı
+            </p>
+            <p class="mt-2 text-slate-400">Hangi kombinasyonu tercih ediyorsun?</p>
+        </footer>
+    </div>
+
+    <script>
+        function setColors(h1, h2, h3) {
+            // Player 1 - Border
+            document.getElementById('player1').style.background =
+                `linear-gradient(#18181b, #18181b) padding-box, linear-gradient(135deg, hsl(${h1}, 80%, 50%), hsl(${h2}, 80%, 50%), hsl(${h3}, 80%, 50%)) border-box`;
+
+            // Player 6 - Animated Border
+            document.getElementById('player6').style.background =
+                `linear-gradient(#18181b, #18181b) padding-box, linear-gradient(135deg, hsl(${h1}, 80%, 50%), hsl(${h2}, 80%, 50%), hsl(${h3}, 80%, 50%), hsl(${h1}, 80%, 50%)) border-box`;
+
+            // Progress Ring
+            document.getElementById('ring2').style.stroke = `hsl(${h1}, 80%, 50%)`;
+
+            // SVG Gradient stops
+            document.getElementById('ringStop1').style.stopColor = `hsl(${h1}, 80%, 50%)`;
+            document.getElementById('ringStop2').style.stopColor = `hsl(${h2}, 80%, 50%)`;
+            document.getElementById('ringStop3').style.stopColor = `hsl(${h3}, 80%, 50%)`;
+
+            // Glow effects
+            document.getElementById('glow1').style.boxShadow = `0 0 30px hsla(${h1}, 80%, 50%, 0.4)`;
+            document.getElementById('glow2').style.boxShadow = `0 0 40px hsla(${h1}, 80%, 50%, 0.5)`;
+
+            // Progress Bar
+            document.getElementById('progressBar').style.background =
+                `linear-gradient(90deg, hsl(${h1}, 80%, 50%), hsl(${h2}, 80%, 50%), hsl(${h3}, 80%, 50%))`;
+
+            // Background Glow
+            document.getElementById('bgGlow').style.background =
+                `linear-gradient(135deg, hsl(${h1}, 80%, 50%), hsl(${h2}, 80%, 50%), hsl(${h3}, 80%, 50%))`;
+        }
+    </script>
+</body>
+</html>

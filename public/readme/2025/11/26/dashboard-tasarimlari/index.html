@@ -1,1 +1,761 @@
-v3/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard V3 - Card-Based Modern</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #1f1f1f;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent-blue: #3b82f6;
+            --accent-green: #22c55e;
+            --accent-purple: #8b5cf6;
+            --accent-orange: #f97316;
+            --accent-pink: #ec4899;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            color: var(--text-primary);
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .nav-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.06);
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+        .nav-btn.primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+        .nav-btn.primary:hover {
+            background: #2563eb;
+        }
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .welcome-text h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .welcome-text p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .welcome-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        .welcome-stat {
+            text-align: center;
+        }
+        .welcome-stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+        .welcome-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .card-sm { grid-column: span 3; }
+        .card-md { grid-column: span 4; }
+        .card-lg { grid-column: span 6; }
+        .card-xl { grid-column: span 8; }
+        .card-full { grid-column: span 12; }
+
+        @media (max-width: 1200px) {
+            .card-sm { grid-column: span 6; }
+            .card-md { grid-column: span 6; }
+            .card-lg { grid-column: span 12; }
+            .card-xl { grid-column: span 12; }
+        }
+        @media (max-width: 768px) {
+            .card-sm, .card-md { grid-column: span 12; }
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .card-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i {
+            font-size: 1.1rem;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .card-action {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .card-action:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .stat-badge {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .stat-badge.up {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--accent-green);
+        }
+        .stat-badge.down {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            line-height: 1;
+        }
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Module Grid */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .module-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .module-item:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        .module-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+        .module-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        .module-count {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Activity List */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .activity-content {
+            flex: 1;
+        }
+        .activity-title {
+            font-size: 0.875rem;
+            margin-bottom: 2px;
+        }
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* AI Card Special */
+        .ai-card {
+            background: linear-gradient(135deg, var(--bg-card), rgba(139, 92, 246, 0.1));
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+        .ai-chat-input {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .ai-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        .ai-input::placeholder {
+            color: var(--text-secondary);
+        }
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+        .ai-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border: none;
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ai-btn:hover {
+            transform: scale(1.05);
+        }
+        .ai-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .ai-suggestion {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ai-suggestion:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: var(--accent-purple);
+            color: var(--text-primary);
+        }
+
+        /* System Status */
+        .system-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .system-item:last-child {
+            border-bottom: none;
+        }
+        .system-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        .system-value {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+        }
+
+        /* Profile Card */
+        .profile-info {
+            text-align: center;
+            padding: 1rem 0;
+        }
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+        .profile-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .profile-role {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .profile-stat {
+            text-align: center;
+        }
+        .profile-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .profile-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo">M</div>
+            <span class="nav-title">Muzibu Panel</span>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-btn">
+                <i class="fas fa-search"></i>
+            </button>
+            <button class="nav-btn">
+                <i class="fas fa-bell"></i>
+                <span class="badge bg-danger" style="font-size: 0.65rem;">3</span>
+            </button>
+            <button class="nav-btn primary">
+                <i class="fas fa-plus"></i> Yeni Icerik
+            </button>
+            <div class="user-avatar">N</div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h1>Hos geldin, Nurullah!</h1>
+                <p>Bugun harika bir gun! Sistemin sorunsuz calisiyor.</p>
+            </div>
+            <div class="welcome-stats">
+                <div class="welcome-stat">
+                    <div class="welcome-stat-value">24.5</div>
+                    <div class="welcome-stat-label">AI Kredisi</div>
+                </div>
+                <div class="welcome-stat">
+                    <div class="welcome-stat-value">8.2K</div>
+                    <div class="welcome-stat-label">Ziyaret</div>
+                </div>
+                <div class="welcome-stat">
+                    <div class="welcome-stat-value">98%</div>
+                    <div class="welcome-stat-label">Uptime</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Stat Cards -->
+            <div class="card card-sm">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15);">
+                            <i class="fas fa-coins" style="color: #f59e0b;"></i>
+                        </div>
+                        <span class="stat-badge up"><i class="fas fa-arrow-up"></i> +5%</span>
+                    </div>
+                    <div class="stat-value">24.5</div>
+                    <div class="stat-label">AI Kredisi</div>
+                </div>
+            </div>
+
+            <div class="card card-sm">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: rgba(34, 197, 94, 0.15);">
+                            <i class="fas fa-file-alt" style="color: #22c55e;"></i>
+                        </div>
+                        <span class="stat-badge up"><i class="fas fa-arrow-up"></i> +3</span>
+                    </div>
+                    <div class="stat-value">48</div>
+                    <div class="stat-label">Sayfalar</div>
+                </div>
+            </div>
+
+            <div class="card card-sm">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15);">
+                            <i class="fas fa-users" style="color: #3b82f6;"></i>
+                        </div>
+                        <span class="stat-badge up"><i class="fas fa-arrow-up"></i> +12%</span>
+                    </div>
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Kullanicilar</div>
+                </div>
+            </div>
+
+            <div class="card card-sm">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15);">
+                            <i class="fas fa-eye" style="color: #8b5cf6;"></i>
+                        </div>
+                        <span class="stat-badge down"><i class="fas fa-arrow-down"></i> -3%</span>
+                    </div>
+                    <div class="stat-value">8.2K</div>
+                    <div class="stat-label">Ziyaretler</div>
+                </div>
+            </div>
+
+            <!-- Modules Card -->
+            <div class="card card-lg">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-th-large" style="color: var(--accent-blue);"></i>
+                        Hizli Erisim
+                    </div>
+                    <span class="card-action">Tumu <i class="fas fa-chevron-right"></i></span>
+                </div>
+                <div class="card-body">
+                    <div class="module-grid">
+                        <div class="module-item">
+                            <div class="module-icon" style="background: rgba(239, 68, 68, 0.15);">
+                                <i class="fas fa-file-alt" style="color: #ef4444;"></i>
+                            </div>
+                            <div class="module-name">Sayfalar</div>
+                            <div class="module-count">48 sayfa</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-icon" style="background: rgba(34, 197, 94, 0.15);">
+                                <i class="fas fa-music" style="color: #22c55e;"></i>
+                            </div>
+                            <div class="module-name">Muzik</div>
+                            <div class="module-count">1,240 sarki</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-icon" style="background: rgba(59, 130, 246, 0.15);">
+                                <i class="fas fa-compact-disc" style="color: #3b82f6;"></i>
+                            </div>
+                            <div class="module-name">Albumler</div>
+                            <div class="module-count">86 album</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-icon" style="background: rgba(245, 158, 11, 0.15);">
+                                <i class="fas fa-users" style="color: #f59e0b;"></i>
+                            </div>
+                            <div class="module-name">Sanatcilar</div>
+                            <div class="module-count">124 sanatci</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistant Card -->
+            <div class="card card-lg ai-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-robot" style="color: var(--accent-purple);"></i>
+                        AI Asistan
+                    </div>
+                    <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: var(--accent-purple);">24.5 Kredi</span>
+                </div>
+                <div class="card-body">
+                    <div class="ai-chat-input">
+                        <input type="text" class="ai-input" placeholder="Bir soru sorun...">
+                        <button class="ai-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="ai-suggestions">
+                        <span class="ai-suggestion">Sistem durumu?</span>
+                        <span class="ai-suggestion">SEO analizi yap</span>
+                        <span class="ai-suggestion">Performans onerileri</span>
+                        <span class="ai-suggestion">Icerik onerisi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Card -->
+            <div class="card card-md">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-clock" style="color: var(--accent-orange);"></i>
+                        Son Aktiviteler
+                    </div>
+                    <span class="card-action">Tumu</span>
+                </div>
+                <div class="card-body">
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: rgba(34, 197, 94, 0.15);">
+                                <i class="fas fa-plus" style="color: #22c55e;"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Yeni sayfa olusturuldu</div>
+                                <div class="activity-time">2 dakika once</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: rgba(59, 130, 246, 0.15);">
+                                <i class="fas fa-edit" style="color: #3b82f6;"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Album bilgileri guncellendi</div>
+                                <div class="activity-time">15 dakika once</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: rgba(139, 92, 246, 0.15);">
+                                <i class="fas fa-user-plus" style="color: #8b5cf6;"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Yeni kullanici kaydi</div>
+                                <div class="activity-time">1 saat once</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status Card -->
+            <div class="card card-md">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-server" style="color: var(--accent-green);"></i>
+                        Sistem Durumu
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="system-item">
+                        <span class="system-label">PHP</span>
+                        <div class="system-value">
+                            <span class="status-indicator"></span>
+                            8.3.28
+                        </div>
+                    </div>
+                    <div class="system-item">
+                        <span class="system-label">Laravel</span>
+                        <div class="system-value">
+                            <span class="status-indicator"></span>
+                            11.x
+                        </div>
+                    </div>
+                    <div class="system-item">
+                        <span class="system-label">Database</span>
+                        <div class="system-value">
+                            <span class="status-indicator"></span>
+                            Bagli
+                        </div>
+                    </div>
+                    <div class="system-item">
+                        <span class="system-label">Cache</span>
+                        <div class="system-value">
+                            <span class="status-indicator"></span>
+                            Aktif
+                        </div>
+                    </div>
+                    <div class="system-item">
+                        <span class="system-label">Uptime</span>
+                        <div class="system-value">
+                            <span class="status-indicator"></span>
+                            99.9%
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="card card-md">
+                <div class="card-body">
+                    <div class="profile-info">
+                        <div class="profile-avatar">N</div>
+                        <div class="profile-name">Nurullah</div>
+                        <div class="profile-role">Administrator</div>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <div class="profile-stat-value">48</div>
+                                <div class="profile-stat-label">Icerik</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-value">12</div>
+                                <div class="profile-stat-label">Modul</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-value">365</div>
+                                <div class="profile-stat-label">Gun</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+</body>
+</html>

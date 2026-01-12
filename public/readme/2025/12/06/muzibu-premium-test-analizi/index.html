@@ -1,1 +1,506 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Premium Test & Analiz Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                🎵 Muzibu Premium Test & Analiz
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Tüm kullanıcı senaryolarının derin analizi ve test sonuçları
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 6 Aralık 2025</span>
+                <span>🎯 Tenant: muzibu.com.tr (1001)</span>
+                <span>✅ Test: 4/4 Başarılı</span>
+            </div>
+        </header>
+
+        <!-- Özet -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Test Sonuçları - Tümü Başarılı</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-3xl">✅</span>
+                        <h3 class="text-xl font-bold text-green-300">Backend Mantık</h3>
+                    </div>
+                    <p class="text-slate-300">isPremiumOrTrial() fonksiyonu doğru çalışıyor</p>
+                </div>
+
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-3xl">✅</span>
+                        <h3 class="text-xl font-bold text-green-300">Frontend Reload</h3>
+                    </div>
+                    <p class="text-slate-300">Login sonrası şarkı otomatik yeniden yükleniyor</p>
+                </div>
+
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-3xl">✅</span>
+                        <h3 class="text-xl font-bold text-green-300">Preview Limitleri</h3>
+                    </div>
+                    <p class="text-slate-300">Guest ve normal üye 30s preview alıyor</p>
+                </div>
+
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-3xl">✅</span>
+                        <h3 class="text-xl font-bold text-green-300">Premium Erişim</h3>
+                    </div>
+                    <p class="text-slate-300">Trial ve premium üye sınırsız dinliyor</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Senaryoları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🧪 Test Senaryoları</h2>
+
+            <!-- Test 1: Guest -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-red-300 mb-3">
+                            🚫 Guest Kullanıcı (Giriş Yok)
+                        </h3>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">Kullanıcı Durumu</div>
+                                <div class="text-lg font-semibold text-white">Giriş Yapmamış</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">Backend Kontrol</div>
+                                <div class="text-lg font-semibold text-red-400">$user = null</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">API Response:</div>
+                            <pre class="text-xs text-green-400 overflow-x-auto"><code>{
+  "status": "preview",
+  "preview_duration": 30,
+  "preview_chunks": 3,
+  "is_premium": false,
+  "message": "Kayıt olun, tam dinleyin"
+}</code></pre>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-4 bg-red-900/20 rounded-lg border border-red-700">
+                            <span class="text-2xl">⏱️</span>
+                            <div>
+                                <div class="font-bold text-red-300">Sonuç: 30 Saniye Preview</div>
+                                <div class="text-sm text-slate-400">Fade-out 25. saniyede başlar, 30. saniyede durur</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test 2: Normal Üye -->
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-orange-300 mb-3">
+                            👤 Normal Üye (Premium/Trial YOK)
+                        </h3>
+                        
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">User ID</div>
+                                <div class="text-lg font-semibold text-white">#28</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">Email</div>
+                                <div class="text-sm font-semibold text-white">test-normal@test.com</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">Subscription</div>
+                                <div class="text-lg font-semibold text-red-400">YOK</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">Backend Kontrol:</div>
+                            <pre class="text-xs text-yellow-400"><code>isPremium() = false
+isTrialActive() = false
+isPremiumOrTrial() = false ❌</code></pre>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">API Response:</div>
+                            <pre class="text-xs text-green-400"><code>{
+  "status": "preview",
+  "preview_duration": 30,
+  "is_premium": false,
+  "message": "Premium'a geçin, sınırsız dinleyin"
+}</code></pre>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-4 bg-orange-900/20 rounded-lg border border-orange-700">
+                            <span class="text-2xl">⏱️</span>
+                            <div>
+                                <div class="font-bold text-orange-300">Sonuç: 30 Saniye Preview</div>
+                                <div class="text-sm text-slate-400">Premium modal gösterilir</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test 3: Trial Üye -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-blue-300 mb-3">
+                            🎁 Trial Üye (14 Gün Deneme)
+                        </h3>
+                        
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">User ID</div>
+                                <div class="text-lg font-semibold text-white">#29</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">Email</div>
+                                <div class="text-sm font-semibold text-white">test-trial@test.com</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">Trial Bitiş</div>
+                                <div class="text-sm font-semibold text-green-400">20 Ara 2025</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">Subscription Bilgisi:</div>
+                            <pre class="text-xs text-cyan-400"><code>subscription_id: 5
+status: 'active'
+has_trial: 1 ✅
+trial_ends_at: 2025-12-20 (gelecek) ✅
+current_period_end: 2025-12-20</code></pre>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">Backend Kontrol:</div>
+                            <pre class="text-xs text-green-400"><code>isPremium() = false
+isTrialActive() = true ✅
+isPremiumOrTrial() = true ✅</code></pre>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">API Response:</div>
+                            <pre class="text-xs text-green-400"><code>{
+  "status": "ready",
+  "stream_url": "https://...",
+  "stream_type": "hls",
+  "is_premium": true,
+  "preview_duration": null ✅
+}</code></pre>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-4 bg-green-900/20 rounded-lg border border-green-700">
+                            <span class="text-2xl">🎵</span>
+                            <div>
+                                <div class="font-bold text-green-300">Sonuç: Sınırsız Dinleme</div>
+                                <div class="text-sm text-slate-400">Preview timer YOK, tüm şarkı çalınır</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test 4: Premium Üye -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-green-300 mb-3">
+                            👑 Premium Üye (Ücretli)
+                        </h3>
+                        
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">User ID</div>
+                                <div class="text-lg font-semibold text-white">#1</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">Email</div>
+                                <div class="text-sm font-semibold text-white">nurullah@nurullah.net</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-sm text-slate-400 mb-1">Bitiş Tarihi</div>
+                                <div class="text-sm font-semibold text-green-400">28 Kas 2026</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">Subscription Bilgisi:</div>
+                            <pre class="text-xs text-cyan-400"><code>subscription_id: 2
+status: 'active' ✅
+has_trial: 0 (direkt premium)
+current_period_end: 2026-11-28 (gelecek) ✅</code></pre>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">Backend Kontrol:</div>
+                            <pre class="text-xs text-green-400"><code>isPremium() = true ✅
+isTrialActive() = false
+isPremiumOrTrial() = true ✅</code></pre>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-slate-400 mb-2">API Response:</div>
+                            <pre class="text-xs text-green-400"><code>{
+  "status": "ready",
+  "stream_url": "https://...",
+  "stream_type": "hls",
+  "is_premium": true,
+  "preview_duration": null ✅
+}</code></pre>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-4 bg-green-900/20 rounded-lg border border-green-700">
+                            <span class="text-2xl">🎵</span>
+                            <div>
+                                <div class="font-bold text-green-300">Sonuç: Sınırsız Dinleme</div>
+                                <div class="text-sm text-slate-400">1 saat cached, 1 yıl premium aktif</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kod Analizi -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">🔍 Kod Analizi & Mantık</h2>
+
+            <!-- Backend -->
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="text-2xl font-bold text-yellow-300 mb-4">Backend: SongStreamController.php</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-sm text-slate-400 mb-2">1️⃣ Guest Kontrolü (Satır 53):</div>
+                        <pre class="text-xs text-cyan-400"><code>if (!$user) {
+    return response()->json([
+        'preview_duration' => 30,
+        'is_premium' => false
+    ]);
+}</code></pre>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-sm text-slate-400 mb-2">2️⃣ Normal Üye Kontrolü (Satır 112):</div>
+                        <pre class="text-xs text-cyan-400"><code>if (!$user->isPremiumOrTrial()) {
+    return response()->json([
+        'preview_duration' => 30,
+        'is_premium' => false
+    ]);
+}</code></pre>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-sm text-slate-400 mb-2">3️⃣ Premium/Trial (Satır 202):</div>
+                        <pre class="text-xs text-green-400"><code>return response()->json([
+    'stream_url' => $hlsUrl,
+    'is_premium' => true,
+    // preview_duration YOK! ✅
+]);</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Model -->
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="text-2xl font-bold text-yellow-300 mb-4">User Model: isPremiumOrTrial()</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-sm text-slate-400 mb-2">isPremium() - Satır 417-418:</div>
+                        <pre class="text-xs text-cyan-400"><code>$activeSubscription = $this->subscriptions()
+    ->where('status', 'active')
+    ->where('current_period_end', '>', now())
+    ->first();
+
+return $activeSubscription ? true : false;</code></pre>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-sm text-slate-400 mb-2">isTrialActive() - Satır 444-447:</div>
+                        <pre class="text-xs text-cyan-400"><code>$trialSubscription = $this->subscriptions()
+    ->whereIn('status', ['active', 'trial'])
+    ->where('has_trial', true)
+    ->whereNotNull('trial_ends_at')
+    ->where('trial_ends_at', '>', now())
+    ->first();
+
+return $trialSubscription ? true : false;</code></pre>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-sm text-slate-400 mb-2">isPremiumOrTrial() - Satır 465:</div>
+                        <pre class="text-xs text-green-400"><code>return $this->isPremium() || $this->isTrialActive();</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frontend -->
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <h3 class="text-2xl font-bold text-yellow-300 mb-4">Frontend: player-core.js</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-sm text-slate-400 mb-2">Login Sonrası Şarkı Reload (Satır 2376-2410):</div>
+                        <pre class="text-xs text-cyan-400"><code>// Login başarılı
+this.isPreviewBlocked = false; // Flag sıfırla
+
+// Mevcut şarkıyı yeniden yükle
+if (this.currentSong && this.currentSong.song_id) {
+    fetch(`/api/muzibu/songs/${this.currentSong.song_id}/stream`)
+        .then(data => {
+            // Şarkı preview_duration=null ile yeniden yüklenir
+            this.loadAndPlaySong(
+                data.stream_url,
+                data.stream_type,
+                data.preview_duration || null, // Premium ise null!
+                false
+            );
+        });
+}</code></pre>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-sm text-slate-400 mb-2">Preview Timer Setup (Satır 1563-1623):</div>
+                        <pre class="text-xs text-yellow-400"><code>// Sadece preview_duration > 0 ise timer kurulur
+if (previewDuration && previewDuration > 0) {
+    this.fadeOutTimer = setTimeout(() => {
+        // 25. saniyede fade-out başlar
+    }, 25000);
+
+    this.previewTimer = setTimeout(() => {
+        // 30. saniyede durdur
+        this.isPreviewBlocked = true;
+        this.showToast('Premium\'a geçin!');
+    }, 30000);
+}
+// Premium/Trial: previewDuration = null → Timer kurulmaz!</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sorun ve Çözüm -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🐛 Tespit Edilen Sorun & Çözüm</h2>
+
+            <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                <h3 class="text-2xl font-bold text-red-300 mb-4">❌ SORUN</h3>
+                <div class="space-y-3 text-slate-300">
+                    <p><strong class="text-white">Senaryo:</strong> Kullanıcı guest olarak şarkı dinlemeye başladı (30s preview), sonra giriş yaptı.</p>
+                    <p><strong class="text-white">Beklenen:</strong> Giriş yaptıktan sonra mevcut şarkı sınırsız dinlenebilmeli.</p>
+                    <p><strong class="text-white">Gerçekleşen:</strong> Giriş yapmasına rağmen 30s preview devam ediyordu!</p>
+                    
+                    <div class="bg-slate-900/50 rounded-lg p-4 mt-4">
+                        <div class="text-sm text-slate-400 mb-2">Console Log:</div>
+                        <pre class="text-xs text-red-400"><code>✅ Login successful
+👤 User: {is_premium: true} ✅
+🔓 Preview block removed ✅
+🎵 Guest preview: Fade-out başladı ❌
+🛑 Guest preview ended - stopping playback ❌</code></pre>
+                    </div>
+
+                    <p class="text-yellow-300 font-semibold mt-4">🔍 Sebep: Login yaptıktan sonra MEVCUT ŞARKI hala eski preview_duration=30 değeri ile yüklü kalmıştı!</p>
+                </div>
+            </div>
+
+            <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                <h3 class="text-2xl font-bold text-green-300 mb-4">✅ ÇÖZÜM</h3>
+                <div class="space-y-3 text-slate-300">
+                    <p><strong class="text-white">Yaklaşım:</strong> Login/Register başarılı olunca mevcut şarkıyı API'den yeniden yükle.</p>
+                    
+                    <div class="bg-slate-900/50 rounded-lg p-4 mt-4">
+                        <div class="text-sm text-slate-400 mb-2">Uygulanan Fix:</div>
+                        <pre class="text-xs text-green-400"><code>1. isPreviewBlocked = false ✅
+2. Preview timer'ları temizle (previewTimer, fadeOutTimer) ✅
+3. Mevcut şarkıyı API'den tekrar fetch et ✅
+4. Şarkıyı preview_duration=null ile yeniden yükle ✅
+5. Kullanıcının dinlediği pozisyonu koru (currentTime) ✅
+6. Çalıyorsa otomatik devam ettir ✅</code></pre>
+                    </div>
+
+                    <p class="text-green-300 font-semibold mt-4">🎯 Sonuç: Login sonrası şarkı kesintisiz sınırsız dinlenmeye devam ediyor!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonuç Tablosu -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">📊 Özet Tablo</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full bg-slate-800/50 rounded-lg overflow-hidden">
+                    <thead class="bg-slate-700">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-white font-bold">Kullanıcı Tipi</th>
+                            <th class="px-6 py-4 text-left text-white font-bold">Backend Kontrol</th>
+                            <th class="px-6 py-4 text-left text-white font-bold">preview_duration</th>
+                            <th class="px-6 py-4 text-left text-white font-bold">Dinleme Süresi</th>
+                            <th class="px-6 py-4 text-center text-white font-bold">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="px-6 py-4 text-white font-semibold">🚫 Guest</td>
+                            <td class="px-6 py-4 text-slate-300"><code class="text-red-400">$user = null</code></td>
+                            <td class="px-6 py-4 text-orange-400 font-bold">30 saniye</td>
+                            <td class="px-6 py-4 text-slate-300">30s preview</td>
+                            <td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-bold">✅ PASS</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="px-6 py-4 text-white font-semibold">👤 Normal Üye</td>
+                            <td class="px-6 py-4 text-slate-300"><code class="text-red-400">isPremiumOrTrial() = false</code></td>
+                            <td class="px-6 py-4 text-orange-400 font-bold">30 saniye</td>
+                            <td class="px-6 py-4 text-slate-300">30s preview</td>
+                            <td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-bold">✅ PASS</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="px-6 py-4 text-white font-semibold">🎁 Trial Üye</td>
+                            <td class="px-6 py-4 text-slate-300"><code class="text-green-400">isTrialActive() = true</code></td>
+                            <td class="px-6 py-4 text-green-400 font-bold">null</td>
+                            <td class="px-6 py-4 text-green-300 font-bold">Sınırsız</td>
+                            <td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-bold">✅ PASS</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="px-6 py-4 text-white font-semibold">👑 Premium Üye</td>
+                            <td class="px-6 py-4 text-slate-300"><code class="text-green-400">isPremium() = true</code></td>
+                            <td class="px-6 py-4 text-green-400 font-bold">null</td>
+                            <td class="px-6 py-4 text-green-300 font-bold">Sınırsız</td>
+                            <td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-bold">✅ PASS</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Derin Analiz & Test Raporu</p>
+            <p class="mt-2">Tailwind CSS · muzibu.com.tr (Tenant 1001)</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,1 +1,822 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 Telegram Bildirim Sistemi - Kurulum Wizard'ı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .step-card {
+            transition: all 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+        .code-block {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse-green {
+            animation: pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-flex items-center gap-4 mb-6">
+                <div class="text-7xl animate-pulse-green">📱</div>
+                <div class="text-7xl">🤖</div>
+            </div>
+            <h1 class="text-5xl font-bold text-white mb-4">
+                Telegram Bildirim Sistemi
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">
+                AI Chatbot'unuz telefon numarası topladığında Telegram'dan <strong class="text-green-400">anında bildirim</strong> alın!
+            </p>
+            <div class="mt-6 inline-flex items-center gap-6 text-sm text-slate-500">
+                <span>📅 24 Aralık 2025</span>
+                <span>⏱️ Kurulum Süresi: ~10 dakika</span>
+                <span>🎯 Zorluk: Kolay</span>
+            </div>
+        </header>
+
+        <!-- Progress Indicator -->
+        <div class="mb-12 bg-slate-900/50 border border-slate-800 rounded-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-slate-200">Kurulum Adımları</h3>
+                <span class="text-sm text-slate-400">5 Adım</span>
+            </div>
+            <div class="grid grid-cols-5 gap-2">
+                <div class="text-center">
+                    <div class="w-full h-2 bg-blue-600 rounded mb-2"></div>
+                    <p class="text-xs text-slate-400">1. Bot Oluştur</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-2 bg-slate-700 rounded mb-2"></div>
+                    <p class="text-xs text-slate-400">2. Grup Oluştur</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-2 bg-slate-700 rounded mb-2"></div>
+                    <p class="text-xs text-slate-400">3. Chat ID Al</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-2 bg-slate-700 rounded mb-2"></div>
+                    <p class="text-xs text-slate-400">4. Admin Panel</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-2 bg-slate-700 rounded mb-2"></div>
+                    <p class="text-xs text-slate-400">5. Test Et</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Telegram Bot Oluşturma -->
+        <section class="mb-12">
+            <div class="step-card bg-gradient-to-br from-blue-900/30 to-blue-950/20 border border-blue-800 rounded-xl p-8">
+                <div class="flex items-start gap-6 mb-6">
+                    <div class="flex-shrink-0 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-3xl font-bold">
+                        1
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold text-blue-400 mb-2">Telegram Bot Oluştur</h2>
+                        <p class="text-slate-300">BotFather ile kendi bot'unuzu oluşturun ve API token alın</p>
+                    </div>
+                    <div class="text-5xl">🤖</div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Adım 1.1 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-bold">1.1</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Telegram'da BotFather'ı Aç</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">Telegram uygulamasını açın ve arama çubuğuna yazın:</p>
+                            <div class="bg-slate-950 border border-slate-700 rounded p-4 font-mono text-green-400">
+                                @BotFather
+                            </div>
+                            <p class="text-sm text-slate-400">💡 Doğru BotFather'ı seçtiğinizden emin olun (mavi onay tiki olmalı)</p>
+                        </div>
+                    </div>
+
+                    <!-- Adım 1.2 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-bold">1.2</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Yeni Bot Oluştur</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">BotFather ile konuşmayı başlatın:</p>
+                            <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                                <div class="space-y-2 font-mono text-sm">
+                                    <div class="text-blue-400">Siz: <span class="text-green-400">/start</span></div>
+                                    <div class="text-slate-500">BotFather: Merhaba! Ben BotFather...</div>
+                                    <div class="text-blue-400 mt-3">Siz: <span class="text-green-400">/newbot</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 1.3 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-bold">1.3</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Bot İsmi ve Username Belirle</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">BotFather şu soruları soracak:</p>
+                            <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                                <div class="space-y-3 font-mono text-sm">
+                                    <div class="text-slate-500">BotFather: Alright, a new bot. How are we going to call it?</div>
+                                    <div class="text-blue-400">Siz: <span class="text-yellow-400">iXtif Assistant</span></div>
+                                    <div class="text-slate-400 text-xs mt-2">👆 Bot'unuzun görünen adı (istediğinizi yazabilirsiniz)</div>
+
+                                    <div class="text-slate-500 mt-4">BotFather: Good. Now let's choose a username for your bot.</div>
+                                    <div class="text-blue-400">Siz: <span class="text-yellow-400">iXtifBot</span></div>
+                                    <div class="text-slate-400 text-xs mt-2">👆 Bot'un unique username'i (mutlaka "bot" ile bitmeli)</div>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-900/20 border border-yellow-800 rounded p-3 text-sm">
+                                <p class="text-yellow-300">⚠️ Username Kuralları:</p>
+                                <ul class="ml-4 mt-2 space-y-1 text-yellow-200">
+                                    <li>• Mutlaka <code class="bg-yellow-950 px-1 rounded">bot</code> ile bitmeli</li>
+                                    <li>• Sadece harfler, rakamlar ve alt çizgi (_)</li>
+                                    <li>• Minimum 5 karakter</li>
+                                    <li>• Örnek: <code class="bg-yellow-950 px-1 rounded">MuzibuBot</code>, <code class="bg-yellow-950 px-1 rounded">ixtif_assistant_bot</code></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 1.4 -->
+                    <div class="bg-slate-900/50 border border-green-900/50 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold">1.4</span>
+                            <h3 class="text-xl font-semibold text-green-300">Bot Token'ı Kopyala ✅</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">BotFather size Bot Token verecek:</p>
+                            <div class="bg-slate-950 border border-green-700 rounded p-4">
+                                <div class="space-y-3 font-mono text-sm">
+                                    <div class="text-green-400">BotFather: Done! Congratulations on your new bot.</div>
+                                    <div class="text-slate-300 mt-2">Use this token to access the HTTP API:</div>
+                                    <div class="code-block relative">
+                                        <div class="bg-green-950/50 border border-green-800 rounded p-3 text-green-400 break-all">
+                                            1234567890:ABCdefGHIjklMNOpqrsTUVwxyz12345678
+                                        </div>
+                                        <button class="copy-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs"
+                                                onclick="navigator.clipboard.writeText('1234567890:ABCdefGHIjklMNOpqrsTUVwxyz12345678')">
+                                            📋 Kopyala
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-red-900/20 border border-red-800 rounded p-4">
+                                <p class="text-red-300 font-semibold mb-2">🔒 ÇOK ÖNEMLİ!</p>
+                                <ul class="text-red-200 text-sm space-y-1 ml-4">
+                                    <li>• Bu token'ı <strong>GİZLİ</strong> tutun!</li>
+                                    <li>• Token ile bot'unuzu kontrol edebilirler</li>
+                                    <li>• Kimseyle paylaşmayın!</li>
+                                    <li>• Güvenli bir yere (örn: parola yöneticisi) kaydedin</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Telegram Grup Oluşturma -->
+        <section class="mb-12">
+            <div class="step-card bg-gradient-to-br from-purple-900/30 to-purple-950/20 border border-purple-800 rounded-xl p-8">
+                <div class="flex items-start gap-6 mb-6">
+                    <div class="flex-shrink-0 w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-3xl font-bold">
+                        2
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold text-purple-400 mb-2">Bildirim Grubu Oluştur</h2>
+                        <p class="text-slate-300">Bot'un bildirim göndereceği Telegram grubu oluşturun</p>
+                    </div>
+                    <div class="text-5xl">👥</div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Adım 2.1 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-sm font-bold">2.1</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Yeni Grup Oluştur</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <ol class="space-y-3 text-slate-300">
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs">1</span>
+                                    <span>Telegram'ı açın</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs">2</span>
+                                    <span>Menü → "Yeni Grup" (New Group)</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs">3</span>
+                                    <span>Grup adı verin (örn: "iXtif Bildirimler")</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs">4</span>
+                                    <span>Kendinizi ekleyin (veya ekip arkadaşlarınızı)</span>
+                                </li>
+                            </ol>
+                            <div class="bg-blue-900/20 border border-blue-800 rounded p-3 text-sm text-blue-200">
+                                💡 <strong>İpucu:</strong> Grup adını açıklayıcı yapın. Örnek: "Müşteri İletişim Bildirimleri", "AI Chat Leads"
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 2.2 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-sm font-bold">2.2</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Bot'u Gruba Ekle</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <ol class="space-y-3 text-slate-300">
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs">1</span>
+                                    <span>Oluşturduğunuz grubu açın</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs">2</span>
+                                    <span>Grup adına tıklayın → "Üye Ekle" (Add Members)</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs">3</span>
+                                    <div>
+                                        <span class="block mb-2">Bot username'inizi aratın:</span>
+                                        <div class="bg-slate-950 border border-purple-700 rounded px-3 py-2 font-mono text-purple-400">
+                                            @iXtifBot
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs">4</span>
+                                    <span>Bot'u seçin ve ekleyin</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Adım 2.3 -->
+                    <div class="bg-slate-900/50 border border-green-900/50 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold">2.3</span>
+                            <h3 class="text-xl font-semibold text-green-300">Bot'u Başlat ✅</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">Grup sohbetinde bot'a mesaj gönderin:</p>
+                            <div class="bg-slate-950 border border-green-700 rounded p-4">
+                                <div class="font-mono text-green-400">/start</div>
+                            </div>
+                            <p class="text-sm text-slate-400">Bu, bot'un grupta mesaj gönderme yetkisini aktifleştirir.</p>
+                        </div>
+                    </div>
+
+                    <!-- Adım 2.4 (Opsiyonel) -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6 opacity-75">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-sm font-bold">2.4</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Bot'u Admin Yap (Opsiyonel)</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">Daha güvenli çalışma için bot'u admin yapabilirsiniz:</p>
+                            <ol class="space-y-2 text-sm text-slate-400 ml-4">
+                                <li>1. Grup → Grup Adı → "Yöneticiler" (Administrators)</li>
+                                <li>2. "Yönetici Ekle" → Bot'u seçin</li>
+                                <li>3. Sadece "Mesaj Gönderme" yetkisi verin</li>
+                            </ol>
+                            <p class="text-xs text-slate-500">💡 Bu adım opsiyoneldir, bot normal üye olarak da çalışır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Chat ID Alma -->
+        <section class="mb-12">
+            <div class="step-card bg-gradient-to-br from-green-900/30 to-green-950/20 border border-green-800 rounded-xl p-8">
+                <div class="flex items-start gap-6 mb-6">
+                    <div class="flex-shrink-0 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-3xl font-bold">
+                        3
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold text-green-400 mb-2">Chat ID Al</h2>
+                        <p class="text-slate-300">Grubun benzersiz ID'sini bulun (Bot'un bildirimi nereye göndereceğini belirtir)</p>
+                    </div>
+                    <div class="text-5xl">🆔</div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Adım 3.1 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold">3.1</span>
+                            <h3 class="text-xl font-semibold text-slate-200">@userinfobot'u Gruba Ekle</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <ol class="space-y-3 text-slate-300">
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-xs">1</span>
+                                    <span>Bildirim grubunuzu açın</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-xs">2</span>
+                                    <span>Üye Ekle → Arama çubuğuna yazın:</span>
+                                </li>
+                            </ol>
+                            <div class="bg-slate-950 border border-green-700 rounded p-4 font-mono text-green-400">
+                                @userinfobot
+                            </div>
+                            <ol start="3" class="space-y-3 text-slate-300">
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-xs">3</span>
+                                    <span>@userinfobot'u gruba ekleyin</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Adım 3.2 -->
+                    <div class="bg-slate-900/50 border border-green-900/50 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold">3.2</span>
+                            <h3 class="text-xl font-semibold text-green-300">Chat ID'yi Kopyala ✅</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">@userinfobot otomatik olarak grup bilgilerini gönderecek:</p>
+                            <div class="bg-slate-950 border border-green-700 rounded p-4">
+                                <div class="space-y-2 font-mono text-sm">
+                                    <div class="text-green-400">userinfobot:</div>
+                                    <div class="text-slate-300">Chat: iXtif Bildirimler</div>
+                                    <div class="text-slate-300">Type: supergroup</div>
+                                    <div class="code-block relative">
+                                        <div class="text-yellow-400 bg-yellow-950/20 border border-yellow-800 rounded p-2 mt-2">
+                                            Id: <span class="text-yellow-300 font-bold">-1002943373765</span>
+                                        </div>
+                                        <button class="copy-btn bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded text-xs"
+                                                onclick="navigator.clipboard.writeText('-1002943373765')">
+                                            📋 Kopyala
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-900/20 border border-yellow-800 rounded p-4">
+                                <p class="text-yellow-300 font-semibold mb-2">⚠️ DİKKAT!</p>
+                                <ul class="text-yellow-200 text-sm space-y-1 ml-4">
+                                    <li>• Chat ID <strong>eksi (-)</strong> işareti ile başlar</li>
+                                    <li>• Tüm ID'yi kopyalayın (eksi işareti dahil)</li>
+                                    <li>• Örnek: <code class="bg-yellow-950 px-1 rounded">-1002943373765</code></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 3.3 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold">3.3</span>
+                            <h3 class="text-xl font-semibold text-slate-200">@userinfobot'u Gruptan Çıkar</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">Chat ID'yi aldıktan sonra @userinfobot'a artık ihtiyacınız yok:</p>
+                            <ol class="space-y-2 text-sm text-slate-400 ml-4">
+                                <li>1. Grup → @userinfobot'a tıklayın</li>
+                                <li>2. "Gruptan Çıkar" (Remove from Group)</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 4: Admin Panel Ayarlama -->
+        <section class="mb-12">
+            <div class="step-card bg-gradient-to-br from-orange-900/30 to-orange-950/20 border border-orange-800 rounded-xl p-8">
+                <div class="flex items-start gap-6 mb-6">
+                    <div class="flex-shrink-0 w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center text-3xl font-bold">
+                        4
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold text-orange-400 mb-2">Admin Panel'de Ayarla</h2>
+                        <p class="text-slate-300">Bot Token ve Chat ID'yi sitenizin admin panelinde kaydedin</p>
+                    </div>
+                    <div class="text-5xl">⚙️</div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Adım 4.1 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-sm font-bold">4.1</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Admin Panel'e Giriş Yap</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">Sitenizin admin paneline giriş yapın:</p>
+                            <div class="bg-slate-950 border border-orange-700 rounded p-4">
+                                <div class="space-y-2 text-sm">
+                                    <div class="text-orange-400">URL Formatı:</div>
+                                    <div class="font-mono text-slate-300">https://<span class="text-yellow-400">[siteniz]</span>/admin</div>
+                                    <div class="mt-4 space-y-1">
+                                        <div class="text-slate-400">Örnekler:</div>
+                                        <div class="font-mono text-green-400">• https://ixtif.com/admin</div>
+                                        <div class="font-mono text-green-400">• https://muzibu.com.tr/admin</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 4.2 -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-sm font-bold">4.2</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Bildirim Ayarları Sayfasını Aç</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">Admin panelde şu yolu takip edin:</p>
+                            <div class="bg-slate-950 border border-orange-700 rounded p-4">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <span class="text-orange-400">Ayarlar</span>
+                                    <span class="text-slate-600">→</span>
+                                    <span class="text-orange-400">Bildirim Ayarları</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-400">veya direkt URL:</p>
+                            <div class="bg-slate-950 border border-orange-700 rounded p-4">
+                                <div class="font-mono text-sm text-slate-300">
+                                    https://<span class="text-yellow-400">[siteniz]</span>/admin/settingmanagement/values/11
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 4.3 -->
+                    <div class="bg-slate-900/50 border border-green-900/50 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold">4.3</span>
+                            <h3 class="text-xl font-semibold text-green-300">Telegram Ayarlarını Doldur ✅</h3>
+                        </div>
+                        <div class="ml-11 space-y-4">
+                            <p class="text-slate-300">Formda şu alanları doldurun:</p>
+
+                            <!-- Form Preview -->
+                            <div class="bg-slate-950 border border-green-700 rounded-lg p-6 space-y-4">
+                                <!-- Enabled Checkbox -->
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" checked class="w-5 h-5 rounded border-green-600 bg-green-900">
+                                    <label class="text-green-300 font-semibold">Telegram Bildirimlerini Aktifleştir</label>
+                                </div>
+
+                                <!-- Bot Token -->
+                                <div>
+                                    <label class="block text-slate-300 mb-2 text-sm">Telegram Bot Token *</label>
+                                    <input type="text"
+                                           value="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz12345678"
+                                           class="w-full bg-slate-900 border border-slate-700 rounded px-4 py-2 text-slate-300 font-mono text-sm"
+                                           readonly>
+                                    <p class="text-xs text-slate-500 mt-1">Adım 1.4'te BotFather'dan aldığınız token</p>
+                                </div>
+
+                                <!-- Chat ID -->
+                                <div>
+                                    <label class="block text-slate-300 mb-2 text-sm">Telegram Chat ID *</label>
+                                    <input type="text"
+                                           value="-1002943373765"
+                                           class="w-full bg-slate-900 border border-slate-700 rounded px-4 py-2 text-slate-300 font-mono text-sm"
+                                           readonly>
+                                    <p class="text-xs text-slate-500 mt-1">Adım 3.2'de @userinfobot'tan aldığınız ID (eksi işareti ile)</p>
+                                </div>
+
+                                <!-- Save Button -->
+                                <div class="pt-4">
+                                    <button class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition">
+                                        💾 Kaydet
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-900/20 border border-blue-800 rounded p-4">
+                                <p class="text-blue-300 font-semibold mb-2">💡 İpuçları:</p>
+                                <ul class="text-blue-200 text-sm space-y-1 ml-4">
+                                    <li>• Token ve ID'yi kopyala-yapıştır yapın (hata yapmayın)</li>
+                                    <li>• Checkbox'ı işaretlemeyi unutmayın (aktifleştirmek için)</li>
+                                    <li>• Kaydet butonuna basmadan sayfayı kapatmayın</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 5: Test Et -->
+        <section class="mb-12">
+            <div class="step-card bg-gradient-to-br from-pink-900/30 to-pink-950/20 border border-pink-800 rounded-xl p-8">
+                <div class="flex items-start gap-6 mb-6">
+                    <div class="flex-shrink-0 w-16 h-16 bg-pink-600 rounded-full flex items-center justify-center text-3xl font-bold">
+                        5
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold text-pink-400 mb-2">Test Et ve Doğrula</h2>
+                        <p class="text-slate-300">Kurulumun başarılı olduğunu test edin</p>
+                    </div>
+                    <div class="text-5xl">🧪</div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Yöntem 1: Frontend Test -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-2xl">🌐</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Yöntem 1: Frontend'den Test (En Gerçekçi)</h3>
+                        </div>
+                        <div class="ml-11 space-y-4">
+                            <ol class="space-y-3 text-slate-300">
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-pink-600 rounded-full flex items-center justify-center text-xs">1</span>
+                                    <div class="flex-1">
+                                        <span class="block mb-2">Sitenizin ana sayfasını açın</span>
+                                        <div class="bg-slate-950 border border-slate-700 rounded p-2 font-mono text-sm text-green-400">
+                                            https://ixtif.com
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-pink-600 rounded-full flex items-center justify-center text-xs">2</span>
+                                    <span>AI Chat widget'ını açın (sağ altta 💬 butonu)</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-pink-600 rounded-full flex items-center justify-center text-xs">3</span>
+                                    <div class="flex-1">
+                                        <span class="block mb-2">Bot ile konuşun ve telefon numarası verin:</span>
+                                        <div class="bg-slate-950 border border-slate-700 rounded p-3 space-y-2 text-sm">
+                                            <div class="text-blue-400">Siz: Merhaba, ürünler hakkında bilgi alabilir miyim?</div>
+                                            <div class="text-green-400">Bot: Tabii! Size nasıl yardımcı olabilirim?</div>
+                                            <div class="text-blue-400 mt-2">Siz: Telefon numaramı bırakayım: <span class="bg-yellow-900/30 px-1 rounded">0555 123 4567</span></div>
+                                            <div class="text-green-400">Bot: Teşekkürler! En kısa sürede sizi arayacağız.</div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-pink-600 rounded-full flex items-center justify-center text-xs">4</span>
+                                    <div class="flex-1">
+                                        <span class="block mb-2">Telegram grubunu kontrol edin:</span>
+                                        <div class="bg-green-950/30 border border-green-800 rounded p-4 text-green-300">
+                                            <div class="font-semibold mb-2">✅ Başarılı! Şu mesajı görmelisiniz:</div>
+                                            <div class="bg-slate-950 rounded p-3 text-sm space-y-1">
+                                                <div class="text-green-400">📞 YENİ TELEFON NUMARASI TOPLANDI!</div>
+                                                <div class="text-slate-300">Telefon: 0555 123 45 67</div>
+                                                <div class="text-slate-300">Konuşma ID: 2345</div>
+                                                <div class="text-slate-300">Mesaj Sayısı: 4</div>
+                                                <div class="text-slate-400 text-xs mt-2">━━━━━━━━━━━━━━━━━━━━</div>
+                                                <div class="text-slate-400 text-xs">İlk Mesaj: Merhaba, ürünler hakkında...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Yöntem 2: Tinker Test -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-2xl">⚡</span>
+                            <h3 class="text-xl font-semibold text-slate-200">Yöntem 2: Tinker ile Hızlı Test (Geliştiriciler İçin)</h3>
+                        </div>
+                        <div class="ml-11 space-y-3">
+                            <p class="text-slate-300">SSH ile sunucuya bağlanın ve şu komutu çalıştırın:</p>
+                            <div class="code-block relative bg-slate-950 border border-slate-700 rounded p-4">
+                                <pre class="text-sm text-green-400 overflow-x-auto"><code>php artisan tinker
+
+$service = new \Modules\AI\App\Services\TelegramNotificationService();
+$result = $service->testConnection();
+print_r($result);</code></pre>
+                                <button class="copy-btn bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded text-xs"
+                                        onclick="navigator.clipboard.writeText('php artisan tinker\n\n$service = new \\Modules\\AI\\App\\Services\\TelegramNotificationService();\n$result = $service->testConnection();\nprint_r($result);')">
+                                    📋 Kopyala
+                                </button>
+                            </div>
+                            <div class="bg-green-950/30 border border-green-800 rounded p-4">
+                                <p class="text-green-300 font-semibold mb-2">✅ Başarılı Output:</p>
+                                <pre class="text-xs text-slate-300 overflow-x-auto"><code>Array (
+    [success] => 1
+    [message] => Telegram bağlantısı başarılı!
+    [response] => Array (
+        [ok] => 1
+        [result] => Array (
+            [message_id] => 60
+            [text] => 🔔 Telegram Bildirim Testi...
+        )
+    )
+)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sorun Giderme -->
+                    <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-2xl">🚨</span>
+                            <h3 class="text-xl font-semibold text-red-300">Bildirim Gelmedi mi? Sorun Giderme</h3>
+                        </div>
+                        <div class="ml-11 space-y-4">
+                            <div class="space-y-3">
+                                <div class="bg-slate-950 rounded p-3">
+                                    <p class="text-yellow-300 font-semibold mb-2">1️⃣ Ayarları Kontrol Et</p>
+                                    <ul class="text-sm text-slate-300 space-y-1 ml-4">
+                                        <li>• Checkbox işaretli mi? (Telegram Bildirimlerini Aktifleştir)</li>
+                                        <li>• Bot Token doğru mu? (BotFather'dan aldığınız)</li>
+                                        <li>• Chat ID doğru mu? (Eksi işareti var mı?)</li>
+                                        <li>• Kaydet butonuna bastınız mı?</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-slate-950 rounded p-3">
+                                    <p class="text-yellow-300 font-semibold mb-2">2️⃣ Bot Durumunu Kontrol Et</p>
+                                    <ul class="text-sm text-slate-300 space-y-1 ml-4">
+                                        <li>• Bot grupta mı? (Üye listesinden kontrol edin)</li>
+                                        <li>• Bot'a /start yazdınız mı?</li>
+                                        <li>• Bot admin ise mesaj gönderme yetkisi var mı?</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-slate-950 rounded p-3">
+                                    <p class="text-yellow-300 font-semibold mb-2">3️⃣ Log Kontrolü (Geliştiriciler)</p>
+                                    <div class="code-block relative">
+                                        <pre class="text-xs text-green-400 mt-2 overflow-x-auto"><code>tail -n 100 storage/logs/laravel.log | grep Telegram</code></pre>
+                                        <button class="copy-btn bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded text-xs"
+                                                onclick="navigator.clipboard.writeText('tail -n 100 storage/logs/laravel.log | grep Telegram')">
+                                            📋
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-950 rounded p-3">
+                                    <p class="text-yellow-300 font-semibold mb-2">4️⃣ Hâlâ Çalışmıyor mu?</p>
+                                    <p class="text-sm text-slate-400">Detaylı troubleshooting için:</p>
+                                    <a href="/readme/telegram-tenant-setup.md" class="text-blue-400 hover:underline text-sm">
+                                        📚 readme/telegram-tenant-setup.md
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Başarı Kartı -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-br from-green-900/50 to-green-950/30 border-2 border-green-700 rounded-xl p-8 text-center">
+                <div class="text-7xl mb-4 animate-bounce">🎉</div>
+                <h2 class="text-4xl font-bold text-green-400 mb-4">Tebrikler! Kurulum Tamamlandı!</h2>
+                <p class="text-xl text-slate-300 mb-6">
+                    Artık AI chatbot'unuz telefon numarası topladığında Telegram'dan anında bildirim alacaksınız!
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+                    <div class="bg-slate-900/50 border border-green-800 rounded-lg p-4">
+                        <div class="text-3xl mb-2">⚡</div>
+                        <p class="text-sm text-slate-300">Anında Bildirim</p>
+                    </div>
+                    <div class="bg-slate-900/50 border border-green-800 rounded-lg p-4">
+                        <div class="text-3xl mb-2">🔒</div>
+                        <p class="text-sm text-slate-300">Güvenli & Özel</p>
+                    </div>
+                    <div class="bg-slate-900/50 border border-green-800 rounded-lg p-4">
+                        <div class="text-3xl mb-2">🎯</div>
+                        <p class="text-sm text-slate-300">Tenant Bazlı</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SSS -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6 text-center">❓ Sıkça Sorulan Sorular</h2>
+            <div class="space-y-4">
+                <details class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <summary class="cursor-pointer text-lg font-semibold text-slate-200 hover:text-white">
+                        Her tenant için ayrı bot gerekli mi?
+                    </summary>
+                    <p class="mt-3 text-slate-400 text-sm">
+                        Evet! Her tenant kendi bot'unu ve grup'unu oluşturmalı. Bu sayede bildirimler karışmaz ve her tenant kendi bildirimlerini alır.
+                    </p>
+                </details>
+
+                <details class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <summary class="cursor-pointer text-lg font-semibold text-slate-200 hover:text-white">
+                        Bot token'ı paylaşırsam ne olur?
+                    </summary>
+                    <p class="mt-3 text-slate-400 text-sm">
+                        Bot token'ınızı kimseyle paylaşmayın! Token ile bot'unuzu kontrol edebilirler ve sizin adınıza mesaj gönderebilirler.
+                    </p>
+                </details>
+
+                <details class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <summary class="cursor-pointer text-lg font-semibold text-slate-200 hover:text-white">
+                        Chat ID eksi işareti ile başlamalı mı?
+                    </summary>
+                    <p class="mt-3 text-slate-400 text-sm">
+                        Evet! Grup chat ID'leri eksi (-) işareti ile başlar. Eğer eksi yoksa muhtemelen kişisel chat ID'sidir. Bildirimleri gruba göndermek için mutlaka eksi işareti olmalı.
+                    </p>
+                </details>
+
+                <details class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <summary class="cursor-pointer text-lg font-semibold text-slate-200 hover:text-white">
+                        Birden fazla gruba bildirim gönderebilir miyim?
+                    </summary>
+                    <p class="mt-3 text-slate-400 text-sm">
+                        Şu anda sistem tek chat ID destekliyor. Ancak birden fazla kişiyi aynı gruba ekleyerek hepsi bildirim alabilir.
+                    </p>
+                </details>
+
+                <details class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <summary class="cursor-pointer text-lg font-semibold text-slate-200 hover:text-white">
+                        Ayarları değiştirmek için ne yapmalıyım?
+                    </summary>
+                    <p class="mt-3 text-slate-400 text-sm">
+                        Admin Panel → Ayarlar → Bildirim Ayarları sayfasından istediğiniz zaman değiştirebilirsiniz. Değişiklik anında aktif olur.
+                    </p>
+                </details>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-slate-800 text-center">
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-slate-300 mb-3">📚 Yararlı Linkler</h3>
+                <div class="flex flex-wrap justify-center gap-4 text-sm">
+                    <a href="/readme/2025/12/24/telegram-bildirim-sorunu/" class="text-blue-400 hover:underline">
+                        Sorun Giderme Raporu
+                    </a>
+                    <span class="text-slate-700">|</span>
+                    <a href="/readme/telegram-tenant-setup.md" class="text-blue-400 hover:underline">
+                        Teknik Döküman
+                    </a>
+                    <span class="text-slate-700">|</span>
+                    <a href="https://core.telegram.org/bots/api" class="text-blue-400 hover:underline" target="_blank">
+                        Telegram Bot API
+                    </a>
+                </div>
+            </div>
+            <p class="text-slate-500 text-sm">🤖 Claude AI tarafından oluşturuldu</p>
+            <p class="text-slate-600 text-sm mt-2">Tuufi Multi-Tenant Platform - Telegram Bildirim Sistemi</p>
+            <p class="text-slate-600 text-sm">📅 24 Aralık 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

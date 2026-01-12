@@ -1,1 +1,631 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Analizi - Kalıcı Hatalar Raporu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card.critical { border-color: #ef4444; }
+        .stat-card.warning { border-color: #f59e0b; }
+        .stat-card.info { border-color: #3b82f6; }
+        .stat-card.success { border-color: #10b981; }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-card.critical .value { color: #ef4444; }
+        .stat-card.warning .value { color: #f59e0b; }
+        .stat-card.info .value { color: #3b82f6; }
+        .stat-card.success .value { color: #10b981; }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .error-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .error-item.critical { border-color: #ef4444; }
+        .error-item.high { border-color: #f59e0b; }
+        .error-item.medium { border-color: #3b82f6; }
+        .error-item.low { border-color: #10b981; }
+
+        .error-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .error-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-critical { background: #ef4444; color: white; }
+        .badge-high { background: #f59e0b; color: white; }
+        .badge-medium { background: #3b82f6; color: white; }
+        .badge-low { background: #10b981; color: white; }
+
+        .error-detail {
+            color: #cbd5e1;
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+
+        .error-detail strong {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            overflow-x: auto;
+            margin: 10px 0;
+            border: 1px solid #334155;
+        }
+
+        .solution-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            margin-top: 15px;
+        }
+
+        .solution-box h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .solution-box ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .solution-box li {
+            margin-bottom: 8px;
+        }
+
+        .timeline {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .severity-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .severity-critical { background: #ef4444; }
+        .severity-high { background: #f59e0b; }
+        .severity-medium { background: #3b82f6; }
+        .severity-low { background: #10b981; }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .stat-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Log Analizi - Kalıcı Hatalar Raporu</h1>
+            <div class="meta">
+                <span>📅 Tarih: 2025-12-04 05:30</span>
+                <span>🎯 Kapsam: Tüm Tenant'lar (Central + Tenant 1, 2, 1001)</span>
+                <span>⏱️ Analiz Dönemi: 2-4 Aralık 2025</span>
+            </div>
+        </header>
+
+        <!-- İstatistikler -->
+        <div class="stat-cards">
+            <div class="stat-card critical">
+                <h3>🚨 Kritik Hatalar</h3>
+                <div class="value">3</div>
+            </div>
+            <div class="stat-card warning">
+                <h3>⚠️ Uyarılar</h3>
+                <div class="value">2</div>
+            </div>
+            <div class="stat-card info">
+                <h3>📊 Toplam Log Kaydı</h3>
+                <div class="value">112+</div>
+            </div>
+            <div class="stat-card info">
+                <h3>📁 İncelenen Dosya</h3>
+                <div class="value">16</div>
+            </div>
+        </div>
+
+        <!-- KRİTİK HATALAR -->
+        <section>
+            <h2>🚨 Kritik Seviye Hatalar (Mutlaka Çözülmeli)</h2>
+
+            <!-- 1. RealTimeResourceTracker -->
+            <div class="error-item critical">
+                <div class="error-header">
+                    <div class="error-title">
+                        <span class="severity-indicator severity-critical"></span>
+                        #1 - RealTimeResourceTracker: Array to String Conversion
+                    </div>
+                    <span class="badge badge-critical">KRİTİK</span>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata Sıklığı:</strong> Her 5 dakikada bir tekrarlıyor (24 saat boyunca durmadan)
+                </div>
+
+                <div class="error-detail">
+                    <strong>Etkilenen Tenant'lar:</strong> Tüm aktif tenant'lar (Tenant 1, 2, 1001)
+                </div>
+
+                <div class="error-detail">
+                    <strong>Sorunun Kaynağı:</strong><br>
+                    Cache'den gelen <code style="color: #fbbf24;">response_time</code> değeri array formatında. Bu değer direkt olarak veritabanına insert edilmeye çalışıldığında "Array to string conversion" hatası veriyor.
+                </div>
+
+                <div class="code-block">
+// Modules/TenantManagement/app/Services/RealTimeResourceTracker.php:238
+'response_time_ms' => $metrics['response_time'],  // ← Array gelirse hata!
+
+// Line 162-163: Cache'den gelen değer kontrol edilmiyor
+private function getRealResponseTime(Tenant $tenant)
+{
+    $cacheKey = "response_time_{$tenant->id}_" . Carbon::now()->format('Y-m-d-H');
+    return Cache::get($cacheKey, 0);  // Array dönerse sorun!
+}
+                </div>
+
+                <div class="error-detail">
+                    <strong>Arkaplanda İşlem Yokken Neden Çalışıyor?</strong><br>
+                    Scheduled task (cron) her 5 dakikada bir <code style="color: #fbbf24;">TrackTenantResources</code> command'ını çalıştırıyor. Kullanıcı işlem yapmasa bile sistem metrikleri sürekli toplanıyor.
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Çözüm Önerileri</h4>
+                    <ul>
+                        <li><strong>Acil:</strong> <code>getRealResponseTime()</code> metodunda dönen değerin tip kontrolü yapılmalı (array ise ortalama alınmalı veya 0 dönmeli)</li>
+                        <li><strong>Kalıcı:</strong> Cache'e yazılan <code>response_time</code> değerinin her zaman numeric olduğunu garanti et</li>
+                        <li><strong>Geçici:</strong> Try-catch bloğunu güçlendir, array gelirse log at ve 0 kullan</li>
+                        <li><strong>İzleme:</strong> Scheduled task sıklığını azalt (5dk → 15dk) veya hata durumunda skip yap</li>
+                    </ul>
+                </div>
+
+                <div class="timeline">
+                    ⏰ İlk Görülme: 2025-12-04 02:05:05 | Son Görülme: 2025-12-04 05:30+ (devam ediyor)
+                </div>
+            </div>
+
+            <!-- 2. Queue Workers Down -->
+            <div class="error-item critical">
+                <div class="error-header">
+                    <div class="error-title">
+                        <span class="severity-indicator severity-critical"></span>
+                        #2 - Queue Worker'lar Çalışmıyor
+                    </div>
+                    <span class="badge badge-critical">KRİTİK</span>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Etkilenen Worker'lar:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>❌ laravel-queue-general (çalışmıyor)</li>
+                        <li>❌ laravel-queue-tenant (çalışmıyor)</li>
+                        <li>❌ laravel-queue-ai (çalışmıyor)</li>
+                        <li>❌ laravel-horizon (çalışmıyor)</li>
+                    </ul>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Sorun:</strong> Queue health check her çalıştığında worker'ları yeniden başlatmaya çalışıyor ama başarılı olamıyor. Tüm restart denemeleri başarısız.
+                </div>
+
+                <div class="code-block">
+🔧 Queue Worker Durumu Kontrol Ediliyor...
+❌ laravel-queue-general çalışmıyor. Yeniden başlatılıyor...
+🚨 laravel-queue-general yeniden başlatılamadı!
+❌ laravel-queue-tenant çalışmıyor. Yeniden başlatılıyor...
+🚨 laravel-queue-tenant yeniden başlatılamadı!
+                </div>
+
+                <div class="error-detail">
+                    <strong>Etkisi:</strong><br>
+                    • Job'lar işlenmiyor (email, AI generation, arka plan işlemleri)<br>
+                    • Horizon dashboard çalışmıyor<br>
+                    • Asenkron işlemler senkron çalışıyor (performans kaybı)
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Çözüm Önerileri</h4>
+                    <ul>
+                        <li><strong>1.</strong> Supervisor durumunu kontrol et: <code>supervisorctl status</code></li>
+                        <li><strong>2.</strong> Supervisor config dosyalarını incele: <code>/etc/supervisor/conf.d/laravel-*.conf</code></li>
+                        <li><strong>3.</strong> Log dosyalarını kontrol et: <code>storage/logs/worker.log</code></li>
+                        <li><strong>4.</strong> Manuel restart dene: <code>supervisorctl restart laravel-horizon</code></li>
+                        <li><strong>5.</strong> Horizon optimize et: CLAUDE.md'de belirtilen maxProcesses ayarlarını kontrol et</li>
+                    </ul>
+                </div>
+
+                <div class="timeline">
+                    ⏰ Durum: Sürekli (Her queue-health check'te tekrarlıyor - her 5 dakikada bir)
+                </div>
+            </div>
+
+            <!-- 3. OpenAI SSL Error -->
+            <div class="error-item critical">
+                <div class="error-header">
+                    <div class="error-title">
+                        <span class="severity-indicator severity-critical"></span>
+                        #3 - OpenAI SSL Sertifika Hatası
+                    </div>
+                    <span class="badge badge-critical">KRİTİK</span>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata Sıklığı:</strong> 48 kez tekrarlandı (Tenant 2 - ixtif.com)
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata Mesajı:</strong><br>
+                    <code style="color: #ef4444;">SSL: no alternative certificate subject name matches target host name 'api.openai.com'</code>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Etkilenen Özellik:</strong> Blog AI Content Generation (otomatik blog yazma)
+                </div>
+
+                <div class="code-block">
+[2025-12-04 04:00:40] local.ERROR: OpenAI streaming API hatası: 
+OpenAI streaming error: SSL: no alternative certificate subject name 
+matches target host name 'api.openai.com'
+
+❌ HowTo generation failed - Generating fallback
+❌ FAQ generation failed to parse
+❌ Auto SEO Fill: AI önerileri alınamadı
+                </div>
+
+                <div class="error-detail">
+                    <strong>Neden Oluyor?</strong><br>
+                    Sunucuda SSL sertifika doğrulaması sırasında OpenAI'ın SSL sertifikasının hostname'i ile eşleşmiyor. cURL SSL ayarları veya CA bundle sorunu olabilir.
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Çözüm Önerileri</h4>
+                    <ul>
+                        <li><strong>1.</strong> CA bundle'ı güncelle: <code>yum update ca-certificates</code></li>
+                        <li><strong>2.</strong> OpenAI client SSL ayarlarını kontrol et (Guzzle verify seçeneği)</li>
+                        <li><strong>3.</strong> cURL versiyonunu kontrol et: <code>curl --version</code></li>
+                        <li><strong>4.</strong> Test et: <code>curl -v https://api.openai.com/</code></li>
+                        <li><strong>Geçici:</strong> SSL doğrulamasını devre dışı bırak (sadece test için, production'da kullanma!)</li>
+                    </ul>
+                </div>
+
+                <div class="timeline">
+                    ⏰ İlk Görülme: 2025-12-04 04:00:40 | Tekrar: 48 kez (Blog AI job'ları çalışırken)
+                </div>
+            </div>
+        </section>
+
+        <!-- ORTA SEVİYE HATALAR -->
+        <section>
+            <h2>⚠️ Orta Seviye Hatalar (Önemli)</h2>
+
+            <!-- 4. Tenant DB Selection Error -->
+            <div class="error-item high">
+                <div class="error-header">
+                    <div class="error-title">
+                        <span class="severity-indicator severity-high"></span>
+                        #4 - Tenant Database Seçimi Hatası
+                    </div>
+                    <span class="badge badge-high">YÜKSEK</span>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata Sıklığı:</strong> 18 kez (ixtif.com mega-menu yüklenirken)
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata:</strong><br>
+                    <code style="color: #f59e0b;">SQLSTATE[3D000]: Invalid catalog name: 1046 No database selected</code>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Etkilenen Dosya:</strong><br>
+                    <code>resources/views/themes/ixtif/partials/mega-menu-products.blade.php</code>
+                </div>
+
+                <div class="code-block">
+SQL: select * from `media` 
+     where `media`.`model_id` in (1022) 
+     and `media`.`model_type` = Modules\Shop\App\Models\ShopProduct
+
+Connection: tenant (ama database seçili değil!)
+                </div>
+
+                <div class="error-detail">
+                    <strong>Sorun:</strong><br>
+                    Mega-menu render edilirken tenant context kaybolmuş, media ilişkileri çağrılırken tenant database bağlantısı seçili değil.
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Çözüm Önerileri</h4>
+                    <ul>
+                        <li><strong>1.</strong> <code>mega-menu-products.blade.php</code> dosyasını incele, eager loading kontrolü yap</li>
+                        <li><strong>2.</strong> Tenant middleware'inin doğru sırada olduğundan emin ol</li>
+                        <li><strong>3.</strong> ShopProduct modeli media ilişkisini tenant-aware yap</li>
+                        <li><strong>4.</strong> View cache temizle: <code>php artisan view:clear</code></li>
+                    </ul>
+                </div>
+
+                <div class="timeline">
+                    ⏰ Görülme: Sporadic (Mega-menu yüklenirken, her zaman değil)
+                </div>
+            </div>
+
+            <!-- 5. MailController Not Found -->
+            <div class="error-item medium">
+                <div class="error-header">
+                    <div class="error-title">
+                        <span class="severity-indicator severity-medium"></span>
+                        #5 - MailController Sınıfı Bulunamıyor
+                    </div>
+                    <span class="badge badge-medium">ORTA</span>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata:</strong><br>
+                    <code style="color: #3b82f6;">Class "Modules\Mail\Http\Controllers\MailController" does not exist</code>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata Sıklığı:</strong> 2 kez
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Çözüm Önerileri</h4>
+                    <ul>
+                        <li><strong>1.</strong> Mail modülünün kurulu olduğunu kontrol et</li>
+                        <li><strong>2.</strong> Route'larda kullanılmayan controller referansını temizle</li>
+                        <li><strong>3.</strong> <code>composer dump-autoload</code> çalıştır</li>
+                    </ul>
+                </div>
+
+                <div class="timeline">
+                    ⏰ Görülme: Nadir (Route yüklenirken)
+                </div>
+            </div>
+        </section>
+
+        <!-- DÜŞÜK SEVİYE / BİLGİ AMAÇLI -->
+        <section>
+            <h2>ℹ️ Bilgi Amaçlı (Düşük Öncelik)</h2>
+
+            <!-- 6. Symfony Console Quiet Option -->
+            <div class="error-item low">
+                <div class="error-header">
+                    <div class="error-title">
+                        <span class="severity-indicator severity-low"></span>
+                        #6 - Symfony Console: Duplicate "quiet" Option
+                    </div>
+                    <span class="badge badge-low">DÜŞÜK</span>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata:</strong><br>
+                    <code>An option named "quiet" already exists.</code>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Hata Sıklığı:</strong> 2 kez
+                </div>
+
+                <div class="error-detail">
+                    <strong>Sorun:</strong> Bir Artisan command'da "quiet" seçeneği iki kez tanımlanmış (muhtemelen parent class'tan inherit edilmiş ve tekrar tanımlanmış).
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Çözüm</h4>
+                    <ul>
+                        <li>İlgili command dosyasını bul ve duplicate option tanımını kaldır</li>
+                        <li>Symfony Console'un base option'larını override etme</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 7. Blog AI Content Generation Warnings -->
+            <div class="error-item low">
+                <div class="error-header">
+                    <div class="error-title">
+                        <span class="severity-indicator severity-low"></span>
+                        #7 - Blog AI: İçerik Çok Kısa (Retry)
+                    </div>
+                    <span class="badge badge-low">DÜŞÜK</span>
+                </div>
+
+                <div class="error-detail">
+                    <strong>Durum:</strong> AI'dan gelen blog içeriği beklenen kelime sayısından kısa olduğunda retry yapılıyor.
+                </div>
+
+                <div class="error-detail">
+                    <strong>Örnekler:</strong><br>
+                    • 1227 kelime (beklenen: 1500+)<br>
+                    • 660 kelime (beklenen: 1500+)<br>
+                    • 115 kelime (çok kısa, 3 kez retry)
+                </div>
+
+                <div class="error-detail">
+                    <strong>Değerlendirme:</strong> Bu normal bir retry mekanizması. Sorun teşkil etmiyor, AI prompt'ları optimize edilebilir.
+                </div>
+            </div>
+        </section>
+
+        <!-- GENEL DEĞERLENDİRME -->
+        <section>
+            <h2>📝 Genel Değerlendirme</h2>
+
+            <div class="solution-box" style="border-color: #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));">
+                <h4 style="color: #3b82f6;">🎯 Öncelik Sıralaması</h4>
+                <ol style="margin-left: 20px; color: #cbd5e1;">
+                    <li style="margin-bottom: 10px;">
+                        <strong style="color: #ef4444;">1. Öncelik (Acil):</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Queue Worker'ları çalıştır (Tüm asenkron işlemler etkileniyor)</li>
+                            <li>RealTimeResourceTracker array hatası (Her 5dk log dosyasını şişiriyor)</li>
+                        </ul>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong style="color: #f59e0b;">2. Öncelik (Önemli):</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>OpenAI SSL hatası (Blog AI özellikleri çalışmıyor)</li>
+                            <li>Tenant DB selection hatası (Mega-menu bazen hata veriyor)</li>
+                        </ul>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong style="color: #3b82f6;">3. Öncelik (Düşük):</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>MailController eksik referans</li>
+                            <li>Symfony console duplicate option</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="error-detail" style="margin-top: 20px;">
+                <strong>📊 Log Dosyası Durumu:</strong><br>
+                • Central: <code>storage/logs/laravel-2025-12-04.log</code> (1.4 MB)<br>
+                • Tenant 2 (ixtif): <code>storage/tenant2/logs/tenant-2025-12-04.log</code><br>
+                • Queue Health: <code>storage/logs/queue-health.log</code> (178 KB - sürekli restart denemeleri)<br>
+                • Worker Log: <code>storage/logs/worker.log</code> (1.6 KB)
+            </div>
+
+            <div class="error-detail" style="margin-top: 20px;">
+                <strong>⚡ Performans Etkisi:</strong><br>
+                • RealTimeResourceTracker hatası: Log dosyasını gereksiz şişiriyor (günde ~1MB+)<br>
+                • Queue worker down: Tüm job'lar senkron çalışıyor (performans kaybı)<br>
+                • OpenAI SSL error: Blog AI generation tamamen durmuş durumda
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 📅 2025-12-04 05:30 | 🔍 Log Analiz Raporu v1
+        </footer>
+    </div>
+</body>
+</html>

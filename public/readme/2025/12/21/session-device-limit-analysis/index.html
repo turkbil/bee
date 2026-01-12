@@ -1,1 +1,273 @@
-v5/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Device Limit & HLS Dayanıklılığı - v5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .glass { background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.15), transparent 25%), radial-gradient(circle at 80% 0%, rgba(14,165,233,0.12), transparent 25%), rgba(15,23,42,0.9); }
+        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+        .badge-emerald { background: rgba(16,185,129,0.16); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+        .badge-blue { background: rgba(59,130,246,0.18); color: #93c5fd; border: 1px solid rgba(59,130,246,0.35); }
+        .badge-amber { background: rgba(251,191,36,0.14); color: #fbbf24; border: 1px solid rgba(251,191,36,0.35); }
+        .badge-red { background: rgba(248,113,113,0.18); color: #fca5a5; border: 1px solid rgba(248,113,113,0.35); }
+        .card { border: 1px solid rgba(100,116,139,0.35); backdrop-filter: blur(10px); }
+        .checkbox-item input[type="checkbox"]:checked + label { text-decoration: line-through; opacity: 0.7; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-10">
+        <header class="mb-10 text-center">
+            <div class="inline-flex items-center gap-3 px-4 py-2 bg-emerald-500/15 border border-emerald-400/40 rounded-full mb-4">
+                <i class="fas fa-satellite-dish text-emerald-300"></i>
+                <span class="text-emerald-200 font-semibold">HLS öncelikli, MP3 sadece son çare</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">Muzibu Device Limit & HLS Dayanıklılığı - v5</h1>
+            <p class="text-slate-400 text-sm md:text-base">Tenant 1001 (muzibu) | Limit=1 cihaz | Hedef: HLS kesintisiz, MP3 yalnızca fallback</p>
+            <div class="flex flex-wrap justify-center gap-3 mt-4 text-xs text-slate-400">
+                <span class="badge badge-emerald"><i class="fas fa-broom"></i>Aktif session tablosu boş (reset sonrası)</span>
+                <span class="badge badge-amber"><i class="fas fa-triangle-exclamation"></i>HLS timeout/fragLoadError görülüyor</span>
+                <span class="badge badge-blue"><i class="fas fa-calendar"></i>22 Aralık 2025</span>
+            </div>
+        </header>
+
+        <!-- Iki seviyeli anlatim -->
+        <section class="grid md:grid-cols-2 gap-4 mb-8">
+            <div class="card bg-emerald-900/25 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-emerald-200 mb-3"><i class="fas fa-hand-holding-heart mr-2"></i>Basit Anlatım (Herkes İçin)</h3>
+                <p class="text-sm leading-relaxed text-slate-100 mb-3">HLS akışı manifest veya parça indiremeyince 15 sn’de zaman aşımına girmiş, MP3’e düşmüş veya tamamen durmuş. Amacımız HLS’i durdurmadan, gerekirse önce yeniden deneme, sonra da en son çare olarak MP3’e geçmek. Bunun için HLS isteklerini detaylı loglayacağız, süresi dolan imzaları parça süresine göre uzatacağız ve hata anında yeniden imzalı adresle tekrar deneyip yalnızca başarısız kalırsa MP3’e geçeceğiz.</p>
+                <ul class="text-sm text-slate-200 space-y-2">
+                    <li>• HLS manifest/frag yüklenemediği için MP3’e düştü; öncelik HLS’te kalmak.</li>
+                    <li>• İmza süresi sabit (300 sn) uzun parçalara yetmeyebilir; dinamik hale getirilecek.</li>
+                    <li>• Hata nedenini göremiyoruz; playlist/segment isteklerini loglayacağız.</li>
+                    <li>• Favoriler API 500 hatası ayrıca çözülecek (ekstra yük bindirmesin).</li>
+                </ul>
+            </div>
+            <div class="card bg-blue-900/25 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-blue-200 mb-3"><i class="fas fa-microchip mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)</h3>
+                <ul class="text-sm text-slate-200 space-y-2">
+                    <li>• Loglar: HLS manifest timeout (15s) ve fragLoadError var; 401/404 görünmüyor çünkü playlist/segment isteklerini loglamıyoruz.</li>
+                    <li>• TTL: Signed URL 300s, player 240s’de yeniliyor fakat yeni URL aktif stream’e swap edilmiyor; uzun parça ve crossfade’da süresi dolabilir.</li>
+                    <li>• Akış: Şu an fatal olunca doğrudan MP3 veya durma; önce yeniden imzalı playlist ile retry yok.</li>
+                    <li>• API: /api/favorites/list 500 (Undefined property model_class) halen mevcut, gürültü ve ek istek yaratıyor.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Plan -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300"><i class="fas fa-list-check"></i></div>
+                    <h2 class="text-2xl font-bold text-white">Öncelikli İş Planı</h2>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-400">
+                    <span class="font-semibold text-white" id="progress-text">0%</span>
+                    <div class="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="h-2 bg-gradient-to-r from-emerald-400 to-cyan-400" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task1" class="mt-1 w-5 h-5">
+                            <label for="task1" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">HLS ayrıntılı log</span>
+                                    <span class="badge badge-blue">kritik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">Playlist/key/segment isteklerinde status, token prefix, session_id, cihaz bilgisi loglansın; 401/404/timeout net görülsün.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task2" class="mt-1 w-5 h-5">
+                            <label for="task2" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">TTL’i dinamik yap</span>
+                                    <span class="badge badge-amber">öncelik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">Signed URL süresini (serveHls + SignedUrlService) parça süresi + en az 120 sn tampon olarak hesapla; 300 sn sabiti kaldır.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task3" class="mt-1 w-5 h-5">
+                            <label for="task3" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">HLS retry → sonra MP3</span>
+                                    <span class="badge badge-amber">öncelik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">Manifest/frag hata aldığında yeni imzalı playlist ile 1 kez daha dene; sadece ikinci deneme de düşerse MP3’e geç.</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task4" class="mt-1 w-5 h-5">
+                            <label for="task4" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Crossfade swap</span>
+                                    <span class="badge badge-blue">öncelik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">Player HLS URL’yi 240.s’de yeniliyor; crossfade/yeniden başlatma sırasında aktif player’a yeni URL enjekte et.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task5" class="mt-1 w-5 h-5">
+                            <label for="task5" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Reason log + mesaj</span>
+                                    <span class="badge badge-blue">devam</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">sessionExists/stream/serveHls içinde reason kodlarını (cookie yok, token uyumsuz, limit aşıldı) daha ayrıntılı logla; kullanıcıya doğru sebep göster.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task6" class="mt-1 w-5 h-5">
+                            <label for="task6" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Favorites 500 fix</span>
+                                    <span class="badge badge-blue">devam</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">/api/favorites/list için Undefined property model_class hatasını gider; sessizlikte ekstra istek ve hata gürültüsünü kes.</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testler -->
+        <section class="mb-10">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-purple-500/25 border border-purple-500/40 flex items-center justify-center text-purple-200"><i class="fas fa-vial"></i></div>
+                <h2 class="text-2xl font-bold text-white">Test Senaryoları</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test1" class="mt-1 w-5 h-5">
+                        <label for="test1" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Tek tarayıcı, uzun parça (>300s)</span>
+                                <span class="badge badge-amber">kritik</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Sayfa yenilemeden uzun süre çal; TTL uzatması ve URL swap ile hiç durmamalı, timeout/frag hatası olmamalı.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test2" class="mt-1 w-5 h-5">
+                        <label for="test2" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Crossfade + yeni imza</span>
+                                <span class="badge badge-blue">öncelik</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Şarkı değişirken yeni imzalı playlist kullanılsın; manifest/frag hatası çıkmadan geçiş tamamlanmalı.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test3" class="mt-1 w-5 h-5">
+                        <label for="test3" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Limit=1 cihaz senaryosu</span>
+                                <span class="badge badge-blue">güvenlik</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">B tarayıcı login olunca A 401/uyarı alıp player durmalı; HLS isteği de 401 dönmeli, loglarda reason görülmeli.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item md:col-span-2">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test4" class="mt-1 w-5 h-5">
+                        <label for="test4" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">MP3 son çare</span>
+                                <span class="badge badge-blue">dayanıklılık</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Manifest/frag hata alırsa önce yeniden imzalı HLS denemesi yapılmalı; sadece ikinci deneme de düşerse MP3 devreye girmeli.</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Riskler -->
+        <section class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-amber-500/25 border border-amber-500/40 flex items-center justify-center text-amber-200"><i class="fas fa-radiation"></i></div>
+                <h2 class="text-2xl font-bold text-white">Riskler / Notlar</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">Sessiz timeout</div>
+                    <p class="text-slate-400">Log olmadan timeout sebebi bilinmiyor; önce log eklenmezse hata tekrarlar.</p>
+                </div>
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">Sabit TTL</div>
+                    <p class="text-slate-400">300s sabiti uzun parçalarda imza bitmesine ve manifestLoadError’a yol açıyor.</p>
+                </div>
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">API gürültüsü</div>
+                    <p class="text-slate-400">Favorites 500 hatası gereksiz istek ve hata gürültüsü yaratıyor; sessizleştirilmeli.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-xs text-slate-500 border-t border-slate-800 pt-6">
+            <p><i class="fas fa-robot text-cyan-400 mr-2"></i>Hazırlayan: Claude AI | 22 Aralık 2025 | v5 plan</p>
+            <p class="mt-1">Hedef: HLS kesintisiz, tek cihaz kuralı bozulmadan, MP3 yalnızca son çare.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const storageKey = 'session-device-limit-v5';
+
+            const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            checkboxes.forEach(cb => { if (saved[cb.id]) cb.checked = true; });
+
+            function update() {
+                const total = checkboxes.length;
+                const done = Array.from(checkboxes).filter(cb => cb.checked).length;
+                const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+                progressBar.style.width = pct + '%';
+                progressText.textContent = pct + '%';
+
+                const state = {};
+                checkboxes.forEach(cb => state[cb.id] = cb.checked);
+                localStorage.setItem(storageKey, JSON.stringify(state));
+            }
+
+            checkboxes.forEach(cb => cb.addEventListener('change', update));
+            update();
+        });
+    </script>
+</body>
+</html>

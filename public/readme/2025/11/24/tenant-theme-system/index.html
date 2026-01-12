@@ -1,1 +1,389 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Tema & Subheader Sistemi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+
+        .scenario {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .scenario h3 {
+            color: #fbbf24;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .scenario p {
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        .user-flow {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-number {
+            background: #3b82f6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .compare-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .compare-box h4 {
+            color: #a78bfa;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .compare-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .compare-box li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .compare-box li:last-child {
+            border-bottom: none;
+        }
+
+        .highlight {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .highlight-title {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .question-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .question-box h3 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+        }
+
+        .question-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .question-box li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+            color: #e2e8f0;
+        }
+
+        .question-box li:last-child {
+            border-bottom: none;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tenant Tema & Subheader Sistemi</h1>
+            <div class="meta">
+                Tarih: 2025-11-24 | Konu: Her tenant kendi temasını ve subheader'ını seçebilecek
+            </div>
+        </header>
+
+        <section>
+            <h2>Nasıl Çalışacak?</h2>
+
+            <div class="scenario">
+                <h3>Central Admin (tuufi.com) - Sen</h3>
+                <p>Tüm temaları ve subheader'ları yönetirsin. Hangi temanın hangi tenant'a görüneceğini belirlersin.</p>
+
+                <div class="user-flow">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Tema Yönetimi sayfasına git</div>
+                            <div class="step-desc">/admin/thememanagement</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Bir tema seç ve "Erişim Ayarları"na tıkla</div>
+                            <div class="step-desc">Hangi tenant'ların bu temayı görebileceğini belirle</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Tenant'ları seç</div>
+                            <div class="step-desc">
+                                Örnek: "ixtif" teması sadece Tenant 2'ye (ixtif.com) görünsün<br>
+                                "simple" teması herkese açık olsun
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario">
+                <h3>Tenant Admin (ixtif.com, muzibu.com vb.)</h3>
+                <p>Her tenant kendi admin panelinden sadece kendisine açılan temalar arasından seçim yapar.</p>
+
+                <div class="user-flow">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Görünüm Ayarları sayfasına git</div>
+                            <div class="step-desc">/admin/site-settings/appearance (yeni sayfa)</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Tema seç</div>
+                            <div class="step-desc">Dropdown'da sadece kendine açılan temalar görünür</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Subheader stili seç</div>
+                            <div class="step-desc">Glass, Minimal, Hero, Colored arasından seç</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Kaydet</div>
+                            <div class="step-desc">Değişiklikler hemen yansır</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Örnek Senaryo</h2>
+
+            <div class="comparison">
+                <div class="compare-box">
+                    <h4>ixtif.com (Tenant 2)</h4>
+                    <ul>
+                        <li>Kullanılabilir Temalar: ixtif, simple</li>
+                        <li>Seçili Tema: ixtif</li>
+                        <li>Subheader: Glass</li>
+                    </ul>
+                </div>
+                <div class="compare-box">
+                    <h4>muzibu.com (Tenant 1001)</h4>
+                    <ul>
+                        <li>Kullanılabilir Temalar: muzibu, simple, modern</li>
+                        <li>Seçili Tema: muzibu</li>
+                        <li>Subheader: Hero</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <div class="highlight-title">Önemli Nokta</div>
+                <p>Her tenant sadece kendine açılan temaları görür. "ixtif" teması muzibu.com'a kapalıysa, muzibu admini bu temayı hiç göremez.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Yapılacaklar</h2>
+
+            <div class="scenario">
+                <h3>1. Central Tarafı</h3>
+                <div class="user-flow">
+                    <div class="step">
+                        <div class="step-number">A</div>
+                        <div class="step-content">
+                            <div class="step-title">Tema-Tenant eşleştirme tablosu</div>
+                            <div class="step-desc">Hangi tema hangi tenant'a açık</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">B</div>
+                        <div class="step-content">
+                            <div class="step-title">ThemeManagement'a erişim ayarları ekle</div>
+                            <div class="step-desc">Tema kartında "Erişim Ayarları" butonu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario">
+                <h3>2. Tenant Tarafı</h3>
+                <div class="user-flow">
+                    <div class="step">
+                        <div class="step-number">A</div>
+                        <div class="step-content">
+                            <div class="step-title">Yeni sayfa: Görünüm Ayarları</div>
+                            <div class="step-desc">/admin/site-settings/appearance</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">B</div>
+                        <div class="step-content">
+                            <div class="step-title">Tema dropdown (filtrelenmiş)</div>
+                            <div class="step-desc">Sadece izin verilen temalar</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">C</div>
+                        <div class="step-content">
+                            <div class="step-title">Subheader stili dropdown</div>
+                            <div class="step-desc">4 seçenek: Glass, Minimal, Hero, Colored</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="question-box">
+            <h3>Onay Bekliyorum</h3>
+            <ul>
+                <li><strong>1.</strong> Bu akış doğru mu? Central tema erişimini kontrol etsin, tenant sadece seçsin?</li>
+                <li><strong>2.</strong> Yeni tema eklendiğinde varsayılan olarak herkese açık mı olsun, yoksa manuel mi eklensin?</li>
+                <li><strong>3.</strong> Subheader stilleri de kısıtlanabilsin mi, yoksa hepsi herkese açık mı kalsın?</li>
+            </ul>
+        </div>
+
+        <footer>
+            Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>

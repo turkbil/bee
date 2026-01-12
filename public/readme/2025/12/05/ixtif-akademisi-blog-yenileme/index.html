@@ -1,1 +1,551 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İxtif Akademisi - Blog Alanı Tasarımı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                📚 İxtif Akademisi - Blog Alanı Yenileme
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Ana sayfada daha fazla içerik gösterimi: 4 büyük + 8 mini liste blog
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 05.12.2025</span>
+                <span>🎯 Tenant: ixtif.com</span>
+                <span>👤 Kullanıcı İsteği: Blog alanını geliştir</span>
+            </div>
+        </header>
+
+        <!-- Ana İçerik -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🎨 Modern Blog Tasarımı</h2>
+
+            <!-- Desktop Önizleme -->
+            <div class="bg-slate-800/50 rounded-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold text-green-400 mb-6">💻 Desktop Görünümü</h3>
+                
+                <!-- Blog Section Mock -->
+                <div class="bg-white rounded-xl p-8">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900">İxtif Akademi</h2>
+                        <a href="#" class="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold">
+                            Tümünü Gör <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+
+                    <!-- Grid Layout: 4 Büyük (Sol) + 8 Mini (Sağ) -->
+                    <div class="grid lg:grid-cols-12 gap-6">
+                        <!-- SOL: 4 Büyük Blog (8 kolon) -->
+                        <div class="lg:col-span-8 grid md:grid-cols-2 gap-6">
+                            <!-- Büyük Blog 1 -->
+                            <div class="group bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-blue-300 hover:shadow-xl transition-all">
+                                <div class="relative h-48 bg-gradient-to-br from-blue-100 to-blue-200 overflow-hidden">
+                                    <img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F1259%2Fleonardo_69333b03ec26f.jpg&w=400&h=300&q=85&f=webp&c=1" 
+                                         alt="Blog" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white/90 to-transparent"></div>
+                                    <div class="absolute top-3 left-3 flex gap-2">
+                                        <span class="px-3 py-1 bg-white/90 rounded-lg text-xs font-medium text-gray-700 flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            05.12.2025
+                                        </span>
+                                        <span class="px-3 py-1 bg-white/90 rounded-lg text-xs font-medium text-gray-700 flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            14:30
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                                        En İyi Reach Truck Hangisi?
+                                    </h3>
+                                    <p class="text-sm text-gray-600 line-clamp-2 mb-4">
+                                        Reach truck seçerken dikkat edilmesi gereken özellikler ve modeller hakkında detaylı bilgi.
+                                    </p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-eye"></i> 1.2K görüntülenme
+                                        </span>
+                                        <span class="text-blue-600 font-semibold group-hover:gap-2 transition-all flex items-center gap-1">
+                                            Devamını Oku <i class="fas fa-arrow-right"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Büyük Blog 2 -->
+                            <div class="group bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-blue-300 hover:shadow-xl transition-all">
+                                <div class="relative h-48 bg-gradient-to-br from-purple-100 to-purple-200 overflow-hidden">
+                                    <div class="w-full h-full flex items-center justify-center text-6xl text-purple-400">
+                                        <i class="fas fa-forklift"></i>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white/90 to-transparent"></div>
+                                    <div class="absolute top-3 left-3 flex gap-2">
+                                        <span class="px-3 py-1 bg-white/90 rounded-lg text-xs font-medium text-gray-700 flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            05.12.2025
+                                        </span>
+                                        <span class="px-3 py-1 bg-white/90 rounded-lg text-xs font-medium text-gray-700 flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            12:15
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                                        Forklift Yedek Parça Bursa
+                                    </h3>
+                                    <p class="text-sm text-gray-600 line-clamp-2 mb-4">
+                                        Bursa bölgesinde forklift yedek parça tedariki ve hızlı servis hizmetleri.
+                                    </p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-eye"></i> 856 görüntülenme
+                                        </span>
+                                        <span class="text-blue-600 font-semibold group-hover:gap-2 transition-all flex items-center gap-1">
+                                            Devamını Oku <i class="fas fa-arrow-right"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Büyük Blog 3 -->
+                            <div class="group bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-blue-300 hover:shadow-xl transition-all">
+                                <div class="relative h-48 bg-gradient-to-br from-green-100 to-green-200 overflow-hidden">
+                                    <div class="w-full h-full flex items-center justify-center text-6xl text-green-400">
+                                        <i class="fas fa-dolly"></i>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white/90 to-transparent"></div>
+                                    <div class="absolute top-3 left-3 flex gap-2">
+                                        <span class="px-3 py-1 bg-white/90 rounded-lg text-xs font-medium text-gray-700 flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            04.12.2025
+                                        </span>
+                                        <span class="px-3 py-1 bg-white/90 rounded-lg text-xs font-medium text-gray-700 flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            09:45
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                                        İstif Makinesi Yedek Parça
+                                    </h3>
+                                    <p class="text-sm text-gray-600 line-clamp-2 mb-4">
+                                        İstif makinesi bakımı ve yedek parça seçiminde dikkat edilecek noktalar.
+                                    </p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-eye"></i> 643 görüntülenme
+                                        </span>
+                                        <span class="text-blue-600 font-semibold group-hover:gap-2 transition-all flex items-center gap-1">
+                                            Devamını Oku <i class="fas fa-arrow-right"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Büyük Blog 4 -->
+                            <div class="group bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-blue-300 hover:shadow-xl transition-all">
+                                <div class="relative h-48 bg-gradient-to-br from-orange-100 to-orange-200 overflow-hidden">
+                                    <div class="w-full h-full flex items-center justify-center text-6xl text-orange-400">
+                                        <i class="fas fa-boxes-stacked"></i>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white/90 to-transparent"></div>
+                                    <div class="absolute top-3 left-3 flex gap-2">
+                                        <span class="px-3 py-1 bg-white/90 rounded-lg text-xs font-medium text-gray-700 flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            03.12.2025
+                                        </span>
+                                        <span class="px-3 py-1 bg-white/90 rounded-lg text-xs font-medium text-gray-700 flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            16:20
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                                        Elektrikli İstif Makinesi Avantajları
+                                    </h3>
+                                    <p class="text-sm text-gray-600 line-clamp-2 mb-4">
+                                        Elektrikli istif makineleri neden daha çok tercih ediliyor? Avantajları nelerdir?
+                                    </p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-eye"></i> 2.1K görüntülenme
+                                        </span>
+                                        <span class="text-blue-600 font-semibold group-hover:gap-2 transition-all flex items-center gap-1">
+                                            Devamını Oku <i class="fas fa-arrow-right"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SAĞ: 8 Mini Liste (4 kolon) -->
+                        <div class="lg:col-span-4 space-y-3">
+                            <div class="bg-gray-50 rounded-lg p-3 mb-4">
+                                <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-fire text-orange-500"></i>
+                                    Son Eklenenler
+                                </h3>
+                            </div>
+
+                            <!-- Mini Blog 1 -->
+                            <a href="#" class="group flex gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg overflow-hidden">
+                                    <img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F1259%2Fleonardo_69333b03ec26f.jpg&w=100&h=100&q=85&f=webp&c=1" 
+                                         alt="Blog" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        Tuzla OSB Forklift Satış
+                                    </h4>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            05.12.2025
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            11:30
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Mini Blog 2 -->
+                            <a href="#" class="group flex gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg flex items-center justify-center text-2xl text-purple-400">
+                                    <i class="fas fa-truck-ramp-box"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        Forklift Kaldırma Kapasitesi
+                                    </h4>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            04.12.2025
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            15:45
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Mini Blog 3 -->
+                            <a href="#" class="group flex gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center text-2xl text-green-400">
+                                    <i class="fas fa-warehouse"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        Depo Ekipmanları Bakımı
+                                    </h4>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            03.12.2025
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            10:20
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Mini Blog 4 -->
+                            <a href="#" class="group flex gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center text-2xl text-orange-400">
+                                    <i class="fas fa-gear"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        Transpalet Bakım İpuçları
+                                    </h4>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            02.12.2025
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            14:00
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Mini Blog 5 -->
+                            <a href="#" class="group flex gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-lg flex items-center justify-center text-2xl text-red-400">
+                                    <i class="fas fa-shield-check"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        İş Güvenliği Standartları
+                                    </h4>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            01.12.2025
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            09:15
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Mini Blog 6 -->
+                            <a href="#" class="group flex gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-lg flex items-center justify-center text-2xl text-yellow-500">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        Forklift Servis Hizmetleri
+                                    </h4>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            30.11.2025
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            16:30
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Mini Blog 7 -->
+                            <a href="#" class="group flex gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-lg flex items-center justify-center text-2xl text-indigo-400">
+                                    <i class="fas fa-hand-holding-dollar"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        Forklift Kiralama Avantajları
+                                    </h4>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            29.11.2025
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            13:10
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Mini Blog 8 -->
+                            <a href="#" class="group flex gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-pink-100 to-pink-200 rounded-lg flex items-center justify-center text-2xl text-pink-400">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        Forklift Operatör Eğitimi
+                                    </h4>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-calendar text-blue-500"></i>
+                                            28.11.2025
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="far fa-clock text-green-500"></i>
+                                            11:45
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Önizleme -->
+            <div class="bg-slate-800/50 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-green-400 mb-6">📱 Mobile Görünümü</h3>
+                
+                <!-- Mobile Mock (iPhone boyutu) -->
+                <div class="max-w-sm mx-auto bg-white rounded-3xl p-6 shadow-2xl">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-900">İxtif Akademi</h2>
+                        <a href="#" class="flex items-center gap-1 text-blue-600 text-sm font-semibold">
+                            Tümünü Gör <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+
+                    <!-- 2 Büyük Blog (Mobile) -->
+                    <div class="space-y-4 mb-6">
+                        <!-- Büyük Blog 1 -->
+                        <div class="group bg-white border-2 border-gray-200 rounded-xl overflow-hidden">
+                            <div class="relative h-40 bg-gradient-to-br from-blue-100 to-blue-200">
+                                <div class="absolute top-2 left-2 flex gap-1.5">
+                                    <span class="px-2 py-1 bg-white/90 rounded text-xs font-medium">
+                                        <i class="far fa-calendar text-blue-500"></i> 05.12
+                                    </span>
+                                    <span class="px-2 py-1 bg-white/90 rounded text-xs font-medium">
+                                        <i class="far fa-clock text-green-500"></i> 14:30
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="text-sm font-bold text-gray-900 line-clamp-2 mb-2">
+                                    En İyi Reach Truck Hangisi?
+                                </h3>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-500">
+                                        <i class="far fa-eye"></i> 1.2K
+                                    </span>
+                                    <span class="text-blue-600 font-semibold">
+                                        Oku <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Büyük Blog 2 -->
+                        <div class="group bg-white border-2 border-gray-200 rounded-xl overflow-hidden">
+                            <div class="relative h-40 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center text-5xl text-purple-400">
+                                <i class="fas fa-forklift"></i>
+                                <div class="absolute top-2 left-2 flex gap-1.5">
+                                    <span class="px-2 py-1 bg-white/90 rounded text-xs font-medium">
+                                        <i class="far fa-calendar text-blue-500"></i> 05.12
+                                    </span>
+                                    <span class="px-2 py-1 bg-white/90 rounded text-xs font-medium">
+                                        <i class="far fa-clock text-green-500"></i> 12:15
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="text-sm font-bold text-gray-900 line-clamp-2 mb-2">
+                                    Forklift Yedek Parça
+                                </h3>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-500">
+                                        <i class="far fa-eye"></i> 856
+                                    </span>
+                                    <span class="text-blue-600 font-semibold">
+                                        Oku <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini Liste (Mobile) -->
+                    <div class="space-y-3">
+                        <div class="bg-gray-50 rounded-lg p-2 mb-3">
+                            <h3 class="text-xs font-bold text-gray-700 flex items-center gap-2">
+                                <i class="fas fa-fire text-orange-500"></i>
+                                Son Eklenenler
+                            </h3>
+                        </div>
+
+                        <!-- Mini Blog 1 -->
+                        <a href="#" class="flex gap-2 bg-white border border-gray-200 rounded-lg p-2">
+                            <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center text-xl text-green-400">
+                                <i class="fas fa-dolly"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-xs font-bold text-gray-900 line-clamp-2 mb-1">
+                                    Transpalet Bakım İpuçları
+                                </h4>
+                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                    <span><i class="far fa-calendar text-blue-500"></i> 02.12</span>
+                                    <span><i class="far fa-clock text-green-500"></i> 14:00</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Mini Blog 2 -->
+                        <a href="#" class="flex gap-2 bg-white border border-gray-200 rounded-lg p-2">
+                            <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center text-xl text-orange-400">
+                                <i class="fas fa-gear"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-xs font-bold text-gray-900 line-clamp-2 mb-1">
+                                    İş Güvenliği Standartları
+                                </h4>
+                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                    <span><i class="far fa-calendar text-blue-500"></i> 01.12</span>
+                                    <span><i class="far fa-clock text-green-500"></i> 09:15</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Mini Blog 3 -->
+                        <a href="#" class="flex gap-2 bg-white border border-gray-200 rounded-lg p-2">
+                            <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-lg flex items-center justify-center text-xl text-red-400">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-xs font-bold text-gray-900 line-clamp-2 mb-1">
+                                    Forklift Servis Hizmetleri
+                                </h4>
+                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                    <span><i class="far fa-calendar text-blue-500"></i> 30.11</span>
+                                    <span><i class="far fa-clock text-green-500"></i> 16:30</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özellikler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">✨ Yeni Tasarım Özellikleri</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Özellik 1 -->
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                            ✓
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-300 mb-2">
+                                4 Büyük + 8 Mini Blog = 12 İçerik
+                            </h3>
+                            <p class="text-slate-300 leading-relaxed">
+                                Ana sayfada <strong class="text-white">12 adet blog</strong> gösterilecek. Daha önce 6 blog vardı, şimdi <span class="text-green-300 font-semibold">2 kat daha fazla</span> içerik gösterilecek.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Özellik 2 -->
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                            ✓
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300 mb-2">
+                                Tarih + Saat Gösterimi
+                            </h3>
+                            <p class="text-slate-300 leading-relaxed">
+                                Her blog kartında <strong class="text-white">tarih + saat</strong> badge\leri

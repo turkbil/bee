@@ -1,1 +1,744 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏢 Multi-Tenant Sistemde N+1 Çözümleri</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-border: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .alert {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-left: 6px solid #fef3c7;
+        }
+
+        .alert h2 {
+            color: #fef3c7;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .alert p {
+            color: #fef3c7;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .problem-box {
+            background: rgba(239, 68, 68, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+            backdrop-filter: blur(10px);
+        }
+
+        .solution-box {
+            background: rgba(34, 197, 94, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #22c55e;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .solution-box:hover {
+            transform: translateX(5px);
+            background: rgba(34, 197, 94, 0.25);
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #f59e0b;
+            backdrop-filter: blur(10px);
+        }
+
+        .code-block {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid #334155;
+        }
+
+        .code-block code {
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .code-block.bad {
+            border-left: 4px solid #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .code-block.good {
+            border-left: 4px solid #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .comparison-item.before {
+            background: rgba(239, 68, 68, 0.15);
+            border: 2px solid #ef4444;
+        }
+
+        .comparison-item.after {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid #22c55e;
+        }
+
+        .tenant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .tenant-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .tenant-card h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .explanation {
+            display: inline-block;
+            margin-left: 5px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #f59e0b;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏢 Multi-Tenant Sistemde N+1 Çözümleri</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-30 |
+                🎯 Konu: Tenant Bazlı Cache & N+1 Optimizasyonu |
+                🏢 Sistem: Multi-Tenant (tuufi.com)
+            </div>
+        </header>
+
+        <div class="alert">
+            <h2>🚨 KRİTİK: Tenant Bazlı Cache Zorunlu!</h2>
+            <p>
+                Multi-tenant sistemde <strong>her tenant'ın verisi ayrı</strong> tutulmalı!
+                Tenant 1'in cache'i Tenant 2'ye karışmamalı. Aksi halde <strong>veri sızıntısı</strong> olur!
+            </p>
+        </div>
+
+        <section>
+            <h2>🏢 Sistemimiz: Multi-Tenant Yapısı</h2>
+
+            <div class="tenant-grid">
+                <div class="tenant-card">
+                    <h4>🏢 Tenant 1 - tuufi.com</h4>
+                    <ul>
+                        <li>Central sistem</li>
+                        <li>Ana tenant</li>
+                        <li>Database: tuufi_4ekim</li>
+                    </ul>
+                </div>
+
+                <div class="tenant-card">
+                    <h4>🏭 Tenant 2 - ixtif.com</h4>
+                    <ul>
+                        <li>Endüstriyel ekipman</li>
+                        <li>Forklift, transpalet</li>
+                        <li>Database: tenant_ixtif</li>
+                    </ul>
+                </div>
+
+                <div class="tenant-card">
+                    <h4>🎵 Tenant 1001 - muzibu.com</h4>
+                    <ul>
+                        <li>Müzik platformu</li>
+                        <li>Song, album, artist</li>
+                        <li>Database: tenant_muzibu_1528d0</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>⚠️ Tenant İzolasyonu Zorunlu!</h3>
+                <p>
+                    Her tenant'ın verisi <strong>tamamen izole</strong> olmalı:
+                </p>
+                <ul>
+                    <li>Tenant 2'nin settings'leri Tenant 1001'e gösterilmemeli</li>
+                    <li>Cache key'leri tenant ID ile ayrılmalı</li>
+                    <li>Database query'leri tenant bazlı olmalı</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔍 Tenant Bazlı N+1 Problemi</h2>
+
+            <div class="problem-box">
+                <h3>❌ YANLIŞ: Tenant Farkındasız Cache</h3>
+                <div class="code-block bad">
+                    <code>// ❌ TEHLİKELİ! Tenant ID yok!
+function setting($key) {
+    return cache()->rememberForever('settings', function () {
+        return Setting::pluck('value', 'key');
+    })[$key] ?? null;
+}
+
+<span style="color: #ef4444;">// SORUN:</span>
+<span style="color: #ef4444;">// Tenant 2 (ixtif.com) cache'ledi: site_title = "İxtif"</span>
+<span style="color: #ef4444;">// Tenant 1001 (muzibu.com) okudu: "İxtif" (YANLIŞ!)</span>
+<span style="color: #ef4444;">// Muzibu'nun kendi title'ı "Muzibu" olmalıydı!</span></code>
+                </div>
+
+                <p style="margin-top: 15px;"><strong>Sonuç:</strong></p>
+                <ul>
+                    <li>🚨 Veri karışması (data leakage)</li>
+                    <li>🚨 Tenant 1001'de Tenant 2'nin verileri görünür</li>
+                    <li>🚨 Güvenlik açığı!</li>
+                    <li>🚨 Hatalı içerik gösterimi</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>✅ DOĞRU: Tenant-Aware Cache</h3>
+                <div class="code-block good">
+                    <code>// ✅ GÜVENLİ! Tenant ID ile cache
+function setting($key) {
+    $tenantId = tenant()?->id ?? 'central';
+
+    return cache()->rememberForever("settings_tenant_{$tenantId}", function () {
+        return Setting::pluck('value', 'key');
+    })[$key] ?? null;
+}
+
+<span style="color: #22c55e;">// SONUÇ:</span>
+<span style="color: #22c55e;">// Tenant 2: settings_tenant_2 → "İxtif"</span>
+<span style="color: #22c55e;">// Tenant 1001: settings_tenant_1001 → "Muzibu"</span>
+<span style="color: #22c55e;">// Her tenant kendi verisini görür! ✅</span></code>
+                </div>
+
+                <p style="margin-top: 15px;"><strong>Avantajlar:</strong></p>
+                <ul>
+                    <li>✅ Tenant izolasyonu sağlanır</li>
+                    <li>✅ Veri karışması olmaz</li>
+                    <li>✅ Her tenant kendi cache'ini kullanır</li>
+                    <li>✅ Güvenli ve hızlı</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🛠️ Tenant Bazlı Cache Stratejileri</h2>
+
+            <div class="solution-box">
+                <h3><span class="step-number">1</span> Cache Key'e Tenant ID Ekle</h3>
+                <p>
+                    En basit ve etkili yöntem: Cache key'ine tenant ID'yi dahil et.
+                </p>
+
+                <div class="code-block good">
+                    <code>// Strateji 1: Cache key'e tenant ID ekle
+function setting($key) {
+    $tenantId = tenant()?->id ?? 'central';
+    $cacheKey = "settings_tenant_{$tenantId}";
+
+    return cache()->rememberForever($cacheKey, function () {
+        return Setting::pluck('value', 'key');
+    })[$key] ?? null;
+}</code>
+                </div>
+            </div>
+
+            <div class="solution-box">
+                <h3><span class="step-number">2</span> Tenant Scope ile Otomatik Filtreleme</h3>
+                <p>
+                    Model'de tenant scope tanımla, otomatik filtreleme yap.
+                </p>
+
+                <div class="code-block good">
+                    <code>// Setting Model
+class Setting extends Model
+{
+    // Otomatik tenant filtreleme
+    protected static function booted()
+    {
+        static::addGlobalScope('tenant', function ($query) {
+            if ($tenantId = tenant()?->id) {
+                $query->where('tenant_id', $tenantId);
+            }
+        });
+    }
+}
+
+// Artık tüm query'ler otomatik tenant filtreli
+$settings = Setting::all(); // Sadece mevcut tenant'ın settings'leri</code>
+                </div>
+            </div>
+
+            <div class="solution-box">
+                <h3><span class="step-number">3</span> Redis Tag'ler ile Tenant Cache</h3>
+                <p>
+                    Redis tag sistemi kullanarak tenant bazlı cache yönetimi.
+                </p>
+
+                <div class="code-block good">
+                    <code>// Redis tag'ler ile cache
+function setting($key) {
+    $tenantId = tenant()?->id ?? 'central';
+
+    return cache()->tags(["tenant_{$tenantId}", 'settings'])
+        ->rememberForever('all_settings', function () {
+            return Setting::pluck('value', 'key');
+        })[$key] ?? null;
+}
+
+// Tenant değiştiğinde sadece o tenant'ın cache'ini temizle
+cache()->tags("tenant_2")->flush(); // Sadece Tenant 2'nin cache'i temizlenir</code>
+                </div>
+            </div>
+
+            <div class="solution-box">
+                <h3><span class="step-number">4</span> AppServiceProvider'da Global Cache</h3>
+                <p>
+                    Request başında tüm settings'leri yükle, tenant-aware olarak.
+                </p>
+
+                <div class="code-block good">
+                    <code>// app/Providers/AppServiceProvider.php
+public function boot()
+{
+    // Tenant context'i hazır olduğunda
+    if (app()->bound('currentTenant')) {
+        $tenantId = tenant()?->id ?? 'central';
+
+        // Tenant'a özel settings'leri cache'le
+        config([
+            'tenant_settings' => cache()->rememberForever(
+                "settings_tenant_{$tenantId}",
+                fn() => Setting::pluck('value', 'key')->toArray()
+            )
+        ]);
+    }
+}
+
+// Helper fonksiyonu
+function setting($key, $default = null) {
+    return config("tenant_settings.{$key}", $default);
+}</code>
+                </div>
+            </div>
+
+            <div class="solution-box">
+                <h3><span class="step-number">5</span> Middleware ile Tenant Cache Yükleme</h3>
+                <p>
+                    Tenant belirlendikten sonra cache'i yükle.
+                </p>
+
+                <div class="code-block good">
+                    <code>// app/Http/Middleware/LoadTenantSettings.php
+class LoadTenantSettings
+{
+    public function handle($request, Closure $next)
+    {
+        if ($tenant = tenant()) {
+            $cacheKey = "settings_tenant_{$tenant->id}";
+
+            $settings = cache()->rememberForever($cacheKey, function () {
+                return Setting::pluck('value', 'key');
+            });
+
+            // Request için share et
+            view()->share('settings', $settings);
+            config(['app.tenant_settings' => $settings]);
+        }
+
+        return $next($request);
+    }
+}</code>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚠️ Tenant Bazlı Cache Dikkat Edilecekler</h2>
+
+            <div class="warning-box">
+                <h3>1. Cache Key Collision (Çakışma)</h3>
+                <p>
+                    Tenant ID olmadan cache key'leri çakışır!
+                </p>
+
+                <div class="code-block bad">
+                    <code>// ❌ YANLIŞ: Tenant ID yok, key çakışır
+cache()->get('user_preferences')
+
+// Her tenant için aynı key! Veri karışır!</code>
+                </div>
+
+                <div class="code-block good">
+                    <code>// ✅ DOĞRU: Tenant ID ile unique key
+$tenantId = tenant()->id;
+cache()->get("tenant_{$tenantId}_user_preferences")</code>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>2. Cache Temizleme (Flush)</h3>
+                <p>
+                    Tüm cache'i temizleme, tüm tenant'ları etkiler!
+                </p>
+
+                <div class="code-block bad">
+                    <code>// ❌ TEHLİKELİ: Tüm tenant'ların cache'i uçar!
+cache()->flush();</code>
+                </div>
+
+                <div class="code-block good">
+                    <code>// ✅ GÜVENLİ: Sadece mevcut tenant'ın cache'i temizlenir
+$tenantId = tenant()->id;
+cache()->forget("settings_tenant_{$tenantId}");
+
+// veya Redis tag ile
+cache()->tags("tenant_{$tenantId}")->flush();</code>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>3. Tenant Context Kontrolü</h3>
+                <p>
+                    Tenant context'i yoksa hata vermemeli, fallback olmalı.
+                </p>
+
+                <div class="code-block good">
+                    <code>// ✅ DOĞRU: Tenant yoksa central kullan
+$tenantId = tenant()?->id ?? 'central';
+$cacheKey = "settings_{$tenantId}";
+
+// veya tenant yoksa cache kullanma
+if ($tenant = tenant()) {
+    $cacheKey = "settings_tenant_{$tenant->id}";
+    $settings = cache()->get($cacheKey);
+} else {
+    // Central sistem, cache'siz çalış
+    $settings = Setting::pluck('value', 'key');
+}</code>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>4. Global Scope ile Eager Loading</h3>
+                <p>
+                    Tenant scope varsa, eager loading otomatik filtrelidir.
+                </p>
+
+                <div class="code-block good">
+                    <code>// Setting Model'de global scope var
+protected static function booted()
+{
+    static::addGlobalScope('tenant', function ($query) {
+        if ($tenant = tenant()) {
+            $query->where('tenant_id', $tenant->id);
+        }
+    });
+}
+
+// Artık with() otomatik tenant filtreli
+$blogs = Blog::with('settings')->get(); // Sadece mevcut tenant'ın settings'leri</code>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Bizim Sistem İçin Önerilen Çözüm</h2>
+
+            <div class="solution-box">
+                <h3>✅ Settings Helper - Tenant-Aware Cache</h3>
+                <p>
+                    <code>Modules/SettingManagement/app/Helpers/setting_helpers.php</code>
+                </p>
+
+                <div class="code-block good">
+                    <code>if (!function_exists('setting')) {
+    /**
+     * Tenant-aware settings helper
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    function setting(string $key, $default = null)
+    {
+        // Tenant ID al (yoksa central)
+        $tenantId = tenant()?->id ?? 'central';
+
+        // Tenant bazlı cache key
+        $cacheKey = "settings_tenant_{$tenantId}";
+
+        // Cache'den al veya yükle
+        $settings = cache()->rememberForever($cacheKey, function () {
+            return \Modules\SettingManagement\App\Models\Setting::query()
+                ->with('values')
+                ->where('is_active', 1)
+                ->get()
+                ->pluck('value', 'key');
+        });
+
+        return $settings[$key] ?? $default;
+    }
+}
+
+// Cache temizleme fonksiyonu
+if (!function_exists('flush_tenant_settings_cache')) {
+    function flush_tenant_settings_cache()
+    {
+        $tenantId = tenant()?->id ?? 'central';
+        cache()->forget("settings_tenant_{$tenantId}");
+    }
+}</code>
+                </div>
+
+                <p style="margin-top: 15px;"><strong>Kullanım:</strong></p>
+                <div class="code-block">
+                    <code>// Tenant 2 (ixtif.com)
+setting('site_title'); // "İxtif" (cache: settings_tenant_2)
+
+// Tenant 1001 (muzibu.com)
+setting('site_title'); // "Muzibu" (cache: settings_tenant_1001)
+
+// Settings değiştiğinde cache temizle
+flush_tenant_settings_cache();</code>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Performans Karşılaştırması</h2>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h3>❌ ŞİMDİ (Cache Yok)</h3>
+                    <ul>
+                        <li>site_title → 1 query</li>
+                        <li>site_logo → 1 query</li>
+                        <li>site_name → 1 query</li>
+                        <li>site_title → 1 query (duplicate!)</li>
+                        <li><strong>Toplam: 4 query (1 duplicate)</strong></li>
+                    </ul>
+                </div>
+
+                <div class="comparison-item after">
+                    <h3>✅ TENANT-AWARE CACHE</h3>
+                    <ul>
+                        <li>İlk çağrı → 1 query (tümü cache'lenir)</li>
+                        <li>site_title → 0 query (cache)</li>
+                        <li>site_logo → 0 query (cache)</li>
+                        <li>site_name → 0 query (cache)</li>
+                        <li><strong>Toplam: 1 query, 0 duplicate</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>🎯 Beklenen İyileşme</h3>
+                <ul>
+                    <li>Query Sayısı: 89 → ~10 (%90 azalma)</li>
+                    <li>Duplicate Query: 74 → 0 (%100 azalma)</li>
+                    <li>Query Süresi: 214ms → ~50ms (%75 azalma)</li>
+                    <li>Sayfa Yükleme: 4.5s → ~2s (2x hızlanma)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Uygulama Adımları</h2>
+
+            <div class="solution-box">
+                <h3>Adım 1: setting_helpers.php Dosyasını Güncelle</h3>
+                <ul>
+                    <li>Tenant ID ekle</li>
+                    <li>Cache key tenant bazlı yap</li>
+                    <li>Cache temizleme fonksiyonu ekle</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>Adım 2: Test Et</h3>
+                <ul>
+                    <li>Tenant 2'de homepage aç → cache oluşsun</li>
+                    <li>Tenant 1001'de homepage aç → ayrı cache oluşsun</li>
+                    <li>a-html.txt kontrolü: query sayısı düşmeli</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>Adım 3: Cache Temizleme Event'i Ekle</h3>
+                <ul>
+                    <li>Setting kaydedildiğinde cache temizlensin</li>
+                    <li>Observer veya Event kullan</li>
+                </ul>
+
+                <div class="code-block good">
+                    <code>// Setting Model Observer
+class SettingObserver
+{
+    public function saved(Setting $setting)
+    {
+        flush_tenant_settings_cache();
+    }
+}</code>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 2025-11-30
+        </footer>
+    </div>
+</body>
+</html>

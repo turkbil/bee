@@ -1,1 +1,453 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AI Taslakları - Gelişim Planı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --border: #334155;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .card-content {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge.high { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge.medium { background: rgba(6, 182, 212, 0.2); color: var(--info); }
+        .badge.low { background: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
+
+        .priority-big {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15));
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .priority-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--warning);
+        }
+
+        .done-small {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .list {
+            list-style: none;
+        }
+
+        .list-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .list-text {
+            flex: 1;
+        }
+
+        .list-text strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 1.05rem;
+        }
+
+        .list-text p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Blog AI Taslakları</h1>
+            <p class="subtitle">Gelişim Planı & Yapılacaklar</p>
+        </header>
+
+        <!-- Yapılanlar (Küçük) -->
+        <div class="done-small">
+            ✅ <strong>Tamamlananlar (16 Kasım):</strong> Migration düzeltildi • Taslak sayısı seçilebilir (min 10) • Akıllı sayfa yenileme
+        </div>
+
+        <!-- İSTATİSTİKLER -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" style="color: var(--warning);">🟡 6</div>
+                <div class="stat-label">Orta Öncelik</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" style="color: var(--info);">🟢 6</div>
+                <div class="stat-label">Düşük Öncelik</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" style="color: var(--success);">✅ 3</div>
+                <div class="stat-label">Tamamlandı</div>
+            </div>
+        </div>
+
+        <!-- ORTA ÖNCELİK (BÜYÜK) -->
+        <div class="priority-big">
+            <h2 class="priority-title">🎯 Yapılacaklar - Orta Öncelik</h2>
+
+            <ul class="list">
+                <li class="list-item">
+                    <span class="list-icon">💳</span>
+                    <div class="list-text">
+                        <strong>Kredi (Credit) Bilgisi Göster</strong>
+                        <span class="badge high">ÖNEMLİ</span>
+                        <p><strong>Sorun:</strong> Kullanıcı kaç kredisi olduğunu görmeden taslak üretiyor.</p>
+                        <p><strong>Çözüm:</strong> Sayfanın üstüne "Mevcut Krediniz: X" yazısı ekle. Butonda "1 kredi" yerine "1 kredi kullan" yaz.</p>
+                        <p><strong>Süre:</strong> ~10 dakika</p>
+                    </div>
+                </li>
+
+                <li class="list-item">
+                    <span class="list-icon">❌</span>
+                    <div class="list-text">
+                        <strong>Hata Mesajlarını İyileştir</strong>
+                        <span class="badge high">ÖNEMLİ</span>
+                        <p><strong>Sorun:</strong> Hata olunca kullanıcı "ne oldu?" diye anlamıyor. Sadece "hata oluştu" yazıyor.</p>
+                        <p><strong>Çözüm:</strong> Daha açıklayıcı mesajlar:</p>
+                        <p>• "İnternet bağlantısı kesildi"<br>
+                        • "AI sistemi şu an meşgul, 1 dakika sonra tekrar dene"<br>
+                        • "Krediniz bitti, lütfen kredi satın alın"</p>
+                        <p><strong>Süre:</strong> ~20 dakika</p>
+                    </div>
+                </li>
+
+                <li class="list-item">
+                    <span class="list-icon">👁️</span>
+                    <div class="list-text">
+                        <strong>Taslak Önizleme Penceresi</strong>
+                        <span class="badge medium">ORTA</span>
+                        <p><strong>Sorun:</strong> Kullanıcı taslağı seçmeden önce içeriğini göremiyor.</p>
+                        <p><strong>Çözüm:</strong> Taslağa tıklayınca küçük bir pencere açılsın:</p>
+                        <p>• Anahtar kelimeler gösterilsin<br>
+                        • Başlıklar (outline) gösterilsin<br>
+                        • Meta açıklama gösterilsin</p>
+                        <p><strong>Süre:</strong> ~30 dakika</p>
+                    </div>
+                </li>
+
+                <li class="list-item">
+                    <span class="list-icon">🔍</span>
+                    <div class="list-text">
+                        <strong>Arama ve Filtreleme</strong>
+                        <span class="badge medium">ORTA</span>
+                        <p><strong>Sorun:</strong> 100 tane taslak olunca istediğini bulmak zor.</p>
+                        <p><strong>Çözüm:</strong> Sayfa üstüne arama kutusu ekle:</p>
+                        <p>• Anahtar kelimeye göre ara<br>
+                        • Kategoriye göre filtrele<br>
+                        • Tarihe göre sırala</p>
+                        <p><strong>Süre:</strong> ~45 dakika</p>
+                    </div>
+                </li>
+
+                <li class="list-item">
+                    <span class="list-icon">📊</span>
+                    <div class="list-text">
+                        <strong>Detaylı İşlem Takibi</strong>
+                        <span class="badge medium">ORTA</span>
+                        <p><strong>Sorun:</strong> "10 taslaktan 7'si bitti" diyor ama hangi 3'ü başarısız oldu bilmiyor.</p>
+                        <p><strong>Çözüm:</strong> Açılabilir liste ekle:</p>
+                        <p>• ✅ "Forklift Bakımı" → Başarılı<br>
+                        • ✅ "Akülü İstif" → Başarılı<br>
+                        • ❌ "Manuel Palet" → Hata: Internet kesildi</p>
+                        <p><strong>Süre:</strong> ~40 dakika</p>
+                    </div>
+                </li>
+
+                <li class="list-item">
+                    <span class="list-icon">🔄</span>
+                    <div class="list-text">
+                        <strong>Tekrar Eden Taslak Bildirimi</strong>
+                        <span class="badge medium">ORTA</span>
+                        <p><strong>Sorun:</strong> AI 25 taslak üretirken 5 tanesini "zaten var" diye atıyor ama kullanıcı bilmiyor.</p>
+                        <p><strong>Çözüm:</strong> İşlem bitince mesaj göster:</p>
+                        <p>"✅ 20 yeni taslak oluşturuldu<br>
+                        ⚠️ 5 taslak zaten vardı, atlandı"</p>
+                        <p><strong>Süre:</strong> ~15 dakika</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- DÜŞÜK ÖNCELİK -->
+        <div class="section">
+            <h2 class="section-title">🟢 Yapılacaklar - Düşük Öncelik (Ekstra Özellikler)</h2>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">Blog Hızlı Önizleme</div>
+                    <div class="card-content">
+                        <span class="badge low">EKSTRA</span><br>
+                        Oluşan blogu yeni sekme açmadan, küçük pencerede göster.<br>
+                        <strong>Süre:</strong> ~25 dakika
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Otomatik Temizlik</div>
+                    <div class="card-content">
+                        <span class="badge low">EKSTRA</span><br>
+                        Eski işlem kayıtları her gün otomatik silinsin (sunucu hafızası boşalsın).<br>
+                        <strong>Süre:</strong> ~20 dakika
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Prompt (AI Talimatı) Düzenleme</div>
+                    <div class="card-content">
+                        <span class="badge low">EKSTRA</span><br>
+                        Admin panelden AI'a verilen talimatları düzenleyebilme.<br>
+                        <strong>Süre:</strong> ~3 saat
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">İş Takip Paneli</div>
+                    <div class="card-content">
+                        <span class="badge low">EKSTRA</span><br>
+                        Arka planda çalışan işleri görebilme (Horizon linki).<br>
+                        <strong>Süre:</strong> ~10 dakika
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Akıllı Yeniden Deneme</div>
+                    <div class="card-content">
+                        <span class="badge low">EKSTRA</span><br>
+                        Hata olunca 1dk → 2dk → 5dk bekleyerek yeniden dene.<br>
+                        <strong>Süre:</strong> ~15 dakika
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">AI Modeline Göre Token Ayarı</div>
+                    <div class="card-content">
+                        <span class="badge low">EKSTRA</span><br>
+                        Farklı AI modelleri için farklı limitler.<br>
+                        <strong>Süre:</strong> ~20 dakika
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAKET ÖNERİLERİ -->
+        <div class="section" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1)); border-color: var(--primary);">
+            <h2 class="section-title" style="color: var(--primary);">📦 Paket Önerileri</h2>
+
+            <div class="grid">
+                <div class="card" style="border-left: 3px solid var(--warning);">
+                    <div class="card-title">🚀 Hızlı Paket</div>
+                    <div class="card-content">
+                        <strong>İçerik:</strong><br>
+                        • Kredi bilgisi göster<br>
+                        • Hata mesajlarını iyileştir<br>
+                        • Tekrar bildirimi<br><br>
+                        <strong>Süre:</strong> ~45 dakika<br>
+                        <strong>Etki:</strong> Kullanıcı deneyimi +%60
+                    </div>
+                </div>
+
+                <div class="card" style="border-left: 3px solid var(--info);">
+                    <div class="card-title">🎨 Tam Paket</div>
+                    <div class="card-content">
+                        <strong>İçerik:</strong><br>
+                        • Hızlı Paket +<br>
+                        • Taslak önizleme<br>
+                        • Arama & filtreleme<br>
+                        • Detaylı takip<br><br>
+                        <strong>Süre:</strong> ~2.5 saat<br>
+                        <strong>Etki:</strong> Profesyonel sistem
+                    </div>
+                </div>
+
+                <div class="card" style="border-left: 3px solid var(--success);">
+                    <div class="card-title">⚡ Premium Paket</div>
+                    <div class="card-content">
+                        <strong>İçerik:</strong><br>
+                        • Tam Paket +<br>
+                        • Tüm ekstra özellikler<br>
+                        • WebSocket gerçek zamanlı<br><br>
+                        <strong>Süre:</strong> ~1 gün<br>
+                        <strong>Etki:</strong> Enterprise seviye
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer style="text-align: center; padding: 2rem 0; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: 3rem;">
+            <p>🚀 Gelecek odaklı geliştirme planı</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Son güncelleme: 16 Kasım 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

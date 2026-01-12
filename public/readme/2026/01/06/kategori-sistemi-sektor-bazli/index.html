@@ -1,1 +1,385 @@
-v3/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sektör Bazlı Kategori - Spotify Tarzı Görünüm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .hero-section {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 1) 100%),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23dc8850" width="1200" height="600"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        .filter-btn {
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .filter-btn:hover {
+            transform: scale(1.05);
+        }
+        .filter-btn.active {
+            background: #dc2626 !important;
+            color: white !important;
+        }
+        .playlist-card {
+            transition: all 0.3s ease;
+            background: #1e293b;
+        }
+        .playlist-card:hover {
+            background: #334155;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+        }
+        .playlist-image {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #dc8850 0%, #dc6850 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <!-- Header -->
+    <header class="gradient-bg border-b border-slate-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-medium border border-orange-500/30">
+                    <i class="fas fa-layer-group mr-2"></i>Scroll Tabanlı Görünüm
+                </span>
+                <span class="text-slate-400 text-sm">6 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-music text-orange-400 mr-3"></i>
+                Sektör Bazlı Kategori Sistemi
+            </h1>
+            <p class="text-slate-300 text-lg">Spotify Business tarzı - Her şey görünür, tıklama yok</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <!-- Sektör Seçici -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">🏢 Sektör Seç (Kullanıcı Profili Simülasyonu)</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                <button class="sector-select-btn bg-gradient-to-br from-amber-900/60 to-amber-800/40 hover:from-amber-800/80 hover:to-amber-700/60 border border-amber-700/50 rounded-xl p-4 text-center transition active" data-sector="cafe">
+                    <i class="fas fa-mug-hot text-amber-400 text-2xl mb-2"></i>
+                    <div class="text-white font-semibold text-sm">Café</div>
+                </button>
+                <button class="sector-select-btn bg-gradient-to-br from-red-900/40 to-red-800/20 hover:from-red-800/60 hover:to-red-700/40 border border-red-700/50 rounded-xl p-4 text-center transition" data-sector="restaurant">
+                    <i class="fas fa-utensils text-red-400 text-2xl mb-2"></i>
+                    <div class="text-white font-semibold text-sm">Restoran</div>
+                </button>
+                <button class="sector-select-btn bg-gradient-to-br from-orange-900/40 to-orange-800/20 hover:from-orange-800/60 hover:to-orange-700/40 border border-orange-700/50 rounded-xl p-4 text-center transition" data-sector="gym">
+                    <i class="fas fa-dumbbell text-orange-400 text-2xl mb-2"></i>
+                    <div class="text-white font-semibold text-sm">Gym</div>
+                </button>
+                <button class="sector-select-btn bg-gradient-to-br from-purple-900/40 to-purple-800/20 hover:from-purple-800/60 hover:to-purple-700/40 border border-purple-700/50 rounded-xl p-4 text-center transition" data-sector="spa">
+                    <i class="fas fa-spa text-purple-400 text-2xl mb-2"></i>
+                    <div class="text-white font-semibold text-sm">SPA</div>
+                </button>
+                <button class="sector-select-btn bg-gradient-to-br from-blue-900/40 to-blue-800/20 hover:from-blue-800/60 hover:to-blue-700/40 border border-blue-700/50 rounded-xl p-4 text-center transition" data-sector="retail">
+                    <i class="fas fa-shopping-bag text-blue-400 text-2xl mb-2"></i>
+                    <div class="text-white font-semibold text-sm">Mağaza</div>
+                </button>
+                <button class="sector-select-btn bg-gradient-to-br from-teal-900/40 to-teal-800/20 hover:from-teal-800/60 hover:to-teal-700/40 border border-teal-700/50 rounded-xl p-4 text-center transition" data-sector="hotel">
+                    <i class="fas fa-hotel text-teal-400 text-2xl mb-2"></i>
+                    <div class="text-white font-semibold text-sm">Otel</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Sektör İçeriği -->
+        <div id="sector-content"></div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg border-t border-slate-800 mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-8 text-center">
+            <div class="flex items-center justify-center gap-3 text-slate-400 mb-3">
+                <i class="fas fa-robot text-blue-400 text-xl"></i>
+                <span class="text-sm">Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300 underline">Claude Code</a></span>
+            </div>
+            <div class="text-xs text-slate-500">
+                Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const sectorData = {
+            cafe: {
+                name: 'Café',
+                label: 'BUSINESS',
+                color: 'amber',
+                bgColor: '#dc8850',
+                filters: ['Discover', 'All', 'Acoustic', 'Bossa nova', 'Instrumental', 'Pop', 'Relaxed', 'Singer-songwriter', 'Family-friendly'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen café playlist\'leri',
+                        playlists: [
+                            { name: 'Café Jazz', desc: 'Sofistike ritimler ve canlı sesler', icon: 'coffee' },
+                            { name: 'Cozy Café', desc: 'Rahatlatıcı atmosfer müziği', icon: 'cloud' },
+                            { name: 'Happy Retro Café', desc: 'Neşeli nostaljik parçalar', icon: 'smile' },
+                            { name: 'Coffee Shop Beats', desc: 'Sakin beatler', icon: 'headphones' },
+                            { name: 'Feel-good Café', desc: 'Pozitif akustik pop', icon: 'heart' },
+                            { name: 'Café Chillout', desc: 'Jazzy chillout beats', icon: 'leaf' }
+                        ]
+                    },
+                    {
+                        title: 'Popüler café playlist\'leri',
+                        subtitle: 'Barista favorileri',
+                        playlists: [
+                            { name: 'Morning Coffee', desc: 'Güne başlarken perfect', icon: 'sun' },
+                            { name: 'Afternoon Tea', desc: 'Öğleden sonra dinginliği', icon: 'mug-hot' },
+                            { name: 'Brunch Grooves', desc: 'Indie pop ve soul', icon: 'music' },
+                            { name: 'Lunch Time Vibes', desc: 'Öğle arası enerji', icon: 'utensils' },
+                            { name: 'Evening Lounge', desc: 'Akşam rahatlaması', icon: 'moon' },
+                            { name: 'Study Café', desc: 'Konsantrasyon müziği', icon: 'book' }
+                        ]
+                    },
+                    {
+                        title: 'Aile dostu café müzikleri',
+                        subtitle: 'Şarkı sözleri uygun',
+                        playlists: [
+                            { name: 'Family Brunch', desc: 'Herkes için uygun', icon: 'users' },
+                            { name: 'Kids & Coffee', desc: 'Çocuklu aileler için', icon: 'child' },
+                            { name: 'Sunday Morning', desc: 'Pazar kahvaltısı keyfi', icon: 'star' }
+                        ]
+                    }
+                ]
+            },
+            restaurant: {
+                name: 'Restoran',
+                label: 'BUSINESS',
+                color: 'red',
+                bgColor: '#dc2626',
+                filters: ['Discover', 'All', 'Breakfast', 'Lunch', 'Dinner', 'Fine Dining', 'Casual', 'Romantic', 'Fast-paced'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen restoran müzikleri',
+                        playlists: [
+                            { name: 'Fine Dining Experience', desc: 'Şık ve zarif melodiler', icon: 'wine-glass' },
+                            { name: 'Italian Restaurant', desc: 'Akdeniz esintileri', icon: 'pizza-slice' },
+                            { name: 'Modern Gastronomy', desc: 'Çağdaş lezzetler için müzik', icon: 'utensils' },
+                            { name: 'Bistro Classics', desc: 'Klasik bistro ambiyansı', icon: 'coffee' },
+                            { name: 'Sushi Bar Vibes', desc: 'Zen ve modern', icon: 'fish' },
+                            { name: 'Steakhouse Jazz', desc: 'Smooth jazz', icon: 'fire' }
+                        ]
+                    },
+                    {
+                        title: 'Zaman dilimlerine göre',
+                        subtitle: 'Günün her saati için uygun',
+                        playlists: [
+                            { name: 'Breakfast Brunch', desc: 'Kahvaltı keyfi', icon: 'egg' },
+                            { name: 'Lunch Service', desc: 'Öğle arası tempo', icon: 'sun' },
+                            { name: 'Dinner Elegance', desc: 'Akşam yemeği şıklığı', icon: 'moon' },
+                            { name: 'Late Night Dining', desc: 'Gece servisi', icon: 'star' }
+                        ]
+                    }
+                ]
+            },
+            gym: {
+                name: 'Gym',
+                label: 'FITNESS',
+                color: 'orange',
+                bgColor: '#ea580c',
+                filters: ['Discover', 'All', 'Cardio', 'HIIT', 'Yoga', 'Strength', 'Warm-up', 'Cool-down', 'Motivational'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen workout müzikleri',
+                        playlists: [
+                            { name: 'Beast Mode', desc: 'Yüksek tempolu güç müziği', icon: 'fire' },
+                            { name: 'Cardio Power', desc: 'Dayanıklılık için enerji', icon: 'heartbeat' },
+                            { name: 'HIIT Session', desc: 'Aralıklı antrenman ritmi', icon: 'bolt' },
+                            { name: 'Pump It Up', desc: 'Maximum motivasyon', icon: 'dumbbell' },
+                            { name: 'Running Beats', desc: 'Koşu temposu', icon: 'running' },
+                            { name: 'CrossFit Intensity', desc: 'Yoğun antrenman', icon: 'fire-alt' }
+                        ]
+                    },
+                    {
+                        title: 'Antrenman tiplerine göre',
+                        subtitle: 'Her egzersiz için doğru tempo',
+                        playlists: [
+                            { name: 'Strength Training', desc: 'Ağır kaldırma ritmi', icon: 'weight' },
+                            { name: 'Yoga & Pilates', desc: 'Akış ve denge', icon: 'spa' },
+                            { name: 'Warm-up Mix', desc: 'Isınma müziği', icon: 'fire' },
+                            { name: 'Cool-down Stretch', desc: 'Soğuma ve esneme', icon: 'wind' }
+                        ]
+                    }
+                ]
+            },
+            spa: {
+                name: 'SPA',
+                label: 'WELLNESS',
+                color: 'purple',
+                bgColor: '#9333ea',
+                filters: ['Discover', 'All', 'Meditation', 'Massage', 'Relaxation', 'Yoga', 'Nature Sounds', 'Zen'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen SPA müzikleri',
+                        playlists: [
+                            { name: 'Deep Relaxation', desc: 'Derin rahatlama sesleri', icon: 'water' },
+                            { name: 'Massage Therapy', desc: 'Terapi eşliği', icon: 'hand-sparkles' },
+                            { name: 'Meditation Journey', desc: 'Meditasyon yolculuğu', icon: 'yin-yang' },
+                            { name: 'Zen Garden', desc: 'Doğa sesleri', icon: 'leaf' },
+                            { name: 'Chakra Balance', desc: 'Enerji dengesi', icon: 'om' },
+                            { name: 'Sound Healing', desc: 'Ses terapisi', icon: 'music' }
+                        ]
+                    },
+                    {
+                        title: 'Wellness kategorileri',
+                        subtitle: 'Her tedavi için uygun',
+                        playlists: [
+                            { name: 'Hot Stone Massage', desc: 'Sıcak taş terapisi', icon: 'fire' },
+                            { name: 'Aromatherapy', desc: 'Koku terapisi müziği', icon: 'seedling' },
+                            { name: 'Sauna & Steam', desc: 'Buhar odası ambiyansı', icon: 'cloud' },
+                            { name: 'Facial Treatment', desc: 'Yüz bakımı', icon: 'spa' }
+                        ]
+                    }
+                ]
+            },
+            retail: {
+                name: 'Mağaza',
+                label: 'RETAIL',
+                color: 'blue',
+                bgColor: '#2563eb',
+                filters: ['Discover', 'All', 'Upbeat', 'Pop', 'Chill', 'Trendy', 'Luxury', 'Fast Fashion'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen mağaza müzikleri',
+                        playlists: [
+                            { name: 'Shopping Vibes', desc: 'Alışveriş keyfi', icon: 'shopping-cart' },
+                            { name: 'Boutique Luxury', desc: 'Lüks butik ambiyansı', icon: 'gem' },
+                            { name: 'Pop Retail', desc: 'Trend pop müzik', icon: 'star' },
+                            { name: 'Fashion Forward', desc: 'Moda mağazaları için', icon: 'tshirt' },
+                            { name: 'Upbeat Shopping', desc: 'Enerji veren', icon: 'bolt' },
+                            { name: 'Chill Retail', desc: 'Rahat alışveriş', icon: 'cloud' }
+                        ]
+                    }
+                ]
+            },
+            hotel: {
+                name: 'Otel',
+                label: 'HOSPITALITY',
+                color: 'teal',
+                bgColor: '#0d9488',
+                filters: ['Discover', 'All', 'Lobby', 'Lounge', 'Pool', 'Restaurant', 'Bar', 'Spa', 'Elevator'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen otel müzikleri',
+                        playlists: [
+                            { name: 'Luxury Lobby', desc: 'Lobi ambiyansı', icon: 'crown' },
+                            { name: 'Poolside Relaxation', desc: 'Havuz başı keyfi', icon: 'swimmer' },
+                            { name: 'Hotel Lounge', desc: 'Lounge bar müziği', icon: 'cocktail' },
+                            { name: 'Elegant Dining', desc: 'Otel restoranı', icon: 'utensils' },
+                            { name: 'Spa Experience', desc: 'Wellness merkezi', icon: 'spa' },
+                            { name: 'Rooftop Bar', desc: 'Teras barı', icon: 'wine-glass' }
+                        ]
+                    },
+                    {
+                        title: 'Otel bölümlerine göre',
+                        subtitle: 'Her alan için özel',
+                        playlists: [
+                            { name: 'Check-in Welcome', desc: 'Karşılama müziği', icon: 'door-open' },
+                            { name: 'Elevator Music', desc: 'Asansör müziği', icon: 'arrows-alt-v' },
+                            { name: 'Breakfast Buffet', desc: 'Kahvaltı salonu', icon: 'coffee' }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentSector = 'cafe';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSector('cafe');
+
+            document.querySelectorAll('.sector-select-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sector-select-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderSector(this.dataset.sector);
+                });
+            });
+        });
+
+        function renderSector(sectorKey) {
+            currentSector = sectorKey;
+            const data = sectorData[sectorKey];
+            const container = document.getElementById('sector-content');
+
+            const filtersHTML = data.filters.map((f, i) => `
+                <button class="filter-btn ${i === 0 ? 'active' : ''} bg-slate-700 hover:bg-slate-600 px-5 py-2.5 rounded-full text-sm font-medium text-white">
+                    ${f}
+                </button>
+            `).join('');
+
+            const sectionsHTML = data.sections.map(section => `
+                <section class="mb-12">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-white mb-1">${section.title}</h3>
+                        ${section.subtitle ? `<p class="text-slate-400 text-sm">${section.subtitle}</p>` : ''}
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                        ${section.playlists.map(pl => `
+                            <div class="playlist-card rounded-lg overflow-hidden cursor-pointer">
+                                <div class="playlist-image" style="background: linear-gradient(135deg, ${data.bgColor} 0%, ${adjustColor(data.bgColor, -20)} 100%);">
+                                    <i class="fas fa-${pl.icon} text-white text-5xl opacity-60"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h4 class="font-semibold text-white mb-1 line-clamp-1">${pl.name}</h4>
+                                    <p class="text-xs text-slate-400 line-clamp-2">${pl.desc}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `).join('');
+
+            container.innerHTML = `
+                <!-- Hero Section -->
+                <div class="hero-section rounded-2xl mb-8 p-12" style="background-color: ${data.bgColor};">
+                    <div class="text-sm font-semibold text-white/80 mb-2">${data.label}</div>
+                    <h2 class="text-6xl font-bold text-white mb-6">${data.name}</h2>
+                </div>
+
+                <!-- Filters -->
+                <div class="mb-8 overflow-x-auto">
+                    <div class="flex gap-2 pb-2">
+                        ${filtersHTML}
+                    </div>
+                </div>
+
+                <!-- Sections -->
+                ${sectionsHTML}
+            `;
+
+            // Filter click handlers
+            container.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        function adjustColor(color, amount) {
+            const hex = color.replace('#', '');
+            const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
+            const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
+            const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
+            return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+    </script>
+
+</body>
+</html>

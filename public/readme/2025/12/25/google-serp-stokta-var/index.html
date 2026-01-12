@@ -1,1 +1,484 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Arama Sonuçlarında "Stokta Var" Yazısı Ekleme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-slate-800 to-slate-700 border-b border-slate-600 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            🔍 Google SEO
+                        </span>
+                        <span class="text-slate-400 text-sm">
+                            25 Aralık 2025
+                        </span>
+                    </div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        Google Arama Sonuçlarında "Stokta Var" Yazısı
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-12">
+
+        <!-- 📝 Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-4">
+                <span class="text-4xl">📝</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-green-400 mb-2">Basit Anlatım (Herkes İçin)</h2>
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Google'da arama yaptığınızda ürünlerin altında <strong class="text-green-400">"Stokta var"</strong>,
+                        <strong class="text-green-400">"Ücretsiz teslimat"</strong> gibi bilgiler görürsünüz.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Google SERP Örneği -->
+            <div class="bg-slate-800/70 rounded-xl p-6 mb-6">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <span class="text-2xl">🔍</span> Google'da Nasıl Görünüyor?
+                </h3>
+                <div class="bg-white rounded-lg p-6 space-y-4">
+                    <!-- Rakip site örneği -->
+                    <div class="border-b border-gray-200 pb-4">
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="w-6 h-6 bg-blue-600 rounded-full"></div>
+                            <span class="text-sm text-gray-600">makinaturkiye.com › ... › Forklift Çatal</span>
+                        </div>
+                        <h3 class="text-xl text-blue-600 hover:underline cursor-pointer mb-1">
+                            Forklift Çatal Uzatma Kılıfı/Bıçağı Litef LTF lift
+                        </h3>
+                        <p class="text-sm text-gray-700 mb-2">
+                            KAPASİTE : 2.5 Ton, 3.0 Ton, 3.5 Ton forjklifler için idealdir. (Her tonajda Forklift için çatal uzatma bıçağı üretmekteyiz.) ÖLÇÜLER : 1800 mm / ...
+                        </p>
+                        <div class="flex items-center gap-4 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                                <span class="text-gray-600">5,0</span>
+                                <span class="text-gray-500">(1)</span>
+                            </div>
+                            <span class="text-gray-700 font-semibold">$220,00</span>
+                            <span class="text-green-700 font-semibold">• Stokta var</span>
+                        </div>
+                    </div>
+
+                    <!-- İxtif örneği (ŞU AN) -->
+                    <div class="border-b border-gray-200 pb-4">
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="w-6 h-6 bg-red-600 rounded-full"></div>
+                            <span class="text-sm text-gray-600">ixtif.com › Mağaza › Çatal Kılıfı</span>
+                        </div>
+                        <h3 class="text-xl text-blue-600 hover:underline cursor-pointer mb-1">
+                            Forklift Çatal Uzatma Kılıfları
+                        </h3>
+                        <p class="text-sm text-gray-700 mb-2">
+                            Forklift çatal kılıfı olarak bilinen bir tür forklift ataçmanıdır. Forkliftin çatallarına eklendiğinde...
+                        </p>
+                        <div class="flex items-center gap-4 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                                <span class="text-gray-600">5,0</span>
+                                <span class="text-gray-500">(1)</span>
+                            </div>
+                            <span class="text-gray-700 font-semibold">₺9.999,00</span>
+                            <span class="text-red-600 font-semibold line-through">• Stok bilgisi YOK</span>
+                        </div>
+                    </div>
+
+                    <!-- İxtif örneği (DÜZELTME SONRASI) -->
+                    <div class="bg-green-50 rounded-lg p-4 border-2 border-green-600">
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="w-6 h-6 bg-red-600 rounded-full"></div>
+                            <span class="text-sm text-gray-600">ixtif.com › Mağaza › Çatal Kılıfı</span>
+                        </div>
+                        <h3 class="text-xl text-blue-600 hover:underline cursor-pointer mb-1">
+                            Forklift Çatal Uzatma Kılıfları
+                        </h3>
+                        <p class="text-sm text-gray-700 mb-2">
+                            Forklift çatal kılıfı olarak bilinen bir tür forklift ataçmanıdır. Forkliftin çatallarına eklendiğinde...
+                        </p>
+                        <div class="flex items-center gap-4 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                                <span class="text-gray-600">5,0</span>
+                                <span class="text-gray-500">(1)</span>
+                            </div>
+                            <span class="text-gray-700 font-semibold">₺9.999,00</span>
+                            <span class="text-green-700 font-bold">✓ Stokta var</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 space-y-3">
+                <h3 class="text-xl font-semibold text-white mb-3">✅ Ne Yapacağız?</h3>
+                <ul class="space-y-2 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-400 text-xl">✓</span>
+                        <span>Google'a <strong class="text-green-400">Schema.org structured data</strong> ile "ürün stokta" bilgisi göndereceğiz</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-400 text-xl">✓</span>
+                        <span>Tüm ürünler <strong class="text-green-400">"InStock"</strong> olarak işaretlenecek</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-400 text-xl">✓</span>
+                        <span>Google Search Console'da test edeceğiz</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mt-6 bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+                <p class="text-blue-300 text-sm">
+                    💡 <strong>Neden Önemli?</strong> Google'da "Stokta var" yazısı görünce kullanıcılar sitenize tıklama olasılığı
+                    <strong>%40-60 artar</strong>! Tıklama oranı (CTR) arttıkça Google sizi daha üst sıralara çıkarır.
+                </p>
+            </div>
+        </section>
+
+        <!-- 🔧 Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-4">
+                <span class="text-4xl">🔧</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-blue-400 mb-2">Teknik Detaylar (Geliştiriciler İçin)</h2>
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Schema.org Product markup - Google Rich Results için gerekli.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Mevcut Durum -->
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                        <span class="text-2xl">❌</span> Şu Anki Kod
+                    </h3>
+                    <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-red-300"><code>private function getAvailabilitySchemaUrl(): string
+{
+    if ($this->stock_tracking) {
+        if ($this->current_stock > 0) {
+            return 'https://schema.org/InStock';
+        }
+        if ($this->allow_backorder) {
+            return 'https://schema.org/BackOrder';
+        }
+        return 'https://schema.org/OutOfStock';
+    }
+
+    return 'https://schema.org/InStock';
+}</code></pre>
+                    <p class="text-red-400 text-sm mt-3">
+                        ⚠️ Stok takibi açıksa ve stok 0 ise "OutOfStock" döndürüyor!
+                    </p>
+                </div>
+
+                <!-- Yeni Kod -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border-2 border-green-600">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                        <span class="text-2xl">✅</span> Yeni Kod
+                    </h3>
+                    <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-green-300"><code>private function getAvailabilitySchemaUrl(): string
+{
+    // 🎯 Kullanıcı isteği:
+    // Tüm ürünler DAIMA stokta gösterilsin
+    // (Google SERP için)
+    return 'https://schema.org/InStock';
+}</code></pre>
+                    <p class="text-green-400 text-sm mt-3">
+                        ✓ Basit ve etkili - tüm ürünler stokta!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Schema.org JSON-LD Örneği -->
+            <div class="mt-6 bg-slate-800/50 rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <span class="text-2xl">📋</span> Schema.org JSON-LD Çıktısı
+                </h3>
+                <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-blue-300"><code>{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Forklift Çatal Uzatma Kılıfları",
+  "image": "https://ixtif.com/storage/products/hero.webp",
+  "description": "Forklift çatal kılıfı...",
+  "sku": "FRK-001",
+  "brand": {
+    "@type": "Brand",
+    "name": "iXtif"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://ixtif.com/shop/forklift-catal-uzatma",
+    "priceCurrency": "TRY",
+    "price": "9999.00",
+    <span class="text-green-400 font-bold">"availability": "https://schema.org/InStock",</span>
+    "itemCondition": "https://schema.org/NewCondition"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5.0",
+    "reviewCount": "1"
+  }
+}</code></pre>
+                <p class="text-slate-400 text-sm mt-3">
+                    Bu JSON-LD kodu ürün sayfasının &lt;head&gt; kısmına otomatik ekleniyor.
+                    Google bu kodu okuyup arama sonuçlarında "Stokta var" yazısını gösteriyor.
+                </p>
+            </div>
+
+            <!-- Dosya Konumu -->
+            <div class="mt-6 bg-slate-800/50 rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <span class="text-2xl">📁</span> Değiştirilecek Dosya
+                </h3>
+                <ul class="space-y-2 text-sm font-mono">
+                    <li class="bg-slate-700/50 p-3 rounded text-blue-300">
+                        Modules/Shop/app/Models/ShopProduct.php
+                    </li>
+                    <li class="text-slate-400 text-xs ml-4">
+                        → getAvailabilitySchemaUrl() fonksiyonu (satır 1083-1097)
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 📊 Uygulama Adımları -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">📊</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Uygulama Adımları</h2>
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Kod değişikliği + Google test süreci.
+                    </p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-slate-700/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</span>
+                        <h3 class="text-lg font-bold text-white">ShopProduct.php Düzenleme</h3>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        <code class="bg-slate-600 px-2 py-1 rounded text-xs">Modules/Shop/app/Models/ShopProduct.php</code>
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-400 ml-8">
+                        <li>• getAvailabilitySchemaUrl() fonksiyonunu basitleştir</li>
+                        <li>• Direkt return 'https://schema.org/InStock';</li>
+                        <li>• Stok kontrolünü kaldır</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</span>
+                        <h3 class="text-lg font-bold text-white">Cache Temizleme</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400 ml-8">
+                        <li>• <code class="bg-slate-600 px-2 py-1 rounded text-xs">php artisan view:clear</code></li>
+                        <li>• <code class="bg-slate-600 px-2 py-1 rounded text-xs">php artisan responsecache:clear</code></li>
+                        <li>• <code class="bg-slate-600 px-2 py-1 rounded text-xs">curl -s -k https://ixtif.com/opcache-reset.php</code></li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</span>
+                        <h3 class="text-lg font-bold text-white">Google Rich Results Test</h3>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        <a href="https://search.google.com/test/rich-results" target="_blank" class="text-blue-400 hover:underline">
+                            https://search.google.com/test/rich-results
+                        </a>
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-400 ml-8">
+                        <li>• Ürün sayfası URL'sini yapıştır (örn: ixtif.com/shop/forklift-catal)</li>
+                        <li>• "Test URL" butonuna tıkla</li>
+                        <li>• "Product" schema'sını kontrol et</li>
+                        <li>• "availability: InStock" olmalı</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">4</span>
+                        <h3 class="text-lg font-bold text-white">Google Search Console - URL İnceleme</h3>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        <a href="https://search.google.com/search-console" target="_blank" class="text-blue-400 hover:underline">
+                            Google Search Console
+                        </a>
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-400 ml-8">
+                        <li>• Sol menüden "URL İnceleme" seç</li>
+                        <li>• Ürün sayfası URL'sini yapıştır</li>
+                        <li>• "Canlı URL'yi Test Et" butonuna tıkla</li>
+                        <li>• Rich Results'ta "Product" şemasını kontrol et</li>
+                        <li>• "Dizin oluşturma iste" butonuna tıkla (Google'ın hemen taraması için)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-6 border-2 border-yellow-600">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-yellow-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">5</span>
+                        <h3 class="text-lg font-bold text-yellow-400">Google'da Görünme Süresi</h3>
+                    </div>
+                    <p class="text-yellow-300 text-sm mb-3">
+                        ⚠️ <strong>ÖNEMLİ:</strong> Değişiklik yaptıktan sonra Google'ın arama sonuçlarında göstermesi zaman alır!
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-8">
+                        <li>• <strong class="text-green-400">Yeni ürünler:</strong> 1-7 gün (Google ilk tarama)</li>
+                        <li>• <strong class="text-blue-400">Mevcut ürünler:</strong> 3-14 gün (Google yeniden tarama)</li>
+                        <li>• <strong class="text-purple-400">Hızlandırma:</strong> Search Console'dan "Dizin oluşturma iste" → 1-3 gün</li>
+                        <li>• <strong class="text-orange-400">Sitemap:</strong> sitemap.xml güncel olmalı (otomatik güncelleniyor)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎯 Beklenen Sonuç -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🎯</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-green-400 mb-2">Beklenen Sonuç</h2>
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Google'da arama sonuçlarında nasıl görünecek?
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/70 rounded-xl p-6">
+                <h3 class="text-xl font-semibold text-white mb-4">Google SERP Görünümü</h3>
+                <div class="bg-white rounded-lg p-6">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-6 h-6 bg-red-600 rounded-full"></div>
+                        <span class="text-sm text-gray-600">ixtif.com › Mağaza › Forklift Ekipmanları</span>
+                    </div>
+                    <h3 class="text-xl text-blue-600 hover:underline cursor-pointer mb-1">
+                        Forklift Çatal Uzatma Kılıfları - iXtif
+                    </h3>
+                    <p class="text-sm text-gray-700 mb-2">
+                        Profesyonel forklift çatal uzatma kılıfları. 2.5-3.5 ton kapasiteli forklifler için ideal. CE sertifikalı, ücretsiz kargo.
+                    </p>
+                    <div class="flex items-center gap-4 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                            <span class="text-gray-600">5,0</span>
+                            <span class="text-gray-500">(15)</span>
+                        </div>
+                        <span class="text-gray-700 font-semibold">₺9.999,00</span>
+                        <span class="text-green-700 font-bold">✓ Stokta var</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-green-900/30 border border-green-700 rounded-lg p-4">
+                <p class="text-green-300 text-sm">
+                    ✅ <strong>Başarı!</strong> Artık rakiplerinizle aynı görünümdesiniz. "Stokta var" yazısı
+                    kullanıcıların dikkatini çekecek ve tıklama oranınızı artıracak.
+                </p>
+            </div>
+        </section>
+
+        <!-- ⚠️ Dikkat Edilecek Noktalar -->
+        <section class="bg-red-900/20 border border-red-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-4">
+                <span class="text-4xl">⚠️</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-red-400 mb-2">Dikkat Edilecek Noktalar</h2>
+                </div>
+            </div>
+            <ul class="space-y-3 text-slate-300">
+                <li class="flex items-start gap-3">
+                    <span class="text-red-400 text-xl">•</span>
+                    <span><strong class="text-red-400">Google tarama süresi:</strong> Değişiklik 1-14 gün içinde yansır (Search Console ile hızlandırılabilir)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-red-400 text-xl">•</span>
+                    <span><strong class="text-red-400">Schema.org hatası olmamalı:</strong> Google Rich Results Test'te hata çıkmamalı</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-red-400 text-xl">•</span>
+                    <span><strong class="text-red-400">Ürün fotoğrafı zorunlu:</strong> "image" field'i boş olursa Google göstermez</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-red-400 text-xl">•</span>
+                    <span><strong class="text-red-400">Fiyat bilgisi zorunlu:</strong> "price" ve "priceCurrency" field'leri dolu olmalı</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 text-xl">•</span>
+                    <span><strong class="text-yellow-400">Gerçek stok durumu:</strong> İleride gerçekten stok takibi yapmak isterseniz kodu tekrar düzenleriz</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 💡 Ek İyileştirmeler -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">💡</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-purple-400 mb-2">Ek İyileştirmeler (Opsiyonel)</h2>
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Google SERP'te daha fazla bilgi göstermek için.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3">🚚 Ücretsiz Teslimat</h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        Schema.org'da "shippingDetails" eklenebilir. Google bazen arama sonuçlarında gösterir.
+                    </p>
+                    <div class="bg-slate-700/50 rounded p-3 text-xs">
+                        <code class="text-green-300">"shippingRate": { "value": "0" }</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3">↩️ İade Politikası</h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        "hasMerchantReturnPolicy" field'i eklenebilir. Google bazen gösterir.
+                    </p>
+                    <div class="bg-slate-700/50 rounded p-3 text-xs">
+                        <code class="text-green-300">"merchantReturnDays": 14</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-purple-900/30 border border-purple-700 rounded-lg p-4">
+                <p class="text-purple-300 text-sm">
+                    💡 <strong>Not:</strong> Bu field'ler zaten kodda mevcut! (ShopProduct.php satır 943-985)
+                    Google bunları bazen gösterir, bazen göstermez. Ama ekstra bir işlem gerekmiyor.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-400 text-sm">
+            <p>🤖 Claude Sonnet 4.5 tarafından oluşturuldu</p>
+            <p class="mt-2">Google SEO Analizi - Schema.org Structured Data</p>
+        </div>
+    </footer>
+</body>
+</html>

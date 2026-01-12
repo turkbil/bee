@@ -1,1 +1,375 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu SPA Links Analiz Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .status-badge { @apply px-3 py-1 rounded-full text-xs font-semibold; }
+        .status-ok { @apply bg-green-500/20 text-green-400 border border-green-500/30; }
+        .status-error { @apply bg-red-500/20 text-red-400 border border-red-500/30; }
+        .status-warning { @apply bg-yellow-500/20 text-yellow-400 border border-yellow-500/30; }
+        .card { @apply bg-slate-800/50 border border-slate-700 rounded-xl p-6 backdrop-blur-sm; }
+    </style>
+</head>
+<body class="text-slate-200 p-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="status-badge status-warning">
+                    <i class="fas fa-link mr-1"></i> SPA Links Analiz
+                </span>
+                <span class="text-slate-400 text-sm">08 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-route mr-3 text-blue-400"></i>
+                Muzibu SPA Links Analiz Raporu
+            </h1>
+            <p class="text-slate-400 text-lg">Anasayfa SPA linklerinin durumu ve çalışmayan sayfaların analizi</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="card bg-green-900/20 border-green-800 mb-6">
+            <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-info-circle"></i>
+                📝 Basit Anlatım (Herkes İçin)
+            </h3>
+            <div class="space-y-3 text-slate-300">
+                <p><strong>Ne oldu?</strong></p>
+                <p>Muzibu anasayfasında bazı linkler (Radyolar ve Sektörler) boş sayfa gösteriyor. Tüm SPA linklerini inceledim.</p>
+
+                <p class="mt-4"><strong>Ana Sorun:</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><strong>Radyolar (/radios):</strong> 122 radyo var ama hiçbirinin playlist ilişkisi yok → Sayfa boş</li>
+                    <li><strong>Sektörler (/sectors):</strong> 23 sektör var ama hiçbirinin playlist ilişkisi yok → Sayfa boş</li>
+                </ul>
+
+                <p class="mt-4"><strong>Neden önemli?</strong></p>
+                <p>Controller (kod) sadece "playlist'i olan" radyo/sektörleri gösteriyor. Hiçbirinin playlist ilişkisi olmadığı için liste boş geliyor.</p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="card bg-blue-900/20 border-blue-800 mb-6">
+            <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-code"></i>
+                🔧 Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-2">Radios Controller Sorunu:</h4>
+                    <p class="mb-2"><strong>Dosya:</strong> <code class="bg-slate-900 px-2 py-1 rounded">Modules/Muzibu/app/Http/Controllers/Front/RadioController.php</code></p>
+                    <p class="mb-2"><strong>Satır:</strong> 13-20</p>
+                    <div class="bg-slate-900 p-4 rounded-lg overflow-x-auto mb-3">
+                        <pre class="text-sm text-green-400">$radios = Radio::with('logoMedia')
+    -&gt;where('is_active', 1)
+    -&gt;whereHas('playlists', function($q) {  // ❌ SORUN: Playlist ilişkisi zorunlu
+        $q-&gt;where('is_active', 1)
+          -&gt;whereHas('songs', function($sq) {
+              $sq-&gt;where('is_active', 1);
+          });
+    })
+    -&gt;paginate(200);</pre>
+                    </div>
+                    <p><strong>Sorun:</strong> <code>whereHas('playlists')</code> filtresi tüm radyoları eliyor çünkü hiçbir radyonun playlist ilişkisi yok.</p>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-white mb-2">Database Durumu:</h4>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li><strong>muzibu_radios:</strong> 122 aktif kayıt (title, logo, description var)</li>
+                        <li><strong>muzibu_sectors:</strong> 23 aktif kayıt (title, icon, description var)</li>
+                        <li><strong>Playlist ilişkisi:</strong> 0 kayıt (pivot table boş veya ilişki kurulmamış)</li>
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-white mb-2">İlgili Model İlişkileri:</h4>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li><code>Radio::class</code> → <code>playlists()</code> ilişkisi: belongsToMany veya hasMany?</li>
+                        <li><code>Sector::class</code> → <code>playlists()</code> ilişkisi: belongsToMany veya hasMany?</li>
+                        <li>Pivot tablo: <code>radio_playlist</code> veya <code>sector_playlist</code> mevcut mu?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anasayfa SPA Links Durumu -->
+        <div class="card mb-6">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <i class="fas fa-home"></i>
+                Anasayfa SPA Links Durumu
+            </h3>
+
+            <!-- Navigation Links -->
+            <div class="mb-8">
+                <h4 class="text-lg font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-bars"></i>
+                    Ana Menü (Sidebar Left)
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-home mr-2"></i>Ana Sayfa</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/"</code>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-list-music mr-2"></i>Çalma Listeleri</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/playlists"</code>
+                        <p class="text-xs text-green-400 mt-2">8 öne çıkan playlist gösteriliyor</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-microphone-lines mr-2"></i>Albümler</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/albums"</code>
+                        <p class="text-xs text-green-400 mt-2">8 yeni albüm gösteriliyor (başlıklar restore edildi)</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-guitars mr-2"></i>Türler</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/genres"</code>
+                        <p class="text-xs text-green-400 mt-2">8 tür gösteriliyor (songs_count > 0 olanlar)</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-red-900 border-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-radio mr-2"></i>Radyolar</span>
+                            <span class="status-badge status-error">✗ BOŞ</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/radios"</code>
+                        <p class="text-xs text-red-400 mt-2">122 radyo var ama playlist ilişkisi yok → Sayfa boş</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-red-900 border-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-building mr-2"></i>Sektörler</span>
+                            <span class="status-badge status-error">✗ BOŞ</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/sectors"</code>
+                        <p class="text-xs text-red-400 mt-2">23 sektör var ama playlist ilişkisi yok → Sayfa boş</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Links -->
+            <div class="mb-8">
+                <h4 class="text-lg font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    Kullanıcı Alanları
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-user-circle mr-2"></i>Panelim</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/dashboard"</code>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-heart mr-2"></i>Favorilerim</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/muzibu/favorites"</code>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-list mr-2"></i>Playlistlerim</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/muzibu/my-playlists"</code>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium"><i class="fas fa-building mr-2"></i>Kurumsal</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">href="/muzibu/corporate-playlists"</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Content Links (Examples) -->
+            <div class="mb-8">
+                <h4 class="text-lg font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-link"></i>
+                    Dinamik İçerik Linkleri (Örnekler)
+                </h4>
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm font-medium">Playlist Detay</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">/playlists/chill-reggae-acoustic-playlist</code>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm font-medium">Albüm Detay</span>
+                            <span class="status-badge status-ok">✓ Çalışıyor</span>
+                        </div>
+                        <code class="text-xs text-slate-400">/albums/1spanish-lounge-album</code>
+                        <p class="text-xs text-green-400 mt-1">Başlık: "Spanish Lounge Album" (restore edildi)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Static Pages -->
+            <div>
+                <h4 class="text-lg font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-file-alt"></i>
+                    Statik Sayfalar (Footer)
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm">İletişim</span>
+                            <span class="status-badge status-ok">✓</span>
+                        </div>
+                        <code class="text-xs text-slate-400">/iletisim</code>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm">Gizlilik</span>
+                            <span class="status-badge status-ok">✓</span>
+                        </div>
+                        <code class="text-xs text-slate-400">/gizlilik-politikasi</code>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm">Kullanım Koşulları</span>
+                            <span class="status-badge status-ok">✓</span>
+                        </div>
+                        <code class="text-xs text-slate-400">/kullanim-kosullari...</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm Önerileri -->
+        <div class="card bg-purple-900/20 border-purple-800 mb-6">
+            <h3 class="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-2">
+                <i class="fas fa-lightbulb"></i>
+                Çözüm Önerileri
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Seçenek 1 -->
+                <div class="bg-slate-900/50 p-5 rounded-lg border border-purple-700">
+                    <h4 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <span class="bg-purple-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                        Playlist İlişkilerini Kur (Önerilen)
+                    </h4>
+                    <p class="text-slate-300 mb-3">Radyo ve sektör için playlist ilişkileri oluştur.</p>
+                    <div class="bg-slate-800 p-4 rounded-lg">
+                        <p class="text-sm text-slate-400 mb-2"><strong>Adımlar:</strong></p>
+                        <ul class="list-disc list-inside space-y-2 text-sm text-slate-300">
+                            <li>Radio ve Sector modellerdeki <code>playlists()</code> ilişkisini kontrol et</li>
+                            <li>Pivot tablo var mı kontrol et: <code>radio_playlist</code>, <code>sector_playlist</code></li>
+                            <li>Admin panelden radyo/sektörlere playlist atama özelliği ekle</li>
+                            <li>Mevcut playlist'leri radyo/sektörlere dağıt</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Seçenek 2 -->
+                <div class="bg-slate-900/50 p-5 rounded-lg border border-purple-700">
+                    <h4 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <span class="bg-purple-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                        Controller Filtresini Kaldır (Hızlı Çözüm)
+                    </h4>
+                    <p class="text-slate-300 mb-3">whereHas('playlists') filtresini kaldır, tüm radyo/sektörleri göster.</p>
+                    <div class="bg-slate-800 p-4 rounded-lg">
+                        <p class="text-sm text-slate-400 mb-2"><strong>Değişiklik:</strong></p>
+                        <div class="bg-slate-900 p-3 rounded overflow-x-auto">
+                            <pre class="text-xs text-red-400 mb-2">// ÖNCE (Mevcut - Boş sonuç)
+$radios = Radio::where('is_active', 1)
+    ->whereHas('playlists') // ❌ Bu filtre tüm radyoları eliyor
+    ->paginate(200);</pre>
+                            <pre class="text-xs text-green-400">// SONRA (Tüm radyolar gösterilir)
+$radios = Radio::where('is_active', 1)
+    ->with('logoMedia')
+    ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
+    ->paginate(200);</pre>
+                        </div>
+                        <p class="text-sm text-yellow-400 mt-3">⚠️ Not: Bu durumda bazı radyoların playlist'i olmayabilir, detay sayfasında "Henüz şarkı yok" mesajı göster.</p>
+                    </div>
+                </div>
+
+                <!-- Seçenek 3 -->
+                <div class="bg-slate-900/50 p-5 rounded-lg border border-purple-700">
+                    <h4 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <span class="bg-purple-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                        Radyo/Sektör Konseptini Değiştir
+                    </h4>
+                    <p class="text-slate-300 mb-3">Radyo/Sektörleri "playlist container" değil, "genre/mood" gibi kullan.</p>
+                    <div class="bg-slate-800 p-4 rounded-lg">
+                        <p class="text-sm text-slate-400 mb-2"><strong>Alternatif Yaklaşım:</strong></p>
+                        <ul class="list-disc list-inside space-y-2 text-sm text-slate-300">
+                            <li>Radio → Müzik türü filtresi olarak kullan (Blues, Rock, Jazz radyoları)</li>
+                            <li>Sector → Mekan bazlı filtre (Cafe, Restaurant → sakin müzik, Bar → canlı müzik)</li>
+                            <li>Her radio/sector için önceden tanımlı genre/mood kombinasyonları kullan</li>
+                            <li>Playlist yerine doğrudan şarkı sorgula: <code>Song::whereHas('genres', ...)</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="card bg-slate-900 border-slate-600">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-clipboard-check"></i>
+                📊 Özet
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center p-4 bg-green-900/30 rounded-lg border border-green-700">
+                    <div class="text-4xl font-bold text-green-400 mb-2">10+</div>
+                    <div class="text-sm text-slate-300">Çalışan Link</div>
+                    <p class="text-xs text-slate-400 mt-2">Playlists, Albums, Genres, User pages</p>
+                </div>
+
+                <div class="text-center p-4 bg-red-900/30 rounded-lg border border-red-700">
+                    <div class="text-4xl font-bold text-red-400 mb-2">2</div>
+                    <div class="text-sm text-slate-300">Boş Sayfa</div>
+                    <p class="text-xs text-slate-400 mt-2">Radios (122 kayıt), Sectors (23 kayıt)</p>
+                </div>
+
+                <div class="text-center p-4 bg-blue-900/30 rounded-lg border border-blue-700">
+                    <div class="text-4xl font-bold text-blue-400 mb-2">0</div>
+                    <div class="text-sm text-slate-300">Playlist İlişkisi</div>
+                    <p class="text-xs text-slate-400 mt-2">Radio ve Sector'lerin hiçbirinde yok</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-slate-500 text-sm">
+            <p>🤖 Claude Code tarafından oluşturuldu</p>
+            <p class="mt-1">08 Ocak 2026 - Muzibu SPA Links Analiz Raporu</p>
+        </footer>
+    </div>
+</body>
+</html>

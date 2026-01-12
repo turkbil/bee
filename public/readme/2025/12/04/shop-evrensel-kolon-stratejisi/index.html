@@ -1,1 +1,642 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Products - Evrensel vs Sektörel Kolonlar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            padding: 40px 20px;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 25px 0 15px 0;
+            color: #cbd5e1;
+        }
+
+        .column-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .column-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+
+        .column-card.universal { border-color: #10b981; }
+        .column-card.sectoral { border-color: #f59e0b; }
+        .column-card.optional { border-color: #64748b; }
+
+        .column-card h4 {
+            color: #e2e8f0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .column-list {
+            list-style: none;
+        }
+
+        .column-list li {
+            padding: 8px 0;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .column-list li:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-keep { background: #10b981; color: white; }
+        .badge-remove { background: #ef4444; color: white; }
+        .badge-body { background: #f59e0b; color: white; }
+        .badge-custom { background: #8b5cf6; color: white; }
+
+        .strategy-box {
+            background: rgba(30, 41, 59, 0.6);
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .strategy-box.option-a { border-color: #f59e0b; }
+        .strategy-box.option-b { border-color: #8b5cf6; }
+        .strategy-box.option-c { border-color: #10b981; }
+
+        .strategy-box h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .pros, .cons {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .pros h4 { color: #10b981; margin-bottom: 10px; }
+        .cons h4 { color: #ef4444; margin-bottom: 10px; }
+
+        .pros ul, .cons ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pros li, .cons li {
+            padding: 5px 0 5px 25px;
+            position: relative;
+            color: #cbd5e1;
+        }
+
+        .pros li::before { content: "✅"; position: absolute; left: 0; }
+        .cons li::before { content: "❌"; position: absolute; left: 0; }
+
+        .comparison-table {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 15px;
+            text-align: left;
+            color: #60a5fa;
+            border-bottom: 2px solid #3b82f6;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+            color: #cbd5e1;
+        }
+
+        .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .column-grid { grid-template-columns: 1fr; }
+            .pros-cons { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏗️ Shop Products - Evrensel vs Sektörel Kolonlar</h1>
+            <div class="meta">
+                🎯 Hedef: Minimum kolon, maksimum esneklik | 📅 2025-12-04
+            </div>
+        </header>
+
+        <div class="warning">
+            <h3>⚠️ ÖNEMLİ: BU SADECE PLAN!</h3>
+            <p style="color: #cbd5e1; line-height: 1.8;">
+                Bu dokümanda <strong>hiçbir şey silinmedi</strong>, sadece strateji önerisi var.<br>
+                Kararı sen vereceksin, uygulama yapılmayacak!
+            </p>
+        </div>
+
+        <!-- MEVCUT DURUM -->
+        <section>
+            <h2>📊 Mevcut Durum: 67 Kolon Analizi</h2>
+
+            <div class="info">
+                <p style="color: #cbd5e1; font-size: 1.1rem;">
+                    İxtif'te şu anda <strong>67 kolon</strong> var. Bunların sadece bir kısmı evrensel (her sektör kullanır),
+                    çoğu sektöre özel veya hiç kullanılmıyor.
+                </p>
+            </div>
+
+            <div class="column-grid">
+                <!-- Evrensel Kolonlar -->
+                <div class="column-card universal">
+                    <h4>✅ Evrensel Kolonlar (18 adet)</h4>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">
+                        Her sektörde kullanılır, KALMALI
+                    </p>
+                    <ul class="column-list">
+                        <li>product_id <span class="badge badge-keep">KALSIN</span></li>
+                        <li>title, slug <span class="badge badge-keep">KALSIN</span></li>
+                        <li>short_description, body <span class="badge badge-keep">KALSIN</span></li>
+                        <li>category_id, brand_id <span class="badge badge-keep">KALSIN</span></li>
+                        <li>product_type, condition <span class="badge badge-keep">KALSIN</span></li>
+                        <li>base_price, currency_id <span class="badge badge-keep">KALSIN</span></li>
+                        <li>tax_rate, compare_at_price <span class="badge badge-keep">KALSIN</span></li>
+                        <li>stock_tracking, current_stock <span class="badge badge-keep">KALSIN</span></li>
+                        <li>is_active, is_featured <span class="badge badge-keep">KALSIN</span></li>
+                        <li>published_at, sort_order <span class="badge badge-keep">KALSIN</span></li>
+                        <li>created_at, updated_at <span class="badge badge-keep">KALSIN</span></li>
+                    </ul>
+                </div>
+
+                <!-- Sektörel Kolonlar -->
+                <div class="column-card sectoral">
+                    <h4>🟡 Sektörel Kolonlar (9 adet)</h4>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">
+                        Sadece belirli sektörlerde kullanılır
+                    </p>
+                    <ul class="column-list">
+                        <li>certifications <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                        <li>accessories <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                        <li>target_industries <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                        <li>competitive_advantages <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                        <li>highlighted_features <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                        <li>use_cases <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                        <li>primary_specs <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                        <li>features <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                        <li>faq_data <span class="badge badge-remove">TAŞIN/SİL</span></li>
+                    </ul>
+                </div>
+
+                <!-- Tercihsel Kolonlar -->
+                <div class="column-card optional">
+                    <h4>⚪ Tercihsel Kolonlar (10+ adet)</h4>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">
+                        Bazı ürünlerde olabilir
+                    </p>
+                    <ul class="column-list">
+                        <li>sku, barcode <span class="badge badge-keep">KALSIN</span></li>
+                        <li>weight, dimensions <span class="badge badge-keep">KALSIN</span></li>
+                        <li>video_url, manual_pdf_url <span class="badge badge-keep">KALSIN</span></li>
+                        <li>warranty_info, shipping_info <span class="badge badge-keep">KALSIN</span></li>
+                        <li>badges, tags <span class="badge badge-keep">KALSIN</span></li>
+                        <li>custom_json_fields <span class="badge badge-keep">KALSIN</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- STRATEJİ SEÇENEKLERİ -->
+        <section>
+            <h2>🎯 3 Farklı Strateji Seçeneği</h2>
+
+            <!-- SEÇENEKseA: BODY İÇİNDE -->
+            <div class="strategy-box option-a">
+                <h3>🟡 Seçenek A: Sektörel İçerik Body'de (HTML)</h3>
+
+                <p style="color: #cbd5e1; margin: 15px 0;">
+                    Sertifikalar, aksesuarlar, FAQ gibi sektörel içerikler <span class="highlight">body</span> kolonunda HTML olarak tutulur.
+                </p>
+
+                <div style="background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <strong style="color: #fbbf24;">Nasıl Olur:</strong>
+                    <ul style="margin-top: 10px; color: #cbd5e1;">
+                        <li>• certifications, accessories, FAQ → body içinde HTML section'lar olarak</li>
+                        <li>• Admin panelde: WYSIWYG editör (TinyMCE, CKEditor)</li>
+                        <li>• Her sektör istediği section'ı ekler (İxtif: sertifika, Muzibu: şarkı sözü)</li>
+                    </ul>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Artılar</h4>
+                        <ul>
+                            <li>En basit yapı</li>
+                            <li>Kolon sayısı minimum (67 → ~25)</li>
+                            <li>WYSIWYG editör kolay</li>
+                            <li>Zengin HTML formatlar</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>❌ Eksiler</h4>
+                        <ul>
+                            <li>Sorgulanamaz (FAQ arama yok)</li>
+                            <li>Yapısal veri çekilemez</li>
+                            <li>API için JSON export zor</li>
+                            <li>Filtreleme yapılamaz</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                    <strong style="color: #f59e0b;">Admin Panel Nasıl Olur:</strong>
+                    <p style="color: #cbd5e1; margin-top: 10px;">
+                        Tek bir büyük HTML editör. Kullanıcı istediği HTML'i yazar. Şablon seçenekleri olabilir
+                        (İxtif için sertifika şablonu, Muzibu için şarkı sözü şablonu).
+                    </p>
+                </div>
+            </div>
+
+            <!-- SEÇENEK B: CUSTOM JSON FIELDS -->
+            <div class="strategy-box option-b">
+                <h3>🟣 Seçenek B: Sektörel İçerik custom_json_fields'te</h3>
+
+                <p style="color: #cbd5e1; margin: 15px 0;">
+                    Sektörel alanlar <span class="highlight">custom_json_fields</span> kolonunda JSON olarak tutulur.
+                    Body sadece genel açıklama için kullanılır.
+                </p>
+
+                <div style="background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <strong style="color: #8b5cf6;">Nasıl Olur:</strong>
+                    <ul style="margin-top: 10px; color: #cbd5e1;">
+                        <li>• certifications, accessories, FAQ → custom_json_fields içinde ayrı key'ler</li>
+                        <li>• Admin panelde: Dinamik form builder (her sektör kendi field'larını ekler)</li>
+                        <li>• JSON yapısal olduğu için sorgulanabilir</li>
+                    </ul>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Artılar</h4>
+                        <ul>
+                            <li>Yapısal veri (sorgulanabilir)</li>
+                            <li>API dostu (JSON export)</li>
+                            <li>Filtreleme yapılabilir</li>
+                            <li>Her tenant kendi field'ını ekler</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>❌ Eksiler</h4>
+                        <ul>
+                            <li>JSON query karmaşık</li>
+                            <li>Admin panelde dinamik form gerekli</li>
+                            <li>Frontend parse gerekli</li>
+                            <li>WYSIWYG yok (JSON input)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                    <strong style="color: #8b5cf6;">Admin Panel Nasıl Olur:</strong>
+                    <p style="color: #cbd5e1; margin-top: 10px;">
+                        Dinamik form builder. Kullanıcı "Yeni Alan Ekle" der, alan adı ve tipi seçer (text, array, object).
+                        Frontend otomatik input oluşturur. Örnek: İxtif "certifications" field'ı ekler, Muzibu "lyrics" ekler.
+                    </p>
+                </div>
+            </div>
+
+            <!-- SEÇENEK C: HİBRİT -->
+            <div class="strategy-box option-c">
+                <h3>🟢 Seçenek C: Hibrit Yaklaşım (ÖNERİLEN)</h3>
+
+                <p style="color: #cbd5e1; margin: 15px 0;">
+                    <span class="highlight">Body</span> → Zengin HTML içerik (kullanım kılavuzu, montaj talimatları)<br>
+                    <span class="highlight">custom_json_fields</span> → Yapısal metadata (certifications, accessories, FAQ)
+                </p>
+
+                <div style="background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <strong style="color: #10b981;">Nasıl Olur:</strong>
+                    <ul style="margin-top: 10px; color: #cbd5e1;">
+                        <li>• <strong>Body:</strong> Ürün açıklaması, kullanım alanları, güvenlik uyarıları (HTML)</li>
+                        <li>• <strong>custom_json_fields:</strong> Sertifikalar, aksesuarlar, FAQ (JSON array)</li>
+                        <li>• Admin panelde: İki sekme (HTML Editör + Dynamic Fields)</li>
+                    </ul>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Artılar</h4>
+                        <ul>
+                            <li>En iyi ikisinin karışımı</li>
+                            <li>Zengin içerik + Yapısal veri</li>
+                            <li>Sorgulanabilir metadata</li>
+                            <li>WYSIWYG + JSON beraber</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>❌ Eksiler</h4>
+                        <ul>
+                            <li>İki sistem yönetmek gerekir</li>
+                            <li>Kullanıcı karışabilir (nereye ne yazacak?)</li>
+                            <li>Biraz daha karmaşık</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                    <strong style="color: #10b981;">Admin Panel Nasıl Olur:</strong>
+                    <p style="color: #cbd5e1; margin-top: 10px;">
+                        İki sekme sistem:<br>
+                        <strong>Sekme 1 - İçerik:</strong> WYSIWYG editör (body için HTML)<br>
+                        <strong>Sekme 2 - Metadata:</strong> Dinamik fields (FAQ, sertifika, aksesuar ekle butonu)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- KARŞILAŞTIRMA TABLOSU -->
+        <section>
+            <h2>⚖️ Strateji Karşılaştırması</h2>
+
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Seçenek A (Body)</th>
+                            <th>Seçenek B (Custom JSON)</th>
+                            <th>Seçenek C (Hibrit)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Kolon Sayısı</strong></td>
+                            <td style="color: #10b981;">~25 (minimum)</td>
+                            <td style="color: #10b981;">~25 (minimum)</td>
+                            <td style="color: #10b981;">~25 (minimum)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sorgulanabilir mi?</strong></td>
+                            <td style="color: #ef4444;">❌ Hayır</td>
+                            <td style="color: #10b981;">✅ Evet</td>
+                            <td style="color: #f59e0b;">⚠️ Kısmen (metadata)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WYSIWYG Editör</strong></td>
+                            <td style="color: #10b981;">✅ Evet</td>
+                            <td style="color: #ef4444;">❌ Hayır</td>
+                            <td style="color: #10b981;">✅ Evet</td>
+                        </tr>
+                        <tr>
+                            <td><strong>API Dostu</strong></td>
+                            <td style="color: #ef4444;">❌ HTML parse</td>
+                            <td style="color: #10b981;">✅ Direkt JSON</td>
+                            <td style="color: #f59e0b;">⚠️ İkisi de</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Esneklik</strong></td>
+                            <td style="color: #10b981;">✅ Sınırsız</td>
+                            <td style="color: #10b981;">✅ Sınırsız</td>
+                            <td style="color: #10b981;">✅ Sınırsız</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kullanım Kolaylığı</strong></td>
+                            <td style="color: #10b981;">✅ Çok kolay</td>
+                            <td style="color: #f59e0b;">⚠️ Orta</td>
+                            <td style="color: #f59e0b;">⚠️ Orta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Geliştirme Süresi</strong></td>
+                            <td style="color: #10b981;">✅ Kısa</td>
+                            <td style="color: #f59e0b;">⚠️ Uzun (form builder)</td>
+                            <td style="color: #f59e0b;">⚠️ Uzun</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ÖNERİ -->
+        <section>
+            <h2>💡 Önerim: Seçenek C (Hibrit)</h2>
+
+            <div class="success">
+                <h3>✅ Neden Hibrit?</h3>
+                <p style="color: #cbd5e1; line-height: 1.8; margin-top: 15px;">
+                    1. <strong>Body:</strong> Zengin içerik için mükemmel (kullanım kılavuzu, montaj, güvenlik)<br>
+                    2. <strong>custom_json_fields:</strong> Yapısal metadata için ideal (FAQ, sertifika, aksesuar)<br>
+                    3. Her iki dünyanın da avantajlarını kullanabilirsin<br>
+                    4. İleride genişletmesi kolay
+                </p>
+            </div>
+
+            <h3>Admin Panel Tasarımı (Hibrit):</h3>
+
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 25px; border-radius: 12px; margin-top: 20px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #334155; padding-bottom: 15px;">
+                    <div style="background: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600;">
+                        📝 İçerik (Body)
+                    </div>
+                    <div style="background: rgba(59, 130, 246, 0.2); color: #cbd5e1; padding: 10px 20px; border-radius: 8px;">
+                        🏷️ Metadata (Custom Fields)
+                    </div>
+                </div>
+
+                <div style="background: white; color: #1f2937; padding: 20px; border-radius: 8px;">
+                    <p style="margin-bottom: 15px; font-weight: 600;">Ürün Açıklaması (HTML Editör):</p>
+                    <div style="background: #f9fafb; padding: 15px; border: 1px solid #d1d5db; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                        [B] [I] [U] | Başlık | Liste | Link | Resim<br>
+                        <br>
+                        Kullanıcı buraya HTML yazıyor...<br>
+                        Montaj talimatları, güvenlik uyarıları vb.
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 25px; border-radius: 12px; margin-top: 20px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #334155; padding-bottom: 15px;">
+                    <div style="background: rgba(59, 130, 246, 0.2); color: #cbd5e1; padding: 10px 20px; border-radius: 8px;">
+                        📝 İçerik (Body)
+                    </div>
+                    <div style="background: #8b5cf6; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600;">
+                        🏷️ Metadata (Custom Fields)
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 20px; border-radius: 8px;">
+                    <p style="margin-bottom: 15px; font-weight: 600; color: #cbd5e1;">Sektöre Özel Alanlar:</p>
+
+                    <div style="background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong style="color: #8b5cf6;">FAQ (Sıkça Sorulan Sorular)</strong>
+                        <button style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; margin-left: 10px; cursor: pointer;">+ Ekle</button>
+                        <div style="margin-top: 10px; color: #94a3b8; font-size: 0.9rem;">
+                            • Dönüş yarıçapı nedir? → 1680 mm...<br>
+                            • Li-Ion avantajları? → Fırsat şarjı...
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong style="color: #8b5cf6;">Sertifikalar</strong>
+                        <button style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; margin-left: 10px; cursor: pointer;">+ Ekle</button>
+                        <div style="margin-top: 10px; color: #94a3b8; font-size: 0.9rem;">
+                            • CE (2024) - EU<br>
+                            • ISO 9001 (2023) - TÜV
+                        </div>
+                    </div>
+
+                    <button style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                        ➕ Yeni Alan Ekle
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section>
+            <h2>🎯 Sonuç ve Karar</h2>
+
+            <div class="info">
+                <h3>Hangi Kolonlar Silinecek?</h3>
+                <p style="color: #cbd5e1; line-height: 1.8; margin-top: 10px;">
+                    <strong>9 sektörel kolon kaldırılacak:</strong><br>
+                    • certifications, accessories, target_industries, competitive_advantages,
+                    highlighted_features, use_cases, primary_specs, features, faq_data
+                </p>
+                <p style="color: #10b981; margin-top: 15px; font-weight: 600;">
+                    ✅ Bu kolonların verileri kaybolmayacak, body veya custom_json_fields'e taşınacak!
+                </p>
+            </div>
+
+            <div class="success">
+                <h3>Nihai Kolon Sayısı</h3>
+                <p style="color: #cbd5e1; font-size: 1.2rem; margin-top: 10px;">
+                    <strong style="color: #fbbf24;">67 kolon</strong> → <strong style="color: #10b981;">~25 kolon</strong><br>
+                    <span style="font-size: 0.9rem;">(%63 azalma! Database çok daha temiz)</span>
+                </p>
+            </div>
+
+            <div class="warning">
+                <h3>⚠️ Sonraki Adım</h3>
+                <p style="color: #cbd5e1; line-height: 1.8; margin-top: 10px;">
+                    Hangi stratejiyi seçiyorsun?<br>
+                    • <strong>Seçenek A:</strong> Body'de HTML (en basit)<br>
+                    • <strong>Seçenek B:</strong> custom_json_fields (yapısal)<br>
+                    • <strong>Seçenek C:</strong> Hibrit (önerilen)
+                </p>
+                <p style="color: #f59e0b; margin-top: 15px; font-weight: 600;">
+                    Kararını verdikten sonra migration planı hazırlanacak!
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI - Evrensel vs Sektörel Kolon Stratejisi | 2025-12-04
+        </footer>
+    </div>
+</body>
+</html>

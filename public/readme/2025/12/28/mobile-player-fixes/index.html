@@ -1,1 +1,220 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobil Player Fix'leri v2 - 28 Aralık 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full">
+                    <i class="fas fa-check-circle mr-1"></i> V2 UPDATE
+                </span>
+                <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full">
+                    <i class="fas fa-mobile-alt mr-1"></i> MOBİL
+                </span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full">
+                    <i class="fab fa-safari mr-1"></i> SAFARI
+                </span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">Mobil iOS Player Fix'leri v2</h1>
+            <p class="text-slate-400">28 Aralık 2025 03:58 - muzibu.com.tr</p>
+        </header>
+
+        <!-- Ana Fix -->
+        <section class="mb-8 bg-green-900/20 border border-green-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4">
+                <i class="fas fa-bug mr-2"></i> Ana Sorun ve Çözüm
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-red-400 mb-2">
+                        <i class="fas fa-times-circle mr-2"></i> SORUN: Queue'daki Şarkı Verileri Eksik
+                    </h3>
+                    <div class="text-slate-300 space-y-2">
+                        <p><strong>Basit Anlatım:</strong> Şarkı bilgileri iki farklı şekilde saklanıyordu. Queue'ya (sıra) eklenen şarkı bilgisi eksikti, sadece başlık ve süre vardı. Albüm ve tür bilgisi yoktu.</p>
+                        <p><strong>Teknik Detay:</strong></p>
+                        <ul class="list-disc list-inside text-sm text-slate-400 ml-4">
+                            <li>Line 2207-2212: <code>song</code> objesi sadece song_id, title, duration içeriyordu</li>
+                            <li>Line 2221: <code>this.queue = [song]</code> - Eksik veri ile queue'ya eklendi</li>
+                            <li>Line 2224: <code>this.currentSong</code> ise streamData.song ile merge ediliyordu (album_id vardı)</li>
+                            <li>Ama queue'daki şarkıda album_id/genre_id yoktu!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-green-400 mb-2">
+                        <i class="fas fa-check-circle mr-2"></i> ÇÖZÜM: Queue'ya Tam Veri Ekle
+                    </h3>
+                    <div class="text-slate-300 space-y-2">
+                        <p><strong>Basit Anlatım:</strong> Artık şarkı queue'ya eklenmeden önce tüm bilgiler birleştiriliyor. Albüm ve tür bilgisi de dahil ediliyor.</p>
+                        <p><strong>Teknik Detay:</strong></p>
+                        <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto mt-2"><code>// ESKİ (HATALI):
+const song = { song_id, title, duration }; // album_id YOK!
+this.queue = [song];
+this.currentSong = { ...song, ...streamData.song }; // Sadece burası doğru
+
+// YENİ (DOĞRU):
+const song = { song_id, title, duration };
+const fullSong = { ...song, ...streamData.song }; // album_id VAR!
+this.queue = [fullSong]; // Queue'ya TAM veri
+this.currentSong = fullSong;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Server Debug Logging -->
+        <section class="mb-8 bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-server mr-2"></i> Server-Side Debug Logging
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <p><strong>Basit Anlatım:</strong> Artık mobil cihazlardan gelen debug bilgileri sunucu loglarına kaydediliyor. Screenshot almaya gerek yok!</p>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">Eklenen Dosyalar/Fonksiyonlar:</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-purple-400 mt-1"></i>
+                            <div>
+                                <span class="text-slate-200">Modules/Muzibu/routes/api.php</span>
+                                <p class="text-slate-400 text-xs">POST /api/muzibu/debug-log endpoint eklendi</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-blue-400 mt-1"></i>
+                            <div>
+                                <span class="text-slate-200">player-core.js:16-28</span>
+                                <p class="text-slate-400 text-xs">serverLog() fonksiyonu - Server'a log gönderir</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-blue-400 mt-1"></i>
+                            <div>
+                                <span class="text-slate-200">player-core.js:31-33</span>
+                                <p class="text-slate-400 text-xs">DOMContentLoaded → scriptLoaded log (versiyon kontrolü)</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">Log Noktaları:</h3>
+                    <ul class="space-y-1 text-sm font-mono">
+                        <li><span class="text-green-400">scriptLoaded</span> - Script yüklendiğinde (versiyon + user agent)</li>
+                        <li><span class="text-blue-400">playSong</span> - Şarkı başladığında (album_id, genre_id, context)</li>
+                        <li><span class="text-yellow-400">onTrackEnded</span> - Şarkı bittiğinde (repeatMode, queue durumu)</li>
+                        <li><span class="text-purple-400">nextTrack</span> - Sonraki şarkıya geçerken (queue index, context)</li>
+                        <li><span class="text-red-400">autoCreateContext</span> - Context otomatik oluşturulurken</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">Log Konumu:</h3>
+                    <pre class="bg-slate-900 p-2 rounded text-xs">storage/logs/laravel.log</pre>
+                    <p class="text-slate-400 text-xs mt-1">Grep komutu: <code>grep "PLAYER DEBUG" storage/logs/laravel.log</code></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cache Busting -->
+        <section class="mb-8 bg-amber-900/20 border border-amber-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-amber-400 mb-4">
+                <i class="fas fa-sync mr-2"></i> Safari Cache Busting
+            </h2>
+
+            <div class="text-slate-300 space-y-2">
+                <p><strong>Basit Anlatım:</strong> Safari çok agresif cache yapıyordu, eski JavaScript dosyasını kullanıyordu. Artık her güncelleme yeni versiyon numarası alıyor.</p>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">Değişiklik:</h3>
+                    <pre class="bg-slate-900 p-2 rounded text-xs overflow-x-auto"><code>// ESKİ:
+&lt;script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}"&gt;
+
+// YENİ:
+&lt;script src="{{ versioned_asset('themes/muzibu/js/player/core/player-core.js') }}"&gt;
+// Sonuç: player-core.js?v=1766883493</code></pre>
+                </div>
+
+                <p class="text-sm text-slate-400">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    <code>versioned_asset()</code> helper dosyanın modification time'ını query string olarak ekler.
+                </p>
+            </div>
+        </section>
+
+        <!-- Değişen Dosyalar -->
+        <section class="mb-8 bg-slate-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-folder-open mr-2 text-yellow-400"></i> Değişen Dosyalar
+            </h2>
+            <ul class="space-y-2 text-sm font-mono">
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-file-code text-blue-400"></i>
+                    <span class="text-slate-300">public/themes/muzibu/js/player/core/player-core.js</span>
+                    <span class="text-xs text-green-400">+serverLog, +fullSong fix</span>
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-file-code text-purple-400"></i>
+                    <span class="text-slate-300">Modules/Muzibu/routes/api.php</span>
+                    <span class="text-xs text-green-400">+debug-log endpoint</span>
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-file-code text-purple-400"></i>
+                    <span class="text-slate-300">resources/views/themes/muzibu/layouts/app.blade.php</span>
+                    <span class="text-xs text-green-400">versioned_asset kullanımı</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Test Adımları -->
+        <section class="mb-8 bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">
+                <i class="fas fa-vial mr-2"></i> Test Adımları
+            </h2>
+            <ol class="space-y-3 text-slate-300">
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">1</span>
+                    <span>Safari'yi tamamen kapatıp yeniden açın (hard refresh)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">2</span>
+                    <span>muzibu.com.tr adresine gidin</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">3</span>
+                    <span>Root user olarak giriş yapın</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">4</span>
+                    <span>Bir şarkıya tıklayın - Debug toast'larını gözlemleyin</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">5</span>
+                    <span>Şarkı bitene kadar bekleyin</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">6</span>
+                    <span><strong>BEKLENEN:</strong> Sonraki şarkıya otomatik geçiş</span>
+                </li>
+            </ol>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p><i class="fas fa-robot mr-1"></i> Claude AI - 28 Aralık 2025 03:58</p>
+            <p class="mt-1">Tenant: muzibu.com.tr (1001)</p>
+        </footer>
+    </div>
+</body>
+</html>

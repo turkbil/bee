@@ -1,1 +1,236 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme & Entegrasyon Sistemi - İnceleme</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0; font-family: system-ui, sans-serif; line-height: 1.8; padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { margin-bottom: 50px; padding-bottom: 30px; border-bottom: 2px solid #334155; }
+        h1 { font-size: 2.5rem; margin-bottom: 15px; color: #60a5fa; }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        section { margin-bottom: 50px; }
+        h2 { font-size: 1.8rem; margin-bottom: 25px; color: #60a5fa; border-bottom: 2px solid #334155; padding-bottom: 15px; }
+        h3 { font-size: 1.3rem; margin-top: 20px; margin-bottom: 15px; color: #93c5fd; }
+        .card { background: rgba(30, 41, 59, 0.5); padding: 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #3b82f6; }
+        .card h4 { color: #60a5fa; margin-bottom: 10px; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; margin: 5px 5px 5px 0; }
+        .badge-success { background: #10b981; color: white; }
+        .code { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 6px; padding: 12px; margin: 10px 0; font-family: monospace; color: #fbbf24; font-size: 0.9rem; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background: rgba(59, 130, 246, 0.2); color: #93c5fd; padding: 10px; text-align: left; border-bottom: 2px solid #334155; }
+        td { padding: 10px; border-bottom: 1px solid #334155; }
+        ul { margin-left: 20px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; }
+        footer { margin-top: 50px; padding-top: 30px; border-top: 1px solid #334155; color: #64748b; text-align: center; }
+        .highlight { background: rgba(251, 191, 36, 0.1); border-left: 3px solid #fbbf24; padding: 12px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💳 Ödeme & Entegrasyon Sistemi İncelemesi</h1>
+            <div class="meta">📅 Tarih: 2025-12-02 | 🎯 Tarafından: Claude AI</div>
+        </header>
+
+        <section>
+            <h2>1. PayTR Ödeme Entegrasyonu</h2>
+            <div class="card">
+                <h4>Genel Yapı</h4>
+                <p>PayTR iFrame API kullanarak güvenli ödeme işlemleri gerçekleştirir.</p>
+                <p><strong>Dosyalar:</strong></p>
+                <ul>
+                    <li>PayTRGateway.php - Temel gateway</li>
+                    <li>PayTRPaymentService.php - Ödeme işlemleri</li>
+                    <li>PayTRCallbackService.php - Callback işlemleri</li>
+                </ul>
+                <p><strong>Parametreler:</strong> Taksit, test mode, timeout, currency</p>
+                <p><strong>Güvenlik:</strong> HMAC-SHA256 hash doğrulama</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Dark/Light Mode Sistemi</h2>
+            <div class="card">
+                <h4>Tema Yönetimi</h4>
+                <p><strong>Status:</strong> FormBuilder ile dinamik yönetim</p>
+                <p><strong>Grup ID:</strong> 7 (Tema)</p>
+                <p><strong>Yönetim URL:</strong> Admin → SettingManagement → FormBuilder</p>
+                <p><strong>CSS Build:</strong></p>
+                <div class="code">npm run css:all     # Tüm tenant CSS
+npm run css:ixtif   # ixtif.com CSS</div>
+                <p><strong>Renkler:</strong> Primary, Secondary, Success, Warning ayarları FormBuilder'dan yönetilir</p>
+                <span class="badge badge-success">Aktif</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Telegram Bildirim Sistemi</h2>
+            <div class="card">
+                <h4>İki Farklı Hizmet</h4>
+                <ul>
+                    <li><strong>TelegramNotificationService:</strong> AI konuşmalarından telefon numarası algılandığında alert</li>
+                    <li><strong>QuoteRequestNotification:</strong> Shop ürün teklifleri için Mail + Telegram</li>
+                </ul>
+                <p><strong>Konfigürasyon:</strong></p>
+                <div class="code">TELEGRAM_BOT_TOKEN=your_token
+TELEGRAM_CHAT_ID=-1001234567890</div>
+                <p><strong>Test:</strong> Admin panelinden test mesajı gönderilebilir</p>
+                <span class="badge badge-success">Aktif</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Çoklu Dil Sistemi</h2>
+            <div class="card">
+                <h4>Dil Yönetimi</h4>
+                <ul>
+                    <li><strong>Admin Languages:</strong> Central DB (Yönetici paneli dili)</li>
+                    <li><strong>Tenant Languages:</strong> Tenant DB (Frontend dilleri)</li>
+                </ul>
+                <p><strong>Hiyerarşi:</strong> User Preference > Tenant Default > First Active > 'tr'</p>
+                <p><strong>TenantLanguageService:</strong> Cache (30 dakika) ile performans optimizasyonu</p>
+                <p><strong>Desteklenen Diller:</strong> Türkçe, İngilizce, Arapça + daha fazla</p>
+                <span class="badge badge-success">Aktif</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>5. Form Builder Sistemi</h2>
+            <div class="card">
+                <h4>Mimari</h4>
+                <ul>
+                    <li><strong>UniversalInputManager:</strong> Form yapısı ve validation</li>
+                    <li><strong>PromptMapper:</strong> User input → AI Prompt</li>
+                </ul>
+                <p><strong>Multi-Layer Caching:</strong></p>
+                <div class="code">L1: 5 min - Form structure
+L2: 30 min - Feature + inputs
+L3: 1 hour - Formatted structure</div>
+                <p><strong>Validation:</strong> required, min, max, email, url</p>
+                <p><strong>Smart Defaults:</strong> Kullanıcı tercihlerine göre otomatik ayarlar</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>6. Settings Yönetim Sistemi</h2>
+            <div class="card">
+                <h4>Yapısı</h4>
+                <table>
+                    <tr>
+                        <th>Tablo</th>
+                        <th>DB</th>
+                        <th>Amaç</th>
+                    </tr>
+                    <tr>
+                        <td>settings_groups</td>
+                        <td>Central</td>
+                        <td>Grup tanımı</td>
+                    </tr>
+                    <tr>
+                        <td>settings</td>
+                        <td>Central</td>
+                        <td>Setting tanımı</td>
+                    </tr>
+                    <tr>
+                        <td>settings_values</td>
+                        <td>Tenant</td>
+                        <td>Tenant override değerleri</td>
+                    </tr>
+                </table>
+                <p><strong>Gruplar:</strong> Site Ayarları (6), Tema (7), SEO (8)</p>
+                <p><strong>Performans:</strong> 700+ query → 2 query (Cache ile)</p>
+                <p><strong>Cache TTL:</strong> 24 saat</p>
+                <span class="badge badge-success">Optimize</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>7. Form Bildirimleri</h2>
+            <div class="card">
+                <h4>Bildirim Türleri</h4>
+                <ul>
+                    <li><strong>Shop Quote Request:</strong> Mail + Telegram (Async Queue)</li>
+                    <li><strong>Payment Notifications:</strong> Mail (başarı/başarısız)</li>
+                </ul>
+                <p><strong>İçerik:</strong> Müşteri bilgileri, ürün bilgisi, iletişim linkler</p>
+                <p><strong>Kanal Seçimi:</strong> Telegram token varsa otomatik Telegram ekle</p>
+                <span class="badge badge-success">Aktif</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Sistem Haritası</h2>
+            <div class="card">
+                <h4>Modül Dağılımı</h4>
+                <table>
+                    <tr>
+                        <th>Modül</th>
+                        <th>Ana Servis</th>
+                        <th>Amaç</th>
+                    </tr>
+                    <tr>
+                        <td>Payment</td>
+                        <td>PayTRPaymentService</td>
+                        <td>Ödeme işlemleri</td>
+                    </tr>
+                    <tr>
+                        <td>SettingManagement</td>
+                        <td>SettingsService</td>
+                        <td>Dinamik ayarlar</td>
+                    </tr>
+                    <tr>
+                        <td>LanguageManagement</td>
+                        <td>TenantLanguageService</td>
+                        <td>Çoklu dil</td>
+                    </tr>
+                    <tr>
+                        <td>AI</td>
+                        <td>FormBuilder servisler</td>
+                        <td>AI prompt building</td>
+                    </tr>
+                    <tr>
+                        <td>Shop</td>
+                        <td>QuoteRequestNotification</td>
+                        <td>Teklifler</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Kontrol Listesi</h2>
+            <div class="highlight">
+                <h3>PayTR</h3>
+                <ul>
+                    <li>✓ .env yapılandırma</li>
+                    <li>✓ Callback URL'ler</li>
+                    <li>✓ Test mode</li>
+                </ul>
+                <h3>Telegram</h3>
+                <ul>
+                    <li>✓ .env token ve chat_id</li>
+                    <li>✓ Test mesajı gönderme</li>
+                    <li>✓ AI alert aktif</li>
+                    <li>✓ Shop notification aktif</li>
+                </ul>
+                <h3>Dil & Settings</h3>
+                <ul>
+                    <li>✓ Tenant dilleri yüklü</li>
+                    <li>✓ FormBuilder grup oluşturuldu</li>
+                    <li>✓ Cache aktif</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından analiz edilmiştir
+        </footer>
+    </div>
+</body>
+</html>

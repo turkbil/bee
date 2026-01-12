@@ -1,1 +1,404 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trial Checkbox Yaklaşımı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border-left: 5px solid #10b981;
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .comp-card {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            border-top: 3px solid;
+        }
+        
+        .comp-card.bad { border-color: #ef4444; }
+        .comp-card.good { border-color: #10b981; }
+        
+        .comp-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        ul { padding-left: 25px; margin: 15px 0; }
+        li { margin: 10px 0; color: #cbd5e1; }
+        
+        .winner {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            padding: 25px;
+            border-radius: 12px;
+            border: 3px solid #10b981;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .winner h3 {
+            color: #10b981;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .mockup {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            color: #1f2937;
+        }
+        
+        .form-group {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+        }
+        
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .checkbox-label {
+            font-weight: 600;
+            color: #1e40af;
+            font-size: 1.1rem;
+        }
+        
+        .warning {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #92400e;
+        }
+        
+        .info-box {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .code {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            color: #e5e7eb;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .step {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #10b981;
+        }
+        
+        .step h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .comparison { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>☑️ Trial Checkbox Yaklaşımı</h1>
+
+        <!-- Neden Checkbox Daha İyi? -->
+        <div class="section">
+            <h2>🎯 Neden Checkbox Daha İyi?</h2>
+            
+            <div class="comparison">
+                <div class="comp-card bad">
+                    <h3 style="color: #ef4444;">❌ Eski: Slug Yaklaşımı</h3>
+                    <p style="color: #cbd5e1; margin-bottom: 15px;">Sistem <code>slug = 'trial'</code> kontrolü yapar</p>
+                    
+                    <p style="color: #ef4444; margin-top: 15px;"><strong>Sorunlar:</strong></p>
+                    <ul>
+                        <li>Slug yanlış yazılabilir (trial, Trial, TRIAL)</li>
+                        <li>Slug değiştirilebilir (trial → deneme)</li>
+                        <li>Birden fazla "trial" slug olabilir</li>
+                        <li>Belirsiz: "Bu trial mı değil mi?"</li>
+                    </ul>
+                </div>
+
+                <div class="comp-card good">
+                    <h3 style="color: #10b981;">✅ Yeni: Checkbox Yaklaşımı</h3>
+                    <p style="color: #cbd5e1; margin-bottom: 15px;">Sistem <code>is_trial = true</code> kontrolü yapar</p>
+                    
+                    <p style="color: #10b981; margin-top: 15px;"><strong>Avantajlar:</strong></p>
+                    <ul>
+                        <li>Net: TRUE veya FALSE</li>
+                        <li>Yanlış yazma riski yok</li>
+                        <li>Sadece 1 plan is_trial olabilir (validasyon)</li>
+                        <li>Admin panelde açık seçim: ☑️</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="winner">
+                <h3>✅ Checkbox = Daha Güvenli & Net</h3>
+                <p style="color: #cbd5e1; margin-top: 10px;">
+                    Slug yerine boolean field kullanmak daha profesyonel ve hatasız!
+                </p>
+            </div>
+        </div>
+
+        <!-- Admin Panel Görünümü -->
+        <div class="section">
+            <h2>🖼️ Admin Panel'de Nasıl Görünecek?</h2>
+            
+            <div class="mockup">
+                <h3 style="margin-bottom: 20px; color: #1f2937;">Subscription Plan Oluştur/Düzenle</h3>
+                
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Plan Adı</label>
+                    <input type="text" value="Trial" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Slug</label>
+                    <input type="text" value="trial" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Para Birimi</label>
+                    <select style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                        <option>₺ TRY</option>
+                    </select>
+                </div>
+
+                <hr style="margin: 25px 0; border: none; border-top: 2px solid #e5e7eb;">
+
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox" checked id="is_trial">
+                    <label for="is_trial" class="checkbox-label">
+                        ☑️ Bu bir deneme üyeliğidir
+                    </label>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Önemli:</strong> Sistemde sadece 1 plan deneme üyeliği olarak işaretlenebilir. 
+                    Bu seçeneği işaretlerseniz, diğer planların deneme üyeliği otomatik kaldırılır.
+                </div>
+            </div>
+        </div>
+
+        <!-- Nasıl Çalışacak? -->
+        <div class="section">
+            <h2>⚙️ Nasıl Çalışacak?</h2>
+
+            <div class="step">
+                <h4>1. Database Migration</h4>
+                <p><code>subscription_plans</code> tablosuna yeni field:</p>
+                <div class="code">is_trial BOOLEAN DEFAULT FALSE</div>
+            </div>
+
+            <div class="step">
+                <h4>2. Admin Panel'de Checkbox</h4>
+                <p>Plan oluştururken/düzenlerken checkbox:</p>
+                <div class="code">&lt;input type="checkbox" wire:model="inputs.is_trial"&gt;
+☑️ Bu bir deneme üyeliğidir</div>
+            </div>
+
+            <div class="step">
+                <h4>3. Validasyon (SADECE 1 TRIAL)</h4>
+                <p>Checkbox işaretlenirse, sistem kontrol eder:</p>
+                <div class="code">// Başka trial planı var mı?
+$existingTrial = SubscriptionPlan::where('is_trial', true)
+    -&gt;where('id', '!=', $this-&gt;planId)
+    -&gt;first();
+
+if ($existingTrial) {
+    // HATA: Zaten bir trial planı var!
+    // Veya otomatik diğerini FALSE yap
+}</div>
+            </div>
+
+            <div class="step">
+                <h4>4. Sistem Trial Planını Bulma</h4>
+                <p>Kayıt olunca sistem trial planını bulur:</p>
+                <div class="code">$trialPlan = SubscriptionPlan::where('is_trial', true)
+    -&gt;where('is_active', true)
+    -&gt;first();
+
+if ($trialPlan) {
+    // Trial subscription oluştur
+}</div>
+            </div>
+
+            <div class="info-box">
+                <strong style="color: #60a5fa; display: block; margin-bottom: 10px;">💡 Avantaj:</strong>
+                <p>Slug yerine <code>is_trial</code> kullanmak:</p>
+                <ul>
+                    <li>Daha net ve anlaşılır</li>
+                    <li>Hata yapma riski yok</li>
+                    <li>Validasyon kolay (sadece 1 true olabilir)</li>
+                    <li>Database index eklenebilir (performans)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Validasyon Senaryoları -->
+        <div class="section">
+            <h2>🛡️ Validasyon Senaryoları</h2>
+
+            <div class="step">
+                <h4>Senaryo 1: İkinci Trial Planı Oluşturmaya Çalışıyorsun</h4>
+                <p><strong>Durum:</strong> Zaten "Trial" planı var (is_trial = true)</p>
+                <p><strong>Yeni Plan:</strong> "Premium Trial" oluşturuyorsun, checkbox işaretliyorsun</p>
+                <p style="margin-top: 10px;"><strong style="color: #10b981;">✅ Sistem:</strong></p>
+                <ul>
+                    <li><strong>Yaklaşım A:</strong> Hata mesajı: "Zaten bir deneme planı var!"</li>
+                    <li><strong>Yaklaşım B:</strong> Eski "Trial" planının is_trial'ını FALSE yap, yeniye TRUE ver</li>
+                </ul>
+                <div class="warning" style="margin-top: 15px;">
+                    <strong>Öneri:</strong> Yaklaşım B daha kullanıcı dostu!
+                </div>
+            </div>
+
+            <div class="step">
+                <h4>Senaryo 2: Mevcut Trial Planının Checkbox'ını Kaldırıyorsun</h4>
+                <p><strong>Durum:</strong> "Trial" planı var (is_trial = true)</p>
+                <p><strong>İşlem:</strong> Checkbox'ı kaldırıyorsun (FALSE yapıyorsun)</p>
+                <p style="margin-top: 10px;"><strong style="color: #fbbf24;">⚠️ Sistem:</strong></p>
+                <ul>
+                    <li>Uyarı göster: "Bu planın deneme üyeliği durumu kaldırılacak. Emin misiniz?"</li>
+                    <li>Onaylarsa is_trial = FALSE yap</li>
+                    <li>Artık sistemde hiç trial planı yok!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Database Yapısı -->
+        <div class="section">
+            <h2>🗄️ Database Yapısı</h2>
+
+            <h3 style="color: #fbbf24; margin-bottom: 15px;">Migration:</h3>
+            <div class="code">Schema::table('subscription_plans', function (Blueprint $table) {
+    $table-&gt;boolean('is_trial')
+        -&gt;default(false)
+        -&gt;after('is_active')
+        -&gt;comment('Bu plan deneme üyeliği mi?');
+    
+    // Performans için index
+    $table-&gt;index('is_trial');
+});</div>
+
+            <h3 style="color: #fbbf24; margin: 25px 0 15px;">Örnek Veri:</h3>
+            <div class="code">| id | title     | slug     | is_trial | is_active |
+|----|-----------|----------|----------|-----------|
+| 1  | Trial     | trial    | TRUE     | TRUE      |
+| 2  | Premium   | premium  | FALSE    | TRUE      |
+| 3  | Gold      | gold     | FALSE    | TRUE      |</div>
+
+            <div class="info-box">
+                <strong style="color: #60a5fa; display: block; margin-bottom: 10px;">💡 Not:</strong>
+                <p>Sadece 1 plan <code>is_trial = TRUE</code> olabilir. Sistem bunu garanti etmeli (validasyon + unique index).</p>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="section">
+            <h2>📋 Özet</h2>
+
+            <div class="winner" style="text-align: left;">
+                <h3 style="text-align: center;">✅ Checkbox Yaklaşımı FTW!</h3>
+                <ul style="margin-top: 20px;">
+                    <li><strong>Güvenli:</strong> Slug hatası riski yok</li>
+                    <li><strong>Net:</strong> TRUE/FALSE, açık seçim</li>
+                    <li><strong>Validasyon:</strong> Sadece 1 trial garantisi</li>
+                    <li><strong>Kullanıcı Dostu:</strong> Admin panelde checkbox = Kolay</li>
+                    <li><strong>Performans:</strong> Boolean index hızlı</li>
+                </ul>
+            </div>
+
+            <div class="step" style="margin-top: 30px;">
+                <h4>Yapılacaklar:</h4>
+                <ol style="padding-left: 25px;">
+                    <li>Migration: <code>is_trial</code> field ekle</li>
+                    <li>Admin panel: Checkbox ekle</li>
+                    <li>Validasyon: Sadece 1 trial kontrolü</li>
+                    <li>Sistem: <code>where('is_trial', true)</code> ile bul</li>
+                </ol>
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI | 📅 2025-12-04 | ☑️ Trial Checkbox Yaklaşımı
+        </footer>
+    </div>
+</body>
+</html>

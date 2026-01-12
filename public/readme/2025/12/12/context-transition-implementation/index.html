@@ -1,1 +1,477 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Transition Implementation Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                🔄 Context Transition Implementation
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Playlist/Album Bitince Genre'ye Geçiş Sistemi
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 12 Aralık 2025</span>
+                <span>🎯 Tenant: muzibu.com.tr</span>
+                <span>📋 Context Hierarchy v4'e Uygun</span>
+            </div>
+        </header>
+
+        <!-- Mevcut Durum vs İstenen -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">❌ Mevcut Durum vs ✅ İstenen Durum</h2>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Mevcut -->
+                <div class="bg-red-900/20 border-2 border-red-500/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-4">❌ Mevcut Backend Logic</h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Genre</p>
+                            <p class="text-green-400">✅ Infinite loop var (offset % total)</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Album</p>
+                            <p class="text-red-300">❌ Bitince boş array döner</p>
+                            <p class="text-xs text-slate-500">Genre'ye geçmiyor!</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Playlist</p>
+                            <p class="text-red-300">❌ Bitince boş array döner</p>
+                            <p class="text-xs text-slate-500">Genre'ye geçmiyor!</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Sector/Radio</p>
+                            <p class="text-red-300">❌ Infinite loop yok</p>
+                            <p class="text-xs text-slate-500">Başa sarmıyor!</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Transition</p>
+                            <p class="text-red-300">❌ "En popüler genre" öneriyor</p>
+                            <p class="text-xs text-slate-500">Dokümana uymuyor!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İstenen -->
+                <div class="bg-green-900/20 border-2 border-green-500/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-300 mb-4">✅ İstenen (Dokümana Göre)</h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Genre</p>
+                            <p class="text-green-400">✅ Zaten çalışıyor</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Album</p>
+                            <p class="text-green-300">Album biter → Album'ün genre'sine geç</p>
+                            <p class="text-xs text-slate-500">Kind of Blue → Jazz infinite</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Playlist</p>
+                            <p class="text-green-300">Playlist biter → Son 5 şarkının en çok genre'si</p>
+                            <p class="text-xs text-slate-500">Epic Mix → Rock infinite</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Sector/Radio</p>
+                            <p class="text-green-300">Kendi içinde infinite loop (başa sar)</p>
+                            <p class="text-xs text-slate-500">Genre'ye GEÇMİYOR!</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <p class="font-bold text-white mb-1">Transition</p>
+                            <p class="text-green-300">Context'e özel akıllı geçiş</p>
+                            <p class="text-xs text-slate-500">Her context farklı!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Steps -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🎯 Implementation Adımları</h2>
+
+            <!-- Step 1: Album Transition -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            Album → Genre Transition
+                        </h3>
+                        <div class="text-slate-300 space-y-3">
+                            <p class="font-semibold text-white">Mantık:</p>
+                            <ul class="list-disc list-inside space-y-1 text-sm">
+                                <li>Album'deki şarkılar biter (boş array döner)</li>
+                                <li>Album'ü bul → album.genre_id çek</li>
+                                <li>O genre'nin şarkılarını döndür (offset: 0)</li>
+                                <li>Frontend'e transition bilgisi gönder</li>
+                            </ul>
+                            <div class="mt-3 p-3 bg-purple-900/20 border border-purple-700/30 rounded">
+                                <p class="text-xs text-purple-300">
+                                    <strong>Dosya:</strong> QueueRefillController.php → getAlbumSongs()
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    Eğer offset'te şarkı yoksa → Album'ün genre'sini bul → Genre şarkılarını döndür
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Playlist Transition -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Playlist → Genre Transition
+                        </h3>
+                        <div class="text-slate-300 space-y-3">
+                            <p class="font-semibold text-white">Mantık:</p>
+                            <ul class="list-disc list-inside space-y-1 text-sm">
+                                <li>Playlist'teki şarkılar biter</li>
+                                <li>Playlist'teki SON 5 şarkıyı al</li>
+                                <li>Bu 5 şarkının genre_id'lerini say</li>
+                                <li>En çok olan genre'yi bul</li>
+                                <li>O genre'nin şarkılarını döndür (offset: 0)</li>
+                            </ul>
+                            <div class="mt-3 p-3 bg-green-900/20 border border-green-700/30 rounded">
+                                <p class="text-xs text-green-300">
+                                    <strong>Dosya:</strong> QueueRefillController.php → getPlaylistSongs()
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    Request'e lastPlayedSongIds parameter ekle → Son 5 şarkının genre'sini analiz et
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Sector/Radio Infinite Loop -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-red-300 mb-2">
+                            Sector/Radio Self-Loop
+                        </h3>
+                        <div class="text-slate-300 space-y-3">
+                            <p class="font-semibold text-white">Mantık:</p>
+                            <ul class="list-disc list-inside space-y-1 text-sm">
+                                <li>Sector/Radio playlists'ten şarkıları topla</li>
+                                <li>Toplam şarkı sayısını bul</li>
+                                <li>offset % totalCount ile başa sar (Genre gibi)</li>
+                                <li>Genre'ye GEÇMİYOR! Kendi içinde sonsuz döngü</li>
+                            </ul>
+                            <div class="mt-3 p-3 bg-red-900/20 border border-red-700/30 rounded">
+                                <p class="text-xs text-red-300">
+                                    <strong>Dosya:</strong> QueueRefillController.php → getSectorSongs(), getRadioSongs()
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    offset % totalCount mantığını ekle (Genre gibi)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Update Transition Logic -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">
+                            Transition Logic Update
+                        </h3>
+                        <div class="text-slate-300 space-y-3">
+                            <p class="font-semibold text-white">Mantık:</p>
+                            <ul class="list-disc list-inside space-y-1 text-sm">
+                                <li>Mevcut "en popüler genre" mantığını KALDIRMıyalım</li>
+                                <li>Context-based transition ekleyelim:</li>
+                                <li class="ml-4">- Album bitti → album.genre_id</li>
+                                <li class="ml-4">- Playlist bitti → son 5 şarkının en çok genre'si</li>
+                                <li class="ml-4">- Diğerleri bitti → en popüler genre (fallback)</li>
+                            </ul>
+                            <div class="mt-3 p-3 bg-yellow-900/20 border border-yellow-700/30 rounded">
+                                <p class="text-xs text-yellow-300">
+                                    <strong>Dosya:</strong> QueueRefillController.php → refill() method
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    Line 62-84 transition logic'i context'e özel hale getir
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Frontend Update -->
+            <div class="bg-slate-800/50 border-l-4 border-cyan-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-cyan-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-cyan-300 mb-2">
+                            Frontend - Transition Handling
+                        </h3>
+                        <div class="text-slate-300 space-y-3">
+                            <p class="font-semibold text-white">Mantık:</p>
+                            <ul class="list-disc list-inside space-y-1 text-sm">
+                                <li>Backend'den transition gelirse → Context'i güncelle</li>
+                                <li>Alpine Store'da playContext değiştir</li>
+                                <li>User'a bildirim göster: "Album bitti → Jazz'a geçildi ♾️"</li>
+                                <li>Müzik kesintisiz devam eder</li>
+                            </ul>
+                            <div class="mt-3 p-3 bg-cyan-900/20 border border-cyan-700/30 rounded">
+                                <p class="text-xs text-cyan-300">
+                                    <strong>Dosya:</strong> muzibu-store.js → refillQueue()
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    response.transition varsa → setPlayContext() çağır + Toast göster
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Code Snippets -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">💻 Örnek Kod Mantığı</h2>
+
+            <!-- Album Transition Code -->
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="font-bold text-purple-300 mb-4">1. Album → Genre Transition (Backend)</h3>
+                <div class="bg-slate-900/50 rounded p-4 text-xs text-slate-300 overflow-x-auto">
+                    <pre>
+private function getAlbumSongs(int $albumId, int $offset, int $limit): array
+{
+    $album = Album::with('genre')->find($albumId);
+    if (!$album) {
+        return [];
+    }
+
+    $songs = $album->songs()
+        ->where('is_active', 1)
+        ->skip($offset)
+        ->take($limit)
+        ->get();
+
+    // 🔄 TRANSITION: Album bitti → Genre'ye geç
+    if ($songs->isEmpty() && $album->genre_id) {
+        // Album'ün genre'sine geçiş yap
+        $genreSongs = $this->getGenreSongs($album->genre_id, 0, $limit);
+
+        if (!empty($genreSongs)) {
+            // Frontend'e transition bilgisi gönder
+            $this->transitionInfo = [
+                'type' => 'genre',
+                'id' => $album->genre_id,
+                'name' => $album->genre->title ?? 'Unknown',
+                'reason' => "Album '{$album->title}' finished - transitioning to genre"
+            ];
+
+            return $genreSongs;
+        }
+    }
+
+    return $this->formatSongs($songs);
+}</pre>
+                </div>
+            </div>
+
+            <!-- Playlist Transition Code -->
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="font-bold text-green-300 mb-4">2. Playlist → Genre Transition (Backend)</h3>
+                <div class="bg-slate-900/50 rounded p-4 text-xs text-slate-300 overflow-x-auto">
+                    <pre>
+private function getPlaylistSongs(int $playlistId, int $offset, int $limit, array $lastPlayedSongIds = []): array
+{
+    $playlist = Playlist::find($playlistId);
+    if (!$playlist) {
+        return [];
+    }
+
+    $songs = $playlist->songs()
+        ->where('is_active', 1)
+        ->skip($offset)
+        ->take($limit)
+        ->get();
+
+    // 🔄 TRANSITION: Playlist bitti → Son 5 şarkının genre'sine geç
+    if ($songs->isEmpty() && !empty($lastPlayedSongIds)) {
+        // Son 5 şarkının genre'lerini analiz et
+        $lastSongs = Song::whereIn('song_id', array_slice($lastPlayedSongIds, -5))
+            ->select('genre_id')
+            ->get();
+
+        // En çok olan genre'yi bul
+        $genreCounts = $lastSongs->countBy('genre_id');
+        $mostCommonGenreId = $genreCounts->sortDesc()->keys()->first();
+
+        if ($mostCommonGenreId) {
+            $genreSongs = $this->getGenreSongs($mostCommonGenreId, 0, $limit);
+
+            if (!empty($genreSongs)) {
+                $genre = Genre::find($mostCommonGenreId);
+                $this->transitionInfo = [
+                    'type' => 'genre',
+                    'id' => $mostCommonGenreId,
+                    'name' => $genre->title ?? 'Unknown',
+                    'reason' => "Playlist '{$playlist->title}' finished - transitioning to most played genre"
+                ];
+
+                return $genreSongs;
+            }
+        }
+    }
+
+    return $this->formatSongs($songs);
+}</pre>
+                </div>
+            </div>
+
+            <!-- Sector Self-Loop Code -->
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="font-bold text-red-300 mb-4">3. Sector Self-Loop (Backend)</h3>
+                <div class="bg-slate-900/50 rounded p-4 text-xs text-slate-300 overflow-x-auto">
+                    <pre>
+private function getSectorSongs(int $sectorId, int $offset, int $limit): array
+{
+    $sector = Sector::find($sectorId);
+    if (!$sector) {
+        return [];
+    }
+
+    // Tüm playlists'ten şarkıları topla
+    $allSongs = collect();
+    $playlists = $sector->playlists()->where('is_active', 1)->get();
+
+    foreach ($playlists as $playlist) {
+        $playlistSongs = $playlist->songs()->where('is_active', 1)->get();
+        $allSongs = $allSongs->merge($playlistSongs);
+    }
+
+    $totalCount = $allSongs->count();
+    if ($totalCount === 0) {
+        return [];
+    }
+
+    // ♾️ SELF-LOOP: offset % totalCount ile başa sar (Genre gibi)
+    $actualOffset = $offset % $totalCount;
+    $songs = $allSongs->skip($actualOffset)->take($limit);
+
+    // Yeterli şarkı yoksa baştan devam et
+    if ($songs->count() < $limit && $actualOffset > 0) {
+        $remaining = $limit - $songs->count();
+        $moreSongs = $allSongs->take($remaining);
+        $songs = $songs->merge($moreSongs);
+    }
+
+    return $this->formatSongs($songs);
+}</pre>
+                </div>
+            </div>
+
+            <!-- Frontend Transition Handling -->
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <h3 class="font-bold text-cyan-300 mb-4">4. Frontend Transition Handling (Alpine.js)</h3>
+                <div class="bg-slate-900/50 rounded p-4 text-xs text-slate-300 overflow-x-auto">
+                    <pre>
+// muzibu-store.js → refillQueue()
+async refillQueue() {
+    const response = await axios.post('/api/muzibu/queue/refill', {
+        type: this.playContext.type,
+        id: this.playContext.id,
+        offset: this.playContext.offset,
+        limit: 15,
+        lastPlayedSongIds: this.queue.map(s => s.song_id) // Son çalınan şarkılar
+    });
+
+    // ✅ Şarkıları queue'ya ekle
+    this.queue.push(...response.data.songs);
+
+    // 🔄 Transition varsa context'i güncelle
+    if (response.data.transition) {
+        const t = response.data.transition;
+
+        // Context'i değiştir
+        this.setPlayContext({
+            type: t.type,
+            id: t.id,
+            offset: 0,
+            source: 'auto_transition'
+        });
+
+        // Kullanıcıya bildir
+        window.showToast(
+            `${t.reason} → ${t.name} ♾️`,
+            'info',
+            5000
+        );
+
+        console.log('🔄 Context transitioned:', t);
+    }
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Scenarios -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-pink-400">🧪 Test Senaryoları</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="font-bold text-purple-300 mb-2">Test 1: Album → Genre</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                        <li>Album ID 12 (Kind of Blue - 11 şarkı)</li>
+                        <li>11 şarkı çal → Album biter</li>
+                        <li>Backend otomatik Genre ID 9 (Jazz) döndürmeli</li>
+                        <li>Frontend context'i güncelle → Jazz infinite başlar</li>
+                        <li>Toast: "Album 'Kind of Blue' bitti → Jazz ♾️"</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="font-bold text-green-300 mb-2">Test 2: Playlist → Genre</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                        <li>Playlist ID 23 (Epic Mix - 500 şarkı)</li>
+                        <li>500 şarkı çal → Playlist biter</li>
+                        <li>Backend son 5 şarkının genre'sini analiz et (örn: 3 Rock, 2 Jazz)</li>
+                        <li>En çok Rock → Genre ID 5 (Rock) döndür</li>
+                        <li>Frontend context'i güncelle → Rock infinite başlar</li>
+                        <li>Toast: "Playlist 'Epic Mix' bitti → Rock ♾️"</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="font-bold text-red-300 mb-2">Test 3: Sector Self-Loop</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                        <li>Sector ID 3 (Restoran - 5 playlist, ~200 şarkı)</li>
+                        <li>200 şarkı çal → offset: 200</li>
+                        <li>Backend: 200 % 200 = 0 → Başa sar</li>
+                        <li>İlk şarkıdan devam eder</li>
+                        <li>Genre'ye GEÇMİYOR! Kendi içinde sonsuz döngü</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+            <p class="mt-2">📅 12 Aralık 2025 - Context Hierarchy v4 Implementation</p>
+        </footer>
+    </div>
+</body>
+</html>

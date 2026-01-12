@@ -1,1 +1,585 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code - Tamamen Kaldırma ve Sıfırdan Yükleme Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        pre { overflow-x: auto; }
+        code { font-family: 'Courier New', monospace; }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-red-900 to-slate-900 border-b border-red-800 py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">🔧 Sistem Bakımı</span>
+                <span class="bg-slate-700 text-slate-300 px-3 py-1 rounded-full text-sm">5 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-2">Claude Code - Tamamen Kaldırma ve Sıfırdan Yükleme</h1>
+            <p class="text-slate-300 text-lg">Claude CLI'sını sistemden tamamen temizleyip sıfırdan yükleme rehberi</p>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <span>📝</span>
+                <span>Basit Anlatım (Herkes İçin)</span>
+            </h3>
+
+            <div class="space-y-4 text-slate-200">
+                <p class="text-lg leading-relaxed">
+                    <strong>Claude Code nedir?</strong><br>
+                    Claude Code, Anthropic'in resmi CLI (komut satırı) aracıdır. Terminal üzerinden Claude AI ile kod yazmanızı, dosya düzenlemenizi ve proje yönetmenizi sağlar.
+                </p>
+
+                <p class="text-lg leading-relaxed">
+                    <strong>Neden tamamen kaldırıp yeniden yükleyeceğiz?</strong><br>
+                    Bazen Claude Code'da sorunlar oluşabilir: eski cache dosyaları, bozuk konfigürasyon, güncel olmayan sürümler.
+                    En temiz çözüm, her şeyi sıfırdan başlatmaktır - sanki hiç yüklenmemiş gibi!
+                </p>
+
+                <p class="text-lg leading-relaxed">
+                    <strong>Ne yapacağız?</strong><br>
+                    3 aşamalı bir süreç: <span class="text-red-400">1) Tamamen kaldırma</span>,
+                    <span class="text-blue-400">2) Cache/config temizliği</span>,
+                    <span class="text-green-400">3) Sıfırdan yükleme</span>
+                </p>
+
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 mt-4">
+                    <p class="flex items-start gap-2">
+                        <span class="text-2xl">⚠️</span>
+                        <span class="text-yellow-200">
+                            <strong>DİKKAT:</strong> Bu işlem sırasında tüm Claude Code ayarları, oturum bilgileri ve cache silinecektir.
+                            İşlem sonrası yeniden giriş yapmanız gerekecek.
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <span>🔧</span>
+                <span>Teknik Detaylar (Geliştiriciler İçin)</span>
+            </h3>
+
+            <div class="space-y-4 text-slate-200">
+                <div>
+                    <h4 class="text-xl font-semibold mb-3 text-blue-300">📂 Silinecek Dosya/Klasörler</h4>
+                    <ul class="space-y-2 ml-6">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">•</span>
+                            <code class="bg-slate-800 px-2 py-1 rounded text-sm">~/.claude/</code>
+                            <span class="text-slate-400">- Tüm Claude Code config ve cache dosyaları</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">•</span>
+                            <code class="bg-slate-800 px-2 py-1 rounded text-sm">~/.npm/_cacache/</code>
+                            <span class="text-slate-400">- NPM cache (Claude Code paketleri)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">•</span>
+                            <code class="bg-slate-800 px-2 py-1 rounded text-sm">/usr/local/bin/claude</code>
+                            <span class="text-slate-400">- Global binary (symlink)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">•</span>
+                            <code class="bg-slate-800 px-2 py-1 rounded text-sm">node_modules/@anthropic-ai/claude-code</code>
+                            <span class="text-slate-400">- NPM paketi</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-semibold mb-3 text-blue-300">⚙️ Kullanılan Araçlar</h4>
+                    <ul class="space-y-2 ml-6">
+                        <li><code class="bg-slate-800 px-2 py-1 rounded text-sm">npm</code> - Paket yöneticisi (kaldırma/yükleme)</li>
+                        <li><code class="bg-slate-800 px-2 py-1 rounded text-sm">rm -rf</code> - Dosya/klasör silme (dikkatli kullan!)</li>
+                        <li><code class="bg-slate-800 px-2 py-1 rounded text-sm">which</code> - Binary konum bulma</li>
+                        <li><code class="bg-slate-800 px-2 py-1 rounded text-sm">ls -la</code> - Dosya listeleme (doğrulama için)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold mb-2 text-blue-300">🔍 Sistem Gereksinimleri</h4>
+                    <ul class="space-y-1 ml-6 text-sm">
+                        <li>✅ Node.js 18+ (kontrol: <code class="bg-slate-900 px-2 py-1 rounded">node -v</code>)</li>
+                        <li>✅ npm 9+ (kontrol: <code class="bg-slate-900 px-2 py-1 rounded">npm -v</code>)</li>
+                        <li>✅ Internet bağlantısı (paket indirmek için)</li>
+                        <li>✅ Sudo yetkisi (global yükleme için)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- AŞAMA 1: KALDIRMA -->
+        <div class="bg-slate-800 border border-red-700 rounded-lg p-6 mb-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="step-number bg-red-600 rounded-full text-white">1</div>
+                <h2 class="text-3xl font-bold">AŞAMA 1: Claude Code'u Tamamen Kaldırma</h2>
+            </div>
+
+            <!-- Adım 1.1 -->
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-600/20 text-red-400 px-3 py-1 rounded-full text-sm font-semibold">Adım 1.1</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">Global Claude Code Paketini Kaldır</h4>
+                        <p class="text-slate-300 mb-4">NPM ile global olarak yüklenmiş Claude Code paketini sistemden kaldırıyoruz.</p>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                            <pre class="text-green-400 text-sm"><code>npm uninstall -g @anthropic-ai/claude-code</code></pre>
+                        </div>
+
+                        <div class="mt-3 bg-blue-900/20 border border-blue-700 rounded p-3">
+                            <p class="text-sm text-blue-200">
+                                <strong>Beklenen Çıktı:</strong> <code class="bg-slate-800 px-2 py-1 rounded">removed 1 package in 2s</code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 1.2 -->
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-600/20 text-red-400 px-3 py-1 rounded-full text-sm font-semibold">Adım 1.2</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">Claude Config Klasörünü Sil</h4>
+                        <p class="text-slate-300 mb-4">Kullanıcı ayarları, oturum bilgileri ve cache'lerin bulunduğu klasörü tamamen siliyoruz.</p>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                            <pre class="text-green-400 text-sm"><code>rm -rf ~/.claude</code></pre>
+                        </div>
+
+                        <div class="mt-3 bg-yellow-900/20 border border-yellow-700 rounded p-3">
+                            <p class="text-sm text-yellow-200">
+                                <strong>⚠️ DİKKAT:</strong> Bu komut tüm Claude ayarlarını siler. API anahtarları, oturum bilgileri kaybolacaktır.
+                            </p>
+                        </div>
+
+                        <div class="mt-3 bg-slate-800 border border-slate-600 rounded p-3">
+                            <p class="text-sm text-slate-300">
+                                <strong>Doğrulama:</strong> <code class="bg-slate-900 px-2 py-1 rounded">ls -la ~/.claude</code>
+                                <span class="text-slate-400">→ "No such file or directory" görmeli</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 1.3 -->
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-600/20 text-red-400 px-3 py-1 rounded-full text-sm font-semibold">Adım 1.3</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">Global Binary'yi Kaldır (Varsa)</h4>
+                        <p class="text-slate-300 mb-4">Sistem PATH'inde olan claude komutunu bulup kaldırıyoruz.</p>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4 mb-3">
+                            <p class="text-slate-400 text-sm mb-2"># Önce konumu kontrol et</p>
+                            <pre class="text-green-400 text-sm"><code>which claude</code></pre>
+                        </div>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                            <p class="text-slate-400 text-sm mb-2"># Eğer konum görüyorsan (örn: /usr/local/bin/claude), sil:</p>
+                            <pre class="text-green-400 text-sm"><code>sudo rm -f /usr/local/bin/claude</code></pre>
+                        </div>
+
+                        <div class="mt-3 bg-slate-800 border border-slate-600 rounded p-3">
+                            <p class="text-sm text-slate-300">
+                                <strong>Doğrulama:</strong> <code class="bg-slate-900 px-2 py-1 rounded">which claude</code>
+                                <span class="text-slate-400">→ Hiçbir çıktı vermemeli (komut bulunamadı)</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 1.4 -->
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-600/20 text-red-400 px-3 py-1 rounded-full text-sm font-semibold">Adım 1.4</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">NPM Cache Temizliği</h4>
+                        <p class="text-slate-300 mb-4">Claude Code ile ilgili tüm NPM cache dosyalarını temizliyoruz.</p>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4 mb-3">
+                            <p class="text-slate-400 text-sm mb-2"># Cache'i tamamen temizle</p>
+                            <pre class="text-green-400 text-sm"><code>npm cache clean --force</code></pre>
+                        </div>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                            <p class="text-slate-400 text-sm mb-2"># Cache klasörünü doğrudan sil (daha agresif)</p>
+                            <pre class="text-green-400 text-sm"><code>rm -rf ~/.npm/_cacache</code></pre>
+                        </div>
+
+                        <div class="mt-3 bg-green-900/20 border border-green-700 rounded p-3">
+                            <p class="text-sm text-green-200">
+                                <strong>✅ Sonuç:</strong> NPM cache temizlendi, yeni yüklemede güncel paket indirilecek.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AŞAMA 2: DOĞRULAMA -->
+        <div class="bg-slate-800 border border-yellow-700 rounded-lg p-6 mb-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="step-number bg-yellow-600 rounded-full text-white">2</div>
+                <h2 class="text-3xl font-bold">AŞAMA 2: Kaldırma İşlemini Doğrula</h2>
+            </div>
+
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-600/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Kontrol</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">Tüm Kontrolleri Çalıştır</h4>
+                        <p class="text-slate-300 mb-4">Her komutu çalıştır ve beklenen sonuçları gör.</p>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                                <p class="text-slate-400 text-sm mb-2"># 1. Claude komutu kaldırılmış mı?</p>
+                                <pre class="text-green-400 text-sm mb-2"><code>which claude</code></pre>
+                                <p class="text-red-400 text-sm">Beklenen: (çıktı yok - komut bulunamadı)</p>
+                            </div>
+
+                            <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                                <p class="text-slate-400 text-sm mb-2"># 2. Claude klasörü silinmiş mi?</p>
+                                <pre class="text-green-400 text-sm mb-2"><code>ls -la ~/.claude</code></pre>
+                                <p class="text-red-400 text-sm">Beklenen: ls: cannot access '~/.claude': No such file or directory</p>
+                            </div>
+
+                            <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                                <p class="text-slate-400 text-sm mb-2"># 3. NPM global paketlerde Claude yok mu?</p>
+                                <pre class="text-green-400 text-sm mb-2"><code>npm list -g @anthropic-ai/claude-code</code></pre>
+                                <p class="text-red-400 text-sm">Beklenen: (empty)</p>
+                            </div>
+
+                            <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                                <p class="text-slate-400 text-sm mb-2"># 4. Claude komutunu çalıştırmayı dene</p>
+                                <pre class="text-green-400 text-sm mb-2"><code>claude --version</code></pre>
+                                <p class="text-red-400 text-sm">Beklenen: command not found: claude</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-green-900/30 border border-green-700 rounded p-4">
+                            <p class="text-green-200">
+                                <strong>✅ Tüm kontroller başarılı ise:</strong> Sistem tamamen temiz, sıfırdan yüklemeye hazır!
+                            </p>
+                        </div>
+
+                        <div class="mt-3 bg-red-900/30 border border-red-700 rounded p-4">
+                            <p class="text-red-200">
+                                <strong>❌ Eğer hala kalıntı varsa:</strong> İlgili adımları tekrar çalıştır. Gerekirse <code class="bg-slate-800 px-2 py-1 rounded">sudo</code> kullan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AŞAMA 3: SIFIRDAN YÜKLEME -->
+        <div class="bg-slate-800 border border-green-700 rounded-lg p-6 mb-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="step-number bg-green-600 rounded-full text-white">3</div>
+                <h2 class="text-3xl font-bold">AŞAMA 3: Claude Code'u Sıfırdan Yükle</h2>
+            </div>
+
+            <!-- Adım 3.1 -->
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-600/20 text-green-400 px-3 py-1 rounded-full text-sm font-semibold">Adım 3.1</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">NPM ile Global Yükleme</h4>
+                        <p class="text-slate-300 mb-4">Claude Code'u global olarak yükle (tüm projelerden erişilebilir).</p>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                            <pre class="text-green-400 text-sm"><code>npm install -g @anthropic-ai/claude-code</code></pre>
+                        </div>
+
+                        <div class="mt-3 bg-blue-900/20 border border-blue-700 rounded p-3">
+                            <p class="text-sm text-blue-200">
+                                <strong>Beklenen Çıktı:</strong> Paket indiriliyor, bağımlılıklar yükleniyor, symlink oluşturuluyor...
+                            </p>
+                        </div>
+
+                        <div class="mt-3 bg-yellow-900/20 border border-yellow-700 rounded p-3">
+                            <p class="text-sm text-yellow-200">
+                                <strong>⏱️ Süre:</strong> İnternet hızınıza göre 30 saniye - 2 dakika arası
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3.2 -->
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-600/20 text-green-400 px-3 py-1 rounded-full text-sm font-semibold">Adım 3.2</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">Yüklemeyi Doğrula</h4>
+                        <p class="text-slate-300 mb-4">Claude Code'un başarıyla yüklendiğini kontrol et.</p>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4 mb-3">
+                            <p class="text-slate-400 text-sm mb-2"># Versiyon kontrol et</p>
+                            <pre class="text-green-400 text-sm"><code>claude --version</code></pre>
+                        </div>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                            <p class="text-slate-400 text-sm mb-2"># Komut konumunu kontrol et</p>
+                            <pre class="text-green-400 text-sm"><code>which claude</code></pre>
+                        </div>
+
+                        <div class="mt-3 bg-green-900/20 border border-green-700 rounded p-3">
+                            <p class="text-sm text-green-200">
+                                <strong>✅ Başarılı:</strong> Versiyon numarası görüyorsun (örn: 0.7.0) → Yükleme tamamlandı!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3.3 -->
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-600/20 text-green-400 px-3 py-1 rounded-full text-sm font-semibold">Adım 3.3</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">Claude Code'u Başlat ve Giriş Yap</h4>
+                        <p class="text-slate-300 mb-4">İlk kez çalıştır ve Anthropic hesabınla giriş yap.</p>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4 mb-3">
+                            <p class="text-slate-400 text-sm mb-2"># Claude'u başlat</p>
+                            <pre class="text-green-400 text-sm"><code>claude</code></pre>
+                        </div>
+
+                        <div class="mt-3 bg-blue-900/20 border border-blue-700 rounded p-3">
+                            <p class="text-sm text-blue-200 mb-2">
+                                <strong>İlk Başlatma Süreci:</strong>
+                            </p>
+                            <ol class="list-decimal ml-6 space-y-1 text-sm text-blue-200">
+                                <li>Claude açılacak ve giriş yapmanızı isteyecek</li>
+                                <li>Tarayıcıda Anthropic login sayfası açılacak</li>
+                                <li>Hesabınızla giriş yapın</li>
+                                <li>Authorization kodunu terminalden onaylayın</li>
+                                <li>Claude kullanıma hazır!</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-3 bg-yellow-900/20 border border-yellow-700 rounded p-3">
+                            <p class="text-sm text-yellow-200">
+                                <strong>⚠️ Önemli:</strong> API Key veya Claude hesabı gereksinimleri değişmiş olabilir.
+                                Resmi dökümana bakın: <a href="https://claude.com/claude-code" class="text-yellow-400 underline">claude.com/claude-code</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3.4 -->
+            <div class="card bg-slate-900 border border-slate-700 rounded-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-600/20 text-green-400 px-3 py-1 rounded-full text-sm font-semibold">Adım 3.4</div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-semibold mb-3">İlk Testi Yap</h4>
+                        <p class="text-slate-300 mb-4">Claude'un düzgün çalıştığını test etmek için basit bir komut dene.</p>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4 mb-3">
+                            <p class="text-slate-400 text-sm mb-2"># Basit bir test mesajı gönder</p>
+                            <pre class="text-green-400 text-sm"><code>claude "Merhaba, çalışıyor musun?"</code></pre>
+                        </div>
+
+                        <div class="bg-slate-950 border border-slate-700 rounded p-4">
+                            <p class="text-slate-400 text-sm mb-2"># Veya interaktif modda test et</p>
+                            <pre class="text-green-400 text-sm"><code>claude
+> Basit bir hesaplama yap: 125 * 8</code></pre>
+                        </div>
+
+                        <div class="mt-3 bg-green-900/20 border border-green-700 rounded p-3">
+                            <p class="text-sm text-green-200">
+                                <strong>✅ Başarılı:</strong> Claude yanıt veriyorsa → Her şey düzgün çalışıyor!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SORUN GİDERME -->
+        <div class="bg-slate-800 border border-purple-700 rounded-lg p-6 mb-6">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-2">
+                <span>🔧</span>
+                <span>Sorun Giderme (Troubleshooting)</span>
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Sorun 1 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-lg p-5">
+                    <h4 class="text-xl font-semibold mb-2 text-red-400">❌ Sorun: "command not found: claude"</h4>
+                    <p class="text-slate-300 mb-3">Yükleme sonrası claude komutu tanınmıyor.</p>
+
+                    <div class="bg-blue-900/20 border border-blue-700 rounded p-3">
+                        <p class="text-sm text-blue-200 mb-2"><strong>Çözümler:</strong></p>
+                        <ol class="list-decimal ml-6 space-y-2 text-sm text-slate-300">
+                            <li>
+                                <strong>PATH kontrolü:</strong> <code class="bg-slate-800 px-2 py-1 rounded">echo $PATH</code>
+                                <br><span class="text-slate-400">→ <code>/usr/local/bin</code> veya <code>~/.npm-global/bin</code> listede var mı?</span>
+                            </li>
+                            <li>
+                                <strong>Shell'i yeniden başlat:</strong> <code class="bg-slate-800 px-2 py-1 rounded">exec $SHELL</code>
+                                <br><span class="text-slate-400">→ PATH değişikliklerini yükler</span>
+                            </li>
+                            <li>
+                                <strong>NPM prefix kontrolü:</strong> <code class="bg-slate-800 px-2 py-1 rounded">npm config get prefix</code>
+                                <br><span class="text-slate-400">→ Global paketlerin nereye yüklendiğini gösterir</span>
+                            </li>
+                            <li>
+                                <strong>Manuel PATH ekleme:</strong> <code class="bg-slate-800 px-2 py-1 rounded">export PATH="$PATH:$(npm config get prefix)/bin"</code>
+                                <br><span class="text-slate-400">→ ~/.bashrc veya ~/.zshrc'ye ekle (kalıcı olması için)</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Sorun 2 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-lg p-5">
+                    <h4 class="text-xl font-semibold mb-2 text-red-400">❌ Sorun: "Permission denied" hatası</h4>
+                    <p class="text-slate-300 mb-3">Yükleme veya çalıştırma sırasında yetki hatası alınıyor.</p>
+
+                    <div class="bg-blue-900/20 border border-blue-700 rounded p-3">
+                        <p class="text-sm text-blue-200 mb-2"><strong>Çözümler:</strong></p>
+                        <ol class="list-decimal ml-6 space-y-2 text-sm text-slate-300">
+                            <li>
+                                <strong>Sudo ile yükle:</strong> <code class="bg-slate-800 px-2 py-1 rounded">sudo npm install -g @anthropic-ai/claude-code</code>
+                            </li>
+                            <li>
+                                <strong>NPM permissions düzelt:</strong>
+                                <br><code class="bg-slate-800 px-2 py-1 rounded text-xs">sudo chown -R $(whoami) ~/.npm ~/.npm-global</code>
+                            </li>
+                            <li>
+                                <strong>Binary permission:</strong> <code class="bg-slate-800 px-2 py-1 rounded">sudo chmod +x /usr/local/bin/claude</code>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Sorun 3 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-lg p-5">
+                    <h4 class="text-xl font-semibold mb-2 text-red-400">❌ Sorun: Login/Authentication başarısız</h4>
+                    <p class="text-slate-300 mb-3">Giriş yapamıyorum veya auth hatası alıyorum.</p>
+
+                    <div class="bg-blue-900/20 border border-blue-700 rounded p-3">
+                        <p class="text-sm text-blue-200 mb-2"><strong>Çözümler:</strong></p>
+                        <ol class="list-decimal ml-6 space-y-2 text-sm text-slate-300">
+                            <li>
+                                <strong>Config sıfırla:</strong> <code class="bg-slate-800 px-2 py-1 rounded">rm -rf ~/.claude && claude</code>
+                            </li>
+                            <li>
+                                <strong>API Key doğrudan kullan:</strong>
+                                <br><code class="bg-slate-800 px-2 py-1 rounded text-xs">export ANTHROPIC_API_KEY="your-api-key-here"</code>
+                            </li>
+                            <li>
+                                <strong>Tarayıcı cache temizle:</strong> Login sayfası açılmıyorsa tarayıcı cache/cookie'lerini temizle
+                            </li>
+                            <li>
+                                <strong>Resmi döküman:</strong> <a href="https://docs.anthropic.com/claude-code/authentication" class="text-blue-400 underline">docs.anthropic.com/claude-code/authentication</a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Sorun 4 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-lg p-5">
+                    <h4 class="text-xl font-semibold mb-2 text-red-400">❌ Sorun: Eski versiyon yüklenmiş</h4>
+                    <p class="text-slate-300 mb-3">Güncel versiyon değil, eski bir sürüm yüklendi.</p>
+
+                    <div class="bg-blue-900/20 border border-blue-700 rounded p-3">
+                        <p class="text-sm text-blue-200 mb-2"><strong>Çözümler:</strong></p>
+                        <ol class="list-decimal ml-6 space-y-2 text-sm text-slate-300">
+                            <li>
+                                <strong>Latest tag ile yükle:</strong>
+                                <br><code class="bg-slate-800 px-2 py-1 rounded text-xs">npm install -g @anthropic-ai/claude-code@latest</code>
+                            </li>
+                            <li>
+                                <strong>NPM cache temizle ve tekrar yükle:</strong>
+                                <br><code class="bg-slate-800 px-2 py-1 rounded text-xs">npm cache clean --force && npm install -g @anthropic-ai/claude-code</code>
+                            </li>
+                            <li>
+                                <strong>Yüklü versiyonu kontrol et:</strong> <code class="bg-slate-800 px-2 py-1 rounded">npm list -g @anthropic-ai/claude-code</code>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖZET -->
+        <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-700 rounded-lg p-6">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-2">
+                <span>📊</span>
+                <span>Özet: Tüm Komutlar Tek Seferde</span>
+            </h2>
+
+            <div class="bg-slate-950 border border-slate-700 rounded p-5">
+                <p class="text-slate-400 text-sm mb-3"># 🔴 AŞAMA 1: KALDIRMA</p>
+                <pre class="text-green-400 text-sm mb-4"><code>npm uninstall -g @anthropic-ai/claude-code
+rm -rf ~/.claude
+sudo rm -f /usr/local/bin/claude
+npm cache clean --force
+rm -rf ~/.npm/_cacache</code></pre>
+
+                <p class="text-slate-400 text-sm mb-3"># 🟡 AŞAMA 2: DOĞRULAMA</p>
+                <pre class="text-yellow-400 text-sm mb-4"><code>which claude                                    # → (çıktı yok)
+ls -la ~/.claude                                # → No such file
+npm list -g @anthropic-ai/claude-code          # → (empty)
+claude --version                                # → command not found</code></pre>
+
+                <p class="text-slate-400 text-sm mb-3"># 🟢 AŞAMA 3: SIFIRDAN YÜKLEME</p>
+                <pre class="text-green-400 text-sm mb-4"><code>npm install -g @anthropic-ai/claude-code
+claude --version                                # → Versiyon görmeli
+which claude                                    # → Konum görmeli
+claude                                          # → İlk kez başlat, giriş yap
+claude "Merhaba, çalışıyor musun?"             # → Test et</code></pre>
+
+                <div class="bg-green-900/30 border border-green-700 rounded p-4 mt-4">
+                    <p class="text-green-200">
+                        <strong>✅ İşlem Tamamlandı!</strong> Claude Code tamamen temiz bir şekilde yüklendi ve kullanıma hazır.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-700 text-center text-slate-400">
+            <p class="mb-2">🤖 Bu rehber <strong>Claude Sonnet 4.5</strong> tarafından oluşturulmuştur.</p>
+            <p class="text-sm">
+                Oluşturulma: 5 Ocak 2026 |
+                <a href="https://claude.com/claude-code" class="text-blue-400 hover:underline">Claude Code Resmi Dokümantasyon</a>
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

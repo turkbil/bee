@@ -1,1 +1,500 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central Domain vs Tenant Domain - Multi-Tenant Sistem Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #0f172a, #1e293b);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 p-6">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-400 text-sm font-semibold mb-4">
+                📊 Sistem Analizi
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Central Domain vs Tenant Domain
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Multi-Tenant Sistemlerde Domain Yapılandırması ve Etkileri
+            </p>
+            <div class="mt-4 text-slate-500 text-sm">
+                📅 08 Ocak 2026 | 🏢 Muzibu.com.tr | v1
+            </div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-12">
+            <div class="bg-green-900/20 border border-green-800 rounded-xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">📝</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-green-400">Basit Anlatım (Herkes İçin)</h2>
+                </div>
+
+                <div class="space-y-6 text-slate-300 leading-relaxed">
+                    <p class="text-lg">
+                        <strong class="text-green-400">Multi-tenant sistem</strong> nedir? Tek bir yazılım üzerinde birden fazla müşterinin (tenant) kendi veritabanları ve ayarlarıyla çalışabildiği sistemdir. Her müşteri kendi domain'i üzerinden erişir.
+                    </p>
+
+                    <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                        <h3 class="text-xl font-semibold text-green-400 mb-4">🏢 İki Tür Domain Var:</h3>
+
+                        <div class="space-y-4">
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center text-blue-400">1</div>
+                                <div>
+                                    <div class="font-semibold text-blue-400 mb-1">Tenant Domain (Normal Müşteri)</div>
+                                    <p class="text-slate-400">Her müşterinin kendi bağımsız domain'i. Örnek: ixtif.com, firma-a.com, firma-b.com</p>
+                                    <p class="text-sm text-slate-500 mt-2">✅ Her müşteri tamamen izole, kendi veritabanı, kendi ayarları</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400">2</div>
+                                <div>
+                                    <div class="font-semibold text-purple-400 mb-1">Central Domain (Yönetim Merkezi)</div>
+                                    <p class="text-slate-400">Sistemin ana domain'i. Tüm müşterileri yönettiğiniz yer. Örnek: tuufi.com (ana sistem)</p>
+                                    <p class="text-sm text-slate-500 mt-2">✅ Admin paneli, tenant oluşturma, sistem ayarları buradan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-green-400 mt-8 mb-4">🤔 Muzibu'nun Durumu (Sorun):</h3>
+
+                    <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                        <p class="mb-4">
+                            <strong class="text-red-400">Problem:</strong> Muzibu.com.tr başta <span class="text-blue-400">tenant domain</span> olarak kuruldu (doğru). Sonra <span class="text-purple-400">central domain</span> yapıldı (yanlış).
+                        </p>
+                        <p class="mb-4">
+                            <strong class="text-yellow-400">Sonuç:</strong> Login yaptığınızda sistemin sizin giriş yaptığınızı anlayamadı çünkü cache sistemi bozuldu. "Giriş Yap" butonu ekranda kalmaya devam etti.
+                        </p>
+                        <p class="text-green-400">
+                            <strong>Çözüm:</strong> Muzibu'yu tekrar tenant domain yaptık ve sorun çözüldü. Artık düzgün çalışıyor.
+                        </p>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mt-6">
+                        <h4 class="font-semibold text-blue-400 mb-3">💡 Neden Önemli?</h4>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">✓</span>
+                                <span><strong>Kullanıcı deneyimi:</strong> Login/logout düzgün çalışır, cache sorunları olmaz</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">✓</span>
+                                <span><strong>Performans:</strong> Her tenant'ın cache'i izole çalışır</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">✓</span>
+                                <span><strong>Güvenlik:</strong> Tenant'lar birbirinin verilerine erişemez</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-12">
+            <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🔧</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-blue-400">Teknik Detaylar (Geliştiriciler İçin)</h2>
+                </div>
+
+                <div class="space-y-8 text-slate-300">
+
+                    <!-- Tenant Domain -->
+                    <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
+                            <span>🏢</span> Tenant Domain (Normal Çalışma Modu)
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-2">📊 Database Yapısı:</h4>
+                                <div class="bg-slate-900/50 rounded p-4 font-mono text-sm">
+                                    <div class="text-green-400">tenants tablosu:</div>
+                                    <div class="text-slate-400 ml-4">id: 1001</div>
+                                    <div class="text-slate-400 ml-4">title: "Muzibu"</div>
+                                    <div class="text-slate-400 ml-4">central: <span class="text-green-400">0</span> (Normal tenant)</div>
+                                    <div class="text-slate-400 ml-4">tenancy_db_name: "tenant_muzibu_1528d0"</div>
+                                    <div class="text-slate-400 ml-4">theme_id: 7 (muzibu teması)</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-2">⚙️ Sistem Davranışı:</h4>
+                                <ul class="space-y-2 text-slate-400">
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-blue-400">•</span>
+                                        <span><code class="text-green-400">tenant()</code> helper: <strong class="text-green-400">Tenant objesi döner</strong> (id: 1001)</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-blue-400">•</span>
+                                        <span>Database connection: <strong class="text-green-400">tenant_muzibu_1528d0</strong></span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-blue-400">•</span>
+                                        <span>Cache pattern: <code class="text-green-400">tenant_1001_guest_*</code> / <code class="text-green-400">tenant_1001_auth_{userId}_*</code></span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-blue-400">•</span>
+                                        <span>Session prefix: <code class="text-green-400">tenant1001_</code></span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-blue-400">•</span>
+                                        <span>Media disk: <code class="text-green-400">tenant1001</code> (storage/tenant1001/app/public)</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-2">✅ Avantajlar:</h4>
+                                <ul class="space-y-2 text-slate-400">
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-green-400">✓</span>
+                                        <span>Cache sistemleri düzgün çalışır (guest→auth geçişi sorunsuz)</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-green-400">✓</span>
+                                        <span>Login/logout response cache temizleme otomatik çalışır</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-green-400">✓</span>
+                                        <span>Tema sistemi tenant-aware çalışır (ThemeService düzgün tema yükler)</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-green-400">✓</span>
+                                        <span>Session yönetimi tenant-aware (her tenant izole session)</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-green-400">✓</span>
+                                        <span>Media library tenant-aware (dosyalar karışmaz)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Central Domain -->
+                    <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                        <h3 class="text-xl font-semibold text-purple-400 mb-4 flex items-center gap-2">
+                            <span>🏛️</span> Central Domain (Merkezi Mod)
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-2">📊 Database Yapısı:</h4>
+                                <div class="bg-slate-900/50 rounded p-4 font-mono text-sm">
+                                    <div class="text-purple-400">tenants tablosu:</div>
+                                    <div class="text-slate-400 ml-4">id: 1001</div>
+                                    <div class="text-slate-400 ml-4">title: "Muzibu"</div>
+                                    <div class="text-slate-400 ml-4">central: <span class="text-red-400">1</span> (Merkezi domain)</div>
+                                    <div class="text-slate-400 ml-4">tenancy_db_name: "tuufi_4ekim" (central DB)</div>
+                                    <div class="mt-2 text-yellow-400">.env dosyası:</div>
+                                    <div class="text-slate-400 ml-4">APP_DOMAIN=muzibu.com.tr</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-2">⚙️ Sistem Davranışı:</h4>
+                                <ul class="space-y-2 text-slate-400">
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-purple-400">•</span>
+                                        <span><code class="text-red-400">tenant()</code> helper: <strong class="text-red-400">NULL döner!</strong></span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-purple-400">•</span>
+                                        <span>Database connection: <strong class="text-red-400">tuufi_4ekim</strong> (central DB, tenant DB'ye geçiş yok)</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-purple-400">•</span>
+                                        <span>Cache pattern: <code class="text-red-400">tenant_central_guest_*</code> (farklı pattern!)</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-purple-400">•</span>
+                                        <span>Session prefix: <code class="text-red-400">central_</code> veya prefix yok</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-purple-400">•</span>
+                                        <span>InitializeTenancy middleware: Domain config'de olduğu için tenant başlatmıyor</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                                <h4 class="font-semibold text-red-400 mb-3">❌ Sorunlar:</h4>
+                                <ul class="space-y-2 text-slate-300">
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-red-400">✗</span>
+                                        <span><strong>Cache Pattern Uyumsuzluğu:</strong> Guest cache <code>tenant_central_guest_*</code> olarak kaydedilir. Login olunca <code>tenant_central_auth_{userId}_*</code> aranır. Ama clearGuestCaches() fonksiyonu <code>tenant_{tenantId}_guest_*</code> pattern'ini temizler. Pattern uyuşmadığı için cache temizlenmez!</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-red-400">✗</span>
+                                        <span><strong>Tenant() NULL:</strong> Birçok sistem (ThemeService, MediaManager, SessionManager) tenant ID'ye bağlı. NULL geldiğinde fallback kodlar çalışır ama sorun çıkarır.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-red-400">✗</span>
+                                        <span><strong>Login Sonrası Cache Kalıyor:</strong> clearGuestCaches() çalışmadığı için guest cache silinmez. Anasayfa cache'ten guest sayfasını döndürür. Kullanıcı login yapmış ama sayfa "Giriş Yap" gösterir!</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-red-400">✗</span>
+                                        <span><strong>Hard Refresh Gerekir:</strong> Kullanıcı Ctrl+F5 yapınca cache bypass olur ve auth sayfası yüklenir.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Çözümler -->
+                    <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                        <h3 class="text-xl font-semibold text-yellow-400 mb-4 flex items-center gap-2">
+                            <span>🛠️</span> Central Domain İle Çalıştırma Çözümleri
+                        </h3>
+
+                        <div class="space-y-6">
+                            <p class="text-slate-400">
+                                Eğer Muzibu'yu <strong>mutlaka</strong> central domain olarak çalıştırmak istiyorsanız, aşağıdaki çözümlerden birini uygulamanız gerekir:
+                            </p>
+
+                            <div class="space-y-4">
+                                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                                    <h4 class="font-semibold text-green-400 mb-2">✅ Çözüm 1: Response Cache Devre Dışı (En Kolay)</h4>
+                                    <p class="text-slate-400 mb-3">Cache sorunlarını tamamen ortadan kaldırır ama performans kaybı olur.</p>
+                                    <div class="bg-slate-900/50 rounded p-3 font-mono text-sm text-slate-300">
+                                        .env dosyası:<br/>
+                                        RESPONSE_CACHE_ENABLED=false
+                                    </div>
+                                    <div class="mt-3 text-sm">
+                                        <div class="text-green-400">✓ Avantaj: Hemen çalışır, cache sorunu kalmaz</div>
+                                        <div class="text-red-400">✗ Dezavantaj: Sayfa yükleme süresi artar (~200ms daha yavaş)</div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                                    <h4 class="font-semibold text-blue-400 mb-2">✅ Çözüm 2: InitializeTenancy Middleware Güncelleme (Orta)</h4>
+                                    <p class="text-slate-400 mb-3">Merkezi domain için de tenant'ı yükle ama DB değiştirme.</p>
+                                    <p class="text-slate-500 text-sm mb-2">Dosya: app/Http/Middleware/InitializeTenancy.php</p>
+                                    <div class="bg-slate-900/50 rounded p-3 text-sm text-slate-300">
+                                        Mantık:<br/>
+                                        - Central domain algılandığında da tenant() yükle<br/>
+                                        - Ama database bağlantısını değiştirme (tuufi_4ekim'de kal)<br/>
+                                        - Cache pattern düzelir: tenant_1001_guest_* olur<br/>
+                                        - Session prefix düzelir: tenant1001_ olur
+                                    </div>
+                                    <div class="mt-3 text-sm">
+                                        <div class="text-green-400">✓ Avantaj: Cache düzgün çalışır, performans kaybı yok</div>
+                                        <div class="text-yellow-400">~ Orta: Middleware değişikliği gerekir (~50 satır kod)</div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                                    <h4 class="font-semibold text-purple-400 mb-2">✅ Çözüm 3: TenantCacheProfile Özelleştirme (Karmaşık)</h4>
+                                    <p class="text-slate-400 mb-3">Cache profile'ı central domain için özel yaz.</p>
+                                    <p class="text-slate-500 text-sm mb-2">Dosya: app/Services/TenantCacheProfile.php</p>
+                                    <div class="bg-slate-900/50 rounded p-3 text-sm text-slate-300">
+                                        Mantık:<br/>
+                                        - useCacheNameSuffix() içinde central domain kontrolü<br/>
+                                        - Central ise: domain'e göre tenant ID bul<br/>
+                                        - Pattern: tenant_{foundTenantId}_guest_*<br/>
+                                        - clearGuestCaches() fonksiyonunu da güncelle
+                                    </div>
+                                    <div class="mt-3 text-sm">
+                                        <div class="text-green-400">✓ Avantaj: Cache düzgün çalışır, tenant() null kalabilir</div>
+                                        <div class="text-red-400">✗ Dezavantaj: Karmaşık, birden fazla dosya değişikliği (~100+ satır)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kod Referansları -->
+                    <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4 flex items-center gap-2">
+                            <span>📂</span> İlgili Dosyalar ve Kodlar
+                        </h3>
+
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-start gap-3">
+                                <span class="text-cyan-400 font-mono">•</span>
+                                <div>
+                                    <div class="font-mono text-cyan-400">app/Http/Middleware/InitializeTenancy.php:44-53</div>
+                                    <div class="text-slate-400">Central domain kontrolü (config'den okuyor)</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-cyan-400 font-mono">•</span>
+                                <div>
+                                    <div class="font-mono text-cyan-400">app/Services/TenantCacheProfile.php:184-197</div>
+                                    <div class="text-slate-400">Cache key pattern oluşturma (tenant ID + auth/guest)</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-cyan-400 font-mono">•</span>
+                                <div>
+                                    <div class="font-mono text-cyan-400">app/Http/Controllers/Auth/AuthenticatedSessionController.php:138-147</div>
+                                    <div class="text-slate-400">Login sonrası response cache temizleme</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-cyan-400 font-mono">•</span>
+                                <div>
+                                    <div class="font-mono text-cyan-400">app/Services/ThemeService.php:76-104</div>
+                                    <div class="text-slate-400">Central domain için tema yükleme (domain'den tenant bulma)</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-cyan-400 font-mono">•</span>
+                                <div>
+                                    <div class="font-mono text-cyan-400">config/tenancy.php:central_domains</div>
+                                    <div class="text-slate-400">Merkezi domain listesi (APP_DOMAIN'den okuyor)</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-cyan-400 font-mono">•</span>
+                                <div>
+                                    <div class="font-mono text-cyan-400">.env:APP_DOMAIN</div>
+                                    <div class="text-slate-400">Merkezi domain tanımı (localhost = tenant mode, muzibu.com.tr = central mode)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonuç ve Öneri -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-green-900/20 to-blue-900/20 border border-green-800/50 rounded-xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">💡</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-green-400">Sonuç ve Öneri</h2>
+                </div>
+
+                <div class="space-y-4 text-slate-300">
+                    <div class="bg-green-900/20 border border-green-700 rounded-lg p-6">
+                        <h3 class="font-semibold text-green-400 mb-3 text-lg">✅ Önerilen Yapılandırma (Şu Anki Durum)</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400">→</span>
+                                <span><strong>Muzibu.com.tr:</strong> Normal tenant olarak çalışsın (central=0)</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400">→</span>
+                                <span><strong>APP_DOMAIN:</strong> localhost (merkezi domain yok)</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400">→</span>
+                                <span><strong>Avantajlar:</strong> Tüm sistemler düzgün çalışır, cache sorunları yok, login/logout hatasız</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-6">
+                        <h3 class="font-semibold text-yellow-400 mb-3 text-lg">⚠️ Central Domain Kullanımı</h3>
+                        <p class="mb-3">
+                            Eğer <strong>mutlaka</strong> central domain olarak çalıştırmak istiyorsanız:
+                        </p>
+                        <ul class="space-y-2 text-slate-400">
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-400">1.</span>
+                                <span>Yukarıdaki <strong>Çözüm 2</strong>'yi uygulayın (InitializeTenancy middleware güncelleme)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-400">2.</span>
+                                <span>Kapsamlı test yapın (login, logout, cache, session, media)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-400">3.</span>
+                                <span>Yeni tenant eklediğinizde de test edin (izolasyon kontrolü)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-6">
+                        <h3 class="font-semibold text-blue-400 mb-3 text-lg">📊 Performans Karşılaştırması</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-700">
+                                        <th class="text-left py-2 text-slate-400">Özellik</th>
+                                        <th class="text-left py-2 text-green-400">Tenant Mode</th>
+                                        <th class="text-left py-2 text-purple-400">Central Mode</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-300">
+                                    <tr class="border-b border-slate-800">
+                                        <td class="py-3">Cache Çalışması</td>
+                                        <td class="text-green-400">✓ Sorunsuz</td>
+                                        <td class="text-red-400">✗ Düzeltme gerekir</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800">
+                                        <td class="py-3">Login/Logout</td>
+                                        <td class="text-green-400">✓ Sorunsuz</td>
+                                        <td class="text-red-400">✗ Cache kalıyor</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800">
+                                        <td class="py-3">Tema Yükleme</td>
+                                        <td class="text-green-400">✓ Otomatik</td>
+                                        <td class="text-yellow-400">~ Özel kod gerekir</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800">
+                                        <td class="py-3">Session İzolasyonu</td>
+                                        <td class="text-green-400">✓ Tenant prefix</td>
+                                        <td class="text-yellow-400">~ Kontrol gerekir</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800">
+                                        <td class="py-3">Media Yönetimi</td>
+                                        <td class="text-green-400">✓ Tenant disk</td>
+                                        <td class="text-yellow-400">~ Özel ayar gerekir</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3">Kod Karmaşıklığı</td>
+                                        <td class="text-green-400">✓ Basit</td>
+                                        <td class="text-red-400">✗ Karmaşık (+150 satır)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>🤖 Bu rapor Claude AI tarafından oluşturulmuştur</p>
+            <p class="mt-2">08 Ocak 2026 | Muzibu Multi-Tenant Sistem Analizi</p>
+        </footer>
+    </div>
+</body>
+</html>

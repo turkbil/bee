@@ -1,1 +1,959 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AI Cron - Settings Entegrasyonu & Tenant-Aware Sistem</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 35px 0 20px 0;
+            color: #38bdf8;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            margin: 25px 0 15px 0;
+            color: #7dd3fc;
+        }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .plan-item h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            margin-top: 0;
+        }
+
+        .plan-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .plan-item ul {
+            margin-left: 25px;
+            margin-top: 12px;
+        }
+
+        .plan-item li {
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .code-block {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #22d3ee;
+            overflow-x: auto;
+        }
+
+        .warning-box {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid #dc2626;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box h4 {
+            color: #fca5a5;
+            margin-bottom: 12px;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .success-box h4 {
+            color: #6ee7b7;
+            margin-bottom: 12px;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .info-box h4 {
+            color: #93c5fd;
+            margin-bottom: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .label {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin: 30px 0;
+            border-collapse: collapse;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: rgba(51, 65, 85, 0.5);
+            padding: 18px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+            border-bottom: 2px solid #334155;
+        }
+
+        .comparison-table td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(51, 65, 85, 0.3);
+        }
+
+        .formula-box {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid #8b5cf6;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .formula-box .formula {
+            font-size: 1.3rem;
+            color: #c4b5fd;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+        }
+
+        .flow-step .number {
+            background: #3b82f6;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .flow-step .content {
+            flex: 1;
+        }
+
+        .arrow {
+            text-align: center;
+            color: #60a5fa;
+            font-size: 1.8rem;
+            margin: 8px 0;
+        }
+
+        .settings-card {
+            background: rgba(51, 65, 85, 0.3);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 3px solid #8b5cf6;
+        }
+
+        .settings-card .setting-name {
+            font-weight: 600;
+            color: #c4b5fd;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .settings-card .setting-key {
+            font-family: 'Courier New', monospace;
+            color: #fbbf24;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .settings-card .setting-desc {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-new { background: #10b981; color: white; }
+        .badge-changed { background: #f59e0b; color: white; }
+        .badge-critical { background: #dc2626; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔄 Blog AI Cron - Settings Entegrasyonu & Tenant-Aware Sistem</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-17 01:55 |
+                🎯 Tenant: Multi-Tenant (All) |
+                👤 Talep: Settings-based dynamic cron + tenant-aware frequency
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Mevcut Durum Analizi</h2>
+
+            <div class="info-box">
+                <h4>🔍 Şu Anki Cron Sistemi</h4>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li style="margin-bottom: 10px; color: #cbd5e1;">
+                        <strong>Frekans:</strong> Her saat başı (hourly) - Tüm tenant'lar için aynı
+                    </li>
+                    <li style="margin-bottom: 10px; color: #cbd5e1;">
+                        <strong>Draft Kontrolü:</strong> is_generated = false (kullanılmamış draft'lar)
+                    </li>
+                    <li style="margin-bottom: 10px; color: #cbd5e1;">
+                        <strong>Blog Üretimi:</strong> Rastgele 1 draft seç → Blog job'u tetikle
+                    </li>
+                    <li style="margin-bottom: 10px; color: #cbd5e1;">
+                        <strong>Auto-Publish:</strong> YOK - Her blog otomatik yayınlanıyor
+                    </li>
+                    <li style="margin-bottom: 10px; color: #cbd5e1;">
+                        <strong>Settings Entegrasyonu:</strong> YOK - Ayarlar kullanılmıyor
+                    </li>
+                    <li style="margin-bottom: 10px; color: #cbd5e1;">
+                        <strong>Tenant-Aware:</strong> KISMEN - Draft tenant DB'den alınıyor ama frekans sabit
+                    </li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Sorunlar</h4>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li style="margin-bottom: 10px; color: #fca5a5;">
+                        <strong>Sabit Frekans:</strong> Tüm tenant'lar saatte 1 blog alıyor (günde 24)
+                    </li>
+                    <li style="margin-bottom: 10px; color: #fca5a5;">
+                        <strong>Settings Yok sayılıyor:</strong> blog_ai_enabled, blog_ai_daily_count, blog_ai_auto_publish kullanılmıyor
+                    </li>
+                    <li style="margin-bottom: 10px; color: #fca5a5;">
+                        <strong>Kontrol Yok:</strong> Tenant sistem pasif olsa bile çalışıyor
+                    </li>
+                    <li style="margin-bottom: 10px; color: #fca5a5;">
+                        <strong>Esneklik Yok:</strong> Günde 1, 5, 10, 100 blog gibi farklı senaryolar yok
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚙️ Settings Management Yapısı</h2>
+
+            <h3>🗂️ Veritabanı Modelleri</h3>
+
+            <div class="plan-item">
+                <h4>SettingGroup (Central DB)</h4>
+                <p>Setting grupları - Tüm tenant'lar için ortak tanımlar</p>
+                <div class="code-block">
+                    Tablo: settings_groups (Central DB)<br>
+                    Örnek: Blog - Yapay Zeka (ID: 18)<br>
+                    Kolonlar: id, parent_id, name, slug, description, icon, layout (JSON)
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>Setting (Central DB)</h4>
+                <p>Ayar tanımları - Hangi ayarlar var, tipleri ne?</p>
+                <div class="code-block">
+                    Tablo: settings (Central DB)<br>
+                    Kolonlar: id, group_id, label, key, type, default_value<br>
+                    Örnek: blog_ai_enabled (checkbox), blog_ai_daily_count (number)
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>SettingValue (Tenant DB)</h4>
+                <p>Ayar değerleri - Her tenant'ın kendi ayar değerleri</p>
+                <div class="code-block">
+                    Tablo: settings_values (Tenant DB - tenant_2_db, tenant_3_db vb.)<br>
+                    Kolonlar: id, setting_id, value<br>
+                    Örnek: setting_id=130, value=1 (blog_ai_enabled=true)
+                </div>
+            </div>
+
+            <h3>📊 Blog AI Settings (Group ID: 18)</h3>
+
+            <div class="settings-card">
+                <div class="setting-name">✅ Blog AI Sistemi Aktif</div>
+                <div class="setting-key">blog_ai_enabled</div>
+                <div class="setting-desc">
+                    <strong>Tip:</strong> Checkbox (boolean)<br>
+                    <strong>Varsayılan:</strong> false<br>
+                    <strong>Kullanım:</strong> Sistem kapalıysa cron çalışmayacak
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="setting-name">📊 Günlük Blog Sayısı</div>
+                <div class="setting-key">blog_ai_daily_count</div>
+                <div class="setting-desc">
+                    <strong>Tip:</strong> Number (1-100 arası)<br>
+                    <strong>Varsayılan:</strong> 24<br>
+                    <strong>Kullanım:</strong> Bu sayıya göre frekans hesaplanacak
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="setting-name">🚀 Otomatik Yayınlama</div>
+                <div class="setting-key">blog_ai_auto_publish</div>
+                <div class="setting-desc">
+                    <strong>Tip:</strong> Checkbox (boolean)<br>
+                    <strong>Varsayılan:</strong> true<br>
+                    <strong>Kullanım:</strong> false ise blog draft olarak kaydedilecek
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="setting-name">🎯 Konu Kaynağı</div>
+                <div class="setting-key">blog_ai_topic_source</div>
+                <div class="setting-desc">
+                    <strong>Tip:</strong> Select (manuel | otomatik | karma)<br>
+                    <strong>Kullanım:</strong> Draft üretim stratejisini belirler
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="setting-name">📝 Manuel Konu Listesi</div>
+                <div class="setting-key">blog_ai_manual_topics</div>
+                <div class="setting-desc">
+                    <strong>Tip:</strong> Textarea (çok satırlı)<br>
+                    <strong>Kullanım:</strong> Her satır bir ana konu - sistem genişletir
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="setting-name">👔 Sadece Profesyonel Stil</div>
+                <div class="setting-key">blog_ai_professional_only</div>
+                <div class="setting-desc">
+                    <strong>Tip:</strong> Checkbox (boolean)<br>
+                    <strong>Kullanım:</strong> true ise sadece profesyonel/uzman ton kullanılır (B2B)
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Yeni Sistem Mimarisi</h2>
+
+            <div class="success-box">
+                <h4>✨ Hedefler</h4>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        <strong>Settings-Driven:</strong> Tüm ayarlar settings'den okunacak
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        <strong>Tenant-Aware:</strong> Her tenant farklı frekans ve ayarlara sahip
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        <strong>Dinamik Frekans:</strong> Günlük blog sayısına göre otomatik hesaplama
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        <strong>Auto-Publish Control:</strong> Ayara göre published/draft olarak kaydetme
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        <strong>Enable/Disable:</strong> Tenant istediği zaman sistemi pasif yapabilir
+                    </li>
+                </ul>
+            </div>
+
+            <h3>🔄 Yeni Cron Akışı</h3>
+
+            <div class="flow-step">
+                <div class="number">1</div>
+                <div class="content">
+                    <strong>Schedule Check - Her Dakika</strong><br>
+                    Laravel scheduler her dakika çalışır (cron: * * * * *)
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="flow-step">
+                <div class="number">2</div>
+                <div class="content">
+                    <strong>Tenant Loop - Tüm Aktif Tenant'ları Tara</strong><br>
+                    Her tenant için ayrı ayrı kontrol yap
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="flow-step">
+                <div class="number">3</div>
+                <div class="content">
+                    <strong>Settings Check - Tenant Ayarları</strong><br>
+                    • blog_ai_enabled = true mı?<br>
+                    • blog_ai_daily_count kaç?<br>
+                    • blog_ai_auto_publish aktif mi?
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="flow-step">
+                <div class="number">4</div>
+                <div class="content">
+                    <strong>Frekans Hesaplama - Dinamik</strong><br>
+                    Günlük blog sayısına göre ne kadar sıklıkla çalışacağını hesapla<br>
+                    Formül: 24 saat / daily_count = saat aralığı
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="flow-step">
+                <div class="number">5</div>
+                <div class="content">
+                    <strong>Time Check - Şimdi Sırası mı?</strong><br>
+                    Son çalıştırma zamanı + frekans >= şimdi → Blog üret<br>
+                    Değilse → Skip (bir sonraki tenant'a geç)
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="flow-step">
+                <div class="number">6</div>
+                <div class="content">
+                    <strong>Blog Generation - Tenant Context</strong><br>
+                    Tenant context'ine geç → Draft seç → Blog üret → Auto-publish ayarına göre kaydet
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="flow-step">
+                <div class="number">7</div>
+                <div class="content">
+                    <strong>Log & Next - Kaydet ve Devam</strong><br>
+                    Son çalışma zamanını güncelle → Bir sonraki tenant'a geç
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📐 Dinamik Frekans Hesaplama</h2>
+
+            <div class="formula-box">
+                <h4 style="color: #c4b5fd; margin-bottom: 15px;">Temel Formül</h4>
+                <div class="formula">
+                    saat_aralığı = 24 / günlük_blog_sayısı
+                </div>
+                <p style="color: #94a3b8; margin-top: 10px;">
+                    Dakika olarak: saat_aralığı × 60
+                </p>
+            </div>
+
+            <h3>📊 Frekans Tablosu</h3>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Günlük Blog</th>
+                        <th>Saat Aralığı</th>
+                        <th>Dakika Aralığı</th>
+                        <th>Cron Mantığı</th>
+                        <th>Örnek Saatler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1 blog</strong></td>
+                        <td>24.0 saat</td>
+                        <td>1440 dakika</td>
+                        <td>Günde 1 kez (günlük)</td>
+                        <td>00:00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2 blog</strong></td>
+                        <td>12.0 saat</td>
+                        <td>720 dakika</td>
+                        <td>12 saatte bir</td>
+                        <td>00:00, 12:00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3 blog</strong></td>
+                        <td>8.0 saat</td>
+                        <td>480 dakika</td>
+                        <td>8 saatte bir</td>
+                        <td>00:00, 08:00, 16:00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4 blog</strong></td>
+                        <td>6.0 saat</td>
+                        <td>360 dakika</td>
+                        <td>6 saatte bir</td>
+                        <td>00:00, 06:00, 12:00, 18:00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5 blog</strong></td>
+                        <td>4.8 saat</td>
+                        <td>288 dakika</td>
+                        <td>~4.8 saatte bir</td>
+                        <td>00:00, 04:48, 09:36, 14:24, 19:12</td>
+                    </tr>
+                    <tr>
+                        <td><strong>10 blog</strong></td>
+                        <td>2.4 saat</td>
+                        <td>144 dakika</td>
+                        <td>~2.4 saatte bir</td>
+                        <td>Her 144 dakikada</td>
+                    </tr>
+                    <tr>
+                        <td><strong>24 blog</strong></td>
+                        <td>1.0 saat</td>
+                        <td>60 dakika</td>
+                        <td>Saatte bir (hourly)</td>
+                        <td>Her saat başı</td>
+                    </tr>
+                    <tr>
+                        <td><strong>48 blog</strong></td>
+                        <td>0.5 saat</td>
+                        <td>30 dakika</td>
+                        <td>30 dakikada bir</td>
+                        <td>Her yarım saatte</td>
+                    </tr>
+                    <tr>
+                        <td><strong>100 blog</strong></td>
+                        <td>0.24 saat</td>
+                        <td>14.4 dakika</td>
+                        <td>~14 dakikada bir</td>
+                        <td>Sürekli (her 14 dk)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <h4>💡 Algoritma Mantığı</h4>
+                <p style="color: #cbd5e1; line-height: 1.8;">
+                    Sistem her dakika çalışır ama her tenant için <strong>son blog üretim zamanını</strong> kontrol eder.
+                    Eğer <code style="color: #fbbf24;">(şimdiki_zaman - son_üretim_zamanı) >= saat_aralığı</code> ise blog üretir.
+                </p>
+                <p style="color: #cbd5e1; line-height: 1.8; margin-top: 10px;">
+                    <strong>Örnek:</strong><br>
+                    • Tenant 2: daily_count = 24 → Her saat başı<br>
+                    • Tenant 3: daily_count = 1 → Günde 1 kez (her gün 00:00'da)<br>
+                    • Tenant 4: daily_count = 5 → Her 4.8 saatte<br>
+                    • Tenant 5: daily_count = 100 → Her 14 dakikada
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🛠️ İmplementasyon Yapısı</h2>
+
+            <h3>1️⃣ Helper Function - Setting Değer Çekme</h3>
+
+            <div class="plan-item">
+                <h4>getTenantSetting() - Tenant-aware setting helper</h4>
+                <p><strong>Amaç:</strong> Tenant context'ine göre setting value çekmek</p>
+                <div class="code-block">
+                    Function: getTenantSetting(key, default = null)<br>
+                    <br>
+                    Mantık:<br>
+                    1. Tenant context'e geç (tenancy()->initialize())<br>
+                    2. Setting model'i bul (key ile)<br>
+                    3. SettingValue'yu tenant DB'den çek<br>
+                    4. Değer varsa döndür, yoksa default_value kullan<br>
+                    5. Return value
+                </div>
+                <p style="margin-top: 15px;"><strong>Kullanım Örnekleri:</strong></p>
+                <ul>
+                    <li>getTenantSetting('blog_ai_enabled') → true/false</li>
+                    <li>getTenantSetting('blog_ai_daily_count', 24) → 1-100 arası sayı</li>
+                    <li>getTenantSetting('blog_ai_auto_publish', true) → true/false</li>
+                </ul>
+            </div>
+
+            <h3>2️⃣ Cron Command - GenerateHourlyBlog Güncellemesi</h3>
+
+            <div class="plan-item">
+                <h4>Yeni Command: GenerateTenantBlogs <span class="badge badge-new">YENİ</span></h4>
+                <p><strong>Değişiklikler:</strong></p>
+                <ul>
+                    <li><strong>Tenant Loop:</strong> Tüm aktif tenant'ları döngüye al</li>
+                    <li><strong>Settings Check:</strong> Her tenant için blog_ai_enabled kontrol et</li>
+                    <li><strong>Frekans Hesapla:</strong> daily_count'a göre ne zaman çalışacağını hesapla</li>
+                    <li><strong>Time Check:</strong> Son çalışma zamanını kontrol et (cache/DB)</li>
+                    <li><strong>Blog Üret:</strong> Sırası gelmişse blog üret</li>
+                    <li><strong>Auto-Publish:</strong> blog_ai_auto_publish ayarına göre published/draft kaydet</li>
+                </ul>
+            </div>
+
+            <h3>3️⃣ Kernel.php Schedule - Dakika Bazlı Çalıştırma</h3>
+
+            <div class="plan-item">
+                <h4>Schedule Değişikliği <span class="badge badge-changed">DEĞİŞTİ</span></h4>
+                <div class="code-block">
+                    ESKİ: ->hourly() (her saat başı)<br>
+                    YENİ: ->everyMinute() (her dakika)<br>
+                    <br>
+                    Neden?<br>
+                    Farklı tenant'lar farklı frekanslarda çalışabilsin:<br>
+                    • Tenant A: Her 14 dakika (100 blog/gün)<br>
+                    • Tenant B: Her 4.8 saat (5 blog/gün)<br>
+                    • Tenant C: Günde 1 kez (1 blog/gün)
+                </div>
+                <p style="margin-top: 15px; color: #fbbf24;"><strong>⚠️ Not:</strong> Command içinde kendi frekans kontrolü yapar, gereksiz yere tüm tenant'lara blog üretmez.</p>
+            </div>
+
+            <h3>4️⃣ GenerateBlogFromDraftJob - Publish Logic</h3>
+
+            <div class="plan-item">
+                <h4>Auto-Publish Desteği <span class="badge badge-new">YENİ</span></h4>
+                <p><strong>Değişiklik:</strong> Job'a auto_publish parametresi eklenecek</p>
+                <div class="code-block">
+                    Job::dispatch(draft_id, auto_publish)<br>
+                    <br>
+                    Mantık:<br>
+                    • auto_publish = true → Blog::create([...., 'status' => 'published'])<br>
+                    • auto_publish = false → Blog::create([...., 'status' => 'draft'])<br>
+                    <br>
+                    Avantaj:<br>
+                    Tenant blog üretsin ama manuel kontrol edip yayınlamak isteyebilir
+                </div>
+            </div>
+
+            <h3>5️⃣ Cache/DB - Son Çalışma Zamanı Takibi</h3>
+
+            <div class="plan-item">
+                <h4>Tracking System <span class="badge badge-new">YENİ</span></h4>
+                <p><strong>Amaç:</strong> Her tenant için son blog üretim zamanını saklamak</p>
+                <div class="code-block">
+                    Yöntem 1: Cache (Hızlı)<br>
+                    Cache::put("blog_cron_last_run_tenant_{$tenantId}", now(), 86400);<br>
+                    $lastRun = Cache::get("blog_cron_last_run_tenant_{$tenantId}");<br>
+                    <br>
+                    Yöntem 2: Database (Persistent)<br>
+                    Tablo: blog_cron_tracking<br>
+                    Kolonlar: tenant_id, last_run_at, daily_count, next_run_at<br>
+                    <br>
+                    Önerilen: Cache + DB (cache hızlı, DB backup)
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎬 Farklı Tenant Senaryoları</h2>
+
+            <h3>📋 Senaryo 1: Tenant 2 (ixtif.com) - Saatte 1 Blog</h3>
+            <div class="plan-item">
+                <h4>Ayarlar</h4>
+                <ul>
+                    <li>blog_ai_enabled = <strong>true</strong></li>
+                    <li>blog_ai_daily_count = <strong>24</strong></li>
+                    <li>blog_ai_auto_publish = <strong>true</strong></li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Çalışma Mantığı:</strong></p>
+                <p>
+                    24 / 24 = 1 saat aralık → Her saat başı blog üret<br>
+                    00:00, 01:00, 02:00, ..., 23:00 → 24 blog/gün<br>
+                    Direkt yayınla (published)
+                </p>
+            </div>
+
+            <h3>📋 Senaryo 2: Tenant 3 - Günde 1 Blog</h3>
+            <div class="plan-item">
+                <h4>Ayarlar</h4>
+                <ul>
+                    <li>blog_ai_enabled = <strong>true</strong></li>
+                    <li>blog_ai_daily_count = <strong>1</strong></li>
+                    <li>blog_ai_auto_publish = <strong>false</strong></li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Çalışma Mantığı:</strong></p>
+                <p>
+                    24 / 1 = 24 saat aralık → Günde 1 kez blog üret<br>
+                    Her gün 00:00'da → 1 blog/gün<br>
+                    Draft olarak kaydet (admin manuel yayınlar)
+                </p>
+            </div>
+
+            <h3>📋 Senaryo 3: Tenant 4 - Günde 5 Blog</h3>
+            <div class="plan-item">
+                <h4>Ayarlar</h4>
+                <ul>
+                    <li>blog_ai_enabled = <strong>true</strong></li>
+                    <li>blog_ai_daily_count = <strong>5</strong></li>
+                    <li>blog_ai_auto_publish = <strong>true</strong></li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Çalışma Mantığı:</strong></p>
+                <p>
+                    24 / 5 = 4.8 saat aralık → Her 4 saat 48 dakikada 1 blog<br>
+                    00:00, 04:48, 09:36, 14:24, 19:12 → 5 blog/gün<br>
+                    Direkt yayınla (published)
+                </p>
+            </div>
+
+            <h3>📋 Senaryo 4: Tenant 5 - Günde 100 Blog (Agresif)</h3>
+            <div class="plan-item">
+                <h4>Ayarlar</h4>
+                <ul>
+                    <li>blog_ai_enabled = <strong>true</strong></li>
+                    <li>blog_ai_daily_count = <strong>100</strong></li>
+                    <li>blog_ai_auto_publish = <strong>true</strong></li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Çalışma Mantığı:</strong></p>
+                <p>
+                    24 / 100 = 0.24 saat = 14.4 dakika aralık → Her ~14 dakikada 1 blog<br>
+                    Sürekli blog üretimi → 100 blog/gün<br>
+                    Direkt yayınla (published)
+                </p>
+                <p style="color: #fbbf24; margin-top: 10px;">
+                    <strong>⚠️ Uyarı:</strong> OpenAI rate limit ve queue kapasitesi göz önünde bulundurulmalı!
+                </p>
+            </div>
+
+            <h3>📋 Senaryo 5: Tenant 6 - Sistem Pasif</h3>
+            <div class="plan-item">
+                <h4>Ayarlar</h4>
+                <ul>
+                    <li>blog_ai_enabled = <strong>false</strong> 🔴</li>
+                    <li>blog_ai_daily_count = 10 (önemsiz)</li>
+                    <li>blog_ai_auto_publish = true (önemsiz)</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Çalışma Mantığı:</strong></p>
+                <p>
+                    blog_ai_enabled = false → Cron bu tenant'ı <strong>ATLA</strong><br>
+                    Hiç blog üretilmez → 0 blog/gün<br>
+                    Tenant istediği zaman sistemi kapatabilir
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Beklenen Sonuçlar</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="value">∞</div>
+                    <div class="label">Tenant Esnekliği</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">1-100</div>
+                    <div class="label">Günlük Blog Aralığı</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">100%</div>
+                    <div class="label">Settings-Driven</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">0</div>
+                    <div class="label">Manuel Müdahale</div>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <h4>✅ Başarı Kriterleri</h4>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        Her tenant kendi ayarlarına göre çalışacak
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        Günlük blog sayısı dinamik olarak ayarlanabilecek (1-100)
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        Otomatik yayınlama/draft kontrolü tenant'a bırakılacak
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        Tenant sistemi istediği zaman pasif yapabilecek
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        Farklı sektörler farklı stratejiler uygulayabilecek
+                    </li>
+                    <li style="margin-bottom: 10px; color: #6ee7b7;">
+                        Sistem tamamen self-service olacak (admin panel'den ayarlama)
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Sonraki Adımlar</h2>
+
+            <div class="plan-item">
+                <h4>1. Helper Function Oluşturma</h4>
+                <p>getTenantSetting() helper'ı implement et</p>
+                <p><strong>Dosya:</strong> app/Helpers/setting_helpers.php veya mevcut helper dosyasına ekle</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>2. Cron Command Güncelleme</h4>
+                <p>GenerateHourlyBlog → GenerateTenantBlogs olarak yeniden yaz</p>
+                <p><strong>Değişiklikler:</strong> Tenant loop, settings check, dynamic frequency, time tracking</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>3. Kernel Schedule Güncelleme</h4>
+                <p>->hourly() → ->everyMinute() olarak değiştir</p>
+                <p><strong>Not:</strong> Command içinde kendi frekans kontrolü olacağı için sorun yok</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>4. Blog Generation Job Güncelleme</h4>
+                <p>GenerateBlogFromDraftJob'a auto_publish parametresi ekle</p>
+                <p><strong>Değişiklik:</strong> Status'u ayara göre belirle (published/draft)</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>5. Tracking System Kurulumu</h4>
+                <p>Her tenant için son çalışma zamanı cache/DB'ye kaydet</p>
+                <p><strong>Yöntem:</strong> Cache (hızlı) + DB (persistent) kombinasyonu</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>6. Test & Monitoring</h4>
+                <p>Farklı tenant senaryolarını test et, log ve monitoring sistemi kur</p>
+                <p><strong>Kontrol:</strong> Her tenant'ın ayarları doğru çalışıyor mu?</p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - Blog AI Cron Settings Entegrasyonu & Tenant-Aware Dinamik Sistem Tasarımı
+        </footer>
+    </div>
+</body>
+</html>

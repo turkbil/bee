@@ -1,1 +1,366 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu HLS Segment 404 Hatası - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-6">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-900/30 text-red-300 border border-red-800 rounded-md text-sm">🔴 Bug Analizi</span>
+                <span class="px-3 py-1 bg-purple-900/30 text-purple-300 border border-purple-800 rounded-md text-sm">HLS Streaming</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">Muzibu HLS Segment 404 Hatası</h1>
+            <p class="text-slate-400">Müzik dinlerken segment dosyalarının yanlış URL pattern ile çağrılması sorunu</p>
+            <p class="text-slate-500 text-sm mt-2">10 Ocak 2026 - Detaylı Sistem Analizi</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-green-300 mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+            <div class="space-y-3 text-slate-200">
+                <p><strong>Sorun:</strong> Müzik çalarken bazen şarkı dosyaları yanlış adresten aranıyor ve bulunamıyor.</p>
+                <p><strong>Örnek:</strong> Player "/api/muzibu/songs/123/segment-000.ts" diye arıyor, ama dosya "/hls/muzibu/songs/123/segment-000.ts" adresinde.</p>
+                <p><strong>Sonuç:</strong> Bazen şarkılar takılabiliyor veya atlanabiliyor.</p>
+                <p><strong>Neden Önemli:</strong> Kullanıcı deneyimi bozuluyor, şarkı akışı kesintiye uğruyor.</p>
+                <p><strong>8 farklı şarkıda tespit edildi.</strong></p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-blue-300 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <h3 class="text-xl font-bold text-blue-200 mb-3 mt-6">📊 Hata Logları:</h3>
+            <div class="bg-slate-950 rounded-lg p-4 mb-4 font-mono text-sm overflow-x-auto">
+<pre class="text-red-300">GET /api/muzibu/songs/28745/segment-000.ts HTTP/2" 404
+GET /api/muzibu/songs/28704/segment-000.ts HTTP/2" 404
+GET /api/muzibu/songs/28698/segment-000.ts HTTP/2" 404
+GET /api/muzibu/songs/22187/segment-000.ts HTTP/2" 404
+GET /api/muzibu/songs/28765/segment-000.ts HTTP/2" 404
+GET /api/muzibu/songs/28773/segment-000.ts HTTP/2" 404
+GET /api/muzibu/songs/11985/segment-000.ts HTTP/2" 404
+GET /api/muzibu/songs/28741/segment-000.ts HTTP/2" 404</pre>
+            </div>
+
+            <h3 class="text-xl font-bold text-blue-200 mb-3 mt-6">✅ Doğru URL Pattern:</h3>
+            <div class="bg-green-950 rounded-lg p-4 mb-4 font-mono text-sm">
+                <p class="text-green-300">GET /hls/muzibu/songs/31118/segment-000.ts?expires=1767993687&token=3&sig=... HTTP/2" 200</p>
+            </div>
+
+            <h3 class="text-xl font-bold text-blue-200 mb-3 mt-6">🎯 Sistem Mimarisi:</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="font-bold text-yellow-300 mb-2">Backend (Laravel)</p>
+                    <ul class="text-sm space-y-1 text-slate-300">
+                        <li>• SignedUrlService: HLS URL üretimi</li>
+                        <li>• SongStreamController: Stream endpoint</li>
+                        <li>• MuzibuServiceProvider: Route tanımları</li>
+                        <li>• ConvertToHLSJob: FFmpeg conversion</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="font-bold text-purple-300 mb-2">Frontend (JavaScript)</p>
+                    <ul class="text-sm space-y-1 text-slate-300">
+                        <li>• player-core.js: Ana player modülü</li>
+                        <li>• HLS.js: HLS streaming library</li>
+                        <li>• createHlsBlobUrl(): Blob URL converter</li>
+                        <li>• playHlsStream(): HLS yükleme fonksiyonu</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-blue-200 mb-3 mt-6">📁 Etkilenen Dosyalar:</h3>
+            <div class="space-y-2 text-sm">
+                <div class="bg-slate-800 rounded p-3">
+                    <p class="font-bold text-white mb-1">public/themes/muzibu/js/player/core/player-core.js</p>
+                    <p class="text-slate-400">• Line 109-151: <code>createHlsBlobUrl()</code> - Blob URL conversion</p>
+                    <p class="text-slate-400">• Line 3350-4069: <code>playSongFromQueue()</code> - Ana play fonksiyonu</p>
+                    <p class="text-slate-400">• Line 4069-4117: <code>loadAndPlaySong()</code> - Stream loader</p>
+                    <p class="text-slate-400">• Line 4279-4650: <code>playHlsStream()</code> - HLS player</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3">
+                    <p class="font-bold text-white mb-1">app/Services/SignedUrlService.php</p>
+                    <p class="text-slate-400">• Line 52-72: <code>generateHlsUrl()</code> - HLS URL generator ✅ DOĞRU</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3">
+                    <p class="font-bold text-white mb-1">Modules/Muzibu/Providers/MuzibuServiceProvider.php</p>
+                    <p class="text-slate-400">• Line 305-317: HLS files route tanımı ✅ DOĞRU</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3">
+                    <p class="font-bold text-white mb-1">Modules/Muzibu/app/Jobs/ConvertToHLSJob.php</p>
+                    <p class="text-slate-400">• Line 79-122: FFmpeg HLS conversion ✅ DOĞRU</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sorun Analizi -->
+        <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-red-300 mb-4">🔍 Sorun Analizi</h2>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-bold text-red-200 mb-3">1️⃣ Backend URL Generation (✅ DOĞRU)</h3>
+                    <div class="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+<pre class="text-green-300">// SignedUrlService.php (Line 62)
+$basePath = "/hls/muzibu/songs/{$songId}/playlist.m3u8";
+
+// Oluşturulan URL:
+https://muzibu.com.tr/hls/muzibu/songs/123/playlist.m3u8?expires=...&token=...&sig=...</pre>
+                    </div>
+                    <p class="text-slate-300 mt-2">✅ Backend doğru <code>/hls/</code> prefix'i ile URL üretiyor.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-red-200 mb-3">2️⃣ Route Definition (✅ DOĞRU)</h3>
+                    <div class="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+<pre class="text-green-300">// MuzibuServiceProvider.php (Line 315)
+Route::match(['get', 'options'], '/hls/muzibu/songs/{id}/{filename}', ...)
+    ->where('filename', 'playlist\.m3u8|segment-\d+\.ts');</pre>
+                    </div>
+                    <p class="text-slate-300 mt-2">✅ Route doğru <code>/hls/</code> pattern ile tanımlanmış.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-red-200 mb-3">3️⃣ Playlist.m3u8 İçeriği (✅ DOĞRU)</h3>
+                    <div class="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+<pre class="text-green-300">#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXTINF:10.005333,
+segment-000.ts    <-- Relative path (DOĞRU!)
+#EXTINF:9.994667,
+segment-001.ts
+...</pre>
+                    </div>
+                    <p class="text-slate-300 mt-2">✅ Segment path'leri relative olarak yazılmış (doğru).</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-red-200 mb-3">4️⃣ JavaScript Blob URL Conversion (⚠️ SORUN BURDA!)</h3>
+                    <div class="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+<pre class="text-yellow-300">// player-core.js (Line 119-133)
+async function createHlsBlobUrl(originalUrl) {
+    // 1. m3u8 içeriğini fetch et
+    const response = await fetch(originalUrl);
+    let m3u8Content = await response.text();
+
+    // 2. Base URL'yi çıkar (segment'ler için)
+    const urlObj = new URL(originalUrl);
+    const baseUrl = urlObj.origin + urlObj.pathname.substring(0, urlObj.pathname.lastIndexOf('/') + 1);
+    const queryString = urlObj.search; // ?token=...&expires=...&sig=...
+
+    // 3. Relative segment URL'lerini absolute yap
+    m3u8Content = m3u8Content.replace(
+        /(segment-\d+\.ts)(\?[^\s\n]*)?/g,
+        (match, segment, query) => {
+            const finalQuery = query || queryString;
+            return baseUrl + segment + finalQuery;  // ⚠️ SORUN BURDA!
+        }
+    );
+}</pre>
+                    </div>
+                    <p class="text-red-300 mt-3 font-bold">❌ SORUN: <code>baseUrl</code> değişkeni <code>originalUrl</code> parametresinden çıkarılıyor.</p>
+
+                    <div class="mt-4 p-4 bg-red-950 rounded-lg">
+                        <p class="font-bold text-red-200 mb-2">Senaryo 1: Doğru URL gelirse ✅</p>
+                        <div class="bg-slate-950 rounded p-3 font-mono text-xs">
+<pre class="text-green-300">originalUrl = "/hls/muzibu/songs/123/playlist.m3u8?token=..."
+baseUrl = "https://muzibu.com.tr/hls/muzibu/songs/123/"
+Segment URL = "https://muzibu.com.tr/hls/muzibu/songs/123/segment-000.ts?..." ✅ 200 OK</pre>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-4 bg-red-950 rounded-lg">
+                        <p class="font-bold text-red-200 mb-2">Senaryo 2: Yanlış URL gelirse ❌</p>
+                        <div class="bg-slate-950 rounded p-3 font-mono text-xs">
+<pre class="text-red-300">originalUrl = "/api/muzibu/songs/123/playlist.m3u8?..." (YANLIŞ!)
+baseUrl = "https://muzibu.com.tr/api/muzibu/songs/123/"
+Segment URL = "https://muzibu.com.tr/api/muzibu/songs/123/segment-000.ts?..." ❌ 404 NOT FOUND</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-red-200 mb-3">5️⃣ Neden Yanlış URL Geliyor?</h3>
+                    <div class="space-y-3 text-slate-300">
+                        <div class="bg-yellow-950 border border-yellow-800 rounded-lg p-4">
+                            <p class="font-bold text-yellow-300 mb-2">Olası Neden 1: Cache'de Eski URL</p>
+                            <p class="text-sm">Player stream URL'lerini cache'liyor. Cache'de eski <code>/api/</code> prefix'li URL kalıyor olabilir.</p>
+                        </div>
+                        <div class="bg-yellow-950 border border-yellow-800 rounded-lg p-4">
+                            <p class="font-bold text-yellow-300 mb-2">Olası Neden 2: Refresh URL Fonksiyonu</p>
+                            <p class="text-sm">HLS URL refresh mekanizması eski URL pattern kullanıyor olabilir.</p>
+                        </div>
+                        <div class="bg-yellow-950 border border-yellow-800 rounded-lg p-4">
+                            <p class="font-bold text-yellow-300 mb-2">Olası Neden 3: Fallback Mekanizması</p>
+                            <p class="text-sm">HLS hata verince fallback URL eski pattern ile deniyor olabilir.</p>
+                        </div>
+                        <div class="bg-yellow-950 border border-yellow-800 rounded-lg p-4">
+                            <p class="font-bold text-yellow-300 mb-2">Olası Neden 4: Preload/Crossfade Path</p>
+                            <p class="text-sm">Preload veya crossfade sırasında eski cached URL kullanılıyor olabilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm Önerileri -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-green-300 mb-4">💡 Çözüm Önerileri</h2>
+
+            <div class="space-y-6">
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="text-lg font-bold text-green-300 mb-3">✅ Çözüm 1: URL Validation (Öncelikli)</h3>
+                    <p class="text-slate-300 mb-3">createHlsBlobUrl() fonksiyonuna URL validation ekle, <code>/api/</code> prefix'ini <code>/hls/</code> ile değiştir.</p>
+                    <div class="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+<pre class="text-green-300">async function createHlsBlobUrl(originalUrl) {
+    // ⚠️ URL FIX: /api/ prefix'ini /hls/ ile değiştir
+    let fixedUrl = originalUrl;
+    if (fixedUrl.includes('/api/muzibu/songs/')) {
+        fixedUrl = fixedUrl.replace('/api/muzibu/songs/', '/hls/muzibu/songs/');
+        console.warn('🔧 URL FIX: /api/ → /hls/', originalUrl);
+    }
+
+    const response = await fetch(fixedUrl);
+    // ... rest of the code
+}</pre>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="text-lg font-bold text-yellow-300 mb-3">⚡ Çözüm 2: Cache Temizleme</h3>
+                    <p class="text-slate-300 mb-3">Stream URL cache'ini temizle, eski URL'leri kullanımdan kaldır.</p>
+                    <div class="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+<pre class="text-yellow-300">// player-core.js içinde cache clear
+clearStreamCache() {
+    // LocalStorage/SessionStorage cache temizleme
+    Object.keys(localStorage).forEach(key => {
+        if (key.includes('stream_cache_')) {
+            localStorage.removeItem(key);
+        }
+    });
+}</pre>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="text-lg font-bold text-blue-300 mb-3">🔍 Çözüm 3: Debug Logging</h3>
+                    <p class="text-slate-300 mb-3">Player'a detaylı logging ekle, hangi URL'in nereden geldiğini takip et.</p>
+                    <div class="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+<pre class="text-blue-300">async function createHlsBlobUrl(originalUrl) {
+    console.log('🎵 HLS Blob URL Creation:', {
+        originalUrl: originalUrl,
+        hasApiPrefix: originalUrl.includes('/api/'),
+        hasHlsPrefix: originalUrl.includes('/hls/'),
+        timestamp: new Date().toISOString()
+    });
+
+    // Server'a da log gönder (debug için)
+    serverLog('hlsBlobUrlCreated', { url: originalUrl });
+}</pre>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="text-lg font-bold text-purple-300 mb-3">🛡️ Çözüm 4: Route Fallback (Son Çare)</h3>
+                    <p class="text-slate-300 mb-3">Backend'e <code>/api/muzibu/songs/{id}/segment-*.ts</code> route'u ekle, doğru yere redirect et.</p>
+                    <div class="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+<pre class="text-purple-300">// MuzibuServiceProvider.php
+// Eski URL'leri yeni URL'e redirect et (backward compatibility)
+Route::get('/api/muzibu/songs/{id}/segment-{segment}.ts', function($id, $segment) {
+    return redirect("/hls/muzibu/songs/{$id}/segment-{$segment}.ts?" . request()->getQueryString());
+})->where('segment', '\d+');</pre>
+                    </div>
+                    <p class="text-yellow-300 text-sm mt-2">⚠️ Bu geçici bir çözüm! Asıl sorun player'da düzeltilmeli.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Planı -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-purple-300 mb-4">🧪 Test Planı</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="font-bold text-white mb-2">1️⃣ Hata Tekrarı</p>
+                    <p class="text-slate-300 text-sm">• Loglardan etkilenen şarkılardan birini çal (song_id: 28745, 28704, vb.)</p>
+                    <p class="text-slate-300 text-sm">• Browser DevTools Network tab'ında <code>/api/muzibu/songs/</code> isteği var mı kontrol et</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="font-bold text-white mb-2">2️⃣ URL Validation Testi</p>
+                    <p class="text-slate-300 text-sm">• Çözüm 1'i uygula, aynı şarkıyı tekrar çal</p>
+                    <p class="text-slate-300 text-sm">• Console'da "URL FIX" warning'i görünmeli</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="font-bold text-white mb-2">3️⃣ Segment İstekleri</p>
+                    <p class="text-slate-300 text-sm">• Network tab'da segment istekleri <code>/hls/muzibu/songs/</code> ile başlamalı</p>
+                    <p class="text-slate-300 text-sm">• Tüm segment istekleri 200 OK dönmeli</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="font-bold text-white mb-2">4️⃣ Cache Temizleme</p>
+                    <p class="text-slate-300 text-sm">• Browser'da Ctrl+Shift+Delete → Cache temizle</p>
+                    <p class="text-slate-300 text-sm">• Tüm şarkıları baştan yüklet, hiçbirinde <code>/api/</code> prefix olmamalı</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="font-bold text-white mb-2">5️⃣ Production Test</p>
+                    <p class="text-slate-300 text-sm">• Düzeltme sonrası 24 saat access log'ları takip et</p>
+                    <p class="text-slate-300 text-sm">• <code>grep "segment-.*404" access_log</code> → 0 sonuç olmalı</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Etkilenen Şarkılar -->
+        <div class="bg-orange-900/20 border border-orange-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-orange-300 mb-4">🎵 Etkilenen Şarkılar</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="bg-slate-800 rounded p-3 text-center">
+                    <p class="font-bold text-white">Song ID: 28745</p>
+                    <p class="text-xs text-slate-400 mt-1">10 Ocak 2026</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3 text-center">
+                    <p class="font-bold text-white">Song ID: 28704</p>
+                    <p class="text-xs text-slate-400 mt-1">10 Ocak 2026</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3 text-center">
+                    <p class="font-bold text-white">Song ID: 28698</p>
+                    <p class="text-xs text-slate-400 mt-1">10 Ocak 2026</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3 text-center">
+                    <p class="font-bold text-white">Song ID: 22187</p>
+                    <p class="text-xs text-slate-400 mt-1">10 Ocak 2026</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3 text-center">
+                    <p class="font-bold text-white">Song ID: 28765</p>
+                    <p class="text-xs text-slate-400 mt-1">10 Ocak 2026</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3 text-center">
+                    <p class="font-bold text-white">Song ID: 28773</p>
+                    <p class="text-xs text-slate-400 mt-1">10 Ocak 2026</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3 text-center">
+                    <p class="font-bold text-white">Song ID: 11985</p>
+                    <p class="text-xs text-slate-400 mt-1">10 Ocak 2026</p>
+                </div>
+                <div class="bg-slate-800 rounded p-3 text-center">
+                    <p class="font-bold text-white">Song ID: 28741</p>
+                    <p class="text-xs text-slate-400 mt-1">10 Ocak 2026</p>
+                </div>
+            </div>
+
+            <p class="text-slate-400 text-sm mt-4">Toplam 8 şarkıda 404 hatası tespit edildi. Bu şarkılar cache temizleme sonrası test edilmeli.</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI Tarafından Detaylı Sistem Analizi ile Oluşturuldu</p>
+            <p class="mt-2">Muzibu Müzik Platformu - HLS Streaming Diagnostics</p>
+        </footer>
+    </div>
+</body>
+</html>

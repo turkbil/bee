@@ -1,1 +1,860 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind v4 Migration Risk Analizi - Tuufi Multi-Tenant Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+    <!-- Header -->
+    <div class="border-b border-slate-800 bg-gradient-to-r from-slate-900 to-slate-850">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-2">⚠️ Tailwind v4 Migration - Risk Analizi</h1>
+                    <p class="text-slate-400">Tüm sistemi Tailwind v4'e güncellemek güç mü? Bozar mı?</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-slate-500">Analiz Tarihi</div>
+                    <div class="text-lg font-semibold text-slate-300">21 Aralık 2025</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+
+        <!-- Hızlı Cevap -->
+        <div class="bg-amber-900/30 border-2 border-amber-700 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-amber-400 mb-4 flex items-center gap-3">
+                <span class="text-4xl">🎯</span>
+                Hızlı Cevap
+            </h2>
+            <div class="space-y-4 text-lg">
+                <div class="flex items-start gap-3">
+                    <span class="text-3xl">❓</span>
+                    <div>
+                        <strong class="text-white">Güç mü?</strong>
+                        <div class="text-amber-200 mt-1">
+                            <strong>ORTA-YÜKSEK ZORLUK.</strong> Official upgrade tool var (otomatik yapıyor çoğu şeyi),
+                            ama 3 tenant config + 2,745 Tailwind class kullanımı + custom color sistemi =
+                            Manuel düzeltme ve kapsamlı test gerekir.
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-3xl">💥</span>
+                    <div>
+                        <strong class="text-white">Bozar mı?</strong>
+                        <div class="text-amber-200 mt-1">
+                            <strong>RİSK YÜKSEK!</strong> Breaking changes çok fazla (config sistemi, import syntax,
+                            default değerler değişti). Canlı sistemde yaparsanız downtime riski var.
+                            Test ortamında yapılmalı, staging'de tüm sayfalar test edilmeli.
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-3xl">💡</span>
+                    <div>
+                        <strong class="text-white">Öneri:</strong>
+                        <div class="text-green-200 mt-1">
+                            <strong>ŞİMDİ YAPMA!</strong> v3.4.17 stabil ve sorunsuz çalışıyor. v4 migration acil değil.
+                            Eğer yapılacaksa: Test ortamı → Staging → Production aşamalı geçiş.
+                            <strong>En az 2-3 hafta test süreci gerekir.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mevcut Sistem Snapshot -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <span class="text-3xl">📊</span>
+                Mevcut Sistem (Tailwind v3.4.17)
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-blue-400">2,745</div>
+                    <div class="text-sm text-slate-400 mt-1">Tailwind Class Kullanımı</div>
+                    <div class="text-xs text-slate-500 mt-1">Muzibu: 1,904 | İxtif: 841</div>
+                </div>
+                <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-purple-400">3</div>
+                    <div class="text-sm text-slate-400 mt-1">Tenant Config Dosyası</div>
+                    <div class="text-xs text-slate-500 mt-1">Default + Muzibu + İxtif</div>
+                </div>
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-green-400">70+</div>
+                    <div class="text-sm text-slate-400 mt-1">Safelist Class</div>
+                    <div class="text-xs text-slate-500 mt-1">Grid, colors, opacity</div>
+                </div>
+                <div class="bg-orange-900/20 border border-orange-800 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-orange-400">8</div>
+                    <div class="text-sm text-slate-400 mt-1">Custom Renk</div>
+                    <div class="text-xs text-slate-500 mt-1">Spotify-style (Muzibu)</div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-slate-900/50 rounded-lg p-4">
+                <h3 class="font-bold text-cyan-400 mb-3">📁 Config Dosya Yapısı</h3>
+                <div class="space-y-2 text-sm font-mono">
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-400">✓</span>
+                        <code class="text-slate-300">tailwind/base.config.js</code>
+                        <span class="text-slate-500 text-xs">(Ortak ayarlar, plugins)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-400">✓</span>
+                        <code class="text-slate-300">tailwind/tenants/tenant-1001.config.js</code>
+                        <span class="text-slate-500 text-xs">(Muzibu - JIT, custom colors)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-400">✓</span>
+                        <code class="text-slate-300">tailwind/tenants/tenant-2.config.js</code>
+                        <span class="text-slate-500 text-xs">(İxtif - standard)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-400">✓</span>
+                        <code class="text-slate-300">tailwind/tenants/default.config.js</code>
+                        <span class="text-slate-500 text-xs">(Fallback)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tailwind v4 Breaking Changes -->
+        <div class="bg-red-900/20 border-2 border-red-700 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+                <span class="text-3xl">💥</span>
+                Tailwind v4 - BREAKING CHANGES (Major Update!)
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Config Sistemi -->
+                <div class="bg-slate-900/50 border border-red-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">🔧</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-red-300 mb-2">1. Config Sistemi TAMAMEN Değişti</h3>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="bg-red-950/50 p-3 rounded">
+                                    <strong class="text-red-400">❌ v3:</strong> <code class="text-slate-400">tailwind.config.js</code> (JavaScript)
+                                </div>
+                                <div class="bg-green-950/50 p-3 rounded">
+                                    <strong class="text-green-400">✅ v4:</strong> <code class="text-slate-400">@theme</code> directive (CSS içinde)
+                                </div>
+                                <div class="text-amber-300 mt-2">
+                                    <strong>Impact:</strong> 3 tenant config dosyasının TÜMÜ CSS formatına dönüştürülmeli!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import Syntax -->
+                <div class="bg-slate-900/50 border border-red-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">📦</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-red-300 mb-2">2. Import Syntax Değişti</h3>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="bg-red-950/50 p-3 rounded font-mono text-xs">
+                                    <strong class="text-red-400">❌ v3:</strong><br>
+                                    @tailwind base;<br>
+                                    @tailwind components;<br>
+                                    @tailwind utilities;
+                                </div>
+                                <div class="bg-green-950/50 p-3 rounded font-mono text-xs">
+                                    <strong class="text-green-400">✅ v4:</strong><br>
+                                    @import "tailwindcss";
+                                </div>
+                                <div class="text-amber-300 mt-2">
+                                    <strong>Impact:</strong> <code class="bg-slate-800 px-2 py-1 rounded">resources/css/app.css</code> değişmeli
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Browser Support -->
+                <div class="bg-slate-900/50 border border-red-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">🌐</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-red-300 mb-2">3. Browser Desteği Değişti (Modern Browsers Only!)</h3>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="bg-green-950/50 p-3 rounded">
+                                    <strong class="text-green-400">✅ Desteklenen:</strong>
+                                    <div class="ml-4 mt-1 space-y-1 text-xs">
+                                        <div>• Safari 16.4+ (Eylül 2022)</div>
+                                        <div>• Chrome 111+ (Mart 2023)</div>
+                                        <div>• Firefox 128+ (Temmuz 2024)</div>
+                                    </div>
+                                </div>
+                                <div class="bg-red-950/50 p-3 rounded">
+                                    <strong class="text-red-400">❌ Desteklenmeyen:</strong>
+                                    <div class="ml-4 mt-1 text-xs">
+                                        Eski browser'lar (IE, eski Safari/Chrome versiyonları)
+                                    </div>
+                                </div>
+                                <div class="text-amber-300 mt-2">
+                                    <strong>Sebep:</strong> CSS <code class="bg-slate-800 px-1 rounded">@property</code> ve <code class="bg-slate-800 px-1 rounded">color-mix()</code> özelliklerini kullanıyor
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PostCSS Plugin -->
+                <div class="bg-slate-900/50 border border-red-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">🔌</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-red-300 mb-2">4. PostCSS Plugin Ayrı Paket Oldu</h3>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="bg-red-950/50 p-3 rounded font-mono text-xs">
+                                    <strong class="text-red-400">❌ v3:</strong> tailwindcss (plugin built-in)
+                                </div>
+                                <div class="bg-green-950/50 p-3 rounded font-mono text-xs">
+                                    <strong class="text-green-400">✅ v4:</strong> @tailwindcss/postcss (ayrı paket)
+                                </div>
+                                <div class="text-amber-300 mt-2">
+                                    <strong>Impact:</strong> <code class="bg-slate-800 px-2 py-1 rounded">package.json</code> ve <code class="bg-slate-800 px-2 py-1 rounded">postcss.config.js</code> güncellenmeli
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Array Otomatik -->
+                <div class="bg-slate-900/50 border border-green-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">✨</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-green-300 mb-2">5. Content Array Artık Otomatik (İYİLEŞTİRME!)</h3>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="bg-red-950/50 p-3 rounded">
+                                    <strong class="text-red-400">v3:</strong> Manuel <code class="bg-slate-800 px-1 rounded">content: []</code> konfigürasyonu gerekiyordu
+                                </div>
+                                <div class="bg-green-950/50 p-3 rounded">
+                                    <strong class="text-green-400">v4:</strong> Auto-detection! Tailwind otomatik buluyor.
+                                </div>
+                                <div class="text-green-300 mt-2">
+                                    <strong>Avantaj:</strong> content array konfigürasyonuna gerek yok, otomatik tarama yapıyor
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Default Değerler Değişti -->
+                <div class="bg-slate-900/50 border border-red-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">🎨</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-red-300 mb-2">6. Default Değerler Değişti (Görünüm Etkilenebilir!)</h3>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-red-400">•</span>
+                                        <strong>Border:</strong> <code class="bg-slate-800 px-1 rounded">gray-200</code> → <code class="bg-slate-800 px-1 rounded">currentColor</code>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-red-400">•</span>
+                                        <strong>Placeholder:</strong> <code class="bg-slate-800 px-1 rounded">gray-400</code> → <code class="bg-slate-800 px-1 rounded">currentColor (50% opacity)</code>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-red-400">•</span>
+                                        <strong>Button Cursor:</strong> <code class="bg-slate-800 px-1 rounded">pointer</code> → <code class="bg-slate-800 px-1 rounded">default</code>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-red-400">•</span>
+                                        <strong>Gradient Behavior:</strong> Variant'lar artık gradient'i reset etmiyor
+                                    </div>
+                                </div>
+                                <div class="text-amber-300 mt-2">
+                                    <strong>Impact:</strong> Görsel farklılıklar olabilir, tüm componentler test edilmeli!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Migration Zorluğu Analizi -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <span class="text-3xl">📏</span>
+                Migration Zorluğu - Detaylı Analiz
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Otomatik İşlemler -->
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                    <h3 class="font-bold text-green-400 mb-3 flex items-center gap-2">
+                        <span class="text-2xl">✅</span>
+                        Otomatik (Kolay)
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">•</span>
+                            <span>Package güncelleme (npm upgrade)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">•</span>
+                            <span>@import syntax dönüşümü</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">•</span>
+                            <span>content array kaldırma</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">•</span>
+                            <span>Deprecated class'ları update</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-xs text-green-300">
+                        Official upgrade tool bunları yapıyor
+                    </div>
+                </div>
+
+                <!-- Yarı-Otomatik -->
+                <div class="bg-amber-900/20 border border-amber-800 rounded-lg p-4">
+                    <h3 class="font-bold text-amber-400 mb-3 flex items-center gap-2">
+                        <span class="text-2xl">⚠️</span>
+                        Yarı-Otomatik (Orta)
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-amber-400">•</span>
+                            <span>3 tenant config → CSS formatına dönüştürme</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-amber-400">•</span>
+                            <span>Base config migration</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-amber-400">•</span>
+                            <span>Plugin konfigürasyonu (@theme)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-amber-400">•</span>
+                            <span>PostCSS config güncelleme</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-xs text-amber-300">
+                        Tool yardımcı olur, manuel kontrol gerekir
+                    </div>
+                </div>
+
+                <!-- Manuel -->
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                    <h3 class="font-bold text-red-400 mb-3 flex items-center gap-2">
+                        <span class="text-2xl">❌</span>
+                        Manuel (Zor)
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span>70+ safelist class → @theme'e taşıma</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span>8 custom renk → CSS variable'a dönüştürme</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span>2,745 class kullanımı → Görsel test</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span>Border/placeholder defaults → Fix</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span>Tüm sayfalarda regression test</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-xs text-red-300">
+                        Büyük test yükü, manuel müdahale şart
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zaman Tahmini -->
+            <div class="mt-6 bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                <h3 class="font-bold text-blue-400 mb-3">⏱️ İş Yükü Tahmini</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                    <div class="bg-slate-900/50 p-3 rounded">
+                        <div class="text-slate-400 text-xs">Migration (Tool + Manuel)</div>
+                        <div class="text-xl font-bold text-blue-300 mt-1">2-3 gün</div>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded">
+                        <div class="text-slate-400 text-xs">Test (Tüm Sayfalar)</div>
+                        <div class="text-xl font-bold text-amber-300 mt-1">1-2 hafta</div>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded">
+                        <div class="text-slate-400 text-xs">Bug Fix + Tweak</div>
+                        <div class="text-xl font-bold text-red-300 mt-1">3-5 gün</div>
+                    </div>
+                </div>
+                <div class="text-xs text-slate-400 mt-3">
+                    <strong>Toplam:</strong> 2-3 hafta (test ortamı + staging + production)
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Değerlendirmesi -->
+        <div class="bg-red-900/20 border-2 border-red-700 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+                <span class="text-3xl">⚠️</span>
+                Risk Değerlendirmesi
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Yüksek Risk -->
+                <div class="bg-slate-900/50 border border-red-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-red-300 mb-3 flex items-center gap-2">
+                        <span class="text-2xl">🔥</span>
+                        YÜKSEK RİSK
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span><strong>Görsel bozulma:</strong> Default değerler değişti (border, placeholder). 2,745 class kullanımı = potansiyel breaking points.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span><strong>Downtime riski:</strong> Canlı sistemde yapılırsa site çökebilir. Production'da ASLA doğrudan yapılmamalı!</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span><strong>Tenant çakışması:</strong> 3 config farklı mimaride. Birinde çalışıp diğerinde çalışmayabilir.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">•</span>
+                            <span><strong>Browser compatibility:</strong> Eski browser kullanan kullanıcılar siteyi göremeyebilir!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orta Risk -->
+                <div class="bg-slate-900/50 border border-amber-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-amber-300 mb-3 flex items-center gap-2">
+                        <span class="text-2xl">⚠️</span>
+                        ORTA RİSK
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-amber-400">•</span>
+                            <span><strong>Custom color sistemi:</strong> Muzibu'nun 8 custom rengi CSS variable'a dönüştürülürken hata yapılabilir.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-amber-400">•</span>
+                            <span><strong>Plugin uyumluluğu:</strong> @tailwindcss/forms ve @tailwindcss/typography v4'le uyumlu mu? Kontrol gerekli.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-amber-400">•</span>
+                            <span><strong>Safelist migration:</strong> 70+ safelist class'ı @theme'e taşınırken purge sorunu olabilir.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Düşük Risk -->
+                <div class="bg-slate-900/50 border border-green-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-green-300 mb-3 flex items-center gap-2">
+                        <span class="text-2xl">✅</span>
+                        DÜŞÜK RİSK
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">•</span>
+                            <span><strong>Package update:</strong> npm upgrade kolay, official tool var.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">•</span>
+                            <span><strong>Rollback:</strong> Git checkpoint ile geri dönülebilir (production öncesi).</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">•</span>
+                            <span><strong>AI Modülü:</strong> Zaten v4.1.12 kullanıyor, etkilenmez.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Önerilen Yaklaşım -->
+        <div class="bg-green-900/20 border-2 border-green-700 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-green-400 mb-6 flex items-center gap-2">
+                <span class="text-3xl">✅</span>
+                Önerilen Yaklaşım
+            </h2>
+
+            <!-- Şimdi YAPMA -->
+            <div class="bg-red-900/30 border border-red-700 rounded-lg p-5 mb-4">
+                <h3 class="font-bold text-red-300 mb-3 text-xl flex items-center gap-2">
+                    <span class="text-2xl">🛑</span>
+                    ŞİMDİ YAPMA!
+                </h3>
+                <div class="space-y-2 text-slate-300">
+                    <div class="flex items-start gap-2">
+                        <span class="text-red-400">•</span>
+                        <span><strong>Tailwind v3.4.17 stabil ve sorunsuz çalışıyor.</strong> Değiştirmek için acil bir sebep yok.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-red-400">•</span>
+                        <span><strong>Migration breaking changes içeriyor.</strong> Canlı sistemde risk almaya değmez.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-red-400">•</span>
+                        <span><strong>Test süresi minimum 2-3 hafta.</strong> Acele edilirse sistem bozulabilir.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eğer Yapılacaksa -->
+            <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-5">
+                <h3 class="font-bold text-blue-300 mb-4 text-xl flex items-center gap-2">
+                    <span class="text-2xl">📋</span>
+                    Eğer Yapılacaksa (Aşamalı Plan)
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- Faz 1 -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-bold text-cyan-400 mb-2">Faz 1: Test Ortamı (1 hafta)</h4>
+                        <div class="space-y-1 text-sm text-slate-300 ml-4">
+                            <div class="flex items-start gap-2">
+                                <span>1.</span>
+                                <span>Lokal/test ortamında migration yap (official upgrade tool kullan)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>2.</span>
+                                <span>3 tenant config'i CSS formatına dönüştür</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>3.</span>
+                                <span>Custom color'ları CSS variable'a migrate et</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>4.</span>
+                                <span>Safelist'i @theme directive'e taşı</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>5.</span>
+                                <span>Build yap, compile hatalarını düzelt</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Faz 2 -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-bold text-cyan-400 mb-2">Faz 2: Görsel Test (1-2 hafta)</h4>
+                        <div class="space-y-1 text-sm text-slate-300 ml-4">
+                            <div class="flex items-start gap-2">
+                                <span>1.</span>
+                                <span>Muzibu: Tüm sayfaları test et (homepage, album, artist, playlist, genre, sector)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>2.</span>
+                                <span>İxtif: Tüm sayfaları test et (homepage, products, categories, blog)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>3.</span>
+                                <span>Border, placeholder, button cursor → Default değer değişikliklerini kontrol et</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>4.</span>
+                                <span>Mobile responsive test (viewport'lar)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>5.</span>
+                                <span>Dark mode test (Muzibu dark theme)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>6.</span>
+                                <span>Her bozuk component'i fix et, regression test yap</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Faz 3 -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-bold text-cyan-400 mb-2">Faz 3: Staging Ortamı (3-5 gün)</h4>
+                        <div class="space-y-1 text-sm text-slate-300 ml-4">
+                            <div class="flex items-start gap-2">
+                                <span>1.</span>
+                                <span>Staging server'a deploy et</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>2.</span>
+                                <span>Gerçek data ile test et</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>3.</span>
+                                <span>Performance test (CSS boyutu, load time)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>4.</span>
+                                <span>Browser compatibility test (Safari, Chrome, Firefox)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>5.</span>
+                                <span>Final bug fix'ler</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Faz 4 -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-bold text-cyan-400 mb-2">Faz 4: Production (Bakım Saatinde)</h4>
+                        <div class="space-y-1 text-sm text-slate-300 ml-4">
+                            <div class="flex items-start gap-2">
+                                <span>1.</span>
+                                <span>Git checkpoint oluştur (rollback için)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>2.</span>
+                                <span>Database backup al</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>3.</span>
+                                <span>Bakım moduna al (maintenance mode)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>4.</span>
+                                <span>Production deploy</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>5.</span>
+                                <span>Quick smoke test (tüm tenant'lar)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>6.</span>
+                                <span>Sorun varsa → Rollback</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>7.</span>
+                                <span>Sorun yoksa → Bakım modunu kapat</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span>8.</span>
+                                <span>24 saat monitoring (hata takibi)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+            <div class="space-y-4 text-slate-300">
+                <p class="leading-relaxed">
+                    <strong class="text-white">Tailwind CSS</strong>, web sitenizin görünümünü oluşturmak için kullanılan bir araç.
+                    Şu anda kullandığınız versiyon (v3.4.17) stabil ve sorunsuz çalışıyor.
+                </p>
+                <p class="leading-relaxed">
+                    <strong class="text-white">Yeni versiyon (v4)</strong> çıktı ve <strong class="text-red-300">çok büyük değişiklikler</strong> içeriyor:
+                </p>
+                <ul class="space-y-2 ml-6">
+                    <li class="flex items-start gap-2">
+                        <span class="text-red-400">•</span>
+                        <span><strong>Ayar sistemi tamamen değişti</strong> - JavaScript yerine CSS içinde ayar yapılıyor artık.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-red-400">•</span>
+                        <span><strong>Eski tarayıcılar desteklenmiyor</strong> - Çok eski Safari, Chrome kullanan kullanıcılar siteyi göremeyebilir.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-red-400">•</span>
+                        <span><strong>Görünüm değişiklikleri</strong> - Buton, kenar çizgileri, placeholder text'ler farklı görünebilir.</span>
+                    </li>
+                </ul>
+                <p class="leading-relaxed">
+                    <strong class="text-white">Güncelleme zor mu?</strong> Orta-yüksek zorlukta. Otomatik araç var ama 3 farklı tema config'iniz +
+                    2,745 Tailwind class kullanımınız var. Manuel kontrol ve test gerekir.
+                </p>
+                <p class="leading-relaxed">
+                    <strong class="text-white">Sistem bozulur mu?</strong> Risk yüksek! Canlı sistemde yaparsanız site çökebilir.
+                    Önce test ortamında denenip, 2-3 hafta test edildikten sonra canlıya alınmalı.
+                </p>
+                <p class="leading-relaxed bg-amber-900/30 border border-amber-700 p-4 rounded">
+                    <strong class="text-amber-300">💡 ÖNERİMİZ:</strong> Şu anda güncellemeye GEREK YOK.
+                    Mevcut sistem sorunsuz çalışıyor. Eğer ileride yapacaksanız, minimum 2-3 hafta test süreci ayırın.
+                    <strong>Acele etmeyin, canlı sistemde risk almayın!</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <div class="space-y-4 text-sm">
+                <!-- Migration Tool -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-bold text-cyan-400 mb-2">🛠️ Official Upgrade Tool</h3>
+                    <div class="space-y-2 text-slate-300">
+                        <div><strong>Gereksinim:</strong> Node.js 20+</div>
+                        <div><strong>Komut:</strong> <code class="bg-slate-800 px-2 py-1 rounded font-mono">npx @tailwindcss/upgrade</code></div>
+                        <div><strong>Otomatik yapılanlar:</strong></div>
+                        <ul class="ml-4 space-y-1 text-xs">
+                            <li>• Package.json update</li>
+                            <li>• Config file migration (JS → CSS)</li>
+                            <li>• Template file changes</li>
+                            <li>• Deprecated class replacement</li>
+                        </ul>
+                        <div class="text-amber-300 mt-2">
+                            <strong>⚠️ Manuel kontrol gerekir:</strong> Multi-tenant config, custom colors, safelist
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Config Migration -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-bold text-cyan-400 mb-2">⚙️ Config Migration (JS → CSS)</h3>
+                    <div class="space-y-2">
+                        <div class="text-slate-400 mb-1">BEFORE (v3 - tailwind.config.js):</div>
+                        <code class="block bg-slate-800 px-3 py-2 rounded text-xs overflow-x-auto text-slate-300">
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        'muzibu-coral': '#ff7f50'
+      }
+    }
+  }
+}</code>
+                        <div class="text-slate-400 mb-1 mt-3">AFTER (v4 - @theme in CSS):</div>
+                        <code class="block bg-slate-800 px-3 py-2 rounded text-xs overflow-x-auto text-slate-300">
+@import "tailwindcss";
+
+@theme {
+  --color-muzibu-coral: #ff7f50;
+}</code>
+                    </div>
+                </div>
+
+                <!-- Browser Compatibility -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-bold text-cyan-400 mb-2">🌐 Browser Compatibility Check</h3>
+                    <div class="text-slate-300">
+                        <div class="mb-2"><strong>Gerekli CSS Features:</strong></div>
+                        <ul class="ml-4 space-y-1 text-xs">
+                            <li>• <code class="bg-slate-800 px-1 rounded">@property</code> - CSS Custom Properties with type</li>
+                            <li>• <code class="bg-slate-800 px-1 rounded">color-mix()</code> - Color mixing function</li>
+                        </ul>
+                        <div class="mt-3">
+                            <strong>Analytics Kontrolü:</strong> Google Analytics'te eski browser kullanımını kontrol edin.
+                            %1'in üzerindeyse migration risk yaratır.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rollback Strategy -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-bold text-cyan-400 mb-2">🔄 Rollback Strategy</h3>
+                    <div class="space-y-2 text-xs text-slate-300">
+                        <div class="bg-slate-800 p-2 rounded font-mono">
+                            # Production deploy öncesi<br>
+                            git checkout -b tailwind-v4-migration<br>
+                            git add .<br>
+                            git commit -m "Tailwind v4 migration"<br>
+                            <br>
+                            # Sorun çıkarsa<br>
+                            git checkout main<br>
+                            git branch -D tailwind-v4-migration
+                        </div>
+                        <div class="text-amber-300">
+                            <strong>CRITICAL:</strong> Database backup + file backup ZORUNLU!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kaynaklar -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-white mb-4">📚 Kaynaklar</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-start gap-2">
+                    <span class="text-blue-400">•</span>
+                    <a href="https://tailwindcss.com/docs/upgrade-guide" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                        Official Upgrade Guide - Tailwind CSS
+                    </a>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-blue-400">•</span>
+                    <a href="https://tailwindcss.com/blog/tailwindcss-v4" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                        Tailwind CSS v4.0 - Release Blog
+                    </a>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-blue-400">•</span>
+                    <a href="https://typescript.tv/hands-on/upgrading-to-tailwind-css-v4-a-migration-guide/" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                        Upgrading to Tailwind CSS v4: A Migration Guide
+                    </a>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-blue-400">•</span>
+                    <a href="https://dev.to/odada-o/tailwind-css-v4-migration-guide-26cb" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                        Tailwind CSS v4 Migration Guide - DEV Community
+                    </a>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-blue-400">•</span>
+                    <a href="https://github.com/tailwindlabs/tailwindcss/discussions/16642" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                        Migration from V3 to V4 - GitHub Discussion
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="border-t border-slate-800 bg-slate-900 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between text-sm text-slate-500">
+                <div>
+                    <span class="text-slate-400">Rapor Oluşturulma:</span>
+                    <span class="ml-2">21 Aralık 2025, Saat: <span id="time"></span></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span>🤖 Oluşturan:</span>
+                    <span class="text-slate-400">Claude Sonnet 4.5</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Saat göster
+        const now = new Date();
+        document.getElementById('time').textContent = now.toLocaleTimeString('tr-TR');
+    </script>
+</body>
+</html>

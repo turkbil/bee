@@ -1,1 +1,367 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toplu Dosya Sahipliği Değiştirme - chown -R</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .badge {
+            @apply inline-block px-3 py-1 text-xs font-semibold rounded-full;
+        }
+        .code-block {
+            @apply bg-slate-950 text-green-400 p-4 rounded-lg overflow-x-auto font-mono text-sm;
+        }
+        .section-card {
+            @apply bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-6;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 md:p-10">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="mb-10">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="badge bg-blue-600 text-white">🔧 Teknik Rehber</span>
+                <span class="badge bg-slate-700 text-slate-300">12 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white">
+                Toplu Dosya Sahipliği Değiştirme
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Linux sistemlerde dosya ve klasör sahipliklerini toplu olarak değiştirme rehberi
+            </p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="section-card bg-green-900/20 border-green-800">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <span>📝</span>
+                <span>Basit Anlatım (Herkes İçin)</span>
+            </h2>
+            <div class="space-y-4 text-slate-300 leading-relaxed">
+                <p>
+                    <strong>Problem:</strong> Bazen dosyalar yanlış kullanıcı tarafından oluşturulur. Örneğin,
+                    "root" kullanıcısı bir dosya oluşturdu ama web sunucusunun bu dosyayı okuması gerekiyor.
+                    Web sunucusu farklı bir kullanıcı adıyla çalıştığı için dosyaya erişemez ve hata verir.
+                </p>
+                <p>
+                    <strong>Çözüm:</strong> Dosyaların "sahibini" değiştirmemiz gerekiyor. Bunu tek tek yapmak
+                    yerine, bir klasördeki tüm dosyaların sahipliğini toplu olarak değiştirebiliriz.
+                </p>
+                <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 mt-4">
+                    <h3 class="font-semibold text-white mb-2">💡 Benzetme:</h3>
+                    <p class="text-sm">
+                        Bir ofiste tüm dolapların anahtarları "Ahmet"te. Ama artık "Mehmet" bu dosyalara
+                        erişmeli. Tek tek her dolabın anahtarını değiştirmek yerine, toplu olarak tüm
+                        dolap anahtarlarını Mehmet'e verebiliriz. İşte <code class="bg-slate-900 px-2 py-1 rounded text-green-400">chown -R</code>
+                        komutu da bunu yapar!
+                    </p>
+                </div>
+                <p>
+                    <strong>Ne Değişti:</strong> Muzibu projesindeki
+                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">httpdocs</code>
+                    klasörü ve içindeki tüm dosyaların sahibi artık doğru kullanıcı
+                    (<code class="bg-slate-900 px-2 py-1 rounded text-green-400">tuufi.com_</code>).
+                    Web sunucusu artık tüm dosyalara sorunsuz erişebilir.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="section-card bg-blue-900/20 border-blue-800">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <span>🔧</span>
+                <span>Teknik Detaylar (Geliştiriciler İçin)</span>
+            </h2>
+
+            <div class="space-y-6 text-slate-300">
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">📁 Dosya Konumu</h3>
+                    <div class="code-block">
+/var/www/vhosts/muzibu.com.tr/httpdocs/
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">⚙️ Kullanılan Komut</h3>
+                    <div class="code-block">
+sudo chown -R tuufi.com_:psaserv /var/www/vhosts/muzibu.com.tr/httpdocs/
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">📊 Komut Parametreleri</h3>
+                    <table class="w-full text-sm border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-3 px-4 font-semibold text-white">Parametre</th>
+                                <th class="text-left py-3 px-4 font-semibold text-white">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4">
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">sudo</code>
+                                </td>
+                                <td class="py-3 px-4">Root (admin) yetkisiyle komut çalıştır</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4">
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">chown</code>
+                                </td>
+                                <td class="py-3 px-4">Change owner - Sahiplik değiştir</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4">
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">-R</code>
+                                </td>
+                                <td class="py-3 px-4">Recursive - Alt klasörler dahil tüm içeriği değiştir</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4">
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">tuufi.com_</code>
+                                </td>
+                                <td class="py-3 px-4">Yeni sahip kullanıcı adı</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4">
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">psaserv</code>
+                                </td>
+                                <td class="py-3 px-4">Grup adı (Plesk sistem grubu)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">🔍 Kontrol Komutları</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-sm text-slate-400 mb-2">Tek bir dosyanın sahipliğini görüntüle:</p>
+                            <div class="code-block">
+ls -la /path/to/file
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 mb-2">Root sahipliğindeki dosyaları bul:</p>
+                            <div class="code-block">
+find /var/www/vhosts/muzibu.com.tr/httpdocs/ -user root 2>/dev/null
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 mb-2">Root sahipliğindeki dosya sayısı:</p>
+                            <div class="code-block">
+find /var/www/vhosts/muzibu.com.tr/httpdocs/ -user root 2>/dev/null | wc -l
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">📋 İşlem Sonuçları</h3>
+                    <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-2">
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400 text-xl">✅</span>
+                            <div>
+                                <strong class="text-white">Toplam Değişiklik:</strong>
+                                <p class="text-sm text-slate-400 mt-1">
+                                    httpdocs içindeki TÜM dosya ve klasörler (alt klasörler dahil)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400 text-xl">✅</span>
+                            <div>
+                                <strong class="text-white">Kalan Root Dosyası:</strong>
+                                <p class="text-sm text-slate-400 mt-1">
+                                    0 (sıfır) - Hiçbir dosya root sahipliğinde kalmadı
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400 text-xl">✅</span>
+                            <div>
+                                <strong class="text-white">Etkilenen Klasörler:</strong>
+                                <p class="text-sm text-slate-400 mt-1">
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">.git</code>,
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">.claude</code>,
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">public</code>,
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">Modules</code>,
+                                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">app</code>
+                                    ve tüm alt klasörler
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-3">🎯 Örnek Sonuç</h3>
+                    <div class="code-block">
+# Değişiklik öncesi (root sahipliğinde)
+-rw-r--r-- 1 root root 37367 Jan 11 21:42 .claude/settings.local.json
+
+# Değişiklik sonrası (tuufi.com_ sahipliğinde)
+-rw-r--r-- 1 tuufi.com_ psaserv 37367 Jan 11 21:42 .claude/settings.local.json
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diğer Kullanım Senaryoları -->
+        <div class="section-card bg-purple-900/20 border-purple-800">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <span>💼</span>
+                <span>Diğer Kullanım Senaryoları</span>
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">1️⃣ Tek Bir Dosya İçin</h3>
+                    <div class="code-block mt-2">
+sudo chown ccc:psaserv /path/to/file.txt
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">2️⃣ Sahiplik + İzinleri Birlikte Ayarla</h3>
+                    <div class="code-block mt-2">
+# Sahipliği değiştir
+sudo chown -R tuufi.com_:psaserv /path/to/dir/
+
+# Dosya izinleri (644)
+sudo find /path/to/dir/ -type f -exec chmod 644 {} \;
+
+# Klasör izinleri (755)
+sudo find /path/to/dir/ -type d -exec chmod 755 {} \;
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">3️⃣ Tek Komutta Tüm İşlemler</h3>
+                    <div class="code-block mt-2">
+TARGET="/var/www/vhosts/muzibu.com.tr/httpdocs/public/readme"
+
+sudo chown -R tuufi.com_:psaserv "$TARGET" && \
+sudo find "$TARGET" -type f -exec chmod 644 {} \; && \
+sudo find "$TARGET" -type d -exec chmod 755 {} \; && \
+echo "✅ Tamamlandı!"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dikkat Edilmesi Gerekenler -->
+        <div class="section-card bg-yellow-900/20 border-yellow-800">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <span>⚠️</span>
+                <span>Dikkat Edilmesi Gerekenler</span>
+            </h2>
+
+            <div class="space-y-3 text-slate-300">
+                <div class="flex items-start gap-3">
+                    <span class="text-yellow-400 text-xl">⚠️</span>
+                    <div>
+                        <strong class="text-white">-R parametresi tehlikeli olabilir!</strong>
+                        <p class="text-sm text-slate-400 mt-1">
+                            Yanlış dizinde çalıştırırsanız tüm sistem etkilenebilir. Komutunuzu çalıştırmadan önce mutlaka kontrol edin.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-yellow-400 text-xl">🧪</span>
+                    <div>
+                        <strong class="text-white">Önce test edin</strong>
+                        <p class="text-sm text-slate-400 mt-1">
+                            Kritik sistemlerde önce küçük bir test klasöründe deneyin, sorun yoksa asıl klasöre uygulayın.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-yellow-400 text-xl">💾</span>
+                    <div>
+                        <strong class="text-white">Yedek alın</strong>
+                        <p class="text-sm text-slate-400 mt-1">
+                            Çok kritik dosyalarda işlem yapmadan önce yedek almayı unutmayın.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-yellow-400 text-xl">👤</span>
+                    <div>
+                        <strong class="text-white">Doğru kullanıcıyı seçin</strong>
+                        <p class="text-sm text-slate-400 mt-1">
+                            Her sistemde farklı kullanıcı adları olabilir. Bu dokümandaki
+                            <code class="bg-slate-900 px-2 py-1 rounded text-green-400">tuufi.com_</code>
+                            sadece bu sistem için geçerlidir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Neden Önemli -->
+        <div class="section-card bg-teal-900/20 border-teal-800">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <span>💡</span>
+                <span>Neden Önemli?</span>
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2 flex items-center gap-2">
+                            <span class="text-green-400">✅</span>
+                            <span>Kullanıcı Deneyimi</span>
+                        </h3>
+                        <p class="text-sm text-slate-400">
+                            Yanlış sahiplik nedeniyle dosyalara erişilememesi → 403 Forbidden hataları →
+                            Kullanıcılar sayfaları göremiyor → Kötü deneyim.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2 flex items-center gap-2">
+                            <span class="text-blue-400">🔒</span>
+                            <span>Güvenlik</span>
+                        </h3>
+                        <p class="text-sm text-slate-400">
+                            Doğru kullanıcı sahipliği → Web sunucusu sadece gerekli dosyalara erişir →
+                            İzin sistemi düzgün çalışır → Güvenli uygulama.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2 flex items-center gap-2">
+                            <span class="text-purple-400">⚡</span>
+                            <span>Performans</span>
+                        </h3>
+                        <p class="text-sm text-slate-400">
+                            Yanlış izinler → PHP cache sorunları → OPcache erişim hataları →
+                            Yavaş site. Doğru izinler → Sorunsuz cache → Hızlı site.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2 flex items-center gap-2">
+                            <span class="text-yellow-400">🛠️</span>
+                            <span>Bakım Kolaylığı</span>
+                        </h3>
+                        <p class="text-sm text-slate-400">
+                            Düzenli sahiplik sistemi → Yeni dosyalar otomatik doğru izinlerle oluşur →
+                            Sistem yönetimi kolaylaşır.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>🤖 <strong>Claude Code</strong> tarafından oluşturuldu</p>
+            <p class="mt-2">12 Ocak 2026 - muzibu.com.tr</p>
+        </footer>
+    </div>
+</body>
+</html>

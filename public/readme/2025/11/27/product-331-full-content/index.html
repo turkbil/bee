@@ -1,1 +1,521 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product ID 331 - FULL AI Content (Hero + Body + FAQ + SEO)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .status-box {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #22c55e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .status-box h2 {
+            color: #22c55e;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .status-box p {
+            color: #cbd5e1;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .info-card h3 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-card p {
+            color: #cbd5e1;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .spec-item {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spec-item i {
+            font-size: 2rem;
+            color: #60a5fa;
+        }
+
+        .spec-item .label {
+            font-weight: 600;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .spec-item .value {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+        }
+
+        .faq-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .faq-item h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .faq-item p {
+            color: #cbd5e1;
+            margin-bottom: 8px;
+        }
+
+        .leonardo-prompt {
+            background: rgba(249, 115, 22, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f97316;
+        }
+
+        .leonardo-prompt h4 {
+            color: #f97316;
+            margin-bottom: 10px;
+        }
+
+        .leonardo-prompt p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .leonardo-prompt .usage {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .content-preview {
+            background: rgba(30, 41, 59, 0.3);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .content-preview h3 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta-box h2 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .cta-box p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .before-box {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .before-box h3 {
+            color: #f87171;
+            margin-bottom: 15px;
+        }
+
+        .after-box {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #22c55e;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .after-box h3 {
+            color: #86efac;
+            margin-bottom: 15px;
+        }
+
+        .json-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .json-link:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛠️ Product ID 331 - FULL AI Content</h1>
+            <div class="meta">
+                <span>📅 2025-11-27</span>
+                <span>🎯 Kategori: Akson Kapağı (Yedek Parça)</span>
+                <span>🔤 Languages: TR + EN</span>
+                <span>✨ Hero + Body + FAQ + SEO</span>
+            </div>
+        </header>
+
+        <div class="status-box">
+            <h2>✅ TAM İÇERİK BAŞARIYLA ÜRETİLDİ!</h2>
+            <p>
+                <strong>Akson Mili Kapağı - 414</strong> için bilingual (TR + EN) FULL içerik oluşturuldu.
+                Hero specs, body, FAQ, SEO keywords ve Leonardo AI prompts dahil!
+            </p>
+            <a href="ai-generated-content.json" class="json-link" target="_blank">
+                <i class="fas fa-file-code"></i> JSON Dosyasını Görüntüle
+            </a>
+        </div>
+
+        <!-- BEFORE/AFTER COMPARISON -->
+        <section>
+            <h2><i class="fas fa-exchange-alt"></i> Önce / Sonra Karşılaştırma</h2>
+
+            <div class="comparison-grid">
+                <div class="before-box">
+                    <h3>❌ ÖNCE (Before)</h3>
+                    <p><strong>Title (TR):</strong> Akson Mili Kapağı - 414</p>
+                    <p><strong>Title (EN):</strong> Yok</p>
+                    <p><strong>Body (TR):</strong> 54 karakter</p>
+                    <p style="color: #f87171; font-style: italic;">"&lt;div class="urunTanim"&gt;Akson Mili Kapağı - 414&lt;/div&gt;"</p>
+                    <p><strong>Body (EN):</strong> 0 karakter</p>
+                    <p><strong>Primary Specs:</strong> null</p>
+                    <p><strong>FAQ:</strong> null</p>
+                    <p><strong>SEO Keywords:</strong> null</p>
+                </div>
+
+                <div class="after-box">
+                    <h3>✅ SONRA (After)</h3>
+                    <p><strong>Title (TR):</strong> Akson Mili Kapağı - 414</p>
+                    <p><strong>Title (EN):</strong> Axle Shaft Cover - 414</p>
+                    <p><strong>Body (TR):</strong> ~10,000+ karakter</p>
+                    <p style="color: #86efac;">4 intro + 6 USP + 4 Use Cases + 4 Advantages + 3 Leonardo</p>
+                    <p><strong>Body (EN):</strong> ~10,000+ karakter</p>
+                    <p><strong>Primary Specs:</strong> 4 specs (bilingual)</p>
+                    <p><strong>FAQ:</strong> 8 items (TR + EN + icons)</p>
+                    <p><strong>SEO Keywords:</strong> 15 TR + 15 EN</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRIMARY SPECS (HERO) -->
+        <section>
+            <h2><i class="fas fa-crown"></i> Primary Specs (Hero Section'da Görünecek)</h2>
+
+            <div class="spec-grid">
+                <div class="spec-item">
+                    <i class="fas fa-cog"></i>
+                    <div>
+                        <div class="label">Malzeme / Material</div>
+                        <div class="value">Döküm Çelik / Cast Steel</div>
+                    </div>
+                </div>
+
+                <div class="spec-item">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <div>
+                        <div class="label">Uyumluluk / Compatibility</div>
+                        <div class="value">Forklift Arka Dingil / Rear Axle</div>
+                    </div>
+                </div>
+
+                <div class="spec-item">
+                    <i class="fas fa-ruler-combined"></i>
+                    <div>
+                        <div class="label">Tip / Type</div>
+                        <div class="value">414 Serisi / 414 Series</div>
+                    </div>
+                </div>
+
+                <div class="spec-item">
+                    <i class="fas fa-certificate"></i>
+                    <div>
+                        <div class="label">Garanti / Warranty</div>
+                        <div class="value">6 Ay / 6 Months</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTENT SUMMARY -->
+        <section>
+            <h2><i class="fas fa-file-alt"></i> Üretilen İçerik Özeti</h2>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Body Content (TR + EN)</h3>
+                    <p>✅ 4 intro paragraf (sidebar image)</p>
+                    <p>✅ 6 USP kart (3x2 grid)</p>
+                    <p>✅ 4 Use Case kart (2x2 grid)</p>
+                    <p>✅ 4 Advantage madde</p>
+                    <p>✅ 3 Leonardo AI görsel</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>Primary Specs</h3>
+                    <p>✅ 4 spec item (bilingual)</p>
+                    <p>✅ FontAwesome icons</p>
+                    <p>✅ Hero section'da görünecek</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>FAQ Data</h3>
+                    <p>✅ 8 FAQ items (bilingual)</p>
+                    <p>✅ Each with icon</p>
+                    <p>✅ Yedek parça odaklı sorular</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>SEO & Leonardo AI</h3>
+                    <p>✅ 15 TR + 15 EN keywords</p>
+                    <p>✅ 3 HIGH QUALITY prompts</p>
+                    <p>✅ NO text, NO artifacts</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ PREVIEW -->
+        <section>
+            <h2><i class="fas fa-question-circle"></i> FAQ Önizleme (8 Adet - Yedek Parça Odaklı)</h2>
+
+            <div class="faq-item">
+                <h4><i class="fas fa-puzzle-piece"></i> 414 serisi hangi forklift modellerine uyumludur?</h4>
+                <p><strong>TR:</strong> 414 serisi akson mili kapağı, 1.5-5 ton kapasiteli çoğu standart forklift modelinde kullanılır.</p>
+                <p><strong>EN:</strong> The 414 series axle shaft cover is used in most standard forklift models with 1.5-5 ton capacity.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4><i class="fas fa-wrench"></i> Montaj için özel alet gerekir mi?</h4>
+                <p><strong>TR:</strong> Hayır, montaj için özel alet gerekmez. Standart el aletleri ile kolayca monte edilebilir.</p>
+                <p><strong>EN:</strong> No, special tools are not required for installation. Can be easily installed with standard hand tools.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4><i class="fas fa-certificate"></i> Garanti kapsamı nedir?</h4>
+                <p><strong>TR:</strong> Ürün, üretim hatalarına karşı 6 ay garanti ile birlikte sunulmaktadır.</p>
+                <p><strong>EN:</strong> The product is supplied with 6 months warranty against manufacturing defects.</p>
+            </div>
+
+            <p style="color: #94a3b8; margin-top: 20px; font-style: italic;">+ 5 adet daha FAQ item (montaj, OEM karşılaştırma, malzeme, toplu alım vb.)</p>
+        </section>
+
+        <!-- LEONARDO AI PROMPTS -->
+        <section>
+            <h2><i class="fas fa-image"></i> Leonardo AI Prompts (3 Adet - Yedek Parça Fotoğrafı)</h2>
+
+            <div class="leonardo-prompt">
+                <h4>Prompt 1: Product Photo (Sidebar)</h4>
+                <p>
+                    HIGH QUALITY PHOTOREALISTIC industrial product photograph of a forklift axle shaft cover part model 414 series, cast steel material, metallic gray color, professional spare part photography on white background, mounted on display stand, industrial catalog quality, technical product shot showing mounting holes and connection points, sharp focus, professional lighting, NO text, NO watermarks, NO artifacts
+                </p>
+                <div class="usage">📍 Kullanım: Sidebar image - Intro section (2/3 + 1/3 sticky)</div>
+            </div>
+
+            <div class="leonardo-prompt">
+                <h4>Prompt 2: Installation Photo</h4>
+                <p>
+                    HIGH QUALITY PHOTOREALISTIC close-up photograph of forklift rear axle assembly showing axle shaft cover 414 installed on forklift axle system, industrial workshop environment, mechanic hands installing the cover part, visible mounting bolts and connection points, professional maintenance setting, technical documentation style, sharp focus on installation detail, NO text, NO watermarks, NO artifacts
+                </p>
+                <div class="usage">📍 Kullanım: Side-by-side layout (1/2 image + 1/2 text box)</div>
+            </div>
+
+            <div class="leonardo-prompt">
+                <h4>Prompt 3: Material Detail</h4>
+                <p>
+                    HIGH QUALITY PHOTOREALISTIC detailed technical photograph of cast steel axle shaft cover 414 series, showing material texture and surface finish, professional macro photography highlighting the casting quality and mounting holes, industrial gray metallic finish, professional spare parts catalog style, extreme detail on surface texture, studio lighting, NO text, NO watermarks, NO artifacts
+                </p>
+                <div class="usage">📍 Kullanım: Full-width image - Material detail showcase</div>
+            </div>
+        </section>
+
+        <!-- SEO KEYWORDS -->
+        <section>
+            <h2><i class="fas fa-search"></i> SEO Keywords (15 TR + 15 EN)</h2>
+
+            <div class="content-preview">
+                <h3>Türkçe (TR)</h3>
+                <p style="color: #cbd5e1; line-height: 1.8;">
+                    akson mili kapağı, forklift akson kapağı, 414 serisi akson kapağı, arka dingil kapağı, forklift yedek parça, akson koruyucu kapak, dingil sistemi parçası, forklift bakım parçası, döküm çelik kapak, oem yedek parça, forklift dingil parçası, akson mili koruma, endüstriyel yedek parça, forklift servis parçası, akson kapağı fiyat
+                </p>
+            </div>
+
+            <div class="content-preview">
+                <h3>English (EN)</h3>
+                <p style="color: #cbd5e1; line-height: 1.8;">
+                    axle shaft cover, forklift axle cover, 414 series axle cover, rear axle cover, forklift spare part, axle protective cover, axle system part, forklift maintenance part, cast steel cover, oem spare part, forklift axle part, axle shaft protection, industrial spare part, forklift service part, axle cover price
+                </p>
+            </div>
+        </section>
+
+        <!-- USP HIGHLIGHTS -->
+        <section>
+            <h2><i class="fas fa-fire"></i> 6 USP (Unique Selling Points)</h2>
+
+            <div class="info-grid">
+                <div class="info-card" style="border-left-color: #f97316;">
+                    <h3>1. Döküm Çelik Malzeme</h3>
+                    <p>Yüksek kaliteli döküm çelik - darbelere ve aşınmaya dayanıklı</p>
+                </div>
+
+                <div class="info-card" style="border-left-color: #f97316;">
+                    <h3>2. OEM Standartlarında Uyumluluk</h3>
+                    <p>Orijinal parça ölçüleri - sorunsuz montaj</p>
+                </div>
+
+                <div class="info-card" style="border-left-color: #f97316;">
+                    <h3>3. Akson Sistemi Koruması</h3>
+                    <p>Toz, kir ve darbe koruması - rulman ömrünü uzatır</p>
+                </div>
+
+                <div class="info-card" style="border-left-color: #f97316;">
+                    <h3>4. Kolay Montaj</h3>
+                    <p>Standart el aletleri - özel ekipman gerektirmez</p>
+                </div>
+
+                <div class="info-card" style="border-left-color: #f97316;">
+                    <h3>5. Stoktan Tedarik</h3>
+                    <p>Depoda stoklanır - acil durumlarda hızlı temin</p>
+                </div>
+
+                <div class="info-card" style="border-left-color: #f97316;">
+                    <h3>6. 6 Ay Garanti</h3>
+                    <p>Üretim hatalarına karşı garanti - kalite güvencesi</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <div class="cta-box">
+            <h2>🎯 Sonraki Adım: Database'e Yaz</h2>
+            <p>
+                FULL içerik hazır! Onay verdiğinizde tüm alanlar database'e yazılacak:<br>
+                title, slug, primary_specs, body, faq_data, seo_keywords
+            </p>
+            <p style="font-size: 0.9rem; margin-top: 10px;">
+                📍 Ürün Linki: <a href="https://ixtif.com/shop/akson-mili-kapagi-414" target="_blank" style="color: white; text-decoration: underline;">https://ixtif.com/shop/akson-mili-kapagi-414</a>
+            </p>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 📅 2025-11-27<br>
+            Bilingual FULL content (Hero + Body + FAQ + SEO) following SHOP-PRODUCT-AI-FINAL.md
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,1 +1,171 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Builder Bug - Key Eşleştirme Hatası</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                🐛 Form Builder Bug - Key Eşleştirme Hatası
+            </h1>
+            <div class="text-slate-400 text-lg">
+                "Kaydet" dediğinde neden düzeltmiyor?
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-05</span>
+                <span>🐛 Form Builder Logic Bug</span>
+                <span>🔧 syncSettingsFromLayout()</span>
+            </div>
+        </header>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🔴 Form Builder Bug'ı</h2>
+            <div class="bg-red-900/30 border-2 border-red-500 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-red-300 mb-6">Satır 87: Yanlış Key Kontrolü</h3>
+                
+                <div class="bg-slate-900/50 rounded-lg p-6 font-mono text-sm mb-6">
+                    <div class="text-slate-400 mb-2">FormBuilderComponent.php (Satır 73-103)</div>
+                    <code class="text-slate-300 whitespace-pre-wrap">
+<span class="text-slate-500">// Mevcut settings'leri al</span>
+<span class="text-yellow-400">$existingSettings</span> = Setting::where(<span class="text-green-400">'group_id'</span>, $groupId)
+    ->get()
+    -><span class="text-purple-400">keyBy</span>(<span class="text-green-400">'key'</span>);
+
+<span class="text-slate-500">// Layout'tan gelen ayarlar</span>
+foreach ($extractedSettings as $settingData) {
+    <span class="text-yellow-400">$key</span> = $settingData[<span class="text-green-400">'name'</span>]; <span class="text-slate-500">// "auth_subscription"</span>
+    
+    <span class="text-slate-500">// ❌ BUG: Yanlış key ile kontrol ediyor!</span>
+    if (isset(<span class="text-yellow-400">$existingSettings[$key]</span>)) {
+        <span class="text-slate-500">// Güncelle</span>
+    } else {
+        <span class="text-slate-500">// ❌ Yeni oluştur (ama UNIQUE constraint var!)</span>
+        Setting::<span class="text-red-400">create</span>([<span class="text-green-400">'key'</span> => $key, ...]);
+    }
+}
+                    </code>
+                </div>
+
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-6">
+                    <h4 class="text-xl font-bold text-yellow-300 mb-4">Ne Oluyor?</h4>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 font-bold">1️⃣</span>
+                            <div>
+                                <p class="text-white font-bold">Database'deki mevcut kayıt:</p>
+                                <code class="text-yellow-400">$existingSettings['auth_subscription_auth_subscription']</code>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 font-bold">2️⃣</span>
+                            <div>
+                                <p class="text-white font-bold">Layout JSON'dan gelen key:</p>
+                                <code class="text-green-400">$key = 'auth_subscription'</code>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 font-bold">3️⃣</span>
+                            <div>
+                                <p class="text-white font-bold">Kontrol:</p>
+                                <code class="text-red-400">isset($existingSettings['auth_subscription']) → FALSE!</code>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 font-bold">4️⃣</span>
+                            <div>
+                                <p class="text-white font-bold">Sonuç:</p>
+                                <p class="text-slate-300">"YENİ KAYIT oluştur" dalına giriyor</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 font-bold">5️⃣</span>
+                            <div>
+                                <p class="text-white font-bold">Database UNIQUE constraint:</p>
+                                <code class="text-red-400">Duplicate entry 'auth_subscription' for key 'settings_key_unique'</code>
+                                <p class="text-slate-400 mt-2">→ Laravel sessizce hata görmezden geliniyor!</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 font-bold">6️⃣</span>
+                            <div>
+                                <p class="text-white font-bold">Sonuç:</p>
+                                <p class="text-red-300 font-bold">Hiçbir güncelleme yapılmıyor!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🔧 Doğru Çözüm</h2>
+            
+            <div class="bg-green-900/30 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-green-300 mb-4">Çözüm 1: Fuzzy Matching Ekle (ÖNERİLEN)</h3>
+                <div class="bg-slate-900/50 p-4 rounded font-mono text-sm">
+                    <code class="text-slate-300 whitespace-pre-wrap">
+<span class="text-slate-500">// Satır 87'yi değiştir:</span>
+if (isset($existingSettings[$key])) {
+    <span class="text-slate-500">// Exact match bulundu</span>
+    $setting = $existingSettings[$key];
+<span class="text-green-400">} elseif ($fuzzyMatch = $this->findFuzzyMatch($existingSettings, $key)) {
+    // Fuzzy match bulundu (prefix, suffix toleransı)
+    $setting = $fuzzyMatch;
+    
+    // Key'i düzelt!
+    $setting->update(['key' => $key]);
+    
+    \Log::info("Setting key düzeltildi: {$fuzzyMatch->key} → {$key}");</span>
+} else {
+    <span class="text-slate-500">// Gerçekten yeni kayıt</span>
+    Setting::create([...]);
+}
+
+<span class="text-slate-500">// Yeni metod:</span>
+<span class="text-green-400">protected function findFuzzyMatch($existingSettings, $key)
+{
+    // 1. Prefix/suffix içeren key'leri ara
+    foreach ($existingSettings as $existingKey => $setting) {
+        if (str_contains($existingKey, $key)) {
+            return $setting;
+        }
+    }
+    
+    // 2. Partial match
+    foreach ($existingSettings as $existingKey => $setting) {
+        similar_text($existingKey, $key, $percent);
+        if ($percent > 60) {
+            return $setting;
+        }
+    }
+    
+    return null;
+}</span>
+                    </code>
+                </div>
+            </div>
+
+            <div class="bg-blue-900/30 border-l-4 border-blue-500 rounded-lg p-6">
+                <h3 class="text-xl font-bold text-blue-300 mb-4">Çözüm 2: Hızlı Fix (Manuel)</h3>
+                <div class="bg-slate-900/50 p-4 rounded font-mono text-sm">
+                    <code class="text-slate-300 whitespace-pre-wrap">
+<span class="text-slate-500">-- Database'deki key'leri düzelt:</span>
+<span class="text-yellow-400">UPDATE settings SET `key` = 'auth_subscription' WHERE id = 211;</span>
+<span class="text-yellow-400">UPDATE settings SET `key` = 'auth_device_limit' WHERE id = 212;</span>
+
+<span class="text-slate-500">-- Sonra form builder'da "Kaydet" → Şimdi eşleşecek!</span>
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Form Builder Bug Analizi</p>
+        </footer>
+    </div>
+</body>
+</html>

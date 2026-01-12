@@ -1,1 +1,316 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Context Menu (Sağ Tık) Sistemi - Master Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+                🎵 Muzibu Context Menu Sistemi
+            </h1>
+            <div class="text-slate-300 text-xl leading-relaxed">
+                Muzibu.com.tr için sağ tık (context menu) ile gelişmiş içerik yönetimi:<br>
+                Favorilere ekleme, puan verme, playliste ekleme ve daha fazlası
+            </div>
+            <div class="mt-6 flex flex-wrap gap-4 text-sm text-slate-400">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-calendar text-purple-400"></i>
+                    05 Aralık 2025
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-globe text-pink-400"></i>
+                    Tenant 1001: muzibu.com.tr
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-layer-group text-red-400"></i>
+                    Alpine.js + Tailwind CSS
+                </span>
+            </div>
+        </header>
+
+        <!-- Quick Navigation -->
+        <nav class="mb-16 bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+            <h3 class="text-lg font-bold text-slate-200 mb-4">📍 Hızlı Navigasyon</h3>
+            <div class="grid md:grid-cols-3 gap-3 text-sm">
+                <a href="#durum-analizi" class="text-blue-400 hover:text-blue-300 transition-colors">→ Mevcut Durum Analizi</a>
+                <a href="#mimari" class="text-purple-400 hover:text-purple-300 transition-colors">→ Sistem Mimarisi</a>
+                <a href="#actions" class="text-green-400 hover:text-green-300 transition-colors">→ Context Menu Actions</a>
+                <a href="#implementation" class="text-yellow-400 hover:text-yellow-300 transition-colors">→ Implementation Planı</a>
+                <a href="#api" class="text-cyan-400 hover:text-cyan-300 transition-colors">→ API Endpoints</a>
+                <a href="#teknik" class="text-red-400 hover:text-red-300 transition-colors">→ Teknik Detaylar</a>
+                <a href="#ornekler" class="text-pink-400 hover:text-pink-300 transition-colors">→ Örnek Senaryolar</a>
+                <a href="#guvenlik" class="text-orange-400 hover:text-orange-300 transition-colors">→ Güvenlik & Performance</a>
+                <a href="#mobil" class="text-indigo-400 hover:text-indigo-300 transition-colors">→ Mobil Uyumluluk</a>
+            </div>
+        </nav>
+
+        <!-- Mevcut Durum Analizi -->
+        <section id="durum-analizi" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400 flex items-center gap-3">
+                <i class="fas fa-chart-line"></i>
+                Mevcut Durum Analizi
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Var Olanlar -->
+                <div class="bg-green-900/30 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Mevcut Sistemler
+                    </h3>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong class="text-white">Favorite Modülü</strong><br>
+                                <span class="text-xs text-slate-400">Favorilere ekleme/çıkarma API çalışıyor</span><br>
+                                <code class="text-xs bg-slate-900 px-1 rounded">POST /api/favorites/toggle</code>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong class="text-white">ReviewSystem Modülü</strong><br>
+                                <span class="text-xs text-slate-400">Rating (puan) + Review (yorum) backend hazır</span><br>
+                                <code class="text-xs bg-slate-900 px-1 rounded">POST /api/reviews</code>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong class="text-white">Playlist Sistemi</strong><br>
+                                <span class="text-xs text-slate-400">Kullanıcı playlist oluşturma, düzenleme, silme var</span><br>
+                                <code class="text-xs bg-slate-900 px-1 rounded">GET /api/muzibu/my-playlists</code>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong class="text-white">Song Actions Menu (Partial)</strong><br>
+                                <span class="text-xs text-slate-400">3-nokta dropdown var ama eksik özellikler var</span><br>
+                                <code class="text-xs bg-slate-900 px-1 rounded">song-actions-menu.blade.php</code>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Eksikler -->
+                <div class="bg-red-900/30 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-times-circle"></i>
+                        Eksik Özellikler
+                    </h3>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong class="text-white">Context Menu (Sağ Tık)</strong><br>
+                                <span class="text-xs text-slate-400">Tarayıcı context menu engellenmiyor, özel menü yok</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong class="text-white">Playliste Ekleme UI</strong><br>
+                                <span class="text-xs text-slate-400">Song actions menüde yok, playliste ekleyemiyorlar</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong class="text-white">Puan Verme UI</strong><br>
+                                <span class="text-xs text-slate-400">ReviewSystem backend var ama frontend UI yok</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong class="text-white">İçerik Tipine Göre Menü</strong><br>
+                                <span class="text-xs text-slate-400">Şarkı/Albüm/Playlist farklı action göstermeli ama yok</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Hedef -->
+                <div class="bg-purple-900/30 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-bullseye"></i>
+                        Hedef Sistem
+                    </h3>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-400">🎯</span>
+                            <div>
+                                <strong class="text-white">Universal Context Menu</strong><br>
+                                <span class="text-xs text-slate-400">Tüm içerik tiplerini destekleyen tek component</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-400">🎯</span>
+                            <div>
+                                <strong class="text-white">Alpine.js Store</strong><br>
+                                <span class="text-xs text-slate-400">Global state management (reactive)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-400">🎯</span>
+                            <div>
+                                <strong class="text-white">Smart Positioning</strong><br>
+                                <span class="text-xs text-slate-400">Ekran sınırları kontrolü, otomatik hizalama</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-400">🎯</span>
+                            <div>
+                                <strong class="text-white">Modüler Architecture</strong><br>
+                                <span class="text-xs text-slate-400">Her action için ayrı modal/handler</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sistem Mimarisi -->
+        <section id="mimari" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400 flex items-center gap-3">
+                <i class="fas fa-project-diagram"></i>
+                Sistem Mimarisi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- Component Yapısı -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-blue-400 mb-4">📦 Component Yapısı</h3>
+                    <div class="space-y-3 text-sm text-slate-300 font-mono">
+                        <div class="bg-slate-900 p-3 rounded">
+                            <div class="text-yellow-400 mb-2">resources/views/components/muzibu/</div>
+                            <div class="ml-4 space-y-1 text-xs">
+                                <div>├── <span class="text-green-400">context-menu.blade.php</span></div>
+                                <div class="ml-4 text-slate-500">Ana context menu component</div>
+                                <div>├── <span class="text-green-400">rating-modal.blade.php</span></div>
+                                <div class="ml-4 text-slate-500">5 yıldız + yorum sistemi</div>
+                                <div>├── <span class="text-green-400">playlist-select-modal.blade.php</span></div>
+                                <div class="ml-4 text-slate-500">Playlist seçim modal</div>
+                                <div>└── <span class="text-green-400">create-playlist-modal.blade.php</span></div>
+                                <div class="ml-4 text-slate-500">Yeni playlist oluştur</div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 p-3 rounded">
+                            <div class="text-yellow-400 mb-2">public/themes/muzibu/js/</div>
+                            <div class="ml-4 space-y-1 text-xs">
+                                <div>├── <span class="text-cyan-400">context-menu-store.js</span></div>
+                                <div class="ml-4 text-slate-500">Alpine store (global state)</div>
+                                <div>└── <span class="text-cyan-400">context-menu-actions.js</span></div>
+                                <div class="ml-4 text-slate-500">Action handler functions</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alpine Store Yapısı -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-blue-400 mb-4">🗂️ Alpine Store Yapısı</h3>
+                    <div class="space-y-3 text-xs font-mono">
+                        <div class="bg-slate-900 p-3 rounded">
+                            <div class="text-cyan-400 font-semibold mb-3">Alpine.store("contextMenu")</div>
+                            <div class="space-y-2 text-slate-300">
+                                <div><span class="text-purple-400">visible:</span> <span class="text-yellow-400">false</span></div>
+                                <div class="ml-4 text-slate-500">// Menü görünür mü?</div>
+                                
+                                <div class="mt-2"><span class="text-purple-400">x:</span> <span class="text-yellow-400">0</span>, <span class="text-purple-400">y:</span> <span class="text-yellow-400">0</span></div>
+                                <div class="ml-4 text-slate-500">// Ekran koordinatları</div>
+                                
+                                <div class="mt-2"><span class="text-purple-400">type:</span> <span class="text-yellow-400">null</span></div>
+                                <div class="ml-4 text-slate-500">// song | album | playlist | genre | sector | review</div>
+                                
+                                <div class="mt-2"><span class="text-purple-400">data:</span> <span class="text-yellow-400">null</span></div>
+                                <div class="ml-4 text-slate-500">// İçerik objesi (id, title, artist vb.)</div>
+                                
+                                <div class="mt-2"><span class="text-purple-400">actions:</span> <span class="text-yellow-400">[]</span></div>
+                                <div class="ml-4 text-slate-500">// Gösterilecek action listesi</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Flow Diagram -->
+            <div class="bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-700/50 rounded-lg p-6">
+                <h3 class="text-xl font-bold text-pink-400 mb-4">🔄 Data Flow (Sağ Tık → Action → API → UI Update)</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-purple-600 text-white px-3 py-1 rounded font-semibold">1</div>
+                        <div class="flex-1 bg-slate-900 p-3 rounded">
+                            <strong class="text-white">Kullanıcı sağ tık yapar</strong>
+                            <div class="text-xs text-slate-400 mt-1">Event: contextmenu → preventDefault()</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-purple-600 text-white px-3 py-1 rounded font-semibold">2</div>
+                        <div class="flex-1 bg-slate-900 p-3 rounded">
+                            <strong class="text-white">Alpine Store güncellenir</strong>
+                            <div class="text-xs text-slate-400 mt-1">contextMenu.show(type, data, x, y)</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-purple-600 text-white px-3 py-1 rounded font-semibold">3</div>
+                        <div class="flex-1 bg-slate-900 p-3 rounded">
+                            <strong class="text-white">Context Menu render olur</strong>
+                            <div class="text-xs text-slate-400 mt-1">x-show="$store.contextMenu.visible" → transition</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-purple-600 text-white px-3 py-1 rounded font-semibold">4</div>
+                        <div class="flex-1 bg-slate-900 p-3 rounded">
+                            <strong class="text-white">Kullanıcı action seçer</strong>
+                            <div class="text-xs text-slate-400 mt-1">Örn: "Favorilere Ekle" → toggleFavorite()</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-purple-600 text-white px-3 py-1 rounded font-semibold">5</div>
+                        <div class="flex-1 bg-slate-900 p-3 rounded">
+                            <strong class="text-white">API çağrısı yapılır</strong>
+                            <div class="text-xs text-slate-400 mt-1">POST /api/favorites/toggle + CSRF token</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-purple-600 text-white px-3 py-1 rounded font-semibold">6</div>
+                        <div class="flex-1 bg-slate-900 p-3 rounded">
+                            <strong class="text-white">UI güncellenir + Toast</strong>
+                            <div class="text-xs text-slate-400 mt-1">Success → Kalp ikonu dolar, toast gösterilir</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Devam Edecek... -->
+        <div class="text-center my-12 p-8 bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-lg border border-blue-700/50">
+            <p class="text-2xl font-bold text-blue-300 mb-2">📄 Sayfa 1/3</p>
+            <p class="text-slate-400">Context Menu Actions, Implementation Planı ve diğer detaylar yükleniyor...</p>
+            <p class="text-xs text-slate-500 mt-2">Tarayıcınızı yenileyin veya aşağı kaydırın</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center">
+            <div class="text-slate-400 mb-4">
+                <p class="text-sm">
+                    🤖 Claude AI tarafından oluşturuldu - Tailwind CSS
+                </p>
+                <p class="text-xs mt-2 text-slate-500">
+                    Muzibu.com.tr için özel hazırlandı • Tenant 1001
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,1 +1,518 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Card Sistemi Analizi - Component vs Inline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
+        .glow-red { box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
+        .glow-green { box-shadow: 0 0 30px rgba(34, 197, 94, 0.3); }
+        .glow-amber { box-shadow: 0 0 30px rgba(245, 158, 11, 0.3); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-purple-900/50 via-slate-900 to-blue-900/50 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-layer-group text-2xl"></i>
+                </div>
+                <div>
+                    <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-medium rounded-full border border-amber-500/30">
+                        <i class="fas fa-search-plus mr-1"></i> Sistem Analizi
+                    </span>
+                    <h1 class="text-3xl font-bold mt-1">Muzibu Card Sistemi Analizi</h1>
+                </div>
+            </div>
+            <p class="text-slate-400 text-lg">Component vs Inline Card Kullanım Karşılaştırması</p>
+            <div class="flex items-center gap-6 mt-4 text-sm text-slate-500">
+                <span><i class="far fa-calendar mr-2"></i>7 Ocak 2026</span>
+                <span><i class="far fa-clock mr-2"></i>Versiyon 1</span>
+                <span><i class="fas fa-code-branch mr-2"></i>muzibu.com.tr</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-10 space-y-10">
+
+        <!-- Basit Anlatım -->
+        <section class="glass rounded-2xl p-8 border border-green-500/30 glow-green">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user-friends text-green-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-green-400">Basit Anlatım (Herkes İçin)</h2>
+            </div>
+
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-white">Ne Bulduk?</strong> Muzibu'da kartları (şarkı, albüm, playlist vb.)
+                    göstermek için <strong class="text-amber-400">iki farklı sistem</strong> kullanılmış. Bu durum
+                    karışıklığa ve tutarsızlığa yol açıyor.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-4 mt-6">
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                        <h4 class="font-semibold text-blue-400 mb-2"><i class="fas fa-puzzle-piece mr-2"></i>Component Sistemi</h4>
+                        <p class="text-sm">Lego parçası gibi düşünün. Bir kez yaparsınız, her yerde kullanırsınız.
+                        Değişiklik yapınca tüm sitede güncellenir.</p>
+                    </div>
+                    <div class="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4">
+                        <h4 class="font-semibold text-orange-400 mb-2"><i class="fas fa-code mr-2"></i>Inline Sistem</h4>
+                        <p class="text-sm">Her sayfaya ayrı ayrı yazılmış kodlar. Değişiklik yapınca
+                        her yeri tek tek güncellemek gerekir.</p>
+                    </div>
+                </div>
+
+                <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mt-4">
+                    <h4 class="font-semibold text-red-400 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Sorun Ne?</h4>
+                    <ul class="text-sm space-y-1 list-disc list-inside">
+                        <li>Aynı kartın iki farklı görünümü var (tutarsız tasarım)</li>
+                        <li>Bir yerde düzeltme yapınca diğeri eski kalıyor</li>
+                        <li>Play butonu bazı yerlerde sağ altta, bazı yerlerde ortada</li>
+                        <li>Favori ikonu bazı yerlerde hep görünüyor, bazılarında sadece üzerine gelince</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Özet -->
+        <section class="glass rounded-2xl p-8 border border-blue-500/30">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cogs text-blue-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-blue-400">Teknik Özet</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-6 text-center border border-slate-700">
+                    <div class="text-4xl font-bold text-green-400 mb-2">10</div>
+                    <div class="text-slate-400">Component Card</div>
+                    <div class="text-xs text-slate-500 mt-1">components/muzibu/</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6 text-center border border-slate-700">
+                    <div class="text-4xl font-bold text-orange-400 mb-2">3</div>
+                    <div class="text-slate-400">Inline Card</div>
+                    <div class="text-xs text-slate-500 mt-1">themes/muzibu/components/</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6 text-center border border-slate-700">
+                    <div class="text-4xl font-bold text-red-400 mb-2">6</div>
+                    <div class="text-slate-400">Kritik Tutarsızlık</div>
+                    <div class="text-xs text-slate-500 mt-1">Düzeltilmesi gereken</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Component Card'lar -->
+        <section class="glass rounded-2xl p-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Component Card'lar (Doğru Yaklaşım)</h2>
+                <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">10 Adet</span>
+            </div>
+
+            <p class="text-slate-400 mb-6">
+                <i class="fas fa-folder mr-2"></i>
+                <code class="bg-slate-800 px-2 py-1 rounded text-sm">resources/views/components/muzibu/</code>
+            </p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Component</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Dosya</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Preview</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Compact</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Kullanım</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.song-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">song-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-green-400">true</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">false</span></td>
+                            <td class="py-3 px-4 text-slate-500">Şarkı listeleri, sidebar</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.album-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">album-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-green-400">true</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">false</span></td>
+                            <td class="py-3 px-4 text-slate-500">Albüm grid, favoriler</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.playlist-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">playlist-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-green-400">true</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">false</span></td>
+                            <td class="py-3 px-4 text-slate-500">Playlist listeleri</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.artist-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">artist-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-slate-500">-</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">false</span></td>
+                            <td class="py-3 px-4 text-slate-500">Sanatçı grid</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.genre-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">genre-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-red-400">false</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">false</span></td>
+                            <td class="py-3 px-4 text-slate-500">Tür listeleri</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.radio-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">radio-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-red-400">false</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">false</span></td>
+                            <td class="py-3 px-4 text-slate-500">Radyo listeleri</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.sector-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">sector-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-red-400">false</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">false</span></td>
+                            <td class="py-3 px-4 text-slate-500">Sektör listeleri</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.my-playlist-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">my-playlist-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-green-400">true</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">false</span></td>
+                            <td class="py-3 px-4 text-slate-500">Kullanıcı playlistleri</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.genre-quick-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">genre-quick-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-slate-500">-</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">-</span></td>
+                            <td class="py-3 px-4 text-slate-500">Ana sayfa yatay tür</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4"><code class="text-purple-400">x-muzibu.playlist-quick-card</code></td>
+                            <td class="py-3 px-4 text-slate-400">playlist-quick-card.blade.php</td>
+                            <td class="py-3 px-4"><span class="text-slate-500">-</span></td>
+                            <td class="py-3 px-4"><span class="text-slate-500">-</span></td>
+                            <td class="py-3 px-4 text-slate-500">Ana sayfa yatay playlist</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Inline Card'lar -->
+        <section class="glass rounded-2xl p-8 border border-red-500/30 glow-red">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-red-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Inline Card'lar (Tutarsızlık Kaynağı)</h2>
+                <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full">3 Adet</span>
+            </div>
+
+            <p class="text-slate-400 mb-6">
+                <i class="fas fa-folder mr-2"></i>
+                <code class="bg-slate-800 px-2 py-1 rounded text-sm">resources/views/themes/muzibu/components/</code>
+            </p>
+
+            <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 mb-6">
+                <p class="text-red-300 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Bu kartlar <strong>horizontal-scroll-section</strong> içinde kullanılıyor.
+                    Aynı işlevi gören component card'lar zaten mevcut!
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-red-500/20">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-compact-disc text-red-400 text-xl"></i>
+                        <h4 class="font-semibold">album-card.blade.php</h4>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-1">
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>preview: false (default)</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>size: small/normal/large</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>Container: div (a değil)</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-red-500/20">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-list text-red-400 text-xl"></i>
+                        <h4 class="font-semibold">playlist-card.blade.php</h4>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-1">
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>preview: false (default)</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>size: small/normal/large</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>Play: ortada overlay</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-red-500/20">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-broadcast-tower text-red-400 text-xl"></i>
+                        <h4 class="font-semibold">radio-card.blade.php</h4>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-1">
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>preview: desteklenmiyor</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>size: small/normal/large</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>Farklı hover efekti</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tutarsızlık Matrisi -->
+        <section class="glass rounded-2xl p-8 border border-amber-500/30 glow-amber">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-balance-scale text-amber-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-amber-400">Tutarsızlık Karşılaştırma Matrisi</h2>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Özellik</th>
+                            <th class="text-left py-3 px-4 text-green-400 font-medium">Component Card</th>
+                            <th class="text-left py-3 px-4 text-red-400 font-medium">Inline Card</th>
+                            <th class="text-left py-3 px-4 text-amber-400 font-medium">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4 font-medium">Preview Default</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4 text-red-400">false</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">TUTARSIZ</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4 font-medium">Size Sistemi</td>
+                            <td class="py-3 px-4 text-green-400">compact: true/false</td>
+                            <td class="py-3 px-4 text-red-400">size: small/normal/large</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">TUTARSIZ</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4 font-medium">Container Element</td>
+                            <td class="py-3 px-4 text-green-400">&lt;a&gt; tag (tıklanabilir)</td>
+                            <td class="py-3 px-4 text-red-400">&lt;div&gt; tag</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">TUTARSIZ</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4 font-medium">Play Button Pozisyon</td>
+                            <td class="py-3 px-4 text-green-400">Sağ alt köşe</td>
+                            <td class="py-3 px-4 text-red-400">Ortada overlay</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">TUTARSIZ</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4 font-medium">Favori İkonu</td>
+                            <td class="py-3 px-4 text-green-400">Her zaman görünür</td>
+                            <td class="py-3 px-4 text-red-400">Sadece hover'da</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">TUTARSIZ</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="py-3 px-4 font-medium">Genişlik Sistemi</td>
+                            <td class="py-3 px-4 text-green-400">w-[190px] (compact)</td>
+                            <td class="py-3 px-4 text-red-400">w-40 sm:w-44 (responsive)</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">TUTARSIZ</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Kullanım Haritası -->
+        <section class="glass rounded-2xl p-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-map text-purple-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Kullanım Haritası</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Component Kullanan Sayfalar -->
+                <div class="bg-green-500/5 border border-green-500/20 rounded-xl p-5">
+                    <h4 class="font-semibold text-green-400 mb-4">
+                        <i class="fas fa-check mr-2"></i>Component Card Kullanan Sayfalar
+                    </h4>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">albums/index.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">playlists/index.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">genres/index.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">genres/show.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">sectors/index.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">radios/index.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">artists/index.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">favorites/index.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">listening-history.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">songs/index.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">sidebar-right.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">Tüm grid partials</code></li>
+                    </ul>
+                </div>
+
+                <!-- Inline Kullanan Sayfalar -->
+                <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-5">
+                    <h4 class="font-semibold text-red-400 mb-4">
+                        <i class="fas fa-times mr-2"></i>Inline Card Kullanan Sayfalar
+                    </h4>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li>
+                            <code class="bg-slate-800 px-2 py-0.5 rounded">home.blade.php</code>
+                            <span class="text-xs text-slate-500 ml-2">horizontal-scroll-section içinde</span>
+                        </li>
+                        <li>
+                            <code class="bg-slate-800 px-2 py-0.5 rounded">dashboard.blade.php</code>
+                            <span class="text-xs text-slate-500 ml-2">horizontal-scroll-section içinde</span>
+                        </li>
+                    </ul>
+
+                    <div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                        <p class="text-amber-300 text-sm">
+                            <i class="fas fa-lightbulb mr-2"></i>
+                            <strong>Öneri:</strong> horizontal-scroll-section component'ı,
+                            inline card yerine component card'ları kullanacak şekilde güncellenebilir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dosya Yapısı -->
+        <section class="glass rounded-2xl p-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-folder-tree text-cyan-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Dosya Yapısı</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-5 font-mono text-sm">
+                    <h4 class="text-green-400 mb-3 font-sans font-semibold">
+                        <i class="fas fa-check-circle mr-2"></i>Component Cards
+                    </h4>
+                    <pre class="text-slate-400 overflow-x-auto">resources/views/components/muzibu/
+├── song-card.blade.php
+├── album-card.blade.php
+├── playlist-card.blade.php
+├── artist-card.blade.php
+├── genre-card.blade.php
+├── radio-card.blade.php
+├── sector-card.blade.php
+├── my-playlist-card.blade.php
+├── genre-quick-card.blade.php
+└── playlist-quick-card.blade.php</pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5 font-mono text-sm">
+                    <h4 class="text-red-400 mb-3 font-sans font-semibold">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Inline Cards (Gereksiz)
+                    </h4>
+                    <pre class="text-slate-400 overflow-x-auto">resources/views/themes/muzibu/components/
+├── album-card.blade.php      <span class="text-red-400">← Duplicate!</span>
+├── playlist-card.blade.php   <span class="text-red-400">← Duplicate!</span>
+└── radio-card.blade.php      <span class="text-red-400">← Duplicate!</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öneriler -->
+        <section class="glass rounded-2xl p-8 border border-emerald-500/30">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-emerald-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-emerald-400">Öneriler</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4 p-4 bg-slate-800/50 rounded-xl">
+                    <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span class="text-emerald-400 font-bold">1</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1">Inline Card'ları Kaldır</h4>
+                        <p class="text-slate-400 text-sm">
+                            <code>themes/muzibu/components/</code> altındaki 3 inline card dosyasını sil.
+                            Bunların yerine component card'ları kullan.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-4 bg-slate-800/50 rounded-xl">
+                    <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span class="text-emerald-400 font-bold">2</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1">horizontal-scroll-section'ı Güncelle</h4>
+                        <p class="text-slate-400 text-sm">
+                            Bu component içinde <code>@include()</code> yerine <code>&lt;x-muzibu.album-card&gt;</code>
+                            gibi component syntax'ı kullan.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-4 bg-slate-800/50 rounded-xl">
+                    <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span class="text-emerald-400 font-bold">3</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1">Size Sistemini Standardize Et</h4>
+                        <p class="text-slate-400 text-sm">
+                            Component card'lara <code>size</code> prop'u ekle veya <code>compact</code> prop'unu
+                            genişlet (small/normal/large desteği).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-4 bg-slate-800/50 rounded-xl">
+                    <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span class="text-emerald-400 font-bold">4</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1">Tek Kaynak Prensibi (Single Source of Truth)</h4>
+                        <p class="text-slate-400 text-sm">
+                            Her card tipi için TEK dosya olsun. Değişiklik yapınca tüm site güncellenir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-white"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold">Claude AI</div>
+                        <div class="text-sm text-slate-500">Sistem Analizi Raporu</div>
+                    </div>
+                </div>
+                <div class="text-sm text-slate-500">
+                    <i class="far fa-clock mr-1"></i> 7 Ocak 2026
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

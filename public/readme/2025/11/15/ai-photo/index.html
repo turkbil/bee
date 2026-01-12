@@ -1,1 +1,1127 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Görsel Üretimi - Hangi Yaklaşım?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 40px 20px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #1e293b;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 60px 40px;
+        }
+
+        .intro {
+            background: #334155;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border-left: 5px solid #3b82f6;
+            font-size: 1.1em;
+            color: #e2e8f0;
+        }
+
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .approach-card {
+            background: #334155;
+            border: 3px solid #475569;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .approach-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-color: #3b82f6;
+        }
+
+        .approach-card.recommended {
+            border-color: #10b981;
+            background: #1e3a2e;
+        }
+
+        .approach-card .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #10b981;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .approach-card h2 {
+            color: #60a5fa;
+            font-size: 2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .approach-card .icon {
+            font-size: 1.5em;
+        }
+
+        .approach-card h3 {
+            color: #94a3b8;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        .features {
+            margin: 20px 0;
+        }
+
+        .features li {
+            padding: 8px 0;
+            list-style: none;
+            display: flex;
+            align-items: start;
+            gap: 10px;
+        }
+
+        .features li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .cons {
+            margin: 20px 0;
+            opacity: 0.7;
+            color: #cbd5e1;
+        }
+
+        .cons li {
+            padding: 8px 0;
+            list-style: none;
+            display: flex;
+            align-items: start;
+            gap: 10px;
+        }
+
+        .cons li:before {
+            content: "✗";
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #475569;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+
+        .comparison-table {
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 50px;
+            border: 2px solid #475569;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background: #3b82f6;
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        .comparison-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #475569;
+            color: #e2e8f0;
+        }
+
+        .comparison-table tr:hover {
+            background: #475569;
+        }
+
+        .rating {
+            font-size: 1.3em;
+        }
+
+        .decision-helper {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 15px;
+            margin-bottom: 50px;
+        }
+
+        .decision-helper h2 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .questions {
+            display: grid;
+            gap: 30px;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .question-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-card .q-number {
+            background: rgba(255,255,255,0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .answers {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .answer {
+            background: #334155;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .answer:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateX(10px);
+        }
+
+        .answer-letter {
+            background: #3b82f6;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .answer:hover .answer-letter {
+            background: white;
+            color: #3b82f6;
+        }
+
+        .answer-text {
+            flex: 1;
+        }
+
+        .answer-result {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .cta {
+            background: #10b981;
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 50px;
+        }
+
+        .cta h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #1e293b;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: white;
+            color: #10b981;
+        }
+
+        @media (max-width: 1024px) {
+            .approach-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 AI Görsel Üretimi</h1>
+            <p>DALL-E 3 HD Image Generation System</p>
+        </div>
+
+        <div class="content">
+            <!-- ÖNEMLİ BİLGİLER -->
+            <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 40px; border-radius: 15px; margin-bottom: 40px;">
+                <h2 style="font-size: 2.5em; margin-bottom: 20px; text-align: center;">⚠️ ÖNEMLİ BİLGİLER</h2>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="font-size: 1.5em; margin-bottom: 15px;">❓ Neden 3 Seçenek Var?</h3>
+                    <p style="font-size: 1.1em; line-height: 1.8;">
+                        <strong>CEVAP:</strong> Gereksiz! Sadece <strong style="color: #fbbf24;">PLAYGROUND</strong> yapacağız.<br>
+                        En profesyonel, en iyi conversion rate, modern UI. Diğerleri amatör kalır.
+                    </p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="font-size: 1.5em; margin-bottom: 15px;">💾 Database Eklenecek mi?</h3>
+                    <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 15px;">
+                        <strong>İKİ FARKLI ŞEY VAR:</strong>
+                    </p>
+                    <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong style="color: #fbbf24;">A) HTML Demo (Şu an yapacağımız):</strong><br>
+                        ❌ DB yok<br>
+                        ❌ Gerçek API yok<br>
+                        ✅ Fake data + Alpine.js<br>
+                        ✅ Sadece mockup gösterim<br>
+                        ⏱️ Süre: 3-4 saat
+                    </div>
+                    <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                        <strong style="color: #fbbf24;">B) Gerçek Laravel Sistem (Sonraki iş):</strong><br>
+                        ✅ DB ekleme (media_library_items, ai_credit_usage)<br>
+                        ✅ Gerçek DALL-E 3 API<br>
+                        ✅ Kredi düşürme<br>
+                        ✅ Production ready<br>
+                        ⏱️ Süre: 6-8 gün
+                    </div>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px;">
+                    <h3 style="font-size: 1.5em; margin-bottom: 15px;">🎨 Hangi AI Servisini Kullanmalıyız?</h3>
+                    <p style="font-size: 1.2em; margin-bottom: 15px;">
+                        <strong style="color: #fbbf24;">DALL-E 3 vs Google Gemini/Imagen 3 (2025 Güncel Test)</strong>
+                    </p>
+
+                    <!-- DALL-E 3 -->
+                    <div style="background: rgba(34, 197, 94, 0.2); border: 2px solid #10b981; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong style="color: #10b981; font-size: 1.2em;">✅ DALL-E 3 (BİRİNCİL SEÇENEĞİMİZ)</strong><br><br>
+                        <strong>Test Puanı:</strong> 13.5/15 ⭐⭐⭐⭐⭐<br>
+                        <strong>Kalite:</strong> En yüksek - Detay, arka plan, prompt takibi mükemmel<br>
+                        <strong>API:</strong> Resmi OpenAI API<br>
+                        <strong>Laravel:</strong> Paket hazır (openai-php/laravel)<br>
+                        <strong>Fiyat:</strong> $0.04/görsel (~1.2 TRY)<br>
+                        <strong>Süre:</strong> 30-60 saniye<br>
+                        <strong>İdeal:</strong> Kreatif, artistik, marketing, e-ticaret<br>
+                        <strong>Özellik:</strong> Content safety (zararlı içerik filtreleme)
+                    </div>
+
+                    <!-- GOOGLE IMAGEN 3 -->
+                    <div style="background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong style="color: #60a5fa; font-size: 1.2em;">🟢 Google Imagen 3 (İKİNCİL SEÇENEĞİMİZ)</strong><br><br>
+                        <strong>Test Puanı:</strong> 12/15 ⭐⭐⭐⭐<br>
+                        <strong>Kalite:</strong> Hyper-realistic (çok gerçekçi görseller)<br>
+                        <strong>API:</strong> Gemini API (Şubat 2025'te yayınlandı)<br>
+                        <strong>Laravel:</strong> Google Cloud paketi gerekli<br>
+                        <strong>Fiyat:</strong> $0.03/görsel (~0.9 TRY) - %25 UCUZ! 💰<br>
+                        <strong>Süre:</strong> 15-30 saniye (daha hızlı)<br>
+                        <strong>İdeal:</strong> Foto-gerçekçi görseller, bütçe projeler<br>
+                        <strong>Özellik:</strong> Google Cloud entegrasyonu
+                    </div>
+
+                    <!-- STABILITY AI SDXL -->
+                    <div style="background: rgba(245, 158, 11, 0.2); border: 2px solid #f59e0b; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong style="color: #fbbf24; font-size: 1.2em;">🟡 Stability AI SDXL (ÜÇÜNCÜL SEÇENEĞİMİZ)</strong><br><br>
+                        <strong>Test Puanı:</strong> 10/15 ⭐⭐⭐<br>
+                        <strong>Kalite:</strong> İyi ama DALL-E 3'ten düşük<br>
+                        <strong>API:</strong> stability.ai, replicate.com<br>
+                        <strong>Fiyat:</strong> $0.02/görsel (~0.6 TRY) - En ucuz!<br>
+                        <strong>Süre:</strong> 10-30 saniye<br>
+                        <strong>Dezavantaj:</strong> Prompt takibi zayıf, kalite tutarsız
+                    </div>
+
+                    <!-- MIDJOURNEY -->
+                    <div style="background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong style="color: #ef4444; font-size: 1.2em;">❌ Midjourney (KULLANILMAZ)</strong><br><br>
+                        <strong>Kalite:</strong> Sanatsal açıdan en yüksek<br>
+                        <strong>Sorun:</strong> Resmi API YOK!<br>
+                        <strong>Alternatif:</strong> Discord bot, wrapper'lar kararsız<br>
+                        <strong>Fiyat:</strong> $0.10-0.20/görsel (wrapper ile)
+                    </div>
+
+                    <!-- FİYAT KARŞILAŞTIRMA -->
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong style="font-size: 1.1em;">💰 Fiyat Karşılaştırma (1000 Görsel):</strong><br><br>
+                        • DALL-E 3: $40 (1200 TRY) - En kaliteli<br>
+                        • Imagen 3: $30 (900 TRY) - %25 tasarruf ✅<br>
+                        • SDXL: $20 (600 TRY) - %50 tasarruf, kalite düşük<br>
+                        • Midjourney: $100-200 (wrapper ile) ❌
+                    </div>
+
+                    <!-- ÖNERİ -->
+                    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 8px; text-align: center;">
+                        <strong style="font-size: 1.3em;">🎯 KARAR:</strong><br><br>
+                        <div style="font-size: 1.1em;">
+                            <strong>Birincil:</strong> DALL-E 3 HD (En yüksek kalite - Default)<br>
+                            <strong>Yedek:</strong> Imagen 3 (Ucuz, hızlı, Google Cloud entegrasyonu)<br><br>
+                            İKİSİNİ DE ENTEGRE EDEBİLİRİZ!<br>
+                            Kullanıcı seçsin: "DALL-E 3 (Kaliteli)" veya "Imagen 3 (Hızlı/Ucuz)"
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="intro">
+                <strong>🎯 Amaç:</strong> <span style="color: #10b981; font-weight: bold;">UNIVERSAL AI Image Generation System</span><br>
+                <strong>📍 Kullanım:</strong> Blog AI, Shop AI, Portfolio AI + Manuel Admin Panel<br>
+                <strong>🎨 Görsel:</strong> <strong style="color: #60a5fa;">DALL-E 3 HD Only</strong> (1024x1024 HD - 1 kredi)<br>
+                <strong>✅ Sistem:</strong> Laravel + MediaManagement + AI Credits
+            </div>
+
+            <!-- UNIVERSAL SİSTEM AÇIKLAMA -->
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 50px 40px; border-radius: 15px; margin-bottom: 50px;">
+                <h2 style="font-size: 2.5em; margin-bottom: 30px; text-align: center;">🌐 UNIVERSAL SYSTEM</h2>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px;">
+                    <!-- MANUEL KULLANIM -->
+                    <div style="background: rgba(255,255,255,0.15); padding: 30px; border-radius: 10px;">
+                        <h3 style="font-size: 1.5em; margin-bottom: 20px;">👤 MANUEL KULLANIM</h3>
+                        <p style="font-size: 1.1em; line-height: 1.8;">
+                            <strong>Admin Panel:</strong><br>
+                            • Prompt gir<br>
+                            • Boyut/kalite seç<br>
+                            • DALL-E 3 üret<br>
+                            • Media Library'ye kaydet<br><br>
+                            <strong>Örnek:</strong><br>
+                            "Professional forklift warehouse"<br>
+                            → Görsel üretilir → Kaydedilir
+                        </p>
+                    </div>
+
+                    <!-- OTOMATİK KULLANIM -->
+                    <div style="background: rgba(255,255,255,0.15); padding: 30px; border-radius: 10px;">
+                        <h3 style="font-size: 1.5em; margin-bottom: 20px;">🤖 OTOMATİK KULLANIM</h3>
+                        <p style="font-size: 1.1em; line-height: 1.8;">
+                            <strong>AI Services:</strong><br>
+                            • Blog AI → Featured image<br>
+                            • Shop AI → Product image<br>
+                            • Portfolio AI → Project image<br><br>
+                            <strong>Örnek:</strong><br>
+                            Blog: "Forklift Kiralama"<br>
+                            → Otomatik featured image üretir
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 10px; margin-top: 30px; text-align: center;">
+                    <strong style="font-size: 1.3em;">🎯 TEK SERVİS, ÇOKLU KULLANIM!</strong><br>
+                    <span style="font-size: 1.1em;">AIImageGenerationService → Her yerden çağrılabilir</span>
+                </div>
+            </div>
+
+            <!-- UYGULAMA PLANI -->
+            <div style="background: #334155; padding: 40px; border-radius: 15px; margin-bottom: 50px; border: 2px solid #475569;">
+                <h2 style="font-size: 2.5em; margin-bottom: 30px; color: #e2e8f0; text-align: center;">📋 UYGULAMA PLANI</h2>
+
+                <!-- FAZ 1 -->
+                <div style="background: #1e293b; padding: 25px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
+                    <h3 style="color: #60a5fa; font-size: 1.5em; margin-bottom: 15px;">
+                        📦 Faz 1: Core Service (2-3 gün)
+                    </h3>
+                    <ul style="list-style: none; padding-left: 0; font-size: 1.1em; line-height: 2;">
+                        <li>☐ AIImageGenerationService.php (Core service)</li>
+                        <li>☐ DallE3Provider.php (API wrapper)</li>
+                        <li>☐ MediaLibraryItem entegrasyonu</li>
+                        <li>☐ AICreditService entegrasyonu (kredi düşürme)</li>
+                        <li>☐ Migration: generation_source, generation_prompt fields</li>
+                    </ul>
+                </div>
+
+                <!-- FAZ 2 -->
+                <div style="background: #1e293b; padding: 25px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #10b981;">
+                    <h3 style="color: #10b981; font-size: 1.5em; margin-bottom: 15px;">
+                        🤖 Faz 2: Otomatik Entegrasyonlar (2 gün)
+                    </h3>
+                    <ul style="list-style: none; padding-left: 0; font-size: 1.1em; line-height: 2;">
+                        <li>☐ Blog AI entegrasyonu (generateForBlog method)</li>
+                        <li>☐ Shop AI entegrasyonu (generateForProduct method)</li>
+                        <li>☐ PromptGenerator.php (Otomatik prompt oluşturucu)</li>
+                        <li>☐ Config: auto_generation ayarları</li>
+                    </ul>
+                </div>
+
+                <!-- FAZ 3 -->
+                <div style="background: #1e293b; padding: 25px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #f59e0b;">
+                    <h3 style="color: #fbbf24; font-size: 1.5em; margin-bottom: 15px;">
+                        🎨 Faz 3: Admin Panel (1-2 gün)
+                    </h3>
+                    <ul style="list-style: none; padding-left: 0; font-size: 1.1em; line-height: 2;">
+                        <li>☐ AIImageGeneratorComponent.php (Livewire)</li>
+                        <li>☐ Blade view (Dark mode UI)</li>
+                        <li>☐ Preview & Download özelliği</li>
+                        <li>☐ Generation history (son 10 görsel)</li>
+                        <li>☐ Admin navigation menüye ekleme</li>
+                    </ul>
+                </div>
+
+                <!-- FAZ 4 -->
+                <div style="background: #1e293b; padding: 25px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #8b5cf6;">
+                    <h3 style="color: #a78bfa; font-size: 1.5em; margin-bottom: 15px;">
+                        ⚡ Faz 4: Queue & Optimization (1 gün)
+                    </h3>
+                    <ul style="list-style: none; padding-left: 0; font-size: 1.1em; line-height: 2;">
+                        <li>☐ AIImageGenerationJob.php (Background processing)</li>
+                        <li>☐ Retry mekanizması (API fail durumunda)</li>
+                        <li>☐ Notification sistemi (üretim tamamlandı)</li>
+                        <li>☐ Cache optimization</li>
+                    </ul>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); padding: 20px; border-radius: 10px; margin-top: 30px; text-align: center; color: white;">
+                    <strong style="font-size: 1.3em;">⏱️ TOPLAM SÜRE: 6-8 GÜN</strong>
+                </div>
+            </div>
+
+            <!-- SİSTEM MANTIK AKIŞI -->
+            <div style="background: #334155; padding: 40px; border-radius: 15px; margin-bottom: 50px; border: 2px solid #475569;">
+                <h2 style="font-size: 2.5em; margin-bottom: 30px; color: #e2e8f0; text-align: center;">🧠 SİSTEM MANTIĞI (NASIL ÇALIŞIR?)</h2>
+
+                <!-- AKIŞ ŞEMASI: MANUEL KULLANIM -->
+                <div style="background: #1e293b; padding: 30px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #3b82f6;">
+                    <h3 style="color: #60a5fa; font-size: 1.5em; margin-bottom: 20px;">👤 MANUEL KULLANIM AKIŞI</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px; font-size: 1.1em; color: #e2e8f0;">
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">1</span>
+                            <div>
+                                <strong>Admin Panel'e Git</strong><br>
+                                <span style="color: #94a3b8;">AI Image Generator sayfası</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: #3b82f6; font-size: 2em;">↓</div>
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">2</span>
+                            <div>
+                                <strong>Prompt Gir + Ayarlar</strong><br>
+                                <span style="color: #94a3b8;">Örn: "Professional forklift warehouse" + 1024x1024 + HD</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: #3b82f6; font-size: 2em;">↓</div>
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">3</span>
+                            <div>
+                                <strong>Sistem İşler</strong><br>
+                                <span style="color: #94a3b8;">Kredi kontrol → DALL-E 3 API çağır → Görsel indir → Media Library'ye kaydet</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: #3b82f6; font-size: 2em;">↓</div>
+                        <div style="background: #10b981; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: white; color: #10b981; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">✓</span>
+                            <div>
+                                <strong>Tamamlandı!</strong><br>
+                                <span style="color: white;">Görsel kullanılabilir, kredi düşürüldü</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AKIŞ ŞEMASI: OTOMATİK KULLANIM -->
+                <div style="background: #1e293b; padding: 30px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #10b981;">
+                    <h3 style="color: #10b981; font-size: 1.5em; margin-bottom: 20px;">🤖 OTOMATİK KULLANIM AKIŞI (Blog AI Örneği)</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px; font-size: 1.1em; color: #e2e8f0;">
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: #10b981; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">1</span>
+                            <div>
+                                <strong>Kullanıcı Blog AI'ya Başlık Verir</strong><br>
+                                <span style="color: #94a3b8;">Örn: "Forklift Kiralama Rehberi"</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: #10b981; font-size: 2em;">↓</div>
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: #10b981; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">2</span>
+                            <div>
+                                <strong>Blog AI Çalışır</strong><br>
+                                <span style="color: #94a3b8;">Blog içeriği üretir (AI Assistant)</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: #10b981; font-size: 2em;">↓</div>
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: #10b981; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">3</span>
+                            <div>
+                                <strong>Sistem Otomatik Prompt Oluşturur</strong><br>
+                                <span style="color: #94a3b8;">Başlık + Kategori → "Modern forklift in warehouse, professional photography"</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: #10b981; font-size: 2em;">↓</div>
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: #10b981; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">4</span>
+                            <div>
+                                <strong>Image Generation Service Çalışır</strong><br>
+                                <span style="color: #94a3b8;">DALL-E 3 üretir → Media Library kaydet → Blog'a bağla</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: #10b981; font-size: 2em;">↓</div>
+                        <div style="background: #10b981; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <span style="background: white; color: #10b981; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">✓</span>
+                            <div>
+                                <strong>Blog Hazır + Featured Image Var!</strong><br>
+                                <span style="color: white;">Kullanıcı hiçbir şey yapmadı, tümü otomatik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VERİ KAYIT MANTIĞI -->
+                <div style="background: #1e293b; padding: 30px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #f59e0b;">
+                    <h3 style="color: #fbbf24; font-size: 1.5em; margin-bottom: 20px;">💾 VERİ KAYIT MANTIĞI</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <!-- Media Library Item -->
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px;">
+                            <h4 style="color: #60a5fa; margin-bottom: 15px; font-size: 1.2em;">📁 Media Library Item</h4>
+                            <div style="font-size: 1.05em; line-height: 2; color: #cbd5e1;">
+                                <strong>Ne Saklanır?</strong><br>
+                                • Görsel dosyası (WebP/JPG)<br>
+                                • Nereden geldi? (AI / Manuel upload)<br>
+                                • Hangi prompt kullanıldı?<br>
+                                • Ayarlar (boyut, kalite, model)
+                            </div>
+                        </div>
+
+                        <!-- AI Credit Usage -->
+                        <div style="background: #0f172a; padding: 20px; border-radius: 8px;">
+                            <h4 style="color: #10b981; margin-bottom: 15px; font-size: 1.2em;">💳 AI Credit Usage</h4>
+                            <div style="font-size: 1.05em; line-height: 2; color: #cbd5e1;">
+                                <strong>Ne Saklanır?</strong><br>
+                                • Kaç kredi kullanıldı? (5 veya 10)<br>
+                                • Hangi özellik? (Blog/Shop/Manuel)<br>
+                                • Kim kullandı? (User ID)<br>
+                                • Ne zaman? (Timestamp)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KREDİ SİSTEMİ MANTIĞI -->
+                <div style="background: #1e293b; padding: 30px; border-radius: 10px; border-left: 5px solid #8b5cf6;">
+                    <h3 style="color: #a78bfa; font-size: 1.5em; margin-bottom: 20px;">💰 KREDİ SİSTEMİ MANTIĞI</h3>
+
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); display: inline-block; padding: 30px 60px; border-radius: 15px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
+                            <div style="font-size: 3em; margin-bottom: 10px;">🎨</div>
+                            <div style="font-size: 2em; font-weight: bold; margin-bottom: 10px; color: white;">1 HD GÖRSEL = 1 KREDİ</div>
+                            <div style="font-size: 1.2em; color: rgba(255,255,255,0.9);">DALL-E 3 HD (1024x1024)</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #0f172a; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; font-size: 1.05em; color: #cbd5e1;">
+                            <div>
+                                <div style="font-size: 2.5em; color: #3b82f6; margin-bottom: 10px;">💰</div>
+                                <strong style="color: #60a5fa;">Maliyet</strong><br>
+                                $0.08 / görsel<br>
+                                <span style="font-size: 0.9em; color: #94a3b8;">(~2.5 TRY)</span>
+                            </div>
+                            <div>
+                                <div style="font-size: 2.5em; color: #10b981; margin-bottom: 10px;">⏱️</div>
+                                <strong style="color: #10b981;">Süre</strong><br>
+                                30-60 saniye<br>
+                                <span style="font-size: 0.9em; color: #94a3b8;">(API yanıt)</span>
+                            </div>
+                            <div>
+                                <div style="font-size: 2.5em; color: #f59e0b; margin-bottom: 10px;">📐</div>
+                                <strong style="color: #fbbf24;">Boyut</strong><br>
+                                1024x1024 px<br>
+                                <span style="font-size: 0.9em; color: #94a3b8;">(HD Quality)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(59, 130, 246, 0.1); border: 2px dashed #3b82f6; padding: 20px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.1em;">
+                        <strong style="color: #60a5fa;">MANTIK:</strong> Sistem önce kredi kontrol eder → Yeterli değilse hata verir → Yetersizse API'yi hiç çağırmaz
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 2px dashed #10b981; padding: 20px; border-radius: 8px; text-align: center; font-size: 1.05em;">
+                        <strong style="color: #10b981;">ÖRNEK KREDİ HESABI:</strong><br>
+                        <div style="margin-top: 10px; font-size: 1.1em;">
+                            10 kredi = <strong>10 HD görsel</strong><br>
+                            100 kredi = <strong>100 HD görsel</strong><br>
+                            1000 kredi = <strong>1000 HD görsel</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="font-size: 2.5em; margin-bottom: 30px; color: #e2e8f0;">📚 Referans Bilgiler (Gerekirse Bak)</h2>
+
+            <div class="approach-grid">
+                <!-- YAKLAŞIM 1: PLAYGROUND -->
+                <div class="approach-card recommended">
+                    <span class="badge">ÖNERİLEN</span>
+                    <h2><span class="icon">🎮</span> Yaklaşım 1</h2>
+                    <h3>İnteraktif Playground</h3>
+
+                    <p style="margin-bottom: 20px; color: #cbd5e1;">
+                        Kullanıcı hemen test edebilir, prompt girer, görsel üretir, sonucu görür.
+                    </p>
+
+                    <h4 style="color: #10b981; margin-bottom: 10px;">✓ Avantajlar:</h4>
+                    <ul class="features">
+                        <li>Kullanıcı sistemi anında test eder</li>
+                        <li>İnteraktif, eğlenceli</li>
+                        <li>Conversion rate çok yüksek</li>
+                        <li>Kredi sistemi net anlaşılır</li>
+                    </ul>
+
+                    <h4 style="color: #ef4444; margin: 15px 0 10px 0;">✗ Dezavantajlar:</h4>
+                    <ul class="cons">
+                        <li>JavaScript gerekir (Alpine.js)</li>
+                        <li>Mock data hazırlamak lazım</li>
+                    </ul>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-label">Hazırlık Süresi</div>
+                            <div class="stat-value">3-4 saat</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Conversion</div>
+                            <div class="stat-value">⭐⭐⭐⭐⭐</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">JavaScript</div>
+                            <div class="stat-value">✅ Gerekli</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Zorluk</div>
+                            <div class="stat-value">Orta</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YAKLAŞIM 2: TUTORIAL -->
+                <div class="approach-card">
+                    <h2><span class="icon">📚</span> Yaklaşım 2</h2>
+                    <h3>Step-by-Step Tutorial</h3>
+
+                    <p style="margin-bottom: 20px; color: #cbd5e1;">
+                        "Şu an ekranda ne var? Ne yapmalıyım?" formatında adım adım kılavuz.
+                    </p>
+
+                    <h4 style="color: #10b981; margin-bottom: 10px;">✓ Avantajlar:</h4>
+                    <ul class="features">
+                        <li>Çok basit ve anlaşılır</li>
+                        <li>Hızlı hazırlanır (1-2 saat)</li>
+                        <li>JavaScript gereksiz</li>
+                        <li>Net talimatlar</li>
+                    </ul>
+
+                    <h4 style="color: #ef4444; margin: 15px 0 10px 0;">✗ Dezavantajlar:</h4>
+                    <ul class="cons">
+                        <li>İnteraktif değil</li>
+                        <li>Görsel çekicilik daha az</li>
+                    </ul>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-label">Hazırlık Süresi</div>
+                            <div class="stat-value">1-2 saat</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Conversion</div>
+                            <div class="stat-value">⭐⭐⭐</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">JavaScript</div>
+                            <div class="stat-value">❌ Gereksiz</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Zorluk</div>
+                            <div class="stat-value">Kolay</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YAKLAŞIM 3: SHOWCASE -->
+                <div class="approach-card">
+                    <h2><span class="icon">🖼️</span> Yaklaşım 3</h2>
+                    <h3>Showcase Gallery</h3>
+
+                    <p style="margin-bottom: 20px; color: #cbd5e1;">
+                        AI üretilmiş görselleri göster. "Neler yapabilirsin?" odaklı galeri.
+                    </p>
+
+                    <h4 style="color: #10b981; margin-bottom: 10px;">✓ Avantajlar:</h4>
+                    <ul class="features">
+                        <li>Görsel olarak çok etkileyici</li>
+                        <li>İlham verici</li>
+                        <li>SEO dostu</li>
+                        <li>Professional görünüm</li>
+                    </ul>
+
+                    <h4 style="color: #ef4444; margin: 15px 0 10px 0;">✗ Dezavantajlar:</h4>
+                    <ul class="cons">
+                        <li>Örnek görseller hazırlamak gerek</li>
+                        <li>İnteraktif değil</li>
+                    </ul>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-label">Hazırlık Süresi</div>
+                            <div class="stat-value">4-6 saat</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Conversion</div>
+                            <div class="stat-value">⭐⭐⭐⭐</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">JavaScript</div>
+                            <div class="stat-value">🟡 Az</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Zorluk</div>
+                            <div class="stat-value">Orta-Zor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KARŞILAŞTIRMA TABLOSU -->
+            <h2 style="font-size: 2.5em; margin-bottom: 30px; color: #e2e8f0;">📊 Detaylı Karşılaştırma</h2>
+
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>🎮 Playground</th>
+                            <th>📚 Tutorial</th>
+                            <th>🖼️ Showcase</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>İnteraktif</strong></td>
+                            <td class="rating">⭐⭐⭐⭐⭐</td>
+                            <td class="rating">⭐</td>
+                            <td class="rating">⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Öğretici</strong></td>
+                            <td class="rating">⭐⭐⭐</td>
+                            <td class="rating">⭐⭐⭐⭐⭐</td>
+                            <td class="rating">⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Görsel Çekicilik</strong></td>
+                            <td class="rating">⭐⭐⭐⭐</td>
+                            <td class="rating">⭐⭐</td>
+                            <td class="rating">⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hazırlık Süresi</strong></td>
+                            <td>3-4 saat</td>
+                            <td>1-2 saat ⚡</td>
+                            <td>4-6 saat</td>
+                        </tr>
+                        <tr>
+                            <td><strong>JavaScript</strong></td>
+                            <td>✅ Gerekli (Alpine.js)</td>
+                            <td>❌ Gereksiz</td>
+                            <td>🟡 Az (Lightbox)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mock Data</strong></td>
+                            <td>✅ Gerekli</td>
+                            <td>❌ Gereksiz</td>
+                            <td>✅ Çok Gerekli</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Conversion Rate</strong></td>
+                            <td class="rating">⭐⭐⭐⭐⭐</td>
+                            <td class="rating">⭐⭐⭐</td>
+                            <td class="rating">⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mobil Uyumlu</strong></td>
+                            <td>✅</td>
+                            <td>✅</td>
+                            <td>✅</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- KARAR VERMENİ KOLAYLAŞTIR -->
+            <div class="decision-helper">
+                <h2>🤔 Hangi Yaklaşımı Seçmeliyim?</h2>
+
+                <div class="questions">
+                    <!-- Soru 1 -->
+                    <div class="question-card">
+                        <h3>
+                            <span class="q-number">1</span>
+                            Kullanıcı ne yapmalı?
+                        </h3>
+                        <div class="answers">
+                            <div class="answer">
+                                <span class="answer-letter">A</span>
+                                <div class="answer-text">
+                                    Hemen denemek (interaktif test)
+                                    <div class="answer-result">→ Playground seç</div>
+                                </div>
+                            </div>
+                            <div class="answer">
+                                <span class="answer-letter">B</span>
+                                <div class="answer-text">
+                                    Sistemi öğrenmek (adım adım)
+                                    <div class="answer-result">→ Tutorial seç</div>
+                                </div>
+                            </div>
+                            <div class="answer">
+                                <span class="answer-letter">C</span>
+                                <div class="answer-text">
+                                    İlham almak (görsellere bakmak)
+                                    <div class="answer-result">→ Showcase seç</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Soru 2 -->
+                    <div class="question-card">
+                        <h3>
+                            <span class="q-number">2</span>
+                            Ne kadar süren var?
+                        </h3>
+                        <div class="answers">
+                            <div class="answer">
+                                <span class="answer-letter">A</span>
+                                <div class="answer-text">
+                                    1-2 saat (hızlı)
+                                    <div class="answer-result">→ Tutorial seç</div>
+                                </div>
+                            </div>
+                            <div class="answer">
+                                <span class="answer-letter">B</span>
+                                <div class="answer-text">
+                                    3-4 saat (orta)
+                                    <div class="answer-result">→ Playground seç</div>
+                                </div>
+                            </div>
+                            <div class="answer">
+                                <span class="answer-letter">C</span>
+                                <div class="answer-text">
+                                    4-6 saat (detaylı)
+                                    <div class="answer-result">→ Showcase seç</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Soru 3 -->
+                    <div class="question-card">
+                        <h3>
+                            <span class="q-number">3</span>
+                            JavaScript olabilir mi?
+                        </h3>
+                        <div class="answers">
+                            <div class="answer">
+                                <span class="answer-letter">A</span>
+                                <div class="answer-text">
+                                    Evet, Alpine.js kullanabiliriz
+                                    <div class="answer-result">→ Playground seç</div>
+                                </div>
+                            </div>
+                            <div class="answer">
+                                <span class="answer-letter">B</span>
+                                <div class="answer-text">
+                                    Hayır, sadece HTML/CSS
+                                    <div class="answer-result">→ Tutorial seç</div>
+                                </div>
+                            </div>
+                            <div class="answer">
+                                <span class="answer-letter">C</span>
+                                <div class="answer-text">
+                                    Az JS olabilir (lightbox vs.)
+                                    <div class="answer-result">→ Showcase seç</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Soru 4 -->
+                    <div class="question-card">
+                        <h3>
+                            <span class="q-number">4</span>
+                            Örnek görseller hazırlamaya zaman var mı?
+                        </h3>
+                        <div class="answers">
+                            <div class="answer">
+                                <span class="answer-letter">A</span>
+                                <div class="answer-text">
+                                    Evet, DALL-E 3'ten üretiriz
+                                    <div class="answer-result">→ Showcase seç</div>
+                                </div>
+                            </div>
+                            <div class="answer">
+                                <span class="answer-letter">B</span>
+                                <div class="answer-text">
+                                    Hayır ama mock data OK
+                                    <div class="answer-result">→ Playground seç</div>
+                                </div>
+                            </div>
+                            <div class="answer">
+                                <span class="answer-letter">C</span>
+                                <div class="answer-text">
+                                    Hiç gereksiz
+                                    <div class="answer-result">→ Tutorial seç</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SON KARAR -->
+            <div class="cta">
+                <h2>✅ Kararını Ver!</h2>
+                <p>Hangi yaklaşımı seçiyorsun? Bana söyle, hemen HTML'i hazırlayayım!</p>
+
+                <div class="cta-buttons">
+                    <button class="btn" onclick="alert('Harika! Playground yaklaşımını seçtin. Claude\'a söyle: PLAYGROUND YAP')">
+                        🎮 Playground
+                    </button>
+                    <button class="btn" onclick="alert('Anlaşıldı! Tutorial yaklaşımını seçtin. Claude\'a söyle: TUTORIAL YAP')">
+                        📚 Tutorial
+                    </button>
+                    <button class="btn" onclick="alert('Mükemmel! Showcase yaklaşımını seçtin. Claude\'a söyle: SHOWCASE YAP')">
+                        🖼️ Showcase
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

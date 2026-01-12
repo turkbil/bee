@@ -1,1 +1,846 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Platform - Master Düzenleme Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: "Courier New", monospace;
+            padding: 40px 20px;
+            line-height: 1.8;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #f87171, #fb923c, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .box {
+            border: 2px solid #334155;
+            padding: 20px;
+            margin: 30px 0;
+            background: #1e293b;
+            border-radius: 8px;
+        }
+
+        .box-title {
+            color: #fbbf24;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .ascii-box {
+            background: #0f172a;
+            border: 1px solid #475569;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre;
+            color: #cbd5e1;
+        }
+
+        .error {
+            background: #7f1d1d;
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .error-title {
+            color: #fca5a5;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .solution {
+            background: #064e3b;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .solution-title {
+            color: #6ee7b7;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .code {
+            background: #1e293b;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #60a5fa;
+            font-size: 0.95em;
+        }
+
+        .warning {
+            background: #713f12;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .warning-title {
+            color: #fcd34d;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .flow-step {
+            margin-left: 20px;
+            padding-left: 15px;
+            border-left: 2px solid #475569;
+            margin-bottom: 10px;
+        }
+
+        .check { color: #10b981; }
+        .cross { color: #ef4444; }
+        .arrow { color: #fbbf24; }
+
+        a { color: #60a5fa; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1>🎵 MUZİBU MÜZİK PLATFORMU</h1>
+        <div class="subtitle">SUBSCRIPTION & DEVICE LIMIT SİSTEMİ - MASTER DÜZENLEME PLANI</div>
+
+        <!-- 1. ÜYELİK HİYERARŞİSİ -->
+        <div class="box">
+            <div class="box-title">1. ÜYELİK HİYERARŞİSİ VE DİNLEME HAKLARI</div>
+            <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│                     KULLANICI TÜRLERİ                           │
+├─────────────────────────────────────────────────────────────────┤
+│  GUEST (Üye değil)          → 30 saniye preview                 │
+│  ÜCRETSİZ ÜYE               → 30 saniye preview                 │
+│  PREMIUM / TRIAL ÜYE        → Sınırsız dinleme                  │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+            <div class="error">
+                <div class="error-title">❌ MEVCUT HATA:</div>
+                <div>Guest ve ücretsiz üye ayrımı kodda tam yapılmamış!</div>
+                <div style="margin-top: 10px;">
+                    <strong>Dosya:</strong> <span class="code">SongStreamController.php</span><br>
+                    <strong>Satır:</strong> 52-149<br>
+                    <strong>Sorun:</strong> Guest ($user == null) ve non-premium ($user->isPremiumOrTrial() == false) için AYNI kod bloğu tekrarlanıyor.
+                </div>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM:</div>
+                <div>Helper method oluştur: <span class="code">getPreviewStreamResponse($song, $userType)</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">protected function getPreviewStreamResponse(Song $song, string $userType): JsonResponse
+{
+    // HLS conversion başlat
+    if ($song->needsHlsConversion()) {
+        ConvertToHLSJob::dispatch($song);
+    }
+
+    // Stream URL hazırla
+    if (!empty($song->hls_path)) {
+        $streamUrl = route('api.muzibu.songs.dynamic-playlist', ['id' => $song->song_id]);
+        $streamType = 'hls';
+        $fallbackUrl = $this->signedUrlService->generateStreamUrl($song->song_id, 30, true);
+    } else {
+        $streamUrl = $this->signedUrlService->generateStreamUrl($song->song_id, 30);
+        $streamType = 'mp3';
+        $fallbackUrl = null;
+    }
+
+    $message = $userType === 'guest'
+        ? 'Kayıt olun, tam dinleyin'
+        : 'Premium\'a geçin, sınırsız dinleyin';
+
+    return response()->json([
+        'status' => 'preview',
+        'message' => $message,
+        'stream_url' => $streamUrl,
+        'stream_type' => $streamType,
+        'fallback_url' => $fallbackUrl,
+        'preview_duration' => 30,
+        'is_premium' => false,
+    ]);
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CİHAZ LİMİTİ FALLBACK -->
+        <div class="box">
+            <div class="box-title">2. CİHAZ LİMİTİ FALLBACK SİSTEMİ (3 Seviyeli)</div>
+            <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│            CİHAZ LİMİTİ BELİRLEME SIRASI                        │
+├─────────────────────────────────────────────────────────────────┤
+│  1. User->device_limit      → VIP/Test/Ban özel durumlar        │
+│  2. SubscriptionPlan->device_limit → Premium plan limiti        │
+│  3. Setting('auth_device_limit')   → Tenant global ayar         │
+│  4. Fallback: 1 cihaz       → Hiçbiri yoksa                     │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+            <div class="solution">
+                <div class="solution-title">✅ DOĞRU UYGULAMA (MEVCUT):</div>
+                <div>
+                    <strong>Dosya:</strong> <span class="code">DeviceService.php:220-252</span><br>
+                    <strong>Method:</strong> <span class="code">getDeviceLimit(User $user)</span>
+                </div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">public function getDeviceLimit(User $user): int
+{
+    // 1. User override (VIP/Test/Ban)
+    if ($user->device_limit !== null && $user->device_limit > 0) {
+        return $user->device_limit;
+    }
+
+    // 2. Subscription Plan device_limit
+    $subscription = $user->subscriptions()
+        ->whereIn('status', ['active', 'trial'])
+        ->where(function($q) {
+            $q->whereNull('current_period_end')
+              ->orWhere('current_period_end', '>', now());
+        })
+        ->with('plan')
+        ->first();
+
+    if ($subscription && $subscription->plan && $subscription->plan->device_limit) {
+        return (int) $subscription->plan->device_limit;
+    }
+
+    // 3. Tenant setting fallback
+    if (function_exists('setting') && setting('auth_device_limit')) {
+        return (int) setting('auth_device_limit');
+    }
+
+    // 4. Ultimate fallback
+    return 1;
+}</pre>
+                </div>
+            </div>
+
+            <div class="warning">
+                <div class="warning-title">⚠️ DİKKAT:</div>
+                <div><strong>BROWSER + SİSTEM ANIMI:</strong> Mevcut sistemde device detection <span class="code">Jenssegers\Agent</span> ile yapılıyor.</div>
+                <div style="margin-top: 8px;"><strong>Kayıt Edilen Bilgiler:</strong></div>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>device_type: desktop / mobile / tablet</li>
+                    <li>device_name: "Windows 11 - Chrome"</li>
+                    <li>browser: Chrome, Firefox, Safari</li>
+                    <li>platform: Windows, macOS, Android, iOS</li>
+                    <li>ip_address: Kullanıcı IP</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 3. LOGIN AKIŞI -->
+        <div class="box">
+            <div class="box-title">3. LOGIN AKIŞI (Cihaz Limit Kontrolü)</div>
+            <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│  1. Kullanıcı email/password girer                              │
+│  2. Credentials doğrulanır                                       │
+│  3. DeviceService.checkDeviceLimitBeforeLogin() çağrılır        │
+│     ├── Limit AŞILMADI → Normal login devam                     │
+│     └── Limit AŞILDI   → 403 + device_limit_exceeded response   │
+│  4. Frontend Device Selection Modal açar                         │
+│     ├── Aktif cihazlar listelenir (IP, Browser, Platform, Son)  │
+│     └── Kullanıcı çıkarmak istediği cihazı seçer               │
+│  5. terminateDevice() API çağrılır (credential-based)           │
+│  6. Seçilen cihazın session'ı silinir                           │
+│  7. Kullanıcı tekrar login yapar (artık limit altında)          │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+            <div class="error">
+                <div class="error-title">❌ MEVCUT HATA 1: CSRF Token Mismatch</div>
+                <div><strong>Sorun:</strong> SPA (Single Page Application) yapısında CSRF token yenilenmesi eksik!</div>
+                <div style="margin-top: 10px;">
+                    <strong>Senaryo:</strong><br>
+                    1. Kullanıcı sayfayı açar (CSRF token alır)<br>
+                    2. Uzun süre bekler (session timeout)<br>
+                    3. Login yapmaya çalışır<br>
+                    4. <span class="cross">❌</span> CSRF token mismatch hatası!
+                </div>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM: Otomatik CSRF Token Yenileme</div>
+                <div><strong>Dosya:</strong> <span class="code">resources/views/themes/muzibu/layouts/app.blade.php</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">// CSRF token yenileme interceptor ekle
+axios.interceptors.response.use(
+    response => response,
+    error => {
+        // CSRF token mismatch hatası
+        if (error.response?.status === 419) {
+            console.warn('CSRF token expired, refreshing...');
+
+            // Yeni token al
+            return axios.get('/sanctum/csrf-cookie').then(() => {
+                // Token yenilendi, isteği tekrar gönder
+                return axios(error.config);
+            });
+        }
+        return Promise.reject(error);
+    }
+);</pre>
+                </div>
+            </div>
+
+            <div class="error">
+                <div class="error-title">❌ MEVCUT HATA 2: Device Selection Modal Eksik</div>
+                <div><strong>Sorun:</strong> <span class="code">checkDeviceLimitBeforeLogin()</span> backend'de var ama frontend modal entegrasyonu yok!</div>
+                <div style="margin-top: 10px;">
+                    <strong>Dosya:</strong> <span class="code">DeviceService.php:282-321</span><br>
+                    <strong>Return:</strong> <span class="code">can_login, devices[], limit</span> döndürüyor ama frontend kullanmıyor!
+                </div>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM: Frontend Login Flow Güncelle</div>
+                <div><strong>Dosya:</strong> <span class="code">public/themes/muzibu/js/features/auth.js</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">async login() {
+    try {
+        const response = await axios.post('/api/login', this.loginForm);
+
+        // Login başarılı
+        window.location.reload();
+
+    } catch (error) {
+        // CSRF token yenileme zaten interceptor'da
+
+        // Device limit kontrolü
+        if (error.response?.status === 403 &&
+            error.response?.data?.error === 'device_limit_exceeded') {
+
+            // Device selection modal aç
+            this.activeDevices = error.response.data.devices;
+            this.deviceLimit = error.response.data.limit;
+            this.showDeviceSelectionModal = true;
+            return;
+        }
+
+        // Diğer hatalar
+        this.authError = error.response?.data?.message || 'Giriş başarısız';
+    }
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SESSION POLLING -->
+        <div class="box">
+            <div class="box-title">4. SESSION POLLING SİSTEMİ (30 Saniye)</div>
+            <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│             SESSION POLLING AKIŞI (Her 30 Saniye)               │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Kullanıcı giriş yapar → Redis session başlar                │
+│  2. Frontend setInterval(30000) başlatır                         │
+│  3. Her 30 saniyede /api/device/ping çağrılır                   │
+│  4. DeviceService::updateSessionActivity() çalışır              │
+│     ├── user_active_sessions.last_activity güncellenir          │
+│     └── Redis session TTL yenilenir (120 dakika)                │
+│  5. Response: { device_limit_status, active_devices }           │
+│  6. Eğer device_limit_exceeded → Modal göster                   │
+│  7. Kullanıcı logout olursa → Polling durdur                    │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+            <div class="solution">
+                <div class="solution-title">✅ DOĞRU UYGULAMA (MEVCUT):</div>
+                <div>
+                    <strong>Dosya:</strong> <span class="code">DeviceService.php:110-151</span><br>
+                    <strong>Method:</strong> <span class="code">updateSessionActivity()</span>
+                </div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">public function updateSessionActivity(): array
+{
+    $user = auth('web')->user() ?? auth('sanctum')->user();
+
+    if (!$user) {
+        return ['status' => 'unauthenticated'];
+    }
+
+    $sessionId = session()->getId();
+
+    // MySQL: last_activity güncelle
+    UserActiveSession::where('session_id', $sessionId)
+        ->where('user_id', $user->id)
+        ->update(['last_activity' => now()]);
+
+    // Redis: Session TTL yenile (120 dakika)
+    Redis::expire("laravel_session:{$sessionId}", 7200);
+
+    // Mevcut cihaz limiti kontrol
+    $deviceLimit = $this->getDeviceLimit($user);
+    $activeDevices = $this->getActiveDevicesCount($user);
+
+    return [
+        'status' => 'active',
+        'device_limit' => $deviceLimit,
+        'active_devices' => $activeDevices,
+        'device_limit_exceeded' => $activeDevices > $deviceLimit,
+    ];
+}</pre>
+                </div>
+            </div>
+
+            <div class="warning">
+                <div class="warning-title">⚠️ DİKKAT: HARDCODED DEĞER!</div>
+                <div>
+                    <strong>Sorun:</strong> Polling interval frontend'de hardcoded: <span class="code">30000 ms</span><br>
+                    <strong>Dosya:</strong> <span class="code">public/themes/muzibu/js/player/core/player-core.js</span><br>
+                    <strong>Satır:</strong> ~850 (setInterval içinde)
+                </div>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM: Config Dosyasına Taşı</div>
+                <div><strong>Yeni Dosya:</strong> <span class="code">config/muzibu.php</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">return [
+    'session' => [
+        'polling_interval' => env('MUZIBU_SESSION_POLLING', 30000), // ms
+        'ttl' => env('MUZIBU_SESSION_TTL', 7200), // saniye
+    ],
+];</pre>
+                </div>
+                <div style="margin-top: 10px;"><strong>Blade Template:</strong></div>
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">window.muzibuPlayerConfig = {
+    sessionPollingInterval: {{ config('muzibu.session.polling_interval') }},
+};</pre>
+            </div>
+        </div>
+
+        <!-- 5. STREAM AKIŞI -->
+        <div class="box">
+            <div class="box-title">5. STREAM AKIŞI (HLS + MP3 Fallback)</div>
+            <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│                  STREAM URL İSTEĞİ AKIŞI                        │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Frontend /api/muzibu/songs/{id}/stream çağrısı yapar        │
+│  2. SongStreamController::stream() method çalışır               │
+│  3. User kontrolü:                                               │
+│     ├── Guest ($user == null)                                   │
+│     │   └─→ getPreviewStreamResponse($song, 'guest')           │
+│     ├── Free Member (!isPremiumOrTrial())                       │
+│     │   └─→ getPreviewStreamResponse($song, 'free')            │
+│     └── Premium/Trial Member (isPremiumOrTrial())               │
+│         └─→ Full stream access                                  │
+│  4. HLS kontrolü:                                                │
+│     ├── hls_path VARSA → HLS playlist döndür                    │
+│     │   ├── Timeout: 6 saniye                                   │
+│     │   └── Fallback: MP3 signed URL                            │
+│     └── hls_path YOKSA → ConvertToHLSJob dispatch et            │
+│  5. Response: stream_url, stream_type, fallback_url             │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+            <div class="error">
+                <div class="error-title">❌ MEVCUT HATA: DUPLICATE CODE</div>
+                <div>Guest ve Free Member için aynı kod bloğu tekrarlanıyor!</div>
+                <div style="margin-top: 10px;">
+                    <strong>Dosya:</strong> <span class="code">SongStreamController.php</span><br>
+                    <strong>Satır 52-96:</strong> Guest user stream logic (48 satır)<br>
+                    <strong>Satır 100-149:</strong> Non-premium user stream logic (49 satır)<br>
+                    <strong>Sorun:</strong> AYNI kod bloğu kopyalanmış! (DRY ihlali)
+                </div>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM: Helper Method Oluştur</div>
+                <div><strong>Yeni Method:</strong> <span class="code">getPreviewStreamResponse()</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">public function stream(Song $song)
+{
+    $user = auth('web')->user() ?? auth('sanctum')->user();
+
+    // 1. Guest user
+    if (!$user) {
+        return $this->getPreviewStreamResponse($song, 'guest');
+    }
+
+    // 2. Free member
+    if (!$user->isPremiumOrTrial()) {
+        return $this->getPreviewStreamResponse($song, 'free');
+    }
+
+    // 3. Premium/Trial member
+    return $this->getFullStreamResponse($song, $user);
+}
+
+protected function getPreviewStreamResponse(Song $song, string $userType): JsonResponse
+{
+    // HLS conversion
+    if ($song->needsHlsConversion()) {
+        ConvertToHLSJob::dispatch($song);
+    }
+
+    // Stream URL (30 saniye limit)
+    if (!empty($song->hls_path)) {
+        $streamUrl = route('api.muzibu.songs.dynamic-playlist', [
+            'id' => $song->song_id
+        ]);
+        $streamType = 'hls';
+        $fallbackUrl = $this->signedUrlService->generateStreamUrl(
+            $song->song_id, 30, true
+        );
+    } else {
+        $streamUrl = $this->signedUrlService->generateStreamUrl(
+            $song->song_id, 30
+        );
+        $streamType = 'mp3';
+        $fallbackUrl = null;
+    }
+
+    $message = $userType === 'guest'
+        ? 'Kayıt olun, tam dinleyin'
+        : 'Premium\'a geçin, sınırsız dinleyin';
+
+    return response()->json([
+        'status' => 'preview',
+        'message' => $message,
+        'stream_url' => $streamUrl,
+        'stream_type' => $streamType,
+        'fallback_url' => $fallbackUrl,
+        'preview_duration' => 30,
+        'is_premium' => false,
+    ]);
+}
+
+protected function getFullStreamResponse(Song $song, User $user): JsonResponse
+{
+    // Full stream logic (sınırsız)
+    // ...
+}</pre>
+                </div>
+            </div>
+
+            <div class="warning">
+                <div class="warning-title">⚠️ DİKKAT: HARDCODED DEĞER!</div>
+                <div>
+                    <strong>Preview duration:</strong> 30 saniye hardcoded (4 yerde!)<br>
+                    <strong>HLS timeout:</strong> 6 saniye hardcoded<br>
+                    <strong>Chunk count:</strong> 3 chunk hardcoded
+                </div>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM: Config Dosyasına Taşı</div>
+                <div><strong>Dosya:</strong> <span class="code">config/muzibu.php</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">return [
+    'stream' => [
+        'preview_duration' => env('MUZIBU_PREVIEW_DURATION', 30), // saniye
+        'hls_timeout' => env('MUZIBU_HLS_TIMEOUT', 6), // saniye
+        'preview_chunks' => env('MUZIBU_PREVIEW_CHUNKS', 3), // adet
+    ],
+];</pre>
+                </div>
+                <div style="margin-top: 10px;"><strong>Kullanım:</strong></div>
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">$previewDuration = config('muzibu.stream.preview_duration');
+$this->signedUrlService->generateStreamUrl($song->song_id, $previewDuration);</pre>
+            </div>
+        </div>
+
+        <!-- 6. PREMIUM STATUS DEĞİŞİKLİĞİ -->
+        <div class="box">
+            <div class="box-title">6. PREMIUM STATUS DEĞİŞİKLİĞİ (Cache Invalidation)</div>
+            <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│              PREMIUM STATUS CACHE AKIŞI                          │
+├─────────────────────────────────────────────────────────────────┤
+│  1. User::isPremiumOrTrial() çağrısı yapılır                    │
+│  2. Cache key: premium_status_{user_id}_{tenant_id}             │
+│  3. Cache TTL: 5 dakika (300 saniye)                            │
+│  4. Cache HIT → Direkt return                                   │
+│  5. Cache MISS → DB sorgusu + Cache write                       │
+│                                                                  │
+│  SORUN: Subscription değiştiğinde cache SİLİNMİYOR!             │
+│  ├─→ Yeni üyelik başlatılır → 5 dakika premium görmez!          │
+│  ├─→ Üyelik iptal edilir → 5 dakika premium görmeye devam!      │
+│  └─→ Üyelik süresi biter → 5 dakika premium görmeye devam!      │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+            <div class="error">
+                <div class="error-title">❌ MEVCUT HATA: SUBSCRIPTION OBSERVER EKSİK!</div>
+                <div><strong>Sorun:</strong> Subscription değişikliklerinde cache otomatik silinmiyor!</div>
+                <div style="margin-top: 10px;">
+                    <strong>Eksik Dosya:</strong> <span class="code">app/Observers/SubscriptionObserver.php</span><br>
+                    <strong>Sonuç:</strong> Premium status 5 dakika gecikmeyle güncelleniyor!
+                </div>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM: SubscriptionObserver Oluştur</div>
+                <div><strong>Yeni Dosya:</strong> <span class="code">app/Observers/SubscriptionObserver.php</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">namespace App\Observers;
+
+use Modules\Subscription\app\Models\Subscription;
+use Illuminate\Support\Facades\Cache;
+
+class SubscriptionObserver
+{
+    public function created(Subscription $subscription)
+    {
+        $this->flushPremiumCache($subscription->user_id);
+    }
+
+    public function updated(Subscription $subscription)
+    {
+        $this->flushPremiumCache($subscription->user_id);
+    }
+
+    public function deleted(Subscription $subscription)
+    {
+        $this->flushPremiumCache($subscription->user_id);
+    }
+
+    protected function flushPremiumCache(int $userId)
+    {
+        $tenantId = tenant() ? tenant()->id : 1;
+        $cacheKey = "premium_status_{$userId}_{$tenantId}";
+
+        Cache::forget($cacheKey);
+
+        \Log::info("Premium cache flushed", [
+            'user_id' => $userId,
+            'tenant_id' => $tenantId,
+            'cache_key' => $cacheKey,
+        ]);
+    }
+}</pre>
+                </div>
+                <div style="margin-top: 10px;"><strong>Register Observer:</strong></div>
+                <div><strong>Dosya:</strong> <span class="code">app/Providers/AppServiceProvider.php</span></div>
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">use Modules\Subscription\app\Models\Subscription;
+use App\Observers\SubscriptionObserver;
+
+public function boot()
+{
+    Subscription::observe(SubscriptionObserver::class);
+}</pre>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ EK ÇÖZÜM: Logout'ta da Cache Temizle</div>
+                <div><strong>Dosya:</strong> <span class="code">app/Http/Controllers/Api/Auth/AuthController.php</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">public function logout()
+{
+    $user = auth('web')->user() ?? auth('sanctum')->user();
+
+    if ($user) {
+        // Premium cache temizle
+        $tenantId = tenant() ? tenant()->id : 1;
+        $cacheKey = "premium_status_{$user->id}_{$tenantId}";
+        Cache::forget($cacheKey);
+
+        // Device session temizle
+        app(DeviceService::class)->unregisterSession();
+
+        // Auth logout
+        Auth::logout();
+    }
+
+    return response()->json(['message' => 'Logged out']);
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. HARDCODED DEĞERLER -->
+        <div class="box">
+            <div class="box-title">7. HARDCODED DEĞERLER (Config'e Taşınacaklar)</div>
+            <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│                  HARDCODED DEĞERLER LİSTESİ                      │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Preview Duration: 30 saniye (4 yerde hardcoded!)            │
+│  2. HLS Timeout: 6 saniye                                        │
+│  3. Preview Chunks: 3 adet                                       │
+│  4. Session Polling: 30000 ms (frontend)                         │
+│  5. Session TTL: 7200 saniye (Redis)                             │
+│  6. Premium Cache TTL: 300 saniye (5 dakika)                     │
+│  7. Device Limit Fallback: 1 cihaz                               │
+│  8. Frontend deviceLimit: 1 (hardcoded!)                         │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+            <div class="error">
+                <div class="error-title">❌ MEVCUT HATA 1: Frontend Device Limit Hardcoded</div>
+                <div>
+                    <strong>Dosya:</strong> <span class="code">public/themes/muzibu/js/player/core/player-core.js</span><br>
+                    <strong>Satır:</strong> ~40<br>
+                    <strong>Kod:</strong> <span class="code">deviceLimit: 1</span>
+                </div>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM: Backend'den İnjection</div>
+                <div><strong>Dosya:</strong> <span class="code">resources/views/themes/muzibu/layouts/app.blade.php</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">@auth
+    @php
+        $deviceService = app(\Modules\Muzibu\app\Services\DeviceService::class);
+        $deviceLimit = $deviceService->getDeviceLimit(auth()->user());
+    @endphp
+
+    window.muzibuPlayerConfig = {
+        deviceLimit: {{ $deviceLimit }},
+        sessionPollingInterval: {{ config('muzibu.session.polling_interval') }},
+        previewDuration: {{ config('muzibu.stream.preview_duration') }},
+    };
+@endauth</pre>
+                </div>
+                <div style="margin-top: 10px;"><strong>Frontend Kullanımı:</strong></div>
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">// player-core.js
+const playerConfig = {
+    deviceLimit: window.muzibuPlayerConfig?.deviceLimit || 1,
+    sessionPollingInterval: window.muzibuPlayerConfig?.sessionPollingInterval || 30000,
+    previewDuration: window.muzibuPlayerConfig?.previewDuration || 30,
+};</pre>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">✅ ÇÖZÜM: Merkezi Config Dosyası Oluştur</div>
+                <div><strong>Yeni Dosya:</strong> <span class="code">config/muzibu.php</span></div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">return [
+    // Stream Settings
+    'stream' => [
+        'preview_duration' => env('MUZIBU_PREVIEW_DURATION', 30),
+        'hls_timeout' => env('MUZIBU_HLS_TIMEOUT', 6),
+        'preview_chunks' => env('MUZIBU_PREVIEW_CHUNKS', 3),
+    ],
+
+    // Session Settings
+    'session' => [
+        'polling_interval' => env('MUZIBU_SESSION_POLLING', 30000),
+        'ttl' => env('MUZIBU_SESSION_TTL', 7200),
+    ],
+
+    // Cache Settings
+    'cache' => [
+        'premium_status_ttl' => env('MUZIBU_PREMIUM_CACHE_TTL', 300),
+    ],
+
+    // Device Settings
+    'device' => [
+        'default_limit' => env('MUZIBU_DEVICE_LIMIT_FALLBACK', 1),
+    ],
+];</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. SETTINGS ENTEGRASYONU -->
+        <div class="box">
+            <div class="box-title">8. SETTINGS ENTEGRASYONU (Tenant Ayarları)</div>
+            <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│              TENANT SETTINGS SİSTEMİ                             │
+├─────────────────────────────────────────────────────────────────┤
+│  MEVCUT SETTINGS (Kullanılıyor):                                │
+│  ├─ ID: 23 → auth_device_limit (Cihaz limit)                    │
+│  └─ ID: 21 → auth_session_lifetime (Session süre)               │
+│                                                                  │
+│  EKLENECEK SETTINGS:                                             │
+│  ├─ muzibu_preview_duration (Preview süre)                      │
+│  ├─ muzibu_hls_timeout (HLS timeout)                            │
+│  ├─ muzibu_session_polling (Polling interval)                   │
+│  └─ muzibu_premium_cache_ttl (Premium cache TTL)                │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+            <div class="solution">
+                <div class="solution-title">✅ DOĞRU KULLANIM:</div>
+                <div>Settings değerleri <span class="code">setting()</span> helper ile çekilmeli.</div>
+                <div style="margin-top: 10px;">
+<pre style="color: #a5b4fc; font-size: 0.85rem; line-height: 1.6;">// DeviceService.php (MEVCUT - DOĞRU)
+if (function_exists('setting') && setting('auth_device_limit')) {
+    return (int) setting('auth_device_limit');
+}
+
+// SongStreamController.php (EKLENMELİ)
+$previewDuration = setting('muzibu_preview_duration')
+    ?? config('muzibu.stream.preview_duration');
+
+// Session Polling (EKLENMELİ)
+$pollingInterval = setting('muzibu_session_polling')
+    ?? config('muzibu.session.polling_interval');</pre>
+                </div>
+            </div>
+
+            <div class="warning">
+                <div class="warning-title">⚠️ DİKKAT: Öncelik Sırası</div>
+                <div style="margin-top: 8px;">
+                    <strong>1. Setting değeri:</strong> setting('key') - Tenant özel ayar<br>
+                    <strong>2. Config değeri:</strong> config('muzibu.key') - Uygulama varsayılanı<br>
+                    <strong>3. Fallback:</strong> Hardcoded (son çare!)
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. ÖZET: YAPILACAKLAR -->
+        <div class="box">
+            <div class="box-title">9. ÖZET: TÜM DÜZELTMELER (Öncelik Sırası)</div>
+
+            <div class="error">
+                <div class="error-title">🔴 YÜK SEK ÖNCELİK (Kritik Hatalar)</div>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>1.</strong> CSRF Token Auto-Renewal (419 hatası düzelt)</li>
+                    <li><strong>2.</strong> SongStreamController Duplicate Code (DRY ihlali)</li>
+                    <li><strong>3.</strong> SubscriptionObserver Oluştur (Premium cache)</li>
+                    <li><strong>4.</strong> Device Selection Modal Frontend Entegrasyonu</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <div class="warning-title">🟡 ORTA ÖNCELİK (İyileştirmeler)</div>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>5.</strong> config/muzibu.php Oluştur (Hardcoded değerler)</li>
+                    <li><strong>6.</strong> Frontend Device Limit Injection (Backend'den al)</li>
+                    <li><strong>7.</strong> Settings Entegrasyonu (Yeni ayarlar ekle)</li>
+                    <li><strong>8.</strong> Logout'ta Premium Cache Temizle</li>
+                </ul>
+            </div>
+
+            <div class="solution">
+                <div class="solution-title">🟢 DÜŞÜK ÖNCELİK (Dokümantasyon)</div>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>9.</strong> API Response Standardizasyonu</li>
+                    <li><strong>10.</strong> Loglama İyileştirme (Session, Device, Stream)</li>
+                    <li><strong>11.</strong> Unit Test Yazma (DeviceService, Stream)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #334155; text-align: center; color: #64748b;">
+            <p>📊 <strong>RAPOR TAMAMLANDI</strong></p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                Tüm sistem akışları analiz edildi • Hatalar tespit edildi • Çözümler dokümante edildi
+            </p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #475569;">
+                🎵 Muzibu Music Platform • Master Plan v1.0 • 7 Aralık 2025
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

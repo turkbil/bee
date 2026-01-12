@@ -1,1 +1,762 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Player - Refactor & Optimization Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #1db954;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #1db954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #ea580c; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #1db954;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #fbbf24;
+        }
+
+        .task-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+            border-left: 4px solid #1db954;
+        }
+
+        .task-card h4 {
+            color: #1db954;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid #3b82f6;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .file-path {
+            display: inline-block;
+            background: rgba(29, 185, 84, 0.2);
+            color: #1db954;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 10px 0;
+            color: #cbd5e1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        th {
+            background: rgba(29, 185, 84, 0.2);
+            color: #1db954;
+            font-weight: 600;
+        }
+
+        .phase {
+            background: linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(29, 185, 84, 0.05));
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 2px solid rgba(29, 185, 84, 0.3);
+        }
+
+        .phase h3 {
+            color: #1db954;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu Player - Refactor & Optimization Plan</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-28 |
+                🎯 Mevcut Durum: %68 Complete |
+                👤 Focus: Player Code Quality & Security
+            </div>
+        </header>
+
+        <div class="success-box">
+            <h3>✅ ZATEN ÇALIŞAN ÖZELLİKLER</h3>
+            <p>Howler.js 2.2.4, HLS.js Streaming, Crossfade (6s/1s), Queue Management, Volume Control, Repeat/Shuffle, Responsive Design, 30s Preview, Premium System - <strong>TÜM CORE ÖZELLİKLER AKTİF!</strong></p>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ ANA PROBLEM</h3>
+            <p><strong>player.blade.php = 2,685 satır monolithic kod!</strong> İyileştirme değil, MODÜLER REFACTOR gerekiyor.</p>
+            <p><strong>Stream endpoint güvenliksiz!</strong> Herkes konsol ile şarkı indirebilir.</p>
+        </div>
+
+        <section>
+            <h2>📋 İŞ PLANI - 3 FAZ</h2>
+
+            <div class="phase">
+                <h3>🔴 FAZ 1: CODE REFACTORING (ÖNCELİKLİ)</h3>
+                <span class="priority-badge priority-critical">CRITICAL</span>
+                <p><strong>Amaç:</strong> 2,685 satırlık player.blade.php'yi modüler hale getir</p>
+
+                <div class="task-card">
+                    <h4>1.1 - Mevcut Kod Yapısı Analizi</h4>
+                    <p><strong>Dosya:</strong> <span class="file-path">resources/views/themes/muzibu/player.blade.php</span></p>
+
+                    <table>
+                        <tr>
+                            <th>Satır Aralığı</th>
+                            <th>İçerik</th>
+                            <th>Satır Sayısı</th>
+                            <th>Hedef Dosya</th>
+                        </tr>
+                        <tr>
+                            <td>1-380</td>
+                            <td>Auth Modal (Login/Register)</td>
+                            <td>~380</td>
+                            <td>components/auth-modal.blade.php</td>
+                        </tr>
+                        <tr>
+                            <td>383-476</td>
+                            <td>Player UI Bar</td>
+                            <td>~93</td>
+                            <td>components/player-bar.blade.php</td>
+                        </tr>
+                        <tr>
+                            <td>478-567</td>
+                            <td>Queue Panel</td>
+                            <td>~89</td>
+                            <td>components/queue-panel.blade.php</td>
+                        </tr>
+                        <tr>
+                            <td>570-1080</td>
+                            <td>CSS Styles</td>
+                            <td>~510</td>
+                            <td>css/player.css</td>
+                        </tr>
+                        <tr>
+                            <td>1082-2685</td>
+                            <td>JavaScript</td>
+                            <td>~1,603</td>
+                            <td>js/player/*.js (modüler)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="task-card">
+                    <h4>1.2 - Yeni Modüler Yapı</h4>
+                    <p><strong>Hedef Klasör Yapısı:</strong></p>
+
+                    <div class="code-block">
+                        <pre>public/themes/muzibu/js/player/
+├── core/
+│   ├── audio-engine.js         # Howler.js + HLS.js wrapper
+│   ├── crossfade.js            # Crossfade logic
+│   └── stream-security.js      # Token + signed URL
+├── features/
+│   ├── queue-manager.js        # Queue operations
+│   ├── favorites.js            # Like/unlike
+│   ├── volume-control.js       # Volume + mute
+│   ├── repeat-shuffle.js       # Repeat/shuffle modes
+│   └── spa-navigation.js       # History API
+├── ui/
+│   ├── player-ui.js            # Progress bar, buttons
+│   ├── queue-ui.js             # Drag & drop
+│   └── modals.js               # Auth, limits modals
+└── utils/
+    ├── api-client.js           # Fetch wrapper
+    ├── formatters.js           # Time, duration
+    └── debounce.js             # Performance utils</pre>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <h4>1.3 - Alpine.js Store Kurulumu</h4>
+                    <p>Modüller arası state paylaşımı için merkezi store</p>
+
+                    <div class="code-block">
+                        <pre>// public/themes/muzibu/js/player-store.js
+document.addEventListener('alpine:init', () => {
+    Alpine.store('player', {
+        // Audio state
+        isPlaying: false,
+        currentSong: null,
+        currentTime: 0,
+        duration: 0,
+        volume: 0.8,
+        isMuted: false,
+
+        // Queue state
+        queue: [],
+        queueIndex: 0,
+
+        // Playback state
+        repeatMode: 'off', // off|all|one
+        isShuffled: false,
+        isCrossfading: false,
+
+        // User state
+        isLoggedIn: false,
+        isPremium: false,
+
+        // Methods (delegated to modules)
+        play() { playerCore.play() },
+        pause() { playerCore.pause() },
+        next() { queueManager.next() },
+        prev() { queueManager.prev() }
+    });
+});</pre>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <h4>1.4 - Howler.js + HLS.js Integration</h4>
+                    <p><strong>Dosya:</strong> <span class="file-path">js/player/core/audio-engine.js</span></p>
+
+                    <div class="code-block">
+                        <pre>// Dual audio system - exactly as currently working
+class AudioEngine {
+    constructor() {
+        this.howl = null;          // Current Howler instance
+        this.howlNext = null;      // Next track for crossfade
+        this.hlsPlayer = null;     // HLS.js instance
+        this.hlsPlayerNext = null; // Next HLS for crossfade
+        this.audioElement = document.getElementById('hlsAudio');
+        this.audioElementNext = document.getElementById('hlsAudioNext');
+    }
+
+    // Load with automatic format detection
+    async loadSong(streamUrl, streamType) {
+        if (streamType === 'hls') {
+            return this.loadHLS(streamUrl);
+        } else {
+            return this.loadHowler(streamUrl);
+        }
+    }
+
+    loadHowler(url) {
+        this.howl = new Howl({
+            src: [url],
+            html5: true,
+            pool: 5,
+            volume: Alpine.store('player').volume,
+            onplay: () => this.onPlayCallback(),
+            onend: () => this.onEndCallback(),
+            onload: () => this.onLoadCallback()
+        });
+        return this.howl;
+    }
+
+    loadHLS(url) {
+        if (!Hls.isSupported()) {
+            // Safari native HLS
+            this.audioElement.src = url;
+            return;
+        }
+
+        this.hlsPlayer = new Hls({
+            enableWorker: true,
+            lowLatencyMode: false
+        });
+
+        this.hlsPlayer.loadSource(url);
+        this.hlsPlayer.attachMedia(this.audioElement);
+    }
+
+    // Crossfade to next track
+    crossfade(nextUrl, nextType, duration = 6000) {
+        // Implementation matches current crossfade logic
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <h4>1.5 - Blade Component Breakdown</h4>
+                    <p><strong>Strategy:</strong> Auth modal zaten ayrıldı, diğerleri de ayrılacak</p>
+
+                    <table>
+                        <tr>
+                            <th>Component</th>
+                            <th>Yeni Dosya</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>Auth Modal</td>
+                            <td>components/auth-modal.blade.php</td>
+                            <td>✅ ZATEN AYRI</td>
+                        </tr>
+                        <tr>
+                            <td>Player Bar</td>
+                            <td>components/player-bar.blade.php</td>
+                            <td>🔄 YAPILACAK</td>
+                        </tr>
+                        <tr>
+                            <td>Queue Panel</td>
+                            <td>components/queue-panel.blade.php</td>
+                            <td>🔄 YAPILACAK</td>
+                        </tr>
+                        <tr>
+                            <td>Player CSS</td>
+                            <td>css/player.css</td>
+                            <td>🔄 YAPILACAK</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>🟠 FAZ 2: SECURITY IMPLEMENTATION</h3>
+                <span class="priority-badge priority-high">HIGH PRIORITY</span>
+                <p><strong>Problem:</strong> `/api/muzibu/songs/{id}/stream` endpoint açık - konsol ile şarkı indirme mümkün!</p>
+
+                <div class="task-card">
+                    <h4>2.1 - Bearer Token Authentication</h4>
+                    <p><strong>Dosya:</strong> <span class="file-path">SongStreamController.php</span></p>
+
+                    <div class="code-block">
+                        <pre>// Laravel Sanctum token generation
+Route::middleware(['auth:sanctum'])->group(function() {
+    Route::get('/songs/{id}/stream', [SongStreamController::class, 'stream']);
+});
+
+// Frontend: Add token to requests
+fetch(`/api/muzibu/songs/${songId}/stream`, {
+    headers: {
+        'Authorization': `Bearer ${window.userToken}`,
+        'X-Requested-With': 'XMLHttpRequest'
+    }
+});</pre>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <h4>2.2 - Signed URLs (HMAC-SHA256)</h4>
+                    <p>URL'ler 5 dakika sonra expire olacak, IP-bound</p>
+
+                    <div class="code-block">
+                        <pre>// Backend - generate signed URL
+public function generateSignedStreamUrl($songId, $userId) {
+    $timestamp = time();
+    $ipAddress = request()->ip();
+    $secret = config('app.stream_secret');
+
+    $signature = hash_hmac('sha256',
+        "{$songId}:{$userId}:{$timestamp}:{$ipAddress}",
+        $secret
+    );
+
+    return url("/api/muzibu/songs/{$songId}/stream?" . http_build_query([
+        't' => $timestamp,
+        'u' => $userId,
+        's' => $signature
+    ]));
+}
+
+// Frontend kullanımı
+const signedUrl = await fetch(`/api/muzibu/songs/${songId}/signed-url`).json();
+audioEngine.loadSong(signedUrl.url, signedUrl.type);</pre>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <h4>2.3 - Rate Limiting</h4>
+                    <p>IP bazlı throttling: 60 request/minute</p>
+
+                    <div class="code-block">
+                        <pre>// routes/api.php
+Route::middleware('throttle:60,1')->group(function() {
+    Route::get('/songs/{id}/stream', ...);
+    Route::post('/songs/{id}/track-progress', ...);
+});</pre>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <h4>2.4 - HLS + AES-128 Encryption (İleri Seviye)</h4>
+                    <p>Segment şifreleme, dynamic key rotation</p>
+
+                    <div class="code-block">
+                        <pre>// FFmpeg HLS conversion with encryption
+ffmpeg -i input.mp3 \
+  -hls_key_info_file keyinfo.txt \
+  -hls_time 10 \
+  -hls_list_size 0 \
+  -hls_segment_filename 'segment_%03d.ts' \
+  output.m3u8
+
+// keyinfo.txt format:
+// key_url
+// key_file_path
+// initialization_vector</pre>
+                    </div>
+
+                    <p><strong>Not:</strong> Bu advanced feature, optional olabilir.</p>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>🟡 FAZ 3: ENHANCEMENT FEATURES</h3>
+                <span class="priority-badge priority-medium">MEDIUM PRIORITY</span>
+                <p>Player experience iyileştirmeleri (optional)</p>
+
+                <div class="task-card">
+                    <h4>3.1 - WaveSurfer.js Integration</h4>
+                    <p>Real-time waveform visualization</p>
+
+                    <div class="code-block">
+                        <pre>// js/player/features/waveform.js
+import WaveSurfer from 'wavesurfer.js';
+
+const wavesurfer = WaveSurfer.create({
+    container: '#waveform',
+    waveColor: '#1db954',
+    progressColor: '#ffffff',
+    height: 80,
+    responsive: true
+});
+
+// Sync with Howler.js
+howl.on('play', () => wavesurfer.play());
+howl.on('pause', () => wavesurfer.pause());
+howl.on('seek', (pos) => wavesurfer.seekTo(pos));</pre>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <h4>3.2 - Dynamic Theme (Color Thief)</h4>
+                    <p>Album art'tan renk çıkarma</p>
+
+                    <div class="code-block">
+                        <pre>// Backend precalculation
+use ColorThief\ColorThief;
+
+$dominantColor = ColorThief::getColor($albumCoverPath);
+$palette = ColorThief::getPalette($albumCoverPath, 5);
+
+// DB'ye kaydet
+$song->update([
+    'theme_color' => "rgb({$dominantColor[0]}, {$dominantColor[1]}, {$dominantColor[2]})"
+]);
+
+// Frontend kullanımı
+document.body.style.setProperty('--player-accent', song.theme_color);</pre>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <h4>3.3 - 10-Band Equalizer (Premium Feature)</h4>
+                    <p>Web Audio API ile profesyonel EQ</p>
+
+                    <div class="code-block">
+                        <pre>class Equalizer {
+    constructor(audioContext) {
+        this.context = audioContext;
+        this.bands = [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000];
+        this.filters = this.createFilters();
+    }
+
+    createFilters() {
+        return this.bands.map((freq, i) => {
+            const filter = this.context.createBiquadFilter();
+            filter.type = (i === 0) ? 'lowshelf' :
+                         (i === this.bands.length - 1) ? 'highshelf' :
+                         'peaking';
+            filter.frequency.value = freq;
+            filter.Q.value = 1;
+            filter.gain.value = 0;
+            return filter;
+        });
+    }
+
+    setBand(index, gain) {
+        this.filters[index].gain.value = gain;
+    }
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 İMPLEMENTATION ROADMAP</h2>
+
+            <table>
+                <tr>
+                    <th>Faz</th>
+                    <th>Task</th>
+                    <th>Estimated Time</th>
+                    <th>Priority</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Mevcut player.blade.php analizi</td>
+                    <td>30 min</td>
+                    <td><span class="priority-badge priority-critical">CRITICAL</span></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Alpine Store kurulumu</td>
+                    <td>1 hour</td>
+                    <td><span class="priority-badge priority-critical">CRITICAL</span></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>audio-engine.js extraction</td>
+                    <td>2 hours</td>
+                    <td><span class="priority-badge priority-critical">CRITICAL</span></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>queue-manager.js extraction</td>
+                    <td>1.5 hours</td>
+                    <td><span class="priority-badge priority-critical">CRITICAL</span></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Diğer modüllerin extraction'ı</td>
+                    <td>3 hours</td>
+                    <td><span class="priority-badge priority-critical">CRITICAL</span></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Blade componentlere ayırma</td>
+                    <td>2 hours</td>
+                    <td><span class="priority-badge priority-high">HIGH</span></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>CSS dosyasına taşıma</td>
+                    <td>1 hour</td>
+                    <td><span class="priority-badge priority-high">HIGH</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Bearer token authentication</td>
+                    <td>1 hour</td>
+                    <td><span class="priority-badge priority-high">HIGH</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Signed URLs implementation</td>
+                    <td>2 hours</td>
+                    <td><span class="priority-badge priority-high">HIGH</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Rate limiting setup</td>
+                    <td>30 min</td>
+                    <td><span class="priority-badge priority-high">HIGH</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>HLS AES-128 encryption</td>
+                    <td>4 hours</td>
+                    <td><span class="priority-badge priority-medium">MEDIUM</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>WaveSurfer.js integration</td>
+                    <td>2 hours</td>
+                    <td><span class="priority-badge priority-medium">MEDIUM</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Color Thief theme system</td>
+                    <td>1.5 hours</td>
+                    <td><span class="priority-badge priority-medium">MEDIUM</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>10-band equalizer</td>
+                    <td>3 hours</td>
+                    <td><span class="priority-badge priority-low">LOW</span></td>
+                </tr>
+            </table>
+
+            <p><strong>Total Estimated Time: ~24 hours</strong></p>
+        </section>
+
+        <section>
+            <h2>📝 ÖNEMLI NOTLAR</h2>
+
+            <div class="warning-box">
+                <h3>⚠️ DİKKAT EDİLMESİ GEREKENLER</h3>
+                <ul>
+                    <li><strong>Hiçbir migration oluşturma!</strong> Mevcut sistem çalışıyor, sadece kod düzenlemesi yapılacak</li>
+                    <li><strong>Users tablosuna dokunma!</strong> Universal tablo, tenant-aware değil</li>
+                    <li><strong>Mevcut özellikler bozulmamalı!</strong> Howler.js + HLS.js + Crossfade çalışıyor, sadece refactor</li>
+                    <li><strong>player.blade.php yedeğini al!</strong> 2,685 satır kodu parçalayacağız</li>
+                    <li><strong>Tenant 1001 kontrolü:</strong> Tüm yeni features sadece muzibu.com için</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <h3>✅ İLKELER</h3>
+                <ul>
+                    <li>Modüler kod: Her modül tek bir sorumluluğa sahip</li>
+                    <li>Alpine.js Store: Merkezi state yönetimi</li>
+                    <li>Progressive Enhancement: Eski tarayıcılar için fallback</li>
+                    <li>Performance: Debounce, throttle, lazy loading kullan</li>
+                    <li>Security First: Token + Signed URL + Rate Limit</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🚀 BAŞLANGIÇ STRATEJİSİ</h2>
+
+            <h3>Adım 1: Git Checkpoint</h3>
+            <div class="code-block">
+                <pre>git add .
+git commit -m "🔧 CHECKPOINT: Before player refactoring (2,685 lines → modular)"</pre>
+            </div>
+
+            <h3>Adım 2: Klasör Yapısı Oluştur</h3>
+            <div class="code-block">
+                <pre>mkdir -p public/themes/muzibu/js/player/{core,features,ui,utils}
+mkdir -p public/themes/muzibu/css/player/
+mkdir -p resources/views/themes/muzibu/components/player/</pre>
+            </div>
+
+            <h3>Adım 3: Alpine Store Kur</h3>
+            <div class="code-block">
+                <pre>// player-store.js oluştur ve app.blade.php'ye ekle
+&lt;script src="{{ asset('themes/muzibu/js/player-store.js') }}"&gt;&lt;/script&gt;</pre>
+            </div>
+
+            <h3>Adım 4: İlk Modülü Çıkar (audio-engine.js)</h3>
+            <p>En kritik kısım - Howler.js + HLS.js logic</p>
+
+            <h3>Adım 5: Test Et!</h3>
+            <div class="code-block">
+                <pre>// Kontrol listesi:
+✓ Şarkı çalıyor mu?
+✓ Crossfade çalışıyor mu?
+✓ Queue next/prev çalışıyor mu?
+✓ Volume control çalışıyor mu?
+✓ Repeat/shuffle çalışıyor mu?</pre>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI - Player Refactor & Optimization Plan<br>
+            2025-11-28 06:15<br>
+            <strong>Next Step:</strong> Onay alındıktan sonra FAZ 1 uygulamasına başla
+        </footer>
+    </div>
+</body>
+</html>

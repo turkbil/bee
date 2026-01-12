@@ -1,1 +1,923 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unimad Madencilik - Modern Teknik Mühendislik Sitesi - Tema Prompt Dokümanı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-copper {
+            background: linear-gradient(135deg, #b87333 0%, #cd7f32 50%, #a0522d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-steel {
+            background: linear-gradient(135deg, #4a5568 0%, #718096 50%, #a0aec0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+
+        <!-- Header -->
+        <header class="mb-16 text-center">
+            <div class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-500/20 to-amber-500/20 rounded-full mb-6 border border-orange-500/30">
+                <i class="fas fa-mountain text-2xl gradient-copper"></i>
+                <span class="text-orange-300 font-semibold">Mühendislik & Madencilik Template</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4">
+                <span class="gradient-copper">UNİMAD MADENCİLİK</span>
+            </h1>
+            <h2 class="text-3xl font-bold text-white mb-4">Teknik Mühendislik Hizmetleri</h2>
+            <p class="text-slate-400 text-lg">Madencilik | Mimarlık | Jeoteknik</p>
+            <div class="flex flex-wrap justify-center gap-3 mt-6">
+                <span class="px-4 py-2 bg-orange-500/20 text-orange-300 rounded-full text-sm">Madencilik</span>
+                <span class="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm">Mimarlık</span>
+                <span class="px-4 py-2 bg-emerald-500/20 text-emerald-300 rounded-full text-sm">Jeoteknik</span>
+                <span class="px-4 py-2 bg-slate-800 text-slate-300 rounded-full text-sm">5 Ocak 2026</span>
+            </div>
+        </header>
+
+        <!-- Hizmet Alanları -->
+        <section class="mb-12 bg-gradient-to-br from-orange-900/20 to-amber-900/20 border border-orange-800/50 rounded-2xl p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-cogs text-orange-400 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-orange-400">🏗️ Hizmet Alanları (3 Ana Başlık)</h3>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Madencilik -->
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-orange-800/50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-full -mr-12 -mt-12"></div>
+                    <div class="flex items-center gap-3 mb-4 relative">
+                        <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-mountain text-orange-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-bold text-orange-400 text-lg">Madencilik</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">ANA İŞ KOLU</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-400 mt-1"></i>
+                            <span class="text-slate-300">Maden Arama & Ruhsat</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-400 mt-1"></i>
+                            <span class="text-slate-300">Maden İşletme Projeleri</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-400 mt-1"></i>
+                            <span class="text-slate-300">ÇED Raporları</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-400 mt-1"></i>
+                            <span class="text-slate-300">Saha Denetimi</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-orange-400 mt-1"></i>
+                            <span class="text-slate-300">Teknik Danışmanlık</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 px-3 py-2 bg-orange-900/30 rounded-lg">
+                        <span class="text-orange-300 text-xs font-semibold">ANA ODAK</span>
+                    </div>
+                </div>
+
+                <!-- Mimarlık -->
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-blue-800/50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full -mr-12 -mt-12"></div>
+                    <div class="flex items-center gap-3 mb-4 relative">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-drafting-compass text-blue-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-bold text-blue-400 text-lg">Mimarlık</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">İŞ KOLU</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span class="text-slate-300">Mimari Proje Tasarımı</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span class="text-slate-300">Yapı Ruhsatı İşlemleri</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span class="text-slate-300">İmar Planı Danışmanlık</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span class="text-slate-300">3D Modelleme</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span class="text-slate-300">Şantiye Kontrolü</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 px-3 py-2 bg-blue-900/30 rounded-lg">
+                        <span class="text-blue-300 text-xs font-semibold">İŞ KOLU</span>
+                    </div>
+                </div>
+
+                <!-- Jeoteknik -->
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-emerald-800/50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full -mr-12 -mt-12"></div>
+                    <div class="flex items-center gap-3 mb-4 relative">
+                        <div class="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-layer-group text-emerald-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-bold text-emerald-400 text-lg">Jeoteknik</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">İŞ KOLU</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-1"></i>
+                            <span class="text-slate-300">Zemin Etüdleri</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-1"></i>
+                            <span class="text-slate-300">Sondaj Çalışmaları</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-1"></i>
+                            <span class="text-slate-300">Laboratuvar Analiz</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-1"></i>
+                            <span class="text-slate-300">Temel Tasarımı</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-1"></i>
+                            <span class="text-slate-300">Şev Stabilite Analizi</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 px-3 py-2 bg-emerald-900/30 rounded-lg">
+                        <span class="text-emerald-300 text-xs font-semibold">İŞ KOLU</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-12 bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-800/50 rounded-2xl p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-green-400 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-green-400">📝 Basit Anlatım (Herkes İçin)</h3>
+            </div>
+            <div class="space-y-4 text-slate-300 leading-relaxed">
+                <p class="text-lg">
+                    <strong class="text-white">Ne İstiyoruz?</strong> Unimad Madencilik'in mevcut sitesini güncelleyerek,
+                    3 ana hizmet alanını (Madencilik, Mimarlık, Jeoteknik) profesyonel şekilde tanıtan modern bir
+                    mühendislik firması sitesi oluşturmak.
+                </p>
+                <p>
+                    <strong class="text-white">Nasıl Görünecek?</strong> Bakır-turuncu ve çelik-gri tonları (madencilik/mühendislik hissi),
+                    teknik çizim öğeleri, profesyonel kurumsal görünüm. Madencilik ağırlıklı ama 3 iş kolu dengeli gösterilecek.
+                </p>
+                <p>
+                    <strong class="text-white">Ana Mesaj:</strong>
+                </p>
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-orange-500/30">
+                    <p class="text-2xl font-bold text-center gradient-copper">"Tecrübe ve Bilgi Birikimimizi Güncel Teknoloji ile Birleştiriyoruz"</p>
+                    <p class="text-center text-slate-400 mt-2">Kusursuz Hizmet | Teknik Uzmanlık | Güvenilir Çözümler</p>
+                </div>
+                <p>
+                    <strong class="text-white">Hangi Bölümler Olacak?</strong>
+                </p>
+                <ul class="space-y-2 ml-6">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span><strong>Ana Sayfa:</strong> Hero (madencilik görseli), 3 hizmet kartı, neden biz, referanslar, iletişim</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span><strong>Kurumsal:</strong> Hakkımızda, İnsan Kaynakları, Değerlerimiz, Kalite Politikası</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span><strong>Hizmetler:</strong> Madencilik (detaylı), Mimarlık (detaylı), Jeoteknik (detaylı)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span><strong>Referanslar:</strong> Tamamlanan projeler, müşteri logoları</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span><strong>YTK:</strong> Yetki Teknik Koordinasyon bilgileri</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span><strong>İletişim:</strong> Form, harita, Ankara ofis bilgileri</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-12 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border border-blue-800/50 rounded-2xl p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-code text-blue-400 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-blue-400">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+                    <h4 class="font-semibold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-orange-400"></i>
+                        Genel Bilgiler
+                    </h4>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between py-2 border-b border-slate-800">
+                            <span class="text-slate-400">Sektör:</span>
+                            <span class="text-white font-medium">Madencilik / Mühendislik</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-800">
+                            <span class="text-slate-400">Site Tipi:</span>
+                            <span class="text-white font-medium">Kurumsal / Teknik Hizmetler</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-800">
+                            <span class="text-slate-400">Ana Tarz:</span>
+                            <span class="text-white font-medium">Profesyonel / Technical / Industrial</span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-slate-400">Varsayılan Tema:</span>
+                            <span class="text-white font-medium">Dark Mode (Light mode toggle)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+                    <h4 class="font-semibold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-palette text-blue-400"></i>
+                        Stil Detayları
+                    </h4>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between py-2 border-b border-slate-800">
+                            <span class="text-slate-400">Font:</span>
+                            <span class="text-white font-medium">Inter / Roboto</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-800">
+                            <span class="text-slate-400">İkon Seti:</span>
+                            <span class="text-white font-medium">FontAwesome 6.5</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-800">
+                            <span class="text-slate-400">Animasyon:</span>
+                            <span class="text-white font-medium">AOS + Subtle transitions</span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-slate-400">Köşeler:</span>
+                            <span class="text-white font-medium">rounded-lg (keskin-profesyonel)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Renk Paleti -->
+        <section class="mb-12 bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-swatchbook text-orange-400"></i>
+                Renk Paleti (Madencilik + Mühendislik)
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                <div class="text-center">
+                    <div class="w-full h-20 rounded-xl bg-gradient-to-br from-orange-600 to-amber-700 mb-3 shadow-lg shadow-orange-500/30"></div>
+                    <div class="text-sm font-medium text-white">Copper Orange</div>
+                    <div class="text-xs text-slate-400">Madencilik Ana</div>
+                    <div class="text-xs text-slate-500">#b87333</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-20 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 mb-3 shadow-lg shadow-blue-500/30"></div>
+                    <div class="text-sm font-medium text-white">Architect Blue</div>
+                    <div class="text-xs text-slate-400">Mimarlık</div>
+                    <div class="text-xs text-slate-500">#3b82f6</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-20 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 mb-3 shadow-lg shadow-emerald-500/30"></div>
+                    <div class="text-sm font-medium text-white">Geo Green</div>
+                    <div class="text-xs text-slate-400">Jeoteknik</div>
+                    <div class="text-xs text-slate-500">#10b981</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-20 rounded-xl bg-gradient-to-br from-slate-500 to-slate-700 mb-3 shadow-lg shadow-slate-500/30"></div>
+                    <div class="text-sm font-medium text-white">Steel Gray</div>
+                    <div class="text-xs text-slate-400">Teknik/Nötr</div>
+                    <div class="text-xs text-slate-500">#64748b</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-20 rounded-xl bg-slate-950 border border-slate-700 mb-3"></div>
+                    <div class="text-sm font-medium text-white">Background</div>
+                    <div class="text-xs text-slate-400">Ana Arkaplan</div>
+                    <div class="text-xs text-slate-500">#0a0a0a</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-full h-20 rounded-xl bg-white mb-3"></div>
+                    <div class="text-sm font-medium text-white">Light Mode BG</div>
+                    <div class="text-xs text-slate-400">Açık Tema</div>
+                    <div class="text-xs text-slate-500">#ffffff</div>
+                </div>
+            </div>
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    <strong class="text-white">Renk Stratejisi:</strong> Bakır-turuncu (madencilik/maden) + Mavi (mimarlık/teknik çizim) +
+                    Yeşil (jeoteknik/toprak). Her hizmet alanının kendi renk kodu var. Steel gray nötr elementler için kullanılır.
+                    Teknik çizim hissi için ince çizgiler ve grid pattern kullanılabilir.
+                </p>
+            </div>
+        </section>
+
+        <!-- Layout Seçimleri -->
+        <section class="mb-12 bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-layer-group text-cyan-400"></i>
+                Layout Seçimleri
+            </h3>
+            <div class="space-y-4">
+                <!-- Header -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">Header/Navigation</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full font-medium">#5 - Technical Clean</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        Sticky header: Logo sol, ana menü ortada, telefon + dil seçici sağda. Top bar: email + adres + sosyal medya
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        subtle border-bottom, minimal design, hover underline effect, mobile hamburger menu
+                    </p>
+                </div>
+
+                <!-- Hero -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">Hero Section</span>
+                        <span class="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full font-medium">#22 - Split Technical</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        Sol %60: Büyük başlık + slogan + 2 CTA buton (Hizmetler, İletişim). Sağ %40: Madencilik/saha fotoğrafı veya teknik illüstrasyon
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        Gradient overlay on image, geometric accent shapes, subtle grid pattern background, professional typography
+                    </p>
+                </div>
+
+                <!-- Hizmetler -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-emerald-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">Hizmetler Section</span>
+                        <span class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full font-medium">#18 - Icon Cards 3-col</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        3-column grid: Madencilik (turuncu), Mimarlık (mavi), Jeoteknik (yeşil). Her kartta: Büyük ikon + başlık + kısa açıklama + "Detay" linki
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        Color-coded top borders, hover lift + glow effect, icon animation on hover, consistent card height
+                    </p>
+                </div>
+
+                <!-- Neden Biz -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">Neden Biz Section</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full font-medium">#30 - Values Grid</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        6 değer kartı (2x3 grid): Bilgili olmak, Güvenilirlik, Verimlilik, Başarı odaklılık, Araştırmacı bakış, Saha denetimi
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        Small icon + title + short description, alternating background shades, subtle dividers
+                    </p>
+                </div>
+
+                <!-- İstatistikler -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">Stats Section</span>
+                        <span class="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full font-medium">#45 - Counter Row</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        4-column counter: Yıllık Tecrübe, Tamamlanan Proje, Aktif Müşteri, Uzman Kadro. Animated count-up on scroll
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        Gradient background strip, large numbers, icon + label below, intersection observer animation
+                    </p>
+                </div>
+
+                <!-- Referanslar -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-emerald-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">Referanslar Section</span>
+                        <span class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full font-medium">#12 - Logo Grid</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        5-column logo grid: 15+ müşteri logosu. Grayscale → color on hover. Başlık: "Güvenilir Çözüm Ortaklarımız"
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        Uniform logo sizing, subtle borders, tooltip with company name, responsive grid adjustment
+                    </p>
+                </div>
+
+                <!-- Hizmet Detay -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">Hizmet Detay Sayfaları</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full font-medium">#66 - Service Detail</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        Her hizmet için ayrı sayfa: Hero banner + hizmet listesi + süreç adımları + ilgili projeler + CTA
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        Sidebar navigation (alt hizmetler), accordion for details, related projects carousel, contact CTA at bottom
+                    </p>
+                </div>
+
+                <!-- CTA -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">CTA Section</span>
+                        <span class="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full font-medium">#8 - Quote Request</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        Split layout: Sol - Başlık + açıklama + telefon. Sağ - Hızlı iletişim formu (isim, email, telefon, mesaj)
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        Gradient background, form validation, phone click-to-call, success message animation
+                    </p>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-emerald-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-semibold text-white text-lg">Footer</span>
+                        <span class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full font-medium">#20 - Technical 4-col</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-2">
+                        4-column: Logo + hakkında | Hizmetler linkleri | Kurumsal linkler | İletişim (adres, tel, email). Alt: Copyright + sosyal medya
+                    </p>
+                    <p class="text-slate-500 text-xs">
+                        Dark background (slate-900), top border accent (copper gradient), subtle map embed option
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Sırası -->
+        <section class="mb-12 bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-list-ol text-orange-400"></i>
+                Ana Sayfa Section Sıralaması
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">1</span>
+                    <span class="text-white font-medium">Hero (Madencilik Vurgusu)</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">2</span>
+                    <span class="text-white font-medium">Hizmetler (3 Kart)</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">3</span>
+                    <span class="text-white font-medium">Hakkımızda Özet</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">4</span>
+                    <span class="text-white font-medium">Neden Biz (6 Değer)</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">5</span>
+                    <span class="text-white font-medium">İstatistikler (Sayaçlar)</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">6</span>
+                    <span class="text-white font-medium">Referanslar (Logo Grid)</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">7</span>
+                    <span class="text-white font-medium">CTA (Teklif Al + Form)</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">8</span>
+                    <span class="text-white font-medium">Footer</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Site Haritası -->
+        <section class="mb-12 bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-sitemap text-orange-400"></i>
+                Site Haritası (Sayfa Yapısı)
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Ana Sayfa -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-orange-500/30">
+                    <h4 class="font-bold text-orange-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-home"></i> Ana Sayfa
+                    </h4>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>• Hero Section</li>
+                        <li>• 3 Hizmet Kartı</li>
+                        <li>• Hakkımızda Özet</li>
+                        <li>• Neden Biz</li>
+                        <li>• İstatistikler</li>
+                        <li>• Referanslar</li>
+                        <li>• İletişim CTA</li>
+                    </ul>
+                </div>
+
+                <!-- Kurumsal -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-blue-500/30">
+                    <h4 class="font-bold text-blue-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-building"></i> Kurumsal
+                    </h4>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>• Hakkımızda</li>
+                        <li>• İnsan Kaynakları</li>
+                        <li>• Değerlerimiz</li>
+                        <li>• Kalite Politikası</li>
+                    </ul>
+                </div>
+
+                <!-- Hizmetler -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-emerald-500/30">
+                    <h4 class="font-bold text-emerald-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-cogs"></i> Hizmetler
+                    </h4>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>• <strong class="text-orange-300">Madencilik</strong> (Detay Sayfa)</li>
+                        <li class="ml-4 text-slate-400">- Maden Arama</li>
+                        <li class="ml-4 text-slate-400">- Ruhsat İşlemleri</li>
+                        <li class="ml-4 text-slate-400">- İşletme Projeleri</li>
+                        <li>• <strong class="text-blue-300">Mimarlık</strong> (Detay Sayfa)</li>
+                        <li>• <strong class="text-emerald-300">Jeoteknik</strong> (Detay Sayfa)</li>
+                    </ul>
+                </div>
+
+                <!-- Referanslar -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-orange-500/30">
+                    <h4 class="font-bold text-orange-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-handshake"></i> Referanslar
+                    </h4>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>• Tamamlanan Projeler</li>
+                        <li>• Müşteri Logoları</li>
+                        <li>• Proje Galerisi</li>
+                    </ul>
+                </div>
+
+                <!-- YTK -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-blue-500/30">
+                    <h4 class="font-bold text-blue-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-certificate"></i> YTK
+                    </h4>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>• Yetki Teknik Koordinasyon</li>
+                        <li>• Mevzuat Bilgileri</li>
+                        <li>• Belge/Sertifikalar</li>
+                    </ul>
+                </div>
+
+                <!-- İletişim -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-emerald-500/30">
+                    <h4 class="font-bold text-emerald-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-envelope"></i> İletişim
+                    </h4>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>• İletişim Formu</li>
+                        <li>• Ankara Ofis Bilgileri</li>
+                        <li>• Harita</li>
+                        <li>• Çalışma Saatleri</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Şirket Değerleri -->
+        <section class="mb-12 bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700 rounded-2xl p-8">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-gem text-orange-400"></i>
+                Temel Değerler (Mevcut Siteden)
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-slate-900/70 rounded-xl p-5 border border-slate-700">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-book-open text-orange-400 text-xl"></i>
+                        <h4 class="font-semibold text-white">Bilgili Olmak</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">Sürekli öğrenme ve gelişim</p>
+                </div>
+                <div class="bg-slate-900/70 rounded-xl p-5 border border-slate-700">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-shield-alt text-blue-400 text-xl"></i>
+                        <h4 class="font-semibold text-white">Güvenilirlik</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">İşi tam ve eksiksiz yapmak</p>
+                </div>
+                <div class="bg-slate-900/70 rounded-xl p-5 border border-slate-700">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-tachometer-alt text-emerald-400 text-xl"></i>
+                        <h4 class="font-semibold text-white">Verimlilik</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">Yüksek personel performansı</p>
+                </div>
+                <div class="bg-slate-900/70 rounded-xl p-5 border border-slate-700">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-bullseye text-orange-400 text-xl"></i>
+                        <h4 class="font-semibold text-white">Başarı Odaklılık</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">Her koşulda çözüm üretme</p>
+                </div>
+                <div class="bg-slate-900/70 rounded-xl p-5 border border-slate-700">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-search text-blue-400 text-xl"></i>
+                        <h4 class="font-semibold text-white">Araştırmacı Bakış</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">Personel görüşlerine değer verme</p>
+                </div>
+                <div class="bg-slate-900/70 rounded-xl p-5 border border-slate-700">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-hard-hat text-emerald-400 text-xl"></i>
+                        <h4 class="font-semibold text-white">Saha Denetimi</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">Düzenli raporlama ve kontrol</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leonardo.ai Görsel Promptları -->
+        <section class="mb-12 bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-image text-orange-400"></i>
+                Leonardo.ai Görsel Promptları
+            </h3>
+            <p class="text-slate-400 text-sm mb-8">
+                Aşağıdaki promptlar Leonardo.ai veya Midjourney ile görsel üretmek için hazırlanmıştır.
+            </p>
+
+            <div class="space-y-6">
+                <!-- Hero Madencilik -->
+                <div class="bg-slate-800/30 rounded-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white text-lg">hero-mining-site.jpg</span>
+                        <span class="text-xs text-slate-400">1920x1080</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+                        Aerial view of open pit mining operation at golden hour, massive excavation site with terraced levels,
+                        heavy mining equipment including excavators and haul trucks, dramatic Turkish landscape,
+                        professional industrial photography, warm copper and amber tones from sunset light,
+                        dust particles in air creating atmospheric effect, 8k quality, cinematic composition
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1 bg-orange-900/50 text-orange-300 rounded-full">Hero Section</span>
+                        <span class="px-3 py-1 bg-orange-900/50 text-orange-300 rounded-full">Madencilik</span>
+                    </div>
+                </div>
+
+                <!-- Mimarlık -->
+                <div class="bg-slate-800/30 rounded-xl p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white text-lg">service-architecture.jpg</span>
+                        <span class="text-xs text-slate-400">1200x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+                        Modern architect workspace with blueprints and 3D building models, professional drafting table
+                        with technical drawings, computer screens showing CAD software, ruler and compass tools,
+                        clean professional office environment, blue accent lighting, isometric architectural models,
+                        contemporary Turkish commercial building design visible, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1 bg-blue-900/50 text-blue-300 rounded-full">Hizmet Görseli</span>
+                        <span class="px-3 py-1 bg-blue-900/50 text-blue-300 rounded-full">Mimarlık</span>
+                    </div>
+                </div>
+
+                <!-- Jeoteknik -->
+                <div class="bg-slate-800/30 rounded-xl p-6 border-l-4 border-emerald-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white text-lg">service-geotechnical.jpg</span>
+                        <span class="text-xs text-slate-400">1200x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+                        Geotechnical soil sampling operation, drilling rig extracting core samples, engineers in hard hats
+                        examining soil layers, cross-section view of ground strata, laboratory soil testing equipment,
+                        earth science and geology concept, green and brown earth tones, professional field work setting,
+                        technical precision, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1 bg-emerald-900/50 text-emerald-300 rounded-full">Hizmet Görseli</span>
+                        <span class="px-3 py-1 bg-emerald-900/50 text-emerald-300 rounded-full">Jeoteknik</span>
+                    </div>
+                </div>
+
+                <!-- Ekip Fotoğrafı -->
+                <div class="bg-slate-800/30 rounded-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white text-lg">team-engineers.jpg</span>
+                        <span class="text-xs text-slate-400">1200x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+                        Professional Turkish engineering team at mining site, group of 5-6 engineers wearing hard hats
+                        and high-visibility vests, standing with confidence, mining equipment in background,
+                        diverse professional appearances, warm natural lighting, corporate team photo style,
+                        mountain landscape visible, friendly but professional expressions, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1 bg-orange-900/50 text-orange-300 rounded-full">Hakkımızda</span>
+                        <span class="px-3 py-1 bg-blue-900/50 text-blue-300 rounded-full">Ekip</span>
+                    </div>
+                </div>
+
+                <!-- Saha Denetimi -->
+                <div class="bg-slate-800/30 rounded-xl p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white text-lg">field-inspection.jpg</span>
+                        <span class="text-xs text-slate-400">1200x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+                        Mining engineer conducting field inspection with tablet device, reviewing geological data on site,
+                        professional work attire with safety equipment, rocky terrain background, serious focused expression,
+                        technical documentation visible, modern technology meets fieldwork, copper and steel color palette,
+                        professional documentary photography style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1 bg-blue-900/50 text-blue-300 rounded-full">Değerler</span>
+                        <span class="px-3 py-1 bg-emerald-900/50 text-emerald-300 rounded-full">Saha Çalışması</span>
+                    </div>
+                </div>
+
+                <!-- Background Pattern -->
+                <div class="bg-slate-800/30 rounded-xl p-6 border-l-4 border-emerald-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white text-lg">bg-technical-grid.png</span>
+                        <span class="text-xs text-slate-400">1920x1080 (tileable)</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+                        Abstract technical blueprint background pattern, subtle grid lines and engineering schematics,
+                        topographic contour lines fading in and out, copper and slate gray color palette on dark background,
+                        very subtle opacity (15-20%), professional CAD/technical drawing aesthetic, seamless tileable pattern,
+                        suitable for overlay use, 4k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1 bg-emerald-900/50 text-emerald-300 rounded-full">Background</span>
+                        <span class="px-3 py-1 bg-slate-700 text-slate-300 rounded-full">Overlay Pattern</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İçerik Önerileri -->
+        <section class="mb-12 bg-gradient-to-br from-orange-900/20 to-amber-900/20 border border-orange-800/50 rounded-2xl p-8">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-file-alt text-orange-400"></i>
+                İçerik Önerileri (Metin)
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Ana Slogan -->
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-orange-500/30">
+                    <h4 class="font-semibold text-orange-400 mb-3">Ana Slogan & Motto</h4>
+                    <div class="space-y-3">
+                        <p class="text-2xl font-bold text-white">"Tecrübe ve Bilgi Birikimimizi Güncel Teknoloji ile Birleştiriyoruz"</p>
+                        <p class="text-slate-300">Alt Başlık: "Kusursuz Hizmet, Teknik Uzmanlık, Güvenilir Çözümler"</p>
+                        <p class="text-slate-400 text-sm">Mevcut siteden alınmıştır - tutarlılık için korunmalı</p>
+                    </div>
+                </div>
+
+                <!-- Hakkımızda -->
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-blue-500/30">
+                    <h4 class="font-semibold text-blue-400 mb-3">Hakkımızda Özet</h4>
+                    <p class="text-slate-300 leading-relaxed">
+                        Unimad Madencilik, Ankara merkezli bir mühendislik firması olarak madencilik, mimarlık ve jeoteknik
+                        alanlarında kapsamlı teknik hizmetler sunmaktadır. Tecrübeli mühendis kadromuzla maden arama ve ruhsat
+                        işlemlerinden zemin etütlerine, mimari projelerden saha denetimine kadar geniş bir yelpazede
+                        müşterilerimize kusursuz çözümler üretiyoruz.
+                    </p>
+                </div>
+
+                <!-- Madencilik Açıklaması -->
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-orange-500/30">
+                    <h4 class="font-semibold text-orange-400 mb-3">Madencilik Hizmeti Açıklaması</h4>
+                    <p class="text-slate-300 leading-relaxed">
+                        Maden arama faaliyetlerinden ruhsat işlemlerine, ÇED raporlarından işletme projelerine kadar
+                        madencilik sektörünün tüm ihtiyaçlarına cevap veriyoruz. MAPEG mevzuatına tam uyumlu çalışma
+                        prensiplerimizle, projelerinizi başından sonuna kadar yönetiyoruz. Saha denetimleri ve periyodik
+                        raporlama ile yatırımlarınızı güvence altına alıyoruz.
+                    </p>
+                </div>
+
+                <!-- Mimarlık Açıklaması -->
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-blue-500/30">
+                    <h4 class="font-semibold text-blue-400 mb-3">Mimarlık Hizmeti Açıklaması</h4>
+                    <p class="text-slate-300 leading-relaxed">
+                        Mimari proje tasarımından yapı ruhsatı işlemlerine, imar planı danışmanlığından 3D modellemeye
+                        kadar mimarlık alanında profesyonel hizmetler sunuyoruz. Estetik ve fonksiyonelliği bir araya
+                        getiren projelerimizle, yapılarınızı hayata geçiriyoruz.
+                    </p>
+                </div>
+
+                <!-- Jeoteknik Açıklaması -->
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-emerald-500/30">
+                    <h4 class="font-semibold text-emerald-400 mb-3">Jeoteknik Hizmeti Açıklaması</h4>
+                    <p class="text-slate-300 leading-relaxed">
+                        Zemin etütleri, sondaj çalışmaları, laboratuvar analizleri ve temel tasarımı konularında
+                        uzman ekibimizle hizmet veriyoruz. Şev stabilite analizleri ve zemin iyileştirme çözümleriyle
+                        yapılarınızın güvenli temeller üzerine inşa edilmesini sağlıyoruz.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- İletişim Bilgileri -->
+        <section class="mb-12 bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-phone text-blue-400"></i>
+                İletişim Bilgileri
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                    <h4 class="font-semibold text-white mb-4">Merkez Ofis - Ankara</h4>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-orange-400 mt-1"></i>
+                            <span>Emek Mah., Çankaya/Ankara</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-phone text-orange-400 mt-1"></i>
+                            <span>+90 (312) 212 68 09/10</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-envelope text-orange-400 mt-1"></i>
+                            <span>info@unimadmadencilik.com</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                    <h4 class="font-semibold text-white mb-4">Çalışma Saatleri</h4>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-clock text-blue-400 mt-1"></i>
+                            <span>Pazartesi - Cuma: 09:00 - 18:00</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-calendar-times text-blue-400 mt-1"></i>
+                            <span>Cumartesi - Pazar: Kapalı</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kullanılan Teknolojiler -->
+        <section class="mb-12 bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-code text-emerald-400"></i>
+                Kullanılan Teknolojiler
+            </h3>
+            <div class="flex flex-wrap gap-3">
+                <span class="px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 rounded-lg text-sm font-medium">Tailwind CSS v4</span>
+                <span class="px-4 py-2 bg-orange-500/10 border border-orange-500/30 text-orange-300 rounded-lg text-sm font-medium">Alpine.js</span>
+                <span class="px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded-lg text-sm font-medium">AOS (Animate On Scroll)</span>
+                <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/30 text-blue-300 rounded-lg text-sm font-medium">FontAwesome 6.5</span>
+                <span class="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 rounded-lg text-sm font-medium">Google Fonts (Inter/Roboto)</span>
+                <span class="px-4 py-2 bg-red-500/10 border border-red-500/30 text-red-300 rounded-lg text-sm font-medium">Leaflet (Harita)</span>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center pt-12 border-t border-slate-800">
+            <div class="mb-6">
+                <p class="text-slate-500 text-sm mb-2">
+                    <i class="fas fa-robot text-orange-400 mr-2"></i>
+                    Bu doküman Claude AI tarafından otomatik oluşturulmuştur.
+                </p>
+                <p class="text-slate-600 text-xs">
+                    Template Design System v3.0 - Unimad Madencilik Teknik Mühendislik Sitesi
+                </p>
+            </div>
+            <div class="inline-flex gap-4">
+                <a href="https://ixtif.com" class="text-slate-500 hover:text-orange-400 transition-colors text-sm">
+                    <i class="fas fa-home mr-1"></i> Ana Sayfa
+                </a>
+                <a href="https://ixtif.com/readme/" class="text-slate-500 hover:text-orange-400 transition-colors text-sm">
+                    <i class="fas fa-th-large mr-1"></i> Tüm Raporlar
+                </a>
+            </div>
+        </footer>
+
+    </div>
+</body>
+</html>

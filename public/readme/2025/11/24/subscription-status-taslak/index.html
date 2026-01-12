@@ -1,1 +1,784 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonelik Durumu - Tasarım Taslağı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .scenario {
+            margin-bottom: 60px;
+        }
+
+        .scenario-title {
+            font-size: 1.8rem;
+            color: #60a5fa;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 25px;
+        }
+
+        .plan-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .badge-info {
+            background: #06b6d4;
+            color: white;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .price-unit {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+        }
+
+        .remaining-days {
+            margin-top: 25px;
+        }
+
+        .remaining-days-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 20px;
+            transition: width 0.3s ease;
+        }
+
+        .days-text {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #60a5fa;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #cbd5e1;
+        }
+
+        .feature-item i {
+            color: #10b981;
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 2px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #60a5fa;
+            border-bottom: 2px solid #334155;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-link {
+            color: #60a5fa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-link:hover {
+            color: #3b82f6;
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-label {
+            font-size: 1.1rem;
+            color: #e2e8f0;
+        }
+
+        .toggle-description {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: #64748b;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #10b981;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 32px;
+        }
+
+        .info-alert {
+            background: linear-gradient(135deg, #0e7490, #06b6d4);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .info-alert i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .info-alert-content {
+            flex: 1;
+        }
+
+        .info-alert-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .info-alert-text {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero-card {
+                padding: 25px;
+            }
+
+            .plan-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .price {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-crown"></i> Abonelik Durumu - Tasarım Taslağı</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-24 |
+                🎯 Sayfa: Kullanıcı Profil > Aboneliğim Sekmesi |
+                🎨 Tema: Muzibu (Modern, Gradient)
+            </div>
+        </header>
+
+        <!-- SENARYO 1: NORMAL KULLANICI -->
+        <div class="scenario">
+            <h2 class="scenario-title">
+                <i class="fas fa-user"></i>
+                Senaryo 1: Normal Kullanıcı (Premium Plan - 15 Gün Kaldı)
+            </h2>
+
+            <!-- Hero Card -->
+            <div class="hero-card">
+                <div class="hero-content">
+                    <div class="plan-header">
+                        <div>
+                            <div class="plan-name">
+                                <i class="fas fa-gem"></i> Premium Plan
+                            </div>
+                            <span class="badge badge-success">
+                                <i class="fas fa-check-circle"></i> Aktif
+                            </span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="price">₺99<span class="price-unit">/ay</span></div>
+                        </div>
+                    </div>
+
+                    <div class="remaining-days">
+                        <div class="remaining-days-label">Abonelik Bitiş Tarihi: 09 Aralık 2025</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 50%;"></div>
+                        </div>
+                        <div class="days-text">
+                            <i class="far fa-clock"></i> 15 gün kaldı
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan Özellikleri -->
+            <div class="section">
+                <h3 class="section-title">
+                    <i class="fas fa-list-check"></i>
+                    Plan Özellikleri
+                </h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Sınırsız Playlist Oluşturma</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Reklamsız Müzik Dinleme</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>HD Ses Kalitesi</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Offline İndirme (500 Şarkı)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Çoklu Cihaz Desteği (3 Cihaz)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Öncelikli Müşteri Desteği</span>
+                    </div>
+                </div>
+
+                <div class="button-group" style="margin-top: 25px;">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-arrows-rotate"></i>
+                        Plan Değiştir
+                    </a>
+                </div>
+            </div>
+
+            <!-- Otomatik Yenileme -->
+            <div class="section">
+                <h3 class="section-title">
+                    <i class="fas fa-sync-alt"></i>
+                    Otomatik Yenileme
+                </h3>
+
+                <div class="toggle-container">
+                    <div>
+                        <div class="toggle-label">Otomatik Yenileme</div>
+                        <div class="toggle-description">Aboneliğiniz otomatik olarak yenilenecek</div>
+                    </div>
+                    <div class="toggle-switch active"></div>
+                </div>
+
+                <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.8;">
+                    <i class="fas fa-info-circle"></i>
+                    Otomatik yenileme açık olduğunda, aboneliğiniz bitiş tarihinden önce otomatik olarak yenilenir.
+                    Kayıtlı kredi kartınızdan ödeme alınır. Dilediğiniz zaman kapatabilirsiniz.
+                </p>
+            </div>
+
+            <!-- Ödeme Geçmişi -->
+            <div class="section">
+                <h3 class="section-title">
+                    <i class="fas fa-receipt"></i>
+                    Ödeme Geçmişi
+                </h3>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Plan</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>01 Kasım 2025</td>
+                                <td>Premium Plan</td>
+                                <td>₺99.00</td>
+                                <td><span class="badge badge-success">Başarılı</span></td>
+                                <td>
+                                    <a href="#" class="btn-link">
+                                        <i class="fas fa-file-invoice"></i> Fatura
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>01 Ekim 2025</td>
+                                <td>Premium Plan</td>
+                                <td>₺99.00</td>
+                                <td><span class="badge badge-success">Başarılı</span></td>
+                                <td>
+                                    <a href="#" class="btn-link">
+                                        <i class="fas fa-file-invoice"></i> Fatura
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>01 Eylül 2025</td>
+                                <td>Basic Plan</td>
+                                <td>₺49.00</td>
+                                <td><span class="badge badge-success">Başarılı</span></td>
+                                <td>
+                                    <a href="#" class="btn-link">
+                                        <i class="fas fa-file-invoice"></i> Fatura
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>01 Ağustos 2025</td>
+                                <td>Basic Plan</td>
+                                <td>₺49.00</td>
+                                <td><span class="badge badge-success">Başarılı</span></td>
+                                <td>
+                                    <a href="#" class="btn-link">
+                                        <i class="fas fa-file-invoice"></i> Fatura
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>01 Temmuz 2025</td>
+                                <td>Basic Plan</td>
+                                <td>₺49.00</td>
+                                <td><span class="badge badge-success">Başarılı</span></td>
+                                <td>
+                                    <a href="#" class="btn-link">
+                                        <i class="fas fa-file-invoice"></i> Fatura
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 15px; text-align: right;">
+                    <a href="#" class="btn-link">
+                        <i class="fas fa-history"></i> Tüm Geçmişi Görüntüle
+                    </a>
+                </div>
+            </div>
+
+            <!-- Aboneliği İptal Et -->
+            <div class="section">
+                <h3 class="section-title">
+                    <i class="fas fa-ban"></i>
+                    Aboneliği İptal Et
+                </h3>
+
+                <p style="color: #94a3b8; margin-bottom: 20px; line-height: 1.8;">
+                    Aboneliğinizi iptal ettiğinizde, mevcut dönem sonuna kadar (09 Aralık 2025) tüm özelliklere erişmeye devam edeceksiniz.
+                    İptal işlemini istediğiniz zaman geri alabilirsiniz.
+                </p>
+
+                <button class="btn btn-danger">
+                    <i class="fas fa-times-circle"></i>
+                    Aboneliği İptal Et
+                </button>
+            </div>
+        </div>
+
+        <!-- SENARYO 2: KURUMSAL ÜYE -->
+        <div class="scenario">
+            <h2 class="scenario-title">
+                <i class="fas fa-building"></i>
+                Senaryo 2: Kurumsal Üye (Kurum Tarafından Yönetiliyor)
+            </h2>
+
+            <!-- Hero Card -->
+            <div class="hero-card">
+                <div class="hero-content">
+                    <div class="plan-header">
+                        <div>
+                            <div class="plan-name">
+                                <i class="fas fa-briefcase"></i> Kurumsal Plan
+                            </div>
+                            <span class="badge badge-info">
+                                <i class="fas fa-building"></i> Kurumsal Üye
+                            </span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="price">-<span class="price-unit"></span></div>
+                            <div style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 5px;">
+                                Kurum tarafından karşılanıyor
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="remaining-days">
+                        <div class="remaining-days-label">Kurum Abonelik Durumu</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%;"></div>
+                        </div>
+                        <div class="days-text">
+                            <i class="fas fa-infinity"></i> Süresiz Erişim
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bilgilendirme Mesajı -->
+            <div class="info-alert">
+                <i class="fas fa-info-circle"></i>
+                <div class="info-alert-content">
+                    <div class="info-alert-title">Kurumsal Üye Bilgilendirmesi</div>
+                    <div class="info-alert-text">
+                        Aboneliğiniz <strong>Acme Corporation</strong> tarafından yönetilmektedir.
+                        Plan değişiklikleri, ödeme işlemleri ve iptal işlemleri sadece kurum yöneticisi tarafından yapılabilir.
+                        Sorularınız için kurum yöneticinizle iletişime geçebilirsiniz.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan Özellikleri -->
+            <div class="section">
+                <h3 class="section-title">
+                    <i class="fas fa-list-check"></i>
+                    Plan Özellikleri
+                </h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Sınırsız Playlist Oluşturma</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Reklamsız Müzik Dinleme</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>HD Ses Kalitesi</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Offline İndirme (Sınırsız)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Çoklu Cihaz Desteği (5 Cihaz)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Premium Müşteri Desteği</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Kurum İçi Analitik Dashboard</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>API Entegrasyonu</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px; padding: 15px; background: rgba(15, 23, 42, 0.3); border-radius: 8px;">
+                    <p style="color: #94a3b8; font-size: 0.95rem;">
+                        <i class="fas fa-shield-halved"></i>
+                        <strong>Kurum Yöneticisi:</strong> admin@acmecorp.com
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kullanım İstatistikleri (Kurumsal Özel) -->
+            <div class="section">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    Bu Ay Kullanım İstatistikleriniz
+                </h3>
+
+                <div class="features-grid">
+                    <div style="background: rgba(15, 23, 42, 0.3); padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #60a5fa; margin-bottom: 5px;">
+                            <i class="fas fa-headphones"></i> 127
+                        </div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">Dinlenen Şarkı</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.3); padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 5px;">
+                            <i class="fas fa-clock"></i> 48.5
+                        </div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">Dinleme Saati</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.3); padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #f59e0b; margin-bottom: 5px;">
+                            <i class="fas fa-list-ul"></i> 12
+                        </div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">Oluşturulan Playlist</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.3); padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #ec4899; margin-bottom: 5px;">
+                            <i class="fas fa-download"></i> 45
+                        </div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">İndirilen Şarkı</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yardım ve Destek -->
+            <div class="section">
+                <h3 class="section-title">
+                    <i class="fas fa-question-circle"></i>
+                    Yardım ve Destek
+                </h3>
+
+                <p style="color: #94a3b8; margin-bottom: 20px; line-height: 1.8;">
+                    Aboneliğinizle ilgili sorularınız için öncelikle kurum yöneticinizle iletişime geçin.
+                    Teknik destek için 7/24 müşteri hizmetlerimize ulaşabilirsiniz.
+                </p>
+
+                <div class="button-group">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-life-ring"></i>
+                        Destek Merkezi
+                    </a>
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-book"></i>
+                        Kullanım Kılavuzu
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - Muzibu Abonelik Durumu Taslağı
+        </footer>
+    </div>
+
+    <script>
+        // Toggle Switch Interaktif Demo
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

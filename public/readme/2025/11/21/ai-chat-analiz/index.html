@@ -1,1 +1,576 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Bot Analiz Raporu - iXtif</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #f87171;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #60a5fa;
+        }
+
+        .error-card {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .error-card h4 {
+            color: #f87171;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .error-card .example {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .error-card .user {
+            color: #60a5fa;
+        }
+
+        .error-card .ai {
+            color: #fbbf24;
+        }
+
+        .improvement-card {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .improvement-card h4 {
+            color: #34d399;
+            margin-bottom: 10px;
+        }
+
+        .todo-card {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .todo-card h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        ul li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+            color: #60a5fa;
+        }
+
+        .checklist li:before {
+            content: "☐";
+        }
+
+        .good-example {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .bad-example {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.8);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Chat Bot Analiz Raporu</h1>
+            <div class="meta">
+                Tarih: 21.11.2025 | Tenant: ixtif.com (Tenant 2) | Analiz: 46 Konusma
+            </div>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">46</div>
+                    <div class="stat-label">Toplam Konusma</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Kritik Hata</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Orta Hata</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Iyilestirme</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- KRITIK HATALAR -->
+        <section>
+            <h2>KRITIK HATALAR</h2>
+
+            <div class="error-card">
+                <h4>1. Arama Toleransi Dusuk <span class="priority priority-critical">Kritik</span></h4>
+                <p>"trans palet" ve "transpalet" farkli sonuc veriyor. Kullanici yazim hatalari tolere edilmiyor.</p>
+                <div class="example">
+                    <span class="user">Kullanici:</span> "trans palet var mi"<br>
+                    <span class="ai">AI:</span> "Aradiginiz urunu bulamadim..."
+                </div>
+                <p><strong>Cozum:</strong> Fuzzy search, Levenshtein distance, veya Meilisearch typo tolerance aktif et.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>2. Yanlis Kategori Onerisi <span class="priority priority-critical">Kritik</span></h4>
+                <p>Kullanici "forklift" istediginde "transpalet" gosteriyor.</p>
+                <div class="example">
+                    <span class="user">Kullanici:</span> "Elektrikli forklift istiyorum"<br>
+                    <span class="ai">AI:</span> "IXTIF EPT20 ET - 2. Ton Akulu Transpalet..."
+                </div>
+                <p><strong>Cozum:</strong> Kategori eslestirme mantigi guclendirilmeli. Forklift != Transpalet.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>3. Yukseklik/Kapasite Filtresi Calismadi <span class="priority priority-critical">Kritik</span></h4>
+                <p>Kullanici 7.5-10m reach truck istedi, 3-4m urunler gosterildi.</p>
+                <div class="example">
+                    <span class="user">Kullanici:</span> "1,6 ton 7,5-10 mt"<br>
+                    <span class="ai">AI:</span> "126" direk (yaklasik 3,2 m)..." <span style="color: #ef4444;">(YANLIS!)</span>
+                </div>
+                <p><strong>Cozum:</strong> Urun specs'lerinden yukseklik filtresi yapmali.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>4. Adres Bilgisi Paylasilmiyor <span class="priority priority-critical">Kritik</span></h4>
+                <p>Kullanici adres sordu, AI "paylasaimi
+yorum" dedi.</p>
+                <div class="example">
+                    <span class="user">Kullanici:</span> "Adres alabilirmiyim"<br>
+                    <span class="ai">AI:</span> "Uzgunum, adres bilgilerini paylasmaiyorum..."
+                </div>
+                <p><strong>Cozum:</strong> Knowledge Base'e sirket adresi eklenmeli.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>5. Fiyat Bilgisi Verilmiyor (Var Oldugunda) <span class="priority priority-critical">Kritik</span></h4>
+                <p>F4 201 fiyati veritabaninda var (99.556 TL) ama AI "iletisime gecin" diyor.</p>
+                <div class="example">
+                    <span class="user">Kullanici:</span> "IXTIF F4 201 transpalet fiyati ne kadar?"<br>
+                    <span class="ai">AI:</span> "Fiyat bilgisi talep uzerine..."
+                </div>
+                <p><strong>Cozum:</strong> Fiyat varsa goster, yoksa iletisime yonlendir.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>6. WhatsApp Linkinde Yanlis URL <span class="priority priority-critical">Kritik</span></h4>
+                <p>WhatsApp linki urun URL'sine gidiyor.</p>
+                <div class="example">
+                    <span class="ai">AI:</span> "WhatsApp: <code>https://ixtif.com/shop/ixtif-efx5-301-45-m-direk</code>"
+                </div>
+                <p><strong>Cozum:</strong> <code>https://wa.me/905010056758</code> kullan.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>7. HTML Tag'leri Render Edilmemis <span class="priority priority-critical">Kritik</span></h4>
+                <p>Bazi yanitlarda raw HTML gorunuyor.</p>
+                <div class="example">
+                    <span class="ai">AI:</span> "&lt;p&gt;Size en uygun urunu bulabilmem icin:&lt;/p&gt; &lt;ul&gt;..."
+                </div>
+                <p><strong>Cozum:</strong> Frontend'de HTML render edilmeli veya markdown kullanilmali.</p>
+            </div>
+        </section>
+
+        <!-- ORTA ONCELIKLI HATALAR -->
+        <section>
+            <h2>ORTA ONCELIKLI HATALAR</h2>
+
+            <div class="error-card">
+                <h4>8. Kantarli Transpalet Yok <span class="priority priority-high">Yuksek</span></h4>
+                <p>Kullanici "kantarli transpalet" istedi, standart transpaletler gosterildi.</p>
+                <p><strong>Cozum:</strong> Kantarli urunler icin ozel kategori veya specs filtresi.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>9. Manuel Transpalet Bulunamadi <span class="priority priority-high">Yuksek</span></h4>
+                <p>"Manuel 2.5 ton" soruldu, "yok" denildi.</p>
+                <p><strong>Cozum:</strong> Manuel urunleri kontrol et veya "satin almaiyoruz" acikla.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>10. Link Parse Edilmemis <span class="priority priority-high">Yuksek</span></h4>
+                <div class="example">
+                    <span class="ai">AI:</span> "[LINK:shop:ixtif-f4-15-ton-li-ion-transpalet]"
+                </div>
+                <p><strong>Cozum:</strong> AIResponseNode'da link parse regex duzenle.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>11. Yanit Kesilmis <span class="priority priority-high">Yuksek</span></h4>
+                <p>Bazi yanitlar yarida kaliyor: "...Li-Ion ile cevre"</p>
+                <p><strong>Cozum:</strong> max_tokens artir veya truncation kontrolu ekle.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>12. Calisma Saati Tutarsizligi <span class="priority priority-medium">Orta</span></h4>
+                <p>Bazen dogru veriyor, bazen numara istiyor.</p>
+                <p><strong>Cozum:</strong> Knowledge Base'de sabit calisma saati tanimla.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>13. Kiralama Bilgisi Yok <span class="priority priority-medium">Orta</span></h4>
+                <p>"Kiralama secenekleri" soruldu, bilgi yok denildi.</p>
+                <p><strong>Cozum:</strong> Kiralama sartlari Knowledge Base'e eklenmeli.</p>
+            </div>
+
+            <div class="error-card">
+                <h4>14. Birim Hatasi (150 kg vs 1500 kg) <span class="priority priority-medium">Orta</span></h4>
+                <p>AI "150 kg kapasiteli" dedi, olmasi gereken "1500 kg".</p>
+                <p><strong>Cozum:</strong> Urun verilerini kontrol et, AI hallucination onle.</p>
+            </div>
+        </section>
+
+        <!-- OLUMLU ORNEKLER -->
+        <section>
+            <h2>OLUMLU ORNEKLER</h2>
+
+            <div class="good-example">
+                <h4>Basarili Urun Oneri Akisi</h4>
+                <p><strong>Konusma #606:</strong> Kullanici "Transpalet modelleri" dedi > AI detay sordu > "1.5 ton elektrikli" > Dogru urunler listelendi.</p>
+            </div>
+
+            <div class="good-example">
+                <h4>Off-topic Sorulara Dogru Yaklasim</h4>
+                <p>"helicopter var mi" > "Ben sadece sirket urunleri hakkinda bilgi verebilirim."</p>
+            </div>
+
+            <div class="good-example">
+                <h4>Numara Toplama</h4>
+                <p>Kullanici numarasini paylasti > "Ekibimiz en kisa surede sizi arayacak."</p>
+            </div>
+
+            <div class="good-example">
+                <h4>Teknik Danismanlik</h4>
+                <p>40 derece rampa sorusu icin motor gucu, akü kapasitesi, agirlik dagilimi aciklandi.</p>
+            </div>
+        </section>
+
+        <!-- IYILESTIRME ONERILERI -->
+        <section>
+            <h2>IYILESTIRME ONERILERI</h2>
+
+            <div class="improvement-card">
+                <h4>1. Fuzzy Search Aktif Et</h4>
+                <ul>
+                    <li>Meilisearch typo tolerance: <code>"typoTolerance": { "enabled": true, "minWordSizeForTypos": { "oneTypo": 4 } }</code></li>
+                    <li>"trans palet", "transpalet", "trans-palet" hepsini bulsun</li>
+                </ul>
+            </div>
+
+            <div class="improvement-card">
+                <h4>2. Knowledge Base Genislet</h4>
+                <ul>
+                    <li>Sirket adresi</li>
+                    <li>Calisma saatleri (Pzt-Cuma: 09:00-18:00, Cmt: 09:00-14:00)</li>
+                    <li>Kiralama sartlari ve fiyatlari</li>
+                    <li>Kargo/teslimat bilgisi</li>
+                    <li>Garanti sartlari</li>
+                    <li>Servis hizmetleri</li>
+                </ul>
+            </div>
+
+            <div class="improvement-card">
+                <h4>3. Kategori Eslestirme Iyilestir</h4>
+                <ul>
+                    <li>Forklift kategorisi ayri tutulmali</li>
+                    <li>Reach Truck kategorisi ayri tutulmali</li>
+                    <li>Istif makinesi kategorisi ayri tutulmali</li>
+                    <li>Transpalet kategorisi ayri tutulmali</li>
+                </ul>
+            </div>
+
+            <div class="improvement-card">
+                <h4>4. Specs Filtreleme Ekle</h4>
+                <ul>
+                    <li>Yukseklik (m/ft cinsinden)</li>
+                    <li>Kapasite (ton)</li>
+                    <li>Akü tipi (Li-Ion, AGM)</li>
+                    <li>Ozel kullanim (soguk depo, dis mekan)</li>
+                </ul>
+            </div>
+
+            <div class="improvement-card">
+                <h4>5. Yanit Kalitesi Artir</h4>
+                <ul>
+                    <li>max_tokens: 1500'e cikar</li>
+                    <li>Markdown kullan, HTML kullanma</li>
+                    <li>Link formati: <code>[Urunu Incele](/shop/slug)</code></li>
+                    <li>Fiyat varsa goster, yoksa "Fiyat icin iletisime gecin"</li>
+                </ul>
+            </div>
+
+            <div class="improvement-card">
+                <h4>6. Proaktif Davranis</h4>
+                <ul>
+                    <li>Urun yoksa benzer onerilerde bulun</li>
+                    <li>2. el secenegi sun</li>
+                    <li>Kiralama alternatifi sun</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TODO LISTESI -->
+        <section>
+            <h2>YAPILACAKLAR LISTESI (TODO)</h2>
+
+            <div class="todo-card">
+                <h4>Acil (Bu Hafta)</h4>
+                <ul class="checklist">
+                    <li>Meilisearch typo tolerance aktif et</li>
+                    <li>WhatsApp linklerini duzelt (<code>wa.me</code> kullan)</li>
+                    <li>Knowledge Base'e adres ekle</li>
+                    <li>Knowledge Base'e calisma saatleri ekle</li>
+                    <li>HTML tag'leri markdown'a cevir</li>
+                    <li>[LINK:xxx] parse sorununu coz</li>
+                </ul>
+            </div>
+
+            <div class="todo-card">
+                <h4>Kisa Vadeli (2 Hafta)</h4>
+                <ul class="checklist">
+                    <li>Kategori eslestirme mantigi guclendir</li>
+                    <li>Specs bazli filtreleme (yukseklik, kapasite)</li>
+                    <li>Fiyat gosterme mantigi duzelt</li>
+                    <li>max_tokens artir (1500)</li>
+                    <li>Kiralama bilgisi ekle</li>
+                </ul>
+            </div>
+
+            <div class="todo-card">
+                <h4>Orta Vadeli (1 Ay)</h4>
+                <ul class="checklist">
+                    <li>Manuel transpalet kategorisi olustur veya aciklama yap</li>
+                    <li>Kantarli urun filtreleme</li>
+                    <li>2. el urun onerileri</li>
+                    <li>Conversation analytics dashboard</li>
+                    <li>A/B test icin yanit varyasyonlari</li>
+                </ul>
+            </div>
+
+            <div class="todo-card">
+                <h4>Uzun Vadeli</h4>
+                <ul class="checklist">
+                    <li>Kullanici davranis analizi</li>
+                    <li>Conversion tracking (numara toplama orani)</li>
+                    <li>Otomatik urun onerisi (ML)</li>
+                    <li>Sesli asistan entegrasyonu</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- METRIKLER -->
+        <section>
+            <h2>ONERILEN METRIKLER</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metrik</th>
+                        <th>Mevcut</th>
+                        <th>Hedef</th>
+                        <th>Aciklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Urun Bulma Orani</td>
+                        <td>~60%</td>
+                        <td>90%</td>
+                        <td>Kullanici istegine uygun urun gosterme</td>
+                    </tr>
+                    <tr>
+                        <td>Numara Toplama</td>
+                        <td>~5%</td>
+                        <td>20%</td>
+                        <td>Kullanicinin numara paylasmasi</td>
+                    </tr>
+                    <tr>
+                        <td>Yanit Dogrulugu</td>
+                        <td>~70%</td>
+                        <td>95%</td>
+                        <td>Dogru bilgi verme orani</td>
+                    </tr>
+                    <tr>
+                        <td>Kullanici Memnuniyeti</td>
+                        <td>Olculmuyor</td>
+                        <td>4.5/5</td>
+                        <td>Post-chat anket</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            Claude AI tarafindan olusturuldu | Analiz Tarihi: 21.11.2025
+        </footer>
+    </div>
+</body>
+</html>

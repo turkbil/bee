@@ -1,1 +1,330 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cihaz Limit Ayarları - Tekrar Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                🔍 Cihaz Limit Ayarları - Tekrar Analizi
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Muzibu platformunda (Tenant 1001) iki farklı grupta "Maksimum Cihaz Sayısı" ayarı var. Hangisi aktif kullanılıyor?
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-07</span>
+                <span>🎯 Tenant: muzibu.com.tr (1001)</span>
+                <span>⚠️ Tekrar Sorunu</span>
+            </div>
+        </header>
+
+        <!-- Mevcut Durum -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">⚠️ Mevcut Durum - İki Farklı Ayar!</h2>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Grup 21 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-yellow-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">📁</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-400">Grup 21 - Oturum Ayarları</h3>
+                            <p class="text-sm text-slate-400">Eski sistem (subscription öncesi)</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <p class="text-slate-300 mb-1"><span class="text-yellow-300 font-semibold">Setting ID:</span> 169</p>
+                            <p class="text-slate-300 mb-1"><span class="text-yellow-300 font-semibold">Key:</span> <code class="bg-slate-950 px-2 py-1 rounded text-yellow-400">auth_session_device_limit</code></p>
+                            <p class="text-slate-300 mb-1"><span class="text-yellow-300 font-semibold">Label:</span> "Cihaz Limiti"</p>
+                            <p class="text-slate-300"><span class="text-yellow-300 font-semibold">Type:</span> text</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <p class="text-slate-300 mb-1"><span class="text-yellow-300 font-semibold">Setting ID:</span> 168</p>
+                            <p class="text-slate-300 mb-1"><span class="text-yellow-300 font-semibold">Key:</span> <code class="bg-slate-950 px-2 py-1 rounded text-slate-400">auth_session_lifetime</code></p>
+                            <p class="text-slate-300"><span class="text-yellow-300 font-semibold">Label:</span> "Oturum Süresi (dk)"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 23 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">📁</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-400">Grup 23 - Abonelik Ayarları</h3>
+                            <p class="text-sm text-slate-400">Yeni sistem (subscription sonrası)</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <p class="text-slate-300 mb-1"><span class="text-blue-300 font-semibold">Setting ID:</span> 212</p>
+                            <p class="text-slate-300 mb-1"><span class="text-blue-300 font-semibold">Key:</span> <code class="bg-slate-950 px-2 py-1 rounded text-blue-400">auth_device_limit</code></p>
+                            <p class="text-slate-300 mb-1"><span class="text-blue-300 font-semibold">Label:</span> "Cihaz Limit Kontrolü"</p>
+                            <p class="text-slate-300"><span class="text-blue-300 font-semibold">Type:</span> number</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <p class="text-slate-300 mb-1"><span class="text-blue-300 font-semibold">Setting ID:</span> 211</p>
+                            <p class="text-slate-300 mb-1"><span class="text-blue-300 font-semibold">Key:</span> <code class="bg-slate-950 px-2 py-1 rounded text-slate-400">auth_subscription</code></p>
+                            <p class="text-slate-300"><span class="text-blue-300 font-semibold">Label:</span> "Ücretli Üyelik"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Karışıklık -->
+            <div class="bg-red-900/20 border border-red-600/50 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <span class="text-4xl">⚠️</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-400 mb-3">Karışıklık - İki Cihaz Limiti Var!</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-yellow-400 mt-1">▸</span>
+                                <span><strong>Grup 21:</strong> <code class="bg-slate-950 px-2 py-1 rounded text-yellow-400">auth_session_device_limit</code> - Oturum yönetimi için (eski sistem)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-400 mt-1">▸</span>
+                                <span><strong>Grup 23:</strong> <code class="bg-slate-950 px-2 py-1 rounded text-blue-400">auth_device_limit</code> - Abonelik sistemi için (yeni sistem)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kodda Kullanım -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">💻 Kodda Kullanım - Hangisi Kullanılıyor?</h2>
+
+            <!-- Dosya 1: SubscriptionService.php -->
+            <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-blue-500 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">SubscriptionService.php:270</h3>
+                        <div class="bg-slate-900/50 rounded p-4 mb-3">
+                            <code class="text-sm text-green-400">
+                                <span class="text-slate-500">// 3. Global fallback (son çare - setting)</span><br>
+                                <span class="text-purple-400">return</span> <span class="text-blue-300">setting</span>(<span class="text-yellow-300">'auth_device_limit'</span>, <span class="text-orange-400">1</span>);
+                            </code>
+                        </div>
+                        <p class="text-slate-300 text-sm">
+                            <span class="inline-block px-2 py-1 bg-blue-600 text-white rounded text-xs mr-2">AKTİF</span>
+                            Subscription modülünde <code class="bg-slate-950 px-2 py-1 rounded text-blue-400">auth_device_limit</code> kullanılıyor
+                        </p>
+                        <p class="text-slate-400 text-sm mt-2">
+                            <strong>Hierarşi:</strong> user.device_limit → plan.device_limit → <code class="text-blue-400">auth_device_limit</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dosya 2: User.php -->
+            <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-yellow-500 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">User.php:184</h3>
+                        <div class="bg-slate-900/50 rounded p-4 mb-3">
+                            <code class="text-sm text-green-400">
+                                <span class="text-purple-400">return</span> <span class="text-slate-300">$this->device_limit</span> ?: (<span class="text-orange-400">int</span>) <span class="text-blue-300">setting</span>(<span class="text-yellow-300">'auth_session_device_limit'</span>, <span class="text-orange-400">1</span>);
+                            </code>
+                        </div>
+                        <p class="text-slate-300 text-sm">
+                            <span class="inline-block px-2 py-1 bg-yellow-600 text-white rounded text-xs mr-2">ESKİ KOD</span>
+                            User modelinde <code class="bg-slate-950 px-2 py-1 rounded text-yellow-400">auth_session_device_limit</code> kullanılıyor
+                        </p>
+                        <p class="text-slate-400 text-sm mt-2">
+                            <strong>Not:</strong> Bu eski sistemden kalmış, güncellenmiş değil
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dosya 3: DeviceService.php -->
+            <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-red-500">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-red-300 mb-2">DeviceService.php:104</h3>
+                        <div class="bg-slate-900/50 rounded p-4 mb-3">
+                            <code class="text-sm text-green-400">
+                                <span class="text-slate-500">// 2. Tenant setting'den device_limit varsa</span><br>
+                                <span class="text-purple-400">if</span> (<span class="text-blue-300">function_exists</span>(<span class="text-yellow-300">'setting'</span>) && <span class="text-blue-300">setting</span>(<span class="text-yellow-300">'device_limit'</span>)) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> (<span class="text-orange-400">int</span>) <span class="text-blue-300">setting</span>(<span class="text-yellow-300">'device_limit'</span>);<br>
+                                }
+                            </code>
+                        </div>
+                        <p class="text-slate-300 text-sm">
+                            <span class="inline-block px-2 py-1 bg-red-600 text-white rounded text-xs mr-2">HATALI!</span>
+                            <code class="bg-slate-950 px-2 py-1 rounded text-red-400">device_limit</code> diye bir setting yok!
+                        </p>
+                        <p class="text-slate-400 text-sm mt-2">
+                            <strong>Sorun:</strong> Bu kod hiçbir zaman çalışmıyor, setting bulunamıyor
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analiz Sonucu -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Analiz Sonucu</h2>
+
+            <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-600/50 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-green-300 mb-4">Aktif Kullanılan Ayar:</h3>
+                <div class="flex items-center gap-4">
+                    <div class="text-5xl">✅</div>
+                    <div>
+                        <p class="text-2xl font-bold text-blue-400 mb-2">Grup 23 - auth_device_limit</p>
+                        <p class="text-slate-300">Subscription modülünde (SubscriptionService.php) bu ayar kullanılıyor</p>
+                        <p class="text-sm text-slate-400 mt-2">Setting ID: 212 | Type: number | Grup: Abonelik Ayarları</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-red-900/20 border border-red-600/50 rounded-lg p-6">
+                <h3 class="text-xl font-bold text-red-300 mb-4">Kullanılmayan/Eski Ayarlar:</h3>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">❌</span>
+                        <div>
+                            <p class="text-lg font-bold text-yellow-400">Grup 21 - auth_session_device_limit</p>
+                            <p class="text-slate-300 text-sm">User.php'de kullanılıyor ama eski sistemden kalmış</p>
+                            <p class="text-slate-400 text-xs mt-1">Setting ID: 169 | Grup: Oturum Ayarları</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">❌</span>
+                        <div>
+                            <p class="text-lg font-bold text-red-400">device_limit (HIÇBIR SETTING YOK!)</p>
+                            <p class="text-slate-300 text-sm">DeviceService.php'de aranıyor ama böyle bir setting yok</p>
+                            <p class="text-slate-400 text-xs mt-1">Kod hatası - setting bulunamıyor</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Çözüm Önerisi -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">🎯 Çözüm Önerisi</h2>
+
+            <!-- Adım 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">Standartlaştırma</h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Tüm kodda <code class="bg-slate-950 px-2 py-1 rounded text-blue-400">auth_device_limit</code> kullanılmalı
+                        </p>
+                        <div class="bg-slate-900/50 rounded p-3 text-sm">
+                            <p class="text-green-400 mb-2"><strong>Güncellenecek dosyalar:</strong></p>
+                            <ul class="space-y-1 text-slate-300">
+                                <li>• <code class="text-yellow-400">User.php:184</code> → <code class="text-blue-400">auth_device_limit</code> kullan</li>
+                                <li>• <code class="text-yellow-400">DeviceService.php:104</code> → <code class="text-blue-400">auth_device_limit</code> kullan</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300 mb-2">Grup 21 - Oturum Ayarları Temizliği</h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            <code class="bg-slate-950 px-2 py-1 rounded text-yellow-400">auth_session_device_limit</code> ayarını kaldır
+                        </p>
+                        <div class="bg-slate-900/50 rounded p-3 text-sm">
+                            <p class="text-green-400 mb-2"><strong>İşlemler:</strong></p>
+                            <ul class="space-y-1 text-slate-300">
+                                <li>• Setting ID 169'u sil (auth_session_device_limit)</li>
+                                <li>• Grup 21'de sadece <code class="text-slate-400">auth_session_lifetime</code> kalsın</li>
+                                <li>• Admin panelde "/admin/settingmanagement/values/21" sayfası temizlenmiş olsun</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">Tek Kaynak Sistemi</h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Artık tüm cihaz limit ayarları Grup 23'ten gelecek
+                        </p>
+                        <div class="bg-slate-900/50 rounded p-3 text-sm">
+                            <p class="text-green-400 mb-2"><strong>Sonuç:</strong></p>
+                            <ul class="space-y-1 text-slate-300">
+                                <li>✅ Tek bir ayar sayfası: "/admin/settingmanagement/values/23"</li>
+                                <li>✅ Tüm kodda aynı setting key: <code class="text-blue-400">auth_device_limit</code></li>
+                                <li>✅ Tekrar yok, karışıklık yok</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet Tablo -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">📊 Özet Tablo</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left p-3 text-slate-400 font-semibold">Setting Key</th>
+                            <th class="text-left p-3 text-slate-400 font-semibold">Grup</th>
+                            <th class="text-left p-3 text-slate-400 font-semibold">Kullanım</th>
+                            <th class="text-left p-3 text-slate-400 font-semibold">Durum</th>
+                            <th class="text-left p-3 text-slate-400 font-semibold">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-800">
+                            <td class="p-3"><code class="bg-slate-950 px-2 py-1 rounded text-blue-400">auth_device_limit</code></td>
+                            <td class="p-3 text-slate-300">Grup 23</td>
+                            <td class="p-3 text-slate-300">SubscriptionService.php</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-green-600 text-white rounded text-xs">AKTİF</span></td>
+                            <td class="p-3 text-green-400">✅ Koru</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-slate-900/30">
+                            <td class="p-3"><code class="bg-slate-950 px-2 py-1 rounded text-yellow-400">auth_session_device_limit</code></td>
+                            <td class="p-3 text-slate-300">Grup 21</td>
+                            <td class="p-3 text-slate-300">User.php (eski kod)</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-yellow-600 text-white rounded text-xs">ESKİ</span></td>
+                            <td class="p-3 text-red-400">❌ Kaldır</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="p-3"><code class="bg-slate-950 px-2 py-1 rounded text-red-400">device_limit</code></td>
+                            <td class="p-3 text-slate-300">-</td>
+                            <td class="p-3 text-slate-300">DeviceService.php</td>
+                            <td class="p-3"><span class="px-2 py-1 bg-red-600 text-white rounded text-xs">YOK</span></td>
+                            <td class="p-3 text-orange-400">🔧 Düzelt</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Cihaz Limit Ayarları Analizi</p>
+        </footer>
+    </div>
+</body>
+</html>

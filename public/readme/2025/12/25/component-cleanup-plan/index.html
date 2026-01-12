@@ -1,1 +1,778 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Component Cleanup - Kapsamlı TODO List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        [x-cloak] { display: none !important; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .diff-add { background: rgba(34, 197, 94, 0.1); border-left: 3px solid #22c55e; }
+        .diff-remove { background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-orange-900 to-slate-900 border-b border-white/10 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-xs font-semibold rounded-full border border-orange-500/30">
+                            📋 TODO LIST
+                        </span>
+                        <span class="text-slate-400 text-sm">25 Aralık 2025</span>
+                    </div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-orange-200 bg-clip-text text-transparent">
+                        Muzibu Component Cleanup - Kapsamlı Plan
+                    </h1>
+                    <p class="text-slate-400 mt-1">Duplicate temizleme, silme adayları, test stratejisi</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-4xl font-bold text-orange-400">18</div>
+                    <div class="text-sm text-slate-400">Toplam Görev</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana İçerik -->
+    <main class="container mx-auto px-6 py-8 max-w-7xl">
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-green-400 mb-4">
+                <i class="fas fa-book-open mr-2"></i>Basit Anlatım (Herkes İçin)
+            </h3>
+            <div class="space-y-3 text-slate-200">
+                <p>
+                    <strong>Ne yapıyoruz?</strong> Muzibu component'lerini temizleyeceğiz. Bazı dosyalar kopyalanmış (duplicate),
+                    bazıları hiç kullanılmıyor. Bunları tespit edip temizleyeceğiz.
+                </p>
+                <p>
+                    <strong>Duplicate ne demek?</strong> Aynı dosyanın iki farklı yerde olması. Mesela lazy-image component'i
+                    hem resources/ hem de Modules/ klasöründe var. Bu karışıklık yaratır, hangi dosyayı güncelleyeceğimizi bilemeyiz.
+                </p>
+                <p>
+                    <strong>Ne olacak?</strong> Her component'i tek tek kontrol edeceğiz. Duplicate olanların hangisinin yeni olduğunu
+                    belirleyip eskilerini sileceğiz. Kullanılmayanları da kaldıracağız. Sonunda temiz, bakımı kolay bir component sistemi kalacak.
+                </p>
+                <div class="bg-green-800/30 border border-green-700 rounded p-4 mt-4">
+                    <p class="font-semibold text-green-300">
+                        <i class="fas fa-lightbulb mr-2"></i>Neden Önemli?
+                    </p>
+                    <p class="text-sm mt-2">
+                        Duplicate dosyalar bug'a neden olur. Birini güncellersiniz ama sistem diğerini kullanır.
+                        Kullanılmayan dosyalar yer kaplar, projeyi karmaşıklaştırır. Temiz kod = hızlı geliştirme!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DUPLICATE ANALİZİ -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-copy text-orange-400"></i>
+                <span>Duplicate Component'ler - Fark Analizi</span>
+            </h2>
+
+            <!-- 1. lazy-image -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-image text-blue-400"></i>
+                            lazy-image
+                            <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">
+                                ✅ TAMAMEN AYNI
+                            </span>
+                        </h3>
+                        <p class="text-sm text-slate-400 mt-2">İki farklı konumda mevcut, ancak içerik tamamen aynı</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-slate-900/50 border border-blue-700 rounded p-4">
+                        <h4 class="font-bold text-blue-400 mb-2 text-sm">📁 Konum 1 (resources/)</h4>
+                        <code class="text-xs text-slate-300 block break-all">
+                            resources/views/components/muzibu/lazy-image.blade.php
+                        </code>
+                        <div class="mt-3 text-xs text-slate-400">
+                            <strong>Satır sayısı:</strong> 38<br>
+                            <strong>Son değişiklik:</strong> Context menu overhaul öncesi
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 border border-purple-700 rounded p-4">
+                        <h4 class="font-bold text-purple-400 mb-2 text-sm">📁 Konum 2 (Modules/)</h4>
+                        <code class="text-xs text-slate-300 block break-all">
+                            Modules/Muzibu/resources/views/components/muzibu/lazy-image.blade.php
+                        </code>
+                        <div class="mt-3 text-xs text-slate-400">
+                            <strong>Satır sayısı:</strong> 38<br>
+                            <strong>Son değişiklik:</strong> Context menu overhaul öncesi
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800 rounded p-4">
+                    <h4 class="font-bold text-green-400 mb-2">
+                        <i class="fas fa-equals mr-2"></i>Fark Analizi
+                    </h4>
+                    <p class="text-sm text-slate-300 mb-3">
+                        İki dosya <strong>BYTE-BYTE AYNI</strong>. Hiçbir fark yok.
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-xs font-mono text-slate-300">
+                        <div>✅ Props: Aynı (src, alt, class, wrapperClass, skeletonClass)</div>
+                        <div>✅ Alpine.js x-data: Aynı ({ loaded: false })</div>
+                        <div>✅ Skeleton loader: Aynı</div>
+                        <div>✅ Image loading animation: Aynı</div>
+                        <div>✅ Fallback icon: Aynı (fa-music)</div>
+                    </div>
+                    <div class="mt-3 bg-blue-900/20 border border-blue-700 rounded p-3">
+                        <p class="text-sm text-blue-300">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Öneri:</strong> resources/ versiyonunu kullan (ana component klasörü).
+                            Modules/ versiyonunu sil.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. song-detail-row -->
+            <div class="bg-slate-800/50 border border-orange-700 rounded-lg p-6 mb-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-music text-orange-400"></i>
+                            song-detail-row
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded">
+                                ⚠️ FARKLILAR
+                            </span>
+                        </h3>
+                        <p class="text-sm text-slate-400 mt-2">İki farklı konumda mevcut, içerik farklı (context menu cleanup)</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-slate-900/50 border border-red-700 rounded p-4">
+                        <h4 class="font-bold text-red-400 mb-2 text-sm">📁 Konum 1 - ESKİ VERSİYON (resources/)</h4>
+                        <code class="text-xs text-slate-300 block break-all">
+                            resources/views/components/muzibu/song-detail-row.blade.php
+                        </code>
+                        <div class="mt-3 text-xs text-slate-400">
+                            <strong>Satır sayısı:</strong> 132<br>
+                            <strong>Son değişiklik:</strong> Context menu overhaul ÖNCESÏ
+                        </div>
+                        <div class="mt-3 bg-red-900/20 border border-red-800 rounded p-2 text-xs">
+                            <strong class="text-red-400">Context Menu Data:</strong>
+                            <div class="mt-1 font-mono text-slate-300">
+                                - album_slug ❌ (ESKİ - kaldırıldı)<br>
+                                - artist_id ❌ (ESKİ - kaldırıldı)<br>
+                                - artist_slug ❌ (ESKİ - kaldırıldı)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 border border-green-700 rounded p-4">
+                        <h4 class="font-bold text-green-400 mb-2 text-sm">📁 Konum 2 - YENİ VERSİYON (Modules/)</h4>
+                        <code class="text-xs text-slate-300 block break-all">
+                            Modules/Muzibu/resources/views/components/muzibu/song-detail-row.blade.php
+                        </code>
+                        <div class="mt-3 text-xs text-slate-400">
+                            <strong>Satır sayısı:</strong> 126<br>
+                            <strong>Son değişiklik:</strong> Context menu overhaul SONRASI
+                        </div>
+                        <div class="mt-3 bg-green-900/20 border border-green-800 rounded p-2 text-xs">
+                            <strong class="text-green-400">Context Menu Data (TEMİZ):</strong>
+                            <div class="mt-1 font-mono text-slate-300">
+                                - album_id ✅ (gerekli)<br>
+                                - is_favorite ✅ (gerekli)<br>
+                                - artist_id/slug YOK ✅ (temizlendi)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-orange-900/20 border border-orange-800 rounded p-4 mb-4">
+                    <h4 class="font-bold text-orange-400 mb-3">
+                        <i class="fas fa-code-compare mr-2"></i>Detaylı Farklar
+                    </h4>
+
+                    <div class="space-y-3">
+                        <!-- Fark 1 -->
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <h5 class="text-sm font-bold text-white mb-2">🔴 ESKİ (resources/) - Satır 12-16</h5>
+                            <pre class="text-xs bg-red-900/20 p-2 rounded border border-red-800 text-red-300 overflow-x-auto diff-remove">album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album ? $song->album->id : 'null') }},
+album_slug: '{{ $song->album?->slug ?? '' }}',
+artist_id: {{ $song->artist?->artist_id ?? ($song->album?->artist?->artist_id ?? 'null') }},
+artist_slug: '{{ $song->artist?->slug ?? ($song->album?->artist?->slug ?? '') }}',
+is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}</pre>
+
+                            <h5 class="text-sm font-bold text-white mb-2 mt-3">🟢 YENİ (Modules/) - Satır 12-13</h5>
+                            <pre class="text-xs bg-green-900/20 p-2 rounded border border-green-800 text-green-300 overflow-x-auto diff-add">album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album ? $song->album->id : 'null') }},
+is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}</pre>
+
+                            <p class="text-xs text-slate-400 mt-2">
+                                <i class="fas fa-arrow-right text-orange-400 mr-1"></i>
+                                album_slug, artist_id, artist_slug KALDIRILDI (context menu overhaul sonrası)
+                            </p>
+                        </div>
+
+                        <!-- Fark 2 -->
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <h5 class="text-sm font-bold text-white mb-2">🔴 ESKİ - Touchstart event (Satır 33-37)</h5>
+                            <pre class="text-xs bg-red-900/20 p-2 rounded border border-red-800 text-red-300 overflow-x-auto diff-remove">album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album ? $song->album->id : 'null') }},
+album_slug: '{{ $song->album?->slug ?? '' }}',
+artist_id: {{ $song->artist?->artist_id ?? ($song->album?->artist?->artist_id ?? 'null') }},
+artist_slug: '{{ $song->artist?->slug ?? ($song->album?->artist?->slug ?? '') }}',
+is_favorite: ...</pre>
+
+                            <h5 class="text-sm font-bold text-white mb-2 mt-3">🟢 YENİ - Touchstart event (Satır 30-31)</h5>
+                            <pre class="text-xs bg-green-900/20 p-2 rounded border border-green-800 text-green-300 overflow-x-auto diff-add">album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album ? $song->album->id : 'null') }},
+is_favorite: ...</pre>
+
+                            <p class="text-xs text-slate-400 mt-2">
+                                <i class="fas fa-arrow-right text-orange-400 mr-1"></i>
+                                Touchstart event'te de temizlenmiş
+                            </p>
+                        </div>
+
+                        <!-- Fark 3 -->
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <h5 class="text-sm font-bold text-white mb-2">Her İki Versiyonda da - 3-Dot Menu (Satır 124/118)</h5>
+                            <pre class="text-xs bg-slate-700 p-2 rounded text-slate-300 overflow-x-auto">album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album ? $song->album->id : 'null') }},
+is_favorite: ...</pre>
+
+                            <p class="text-xs text-slate-400 mt-2">
+                                <i class="fas fa-info-circle text-blue-400 mr-1"></i>
+                                3-dot menu her ikisinde de temiz (album_id ve is_favorite var, diğerleri yok)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800 rounded p-4">
+                    <p class="text-sm text-green-300 mb-3">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <strong>Öneri:</strong> Modules/ versiyonunu (YENİ) kullan. Context menu overhaul sonrası güncellenmiş,
+                        gereksiz veriler temizlenmiş (artist_id, artist_slug, album_slug kaldırılmış).
+                    </p>
+                    <p class="text-xs text-slate-400 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        resources/ versiyonu ESKİ ve KİRLİ. Silme adayı.
+                    </p>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800 rounded p-4 mt-4">
+                    <h4 class="font-bold text-blue-400 mb-2">
+                        <i class="fas fa-search mr-2"></i>Kullanım Kontrolü Gerekli
+                    </h4>
+                    <p class="text-sm text-slate-300">
+                        song-detail-row 13 yerde kullanılıyor. Hangi versiyon çağrıldığını kontrol etmeliyiz:
+                    </p>
+                    <ul class="text-xs text-slate-400 mt-2 space-y-1 list-disc list-inside ml-2">
+                        <li>Laravel component resolution priority: Modules/ klasörü önce kontrol ediliyor mu?</li>
+                        <li>Her kullanım yerinde &lt;x-muzibu.song-detail-row&gt; aynı dosyayı mı çağırıyor?</li>
+                        <li>Test: Modules/ versiyonunu değiştir, site bozulur mu?</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SİLME ADAYLARI -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-trash-alt text-red-400"></i>
+                <span>Silme Adayları (Kullanılmayan Component'ler)</span>
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- artist-card -->
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-user-tie"></i>
+                        artist-card
+                    </h3>
+                    <code class="text-xs text-slate-400 bg-slate-900/50 px-2 py-1 rounded block mb-4">
+                        resources/views/components/muzibu/artist-card.blade.php
+                    </code>
+                    <div class="bg-slate-900/50 rounded p-4 mb-3">
+                        <p class="text-sm text-slate-300 mb-2">
+                            <strong>Kullanım sayısı:</strong> <span class="text-red-400">2</span>
+                        </p>
+                        <p class="text-xs text-slate-400">
+                            Sadece kendi dosyasında usage comment var. Aktif kullanım yok.
+                        </p>
+                    </div>
+                    <div class="bg-yellow-900/20 border border-yellow-800 rounded p-3">
+                        <p class="text-xs text-yellow-300">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <strong>Dikkat:</strong> Silmeden önce grep ile tekrar kontrol et!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- empty-state -->
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-inbox"></i>
+                        empty-state
+                    </h3>
+                    <code class="text-xs text-slate-400 bg-slate-900/50 px-2 py-1 rounded block mb-4">
+                        resources/views/components/muzibu/empty-state.blade.php
+                    </code>
+                    <div class="bg-slate-900/50 rounded p-4 mb-3">
+                        <p class="text-sm text-slate-300 mb-2">
+                            <strong>Kullanım sayısı:</strong> <span class="text-red-400">4</span>
+                        </p>
+                        <p class="text-xs text-slate-400">
+                            Sadece kendi dosyasında usage comment var. Aktif kullanım yok.
+                        </p>
+                    </div>
+                    <div class="bg-yellow-900/20 border border-yellow-800 rounded p-3">
+                        <p class="text-xs text-yellow-300">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <strong>Dikkat:</strong> Silmeden önce grep ile tekrar kontrol et!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KAPSAMLI TODO LİST -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-list-check text-orange-400"></i>
+                <span>Kapsamlı TODO List (18 Görev)</span>
+            </h2>
+
+            <!-- PHASE 1: DUPLICATE TEMİZLEME -->
+            <div class="bg-orange-900/20 border border-orange-800 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-bold text-orange-400 mb-4">
+                    <i class="fas fa-copy mr-2"></i>Phase 1: Duplicate Component Temizleme (4 görev)
+                </h3>
+
+                <div class="space-y-3">
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-orange-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-orange-400">1</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">Hangi song-detail-row kullanılıyor kontrol et</h4>
+                                <p class="text-sm text-slate-400 mb-2">
+                                    Laravel component resolution priority'yi test et. Modules/ öncelikli mi?
+                                </p>
+                                <code class="text-xs bg-slate-800 px-2 py-1 rounded block">
+                                    # Test: Modules/ versiyonuna console.log ekle, çağrılıyor mu bak
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-orange-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-orange-400">2</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">lazy-image duplicate'ini sil (Modules/ versiyonunu)</h4>
+                                <p class="text-sm text-slate-400 mb-2">
+                                    İkisi tamamen aynı. Ana component klasörünü (resources/) kullan.
+                                </p>
+                                <code class="text-xs bg-slate-800 px-2 py-1 rounded block">
+                                    sudo rm Modules/Muzibu/resources/views/components/muzibu/lazy-image.blade.php
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-orange-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-orange-400">3</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">song-detail-row duplicate'ini sil (resources/ ESKİ versiyonunu)</h4>
+                                <p class="text-sm text-slate-400 mb-2">
+                                    Modules/ versiyonu YENİ ve TEMİZ (context menu overhaul sonrası). resources/ ESKİ ve KİRLİ.
+                                </p>
+                                <code class="text-xs bg-slate-800 px-2 py-1 rounded block mb-2">
+                                    sudo rm resources/views/components/muzibu/song-detail-row.blade.php
+                                </code>
+                                <div class="bg-red-900/20 border border-red-800 rounded p-2 text-xs text-red-300 mt-2">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    <strong>DİKKAT:</strong> 13 yerde kullanılıyor! Silince sitede hata olabilir. Önce test et!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-orange-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-orange-400">4</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">Duplicate temizlendikten sonra site testi</h4>
+                                <p class="text-sm text-slate-400 mb-2">
+                                    Albüm, playlist, genre detay sayfalarını aç. Şarkı listesi görünüyor mu?
+                                </p>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>https://muzibu.com.tr/albums/[herhangi-bir-album]</li>
+                                    <li>https://muzibu.com.tr/playlists/[herhangi-bir-playlist]</li>
+                                    <li>https://muzibu.com.tr/genres/[herhangi-bir-genre]</li>
+                                    <li>Console'da hata var mı kontrol et</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHASE 2: KULLANILMAYAN COMPONENT SİLME -->
+            <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-bold text-red-400 mb-4">
+                    <i class="fas fa-trash-alt mr-2"></i>Phase 2: Kullanılmayan Component'leri Sil (4 görev)
+                </h3>
+
+                <div class="space-y-3">
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-red-400">5</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">artist-card kullanımını doğrula</h4>
+                                <p class="text-sm text-slate-400 mb-2">
+                                    Grep ile tüm proje taraması yap. Gerçekten kullanılmıyor mu?
+                                </p>
+                                <code class="text-xs bg-slate-800 px-2 py-1 rounded block">
+                                    grep -r "x-muzibu.artist-card" resources/ Modules/ --include="*.blade.php"
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-red-400">6</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">artist-card'ı sil (kullanılmıyorsa)</h4>
+                                <code class="text-xs bg-slate-800 px-2 py-1 rounded block">
+                                    sudo rm resources/views/components/muzibu/artist-card.blade.php
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-red-400">7</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">empty-state kullanımını doğrula</h4>
+                                <code class="text-xs bg-slate-800 px-2 py-1 rounded block">
+                                    grep -r "x-muzibu.empty-state" resources/ Modules/ --include="*.blade.php"
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-red-400">8</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">empty-state'i sil (kullanılmıyorsa)</h4>
+                                <code class="text-xs bg-slate-800 px-2 py-1 rounded block">
+                                    sudo rm resources/views/components/muzibu/empty-state.blade.php
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHASE 3: TÜM COMPONENT'LERİN TESTİ -->
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-bold text-blue-400 mb-4">
+                    <i class="fas fa-vial mr-2"></i>Phase 3: Tüm Component'lerin Testi (10 görev)
+                </h3>
+
+                <div class="space-y-3">
+                    <!-- Test checklist -->
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">9</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">album-card testi</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Click: Desktop'ta sidebar preview açılıyor mu?</li>
+                                    <li>Click: Mobilde detay sayfasına gidiyor mu?</li>
+                                    <li>Context menu: Sağ tık çalışıyor mu?</li>
+                                    <li>Context menu: "Playliste Ekle" var mı? (yeni)</li>
+                                    <li>Context menu: "Sanatçıya Git" YOK mu? (kaldırıldı)</li>
+                                    <li>Hover: Önizleme animasyonu çalışıyor mu?</li>
+                                    <li>Favorilere ekleme/çıkarma çalışıyor mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">10</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">playlist-card testi</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Click: Desktop preview, mobile detail page</li>
+                                    <li>Context menu çalışıyor mu?</li>
+                                    <li>Favorilere ekleme çalışıyor mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">11</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">radio-card testi</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Click: Direkt çalıyor mu? (preview YOK)</li>
+                                    <li>Context menu: "Sıraya Ekle" YOK mu? (kaldırıldı)</li>
+                                    <li>Context menu: Sadece "Şimdi Dinle" ve "Favori" var mı?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">12</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">genre-card / sector-card testi</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Click çalışıyor mu?</li>
+                                    <li>Görsel yükleniyor mu?</li>
+                                    <li>Responsive tasarım çalışıyor mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">13</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">song-detail-row testi (13 kullanım yeri)</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Album detay: Şarkı listesi görünüyor mu?</li>
+                                    <li>Playlist detay: Şarkı listesi görünüyor mu?</li>
+                                    <li>Genre detay: Şarkı listesi görünüyor mu?</li>
+                                    <li>Context menu: artist_id/artist_slug YOK mu? (temizlendi)</li>
+                                    <li>Hover: Play button görünüyor mu?</li>
+                                    <li>Click: Şarkı çalıyor mu?</li>
+                                    <li>Favorilere ekleme çalışıyor mu?</li>
+                                    <li>3-dot menu çalışıyor mu?</li>
+                                    <li>Touch/long-press (mobile) çalışıyor mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">14</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">song-list-item testi</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Dashboard: Son çalınanlar görünüyor mu?</li>
+                                    <li>Favoriler: Şarkı listesi çalışıyor mu?</li>
+                                    <li>Sidebar: Queue listesi görünüyor mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">15</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">song-row testi</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Songs index: Tablo görünümü çalışıyor mu?</li>
+                                    <li>Artist detay: Şarkı listesi görünüyor mu?</li>
+                                    <li>Dinleme geçmişi: Listesi çalışıyor mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">16</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">lazy-image testi</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Skeleton loader görünüyor mu?</li>
+                                    <li>Görsel yüklenince animasyon çalışıyor mu?</li>
+                                    <li>Fallback icon (fa-music) çalışıyor mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">17</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">create-playlist-modal testi</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Modal açılıyor mu?</li>
+                                    <li>Playlist oluşturma çalışıyor mu?</li>
+                                    <li>Muzebu store entegrasyonu çalışıyor mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="text-xs font-bold text-blue-400">18</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white mb-1">Console error kontrolü</h4>
+                                <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside ml-2">
+                                    <li>Tüm sayfalarda F12 → Console aç</li>
+                                    <li>Kırmızı hata var mı kontrol et</li>
+                                    <li>404 Not Found var mı bak</li>
+                                    <li>JavaScript hataları var mı kontrol et</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-code mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+            <div class="space-y-3 text-slate-200">
+                <p>
+                    <strong>Laravel Component Resolution:</strong>
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-sm ml-4">
+                    <li>Laravel önce <code class="bg-slate-800 px-2 py-1 rounded">resources/views/components/</code> klasörünü kontrol eder</li>
+                    <li>Sonra modül klasörlerini tarar: <code class="bg-slate-800 px-2 py-1 rounded">Modules/*/resources/views/components/</code></li>
+                    <li>İlk bulduğu dosyayı kullanır (priority: resources/ > Modules/)</li>
+                    <li>Ancak namespace prefix kullanılırsa (örn: <code class="bg-slate-800 px-2 py-1 rounded">muzibu::components.song-detail-row</code>) modül içindeki dosyayı çağırır</li>
+                </ul>
+
+                <p class="mt-4">
+                    <strong>Duplicate Temizleme Stratejisi:</strong>
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-sm ml-4">
+                    <li><strong>lazy-image:</strong> resources/ versiyonunu kullan (ana klasör), Modules/ versiyonunu sil</li>
+                    <li><strong>song-detail-row:</strong> Modules/ versiyonunu kullan (yeni, temiz), resources/ versiyonunu sil</li>
+                    <li>Silmeden önce mutlaka test et!</li>
+                </ul>
+
+                <div class="bg-yellow-900/20 border border-yellow-800 rounded p-4 mt-4">
+                    <p class="font-semibold text-yellow-300">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Risk Değerlendirmesi
+                    </p>
+                    <p class="text-sm mt-2">
+                        song-detail-row 13 yerde kullanılıyor. Yanlış dosyayı silersek tüm detay sayfaları bozulur.
+                        Mutlaka staging/dev ortamda test et, sonra production'a geç!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sonuç -->
+        <div class="mt-12 bg-gradient-to-r from-orange-900/30 to-purple-900/30 border border-orange-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-orange-400 mb-4">
+                <i class="fas fa-flag-checkered mr-2"></i>Özet ve Sonraki Adımlar
+            </h2>
+            <div class="space-y-4">
+                <div class="bg-slate-900/50 rounded p-4">
+                    <h3 class="font-bold text-green-400 mb-2">✅ Yapılacaklar (Sıralı)</h3>
+                    <ol class="text-sm text-slate-300 space-y-1 list-decimal list-inside">
+                        <li>Hangi song-detail-row kullanıldığını test et</li>
+                        <li>lazy-image duplicate'ini sil (Modules/)</li>
+                        <li>song-detail-row duplicate'ini sil (resources/)</li>
+                        <li>Site test et (şarkı listeleri çalışıyor mu?)</li>
+                        <li>artist-card ve empty-state kullanımını doğrula</li>
+                        <li>Kullanılmıyorlarsa sil</li>
+                        <li>Tüm component'leri tek tek test et (18 adım)</li>
+                        <li>Console error kontrolü</li>
+                        <li>Cache temizle, production build</li>
+                    </ol>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800 rounded p-4">
+                    <h3 class="font-bold text-blue-400 mb-2">📊 Beklenen Sonuç</h3>
+                    <ul class="text-sm text-blue-300 space-y-1 list-disc list-inside">
+                        <li>Duplicate component'ler temizlenecek (2 dosya silinecek)</li>
+                        <li>Kullanılmayan component'ler kaldırılacak (artist-card, empty-state)</li>
+                        <li>Tüm component'ler test edilecek, bug'lar tespit edilecek</li>
+                        <li>Temiz, bakımı kolay component sistemi kalacak</li>
+                    </ul>
+                </div>
+
+                <div class="bg-orange-900/20 border border-orange-800 rounded p-4">
+                    <h3 class="font-bold text-orange-400 mb-2">⚠️ Dikkat Edilecek Noktalar</h3>
+                    <ul class="text-sm text-orange-300 space-y-1 list-disc list-inside">
+                        <li>song-detail-row silme işlemi RİSKLİ! (13 kullanım yeri)</li>
+                        <li>Önce staging'de test et, sonra production'a geç</li>
+                        <li>Backup al! (dosyaları silmeden önce)</li>
+                        <li>Context menu overhaul sonrası temizlenen datalar geri gelmesin</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-white/10 py-6 mt-12">
+        <div class="container mx-auto px-6 text-center text-slate-400 text-sm">
+            <p>🤖 Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300">Claude Code</a></p>
+            <p class="mt-1">Component Cleanup Plan - 25 Aralık 2025</p>
+        </div>
+    </footer>
+
+</body>
+</html>

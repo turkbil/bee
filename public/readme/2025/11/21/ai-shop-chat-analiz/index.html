@@ -1,1 +1,656 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shop Chat Robot - Kapsamli Analiz & Gelistirme Plani</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 20px 0 15px 0;
+            color: #f8fafc;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-success {
+            border-left-color: #10b981;
+        }
+
+        .card-warning {
+            border-left-color: #f59e0b;
+        }
+
+        .card-danger {
+            border-left-color: #ef4444;
+        }
+
+        .card-purple {
+            border-left-color: #8b5cf6;
+        }
+
+        .card h3 {
+            color: #60a5fa;
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .tech-item {
+            background: rgba(51, 65, 85, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .tech-item strong {
+            display: block;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+
+        .file-tree {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+
+        .file-tree code {
+            color: #a5f3fc;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+        .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        .flow-diagram {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.5;
+            font-size: 0.85rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: rgba(51, 65, 85, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(51, 65, 85, 0.5);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+        }
+
+        .tag-blue { background: #1e40af; color: #93c5fd; }
+        .tag-green { background: #166534; color: #86efac; }
+        .tag-purple { background: #6b21a8; color: #d8b4fe; }
+        .tag-orange { background: #9a3412; color: #fed7aa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Shop Chat Robot - Kapsamli Analiz</h1>
+            <div class="meta">
+                Tarih: 2025-11-21 |
+                Tenant: ixtif.com (ID: 2) |
+                Sistem: Node-based Workflow Engine V2
+            </div>
+        </header>
+
+        <!-- EXECUTIVE SUMMARY -->
+        <section>
+            <h2>Yonetici Ozeti</h2>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">14</div>
+                    <div class="stat-label">Workflow Node</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">AI Provider</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">API Endpoint</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">V2</div>
+                    <div class="stat-label">Sistem Versiyonu</div>
+                </div>
+            </div>
+
+            <div class="card card-success">
+                <h3>Sistem Durumu: Aktif</h3>
+                <p>AI Shop Chat robotu <span class="highlight">Node-based Workflow Engine V2</span> uzerinde calisiyor. Sistem, kullanici mesajlarini isleyip urun aramalari yaparak akilli yanit uretiyor.</p>
+                <p><strong>Ana Ozellikler:</strong> Meilisearch ile hibrit arama, fallback AI provider zinciri (OpenAI → Claude → DeepSeek), conversation history yonetimi, tenant-specific kurallar.</p>
+            </div>
+        </section>
+
+        <!-- ARCHITECTURE OVERVIEW -->
+        <section>
+            <h2>Sistem Mimarisi</h2>
+
+            <div class="flow-diagram">
+Kullanici Mesaji
+       ↓
+┌─────────────────────────────────────┐
+│ PublicAIController                  │
+│ POST /api/ai/v1/shop-assistant/chat │
+└─────────────────────────────────────┘
+       ↓
+┌─────────────────────────────────────┐
+│ shopAssistantChatV2()               │
+│ → Session yonetimi                  │
+│ → Conversation olusturma            │
+└─────────────────────────────────────┘
+       ↓
+┌─────────────────────────────────────┐
+│ ConversationFlowEngine              │
+│ → Flow yukleme (tenant-specific)    │
+│ → Node execution loop (max 20)      │
+└─────────────────────────────────────┘
+       ↓
+┌─────────────────────────────────────┐
+│ WORKFLOW NODES (Sirasıyla)          │
+│ 1. CategoryDetectionNode            │
+│ 2. ProductSearchNode (Meilisearch)  │
+│ 3. StockSorterNode                  │
+│ 4. ContextBuilderNode               │
+│ 5. AIResponseNode → OpenAI API      │
+│ 6. MessageSaverNode                 │
+│ 7. EndNode                          │
+└─────────────────────────────────────┘
+       ↓
+┌─────────────────────────────────────┐
+│ API Response                        │
+│ { success, message, session_id }    │
+└─────────────────────────────────────┘
+            </div>
+        </section>
+
+        <!-- FRONTEND STRUCTURE -->
+        <section>
+            <h2>Frontend Yapisi</h2>
+
+            <div class="card">
+                <h3>Floating Widget Component</h3>
+                <p><strong>Dosya:</strong> <code>resources/views/components/ai/floating-widget.blade.php</code></p>
+                <p><strong>Teknolojiler:</strong></p>
+                <div class="tech-stack">
+                    <div class="tech-item">
+                        <strong>Alpine.js</strong>
+                        State Management
+                    </div>
+                    <div class="tech-item">
+                        <strong>Tailwind CSS</strong>
+                        Styling
+                    </div>
+                    <div class="tech-item">
+                        <strong>marked.js</strong>
+                        Markdown Render
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Mevcut UI Ozellikleri</h3>
+                <ul>
+                    <li><strong>Auto-open:</strong> Desktop'ta 10 saniye sonra otomatik acilma (mobilde kapali)</li>
+                    <li><strong>Animated Bubble:</strong> Donen mesajlar ile dikkat cekme</li>
+                    <li><strong>Quick Actions:</strong> Transpalet, Forklift, Istif Makinesi vb. hizli butonlar</li>
+                    <li><strong>Dark Mode:</strong> Sistem tercihi destegi</li>
+                    <li><strong>Typing Indicator:</strong> AI yazarken animasyon</li>
+                    <li><strong>Unread Badge:</strong> Okunmamis mesaj sayaci</li>
+                    <li><strong>Disclaimer Modal:</strong> AI hakkinda bilgilendirme</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>JavaScript Store (ai-chat.js)</h3>
+                <p><strong>Dosya:</strong> <code>public/assets/js/ai-chat.js</code></p>
+                <ul>
+                    <li><strong>sessionStorage:</strong> Her sekme icin ayri session (tab isolation)</li>
+                    <li><strong>Conversation History:</strong> Mesaj gecmisi yukleme</li>
+                    <li><strong>Markdown Renderer:</strong> AI yanitlarini formatli gosterme</li>
+                    <li><strong>Auto-scroll:</strong> Yeni mesajda asagi kayma</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- BACKEND STRUCTURE -->
+        <section>
+            <h2>Backend Yapisi</h2>
+
+            <div class="card card-purple">
+                <h3>Workflow Engine V2</h3>
+                <p>Sistem, <span class="highlight">node-based workflow</span> mimarisi kullaniyor. Her node bagimsiz bir gorev yapar ve sonraki node'a gecis yapar.</p>
+
+                <h3>Mevcut Node'lar</h3>
+                <table>
+                    <tr>
+                        <th>Node Tipi</th>
+                        <th>Gorev</th>
+                        <th>Dosya</th>
+                    </tr>
+                    <tr>
+                        <td>CategoryDetectionNode</td>
+                        <td>Kullanici mesajindan kategori tespit etme</td>
+                        <td>Workflow/Nodes/CategoryDetectionNode.php</td>
+                    </tr>
+                    <tr>
+                        <td>ProductSearchNode</td>
+                        <td>Meilisearch ile urun arama</td>
+                        <td>Workflow/Nodes/ProductSearchNode.php</td>
+                    </tr>
+                    <tr>
+                        <td>StockSorterNode</td>
+                        <td>Urunleri stok durumuna gore siralama</td>
+                        <td>Workflow/Nodes/StockSorterNode.php</td>
+                    </tr>
+                    <tr>
+                        <td>ContextBuilderNode</td>
+                        <td>AI icin context hazirlama</td>
+                        <td>Workflow/Nodes/ContextBuilderNode.php</td>
+                    </tr>
+                    <tr>
+                        <td>AIResponseNode</td>
+                        <td>OpenAI/Claude ile yanit uretme</td>
+                        <td>Workflow/Nodes/AIResponseNode.php</td>
+                    </tr>
+                    <tr>
+                        <td>MessageSaverNode</td>
+                        <td>Mesajlari veritabanina kaydetme</td>
+                        <td>Workflow/Nodes/MessageSaverNode.php</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Tenant-Specific Servisler</h3>
+                <p><strong>Dosya:</strong> <code>Modules/AI/app/Services/Tenant/Tenant2ProductSearchService.php</code></p>
+                <ul>
+                    <li><strong>Kategori Detection:</strong> Forklift, Transpalet, Istif Makinesi, Reach Truck, Otonom</li>
+                    <li><strong>Keyword Extraction:</strong> ton, akulu, elektrikli, li-ion, manuel vb.</li>
+                    <li><strong>Custom Prompts:</strong> Fiyat/stok politikalari, urun onceliklendirme</li>
+                    <li><strong>Hybrid Search:</strong> Meilisearch + Vector search kombinasyonu</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>AI Provider Fallback Zinciri</h3>
+                <div class="code-block">
+OpenAI (gpt-4o-mini)
+    ↓ Rate Limit/Hata
+Claude (claude-3-haiku)
+    ↓ Hata
+DeepSeek (deepseek-chat)
+    ↓ Hata
+Hata Mesaji: "AI servisleri gecici olarak kullanilamiyor"
+                </div>
+            </div>
+        </section>
+
+        <!-- API ENDPOINTS -->
+        <section>
+            <h2>API Endpoint'leri</h2>
+
+            <div class="card">
+                <h3>Shop Assistant API</h3>
+                <table>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Aciklama</th>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-green">POST</span></td>
+                        <td>/api/ai/v1/shop-assistant/chat</td>
+                        <td>Ana chat endpoint (rate limit YOK)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-green">POST</span></td>
+                        <td>/api/ai/v1/shop-assistant/chat-stream</td>
+                        <td>Streaming yanit (SSE)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-blue">GET</span></td>
+                        <td>/api/ai/v1/shop-assistant/history</td>
+                        <td>Konusma gecmisi</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-orange">DELETE</span></td>
+                        <td>/api/ai/v1/conversation/{id}</td>
+                        <td>Konusmayi silme</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- CURRENT FEATURES -->
+        <section>
+            <h2>Mevcut Ozellikler</h2>
+
+            <div class="card card-success">
+                <h3>Calisanlar</h3>
+                <ul>
+                    <li>Meilisearch ile hizli urun arama</li>
+                    <li>Conversation history ile baglam koruma</li>
+                    <li>Markdown formatinda AI yanitlari</li>
+                    <li>Urun linkleri ile direkt yonlendirme</li>
+                    <li>Fiyat sorgulari (en ucuz/en pahali)</li>
+                    <li>Kategori bazli filtreleme</li>
+                    <li>Fallback AI provider zinciri</li>
+                    <li>Session bazli izolasyon</li>
+                </ul>
+            </div>
+
+            <div class="card card-warning">
+                <h3>Iyilestirme Gerektiren Alanlar</h3>
+                <ul>
+                    <li><strong>Streaming:</strong> SSE streaming tamamen aktif degil</li>
+                    <li><strong>Response Time:</strong> Bazi sorgularda 5+ saniye bekleme</li>
+                    <li><strong>Prompt Length:</strong> Cok uzun system prompt'lar (token maliyeti)</li>
+                    <li><strong>Error Handling:</strong> Kullaniciya daha anlasilir hata mesajlari</li>
+                    <li><strong>Analytics:</strong> Kullanici davranisi analizi eksik</li>
+                    <li><strong>Caching:</strong> Benzer sorgular icin cache mekanizmasi</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- DEVELOPMENT RECOMMENDATIONS -->
+        <section>
+            <h2>Gelistirme Onerileri</h2>
+
+            <div class="card">
+                <h3>1. Performans Iyilestirmeleri <span class="priority priority-high">Yuksek</span></h3>
+                <ul>
+                    <li><strong>Streaming Aktivasyonu:</strong> SSE ile parcali yanit gosterimi</li>
+                    <li><strong>Prompt Optimization:</strong> System prompt'u kisaltma (1500 → 800 token)</li>
+                    <li><strong>Response Caching:</strong> Benzer sorgular icin Redis cache</li>
+                    <li><strong>Parallel Node Execution:</strong> Bagimsiz node'lari paralel calistirma</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>2. UX Iyilestirmeleri <span class="priority priority-high">Yuksek</span></h3>
+                <ul>
+                    <li><strong>Quick Reply Buttons:</strong> AI yanitinda tiklanabilir secenekler</li>
+                    <li><strong>Product Cards:</strong> Urunleri gorsel kartlar olarak gosterme</li>
+                    <li><strong>Voice Input:</strong> Sesli mesaj destegi</li>
+                    <li><strong>File Upload:</strong> Gorsel ile urun arama</li>
+                    <li><strong>Typing Animation:</strong> Gercekci karakter karakter yazma</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>3. Akilli Ozellikler <span class="priority priority-medium">Orta</span></h3>
+                <ul>
+                    <li><strong>Intent Detection:</strong> Kullanici niyetini anlama (satis, bilgi, sikayet)</li>
+                    <li><strong>Sentiment Analysis:</strong> Kullanici ruh halini algilama</li>
+                    <li><strong>Proactive Suggestions:</strong> Sayfa icerigine gore otomatik oneri</li>
+                    <li><strong>Comparison Mode:</strong> Urunleri yan yana karsilastirma</li>
+                    <li><strong>Lead Capture:</strong> Akilli iletisim bilgisi toplama</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>4. Admin Panel Ozellikleri <span class="priority priority-medium">Orta</span></h3>
+                <ul>
+                    <li><strong>Conversation Dashboard:</strong> Tum konusmalari izleme</li>
+                    <li><strong>Analytics:</strong> Populer sorular, conversion rate</li>
+                    <li><strong>A/B Testing:</strong> Farkli prompt'lari test etme</li>
+                    <li><strong>Directive Editor:</strong> System prompt'u panelden duzenleme</li>
+                    <li><strong>Training Data:</strong> Yanlis yanitlari duzeltme</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>5. Entegrasyonlar <span class="priority priority-low">Dusuk</span></h3>
+                <ul>
+                    <li><strong>WhatsApp:</strong> WhatsApp Business API entegrasyonu</li>
+                    <li><strong>CRM:</strong> Musterileri CRM'e aktarma</li>
+                    <li><strong>Email:</strong> Konusma ozetini mail ile gonderme</li>
+                    <li><strong>Calendar:</strong> Randevu planlama</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- FILE STRUCTURE -->
+        <section>
+            <h2>Dosya Yapisi</h2>
+
+            <div class="file-tree">
+<code>Modules/AI/
+├── app/
+│   ├── Http/
+│   │   └── Controllers/Api/
+│   │       └── PublicAIController.php      # Ana API controller
+│   └── Services/
+│       ├── AIService.php                   # Temel AI servisi
+│       ├── Chat/
+│       │   └── ChatServiceV2.php           # Chat session yonetimi
+│       ├── Tenant/
+│       │   └── Tenant2ProductSearchService.php  # iXtif ozel arama
+│       └── Workflow/
+│           ├── FlowExecutor.php            # Flow calistirici
+│           ├── NodeExecutor.php            # Node calistirici
+│           └── Nodes/
+│               ├── AIResponseNode.php      # AI yanit uretimi
+│               ├── CategoryDetectionNode.php
+│               ├── ProductSearchNode.php
+│               ├── StockSorterNode.php
+│               ├── ContextBuilderNode.php
+│               ├── MessageSaverNode.php
+│               └── EndNode.php
+├── routes/
+│   └── api.php                             # API route'lari
+└── config/
+    └── ai.php                              # AI konfigurasyonu
+
+resources/views/components/ai/
+├── floating-widget.blade.php               # Ana chat widget
+├── chat-store.blade.php                    # Alpine store
+└── inline-widget.blade.php                 # Sayfa ici widget
+
+public/assets/js/
+└── ai-chat.js                              # Frontend JS</code>
+            </div>
+        </section>
+
+        <!-- NEXT STEPS -->
+        <section>
+            <h2>Sonraki Adimlar</h2>
+
+            <div class="card">
+                <h3>Gelistirme Oncelikleri</h3>
+                <ol>
+                    <li><strong>Streaming aktivasyonu</strong> - Kullanici deneyimini aninda iyilestirir</li>
+                    <li><strong>Quick reply butonlari</strong> - Kullanici etkilesimini artirir</li>
+                    <li><strong>Urun kartlari</strong> - Gorsel zenginlik saglar</li>
+                    <li><strong>Response caching</strong> - Maliyet ve hiz optimizasyonu</li>
+                    <li><strong>Analytics dashboard</strong> - Veri odakli iyilestirme</li>
+                </ol>
+            </div>
+
+            <div class="card card-success">
+                <h3>Hazir Altyapi</h3>
+                <p>Sistem guclü bir altyapiya sahip:</p>
+                <ul>
+                    <li>Modular node-based architecture → Yeni ozellikler kolayca eklenebilir</li>
+                    <li>Tenant-aware design → Her tenant icin ozel kurallar tanimlanabilir</li>
+                    <li>Fallback chain → Yuksek kullanilabilirlik</li>
+                    <li>Conversation persistence → Kullanici baglami korunuyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafindan olusturuldu | 2025-11-21
+        </footer>
+    </div>
+</body>
+</html>

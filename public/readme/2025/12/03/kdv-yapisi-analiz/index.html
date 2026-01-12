@@ -1,1 +1,499 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDV Yapısı Analiz Raporu - Shop + Subscription + Cart + Payment</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            color: #93c5fd;
+        }
+
+        .analysis-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-ok { background: #10b981; color: white; }
+        .status-warning { background: #f59e0b; color: white; }
+        .status-missing { background: #ef4444; color: white; }
+
+        .code-box {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .field-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .field-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .field-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .field-list li.missing:before {
+            content: "✗";
+            color: #ef4444;
+        }
+
+        .recommendation-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .recommendation-box h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .warning-box h4 {
+            color: #fbbf24;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .code-inline {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #93c5fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 KDV Yapısı Analiz Raporu</h1>
+            <div class="meta">
+                <div class="meta-item">📅 2025-12-03</div>
+                <div class="meta-item">🎯 Shop + Subscription + Cart + Payment</div>
+                <div class="meta-item">🏢 Multi-Tenant Sistem</div>
+            </div>
+        </header>
+
+        <!-- ÖZET -->
+        <section>
+            <h2>📋 Özet</h2>
+            <div class="analysis-box">
+                <p>Sistemdeki KDV yapısı detaylı analiz edildi. <strong>Shop</strong> ve <strong>Cart</strong> modüllerinde KDV altyapısı mevcut ancak <strong>Subscription</strong> modülünde eksik. Ayrıca <strong>KDV dahil/hariç</strong> ayrımı yapılmıyor, bu da fiyat kafa karışıklığına yol açabilir.</p>
+            </div>
+        </section>
+
+        <!-- SHOP MODÜLÜ -->
+        <section>
+            <h2>🛒 Shop Modülü (ShopProduct)</h2>
+            
+            <h3>Mevcut Durum <span class="status-badge status-warning">Eksik Alan</span></h3>
+            
+            <div class="analysis-box">
+                <h4 style="color: #93c5fd; margin-bottom: 10px;">✅ Var Olan Alanlar</h4>
+                <ul class="field-list">
+                    <li><span class="code-inline">tax_rate</span> - KDV oranı (decimal 5,2) - <strong>Model:</strong> Line 48, 106</li>
+                    <li><span class="code-inline">base_price</span> - Temel fiyat (decimal 12,2) - <strong>Migration:</strong> Line 56</li>
+                    <li><span class="code-inline">compare_at_price</span> - İndirim öncesi fiyat</li>
+                    <li><span class="code-inline">cost_price</span> - Maliyet fiyatı</li>
+                    <li><span class="code-inline">currency</span> - Para birimi (TRY, USD, EUR)</li>
+                </ul>
+
+                <h4 style="color: #ef4444; margin-top: 20px; margin-bottom: 10px;">❌ Eksik Alanlar</h4>
+                <ul class="field-list">
+                    <li class="missing"><span class="code-inline">tax_included</span> - KDV dahil mi hariç mi? (boolean)</li>
+                    <li class="missing"><span class="code-inline">price_display_mode</span> - Fiyat gösterim şekli (with_tax / without_tax / both)</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Sorun</h4>
+                <p>Ürün fiyatının <strong>KDV dahil</strong> mi <strong>KDV hariç</strong> mi olduğu belli değil. Kullanıcı kafası karışabilir:</p>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>B2B müşteriler genelde <strong>KDV hariç</strong> fiyat görmek ister</li>
+                    <li>B2C müşteriler genelde <strong>KDV dahil</strong> fiyat görmek ister</li>
+                    <li>Sepette hesaplama yaparken fiyat <strong>KDV dahil</strong> mi <strong>hariç</strong> mi anlaşılmıyor</li>
+                </ul>
+            </div>
+
+            <div class="code-box">
+<strong>CartService.php</strong> - Line 281-282:<br>
+// Default KDV %20<br>
+return 20.0;
+            </div>
+
+            <p style="margin-top: 15px;">Mevcut kod <strong>varsayılan %20 KDV</strong> kullanıyor ama ürün bazında farklı KDV oranları tanımlanamıyor (örn: gıda %1, kitap %0).</p>
+        </section>
+
+        <!-- SUBSCRIPTION MODÜLÜ -->
+        <section>
+            <h2>💳 Subscription Modülü (SubscriptionPlan)</h2>
+            
+            <h3>Mevcut Durum <span class="status-badge status-missing">KDV Yok</span></h3>
+            
+            <div class="analysis-box">
+                <h4 style="color: #ef4444; margin-bottom: 10px;">❌ Hiç KDV Alanı Yok!</h4>
+                <ul class="field-list">
+                    <li class="missing"><span class="code-inline">tax_rate</span> - KDV oranı</li>
+                    <li class="missing"><span class="code-inline">tax_included</span> - KDV dahil mi?</li>
+                    <li class="missing"><span class="code-inline">price_display_mode</span> - Fiyat gösterim şekli</li>
+                </ul>
+
+                <p style="margin-top: 20px; color: #fbbf24;">⚠️ <strong>billing_cycles</strong> içinde sadece <span class="code-inline">price</span> var, KDV bilgisi hiç yok!</p>
+            </div>
+
+            <div class="code-box">
+<strong>SubscriptionPlan Model</strong> - Line 51:<br>
+'billing_cycles' => 'array',  // {"monthly": {"price": 199.90, "duration_months": 1}}
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Kritik Sorun</h4>
+                <p>Abonelik planlarında KDV bilgisi hiç yok! Bu durumda:</p>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>199,90 TL KDV dahil mi hariç mi belli değil</li>
+                    <li>Faturada KDV hesaplaması yapılamaz</li>
+                    <li>Yasal olarak KDV bilgisi <strong>zorunlu</strong></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- CART MODÜLÜ -->
+        <section>
+            <h2>🛍️ Cart Modülü (CartItem + CartService)</h2>
+            
+            <h3>Mevcut Durum <span class="status-badge status-ok">KDV Var</span></h3>
+            
+            <div class="analysis-box">
+                <h4 style="color: #93c5fd; margin-bottom: 10px;">✅ Var Olan Alanlar</h4>
+                <ul class="field-list">
+                    <li><span class="code-inline">tax_rate</span> - KDV oranı (decimal 5,2) - <strong>Migration:</strong> Line 39</li>
+                    <li><span class="code-inline">tax_amount</span> - KDV tutarı (decimal 12,2) - <strong>Migration:</strong> Line 38</li>
+                    <li><span class="code-inline">unit_price</span> - Birim fiyat</li>
+                    <li><span class="code-inline">final_price</span> - İndirim sonrası fiyat</li>
+                    <li><span class="code-inline">subtotal</span> - Ara toplam (KDV hariç)</li>
+                    <li><span class="code-inline">total</span> - Genel toplam (KDV dahil)</li>
+                </ul>
+
+                <h4 style="color: #ef4444; margin-top: 20px; margin-bottom: 10px;">❌ Eksik Mantık</h4>
+                <ul class="field-list">
+                    <li class="missing">Ürün fiyatı <strong>KDV dahil</strong> mi <strong>hariç</strong> mi anlaşılamıyor</li>
+                    <li class="missing">KDV hesaplama <strong>hatalı</strong> olabilir (KDV dahil fiyata tekrar KDV eklenirse çift vergi!)</li>
+                </ul>
+            </div>
+
+            <div class="code-box">
+<strong>CartItem Model</strong> - Line 176:<br>
+// Tax amount'u yeniden hesapla (quantity'ye göre)<br>
+$this->tax_amount = $this->subtotal * ($this->tax_rate / 100);
+            </div>
+
+            <p style="margin-top: 15px;">Mevcut hesaplama <strong>subtotal * tax_rate</strong> yapıyor. Ancak:</p>
+            <ul style="margin-left: 30px; margin-top: 10px;">
+                <li>Eğer <span class="code-inline">base_price</span> zaten <strong>KDV dahil</strong> ise → <strong>Yanlış hesaplama!</strong></li>
+                <li>Önce KDV'yi çıkarıp sonra eklemek gerekir</li>
+            </ul>
+
+            <div class="recommendation-box">
+                <h4>💡 Doğru Hesaplama Mantığı</h4>
+                <p><strong>Senaryo 1:</strong> Fiyat KDV dahil (tax_included = true)</p>
+                <div class="code-box">
+net_price = base_price / (1 + tax_rate / 100)  // KDV'yi çıkar<br>
+tax_amount = base_price - net_price             // KDV tutarı<br>
+subtotal = net_price * quantity                 // KDV hariç toplam<br>
+total = base_price * quantity                   // KDV dahil toplam
+                </div>
+
+                <p style="margin-top: 15px;"><strong>Senaryo 2:</strong> Fiyat KDV hariç (tax_included = false)</p>
+                <div class="code-box">
+net_price = base_price                          // Zaten KDV hariç<br>
+tax_amount = base_price * (tax_rate / 100)      // KDV tutarı hesapla<br>
+subtotal = base_price * quantity                // KDV hariç toplam<br>
+total = subtotal + (tax_amount * quantity)      // KDV ekle
+                </div>
+            </div>
+        </section>
+
+        <!-- PAYMENT MODÜLÜ -->
+        <section>
+            <h2>💰 Payment Modülü</h2>
+            
+            <div class="analysis-box">
+                <p>Payment modülü sadece <strong>ödeme gateway entegrasyonu</strong> yapıyor. KDV hesaplaması <strong>Cart</strong> ve <strong>Order</strong> modüllerinde yapılıyor.</p>
+                <p style="margin-top: 10px;">✅ Payment modülünde KDV için ekstra bir şey yapmaya gerek yok.</p>
+            </div>
+        </section>
+
+        <!-- KDV ORANLARI -->
+        <section>
+            <h2>📊 Türkiye KDV Oranları (2025)</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>KDV Oranı</th>
+                        <th>Ürün/Hizmet Kategorisi</th>
+                        <th>Örnekler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>%0</strong></td>
+                        <td>İhracat, uluslararası taşımacılık</td>
+                        <td>Yurtdışı satışlar</td>
+                    </tr>
+                    <tr>
+                        <td><strong>%1</strong></td>
+                        <td>Temel gıda, yayın</td>
+                        <td>Ekmek, süt, gazete, kitap</td>
+                    </tr>
+                    <tr>
+                        <td><strong>%10</strong></td>
+                        <td>Bazı gıda ve tekstil</td>
+                        <td>Makarna, tekstil ürünleri</td>
+                    </tr>
+                    <tr>
+                        <td><strong>%20</strong></td>
+                        <td>Genel (varsayılan)</td>
+                        <td>Elektronik, mobilya, endüstriyel ekipman, yazılım, hizmetler</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <h4>⚠️ Sisteminiz İçin Geçerli</h4>
+                <p>İxtif (endüstriyel ekipman) için varsayılan <strong>%20 KDV</strong> uygun. Ancak:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>B2B satışlarda <strong>fiyat gösterimi KDV hariç</strong> olmalı</li>
+                    <li>B2C satışlarda <strong>fiyat gösterimi KDV dahil</strong> olmalı</li>
+                    <li>Faturada her iki bilgi de <strong>ayrı ayrı</strong> yazılmalı</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ÖNERİLER -->
+        <section>
+            <h2>✅ Önerilen Çözüm</h2>
+            
+            <div class="recommendation-box">
+                <h4>1. Migration Ekleme (Shop + Subscription)</h4>
+                <p>Hem <strong>shop_products</strong> hem <strong>subscription_plans</strong> tablolarına şu alanları ekle:</p>
+                <div class="code-box">
+$table->boolean('tax_included')->default(true);<br>
+// true = Fiyat KDV dahil, false = Fiyat KDV hariç<br><br>
+
+$table->enum('price_display_mode', ['with_tax', 'without_tax', 'both'])<br>
+      ->default('with_tax');<br>
+// with_tax = Sadece KDV dahil göster<br>
+// without_tax = Sadece KDV hariç göster<br>
+// both = Her iki fiyatı da göster (B2B için ideal)
+                </div>
+            </div>
+
+            <div class="recommendation-box">
+                <h4>2. CartService'i Güncelle</h4>
+                <p><strong>setPricing()</strong> metodunda doğru hesaplama yap:</p>
+                <div class="code-box">
+if ($item->tax_included) {<br>
+    // Fiyat KDV dahil → KDV'yi çıkar<br>
+    $netPrice = $unitPrice / (1 + $taxRate / 100);<br>
+    $taxAmount = $unitPrice - $netPrice;<br>
+} else {<br>
+    // Fiyat KDV hariç → KDV'yi ekle<br>
+    $netPrice = $unitPrice;<br>
+    $taxAmount = $unitPrice * ($taxRate / 100);<br>
+}<br><br>
+
+$cartItem->unit_price = $netPrice;  // Her zaman NET fiyat kaydet<br>
+$cartItem->tax_amount = $taxAmount;<br>
+$cartItem->final_price = $netPrice + $taxAmount;
+                </div>
+            </div>
+
+            <div class="recommendation-box">
+                <h4>3. Frontend Gösterim</h4>
+                <p>Ürün kartlarında ve detay sayfalarında:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>B2B kullanıcı:</strong> "999,00 TL + KDV" (KDV hariç göster)</li>
+                    <li><strong>B2C kullanıcı:</strong> "1.198,80 TL (KDV dahil)" (KDV dahil göster)</li>
+                    <li><strong>Both mode:</strong> "999,00 TL + KDV = 1.198,80 TL" (her ikisini göster)</li>
+                </ul>
+            </div>
+
+            <div class="recommendation-box">
+                <h4>4. Admin Panel</h4>
+                <p>Ürün/Plan eklerken admin'e sor:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>☑️ Girdiğiniz fiyat KDV dahil mi?</li>
+                    <li>☑️ KDV oranı nedir? (%20, %10, %1, %0)</li>
+                    <li>☑️ Kullanıcıya nasıl gösterilsin? (KDV dahil / KDV hariç / İkisi de)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section>
+            <h2>🎯 Sonuç</h2>
+            
+            <div class="analysis-box">
+                <h4 style="color: #93c5fd; margin-bottom: 15px;">Mevcut Durum</h4>
+                <ul style="margin-left: 20px;">
+                    <li>✅ <strong>Shop:</strong> KDV oranı var ama <strong>dahil/hariç</strong> ayrımı yok</li>
+                    <li>❌ <strong>Subscription:</strong> KDV altyapısı <strong>hiç yok</strong></li>
+                    <li>✅ <strong>Cart:</strong> KDV hesaplama var ama <strong>mantık eksik</strong></li>
+                    <li>✅ <strong>Payment:</strong> Sorun yok (Cart'tan aldığı veriyi kullanıyor)</li>
+                </ul>
+
+                <h4 style="color: #60a5fa; margin-top: 25px; margin-bottom: 15px;">Yapılması Gerekenler</h4>
+                <ul style="margin-left: 20px;">
+                    <li>1️⃣ Migration: <span class="code-inline">tax_included</span> + <span class="code-inline">price_display_mode</span> ekle</li>
+                    <li>2️⃣ CartService: Doğru KDV hesaplama mantığı yaz</li>
+                    <li>3️⃣ Admin: Ürün eklerken KDV bilgisi sor</li>
+                    <li>4️⃣ Frontend: Kullanıcıya göre fiyat gösterimi ayarla</li>
+                </ul>
+
+                <p style="margin-top: 25px; color: #fbbf24; font-weight: 600;">⚠️ Özellikle <strong>Subscription</strong> modülü acil düzenlenmeli, yasal zorunluluk!</p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - 2025-12-03
+        </footer>
+    </div>
+</body>
+</html>

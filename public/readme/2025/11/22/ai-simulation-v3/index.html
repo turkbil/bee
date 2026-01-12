@@ -1,1 +1,952 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Simülasyon V3 - Gelişmiş Test Raporu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .stat-card.warning .stat-value { color: #f59e0b; }
+        .stat-card.danger .stat-value { color: #ef4444; }
+        .stat-card.success .stat-value { color: #10b981; }
+
+        /* Filter Buttons */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #475569;
+            background: rgba(30, 41, 59, 0.5);
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: #3b82f6;
+        }
+
+        .filter-btn.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .filter-btn.negative {
+            border-color: #ef4444;
+        }
+
+        .filter-btn.negative.active {
+            background: #ef4444;
+        }
+
+        /* Test Cards */
+        .test-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .test-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
+
+        .test-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .test-card.has-negative {
+            border-left: 4px solid #ef4444;
+        }
+
+        .test-header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .test-num {
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .test-category {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .cat-selamlama { background: #10b981; color: white; }
+        .cat-belirsiz { background: #f59e0b; color: white; }
+        .cat-belirli { background: #3b82f6; color: white; }
+        .cat-fiyat { background: #8b5cf6; color: white; }
+        .cat-olumsuz { background: #ef4444; color: white; }
+        .cat-teknik { background: #06b6d4; color: white; }
+        .cat-servis { background: #ec4899; color: white; }
+        .cat-karsilastirma { background: #6366f1; color: white; }
+        .cat-senaryo { background: #14b8a6; color: white; }
+        .cat-iletisim { background: #f97316; color: white; }
+
+        .test-duration {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .test-body {
+            padding: 20px;
+        }
+
+        .test-section {
+            margin-bottom: 15px;
+        }
+
+        .test-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .test-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 5px;
+        }
+
+        .test-message {
+            color: #fbbf24;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .test-expected {
+            color: #a78bfa;
+            font-style: italic;
+        }
+
+        .test-response {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .negative-warning {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #fca5a5;
+        }
+
+        /* Scrollbar */
+        .test-response::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .test-response::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .test-response::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .stat-value { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Simülasyon V3 - Gelişmiş Test Raporu</h1>
+            <div class="meta">
+                Tarih: 2025-11-22 | Tenant: ixtif.com | 60 Test Senaryosu
+            </div>
+        </header>
+
+        <div class="stats-grid" id="stats">
+            <!-- Stats will be injected here -->
+        </div>
+
+        <div class="filters" id="filters">
+            <!-- Filters will be injected here -->
+        </div>
+
+        <div class="test-grid" id="testGrid">
+            <!-- Test cards will be injected here -->
+        </div>
+
+        <footer>
+            Claude AI tarafından oluşturuldu | AI Chatbot Simülasyon Testi
+        </footer>
+    </div>
+
+    <script>
+        const testData = [
+    {
+        "test_num": 1,
+        "category": "Selamlama",
+        "message": "Selam",
+        "expected": "Selamlama yanıtı",
+        "response": "Merhaba! Size nasıl yardımcı olabilirim? 😊",
+        "duration_ms": 7259,
+        "has_negative": false
+    },
+    {
+        "test_num": 2,
+        "category": "Selamlama",
+        "message": "İyi akşamlar",
+        "expected": "Selamlama yanıtı",
+        "response": "Merhaba! Size nasıl yardımcı olabilirim? 😊",
+        "duration_ms": 4666,
+        "has_negative": false
+    },
+    {
+        "test_num": 3,
+        "category": "Selamlama",
+        "message": "Merhaba, yardımcı olabilir misiniz?",
+        "expected": "Selamlama + yardım teklifi",
+        "response": "Merhaba! Size nasıl yardımcı olabilirim? 😊",
+        "duration_ms": 3846,
+        "has_negative": false
+    },
+    {
+        "test_num": 4,
+        "category": "Selamlama",
+        "message": "Hey",
+        "expected": "Selamlama yanıtı",
+        "response": "Merhaba! Size nasıl yardımcı olabilirim? 😊",
+        "duration_ms": 3334,
+        "has_negative": false
+    },
+    {
+        "test_num": 5,
+        "category": "Selamlama",
+        "message": "Nasılsınız?",
+        "expected": "Selamlama yanıtı",
+        "response": "Merhaba! Size nasıl yardımcı olabilirim? 😊",
+        "duration_ms": 3757,
+        "has_negative": false
+    },
+    {
+        "test_num": 6,
+        "category": "Belirsiz",
+        "message": "Forklift arıyorum",
+        "expected": "Tonaj\/tip sorusu sormalı",
+        "response": "Merhaba! Size yardımcı olabilirim. 😊\n\nİhtiyacınıza en uygun forklift modelini bulabilmem için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa dizel ya da başka bir tip mi tercih edersiniz?",
+        "duration_ms": 4488,
+        "has_negative": true
+    },
+    {
+        "test_num": 7,
+        "category": "Belirsiz",
+        "message": "Transpalet lazım",
+        "expected": "Tonaj\/tip sorusu sormalı",
+        "response": "Merhaba! Size yardımcı olabilirim. 😊\n\nTranspalet seçeneklerimizi en iyi şekilde sunabilmem için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)\n- Manuel mi yoksa elektrikli mi tercih edersiniz?",
+        "duration_ms": 3858,
+        "has_negative": true
+    },
+    {
+        "test_num": 8,
+        "category": "Belirsiz",
+        "message": "İstif makinesi bakıyorum",
+        "expected": "Tonaj\/tip sorusu sormalı",
+        "response": "Tabii, size yardımcı olabilirim! 😊\n\nİhtiyacınıza en uygun istif makinesini bulabilmem için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa başka bir tip mi tercih edersiniz?",
+        "duration_ms": 3636,
+        "has_negative": true
+    },
+    {
+        "test_num": 9,
+        "category": "Belirsiz",
+        "message": "Reach truck var mı?",
+        "expected": "Tonaj\/tip sorusu sormalı",
+        "response": "Tabii, size yardımcı olabilirim! 😊\n\nReach truck için en uygun modeli bulabilmemiz adına:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa başka bir tip mi tercih edersiniz?",
+        "duration_ms": 3358,
+        "has_negative": true
+    },
+    {
+        "test_num": 10,
+        "category": "Belirsiz",
+        "message": "Depo ekipmanı istiyorum",
+        "expected": "Ne tür ekipman sorusu sormalı",
+        "response": "Merhaba! Size en uygun depo ekipmanını bulabilmem için:\n\n- Hangi tür ekipman arıyorsunuz? (Forklift, transpalet, istif makinesi, reach truck gibi)\n- Kaç ton taşıma kapasitesi ihtiyacınız var? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa manuel mi tercih edersiniz?\n\nBilgilerinizi paylaşırsanız, size en uygun seçenekleri sunabilirim! 😊",
+        "duration_ms": 4956,
+        "has_negative": true
+    },
+    {
+        "test_num": 11,
+        "category": "Belirsiz",
+        "message": "Akülü bir şey arıyorum",
+        "expected": "Ne tür ürün sorusu sormalı",
+        "response": "Tabii, size yardımcı olabilirim! 😊\n\nSize en uygun ürünü bulabilmem için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)\n- Hangi kategoriyle ilgileniyorsunuz? (Forklift, Transpalet, İstif makinesi gibi)",
+        "duration_ms": 5051,
+        "has_negative": false
+    },
+    {
+        "test_num": 12,
+        "category": "Belirsiz",
+        "message": "Yük taşıma için bir şey lazım",
+        "expected": "Detay sorusu sormalı",
+        "response": "Merhaba! Size nasıl yardımcı olabilirim? 😊\n\nİhtiyacınıza en uygun ürünü bulabilmem için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa manuel mi tercih edersiniz?",
+        "duration_ms": 4791,
+        "has_negative": true
+    },
+    {
+        "test_num": 13,
+        "category": "Belirsiz",
+        "message": "Ürünleriniz neler?",
+        "expected": "Kategori tanıtımı yapmalı",
+        "response": "Merhaba! Size nasıl yardımcı olabilirim? 😊\n\nHangi kategori ürünleri ile ilgileniyorsunuz?\n\n- Forklift\n- Transpalet\n- İstif Makinesi\n- Reach Truck\n- Platform\n- Tow Tractor\n\nHangi kategoriye bakmak istersiniz?",
+        "duration_ms": 4092,
+        "has_negative": false
+    },
+    {
+        "test_num": 14,
+        "category": "Belirli",
+        "message": "1.5 ton elektrikli transpalet",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Size uygun seçenekleri göstereyim. 😊\n\n### F4 - 1.5 Ton Li-Ion Transpalet [Ürünü İncele](\/shop\/ixtif-f4-15-ton-li-ion-transpalet)\n\n- 1.500 kg taşıma kapasitesi\n- Li-Ion batarya ile uzun kullanım\n- Ergonomik tasarım\n\nFiyat: **52.948 TL** ≈ $1.250\n\nHangi model hakkında detaylı bilgi almak istersiniz?",
+        "duration_ms": 4081,
+        "has_negative": false
+    },
+    {
+        "test_num": 15,
+        "category": "Belirli",
+        "message": "2 ton akülü forklift istiyorum",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Size uygun seçenekleri göstereyim:\n\n⭐ **Denge Tekeri - 1525** [Ürünü İncele](\/shop\/denge-tekeri-1525)\n\n- Dayanıklı yapı\n- Verimli kullanım\n- Güvenilir performans\n\n⭐ **Denge Tekeri - 1526** [Ürünü İncele](\/shop\/denge-tekeri-1526)\n\n- Sağlam tasarım\n- Uzun ömürlü malzeme\n- Endüstriyel kullanım için uygun\n\n⭐ **Denge Tekeri - 1529** [Ürünü İncele](\/shop\/denge-tekeri-1529)\n\n- Yüksek kalite malzeme\n- Stabil çalışma\n- Dayanıklı yapı\n\nSize özel daha detaylı bilgi ve teklif için telefon numaranızı paylaşır mısınız? 📱",
+        "duration_ms": 6024,
+        "has_negative": false
+    },
+    {
+        "test_num": 16,
+        "category": "Belirli",
+        "message": "1.2 ton Li-Ion istif makinesi",
+        "expected": "Ürün listesi göstermeli",
+        "response": "İstif makinesi kategorisinde 1.2 ton kapasitede Li-Ion bataryalı ürünlerimiz bulunmamaktadır. 😊\n\nSize en doğru seçenekleri sunabilmemiz için müşteri temsilcimiz sizinle iletişime geçsin!\n\n📞 0216 755 3 555 veya 📱 telefon numaranızı paylaşır mısınız?",
+        "duration_ms": 3528,
+        "has_negative": true
+    },
+    {
+        "test_num": 17,
+        "category": "Belirli",
+        "message": "3 ton dizel forklift lazım",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Size uygun seçenekleri göstereyim:\n\n### Şambrel - İç Lastik [Ürünü İncele](\/shop\/sambrel-ic-lastik)\n\n- Dayanıklı iç lastik yapısı\n- Forkliftlerin performansını artırır\n- Güvenilir kullanım sağlar\n\n### Denge Tekeri - 1525 [Ürünü İncele](\/shop\/denge-tekeri-1525)\n\n- Forklift için özel denge tekeri\n- Sağlam ve uzun ömürlü tasarım\n- Yüksek dayanıklılık\n\n### Bombeli Tork Sacı [Ürünü İncele](\/shop\/bombeli-tork-saci)\n\n- Forklift dönüşüm sacı\n- Dayanıklı ve kaliteli malzeme\n- Kolay montaj imkanı\n\n### Denge Tekeri - 1526 [Ürünü İncele](\/shop\/denge-tekeri-1526)\n\n- Yüksek performanslı denge tekeri\n- Forklift stabilitesini artırır\n- Uzun ömürlü kullanım\n\n### Denge Tekeri - 1529 [Ürünü İncele](\/shop\/denge-tekeri-1529)\n\n- Forklift için kaliteli denge tekeri\n- Dayanıklı ve güvenilir\n- İyi performans sunar\n\n### LPG Dizel Dönüşüm Sacı [Ürünü İncele](\/shop\/lpg-dizel-donusum-saci)\n\n- Dizel forklifte LPG dönüşümü için sac\n- Dayanıklı ve kaliteli malzeme\n- Kolay uygulama imkanı\n\n### Denge Tekeri - STILL - ST-EXU16 [Ürünü İncele](\/shop\/denge-tekeri-still-st-exu16)\n\n- STILL marka forkliftlere özel denge tekeri\n- Uzun ömürlü ve sağlam yapı\n- Yüksek performans\n\nBu ürünler forkliftinize destek olacak kaliteli parçalar. Dizel forklift için tam ürünlerimiz bulunuyor, detaylı destek için müşteri temsilcimizle görüşebilirsiniz. Telefon numaranızı paylaşır mısınız? 📱",
+        "duration_ms": 8799,
+        "has_negative": false
+    },
+    {
+        "test_num": 18,
+        "category": "Belirli",
+        "message": "1600mm kaldırma yüksekliği olan transpalet",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Size yardımcı olabilirim! 😊\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)\n- Manuel mi yoksa elektrikli mi tercih edersiniz?",
+        "duration_ms": 3177,
+        "has_negative": true
+    },
+    {
+        "test_num": 19,
+        "category": "Belirli",
+        "message": "Dar koridor için reach truck",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Reach truck konusunda size yardımcı olabilirim. 😊\n\nSize en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬\n\n**İletişim bilgilerinizi paylaşır mısınız?**  \n📱 Telefon numaranız:  \n📧 E-posta adresiniz: (opsiyonel)\n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 3333,
+        "has_negative": false
+    },
+    {
+        "test_num": 20,
+        "category": "Belirli",
+        "message": "Soğuk hava deposu için forklift",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Size yardımcı olabilirim! 😊\n\nForklift seçiminiz için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa başka bir tip mi tercih edersiniz?",
+        "duration_ms": 3299,
+        "has_negative": true
+    },
+    {
+        "test_num": 21,
+        "category": "Belirli",
+        "message": "2.5 ton kapasiteli akülü transpalet",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Size uygun seçenekleri göstereyim. 😊\n\n⭐ **EPL153 - 2.5 Ton Akülü Transpalet** [Ürünü İncele](\/shop\/ixtif-epl153-transpalet)\n\n- 2.500 kg taşıma kapasitesi\n- Akülü kullanım için ideal\n- Dayanıklı ve verimli tasarım\n\nFiyat: Müşteri temsilcilerimizle iletişime geçerek detaylı fiyat teklifi alabilirsiniz.  \nİletişim: 0216 755 3 555 numaralı telefonu arayabilir veya iletişim bilgilerinizi bırakabilirsiniz.\n\nHangi model hakkında detaylı bilgi almak istersiniz?",
+        "duration_ms": 4022,
+        "has_negative": false
+    },
+    {
+        "test_num": 22,
+        "category": "Belirli",
+        "message": "Platform üzerinde operatör olan istif makinesi",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Platform üzerinde operatör olan istif makinesi kategorimizle ilgili size özel seçenekler sunabilmem için müşteri temsilcimizle iletişime geçmeniz en doğrusu olacaktır. 😊\n\nSize en uygun seçenekleri sunabilmemiz için müşteri temsilcimiz sizinle iletişime geçsin!\n\n📞 0216 755 3 555 veya 📱 telefon numaranızı paylaşır mısınız?",
+        "duration_ms": 4435,
+        "has_negative": false
+    },
+    {
+        "test_num": 23,
+        "category": "Belirli",
+        "message": "Üç tekerlekli elektrikli forklift",
+        "expected": "Ürün listesi göstermeli",
+        "response": "Size yardımcı olabilirim! 😊\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)\n- Elektrikli mi tercih edersiniz?",
+        "duration_ms": 3134,
+        "has_negative": false
+    },
+    {
+        "test_num": 24,
+        "category": "Fiyat",
+        "message": "En ucuz transpalet hangisi?",
+        "expected": "Fiyata göre sıralı ürün göstermeli",
+        "response": "Size en uygun transpaleti göstereyim. 😊\n\n⭐ **F4 - 1.5 Ton Li-Ion Transpalet** [Ürünü İncele](\/shop\/ixtif-f4-15-ton-li-ion-transpalet)\n\n- 1.500 kg taşıma kapasitesi\n- Li-Ion batarya ile uzun kullanım\n- Ergonomik tasarım\n\nFiyat: 52.948 TL ≈ $1.250\n\nHangi model hakkında detaylı bilgi almak istersiniz?",
+        "duration_ms": 5385,
+        "has_negative": false
+    },
+    {
+        "test_num": 25,
+        "category": "Fiyat",
+        "message": "100.000 TL altında forklift var mı?",
+        "expected": "Bütçeye uygun ürün göstermeli",
+        "response": "100.000 TL altında forklift seçeneklerine bakalım! 😊\n\n### İXTİF F4 - 1.5 Ton Li-Ion Forklift [Ürünü İncele](\/shop\/ixtif-f4-15-ton-lion-forklift)\n\n- 1.5 ton taşıma kapasitesi\n- Li-Ion batarya ile uzun süreli kullanım\n- Ergonomik ve verimli tasarım\n\nFiyat: **99.542 TL**\n\nBu model, 1.5 ton kapasite isteyenler için ideal ve ekonomik bir tercih. Sağlam performans sunar.\n\nDaha fazla bilgi veya başka seçenekler için hangi ton ve özelliklerde forklift istediğinizi belirtir misiniz? Size uygun modeli seçmenizde yardımcı olabilirim!",
+        "duration_ms": 5483,
+        "has_negative": false
+    },
+    {
+        "test_num": 26,
+        "category": "Fiyat",
+        "message": "Fiyat listesi alabilir miyim?",
+        "expected": "Temsilci yönlendirmesi",
+        "response": "Tabii! Size yardımcı olabilirim. 😊\n\nHangi ürün kategorisi ile ilgileniyorsunuz?\n\n- Forklift\n- Transpalet\n- İstif makinesi\n- Reach truck\n- Başka bir ürün mü?\n\nİlginizi çeken kategoriyi belirtir misiniz?",
+        "duration_ms": 4493,
+        "has_negative": false
+    },
+    {
+        "test_num": 27,
+        "category": "Fiyat",
+        "message": "İstif makinesi fiyatları ne kadar?",
+        "expected": "Fiyat aralığı veya ürün göstermeli",
+        "response": "İstif makinesi fiyatları hakkında size en doğru bilgiyi verebilmem için birkaç sorum olacak 😊\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa manuel mi tercih edersiniz?",
+        "duration_ms": 3227,
+        "has_negative": true
+    },
+    {
+        "test_num": 28,
+        "category": "Fiyat",
+        "message": "Bütçem 200.000 TL, ne önerirsiniz?",
+        "expected": "Bütçeye uygun ürün göstermeli",
+        "response": "Bütçenize uygun seçenekleri hemen sunuyorum! 😊\n\n### Denge Tekeri - STILL - ST-EXU16 [Ürünü İncele](\/shop\/denge-tekeri-still-st-exu16)\n\n- Dayanıklı yapı\n- Yüksek performans\n- Uzun ömürlü kullanım\n\nFiyat: 99.542 TL\n\n### Bombeli Tork Sacı [Ürünü İncele](\/shop\/bombeli-tork-saci)\n\n- Sağlam malzeme kalitesi\n- Endüstriyel kullanım için uygun\n\nFiyat: 52.948 TL\n\nBu ürünler bütçenize uygun ve kaliteli seçeneklerdir. Size en uygun modeli seçmenizde yardımcı olabilirim. Hangi ürün hakkında detaylı bilgi almak istersiniz?",
+        "duration_ms": 5096,
+        "has_negative": false
+    },
+    {
+        "test_num": 29,
+        "category": "Fiyat",
+        "message": "En pahalı forkliftiniz hangisi?",
+        "expected": "Premium ürün göstermeli",
+        "response": "Size en pahalı forklift seçeneklerimizi göstereyim. 😊\n\n### İXTİF EFX5 351 - 3 Ton Li-Ion Forklift [Ürünü İncele](\/shop\/ixtif-efx5-351-3-ton-li-ion-forklift)\n\n- 3 ton taşıma kapasitesi\n- Li-Ion batarya teknolojisi ile uzun çalışma süresi\n- Dayanıklı ve verimli tasarım\n\nFiyat: **1.503.713 TL** ≈ $35.500\n\n### İXTİF TDL162 - 1.6 Ton 80V Li-Ion 3 Teker Forklift [Ürünü İncele](\/shop\/ixtif-tdl162-16-ton-80v-li-ion-3-teker-forklift)\n\n- 1.6 ton taşıma kapasitesi\n- 80V Li-Ion batarya\n- Üç tekerlekli mani çevik tasarım\n\nFiyat: **1.355.459 TL** ≈ $32.000\n\nHangi model hakkında detaylı bilgi almak istersiniz? Size en uygun modeli seçmenizde yardımcı olabilirim.",
+        "duration_ms": 6518,
+        "has_negative": false
+    },
+    {
+        "test_num": 30,
+        "category": "Olumsuz Test",
+        "message": "Platform truck var mı?",
+        "expected": "Pozitif yönlendirme (bulunmamaktadır YASAK)",
+        "response": "Platform truck konusunda size yardımcı olabilirim. 😊\n\nSize en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬\n\n**İletişim bilgilerinizi paylaşır mısınız?**\n📱 Telefon numaranız:\n📧 E-posta adresiniz: (opsiyonel)\n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 4696,
+        "has_negative": false
+    },
+    {
+        "test_num": 31,
+        "category": "Olumsuz Test",
+        "message": "Terazili transpalet istiyorum",
+        "expected": "Pozitif yönlendirme (yok YASAK)",
+        "response": "Terazili transpalet konusunda size yardımcı olabilirim. 😊\n\nSize en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬\n\n**İletişim bilgilerinizi paylaşır mısınız?**\n- 📱 Telefon numaranız:\n- 📧 E-posta adresiniz: (opsiyonel)\n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 3672,
+        "has_negative": false
+    },
+    {
+        "test_num": 32,
+        "category": "Olumsuz Test",
+        "message": "Order picker var mı?",
+        "expected": "Pozitif yönlendirme (mevcut değil YASAK)",
+        "response": "Order picker konusunda size yardımcı olabilirim. 😊\n\nSize en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬\n\n**İletişim bilgilerinizi paylaşır mısınız?**  \n📱 Telefon numaranız:  \n📧 E-posta adresiniz: (opsiyonel)  \n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 3747,
+        "has_negative": false
+    },
+    {
+        "test_num": 33,
+        "category": "Olumsuz Test",
+        "message": "Vinç arıyorum",
+        "expected": "Pozitif yönlendirme",
+        "response": "Size yardımcı olabilirim! 😊\n\n- Kaç ton kaldırma kapasitesi arıyorsunuz? (1 ton, 5 ton, 10 ton gibi)\n- Elektrikli mi yoksa başka bir tip mi tercih edersiniz?",
+        "duration_ms": 2855,
+        "has_negative": true
+    },
+    {
+        "test_num": 34,
+        "category": "Olumsuz Test",
+        "message": "Palet sarma makinesi var mı?",
+        "expected": "Pozitif yönlendirme",
+        "response": "Palet sarma makinesi konusunda size yardımcı olabilirim. 😊\n\nSize en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬\n\n**İletişim bilgilerinizi paylaşır mısınız?**\n📱 Telefon numaranız:\n📧 E-posta adresiniz: (opsiyonel)\n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 4466,
+        "has_negative": false
+    },
+    {
+        "test_num": 35,
+        "category": "Olumsuz Test",
+        "message": "Konveyör sistemi bakıyorum",
+        "expected": "Pozitif yönlendirme",
+        "response": "Konveyör sistemi kategorisiyle ilgili ürünlerimiz bulunmuyor. 😊\n\nSize en uygun seçenekleri sunabilmemiz için müşteri temsilcimiz sizinle iletişime geçsin!\n\n📞 0216 755 3 555 veya 📱 telefon numaranızı paylaşır mısınız?",
+        "duration_ms": 4476,
+        "has_negative": false
+    },
+    {
+        "test_num": 36,
+        "category": "Olumsuz Test",
+        "message": "Raf sistemi satıyor musunuz?",
+        "expected": "Pozitif yönlendirme",
+        "response": "Raf sistemi konusunda size yardımcı olabilirim. 😊\n\nSize en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬\n\n**İletişim bilgilerinizi paylaşır mısınız?**\n📱 Telefon numaranız:\n📧 E-posta adresiniz: (opsiyonel)\n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 4228,
+        "has_negative": false
+    },
+    {
+        "test_num": 37,
+        "category": "Olumsuz Test",
+        "message": "Elektrikli palet sarıcı var mı?",
+        "expected": "Pozitif yönlendirme",
+        "response": "Elektrikli palet sarıcı konusunda size yardımcı olabilirim. 😊\n\nSize en uygun seçeneği sunabilmem için:\n\n- Hangi kapasitede ürün arıyorsunuz? (örneğin 1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa manuel mi tercih edersiniz?\n\nBilgileri paylaşırsanız, size uygun seçenekleri gösterebilirim!",
+        "duration_ms": 3987,
+        "has_negative": true
+    },
+    {
+        "test_num": 38,
+        "category": "Teknik",
+        "message": "Li-Ion ile kurşun asit arasındaki fark nedir?",
+        "expected": "Teknik karşılaştırma",
+        "response": "### Li-Ion vs Kurşun Asit Batarya\n\n**Li-Ion Batarya Avantajları:**\n- Daha hafif ve kompakt tasarım\n- Hızlı şarj imkanı (genellikle 1-2 saat)\n Daha uzun kullanım ömrü ve yüksek döngü sayısı\n- Bakım gerektirmez, temiz çalışma sağlar\n- Yüksek enerji yoğunluğu sayesinde daha verimli\n\n**Kurşun Asit Batarya Avantajları:**\n- Daha uygun başlangıç maliyeti\n- Geniş kullanım alanı ve yaygın bulunabilirlik\n- Soğuk hava koşullarına dayanıklı\n\n**Önerim:** Yoğun ve sürekli kullanımda, hızlı şarj ve uzun ömür için Li-Ion tercih edilir. Bütçe dostu ve klasik çözümler için Kurşun Asit ideal.\n\nBaşka hangi konuda yardımcı olabilirim? 😊",
+        "duration_ms": 5325,
+        "has_negative": false
+    },
+    {
+        "test_num": 39,
+        "category": "Teknik",
+        "message": "Forklift bakım periyodu ne kadar?",
+        "expected": "Teknik bilgi veya temsilci yönlendirmesi",
+        "response": "Forklift bakım periyodu hakkında size yardımcı olabilirim. 😊\n\nSize en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬\n\n**İletişim bilgilerinizi paylaşır mısınız?**  \n📱 Telefon numaranız:  \n📧 E-posta adresiniz: (opsiyonel)  \n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 4507,
+        "has_negative": false
+    },
+    {
+        "test_num": 40,
+        "category": "Teknik",
+        "message": "Akü şarj süresi ne kadar?",
+        "expected": "Teknik bilgi",
+        "response": "Akü şarj süreleri hakkında size detaylı bilgi verebilmem için kullandığınız ürünün modelini veya tipini paylaşabilir misiniz? 😊\n\nBu bilgiler doğrultusunda en doğru bilgiyi sunabilirim.",
+        "duration_ms": 3215,
+        "has_negative": false
+    },
+    {
+        "test_num": 41,
+        "category": "Teknik",
+        "message": "Kaldırma kapasitesi nasıl hesaplanır?",
+        "expected": "Teknik açıklama",
+        "response": "Kaldırma kapasitesi hesaplama konusunda size yardımcı olabilirim! 😊\n\nBu konuda teknik detaylar ve doğru hesaplama için uzman müşteri temsilcilerimiz size destek olabilir. \n\nSize en doğru bilgiyi vermek için müşteri temsilcimizle iletişime geçmek ister misiniz? Telefon numaranızı paylaşabilir misiniz? 📱",
+        "duration_ms": 3523,
+        "has_negative": false
+    },
+    {
+        "test_num": 42,
+        "category": "Teknik",
+        "message": "IP54 koruma sınıfı ne demek?",
+        "expected": "Teknik açıklama",
+        "response": "IP54 koruma sınıfı, bir cihazın toz ve suya karşı dayanıklılık seviyesini belirtir.\n\n- **IP**: International Protection (Uluslararası Koruma)\n- **5**: Toza karşı kısmi koruma sağlar; toz girişi tamamen engellenmez ama cihazın çalışmasını engelleyecek kadar toz girişi önlenir.\n- **4**: Her yönden gelen su sıçramalarına karşı koruma vardır.\n\nYani IP54 sınıfındaki bir cihaz, toz partiküllerine karşı büyük oranda korumalıdır ve su sıçramalarına dayanıklıdır. Bu, özellikle endüstriyel ortamlar ve dış mekan kullanımları için uygun bir koruma seviyesidir. \n\nBaşka nasıl yardımcı olabilirim? 😊",
+        "duration_ms": 4728,
+        "has_negative": false
+    },
+    {
+        "test_num": 43,
+        "category": "Servis",
+        "message": "Teknik servis hizmetiniz var mı?",
+        "expected": "Pozitif yanıt + temsilci",
+        "response": "Evet, profesyonel teknik servis hizmetimiz bulunmaktadır! 🔧\n\nSize özel servis planı ve detaylı bilgi için müşteri temsilcimiz sizinle iletişime geçsin. 😊\n\n**İletişim bilgilerinizi paylaşır mısınız?**\n📱 Telefon numaranız:",
+        "duration_ms": 3923,
+        "has_negative": false
+    },
+    {
+        "test_num": 44,
+        "category": "Servis",
+        "message": "Forklift kiralama yapıyor musunuz?",
+        "expected": "Pozitif yanıt + temsilci",
+        "response": "Forklift kiralama seçeneklerimiz hakkında size özel teklif hazırlayabiliriz! 😊\n\nSize en uygun kiralama paketini sunabilmemiz için müşteri temsilcimiz sizinle iletişime geçsin. Telefon numaranızı paylaşır mısınız? 📱",
+        "duration_ms": 3147,
+        "has_negative": false
+    },
+    {
+        "test_num": 45,
+        "category": "Servis",
+        "message": "Yedek parça bulabilir miyim?",
+        "expected": "Pozitif yanıt + temsilci",
+        "response": "Yedek parça konusunda size kesinlikle yardımcı olabiliriz! 😊 Hangi parçayı arıyorsunuz? Size özel fiyat teklifi hazırlayabilmemiz için iletişim bilgilerinizi alabilir miyim? 📱",
+        "duration_ms": 3879,
+        "has_negative": false
+    },
+    {
+        "test_num": 46,
+        "category": "Servis",
+        "message": "Garanti süresi ne kadar?",
+        "expected": "Bilgi veya temsilci",
+        "response": "Garanti süresi hakkında size en doğru ve detaylı bilgiyi verebilmemiz için müşteri temsilcimiz sizinle iletişime geçsin! 😊\n\n**İletişim bilgilerinizi paylaşır mısınız?**  \n📱 Telefon numaranız:  \n📧 E-posta adresiniz: (opsiyonel)  \n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 6103,
+        "has_negative": false
+    },
+    {
+        "test_num": 47,
+        "category": "Servis",
+        "message": "Operatör eğitimi veriyor musunuz?",
+        "expected": "Pozitif yanıt + temsilci",
+        "response": "Operatör eğitimi konusunda size yardımcı olabilirim. 😊\n\nSize en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬\n\n**İletişim bilgilerinizi paylaşır mısınız?**  \n📱 Telefon numaranız:  \n📧 E-posta adresiniz: (opsiyonel)\n\nHemen geri dönüş yapacağız! ⚡",
+        "duration_ms": 4974,
+        "has_negative": false
+    },
+    {
+        "test_num": 48,
+        "category": "Servis",
+        "message": "İkinci el forklift var mı?",
+        "expected": "Pozitif yanıt + temsilci",
+        "response": "İkinci el forklift konusunda size yardımcı olabilirim. 😊\n\nSize en uygun seçenekleri sunabilmemiz için müşteri temsilcimiz sizinle iletişime geçsin!  \n\n📞 0216 755 3 555 veya  \n📱 Telefon numaranızı paylaşır mısınız?",
+        "duration_ms": 2957,
+        "has_negative": false
+    },
+    {
+        "test_num": 49,
+        "category": "Karşılaştırma",
+        "message": "Elektrikli mi dizel mi daha iyi?",
+        "expected": "Karşılaştırma yapmalı",
+        "response": "### Elektrikli vs Dizel Forklift\n\n**Elektrikli Avantajları:**\n- Sessiz çalışma, kapalı alanlarda ideal\n- Sıfır emisyon, çevre dostu\n- Düşük bakım maliyeti\n- Uzun vadede ekonomik kullanım\n\n**Dizel Avantajları:**\n- Yüksek güç performansı\n- Açık alanlarda çok uygun\n- Uzun çalışma süresi\n- Ağır yüklerde güçlü performans\n\n**Önerim:** Kapalı depolar ve iç mekan kullanımı için elektrikli forkliftler, açık alan ve ağır işlerde dizel forkliftler tercih edilir. \n\nSize uygun elektrikli forklift modellerimizi göstereyim mi? 😊",
+        "duration_ms": 5179,
+        "has_negative": false
+    },
+    {
+        "test_num": 50,
+        "category": "Karşılaştırma",
+        "message": "Manuel ve akülü transpalet farkı nedir?",
+        "expected": "Karşılaştırma yapmalı",
+        "response": "### Manuel Transpalet vs Akülü (Elektrikli) Transpalet\n\n**Manuel Transpalet Avantajları:**\n- Kullanımı basit ve hızlıdır.\n- Mekanik olduğu için bakım ve tamir maliyeti düşüktür.\n- Düşük yatırım maliyeti ile ekonomik çözüm sunar.\n- Küçük ve ortaçekli taşıma işleri için uygundur.\n\n**Akülü (Elektrikli) Transpalet Avantajları:**\n- Güçlü Li-Ion batarya ile daha az efor gerektirir.\n- Uzun süreli ve yoğun kullanımlarda yüksek verim sağlar.\n- Operatörün yorgunluğunu azaltır, ergonomiktir.\n- Hızlı şarj ve uzun çalışma süresi ile iş sürekliliğini artırır.\n\n**Özet:** Manuel transpalet daha ekonomik ve basit işler için ideal iken, akülü transpalet yoğun ve uzun süreli kullanımlarda performans ve verimlilik sağlar.\n\nSize uygun transpalet seçeneklerini göstereyim mi? 😊\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)\n- Manuel mi yoksa elektrikli (akülü) mi tercih edersiniz?",
+        "duration_ms": 6624,
+        "has_negative": true
+    },
+    {
+        "test_num": 51,
+        "category": "Karşılaştırma",
+        "message": "Reach truck mu forklift mi almalıyım?",
+        "expected": "Kullanım senaryosu sormalı veya karşılaştırma",
+        "response": "Size yardımcı olabilirim! 😊\n\nKarar vermenize destek olmak için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa başka bir tip mi tercih edersiniz?",
+        "duration_ms": 7803,
+        "has_negative": true
+    },
+    {
+        "test_num": 52,
+        "category": "Karşılaştırma",
+        "message": "3 tekerlekli mi 4 tekerlekli mi?",
+        "expected": "Karşılaştırma yapmalı",
+        "response": "Tabii, size yardımcı olabilirim! 😊\n\n3 tekerlekli mi yoksa 4 tekerlekli forklift mi tercih edersiniz?\n\n- Kaç ton taşıma kapasitesine ihtiyacınız var? (1.6 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi tercih edersiniz?",
+        "duration_ms": 3382,
+        "has_negative": true
+    },
+    {
+        "test_num": 53,
+        "category": "Senaryo",
+        "message": "Market deposu için ne önerirsiniz?",
+        "expected": "Senaryo bazlı öneri",
+        "response": "Size en uygun ürünü bulabilmem için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)\n- Elektrikli mi yoksa manuel mi tercih edersiniz?",
+        "duration_ms": 4392,
+        "has_negative": true
+    },
+    {
+        "test_num": 54,
+        "category": "Senaryo",
+        "message": "Fabrika için 50 palet\/gün taşıyacağım",
+        "expected": "Senaryo bazlı öneri",
+        "response": "Size en uygun forklift seçeneklerini göstereyim. 😊\n\n### İXTİF TDL162 - 1.6 Ton 80V Li-Ion 3 Teker Forklift [Ürünü İncele](\/shop\/ixtif-tdl162-16-ton-80v-li-ion-3-teker-forklift)\n\n- **1.600 kg taşıma kapasitesi**\n- 80V Li-Ion batarya ile uzun çalışma süresi\n- 3 teker yapısı ile manevra kabiliyeti yüksek\n\nFiyat: **1.355.459 TL** ≈ $32.000\n\n\n### İXTİF CPD18TVL - Li-Ion Forklift [Ürünü İncele](\/shop\/ixtif-cpd18tvl-li-ion-forklift)\n\n- 1.800 kg taşıma kapasitesi\n- Li-Ion batarya teknolojisi ile hızlı şarj ve uzun ömür\n- Dayanıklı ve verimli performans\n\nFiyat: **1.080.132 TL** ≈ $25.500\n\n\n### İXTİF EFL201 - 2. Ton 80V Li-Ion Denge Ağırlıklı Forklift [Ürünü İncele](\/shop\/ixtif-efl201-20-ton-80v-li-ion-denge-agirlikli-forklift)\n\n- 2.000 kg taşıma kapasitesi\n- 80V Li-Ion batarya ile güç ve dayanıklılık\n- Denge ağırlıklı tasarım ile stabil kullanım\n\nFiyat: **931.878 TL** ≈ $22.000\n\n\nBu ürünler fabrika ve günlük 50 palet taşıma için uygun, sağlam ve güvenilir seçeneklerdir. Hangi model hakkında detaylı bilgi almak istersiniz?",
+        "duration_ms": 10555,
+        "has_negative": false
+    },
+    {
+        "test_num": 55,
+        "category": "Senaryo",
+        "message": "Dış mekanda kullanacağım, yağmurda çalışmalı",
+        "expected": "Senaryo bazlı öneri",
+        "response": "Size yardımcı olabilirim! 😊\n\nİhtiyacınıza en uygun ürünü bulabilmem için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa başka bir tip mi tercih edersiniz?",
+        "duration_ms": 4795,
+        "has_negative": true
+    },
+    {
+        "test_num": 56,
+        "category": "Senaryo",
+        "message": "Gıda sektöründe kullanacağım, hijyen önemli",
+        "expected": "Senaryo bazlı öneri",
+        "response": "Size en uygun ürünü bulabilmem için:\n\n- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)\n- Elektrikli mi yoksa manuel mi tercih edersiniz?",
+        "duration_ms": 3576,
+        "has_negative": true
+    },
+    {
+        "test_num": 57,
+        "category": "Senaryo",
+        "message": "E-ticaret deposu kuruyorum, öneri?",
+        "expected": "Senaryo bazlı öneri",
+        "response": "Size yardımcı olabilirim! 😊\n\nE-ticaret deponuz için en uygun ekipmanı seçebilmemiz için:\n\n- Kaç ton taşıma kapasitesi ihtiyacınız var? (1.5 ton, 2 ton, 3 ton gibi)\n- Elektrikli mi yoksa manuel mi tercih edersiniz?\n\nBu bilgilerle size en uygun seçenekleri gösterebilirim!",
+        "duration_ms": 3447,
+        "has_negative": true
+    },
+    {
+        "test_num": 58,
+        "category": "İletişim",
+        "message": "Telefon numaranız nedir?",
+        "expected": "İletişim bilgisi vermeli",
+        "response": "Tabii! İşte iletişim bilgilerimiz:\n\n📞 **Telefon:** 0216 755 3 555  \n📱 **WhatsApp:** [0501 005 67 58](https:\/\/wa.me\/905010056758)\n\nSize nasıl yardımcı olabiliriz?",
+        "duration_ms": 3150,
+        "has_negative": false
+    },
+    {
+        "test_num": 59,
+        "category": "İletişim",
+        "message": "WhatsApp var mı?",
+        "expected": "WhatsApp linki vermeli",
+        "response": "Tabii! İşte iletişim bilgilerimiz:\n\n📞 **Telefon:** 0216 755 3 555  \n📱 **WhatsApp:** [0501 005 67 58](https:\/\/wa.me\/905010056758)\n\nSize nasıl yardımcı olabiliriz?",
+        "duration_ms": 2824,
+        "has_negative": false
+    },
+    {
+        "test_num": 60,
+        "category": "İletişim",
+        "message": "Neredesiniz?",
+        "expected": "Adres veya temsilci yönlendirmesi",
+        "response": "Evet! Hafta içi 08:30-18:00, Cumartesi 09:00-17:00 saatleri arasında hizmetinizdeyiz. Pazar günleri kapalıyız. Başka nasıl yardımcı olabilirim? 😊",
+        "duration_ms": 3903,
+        "has_negative": false
+    }
+];
+
+        let activeFilter = 'all';
+
+        function getCategoryClass(category) {
+            const map = {
+                'Selamlama': 'cat-selamlama',
+                'Belirsiz': 'cat-belirsiz',
+                'Belirli': 'cat-belirli',
+                'Fiyat': 'cat-fiyat',
+                'Olumsuz Test': 'cat-olumsuz',
+                'Teknik': 'cat-teknik',
+                'Servis': 'cat-servis',
+                'Karşılaştırma': 'cat-karsilastirma',
+                'Senaryo': 'cat-senaryo',
+                'İletişim': 'cat-iletisim'
+            };
+            return map[category] || 'cat-belirsiz';
+        }
+
+        function renderStats() {
+            const total = testData.length;
+            const categories = [...new Set(testData.map(t => t.category))].length;
+            const avgDuration = Math.round(testData.reduce((sum, t) => sum + t.duration_ms, 0) / total);
+            const negativeCount = testData.filter(t => t.has_negative).length;
+            const successRate = Math.round(((total - negativeCount) / total) * 100);
+
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${total}</div>
+                    <div class="stat-label">Toplam Test</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${categories}</div>
+                    <div class="stat-label">Kategori</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${avgDuration}ms</div>
+                    <div class="stat-label">Ort. Süre</div>
+                </div>
+                <div class="stat-card ${negativeCount > 0 ? 'danger' : 'success'}">
+                    <div class="stat-value">${negativeCount}</div>
+                    <div class="stat-label">Olumsuz Kelime</div>
+                </div>
+                <div class="stat-card ${successRate >= 90 ? 'success' : successRate >= 70 ? 'warning' : 'danger'}">
+                    <div class="stat-value">${successRate}%</div>
+                    <div class="stat-label">Başarı Oranı</div>
+                </div>
+            `;
+        }
+
+        function renderFilters() {
+            const categories = [...new Set(testData.map(t => t.category))];
+            const negativeCount = testData.filter(t => t.has_negative).length;
+
+            let html = `
+                <button class="filter-btn active" onclick="setFilter('all')">Tümü (${testData.length})</button>
+                <button class="filter-btn negative" onclick="setFilter('negative')">Olumsuz Kelime (${negativeCount})</button>
+            `;
+
+            categories.forEach(cat => {
+                const count = testData.filter(t => t.category === cat).length;
+                html += `<button class="filter-btn" onclick="setFilter('${cat}')">${cat} (${count})</button>`;
+            });
+
+            document.getElementById('filters').innerHTML = html;
+        }
+
+        function setFilter(filter) {
+            activeFilter = filter;
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes(filter === 'all' ? 'Tümü' : filter === 'negative' ? 'Olumsuz Kelime' : filter)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            renderTests();
+        }
+
+        function renderTests() {
+            let filtered = testData;
+
+            if (activeFilter === 'negative') {
+                filtered = testData.filter(t => t.has_negative);
+            } else if (activeFilter !== 'all') {
+                filtered = testData.filter(t => t.category === activeFilter);
+            }
+
+            const html = filtered.map(test => `
+                <div class="test-card ${test.has_negative ? 'has-negative' : ''}">
+                    <div class="test-header">
+                        <div>
+                            <span class="test-num">#${test.test_num}</span>
+                            <span class="test-category ${getCategoryClass(test.category)}">${test.category}</span>
+                        </div>
+                        <span class="test-duration">${test.duration_ms}ms</span>
+                    </div>
+                    <div class="test-body">
+                        <div class="test-section">
+                            <div class="test-label">Kullanıcı Mesajı</div>
+                            <div class="test-message">${test.message}</div>
+                        </div>
+                        <div class="test-section">
+                            <div class="test-label">Beklenen</div>
+                            <div class="test-expected">${test.expected}</div>
+                        </div>
+                        <div class="test-section">
+                            <div class="test-label">AI Yanıtı</div>
+                            <div class="test-response">${test.response || 'Yanıt yok'}</div>
+                            ${test.has_negative ? '<div class="negative-warning">⚠️ Bu yanıtta olumsuz kelime tespit edildi!</div>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('testGrid').innerHTML = html;
+        }
+
+        // Initialize
+        renderStats();
+        renderFilters();
+        renderTests();
+    </script>
+</body>
+</html>

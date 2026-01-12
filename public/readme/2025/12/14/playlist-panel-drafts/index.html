@@ -1,1 +1,544 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist'e Ekle Modal - Drafts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-dark': '#121212',
+                        'muzibu-gray': '#1e1e1e',
+                        'muzibu-coral': '#ff6b6b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 2px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-12 pb-6 border-b border-slate-700">
+            <h1 class="text-3xl font-bold mb-3 bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                🎵 Playlist'e Ekle Modal
+            </h1>
+            <p class="text-slate-400">Şarkıya tıklayınca açılan playlist seçme/oluşturma modal'ı</p>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 14 Aralık 2025</span>
+                <span>🎯 muzibu.com.tr</span>
+            </div>
+        </header>
+
+        <!-- Flow Explanation -->
+        <div class="mb-12 bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <h3 class="text-lg font-bold text-white mb-4">🔄 Kullanım Akışı</h3>
+            <div class="flex items-center gap-4 text-sm flex-wrap">
+                <div class="flex items-center gap-2 bg-zinc-800 px-4 py-2 rounded-full">
+                    <span class="w-6 h-6 bg-muzibu-coral rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                    <span>Şarkıya sağ tık / uzun bas</span>
+                </div>
+                <i class="fas fa-arrow-right text-slate-600"></i>
+                <div class="flex items-center gap-2 bg-zinc-800 px-4 py-2 rounded-full">
+                    <span class="w-6 h-6 bg-muzibu-coral rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                    <span>"Playlist'e Ekle" seç</span>
+                </div>
+                <i class="fas fa-arrow-right text-slate-600"></i>
+                <div class="flex items-center gap-2 bg-zinc-800 px-4 py-2 rounded-full">
+                    <span class="w-6 h-6 bg-muzibu-coral rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                    <span>Modal açılır</span>
+                </div>
+                <i class="fas fa-arrow-right text-slate-600"></i>
+                <div class="flex items-center gap-2 bg-zinc-800 px-4 py-2 rounded-full">
+                    <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold">✓</span>
+                    <span>Playlist seç veya yeni oluştur</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex gap-3 mb-10 flex-wrap">
+            <a href="#draft1" class="px-4 py-2 bg-muzibu-coral/20 text-muzibu-coral rounded-full hover:bg-muzibu-coral/30 transition text-sm">Draft 1: Kompakt</a>
+            <a href="#draft2" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full hover:bg-blue-500/30 transition text-sm">Draft 2: Arama + Liste</a>
+            <a href="#draft3" class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full hover:bg-purple-500/30 transition text-sm">Draft 3: Grid Görünüm</a>
+        </nav>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- DRAFT 1: Kompakt Modal -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="draft1" class="mb-16">
+            <div class="flex items-center gap-4 mb-4">
+                <span class="px-3 py-1 bg-muzibu-coral text-white text-xs font-bold rounded-full">DRAFT 1</span>
+                <h2 class="text-xl font-bold text-white">Kompakt Modal</h2>
+                <span class="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded">ÖNERİLEN</span>
+            </div>
+            <p class="text-slate-400 text-sm mb-6">Minimal, hızlı, mobil uyumlu</p>
+
+            <!-- Desktop + Mobile Side by Side -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Desktop View -->
+                <div>
+                    <p class="text-xs text-slate-500 mb-2 uppercase tracking-wider">Desktop</p>
+                    <div class="bg-black rounded-xl overflow-hidden border border-white/10">
+                        <!-- Backdrop -->
+                        <div class="relative h-[450px] bg-gradient-to-br from-zinc-900 to-black flex items-center justify-center">
+                            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+                            <!-- Modal -->
+                            <div class="relative w-80 bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+                                <!-- Header with Song Info -->
+                                <div class="p-4 border-b border-white/10 bg-gradient-to-r from-muzibu-coral/20 to-transparent">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex-shrink-0"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-medium text-white truncate text-sm">Yıldızların Altında</p>
+                                            <p class="text-xs text-zinc-400">Tarkan • 3:42</p>
+                                        </div>
+                                        <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-white rounded-full hover:bg-white/10">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Create New -->
+                                <div class="p-3 border-b border-white/5">
+                                    <button class="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition group">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-plus text-white"></i>
+                                        </div>
+                                        <span class="font-medium text-white">Yeni Playlist Oluştur</span>
+                                        <i class="fas fa-chevron-right text-zinc-600 ml-auto group-hover:text-white"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Playlist List -->
+                                <div class="max-h-56 overflow-y-auto scrollbar-thin">
+                                    <p class="px-4 py-2 text-xs text-zinc-500 uppercase tracking-wider">Playlistlerim</p>
+
+                                    <div class="px-3 pb-3 space-y-1">
+                                        <button class="w-full flex items-center gap-3 p-2.5 hover:bg-white/5 rounded-xl transition group">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex-shrink-0"></div>
+                                            <div class="flex-1 text-left min-w-0">
+                                                <p class="font-medium text-white truncate text-sm">Yaz Hitleri</p>
+                                                <p class="text-xs text-zinc-500">12 şarkı</p>
+                                            </div>
+                                            <div class="w-6 h-6 border-2 border-zinc-600 rounded-full group-hover:border-green-500 transition"></div>
+                                        </button>
+
+                                        <button class="w-full flex items-center gap-3 p-2.5 hover:bg-white/5 rounded-xl transition group">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex-shrink-0"></div>
+                                            <div class="flex-1 text-left min-w-0">
+                                                <p class="font-medium text-white truncate text-sm">Gece Müzikleri</p>
+                                                <p class="text-xs text-zinc-500">8 şarkı</p>
+                                            </div>
+                                            <div class="w-6 h-6 border-2 border-zinc-600 rounded-full group-hover:border-green-500 transition"></div>
+                                        </button>
+
+                                        <button class="w-full flex items-center gap-3 p-2.5 bg-green-500/10 rounded-xl transition group border border-green-500/30">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex-shrink-0"></div>
+                                            <div class="flex-1 text-left min-w-0">
+                                                <p class="font-medium text-white truncate text-sm">Favorilerim</p>
+                                                <p class="text-xs text-zinc-500">24 şarkı</p>
+                                            </div>
+                                            <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-check text-white text-xs"></i>
+                                            </div>
+                                        </button>
+
+                                        <button class="w-full flex items-center gap-3 p-2.5 hover:bg-white/5 rounded-xl transition group">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-lg flex-shrink-0"></div>
+                                            <div class="flex-1 text-left min-w-0">
+                                                <p class="font-medium text-white truncate text-sm">Spor</p>
+                                                <p class="text-xs text-zinc-500">16 şarkı</p>
+                                            </div>
+                                            <div class="w-6 h-6 border-2 border-zinc-600 rounded-full group-hover:border-green-500 transition"></div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile View -->
+                <div>
+                    <p class="text-xs text-slate-500 mb-2 uppercase tracking-wider">Mobile (Bottom Sheet)</p>
+                    <div class="bg-black rounded-xl overflow-hidden border border-white/10 max-w-xs mx-auto">
+                        <div class="relative h-[450px] bg-gradient-to-br from-zinc-900 to-black">
+                            <div class="absolute inset-0 bg-black/80"></div>
+
+                            <!-- Bottom Sheet -->
+                            <div class="absolute bottom-0 left-0 right-0 bg-zinc-900 rounded-t-3xl border-t border-white/10">
+                                <!-- Handle -->
+                                <div class="flex justify-center py-3">
+                                    <div class="w-10 h-1 bg-zinc-700 rounded-full"></div>
+                                </div>
+
+                                <!-- Song Info -->
+                                <div class="px-4 pb-3 flex items-center gap-3">
+                                    <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded-xl flex-shrink-0"></div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-white">Yıldızların Altında</p>
+                                        <p class="text-sm text-zinc-400">Tarkan</p>
+                                    </div>
+                                </div>
+
+                                <!-- Create New -->
+                                <div class="px-4 pb-2">
+                                    <button class="w-full flex items-center gap-3 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
+                                        <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-plus text-white"></i>
+                                        </div>
+                                        <span class="font-medium text-green-400">Yeni Playlist Oluştur</span>
+                                    </button>
+                                </div>
+
+                                <!-- Playlists -->
+                                <div class="px-4 pb-4">
+                                    <p class="text-xs text-zinc-500 mb-2">Playlistlerim</p>
+                                    <div class="space-y-1 max-h-40 overflow-y-auto">
+                                        <button class="w-full flex items-center gap-3 p-2.5 hover:bg-white/5 rounded-xl">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg"></div>
+                                            <div class="flex-1 text-left">
+                                                <p class="font-medium text-white text-sm">Yaz Hitleri</p>
+                                                <p class="text-xs text-zinc-500">12 şarkı</p>
+                                            </div>
+                                        </button>
+                                        <button class="w-full flex items-center gap-3 p-2.5 hover:bg-white/5 rounded-xl">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg"></div>
+                                            <div class="flex-1 text-left">
+                                                <p class="font-medium text-white text-sm">Gece Müzikleri</p>
+                                                <p class="text-xs text-zinc-500">8 şarkı</p>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-4 flex flex-wrap gap-2">
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">✓ Tek tıkla ekleme</span>
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">✓ Bottom sheet (mobil)</span>
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">✓ Checkbox seçim</span>
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">✓ Şarkı bilgisi göster</span>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- DRAFT 2: Arama + Liste -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="draft2" class="mb-16">
+            <div class="flex items-center gap-4 mb-4">
+                <span class="px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">DRAFT 2</span>
+                <h2 class="text-xl font-bold text-white">Arama + Liste</h2>
+            </div>
+            <p class="text-slate-400 text-sm mb-6">Çok playlist olanlar için arama özellikli</p>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Desktop -->
+                <div>
+                    <p class="text-xs text-slate-500 mb-2 uppercase tracking-wider">Desktop</p>
+                    <div class="bg-black rounded-xl overflow-hidden border border-white/10">
+                        <div class="relative h-[480px] bg-gradient-to-br from-zinc-900 to-black flex items-center justify-center">
+                            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+                            <!-- Modal -->
+                            <div class="relative w-96 bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+                                <!-- Header -->
+                                <div class="p-4 border-b border-white/10">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h3 class="text-lg font-bold text-white">Playlist'e Ekle</h3>
+                                        <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-white rounded-full hover:bg-white/10">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Song Preview -->
+                                    <div class="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-medium text-white truncate text-sm">Yıldızların Altında</p>
+                                            <p class="text-xs text-zinc-500">Tarkan</p>
+                                        </div>
+                                        <span class="text-xs text-zinc-500">3:42</span>
+                                    </div>
+                                </div>
+
+                                <!-- Search -->
+                                <div class="p-3 border-b border-white/5">
+                                    <div class="relative">
+                                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm"></i>
+                                        <input type="text" placeholder="Playlist ara..." class="w-full pl-10 pr-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-xl text-white text-sm placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                </div>
+
+                                <!-- Create New -->
+                                <button class="w-full flex items-center gap-3 p-4 hover:bg-white/5 transition border-b border-white/5">
+                                    <div class="w-10 h-10 border-2 border-dashed border-zinc-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-plus text-zinc-500"></i>
+                                    </div>
+                                    <span class="font-medium text-zinc-300">Yeni Playlist Oluştur</span>
+                                </button>
+
+                                <!-- Playlist List -->
+                                <div class="max-h-52 overflow-y-auto scrollbar-thin">
+                                    <div class="p-2 space-y-1">
+                                        <button class="w-full flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl transition">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex-shrink-0"></div>
+                                            <div class="flex-1 text-left">
+                                                <p class="font-medium text-white">Yaz Hitleri</p>
+                                                <p class="text-xs text-zinc-500">12 şarkı • 45 dk</p>
+                                            </div>
+                                            <i class="fas fa-plus-circle text-zinc-600 text-lg hover:text-green-500"></i>
+                                        </button>
+
+                                        <button class="w-full flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl transition">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex-shrink-0"></div>
+                                            <div class="flex-1 text-left">
+                                                <p class="font-medium text-white">Gece Müzikleri</p>
+                                                <p class="text-xs text-zinc-500">8 şarkı • 32 dk</p>
+                                            </div>
+                                            <i class="fas fa-plus-circle text-zinc-600 text-lg hover:text-green-500"></i>
+                                        </button>
+
+                                        <button class="w-full flex items-center gap-3 p-3 bg-green-500/10 rounded-xl border border-green-500/30">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex-shrink-0"></div>
+                                            <div class="flex-1 text-left">
+                                                <p class="font-medium text-white">Favorilerim</p>
+                                                <p class="text-xs text-green-400">Eklendi ✓</p>
+                                            </div>
+                                            <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile -->
+                <div>
+                    <p class="text-xs text-slate-500 mb-2 uppercase tracking-wider">Mobile</p>
+                    <div class="bg-black rounded-xl overflow-hidden border border-white/10 max-w-xs mx-auto">
+                        <div class="relative h-[480px] bg-gradient-to-br from-zinc-900 to-black">
+                            <div class="absolute inset-0 bg-black/80"></div>
+
+                            <!-- Full Screen Modal on Mobile -->
+                            <div class="absolute inset-0 bg-zinc-900 flex flex-col">
+                                <!-- Header -->
+                                <div class="p-4 border-b border-white/10 flex items-center gap-3">
+                                    <button class="w-10 h-10 flex items-center justify-center text-white">
+                                        <i class="fas fa-arrow-left"></i>
+                                    </button>
+                                    <h3 class="text-lg font-bold text-white flex-1">Playlist'e Ekle</h3>
+                                </div>
+
+                                <!-- Song Info -->
+                                <div class="p-4 flex items-center gap-3 bg-gradient-to-r from-pink-500/10 to-transparent">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-xl"></div>
+                                    <div>
+                                        <p class="font-semibold text-white">Yıldızların Altında</p>
+                                        <p class="text-sm text-zinc-400">Tarkan • 3:42</p>
+                                    </div>
+                                </div>
+
+                                <!-- Search -->
+                                <div class="p-4">
+                                    <div class="relative">
+                                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                                        <input type="text" placeholder="Playlist ara..." class="w-full pl-12 pr-4 py-3 bg-zinc-800 rounded-xl text-white placeholder-zinc-500">
+                                    </div>
+                                </div>
+
+                                <!-- Create New -->
+                                <button class="mx-4 mb-3 flex items-center gap-3 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
+                                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-plus text-white"></i>
+                                    </div>
+                                    <span class="font-medium text-green-400">Yeni Playlist</span>
+                                </button>
+
+                                <!-- Playlists -->
+                                <div class="flex-1 overflow-y-auto px-4 pb-4">
+                                    <p class="text-xs text-zinc-500 mb-2">Playlistlerim</p>
+                                    <div class="space-y-2">
+                                        <button class="w-full flex items-center gap-3 p-3 bg-white/5 rounded-xl">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg"></div>
+                                            <div class="flex-1 text-left">
+                                                <p class="font-medium text-white">Yaz Hitleri</p>
+                                                <p class="text-xs text-zinc-500">12 şarkı</p>
+                                            </div>
+                                            <i class="fas fa-plus text-zinc-500"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-2">
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">✓ Playlist arama</span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">✓ Full-screen mobil</span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">✓ Eklendi feedback</span>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- DRAFT 3: Grid Görünüm -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="draft3" class="mb-16">
+            <div class="flex items-center gap-4 mb-4">
+                <span class="px-3 py-1 bg-purple-500 text-white text-xs font-bold rounded-full">DRAFT 3</span>
+                <h2 class="text-xl font-bold text-white">Grid Görünüm</h2>
+            </div>
+            <p class="text-slate-400 text-sm mb-6">Görsel ağırlıklı, büyük kapaklar</p>
+
+            <div class="bg-black rounded-xl overflow-hidden border border-white/10 max-w-lg mx-auto">
+                <div class="relative h-[500px] bg-gradient-to-br from-zinc-900 to-black flex items-center justify-center">
+                    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+                    <!-- Modal -->
+                    <div class="relative w-[420px] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+                        <!-- Header -->
+                        <div class="p-4 border-b border-white/10 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg"></div>
+                                <div>
+                                    <p class="font-medium text-white text-sm">Yıldızların Altında</p>
+                                    <p class="text-xs text-zinc-500">Playlist'e ekle</p>
+                                </div>
+                            </div>
+                            <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-white rounded-full hover:bg-white/10">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <!-- Create New -->
+                        <div class="p-3 border-b border-white/5">
+                            <button class="w-full p-3 border-2 border-dashed border-zinc-700 rounded-xl hover:border-green-500 hover:bg-green-500/5 transition flex items-center justify-center gap-2 text-zinc-400 hover:text-green-400">
+                                <i class="fas fa-plus"></i>
+                                <span class="font-medium">Yeni Playlist Oluştur</span>
+                            </button>
+                        </div>
+
+                        <!-- Grid -->
+                        <div class="p-3 max-h-72 overflow-y-auto scrollbar-thin">
+                            <div class="grid grid-cols-3 gap-2">
+                                <!-- Playlist Card -->
+                                <button class="group relative aspect-square rounded-xl overflow-hidden hover:ring-2 hover:ring-green-500 transition">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-600"></div>
+                                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center p-2">
+                                        <p class="text-white text-xs font-medium text-center truncate w-full">Yaz Hitleri</p>
+                                        <p class="text-white/60 text-[10px]">12 şarkı</p>
+                                    </div>
+                                    <div class="absolute top-1 right-1 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-plus text-white text-[10px]"></i>
+                                    </div>
+                                </button>
+
+                                <button class="group relative aspect-square rounded-xl overflow-hidden hover:ring-2 hover:ring-green-500 transition">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-600"></div>
+                                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center p-2">
+                                        <p class="text-white text-xs font-medium text-center truncate w-full">Gece</p>
+                                        <p class="text-white/60 text-[10px]">8 şarkı</p>
+                                    </div>
+                                </button>
+
+                                <button class="group relative aspect-square rounded-xl overflow-hidden ring-2 ring-green-500">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600"></div>
+                                    <div class="absolute inset-0 bg-black/20"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center p-2">
+                                        <p class="text-white text-xs font-medium text-center truncate w-full">Favoriler</p>
+                                        <p class="text-green-400 text-[10px]">Eklendi ✓</p>
+                                    </div>
+                                    <div class="absolute top-1 right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check text-white text-[10px]"></i>
+                                    </div>
+                                </button>
+
+                                <button class="group relative aspect-square rounded-xl overflow-hidden hover:ring-2 hover:ring-green-500 transition">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-yellow-500 to-amber-600"></div>
+                                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center p-2">
+                                        <p class="text-white text-xs font-medium text-center truncate w-full">Spor</p>
+                                        <p class="text-white/60 text-[10px]">16 şarkı</p>
+                                    </div>
+                                </button>
+
+                                <button class="group relative aspect-square rounded-xl overflow-hidden hover:ring-2 hover:ring-green-500 transition">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-600"></div>
+                                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center p-2">
+                                        <p class="text-white text-xs font-medium text-center truncate w-full">Chill</p>
+                                        <p class="text-white/60 text-[10px]">6 şarkı</p>
+                                    </div>
+                                </button>
+
+                                <button class="group relative aspect-square rounded-xl overflow-hidden hover:ring-2 hover:ring-green-500 transition">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-rose-500 to-red-600"></div>
+                                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center p-2">
+                                        <p class="text-white text-xs font-medium text-center truncate w-full">Romantik</p>
+                                        <p class="text-white/60 text-[10px]">10 şarkı</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-2">
+                <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full">✓ Görsel ağırlıklı</span>
+                <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full">✓ Kompakt grid</span>
+                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">⚠ Mobilde 2 kolon</span>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- Recommendation -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-check text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-green-400 mb-2">Öneri: Draft 1 (Kompakt)</h3>
+                        <ul class="space-y-1 text-sm text-slate-400">
+                            <li>✓ En hızlı kullanım (tek tıkla ekle)</li>
+                            <li>✓ Bottom sheet mobilde mükemmel çalışır</li>
+                            <li>✓ Checkbox ile görsel feedback</li>
+                            <li>✓ Geliştirmesi kolay</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="pt-6 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>Onay: "UYGUNDUR" veya değişiklik belirtin</p>
+        </footer>
+    </div>
+</body>
+</html>

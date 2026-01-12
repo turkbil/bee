@@ -955,8 +955,12 @@
     {{-- Session Check --}}
     @include('themes.muzibu.components.session-check')
 
-    {{-- AI Chat Widget --}}
-    @include('themes.muzibu.components.ai-chat-widget')
+    {{-- AI Chat Widget - Sadece root kullanıcılar için --}}
+    @auth
+        @if(auth()->user()->hasRole('root'))
+            @include('themes.muzibu.components.ai-chat-widget')
+        @endif
+    @endauth
 
     {{-- Context Menu System --}}
     @include('themes.muzibu.components.context-menu')

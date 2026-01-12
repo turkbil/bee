@@ -1,1 +1,308 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 İxtif Yedek Parça Ürünleri - İçerik Doldurulamayan Liste</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                📋 İxtif Yedek Parça İçerik Listesi
+            </h1>
+            <p class="text-slate-400 text-lg mb-6">
+                Boş alan bulunan ürünler ve doldurmaya ihtiyaç duyan alanlar
+            </p>
+
+            <!-- İstatistikler -->
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">📦 Toplam Ürün</div>
+                    <div class="text-3xl font-bold text-blue-400">38</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">🔴 Çok Boş (4 alan)</div>
+                    <div class="text-3xl font-bold text-red-400">4</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">🟡 Kısmen Boş (3 alan)</div>
+                    <div class="text-3xl font-bold text-yellow-400">34</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">⏱️ Tarih</div>
+                    <div class="text-lg font-bold text-green-400">16 Aralık 2025</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Yüksek Öncelik - 4 alan eksik -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400 flex items-center gap-3">
+                <span class="text-4xl">🔴</span> Yüksek Öncelik (4 Alan Eksik)
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">1️⃣ İXTİF CQE15S - 157" Direk</h3>
+                            <p class="text-slate-300 mb-3">SKU: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">CQE15S-157</code></p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p>❌ features</p>
+                                <p>❌ faq_data</p>
+                                <p>❌ technical_specs</p>
+                                <p>❌ primary_specs</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">2️⃣ İXTİF CQE15S - 189" Direk</h3>
+                            <p class="text-slate-300 mb-3">SKU: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">CQE15S-189</code></p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p>❌ features</p>
+                                <p>❌ faq_data</p>
+                                <p>❌ technical_specs</p>
+                                <p>❌ primary_specs</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">3️⃣ İXTİF EFL252X3 - 4500 mm Direk</h3>
+                            <p class="text-slate-300 mb-3">SKU: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">EFL252X3-4500MM-FREE</code></p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p>❌ features</p>
+                                <p>❌ faq_data</p>
+                                <p>❌ technical_specs</p>
+                                <p>❌ primary_specs</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">4️⃣ İXTİF EFL252X3 - Batarya</h3>
+                            <p class="text-slate-300 mb-3">SKU: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">EFL252X3-80V280AH</code></p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p>❌ features</p>
+                                <p>❌ faq_data</p>
+                                <p>❌ technical_specs</p>
+                                <p>❌ primary_specs</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orta Öncelik - 3 alan eksik -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400 flex items-center gap-3">
+                <span class="text-4xl">🟡</span> Orta Öncelik (3 Alan Eksik) - 34 Ürün
+            </h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <p class="text-slate-300 mb-6">Aşağıdaki ürünlerin <strong>features, faq_data, primary_specs</strong> alanları boş:</p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Çatal (Forks) Ürünleri -->
+                    <div class="bg-slate-700/30 rounded p-4 border border-slate-600">
+                        <h4 class="font-bold text-blue-300 mb-3 flex items-center gap-2">
+                            <span class="text-xl">⚙️</span> Çatal (Fork) Ürünleri
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>• CPD15TVL 1150mm</li>
+                            <li>• CPD18FVL 920mm</li>
+                            <li>• CPD18FVL 1070mm</li>
+                            <li>• CPD18FVL 1150mm</li>
+                            <li>• CPD18FVL 1220mm</li>
+                            <li>• CPD18TVL 1070mm</li>
+                            <li>• CPD18TVL 1150mm</li>
+                            <li>• CPD20FVL 920mm</li>
+                            <li>• CPD20FVL 1070mm</li>
+                            <li>• CPD20FVL 1150mm</li>
+                            <li>• CPD20FVL 1220mm</li>
+                            <li>• CPD20TVL 1070mm</li>
+                            <li>• CPD20TVL 1150mm</li>
+                            <li>• EFL181 920mm</li>
+                            <li>• EFL181 1070mm</li>
+                            <li>• EFL181 1150mm</li>
+                            <li>• EFL181 1220mm</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded p-4 border border-slate-600">
+                        <h4 class="font-bold text-green-300 mb-3 flex items-center gap-2">
+                            <span class="text-xl">📏</span> Mast & Direk
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>• CPD15TVL 3300mm</li>
+                            <li>• CPD18TVL 3300mm</li>
+                            <li>• CPD20TVL 3300mm</li>
+                            <li>• CQE15S 126"</li>
+                            <li>• EFL252X2 3000mm</li>
+                            <li>• EFL252X2 4500mm</li>
+                            <li>• EFL252X3 3000mm</li>
+                            <li>• EFL252X3 3300mm</li>
+                            <li>• EFL252 3000mm</li>
+                            <li>• EFL252 4500mm</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded p-4 border border-slate-600">
+                        <h4 class="font-bold text-purple-300 mb-3 flex items-center gap-2">
+                            <span class="text-xl">🔋</span> Batarya & Elektrik
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>• EFL203P 230Ah</li>
+                            <li>• EFL203P 460Ah</li>
+                            <li>• EFL203 230Ah</li>
+                            <li>• EFL203 460Ah</li>
+                            <li>• EFL252X5 280Ah</li>
+                            <li>• EFL252X5 560Ah</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-slate-900/50 rounded border border-slate-600">
+                    <p class="text-sm text-slate-400">
+                        ℹ️ <strong>Not:</strong> Bir önceki çalışmada Product ID 942 (12x00-20 Tire) başarıyla tamamlanmıştır.
+                        Diğer ürünler benzer şekilde doldurulabilir.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Doldurulacak Alanlar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400 flex items-center gap-3">
+                <span class="text-4xl">📝</span> Doldurulması Gereken Alanlar
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-blue-300 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">✨</span> Features (Özellikler)
+                    </h3>
+                    <p class="text-slate-300 mb-3">Her ürün için 3-5 temel özellik:</p>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li>📌 Başlık (title)</li>
+                        <li>📝 Açıklama (text)</li>
+                        <li>🔄 Sıralı liste</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-green-300 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">❓</span> FAQ Data (Sık Sorulan Sorular)
+                    </h3>
+                    <p class="text-slate-300 mb-3">Her ürün için 4-5 Q&A:</p>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li>❓ Soru (question)</li>
+                        <li>💬 Cevap (answer)</li>
+                        <li>🔄 İlişkili sorular</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">⚙️</span> Technical Specs (Teknik Özellikler)
+                    </h3>
+                    <p class="text-slate-300 mb-3">Her ürün için 4-6 teknik parametre:</p>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li>📏 Boyut/Ölçü</li>
+                        <li>⚖️ Ağırlık/Kapasite</li>
+                        <li>🔩 Malzeme/Tip</li>
+                        <li>⏱️ Ömür/Garanti</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-purple-300 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">🎯</span> Primary Specs (Ana Özellikler)
+                    </h3>
+                    <p class="text-slate-300 mb-3">Ürün sayfasında gösterilen 4 ana spec:</p>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li>🎨 İkon (icon - Font Awesome)</li>
+                        <li>🏷️ Etiket (label)</li>
+                        <li>📊 Değer (value)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öneriler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400 flex items-center gap-3">
+                <span class="text-4xl">💡</span> Öneriler
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-cyan-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-cyan-300 mb-3">1️⃣ Gruplandırmaya Göre Doldur</h3>
+                    <p class="text-slate-300">
+                        Benzer ürünleri gruplandırıp doldur (örn: Tüm EFL181 çatallar, tüm EFL252X3 direkleri vb.)
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-300 mb-3">2️⃣ Şablon Oluştur</h3>
+                    <p class="text-slate-300">
+                        Çatal ürünleri için şablon, mast ürünleri için şablon vb. oluştur. Farklı ürün tipleri için açıklamalar değişebilir.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">3️⃣ Yüksek Öncelikli Başla</h3>
+                    <p class="text-slate-300">
+                        4 alan eksik olan ürünlerden başla (CQE15S, EFL252X3). Sonra 3 alan eksik olanları toplu döl.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-3">4️⃣ Body Alanı Kontrol Et</h3>
+                    <p class="text-slate-300">
+                        Ürünlerin body alanında (uzun açıklama) zaten içerik olabilir. Bunları tekrarlamadan features/faq'a özetle ver.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- İstatistik Özeti -->
+        <section>
+            <h2 class="text-3xl font-bold mb-8 text-emerald-400 flex items-center gap-3">
+                <span class="text-4xl">📊</span> İçerik Doldurma İstatistikleri
+            </h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-600">
+                        <span class="text-slate-300">Toplam İçerik Alanı Sayısı (38 ürün × 4 alan)</span>
+                        <span class="text-2xl font-bold text-blue-400">152</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-600">
+                        <span class="text-slate-300">Doldurulması Gereken Alan</span>
+                        <span class="text-2xl font-bold text-yellow-400">134</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-600">
+                        <span class="text-slate-300">Doldurulma Oranı</span>
+                        <span class="text-2xl font-bold text-red-400">12% (18/152)</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-300 font-semibold">Kalan İş</span>
+                        <span class="text-2xl font-bold text-emerald-400">88%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>📅 Oluşturulma Tarihi: 16 Aralık 2025</p>
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+        </footer>
+    </div>
+</body>
+</html>

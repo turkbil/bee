@@ -1,1 +1,641 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Session & Auth Sistemi - Tam Dokümantasyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                🔐 Muzibu Session & Auth Sistemi
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Tam Dokümantasyon: Login, Session, Device Limit, Redis, Database
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-10</span>
+                <span>🎯 Tenant: muzibu.com.tr</span>
+            </div>
+        </header>
+
+        <!-- İçindekiler -->
+        <nav class="mb-12 bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+            <h2 class="text-xl font-bold mb-4 text-blue-400">📑 İçindekiler</h2>
+            <ul class="grid md:grid-cols-2 gap-2 text-slate-300">
+                <li><a href="#overview" class="hover:text-blue-400">1. Genel Bakış (Basit Anlatım)</a></li>
+                <li><a href="#storage" class="hover:text-blue-400">2. Veriler Nereye Kaydediliyor?</a></li>
+                <li><a href="#redis" class="hover:text-blue-400">3. Redis Ne Yapıyor?</a></li>
+                <li><a href="#database" class="hover:text-blue-400">4. Database Ne Yapıyor?</a></li>
+                <li><a href="#login-flow" class="hover:text-blue-400">5. Login Akışı</a></li>
+                <li><a href="#logout-flow" class="hover:text-blue-400">6. Logout Akışı</a></li>
+                <li><a href="#device-limit" class="hover:text-blue-400">7. Cihaz Limiti (LIFO)</a></li>
+                <li><a href="#kick-user" class="hover:text-blue-400">8. Kullanıcıyı Nasıl Çıkarırız?</a></li>
+                <li><a href="#stream-flow" class="hover:text-blue-400">9. Şarkı Dinleme Akışı</a></li>
+                <li><a href="#issues" class="hover:text-blue-400">10. Mevcut Sorunlar</a></li>
+            </ul>
+        </nav>
+
+        <!-- 1. Genel Bakış -->
+        <section id="overview" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">1. Genel Bakış (Basit Anlatım)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 mb-6">
+                <h3 class="text-xl font-bold mb-4 text-green-400">🎯 Ne İşe Yarıyor?</h3>
+                <div class="space-y-4 text-slate-300">
+                    <p><strong class="text-white">Session sistemi</strong> = Kullanıcının kim olduğunu takip etme</p>
+                    <p><strong class="text-white">Device limit</strong> = Aynı anda kaç cihazda müzik dinleyebileceğini kontrol etme</p>
+                    <p><strong class="text-white">LIFO (Last In First Out)</strong> = Yeni giriş yapan, eski girişi atar</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-xl font-bold mb-4 text-yellow-400">🔄 Basit Akış</h3>
+                <div class="flex flex-wrap items-center gap-2 text-sm">
+                    <span class="px-3 py-2 bg-blue-600 rounded">Kullanıcı Login</span>
+                    <span class="text-slate-500">→</span>
+                    <span class="px-3 py-2 bg-purple-600 rounded">Redis'e Session</span>
+                    <span class="text-slate-500">→</span>
+                    <span class="px-3 py-2 bg-green-600 rounded">DB'ye Kayıt</span>
+                    <span class="text-slate-500">→</span>
+                    <span class="px-3 py-2 bg-orange-600 rounded">Cookie'ye ID</span>
+                    <span class="text-slate-500">→</span>
+                    <span class="px-3 py-2 bg-red-600 rounded">Müzik Dinle!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Veriler Nereye Kaydediliyor -->
+        <section id="storage" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">2. Veriler Nereye Kaydediliyor?</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Redis -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-red-500">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">🔴 Redis</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Session verisi (kullanıcı bilgisi)</li>
+                        <li>✅ CSRF token</li>
+                        <li>✅ Flash messages</li>
+                        <li>✅ Geçici cache</li>
+                    </ul>
+                    <p class="mt-4 text-xs text-slate-500">
+                        <strong>TTL:</strong> 10080 dakika (7 gün)<br>
+                        <strong>Key format:</strong> 40 karakter alphanumeric
+                    </p>
+                </div>
+
+                <!-- Database -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-blue-500">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">🔵 Database</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ <code>user_active_sessions</code> tablosu</li>
+                        <li>✅ Cihaz bilgisi (browser, platform)</li>
+                        <li>✅ IP adresi</li>
+                        <li>✅ Son aktivite zamanı</li>
+                    </ul>
+                    <p class="mt-4 text-xs text-slate-500">
+                        <strong>Tablo:</strong> tenant_muzibu_1528d0.user_active_sessions<br>
+                        <strong>Kullanım:</strong> Device limit kontrolü
+                    </p>
+                </div>
+
+                <!-- Cookie -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-green-500">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">🟢 Cookie</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Session ID (40 karakter)</li>
+                        <li>✅ XSRF-TOKEN</li>
+                        <li>✅ HttpOnly flag</li>
+                        <li>✅ Secure flag</li>
+                    </ul>
+                    <p class="mt-4 text-xs text-slate-500">
+                        <strong>Cookie adı:</strong> tuufi_session<br>
+                        <strong>Şifreleme:</strong> Laravel encrypt
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Redis Ne Yapıyor -->
+        <section id="redis" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">3. Redis Ne Yapıyor?</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-bold mb-3 text-red-400">📦 Redis'te Saklanan</h3>
+                        <pre class="bg-slate-900 p-4 rounded text-xs overflow-x-auto">
+Key: AKmX6ilTCPbot7IukdA8H3NblqBNmXp4qfJfcPKN
+
+Value: {
+  "_token": "csrf_token_here",
+  "_previous": {"url": "https://muzibu.com.tr"},
+  "login_web_...": 1,  // User ID
+  "password_hash_web_...": "hash"
+}</pre>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold mb-3 text-green-400">✅ Redis'in Görevi</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li>• <strong>Hız:</strong> Database'den 100x hızlı</li>
+                            <li>• <strong>Session storage:</strong> Laravel session driver</li>
+                            <li>• <strong>TTL:</strong> Otomatik expire (7 gün)</li>
+                            <li>• <strong>Atomik:</strong> Race condition yok</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-yellow-900/30 border border-yellow-600 rounded">
+                    <h4 class="font-bold text-yellow-400 mb-2">⚠️ Redis Session Silinirse Ne Olur?</h4>
+                    <p class="text-slate-300 text-sm">
+                        Kullanıcı <strong>otomatik logout</strong> olur. Sayfa yenileyince login sayfasına yönlendirilir.
+                        Ama <code>user_active_sessions</code> tablosundaki kayıt kalır (stale data).
+                        Bu nedenle 60 dakika sonra temizlenir.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Database Ne Yapıyor -->
+        <section id="database" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">4. Database Ne Yapıyor?</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-bold mb-4 text-blue-400">📊 user_active_sessions Tablosu</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-700">
+                            <tr>
+                                <th class="p-2 text-left">Kolon</th>
+                                <th class="p-2 text-left">Tip</th>
+                                <th class="p-2 text-left">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2 font-mono">id</td>
+                                <td class="p-2">bigint</td>
+                                <td class="p-2">Primary key</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2 font-mono">user_id</td>
+                                <td class="p-2">bigint</td>
+                                <td class="p-2">Kullanıcı ID (FK → users)</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2 font-mono">session_id</td>
+                                <td class="p-2">varchar(255)</td>
+                                <td class="p-2">Redis session ID (unique)</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2 font-mono">ip_address</td>
+                                <td class="p-2">varchar(45)</td>
+                                <td class="p-2">Kullanıcı IP</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2 font-mono">device_type</td>
+                                <td class="p-2">varchar(20)</td>
+                                <td class="p-2">desktop / mobile / tablet</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2 font-mono">device_name</td>
+                                <td class="p-2">varchar(100)</td>
+                                <td class="p-2">OS X - Chrome</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2 font-mono">last_activity</td>
+                                <td class="p-2">timestamp</td>
+                                <td class="p-2">Son aktivite (30 sn'de güncellenir)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6 p-4 bg-blue-900/30 border border-blue-600 rounded">
+                    <h4 class="font-bold text-blue-400 mb-2">🎯 Tablo Ne İşe Yarıyor?</h4>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• <strong>Device limit kontrolü:</strong> Kaç cihaz aktif?</li>
+                        <li>• <strong>LIFO uygulaması:</strong> Yeni giriş, eskiyi siler</li>
+                        <li>• <strong>Aktif cihaz listesi:</strong> Kullanıcıya göster</li>
+                        <li>• <strong>Cihaz sonlandırma:</strong> Seçili cihazı çıkar</li>
+                    </ul>
+                </div>
+
+                <div class="mt-4 p-4 bg-red-900/30 border border-red-600 rounded">
+                    <h4 class="font-bold text-red-400 mb-2">⚠️ DB'den Session Silinirse Ne Olur?</h4>
+                    <p class="text-slate-300 text-sm">
+                        Frontend her 30 saniyede <code>/api/auth/check-session</code> çağırıyor.
+                        Session DB'de yoksa → <strong>"session_terminated"</strong> döner → Kullanıcı logout olur.
+                        <br><br>
+                        <strong>Ama Redis'te session hala var!</strong> Bu durumda Laravel "giriş yapmış" sanır,
+                        ama DeviceService "session yok" der. Sonuç: Çelişki ve logout.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Login Akışı -->
+        <section id="login-flow" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">5. Login Akışı</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300 mb-2">Kullanıcı Form'u Gönderir</h3>
+                            <p class="text-slate-300">Email + Password → <code>POST /api/auth/login</code></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-300 mb-2">Laravel Auth::attempt()</h3>
+                            <p class="text-slate-300">Şifre doğrulanır, session regenerate edilir, yeni session ID oluşur</p>
+                            <pre class="mt-2 bg-slate-900 p-3 rounded text-xs">$request->session()->regenerate();</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">Redis'e Session Kaydedilir</h3>
+                            <p class="text-slate-300">Session driver redis olduğu için otomatik yazılır</p>
+                            <pre class="mt-2 bg-slate-900 p-3 rounded text-xs">Redis KEY: AKmX6ilTCPbot7IukdA8...
+TTL: 10080 dakika (7 gün)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-300 mb-2">DeviceService.registerSession()</h3>
+                            <p class="text-slate-300">Session ID + cihaz bilgisi → <code>user_active_sessions</code> tablosuna</p>
+                            <pre class="mt-2 bg-slate-900 p-3 rounded text-xs">DB::table('user_active_sessions')->insert([
+    'user_id' => $user->id,
+    'session_id' => session()->getId(),
+    'device_name' => 'OS X - Chrome',
+    ...
+]);</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-300 mb-2">LIFO: Eski Sessionlar Silinir</h3>
+                            <p class="text-slate-300">Device limit aşıldıysa en eski session silinir</p>
+                            <pre class="mt-2 bg-slate-900 p-3 rounded text-xs">// enforceDeviceLimit()
+// Limit: 1 → 2. cihaz giriş yapınca 1. cihaz silinir
+// Limit: 2 → 3. cihaz giriş yapınca 1. cihaz silinir</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">6</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-300 mb-2">Cookie Gönderilir</h3>
+                            <p class="text-slate-300">Session ID şifrelenerek cookie'ye yazılır</p>
+                            <pre class="mt-2 bg-slate-900 p-3 rounded text-xs">Set-Cookie: tuufi_session=eyJpdiI6...; HttpOnly; Secure; SameSite=Lax</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Logout Akışı -->
+        <section id="logout-flow" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">6. Logout Akışı</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold mb-4 text-green-400">✅ Normal Logout</h3>
+                    <ol class="space-y-2 text-slate-300 text-sm list-decimal list-inside">
+                        <li>Kullanıcı "Çıkış" butonuna tıklar</li>
+                        <li><code>POST /api/auth/logout</code> çağrılır</li>
+                        <li><code>DeviceService.unregisterSession()</code> → DB'den siler</li>
+                        <li><code>Auth::logout()</code> → Laravel logout</li>
+                        <li><code>session()->invalidate()</code> → Redis'ten siler</li>
+                        <li>Cookie expire edilir</li>
+                        <li>Login sayfasına yönlendirilir</li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold mb-4 text-red-400">⚡ Zorla Logout (LIFO)</h3>
+                    <ol class="space-y-2 text-slate-300 text-sm list-decimal list-inside">
+                        <li>Başka cihazdan login yapılır</li>
+                        <li><code>enforceDeviceLimit()</code> çalışır</li>
+                        <li>Eski session DB'den silinir</li>
+                        <li>Frontend 30 sn'de <code>check-session</code> çağırır</li>
+                        <li>API "session_terminated" döner</li>
+                        <li>Frontend logout yapar + login'e yönlendirir</li>
+                    </ol>
+                    <p class="mt-4 text-xs text-yellow-400">
+                        ⚠️ Redis session hala var ama DB'de yok → Çelişki
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Device Limit -->
+        <section id="device-limit" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">7. Cihaz Limiti (LIFO)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 mb-6">
+                <h3 class="text-lg font-bold mb-4 text-purple-400">📊 Limit Hiyerarşisi (3-Tier)</h3>
+
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="px-4 py-2 bg-red-600 rounded">
+                        <span class="font-bold">1. User Override</span>
+                        <p class="text-xs">users.device_limit</p>
+                    </div>
+                    <span class="text-2xl">→</span>
+                    <div class="px-4 py-2 bg-yellow-600 rounded">
+                        <span class="font-bold">2. Subscription Plan</span>
+                        <p class="text-xs">plans.device_limit</p>
+                    </div>
+                    <span class="text-2xl">→</span>
+                    <div class="px-4 py-2 bg-green-600 rounded">
+                        <span class="font-bold">3. Tenant Setting</span>
+                        <p class="text-xs">auth_device_limit</p>
+                    </div>
+                </div>
+
+                <pre class="mt-4 bg-slate-900 p-4 rounded text-xs overflow-x-auto">
+// DeviceService::getDeviceLimit()
+1. User override: $user->device_limit (null değilse)
+2. Subscription Plan: $user->subscriptions->plan->device_limit
+3. Tenant setting: setting('auth_device_limit') → Default: 1</pre>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-bold mb-4 text-orange-400">🔄 LIFO Nasıl Çalışıyor?</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-700">
+                            <tr>
+                                <th class="p-2 text-left">Zaman</th>
+                                <th class="p-2 text-left">İşlem</th>
+                                <th class="p-2 text-left">Sonuç</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2">09:00</td>
+                                <td class="p-2">Bilgisayardan login</td>
+                                <td class="p-2 text-green-400">Session A aktif</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2">10:00</td>
+                                <td class="p-2">Telefondan login</td>
+                                <td class="p-2 text-yellow-400">Session B aktif, Session A siliniyor...</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-2">10:00:30</td>
+                                <td class="p-2">Bilgisayar check-session</td>
+                                <td class="p-2 text-red-400">Session A yok → Logout!</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2">10:01</td>
+                                <td class="p-2">Bilgisayar login sayfasına</td>
+                                <td class="p-2 text-blue-400">"Başka cihazdan giriş yapıldı"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Kullanıcıyı Nasıl Çıkarırız -->
+        <section id="kick-user" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">8. Kullanıcıyı Nasıl Çıkarırız?</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-green-500">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">✅ Yöntem 1: DB'den Sil</h3>
+                    <pre class="bg-slate-900 p-4 rounded text-xs overflow-x-auto">
+-- Belirli kullanıcının tüm sessionlarını sil
+DELETE FROM user_active_sessions
+WHERE user_id = 1;
+
+-- Sonuç: 30 saniye içinde logout olur</pre>
+                    <p class="mt-4 text-sm text-slate-400">
+                        Frontend polling "session yok" alır → Logout
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-blue-500">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">✅ Yöntem 2: Redis'ten Sil</h3>
+                    <pre class="bg-slate-900 p-4 rounded text-xs overflow-x-auto">
+# Session ID'yi bul
+SELECT session_id FROM user_active_sessions
+WHERE user_id = 1;
+
+# Redis'ten sil
+redis-cli DEL "AKmX6ilTCPbot7IukdA8..."
+
+# Sonuç: ANINDA logout</pre>
+                    <p class="mt-4 text-sm text-slate-400">
+                        Laravel session yok → Anında unauthorized
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-purple-500">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">✅ Yöntem 3: API ile</h3>
+                    <pre class="bg-slate-900 p-4 rounded text-xs overflow-x-auto">
+// Admin panelden
+DeviceService::terminateSession($sessionId);
+
+// Veya API endpoint (ileride)
+POST /api/admin/users/{id}/logout</pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-yellow-500">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">✅ Yöntem 4: Tinker ile</h3>
+                    <pre class="bg-slate-900 p-4 rounded text-xs overflow-x-auto">
+php artisan tinker
+>>> tenancy()->initialize(\App\Models\Tenant::find(1001));
+>>> DB::table('user_active_sessions')
+...     ->where('user_id', 1)
+...     ->delete();</pre>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-red-900/30 border border-red-600 rounded">
+                <h4 class="font-bold text-red-400 mb-2">⚠️ Dikkat!</h4>
+                <p class="text-slate-300 text-sm">
+                    <strong>Sadece DB'den silmek yetmez!</strong> Redis'te session hala var olabilir.
+                    <br>Kullanıcı logout olduktan sonra bile cookie ile request atabilir.
+                    <br>En güvenli: <strong>Hem DB hem Redis'ten sil.</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- 9. Şarkı Dinleme Akışı -->
+        <section id="stream-flow" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">9. Şarkı Dinleme Akışı</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-bold mb-4 text-green-400">🎵 Stream İsteği Geldiğinde</h3>
+
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <span class="px-3 py-1 bg-blue-600 rounded text-sm">1</span>
+                        <div>
+                            <p class="text-slate-300"><code>GET /api/songs/{id}/stream</code></p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <span class="px-3 py-1 bg-purple-600 rounded text-sm">2</span>
+                        <div>
+                            <p class="text-slate-300">Auth kontrolü: <code>auth('web')->user()</code></p>
+                            <p class="text-xs text-slate-500">Giriş yapmamış → 30 sn preview</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <span class="px-3 py-1 bg-green-600 rounded text-sm">3</span>
+                        <div>
+                            <p class="text-slate-300">Session DB'de var mı?</p>
+                            <pre class="mt-1 bg-slate-900 p-2 rounded text-xs">DB::table('user_active_sessions')
+    ->where('session_id', session()->getId())
+    ->exists();</pre>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <span class="px-3 py-1 bg-yellow-600 rounded text-sm">4</span>
+                        <div>
+                            <p class="text-slate-300">Session yoksa → <code>401 session_terminated</code></p>
+                            <p class="text-slate-300">Session varsa → Device limit kontrolü</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <span class="px-3 py-1 bg-orange-600 rounded text-sm">5</span>
+                        <div>
+                            <p class="text-slate-300">Premium kontrolü: <code>$user->isPremiumOrTrial()</code></p>
+                            <p class="text-xs text-slate-500">Premium değil → 30 sn preview</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <span class="px-3 py-1 bg-red-600 rounded text-sm">6</span>
+                        <div>
+                            <p class="text-slate-300">✅ Signed URL döndür → Şarkı çalar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-900/30 border border-blue-600 rounded">
+                <h4 class="font-bold text-blue-400 mb-2">🔐 Signed URL Nedir?</h4>
+                <p class="text-slate-300 text-sm">
+                    MP3/HLS dosyasına erişim için <strong>geçici şifrelenmiş URL</strong>.
+                    <br>30 dakika sonra expire olur, tekrar stream isteği gerekir.
+                    <br>Bu sayede direkt link paylaşılsa bile çalışmaz.
+                </p>
+            </div>
+        </section>
+
+        <!-- 10. Mevcut Sorunlar -->
+        <section id="issues" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">10. Mevcut Sorunlar & Çözümler</h2>
+
+            <div class="space-y-6">
+                <!-- Sorun 1 -->
+                <div class="bg-red-900/30 border border-red-600 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">🐛 Sorun 1: "Premium'a Geçin" Açılışta Gösteriliyor</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-bold text-yellow-400 mb-2">Neden?</h4>
+                            <p class="text-slate-300 text-sm">
+                                <code>localStorage</code>'dan önceki state yükleniyor.
+                                <br>Eğer preview mode'da kaldıysa, <code>isPreviewBlocked = true</code> oluyor.
+                                <br>Play butonuna basınca "Premium'a geçin" toast çıkıyor.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-green-400 mb-2">Çözüm</h4>
+                            <p class="text-slate-300 text-sm">
+                                State restore sırasında <code>isPreviewBlocked</code> flag'ini sıfırla.
+                                <br>Veya login olduktan sonra flag'i temizle.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sorun 2 -->
+                <div class="bg-red-900/30 border border-red-600 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">🐛 Sorun 2: Otomatik Şarkı Çalıyor</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-bold text-yellow-400 mb-2">Neden?</h4>
+                            <p class="text-slate-300 text-sm">
+                                <code>loadState()</code> fonksiyonu önceki queue'yu yüklüyor.
+                                <br>Sonra <code>playSongFromQueue()</code> çağrılıyor (autoplay=false bile olsa).
+                                <br>Stream API çağrısı yapılıyor, URL alınıyor.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-green-400 mb-2">Çözüm</h4>
+                            <p class="text-slate-300 text-sm">
+                                State restore sırasında sadece UI güncellemesi yap.
+                                <br>Şarkıyı yükleme, stream isteği atma.
+                                <br>Kullanıcı play'e basınca yükle.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sorun 3 -->
+                <div class="bg-yellow-900/30 border border-yellow-600 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">⚠️ Sorun 3: Redis-DB Senkronizasyon</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-bold text-yellow-400 mb-2">Neden?</h4>
+                            <p class="text-slate-300 text-sm">
+                                Redis session 7 gün yaşar.
+                                <br>DB session 60 dakika inaktifse silinir.
+                                <br>İkisi arasında senkronizasyon yok.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-green-400 mb-2">Çözüm</h4>
+                            <p class="text-slate-300 text-sm">
+                                DB cleanup TTL'ini Redis ile eşitle.
+                                <br>Veya logout sırasında her ikisini de sil.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu</p>
+            <p class="mt-2">Muzibu Session & Auth Sistemi Dokümantasyonu</p>
+        </footer>
+    </div>
+</body>
+</html>

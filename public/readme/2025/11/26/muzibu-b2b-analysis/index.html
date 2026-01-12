@@ -1,1 +1,1857 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu B2B Platform - Detaylı Analiz & Eksik Özellikler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .summary {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #a78bfa;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary p {
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+
+        .summary strong {
+            color: #a78bfa;
+        }
+
+        section {
+            margin-bottom: 45px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 25px;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #334155;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            border-color: #a78bfa;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(167, 139, 250, 0.15);
+        }
+
+        .category-card h3 {
+            font-size: 1.4rem;
+            color: #60a5fa;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #475569;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-exists {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-partial {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-missing {
+            background: #ef4444;
+            color: white;
+        }
+
+        .status-warning {
+            background: #ec4899;
+            color: white;
+        }
+
+        .mevcut {
+            margin-bottom: 20px;
+        }
+
+        .eksikler {
+            margin-bottom: 20px;
+        }
+
+        .oncelik {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #475569;
+        }
+
+        .mevcut h4,
+        .eksikler h4,
+        .oncelik h4 {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            color: #94a3b8;
+        }
+
+        .list-item {
+            background: rgba(51, 65, 85, 0.3);
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 3px solid;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .list-item.exists {
+            border-left-color: #10b981;
+        }
+
+        .list-item.missing {
+            border-left-color: #ef4444;
+        }
+
+        .list-item.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .file-path {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #60a5fa;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .priority-high {
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            color: #f59e0b;
+        }
+
+        .priority-low {
+            color: #10b981;
+        }
+
+        .recommendation {
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid #a78bfa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        .recommendation strong {
+            color: #a78bfa;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #475569;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #a78bfa;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background: rgba(51, 65, 85, 0.4);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: #a78bfa;
+            color: white;
+            border-color: #a78bfa;
+        }
+
+        .critical {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .highlight {
+            background: rgba(167, 139, 250, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #a78bfa;
+        }
+
+        .architecture {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #60a5fa;
+        }
+
+        .architecture code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #60a5fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu B2B Platform - Detaylı Analiz</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-26
+                <br>
+                🎯 Kapsam: İşletmelere müzik hizmeti B2B platformu
+                <br>
+                👤 Tenant: Muzibu (1001) - Müzik Streaming
+            </div>
+        </header>
+
+        <div class="summary">
+            <p><strong>📊 Analiz Özeti:</strong></p>
+            <p>Muzibu platformu temel müzik streaming özelliklerine sahiptir fakat B2B (işletmelere hizmet) perspektifinden çeşitli eksiklikler bulunmaktadır. Platform şu anda:</p>
+            <ul style="margin-left: 20px; margin-top: 10px; list-style: none;">
+                <li>✅ Temel müzik katalog yönetimi (sanatçı, albüm, şarkı, genre)</li>
+                <li>✅ Playlist ve Radio sistemi</li>
+                <li>✅ Kısmi Corporate hesap sistemi (Muzibu-only)</li>
+                <li>✅ HLS streaming (video sunucusu gibi)</li>
+                <li>✅ Temel subscription yönetimi</li>
+                <li>❌ İşletme yönetim paneli (B2B dashboard)</li>
+                <li>❌ Lisans/telif hakkı takibi</li>
+                <li>❌ İşletme bazlı analitiğ ve raporlama</li>
+                <li>❌ Destek/ticket sistemi</li>
+            </ul>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number">13</div>
+                <div class="stat-label">Analiz Kategorisi</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Mevcut Özellik</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Kritik Eksiklik</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">7/13</div>
+                <div class="stat-label">Tamamlanmışlık</div>
+            </div>
+        </div>
+
+        <!-- 1. İŞLETME/CORPORATE HESAP SİSTEMİ -->
+        <section>
+            <h2>1️⃣ İşletme/Corporate Hesap Sistemi</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-partial">Kısmi Mevcut</span>
+                    <h3>Corporate Hesap Modeli</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            <strong>Model:</strong> <code>MuzibuCorporateAccount</code> var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Yapısı:</strong> User bazlı corporate hesap (owner + üyeler)
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Davet Kodu:</strong> Üyeleri davet etme sistemi var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Şubeler:</strong> Parent-child ilişkisi (şube yönetimi kabiliyeti)
+                        </div>
+                        <div class="file-path">
+                            Modules/Muzibu/app/Models/MuzibuCorporateAccount.php
+                        </div>
+                        <div class="file-path">
+                            Modules/Muzibu/app/Services/MuzibuCorporateService.php
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Vergi numarası (KDV No), işletme türü gibi kurumsal bilgiler YOK
+                        </div>
+                        <div class="list-item missing">
+                            Kurumsal fatura adresi ve teslimat adresi alanları eksik
+                        </div>
+                        <div class="list-item missing">
+                            İş akışı onayı (manager → admin) sisteminin tamamlanmamış
+                        </div>
+                        <div class="list-item missing">
+                            Lokasyon/şube bazlı dinleme limitlemesi yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>İşletme Profili Verileri</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Şirket/İşletme adı (var ama minimal)
+                        </div>
+                        <div class="list-item missing">
+                            <span class="critical">Vergi kimlik numarası (Tür: TL / KDV No)</span>
+                        </div>
+                        <div class="list-item missing">
+                            <span class="critical">İşletme türü (Restoran, Kafe, Mağaza, Otel, Salon vb.)</span>
+                        </div>
+                        <div class="list-item missing">
+                            Kurumsal logo/ikon
+                        </div>
+                        <div class="list-item missing">
+                            İletişim kişisi bilgileri (name, phone, email)
+                        </div>
+                        <div class="list-item missing">
+                            Lokasyon/Şube bilgileri (adres, GPS, kapasite)
+                        </div>
+                    </div>
+
+                    <div class="recommendation">
+                        <strong>Tavsiye:</strong> <code>Musik_corporate_profiles</code> migration oluştur:
+                        <br>business_type (enum), tax_id, contact_person, headquarters_address vb.
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Çoklu Kullanıcı Yönetimi</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            İşletme admin / işletme üye rolleri eksik
+                        </div>
+                        <div class="list-item missing">
+                            Rol bazlı erişim kontrolü (RBAC) yok
+                        </div>
+                        <div class="list-item missing">
+                            İzin yönetimi (kimin neleri görebileceği) eksik
+                        </div>
+                        <div class="list-item missing">
+                            <span class="critical">Cihaz sayısı sınırlaması per lokasyon yok</span>
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. LİSANS & TELİF HAKKI -->
+        <section>
+            <h2>2️⃣ Lisans & Telif Hakkı Yönetimi</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Telif Hakkı Takibi</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ KRİTİK EKSIKLER</h4>
+                        <div class="list-item missing">
+                            <span class="critical">MESAM/MSG lisans entegrasyonu yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            <span class="critical">Şarkı başına lisans bilgisi (ISRC, UPC kodları) yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Sanatçı/Yayıncı telif bilgileri eklenmiyor
+                        </div>
+                        <div class="list-item missing">
+                            Ticari kullanım izni (commercial license) sistemi yok
+                        </div>
+                    </div>
+
+                    <div class="recommendation">
+                        <strong>HUKUKI RİSK:</strong> B2B platformu işletmelere müzik sunuyorsa
+                        <br><span class="highlight">kesinlikle telif hakkı ve lisans takibi gerekli</span>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">🔴 KRİTİK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>İçerik Koruması</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            DRM (Digital Rights Management) yok
+                        </div>
+                        <div class="list-item missing">
+                            İndirme engelleme mekanizması yok
+                        </div>
+                        <div class="list-item missing">
+                            Şarkı taşınabilirliği sınırı yok (portable limit)
+                        </div>
+                        <div class="list-item missing">
+                            Watermarking sistemi yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Lisans Metaveri</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Song modeline ISRC, UPC alan yok
+                        </div>
+                        <div class="list-item missing">
+                            Yayıncı/Label bilgisi eksik
+                        </div>
+                        <div class="list-item missing">
+                            Ticari vs Kişisel kullanım ayırımı yok
+                        </div>
+                        <div class="list-item missing">
+                            Coğrafysal kısıtlamalar (geo-blocking) yok
+                        </div>
+                    </div>
+
+                    <div class="file-path">
+                        Modules/Muzibu/database/migrations/tenant/2025_11_09_000004_create_muzibu_songs_table.php
+                        <br>⚠️ ISRC, UPC, publisher alanları eksik
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. FATURALAMA & ÖDEME -->
+        <section>
+            <h2>3️⃣ Faturalama & Ödeme Sistemi</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-partial">Kısmi Mevcut</span>
+                    <h3>Ödeme & Subscription</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            <strong>Model:</strong> <code>Payment</code> ve <code>Subscription</code> modelleri var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Gateway:</strong> PayTR entegrasyonu (Türkiye)
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Taksit:</strong> PayTR taksit seçenekleri var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Durum:</strong> payment_status = completed/pending/failed
+                        </div>
+                        <div class="file-path">
+                            Modules/Subscription/app/Models/SubscriptionPlan.php
+                            <br>Modules/Payment/app/Models/Payment.php
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">Kurumsal fatura (invoice) sistemi tamamlanmamış</span>
+                        </div>
+                        <div class="list-item missing">
+                            <span class="critical">PDF fatura oluşturma (invoice generation) yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Fatura numaralandırma sistemi eksik
+                        </div>
+                        <div class="list-item missing">
+                            KDV hesaplama ve vergiden muaf kuruluşlar yönetimi yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Korporat Ödeme Yönetimi</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Kurumsal hesap sahibinin tüm üyelerinin ödeme sorumluluğu yok
+                        </div>
+                        <div class="list-item missing">
+                            Toplu ödeme sistemi (organization-wide billing) yok
+                        </div>
+                        <div class="list-item missing">
+                            Ödeme yöntemi yönetimi (kurumsal kart ekle/sil) eksik
+                        </div>
+                        <div class="list-item missing">
+                            Ödeme geçmişi (kurumsal bazlı) raporlama yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>İade & Geri Ödeme</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            İade politikası (refund policy) sistemi eksik
+                        </div>
+                        <div class="list-item missing">
+                            Otomatik geri ödeme işlemi yok
+                        </div>
+                        <div class="list-item missing">
+                            İade nedeni takibi eksik
+                        </div>
+                        <div class="list-item missing">
+                            Kısmi iade (partial refund) seçeneği yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. KULLANICI YÖNETİMİ -->
+        <section>
+            <h2>4️⃣ Kullanıcı & Rol Yönetimi</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-exists">Mevcut</span>
+                    <h3>User Modeli</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            <strong>Model:</strong> <code>User</code> ile temel alanlara sahip
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Corporate:</strong> <code>corporate_account_id</code> alanı var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Güvenlik:</strong> 2FA, başarısız login takibi, account lock var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Approval:</strong> İşletme onayı (is_approved) sistemi var
+                        </div>
+                        <div class="file-path">
+                            app/Models/User.php - corporate_account_id, is_approved, locked_until
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Kurumsal rol seçenekleri (admin, manager, user) tamamlanmamış
+                        </div>
+                        <div class="list-item missing">
+                            Permission yönetimi (kimin neleri görebileceği) eksik
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>İşletme Admin vs Çalışan</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">İşletme sahibi / admin rolleri net olmayan</span>
+                        </div>
+                        <div class="list-item missing">
+                            İşletme yöneticileri (managers) sistemi eksik
+                        </div>
+                        <div class="list-item missing">
+                            Çalışan ekleme/çıkarma yönetim paneli yok
+                        </div>
+                        <div class="list-item missing">
+                            Rol bazlı erişim kontrolü (RBAC) tamamlanmamış
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Hesap Doğrulama</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">E-mail doğrulama (email verification) yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Telefon doğrulama (phone verification) yok
+                        </div>
+                        <div class="list-item missing">
+                            Kurumsal hesap doğrulama (vergi numarası kontrol) yok
+                        </div>
+                        <div class="list-item missing">
+                            İş e-mail zorunluluğu yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. İÇERİK YÖNETİMİ -->
+        <section>
+            <h2>5️⃣ İçerik Yönetimi</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-exists">Mevcut</span>
+                    <h3>Müzik Kataloğu</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            <strong>Modeller:</strong> Song, Album, Artist, Genre, Playlist, Radio
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Admin:</strong> Tüm modeller için yönetim sayfaları var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Bulk Upload:</strong> Albüm toplu yükleme (bulk) var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Çoklu Dil:</strong> title, slug, lyrics JSON'da saklı
+                        </div>
+                        <div class="file-path">
+                            Modules/Muzibu/database/migrations/tenant/2025_11_09_000001_*.php
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Sanatçı yükleme yönetim paneli basit
+                        </div>
+                        <div class="list-item missing">
+                            Yayıncı/Label bilgileri eksik
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-low">DÜŞÜK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-partial">Kısmi Mevcut</span>
+                    <h3>Metadata Yönetimi</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            Temel bilgiler (title, duration, bitrate, media_id)
+                        </div>
+                        <div class="list-item exists">
+                            Şarkı Sözleri (lyrics) JSON'da tutulur
+                        </div>
+                        <div class="list-item exists">
+                            HLS streaming bilgileri (hls_path, encryption_key)
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">ISRC kod sistemi yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            <span class="critical">UPC barcode yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Telif hakkı bilgisi yok
+                        </div>
+                        <div class="list-item missing">
+                            Yayın tarihi (release date) alanı eksik
+                        </div>
+                        <div class="list-item missing">
+                            Bileşim türü (composition) bilgileri yok
+                        </div>
+                    </div>
+
+                    <div class="file-path">
+                        app/Models/Song.php - ISRC, UPC, release_date alanları eksik
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-exists">Mevcut</span>
+                    <h3>Albüm & Playlist Yönetimi</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            Album modeli tam fonksiyonel
+                        </div>
+                        <div class="list-item exists">
+                            Playlist-Song ilişkisi (many-to-many) var
+                        </div>
+                        <div class="list-item exists">
+                            Playlist yönetim paneli mevcut
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-low">DÜŞÜK</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. ÇALMA & STREAM -->
+        <section>
+            <h2>6️⃣ Çalma & Stream Sistemi</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-partial">Kısmi Mevcut</span>
+                    <h3>Stream & Kalite</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            <strong>HLS:</strong> HLS streaming desteği var (m3u8 playlists)
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Bitrate:</strong> Bitrate bilgisi tutulur (integer)
+                        </div>
+                        <div class="list-item exists">
+                            <strong>Encryption:</strong> encryption_key alanı var
+                        </div>
+                        <div class="list-item exists">
+                            <strong>API:</strong> /api/muzibu/songs/{id}/stream endpoint var
+                        </div>
+                        <div class="file-path">
+                            Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Kalite seçenekleri (128kbps, 320kbps, lossless) yok
+                        </div>
+                        <div class="list-item missing">
+                            Adaptif bitrate (adaptive streaming) yok
+                        </div>
+                        <div class="list-item missing">
+                            Offline dinleme desteği yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Cihaz Yönetimi</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">Çoklu cihaz desteği (multi-device) yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Eşzamanlı dinleme sınırı (concurrent streams) yok
+                        </div>
+                        <div class="list-item missing">
+                            Cihaz kullanıcısı eşlemesi (user-device mapping) yok
+                        </div>
+                        <div class="list-item missing">
+                            <span class="critical">Kurumsal lokasyon bazlı cihaz sınırı yok</span>
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-partial">Kısmi Mevcut</span>
+                    <h3>Çalma Takibi</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            <code>SongPlay</code> modeli ile çalma takibi var
+                        </div>
+                        <div class="list-item exists">
+                            Play count (toplam çalma sayısı) takibi var
+                        </div>
+                        <div class="list-item exists">
+                            <code>/api/musikbu/songs/{id}/play</code> endpoint var
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">İşletme bazlı dinleme raporları yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Kullanıcı bazlı çalma tarihi ve saat bilgisi eksik
+                        </div>
+                        <div class="list-item missing">
+                            Başarısız çalma takibi (interrupted plays) yok
+                        </div>
+                    </div>
+
+                    <div class="file-path">
+                        Modules/Muzibu/database/migrations/tenant/2025_11_09_000012_create_muzibu_song_plays_table.php
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. ANALİTİK & RAPORLAMA -->
+        <section>
+            <h2>7️⃣ Analitiğ & Raporlama</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>İşletme Dashboard</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ KRİTİK EKSIKLER</h4>
+                        <div class="list-item missing">
+                            <span class="critical">İşletme yönetim dashboard'ı tamamlanmamış</span>
+                        </div>
+                        <div class="list-item missing">
+                            <span class="critical">Dinleme istatistikleri gösterilmiyor</span>
+                        </div>
+                        <div class="list-item missing">
+                            Popüler şarkılar raporu yok
+                        </div>
+                        <div class="list-item missing">
+                            Kullanıcı aktivitesi raporları yok
+                        </div>
+                        <div class="list-item missing">
+                            Real-time dinleme göstergesi (live listeners) yok
+                        </div>
+                    </div>
+
+                    <div class="architecture">
+                        Mevcut Dashboard sadece sayı gösterir:
+                        <code>totalSongs</code>, <code>totalAlbums</code>, <code>recentSongs</code> vb.
+                        <br><span class="critical">İşletme bazlı analitiğ YOKTUR!</span>
+                    </div>
+
+                    <div class="file-path">
+                        Modules/Muzibu/app/Http/Livewire/Admin/DashboardComponent.php
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">🔴 KRİTİK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Kullanım Raporları</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">Günlük/Haftalık/Aylık dinleme raporları yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Saatlik dinleme trendi yok
+                        </div>
+                        <div class="list-item missing">
+                            Şarkı/Albüm bazlı hit sayıları yok
+                        </div>
+                        <div class="list-item missing">
+                            Kullanıcı segmentasyon raporları yok
+                        </div>
+                        <div class="list-item missing">
+                            Coğrafysal dağılım (lokasyona göre dinleme) yok
+                        </div>
+                    </div>
+
+                    <div class="recommendation">
+                        <strong>Tablo:</strong> create_analytics_reports migration → play_date, play_hour, user_count, song_id
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>İndir/Dışa Aktarma</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            PDF rapor oluşturma (report generation) yok
+                        </div>
+                        <div class="list-item missing">
+                            Excel/CSV export yok
+                        </div>
+                        <div class="list-item missing">
+                            Planlı rapor gönderimi (scheduled reports) yok
+                        </div>
+                        <div class="list-item missing">
+                            E-mail ile rapor gönderme yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. GÜVENLİK & DRM -->
+        <section>
+            <h2>8️⃣ Güvenlik & İçerik Koruma</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-partial">Kısmi Mevcut</span>
+                    <h3>Stream Güvenliği</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            HLS encryption alanı var
+                        </div>
+                        <div class="list-item exists">
+                            Stream URL'leri API aracılığıyla sunulur (direct file açık değil)
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">DRM (Widevine, PlayReady, FairPlay) yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Stream URL'leri time-limited token'ı olmadan sunulabilir
+                        </div>
+                        <div class="list-item missing">
+                            IP kısıtlaması (IP whitelist) yok
+                        </div>
+                        <div class="list-item missing">
+                            Coğrafysal kısıtlama (geo-blocking) yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>İndirme Engelleme</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">Offline İndirme (download) özelliği yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Saklı MP3 dosyalarına doğrudan erişim engelleme mekanizması yok
+                        </div>
+                        <div class="list-item missing">
+                            Browser tools ile indir engelleme yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Watermarking & Tracking</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Ses watermarking yok
+                        </div>
+                        <div class="list-item missing">
+                            İçeriğe gömülü metadata (embedded metadata) yok
+                        </div>
+                        <div class="list-item missing">
+                            İzinsiz dağıtım takibi yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. API & ENTEGRASYON -->
+        <section>
+            <h2>9️⃣ API & Entegrasyon</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-partial">Kısmi Mevcut</span>
+                    <h3>API Endpoints</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            RESTful API var (/api/muzibu prefix)
+                        </div>
+                        <div class="list-item exists">
+                            Playlists, Albums, Songs, Genres, Sectors endpoints
+                        </div>
+                        <div class="list-item exists">
+                            Stream endpoint: /api/muzibu/songs/{id}/stream
+                        </div>
+                        <div class="list-item exists">
+                            Sanctum token auth var
+                        </div>
+                        <div class="file-path">
+                            Modules/Muzibu/routes/api.php
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">İşletme/Corporate API endpoints yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Analytics API (reporting) yok
+                        </div>
+                        <div class="list-item missing">
+                            Batch download API yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Webhook & Entegrasyonlar</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Webhook sistemi (play event, subscription change) yok
+                        </div>
+                        <div class="list-item missing">
+                            Üçüncü parti entegrasyonları (Zapier, IFTTT) yok
+                        </div>
+                        <div class="list-item missing">
+                            Import/Export API'ı yok
+                        </div>
+                        <div class="list-item missing">
+                            Real-time data sync yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>API Dokumentasyon & SDK</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            OpenAPI/Swagger dokumentasyonu yok
+                        </div>
+                        <div class="list-item missing">
+                            SDK (JavaScript, Python, PHP) yok
+                        </div>
+                        <div class="list-item missing">
+                            Rate limiting dokumentasyonu yok
+                        </div>
+                        <div class="list-item missing">
+                            API keyleri yönetimi yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. MOBİL & UYGULAMA -->
+        <section>
+            <h2>🔟 Mobil & Uygulama</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>PWA Desteği</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">Progressive Web App (PWA) özelliği yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Service Worker yok
+                        </div>
+                        <div class="list-item missing">
+                            Offline mode yok
+                        </div>
+                        <div class="list-item missing">
+                            Home screen install yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Mobil Uygulama Planı</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">iOS/Android mobil uygulaması yok</span>
+                        </div>
+                        <div class="list-item missing">
+                            Offline dinleme (mobile cache) yok
+                        </div>
+                        <div class="list-item missing">
+                            Push notification sistemi yok
+                        </div>
+                        <div class="list-item missing">
+                            Kilit ekranı kontrolü (lock screen player) yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Push Notification</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Push notification sistemi yok
+                        </div>
+                        <div class="list-item missing">
+                            Tercih kontrollü notification (notification preferences) yok
+                        </div>
+                        <div class="list-item missing">
+                            İşletme admin için notification paneli yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-low">DÜŞÜK</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. DESTEK SİSTEMİ -->
+        <section>
+            <h2>1️⃣1️⃣ Müşteri Destek Sistemi</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Ticket/Destek Sistemi</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ KRİTİK EKSIKLER</h4>
+                        <div class="list-item missing">
+                            <span class="critical">Ticket/destek sistemi TAMAMEN YOK</span>
+                        </div>
+                        <div class="list-item missing">
+                            İşletmelerin sorun bildirme yöntemi yok
+                        </div>
+                        <div class="list-item missing">
+                            Destek tarafından takip sistemi yok
+                        </div>
+                        <div class="list-item missing">
+                            Öncelik seviyelendirmesi (priority levels) yok
+                        </div>
+                        <div class="list-item missing">
+                            Cevap süresi takibi (SLA) yok
+                        </div>
+                    </div>
+
+                    <div class="recommendation">
+                        <strong>GEREKLI:</strong> B2B platformu için en az Zendesk entegrasyonu veya
+                        <br>in-house ticket sistemi oluşturulmalı
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">🔴 KRİTİK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Canlı Chat & Yardım</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Canlı chat sistemi yok
+                        </div>
+                        <div class="list-item missing">
+                            SSS/Knowledge Base yok
+                        </div>
+                        <div class="list-item missing">
+                            Yardım merkezi (help center) yok
+                        </div>
+                        <div class="list-item missing">
+                            Tutorial videoları yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Bildirim & İletişim</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            E-mail bildirimleri sistemi yok
+                        </div>
+                        <div class="list-item missing">
+                            SMS bildirimleri yok
+                        </div>
+                        <div class="list-item missing">
+                            In-app notification paneli yok
+                        </div>
+                        <div class="list-item missing">
+                            Duyuru/Broadcast sistemi yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 12. FRONTEND SAYFALAR -->
+        <section>
+            <h2>1️⃣2️⃣ Frontend Sayfalar & UX</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-partial">Kısmi Mevcut</span>
+                    <h3>Halka Açık Sayfalar</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            Home: Ana sayfa (featured playlists, new releases)
+                        </div>
+                        <div class="list-item exists">
+                            Playlists: Playlist listesi ve detay
+                        </div>
+                        <div class="list-item exists">
+                            Albums: Albüm listesi ve detay
+                        </div>
+                        <div class="list-item exists">
+                            Genres: Türler listesi ve detay
+                        </div>
+                        <div class="list-item exists">
+                            Sectors: İşletme türleri (restoran, kafe vb.)
+                        </div>
+                        <div class="list-item exists">
+                            Search: Arama sayfası
+                        </div>
+                        <div class="file-path">
+                            Modules/Muzibu/resources/views/themes/muzibu/
+                        </div>
+                    </div>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            About/Hakkında sayfası yok
+                        </div>
+                        <div class="list-item missing">
+                            Fiyatlandırma sayfası yok
+                        </div>
+                        <div class="list-item missing">
+                            İşin nasıl çalıştığı (how it works) sayfası yok
+                        </div>
+                        <div class="list-item missing">
+                            Blog/Haber sayfası yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Kullanıcı Paneli (Müşteri)</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            <span class="critical">İşletme dashboard'ı TAMAMEN YOK</span>
+                        </div>
+                        <div class="list-item missing">
+                            İşletme profili düzenleme yok
+                        </div>
+                        <div class="list-item missing">
+                            Dinleme istatistikleri paneli yok
+                        </div>
+                        <div class="list-item missing">
+                            Ödeme yönetimi paneli yok
+                        </div>
+                        <div class="list-item missing">
+                            Tarifeler/Abonelik yönetimi yok
+                        </div>
+                        <div class="list-item missing">
+                            Çalışan yönetimi (team management) paneli yok
+                        </div>
+                    </div>
+
+                    <div class="recommendation">
+                        <strong>ÖNEMLİ:</strong> İşletme müşterileri için komplet dashboard sistemine ihtiyaç var
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">🔴 KRİTİK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Kayıt & Onboarding</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Kurumsal kayıt (B2B signup) sayfası yok
+                        </div>
+                        <div class="list-item missing">
+                            Adım adım onboarding (step-by-step) yok
+                        </div>
+                        <div class="list-item missing">
+                            İşletme doğrulama (verification) adımları eksik
+                        </div>
+                        <div class="list-item missing">
+                            Hoş geldiniz tutu (welcome flow) yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 13. ADMIN PANEL -->
+        <section>
+            <h2>1️⃣3️⃣ Admin Paneli & Yönetim</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span class="status-badge status-exists">Mevcut</span>
+                    <h3>İçerik Yönetimi (Admin)</h3>
+
+                    <div class="mevcut">
+                        <h4>✅ Mevcut Durum</h4>
+                        <div class="list-item exists">
+                            Müzik, Albüm, Sanatçı, Türler admin sayfaları
+                        </div>
+                        <div class="list-item exists">
+                            Playlist yönetimi (şarkı ekleme/çıkarma)
+                        </div>
+                        <div class="list-item exists">
+                            Toplu yükleme (bulk upload) Livewire komponenti
+                        </div>
+                        <div class="list-item exists">
+                            Livewire ile canlı yönetim (inline edit, bulk actions)
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-low">DÜŞÜK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>İşletme Yönetimi (Admin)</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ KRİTİK EKSIKLER</h4>
+                        <div class="list-item missing">
+                            <span class="critical">İşletme/Corporate yönetim paneli tamamlanmamış</span>
+                        </div>
+                        <div class="list-item missing">
+                            İşletme onayı/reddetme adımları eksik
+                        </div>
+                        <div class="list-item missing">
+                            Admin tarafından kapasite belirleme (slot yönetimi) yok
+                        </div>
+                        <div class="list-item missing">
+                            İşletme suspend/ban sistemi yok
+                        </div>
+                        <div class="list-item missing">
+                            Kullanıcı aktivitesi denetim izi (audit log) yok
+                        </div>
+                    </div>
+
+                    <div class="file-path">
+                        Modules/Muzibu/app/Http/Livewire/Admin/CorporateAccountComponent.php
+                        <br>Modules/Muzibu/resources/views/admin/corporate-index.blade.php
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-high">YÜKSEK</span>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="status-badge status-missing">Eksik</span>
+                    <h3>Sistem Ayarları & Yapılandırma</h3>
+
+                    <div class="eksikler">
+                        <h4>❌ Eksikler</h4>
+                        <div class="list-item missing">
+                            Subscripti plan yönetimi (admin tarafından)
+                        </div>
+                        <div class="list-item missing">
+                            Fiyatlandırma stratejisi (pricing management) yok
+                        </div>
+                        <div class="list-item missing">
+                            Email şablonları yönetimi yok
+                        </div>
+                        <div class="list-item missing">
+                            API anahtarı yönetimi yok
+                        </div>
+                        <div class="list-item missing">
+                            Sistem sağlığı dashboard'ı (system health) yok
+                        </div>
+                    </div>
+
+                    <div class="oncelik">
+                        <h4>🎯 Öncelik</h4>
+                        <span class="priority-medium">ORTA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZET & ÖNERİLER -->
+        <section>
+            <h2>📋 Toplam Analiz Özeti</h2>
+
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 30px; border-radius: 14px; border-left: 4px solid #a78bfa;">
+                <h3 style="color: #a78bfa; margin-bottom: 20px;">Durum Raporu</h3>
+
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background: rgba(0, 0, 0, 0.3); border-bottom: 2px solid #475569;">
+                            <th style="padding: 12px; text-align: left; color: #cbd5e1;">Kategori</th>
+                            <th style="padding: 12px; text-align: center; color: #cbd5e1;">Durum</th>
+                            <th style="padding: 12px; text-align: center; color: #cbd5e1;">Mevcut %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">1. İşletme Hesap Sistemi</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-partial">Kısmi</span></td>
+                            <td style="padding: 12px; text-align: center; color: #60a5fa;"><strong>40%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">2. Lisans & Telif Hakkı</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-missing">Eksik</span></td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;"><strong>0%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">3. Faturalama & Ödeme</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-partial">Kısmi</span></td>
+                            <td style="padding: 12px; text-align: center; color: #60a5fa;"><strong>60%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">4. Kullanıcı Yönetimi</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-partial">Kısmi</span></td>
+                            <td style="padding: 12px; text-align: center; color: #60a5fa;"><strong>50%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">5. İçerik Yönetimi</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-exists">Mevcut</span></td>
+                            <td style="padding: 12px; text-align: center; color: #10b981;"><strong>85%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">6. Çalma & Stream</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-partial">Kısmi</span></td>
+                            <td style="padding: 12px; text-align: center; color: #60a5fa;"><strong>50%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">7. Analitiğ & Raporlama</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-missing">Eksik</span></td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;"><strong>15%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">8. Güvenlik & DRM</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-partial">Kısmi</span></td>
+                            <td style="padding: 12px; text-align: center; color: #60a5fa;"><strong>30%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">9. API & Entegrasyon</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-partial">Kısmi</span></td>
+                            <td style="padding: 12px; text-align: center; color: #60a5fa;"><strong>40%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">10. Mobil & Uygulama</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-missing">Eksik</span></td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;"><strong>0%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">11. Destek Sistemi</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-missing">Eksik</span></td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;"><strong>0%</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px; color: #cbd5e1;">12. Frontend Sayfalar</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-partial">Kısmi</span></td>
+                            <td style="padding: 12px; text-align: center; color: #60a5fa;"><strong>55%</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; color: #cbd5e1;">13. Admin Panel</td>
+                            <td style="padding: 12px; text-align: center;"><span class="status-badge status-partial">Kısmi</span></td>
+                            <td style="padding: 12px; text-align: center; color: #60a5fa;"><strong>50%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="color: #a78bfa; margin-bottom: 15px; margin-top: 25px;">Önemli Bulgular</h3>
+
+                <div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid #dc2626; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                    <strong style="color: #fca5a5;">🔴 KRİTİK SORUNLAR (Hemen Çözmeli):</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px; list-style: none;">
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">❌ <span class="critical">Telif Hakkı & Lisans Sistemi Yoktur</span> - YASAL RİSK!</li>
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">❌ <span class="critical">İşletme Dashboard'ı Tamamlanmamış</span> - Müşteriler yönetebilmiyor</li>
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">❌ <span class="critical">Analitiğ & Raporlama Sistemi Yok</span> - B2B için çok önemli</li>
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">❌ <span class="critical">Destek Sistemi Yoktur</span> - Müşteri hizmetleri mümkün değil</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                    <strong style="color: #fde047;">🟠 ÖNEMLİ EKSIKLER (Yakında Eklemeli):</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px; list-style: none;">
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">⚠️ Kurumsal Profil Verileri (vergi numarası, işletme türü)</li>
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">⚠️ Kurumsal Fatura Sistemi (invoice generation)</li>
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">⚠️ Çoklu Cihaz Yönetimi (multi-device, concurrent streams)</li>
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">⚠️ İşletme Rol/Permission Sistemi</li>
+                        <li style="color: #cbd5e1; margin-bottom: 8px;">⚠️ Canlı Yardım / Chat Sistemi</li>
+                    </ul>
+                </div>
+
+                <h3 style="color: #a78bfa; margin-bottom: 15px; margin-top: 25px;">Genel Değerlendirme</h3>
+                <p style="color: #cbd5e1; margin-bottom: 10px;">
+                    <strong style="color: #60a5fa;">Mevcut Durum:</strong> Muzibu platformu temel müzik streaming özellikleri sunmakta ancak
+                    <span class="highlight">B2B (işletmelere hizmet) perspektifinden çok ciddi eksiklikler</span> bulunmaktadır.
+                </p>
+                <p style="color: #cbd5e1; margin-bottom: 10px;">
+                    <strong style="color: #60a5fa;">Tamamlanmışlık Oranı:</strong> <strong style="color: #a78bfa;">~41%</strong> (13 kategoriden 5+ kısmi, 3 tam olarak eksik)
+                </p>
+                <p style="color: #cbd5e1; margin-bottom: 10px;">
+                    <strong style="color: #60a5fa;">B2B Uygunluğu:</strong> <span class="critical">DÜŞÜK - İşletmeler için hazır DEĞİL</span>
+                </p>
+                <p style="color: #cbd5e1;">
+                    <strong style="color: #60a5fa;">Gerekli İyileştirme Süresi:</strong> ~3-4 ay (agresif geliştirme ile)
+                </p>
+            </div>
+        </section>
+
+        <!-- İLERİ ADIMLAR -->
+        <section>
+            <h2>🎯 Önerilen İlerleme Adımları</h2>
+
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 30px; border-radius: 14px;">
+                <h3 style="color: #a78bfa; margin-bottom: 20px;">FAZA 1: KRİTİK SORUNLAR (1-2 Hafta)</h3>
+                <ol style="color: #cbd5e1; margin-left: 20px; line-height: 2;">
+                    <li><span class="critical">🔴 Telif Hakkı & Lisans Sistemi Tasarla</span> - Hukuki danışman ile</li>
+                    <li><span class="critical">🔴 İşletme Dashboard Oluştur</span> - Temel istatistikler</li>
+                    <li><span class="critical">🔴 Basit Ticket Sistemi Ekle</span> - Email-tabanlı veya Zendesk entegrasyonu</li>
+                    <li><span class="critical">🔴 Kurumsal Profil Alanları Ekle</span> - Migration ve form</li>
+                </ol>
+
+                <h3 style="color: #a78bfa; margin-bottom: 20px; margin-top: 25px;">FAZA 2: ÖNEMLİ ÖZELLİKLER (2-3 Hafta)</h3>
+                <ol style="color: #cbd5e1; margin-left: 20px; line-height: 2;">
+                    <li>Faturalama & Invoice Sistemi Tamamla</li>
+                    <li>Kullanım Raporları (Analytics) Oluştur</li>
+                    <li>Rol/Permission Sistemi Geliştir</li>
+                    <li>Cihaz Yönetimi ve Concurrent Stream Limiti Ekle</li>
+                </ol>
+
+                <h3 style="color: #a78bfa; margin-bottom: 20px; margin-top: 25px;">FAZA 3: İYİLEŞTİRMELER (3+ Hafta)</h3>
+                <ol style="color: #cbd5e1; margin-left: 20px; line-height: 2;">
+                    <li>DRM & Güvenlik Özellikleri (video platform benzeri)</li>
+                    <li>Mobil PWA / App Planlaması</li>
+                    <li>API Dokumentasyonu & Webhook</li>
+                    <li>İleri Analitiğ & Raporlama</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            🎵 Muzibu B2B Platform Analiz Raporu
+            <br>
+            Claude AI tarafından oluşturuldu - 2025-11-26
+        </footer>
+    </div>
+</body>
+</html>

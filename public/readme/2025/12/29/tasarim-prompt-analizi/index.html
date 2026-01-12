@@ -1,1 +1,828 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasarım Prompt Analizi | Özgünlük Sorunu ve Çözüm Önerileri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .code-block {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+        .problem-card:hover { transform: translateY(-2px); }
+        .diff-add { background: rgba(34, 197, 94, 0.15); border-left: 3px solid #22c55e; }
+        .diff-remove { background: rgba(239, 68, 68, 0.15); border-left: 3px solid #ef4444; text-decoration: line-through; opacity: 0.7; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 sticky top-0 bg-slate-950/95 backdrop-blur z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-700 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-wand-magic-sparkles text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-white">Tasarım Prompt Analizi</h1>
+                        <p class="text-xs text-slate-500">29 Aralık 2025</p>
+                    </div>
+                </div>
+                <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-medium rounded-full">
+                    <i class="fas fa-triangle-exclamation mr-1"></i> Özgünlük Sorunu
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+
+        <!-- Basit Anlatım -->
+        <section class="mb-12">
+            <div class="bg-emerald-900/20 border border-emerald-800/50 rounded-2xl p-8">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-lightbulb text-emerald-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white mb-4">Basit Anlatım (Herkes İçin)</h2>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong>Sorun:</strong> AI'a "kurumsal site yap" diyorsunuz, her seferinde neredeyse aynı siteyi üretiyor.
+                            Hero bölümü hep aynı düzende (sol metin, sağ görsel), hakkımızda bölümü hep aynı (sol görsel grid, sağ metin),
+                            şirketler bölümü hep 6 kartlık grid... Sanki aynı şablonu farklı renklerle boyuyor.
+                        </p>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong>Neden oluyor?</strong> Mevcut prompt'ta "farklı hero yaklaşımları dene" gibi genel ifadeler var
+                            ama AI bunları genellikle görmezden geliyor çünkü somut talimat yok. AI, en "güvenli" ve yaygın pattern'i seçiyor.
+                        </p>
+                        <p class="text-slate-300 leading-relaxed">
+                            <strong>Çözüm:</strong> Prompt'a "zorunlu farklılık kuralları" ekleyeceğiz. Her tasarımda rastgele seçilen
+                            layout pattern'leri, section sıralamaları ve görsel yaklaşımlar olacak. AI'ın "rahat alanından" çıkmasını
+                            zorlayacağız.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Özet -->
+        <section class="mb-12">
+            <div class="bg-blue-900/20 border border-blue-800/50 rounded-2xl p-8">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-code text-blue-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white mb-4">Teknik Özet (Geliştiriciler İçin)</h2>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-slate-800/50 rounded-lg p-4">
+                                <div class="text-2xl font-bold text-white mb-1">13</div>
+                                <div class="text-sm text-slate-400">Analiz edilen template</div>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-lg p-4">
+                                <div class="text-2xl font-bold text-amber-400 mb-1">9</div>
+                                <div class="text-sm text-slate-400">Tekrar eden section pattern</div>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-lg p-4">
+                                <div class="text-2xl font-bold text-red-400 mb-1">%85+</div>
+                                <div class="text-sm text-slate-400">Yapısal benzerlik oranı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <nav class="mb-12 bg-slate-900/50 rounded-xl p-4 flex flex-wrap gap-2">
+            <a href="#sorunlar" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition">
+                <i class="fas fa-bug mr-2 text-red-400"></i>Tespit Edilen Sorunlar
+            </a>
+            <a href="#mevcut-prompt" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition">
+                <i class="fas fa-file-code mr-2 text-slate-400"></i>Mevcut Prompt
+            </a>
+            <a href="#yeni-prompt" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition">
+                <i class="fas fa-sparkles mr-2 text-emerald-400"></i>Yeni Prompt
+            </a>
+            <a href="#karsilastirma" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition">
+                <i class="fas fa-code-compare mr-2 text-violet-400"></i>Karşılaştırma
+            </a>
+        </nav>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- TESPİT EDİLEN SORUNLAR -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="sorunlar" class="mb-16">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <i class="fas fa-bug text-red-400"></i>
+                Tespit Edilen Özgünlük Sorunları
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <!-- Sorun 1: Hero -->
+                <div class="problem-card bg-slate-900 border border-slate-800 rounded-xl p-6 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-red-400 font-bold">1</span>
+                        </div>
+                        <h3 class="font-semibold text-white">Hero Section - Aynı Layout</h3>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">
+                        13 template'in 12'sinde aynı yapı: Sol tarafta badge + başlık + açıklama + butonlar + istatistikler,
+                        sağ tarafta görsel + floating card elementi.
+                    </p>
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <code class="text-xs text-slate-300">
+                            Split Layout (92%) | Full-width (8%) | Video Hero (0%)
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Sorun 2: About -->
+                <div class="problem-card bg-slate-900 border border-slate-800 rounded-xl p-6 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-red-400 font-bold">2</span>
+                        </div>
+                        <h3 class="font-semibold text-white">Hakkımızda - Aynı Grid</h3>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">
+                        Hep aynı düzen: Sol tarafta 3 parçalı görsel grid (2+1 veya 1+2), sağda metin + özellik listesi +
+                        köşede "X yıl tecrübe" badge'i.
+                    </p>
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <code class="text-xs text-slate-300">
+                            Image Grid + Text (100%) | Timeline (0%) | Cards (0%)
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Sorun 3: Companies/Services -->
+                <div class="problem-card bg-slate-900 border border-slate-800 rounded-xl p-6 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-red-400 font-bold">3</span>
+                        </div>
+                        <h3 class="font-semibold text-white">Şirketler/Hizmetler - 6 Kart Grid</h3>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">
+                        Her zaman 6 adet kart, 3 sütunluk grid içinde. Her kart: gradient icon box + başlık + açıklama + link.
+                        Hiç farklı yaklaşım yok.
+                    </p>
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <code class="text-xs text-slate-300">
+                            Card Grid (100%) | Carousel (0%) | Masonry (0%) | Tabs (0%)
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Sorun 4: Strategy -->
+                <div class="problem-card bg-slate-900 border border-slate-800 rounded-xl p-6 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-red-400 font-bold">4</span>
+                        </div>
+                        <h3 class="font-semibold text-white">Strateji/Değerler - 4 Sütun Pillar</h3>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">
+                        Koyu gradient arka plan + 4 adet pillar kartı (numara + icon + başlık + açıklama).
+                        Sektör fark etmeksizin hep aynı yapı.
+                    </p>
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <code class="text-xs text-slate-300">
+                            4-Pillar Cards (100%) | Process Steps (0%) | Interactive (0%)
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Sorun 5: Footer -->
+                <div class="problem-card bg-slate-900 border border-slate-800 rounded-xl p-6 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-amber-400 font-bold">5</span>
+                        </div>
+                        <h3 class="font-semibold text-white">Footer - Birebir Aynı</h3>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">
+                        5 sütunluk grid: Logo+açıklama+sosyal | Kurumsal linkler | Şirketler linkler | Hızlı erişim |
+                        Sertifikalar | Alt footer. %100 aynı.
+                    </p>
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <code class="text-xs text-slate-300">
+                            5-Column Grid (100%) | Minimal (0%) | Magazine (0%)
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Sorun 6: Section Sırası -->
+                <div class="problem-card bg-slate-900 border border-slate-800 rounded-xl p-6 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-amber-400 font-bold">6</span>
+                        </div>
+                        <h3 class="font-semibold text-white">Section Sıralaması - Sabit</h3>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">
+                        Hep: Hero → About → Services → Strategy → Investor → News → Career CTA → Contact → Footer.
+                        Bu sıralama asla değişmiyor.
+                    </p>
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <code class="text-xs text-slate-300">
+                            Aynı sıralama: %92 | Farklı sıralama: %8 (sadece v2-minimal)
+                        </code>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Görsel Analiz -->
+            <div class="mt-8 bg-slate-900 border border-slate-800 rounded-xl p-6">
+                <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-chart-bar text-violet-400"></i>
+                    Yapısal Benzerlik Matrisi
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-3 px-4 text-slate-400">Section</th>
+                                <th class="text-center py-3 px-4 text-slate-400">v1</th>
+                                <th class="text-center py-3 px-4 text-slate-400">v2</th>
+                                <th class="text-center py-3 px-4 text-slate-400">v3</th>
+                                <th class="text-center py-3 px-4 text-slate-400">v4</th>
+                                <th class="text-center py-3 px-4 text-slate-400">v5</th>
+                                <th class="text-center py-3 px-4 text-slate-400">v6</th>
+                                <th class="text-center py-3 px-4 text-slate-400">Benzerlik</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4 text-white">Hero</td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Split</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Split</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Split</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Split</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Split</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Split</span></td>
+                                <td class="text-center py-3 px-4"><span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs">100%</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4 text-white">About</td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Grid</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Grid</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Grid</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Grid</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Grid</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">Grid</span></td>
+                                <td class="text-center py-3 px-4"><span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs">100%</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4 text-white">Services</td>
+                                <td class="text-center py-3 px-4"><span class="text-amber-400">6-Card</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-amber-400">6-Card</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-amber-400">6-Card</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-amber-400">6-Card</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-amber-400">6-Card</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-amber-400">6-Card</span></td>
+                                <td class="text-center py-3 px-4"><span class="bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded text-xs">92%</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4 text-white">Footer</td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">5-Col</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">5-Col</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">5-Col</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">5-Col</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">5-Col</span></td>
+                                <td class="text-center py-3 px-4"><span class="text-red-400">5-Col</span></td>
+                                <td class="text-center py-3 px-4"><span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs">100%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- MEVCUT PROMPT -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="mevcut-prompt" class="mb-16">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <i class="fas fa-file-code text-slate-400"></i>
+                Mevcut Prompt
+            </h2>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                <div class="bg-slate-800/50 px-6 py-3 border-b border-slate-700 flex items-center justify-between">
+                    <span class="text-sm text-slate-400">public/design/templates/index.php içindeki prompt</span>
+                    <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">Mevcut</span>
+                </div>
+                <div class="code-block p-6 max-h-[500px] overflow-y-auto">
+                    <pre class="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">## KAYIT BİLGİLERİ
+
+Dosya konumu: public/design/templates/{kategori-adi}/{versiyon}/index.html
+
+Örnek:
+- public/design/templates/saglik-klinigi/v1/index.html
+- public/design/templates/belediye-sitesi/v2-koyu/index.html
+
+Kurallar:
+- Kategori: sektör veya proje adı (küçük harf, tire ile)
+- Versiyon: v1, v2, v3 veya v1-aciklama, v2-minimal gibi
+- Dosya adı: her zaman index.html
+
+---
+
+## TASARIM TALİMATLARI
+
+ANA HEDEF: Profesyonel, düzenli ve sektöre uygun kurumsal web sitesi. Temiz layout, okunabilir tipografi, tutarlı spacing. İçerik Türkçe olsun.
+
+KULLANILACAK TEKNOLOJİLER: Tailwind CSS v4 (CDN), Alpine.js (interaktivite), ve gerektiğinde ek kütüphaneler (Swiper, GSAP, AOS, Lottie vb. CDN ile). Sayfa modern, profesyonel ve premium ama sakin hissettirmeli.
+
+FONT SEÇİMİ: Google Fonts'tan sektöre uygun font çifti seç. Başlıklar için display veya serif font, gövde için okunabilir sans-serif tercih edilebilir. Font ağırlık çeşitliliği kullan (300, 400, 500, 600, 700). <span class="text-amber-400">Her üretimde farklı font kombinasyonu dene.</span>
+
+RENK SİSTEMİ: CSS custom properties (değişkenler) ile renk sistemi kur. Ana renk (--color-primary), ikincil renk (--color-secondary), vurgu rengi (--color-accent) ve nötr tonlar tanımla. Sektöre uygun renk psikolojisi uygula ama renkleri tutumlu kullan.
+
+İKON SİSTEMİ: FontAwesome Pro kullan (fa-thin, fa-light, fa-regular, fa-solid, fa-duotone). Varsayılan ince stiller, hover durumunda solid'e geçiş - animasyonlu olsun.
+
+HERO SECTION: <span class="text-amber-400">Her üretimde farklı hero yaklaşımı dene</span> - tam ekran görsel/video, split layout, slider/carousel, minimalist tipografik hero, overlapping elementler, paralaks efekt, animasyonlu arka plan, geometrik şekiller.
+
+LAYOUT VE BOŞLUK: Section'lar tam genişlik (fluid), içerik max-width container içinde. Cömert boşluk kullan, "nefes alan" tasarım hedefle.
+
+Responsive tasarım (mobil öncelikli). Mobil menü, dark/light mode toggle dahil edilsin. Dark/light mode premium özellik, mutlaka olsun.
+
+Header çok önemli; mümkünse mega menu yapısı olsun.
+
+⚠️ DROPDOWN ORTALAMA (KRİTİK): Mega menü dropdown'ları MUTLAKA parent linkin altında ORTALI açılmalı! CSS: position: absolute; left: 50%; transform: translateX(-50%);
+
+Hover efektleri önemli ama abartısız. Kartlar zıplamasın, scale ile yaklaşmasın.
+
+Zengin footer şart; iletişim bilgileri, sosyal medya, hızlı erişim linkleri, mini site haritası içermeli.
+
+📋 PROMPT MODAL (ZORUNLU): Sayfanın en altına küçük "Prompt" butonu ekle. Tıklayınca modal açılsın, içinde bu siteyi oluşturmak için kullanılan prompt gösterilsin.
+
+Tüm çıktı tek dosya index.html olarak verilecek.
+
+---
+
+sektör: genel kurumsal
+tarz: profesyonel ve dengeli</pre>
+                </div>
+            </div>
+
+            <!-- Sorun Noktaları -->
+            <div class="mt-6 grid md:grid-cols-3 gap-4">
+                <div class="bg-red-900/20 border border-red-800/50 rounded-lg p-4">
+                    <i class="fas fa-times-circle text-red-400 mb-2"></i>
+                    <h4 class="font-medium text-white text-sm mb-1">Zorlama Yok</h4>
+                    <p class="text-xs text-slate-400">"Farklı dene" demek yeterli değil, AI en güvenli yolu seçiyor</p>
+                </div>
+                <div class="bg-red-900/20 border border-red-800/50 rounded-lg p-4">
+                    <i class="fas fa-times-circle text-red-400 mb-2"></i>
+                    <h4 class="font-medium text-white text-sm mb-1">Section Talimatı Yok</h4>
+                    <p class="text-xs text-slate-400">Sadece hero için seçenek var, diğer section'lar boş bırakılmış</p>
+                </div>
+                <div class="bg-red-900/20 border border-red-800/50 rounded-lg p-4">
+                    <i class="fas fa-times-circle text-red-400 mb-2"></i>
+                    <h4 class="font-medium text-white text-sm mb-1">Randomizasyon Yok</h4>
+                    <p class="text-xs text-slate-400">Rastgele seçim mekanizması tanımlanmamış</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- YENİ PROMPT -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="yeni-prompt" class="mb-16">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <i class="fas fa-sparkles text-emerald-400"></i>
+                Önerilen Yeni Prompt
+            </h2>
+
+            <div class="bg-slate-900 border border-emerald-800/50 rounded-xl overflow-hidden">
+                <div class="bg-emerald-900/30 px-6 py-3 border-b border-emerald-800/50 flex items-center justify-between">
+                    <span class="text-sm text-emerald-300">Özgünlük Odaklı Yeni Prompt</span>
+                    <button onclick="copyNewPrompt()" class="text-xs bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded text-white transition flex items-center gap-2">
+                        <i class="fas fa-copy"></i> Kopyala
+                    </button>
+                </div>
+                <div class="code-block p-6 max-h-[600px] overflow-y-auto" id="newPromptContent">
+                    <pre class="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">## KAYIT BİLGİLERİ
+
+Dosya konumu: public/design/templates/{kategori-adi}/{versiyon}/index.html
+
+Örnek:
+- public/design/templates/saglik-klinigi/v1/index.html
+- public/design/templates/belediye-sitesi/v2-koyu/index.html
+
+Kurallar:
+- Kategori: sektör veya proje adı (küçük harf, tire ile)
+- Versiyon: v1, v2, v3 veya v1-aciklama, v2-minimal gibi
+- Dosya adı: her zaman index.html
+
+---
+
+## TASARIM TALİMATLARI
+
+ANA HEDEF: Profesyonel, düzenli ve sektöre uygun kurumsal web sitesi. Temiz layout, okunabilir tipografi, tutarlı spacing. İçerik Türkçe olsun.
+
+KULLANILACAK TEKNOLOJİLER: Tailwind CSS v4 (CDN), Alpine.js (interaktivite), ve gerektiğinde ek kütüphaneler (Swiper, GSAP, AOS, Lottie vb. CDN ile). Sayfa modern, profesyonel ve premium ama sakin hissettirmeli.
+
+---
+
+## 🎲 ÖZGÜNLÜK KURALLARI (ZORUNLU)
+
+⚠️ KRİTİK: Her tasarımda aşağıdaki listelerden RASTGELE seçim yap.
+Aynı kombinasyonu TEKRARLAMA. Önceki tasarımlardan FARKLI ol.
+
+### HERO SECTION (Aşağıdakilerden BİRİNİ seç):
+1. **Full-Screen Visual** - Tam ekran görsel/video, üzerinde ortalı metin
+2. **Split Layout (Sol Metin)** - Sol: içerik | Sağ: görsel
+3. **Split Layout (Sağ Metin)** - Sol: görsel | Sağ: içerik [TAM TERSİ!]
+4. **Typographic Hero** - Minimal, dev tipografi odaklı, görsel yok/çok az
+5. **Slider/Carousel** - Otomatik geçişli çoklu slide
+6. **Video Background** - Arka planda döngüsel video
+7. **Asymmetric Overlap** - Örtüşen elementler, asimetrik düzen
+8. **Animated Canvas** - Particles, waves veya geometrik animasyon
+9. **Stacked Cards** - Kayan/üst üste kartlar
+10. **Magazine Style** - Gazete/dergi layout, grid-based
+
+### ABOUT/HAKKIMIZDA (Aşağıdakilerden BİRİNİ seç):
+1. **Timeline** - Yatay veya dikey zaman çizelgesi
+2. **Stats First** - Önce büyük istatistikler, sonra metin
+3. **Image Gallery** - Masonry veya kaydırmalı galeri
+4. **Card Grid** - Değerler/özellikler kart olarak
+5. **Parallax Story** - Scroll ile açılan hikaye
+6. **Video Testimonial** - Video ile tanıtım
+7. **Split Reveal** - Scroll ile açılan iki taraflı içerik
+8. **Infographic Style** - Görsel infografik
+
+### HİZMETLER/ŞİRKETLER (Aşağıdakilerden BİRİNİ seç):
+1. **Hover Cards** - Hover'da detay açılan kartlar
+2. **Tab Navigation** - Sekmeli içerik
+3. **Accordion** - Akordiyon açılır/kapanır
+4. **Carousel/Slider** - Kaydırmalı gösterim
+5. **Masonry Grid** - Farklı boyutlarda kartlar
+6. **Interactive Map** - Tıklanabilir görsel harita
+7. **Bento Grid** - Apple tarzı farklı boyutlu grid
+8. **Icon List** - Basit, temiz liste görünümü
+9. **Feature Comparison** - Karşılaştırma tablosu
+
+### STRATEJİ/DEĞERLER (Aşağıdakilerden BİRİNİ seç):
+1. **Numbered Steps** - Adım adım süreç
+2. **Icon Pillars** - İkonlu sütunlar
+3. **Quote + Features** - Büyük alıntı + alt özellikler
+4. **Interactive Wheel** - Tıklanabilir tekerlek/çember
+5. **Before/After** - Önce/sonra karşılaştırma
+6. **Animated Counter** - Animasyonlu sayaçlar
+7. **Staggered Reveal** - Scroll ile sırayla açılan
+
+### İLETİŞİM (Aşağıdakilerden BİRİNİ seç):
+1. **Split Form** - Sol bilgi, sağ form
+2. **Full-Width Map** - Büyük harita üzerinde form overlay
+3. **Minimal Card** - Tek kart içinde her şey
+4. **Multi-Step Form** - Adımlı form wizard
+5. **Chat-Like** - Sohbet arayüzü tarzı
+6. **Contact Cards** - Farklı iletişim yöntemleri için kartlar
+
+### FOOTER (Aşağıdakilerden BİRİNİ seç):
+1. **Multi-Column Classic** - 4-5 sütun klasik
+2. **Minimal Bar** - Tek satır, çok sade
+3. **CTA Footer** - Büyük CTA + minimal linkler
+4. **Newsletter Focus** - Bülten formu odaklı
+5. **Magazine Footer** - Dergi stili, görsel ağırlıklı
+6. **Stacked Sections** - Dikey bölümler halinde
+
+---
+
+## 🔀 SECTION SIRASI (RASTGELE DEĞİŞTİR!)
+
+Standart sıra yerine, sektöre göre mantıklı farklı sıralamalar dene:
+- Hero'dan sonra hemen şirketler/hizmetler gelebilir
+- İstatistikler ayrı section yerine hero içinde olabilir
+- İletişim ortada, haberler sonda olabilir
+- Bazı section'lar atlanabilir (her sitede hepsi olmasın)
+
+---
+
+## 🎨 GÖRSEL STIL (Her tasarımda FARKLI)
+
+FONT SEÇİMİ: Google Fonts'tan sektöre uygun font çifti seç.
+⚠️ Son kullanılanlardan FARKLI fontlar seç:
+- Roboto, Playfair Display (v1'de kullanıldı) - KULLANMA
+- Cormorant Garamond, Inter (v4'te kullanıldı) - KULLANMA
+- Plus Jakarta Sans (v5'te kullanıldı) - KULLANMA
+- Space Grotesk (madencilik'te kullanıldı) - KULLANMA
+
+RENK SİSTEMİ: CSS custom properties ile. Sektöre göre farklı paletler:
+- Mavi tonları sadece kurumsal/finans için
+- Yeşil sadece çevre/tarım/sürdürülebilirlik için
+- Altın/bronz lüks/prestij için
+- Turuncu/kırmızı enerji/dinamizm için
+
+İKON SİSTEMİ: FontAwesome Pro (fa-thin, fa-light, fa-regular, fa-solid, fa-duotone).
+
+---
+
+## ⚙️ TEKNİK GEREKSİNİMLER
+
+- Responsive tasarım (mobil öncelikli)
+- Dark/Light mode toggle
+- Mobil menü (hamburger)
+- Header: Mega menu veya dropdown
+- ⚠️ Dropdown'lar parent link altında ortalı: left: 50%; transform: translateX(-50%);
+- Hover efektleri: subtle, abartısız. Kartlar zıplamasın, scale ile yaklaşmasın.
+- AOS veya benzeri scroll animasyonları
+- Lazy loading görseller
+
+📋 PROMPT MODAL (ZORUNLU): Sayfanın en altına küçük "Prompt" butonu ekle.
+Tıklayınca modal açılsın, içinde bu siteyi oluşturmak için kullanılan prompt gösterilsin.
+
+Tüm çıktı tek dosya index.html olarak verilecek.
+
+---
+
+## 🏭 SEKTÖR & TARZ
+
+sektör: [KULLANICI GİRİŞİ]
+tarz: [KULLANICI GİRİŞİ]
+
+---
+
+## ✅ SON KONTROL
+
+Tasarımı tamamlamadan önce kontrol et:
+☐ Hero layout öncekilerden farklı mı?
+☐ About section farklı yaklaşım mı?
+☐ Hizmetler/şirketler farklı görünüm mü?
+☐ Font kombinasyonu yeni mi?
+☐ Renk paleti sektöre uygun ve farklı mı?
+☐ Section sıralaması standart değil mi?</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- KARŞILAŞTIRMA -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="karsilastirma" class="mb-16">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <i class="fas fa-code-compare text-violet-400"></i>
+                Mevcut vs. Yeni Prompt Karşılaştırması
+            </h2>
+
+            <div class="space-y-6">
+
+                <!-- Karşılaştırma 1 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                    <div class="bg-slate-800/50 px-6 py-3 border-b border-slate-700">
+                        <h3 class="font-medium text-white">Hero Section Talimatı</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="diff-remove px-4 py-3 rounded text-sm">
+                            HERO SECTION: Her üretimde farklı hero yaklaşımı dene - tam ekran görsel/video, split layout, slider/carousel, minimalist tipografik hero, overlapping elementler, paralaks efekt, animasyonlu arka plan, geometrik şekiller.
+                        </div>
+                        <div class="diff-add px-4 py-3 rounded text-sm">
+                            ### HERO SECTION (Aşağıdakilerden BİRİNİ seç):<br>
+                            1. **Full-Screen Visual** - Tam ekran görsel/video, üzerinde ortalı metin<br>
+                            2. **Split Layout (Sol Metin)** - Sol: içerik | Sağ: görsel<br>
+                            3. **Split Layout (Sağ Metin)** - Sol: görsel | Sağ: içerik [TAM TERSİ!]<br>
+                            4. **Typographic Hero** - Minimal, dev tipografi odaklı...<br>
+                            [+ 6 seçenek daha]
+                        </div>
+                        <p class="text-xs text-slate-500 italic">
+                            Fark: Genel öneri yerine numaralı, zorunlu seçim listesi. AI tek bir seçenek seçmek zorunda.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Karşılaştırma 2 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                    <div class="bg-slate-800/50 px-6 py-3 border-b border-slate-700">
+                        <h3 class="font-medium text-white">Diğer Section'lar</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="diff-remove px-4 py-3 rounded text-sm">
+                            [HİÇBİR TALİMAT YOK - About, Services, Strategy, Contact, Footer için yönerge yok]
+                        </div>
+                        <div class="diff-add px-4 py-3 rounded text-sm">
+                            ### ABOUT/HAKKIMIZDA (8 seçenek)<br>
+                            ### HİZMETLER/ŞİRKETLER (9 seçenek)<br>
+                            ### STRATEJİ/DEĞERLER (7 seçenek)<br>
+                            ### İLETİŞİM (6 seçenek)<br>
+                            ### FOOTER (6 seçenek)
+                        </div>
+                        <p class="text-xs text-slate-500 italic">
+                            Fark: Her section için farklılık zorunluluğu. Toplam 36+ layout seçeneği.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Karşılaştırma 3 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                    <div class="bg-slate-800/50 px-6 py-3 border-b border-slate-700">
+                        <h3 class="font-medium text-white">Section Sıralaması</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="diff-remove px-4 py-3 rounded text-sm">
+                            [HİÇBİR TALİMAT YOK - Sıralama hiç belirtilmemiş]
+                        </div>
+                        <div class="diff-add px-4 py-3 rounded text-sm">
+                            ## 🔀 SECTION SIRASI (RASTGELE DEĞİŞTİR!)<br>
+                            - Hero'dan sonra hemen şirketler/hizmetler gelebilir<br>
+                            - İstatistikler ayrı section yerine hero içinde olabilir<br>
+                            - Bazı section'lar atlanabilir (her sitede hepsi olmasın)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Karşılaştırma 4 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                    <div class="bg-slate-800/50 px-6 py-3 border-b border-slate-700">
+                        <h3 class="font-medium text-white">Font Tekrar Kontrolü</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="diff-remove px-4 py-3 rounded text-sm">
+                            FONT SEÇİMİ: ... Her üretimde farklı font kombinasyonu dene.
+                        </div>
+                        <div class="diff-add px-4 py-3 rounded text-sm">
+                            ⚠️ Son kullanılanlardan FARKLI fontlar seç:<br>
+                            - Roboto, Playfair Display (v1'de kullanıldı) - KULLANMA<br>
+                            - Cormorant Garamond, Inter (v4'te kullanıldı) - KULLANMA<br>
+                            - Plus Jakarta Sans (v5'te kullanıldı) - KULLANMA
+                        </div>
+                        <p class="text-xs text-slate-500 italic">
+                            Fark: Explicit "kullanma" listesi. AI'ın kaçış yolu yok.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Karşılaştırma 5 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                    <div class="bg-slate-800/50 px-6 py-3 border-b border-slate-700">
+                        <h3 class="font-medium text-white">Son Kontrol Listesi</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="diff-remove px-4 py-3 rounded text-sm">
+                            [YOK]
+                        </div>
+                        <div class="diff-add px-4 py-3 rounded text-sm">
+                            ## ✅ SON KONTROL<br>
+                            ☐ Hero layout öncekilerden farklı mı?<br>
+                            ☐ About section farklı yaklaşım mı?<br>
+                            ☐ Font kombinasyonu yeni mi?<br>
+                            ☐ Section sıralaması standart değil mi?
+                        </div>
+                        <p class="text-xs text-slate-500 italic">
+                            Fark: AI'ın kendini kontrol etmesi için checklist.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ÖZET & ÖNERİLER -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <i class="fas fa-check-double text-emerald-400"></i>
+                Özet ve Öneriler
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Sorunlar -->
+                <div class="bg-red-900/20 border border-red-800/50 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-times-circle text-red-400"></i>
+                        Mevcut Prompt'taki Sorunlar
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-minus text-red-400 mt-1"></i>
+                            "Farklı dene" gibi muğlak ifadeler yetersiz
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-minus text-red-400 mt-1"></i>
+                            Sadece hero için seçenek var, diğer section'lar boş
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-minus text-red-400 mt-1"></i>
+                            Section sıralaması için talimat yok
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-minus text-red-400 mt-1"></i>
+                            Font/renk tekrar kontrolü yok
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-minus text-red-400 mt-1"></i>
+                            Özgünlük zorunluluğu yok
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Çözümler -->
+                <div class="bg-emerald-900/20 border border-emerald-800/50 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-check-circle text-emerald-400"></i>
+                        Yeni Prompt'taki Çözümler
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-plus text-emerald-400 mt-1"></i>
+                            Numaralı, seçim zorunluluğu olan listeler
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-plus text-emerald-400 mt-1"></i>
+                            Her section için 6-10 farklı layout seçeneği
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-plus text-emerald-400 mt-1"></i>
+                            Section sıralaması değiştirme talimatı
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-plus text-emerald-400 mt-1"></i>
+                            Explicit "KULLANMA" font listesi
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-plus text-emerald-400 mt-1"></i>
+                            Son kontrol checklist'i
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Uygulama Adımları -->
+            <div class="mt-8 bg-violet-900/20 border border-violet-800/50 rounded-xl p-6">
+                <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-list-check text-violet-400"></i>
+                    Uygulama Adımları
+                </h3>
+                <ol class="space-y-3 text-sm text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 bg-violet-600 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">1</span>
+                        <span><code class="bg-slate-800 px-2 py-0.5 rounded text-xs">public/design/templates/index.php</code> dosyasındaki prompt'u yeni prompt ile değiştir</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 bg-violet-600 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">2</span>
+                        <span>Sektör girişi yapıldığında, o sektöre uygun section önerileri de eklenebilir</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 bg-violet-600 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">3</span>
+                        <span>Kullanılan font listesi dinamik olarak güncellenebilir (mevcut template'lerden parse)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 bg-violet-600 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">4</span>
+                        <span>Test: Aynı "genel kurumsal" sektörü için 3 farklı tasarım üret, karşılaştır</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-8">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="text-sm text-slate-500">
+                Claude AI ile hazırlandı | 29 Aralık 2025
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function copyNewPrompt() {
+            const content = document.getElementById('newPromptContent').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                const btn = event.target.closest('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check mr-1"></i> Kopyalandı!';
+                btn.classList.remove('bg-emerald-600');
+                btn.classList.add('bg-green-500');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-green-500');
+                    btn.classList.add('bg-emerald-600');
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

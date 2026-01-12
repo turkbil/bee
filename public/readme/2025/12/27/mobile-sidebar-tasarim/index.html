@@ -1,1 +1,805 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Sidebar Tasarım Alternatifleri - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .sidebar-mock {
+            width: 280px;
+            height: 520px;
+            background: linear-gradient(180deg, #121212 0%, #0a0a0a 100%);
+            border-radius: 0 16px 16px 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        .nav-item { transition: all 0.2s; }
+        .nav-item:hover { background: rgba(255,255,255,0.08); }
+        .pair-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white p-6">
+    <div class="max-w-[1800px] mx-auto">
+        <h1 class="text-3xl font-bold mb-2">Mobile Sidebar Tasarım Alternatifleri</h1>
+        <p class="text-gray-400 mb-8">Her tasarımın <span class="text-green-400">Giriş Yapmış</span> ve <span class="text-red-400">Giriş Yapmamış</span> hali</p>
+
+        <!-- ==================== STYLE A: Minimal ==================== -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-black font-bold">A</span>
+                Minimal Stil
+            </h2>
+            <div class="pair-container">
+                <!-- A - Logged In -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-green-400">Giriş Yapmış</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto p-3">
+                            <div class="mb-4">
+                                <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Kitaplığım</h4>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-layer-group w-5"></i>
+                                    <span class="text-sm">Playlistlerim</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-heart w-5 text-pink-400"></i>
+                                    <span class="text-sm">Favorilerim</span>
+                                </a>
+                            </div>
+                            <div class="h-px bg-white/10 my-3"></div>
+                            <div class="mb-4">
+                                <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Keşfet</h4>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-list w-5"></i>
+                                    <span class="text-sm">Çalma Listeleri</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-compact-disc w-5"></i>
+                                    <span class="text-sm">Albümler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-guitar w-5"></i>
+                                    <span class="text-sm">Türler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-building w-5"></i>
+                                    <span class="text-sm">Sektörler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-broadcast-tower w-5"></i>
+                                    <span class="text-sm">Radyolar</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="border-t border-white/10 p-3 space-y-1">
+                            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 rounded-lg text-sm">
+                                <i class="fas fa-cog w-5"></i>
+                                <span>Ayarlar</span>
+                            </a>
+                            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 text-red-400 rounded-lg text-sm">
+                                <i class="fas fa-sign-out-alt w-5"></i>
+                                <span>Çıkış Yap</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A - Logged Out -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-sm text-red-400">Giriş Yapmamış</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto p-3">
+                            <!-- Login CTA -->
+                            <div class="bg-gradient-to-r from-orange-500/20 to-pink-500/20 border border-orange-500/30 rounded-xl p-4 mb-4">
+                                <p class="text-sm text-gray-300 mb-3">Favorilerin ve playlistlerin için giriş yap</p>
+                                <a href="#" class="block w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white text-center py-2.5 rounded-lg text-sm font-semibold">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Giriş Yap
+                                </a>
+                            </div>
+                            <div class="h-px bg-white/10 my-3"></div>
+                            <div class="mb-4">
+                                <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Keşfet</h4>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-list w-5"></i>
+                                    <span class="text-sm">Çalma Listeleri</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-compact-disc w-5"></i>
+                                    <span class="text-sm">Albümler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-guitar w-5"></i>
+                                    <span class="text-sm">Türler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-building w-5"></i>
+                                    <span class="text-sm">Sektörler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-broadcast-tower w-5"></i>
+                                    <span class="text-sm">Radyolar</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STYLE B: Top User Card ==================== -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-black font-bold">B</span>
+                Üstte Kullanıcı Kartı
+            </h2>
+            <div class="pair-container">
+                <!-- B - Logged In -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-green-400">Giriş Yapmış (Premium)</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto">
+                            <!-- User Card -->
+                            <a href="#" class="flex items-center gap-3 p-4 bg-white/5 hover:bg-white/10 transition-colors border-b border-white/10">
+                                <div class="w-11 h-11 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                                    N
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-white font-semibold text-sm">Nurullah</p>
+                                        <span class="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 text-[10px] font-bold rounded">
+                                            <i class="fas fa-crown mr-0.5"></i>PRO
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-500 text-xs">15 gün kaldı</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-500 text-sm"></i>
+                            </a>
+                            <div class="p-3">
+                                <div class="mb-4">
+                                    <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Kitaplığım</h4>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-layer-group w-5"></i>
+                                        <span class="text-sm">Playlistlerim</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-heart w-5 text-pink-400"></i>
+                                        <span class="text-sm">Favorilerim</span>
+                                    </a>
+                                </div>
+                                <div class="h-px bg-white/10 my-3"></div>
+                                <div class="mb-4">
+                                    <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Keşfet</h4>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-list w-5"></i>
+                                        <span class="text-sm">Çalma Listeleri</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-compact-disc w-5"></i>
+                                        <span class="text-sm">Albümler</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-guitar w-5"></i>
+                                        <span class="text-sm">Türler</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-t border-white/10 p-3 flex gap-2">
+                            <a href="#" class="flex-1 nav-item flex items-center justify-center gap-2 px-3 py-2.5 text-gray-400 rounded-lg text-sm bg-white/5">
+                                <i class="fas fa-cog"></i>
+                                <span>Ayarlar</span>
+                            </a>
+                            <a href="#" class="flex-1 nav-item flex items-center justify-center gap-2 px-3 py-2.5 text-red-400 rounded-lg text-sm bg-red-500/10">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Çıkış</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B - Logged In Free -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                        <span class="text-sm text-yellow-400">Giriş Yapmış (Ücretsiz)</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto">
+                            <!-- User Card - Free -->
+                            <div class="p-3 border-b border-white/10">
+                                <a href="#" class="flex items-center gap-3 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <div class="w-11 h-11 bg-gray-600 rounded-full flex items-center justify-center text-white font-bold">
+                                        N
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-white font-semibold text-sm">Nurullah</p>
+                                        <p class="text-gray-500 text-xs">Ücretsiz Üye</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-500 text-sm"></i>
+                                </a>
+                                <!-- Upgrade Button -->
+                                <a href="#" class="mt-3 flex items-center justify-center gap-2 w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black py-2.5 rounded-lg text-sm font-bold">
+                                    <i class="fas fa-crown"></i>
+                                    <span>Premium'a Geç</span>
+                                </a>
+                            </div>
+                            <div class="p-3">
+                                <div class="mb-4">
+                                    <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Kitaplığım</h4>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-layer-group w-5"></i>
+                                        <span class="text-sm">Playlistlerim</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-heart w-5 text-pink-400"></i>
+                                        <span class="text-sm">Favorilerim</span>
+                                    </a>
+                                </div>
+                                <div class="h-px bg-white/10 my-3"></div>
+                                <div class="mb-4">
+                                    <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Keşfet</h4>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-list w-5"></i>
+                                        <span class="text-sm">Çalma Listeleri</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-compact-disc w-5"></i>
+                                        <span class="text-sm">Albümler</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-t border-white/10 p-3 flex gap-2">
+                            <a href="#" class="flex-1 nav-item flex items-center justify-center gap-2 px-3 py-2.5 text-gray-400 rounded-lg text-sm bg-white/5">
+                                <i class="fas fa-cog"></i>
+                                <span>Ayarlar</span>
+                            </a>
+                            <a href="#" class="flex-1 nav-item flex items-center justify-center gap-2 px-3 py-2.5 text-red-400 rounded-lg text-sm bg-red-500/10">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Çıkış</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B - Logged Out -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-sm text-red-400">Giriş Yapmamış</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto">
+                            <!-- Login Card -->
+                            <div class="p-3 border-b border-white/10">
+                                <div class="bg-gradient-to-br from-orange-500/20 to-pink-500/20 border border-white/10 rounded-xl p-4">
+                                    <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-user text-gray-400 text-xl"></i>
+                                    </div>
+                                    <p class="text-center text-gray-300 text-sm mb-3">Müzik deneyimini kişiselleştir</p>
+                                    <a href="#" class="block w-full bg-white text-black text-center py-2.5 rounded-lg text-sm font-bold mb-2">
+                                        Giriş Yap
+                                    </a>
+                                    <a href="#" class="block w-full border border-white/20 text-white text-center py-2.5 rounded-lg text-sm">
+                                        Kayıt Ol
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="mb-4">
+                                    <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Keşfet</h4>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-list w-5"></i>
+                                        <span class="text-sm">Çalma Listeleri</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-compact-disc w-5"></i>
+                                        <span class="text-sm">Albümler</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-guitar w-5"></i>
+                                        <span class="text-sm">Türler</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-building w-5"></i>
+                                        <span class="text-sm">Sektörler</span>
+                                    </a>
+                                    <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                        <i class="fas fa-broadcast-tower w-5"></i>
+                                        <span class="text-sm">Radyolar</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STYLE C: Bottom User Card ==================== -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center text-black font-bold">C</span>
+                Altta Kullanıcı Kartı
+            </h2>
+            <div class="pair-container">
+                <!-- C - Logged In Premium -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-green-400">Giriş Yapmış (Premium)</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto p-3">
+                            <div class="mb-4">
+                                <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Kitaplığım</h4>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-layer-group w-5"></i>
+                                    <span class="text-sm">Playlistlerim</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-heart w-5 text-pink-400"></i>
+                                    <span class="text-sm">Favorilerim</span>
+                                </a>
+                            </div>
+                            <div class="h-px bg-white/10 my-3"></div>
+                            <div class="mb-4">
+                                <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Keşfet</h4>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-list w-5"></i>
+                                    <span class="text-sm">Çalma Listeleri</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-compact-disc w-5"></i>
+                                    <span class="text-sm">Albümler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-guitar w-5"></i>
+                                    <span class="text-sm">Türler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-building w-5"></i>
+                                    <span class="text-sm">Sektörler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-broadcast-tower w-5"></i>
+                                    <span class="text-sm">Radyolar</span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Bottom Gradient User Card -->
+                        <div class="m-3 bg-gradient-to-br from-orange-500 to-pink-600 rounded-2xl p-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-crown text-yellow-300"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-white font-bold text-sm">Nurullah</p>
+                                    <p class="text-white/80 text-xs">Premium • 15 gün</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="#" class="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-white/20 rounded-lg text-white text-xs font-medium">
+                                    <i class="fas fa-user"></i>
+                                    <span>Profil</span>
+                                </a>
+                                <a href="#" class="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-black/30 rounded-lg text-white text-xs font-medium">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Çıkış</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C - Logged In Free -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                        <span class="text-sm text-yellow-400">Giriş Yapmış (Ücretsiz)</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto p-3">
+                            <div class="mb-4">
+                                <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Kitaplığım</h4>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-layer-group w-5"></i>
+                                    <span class="text-sm">Playlistlerim</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-heart w-5 text-pink-400"></i>
+                                    <span class="text-sm">Favorilerim</span>
+                                </a>
+                            </div>
+                            <div class="h-px bg-white/10 my-3"></div>
+                            <div class="mb-4">
+                                <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Keşfet</h4>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-list w-5"></i>
+                                    <span class="text-sm">Çalma Listeleri</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-compact-disc w-5"></i>
+                                    <span class="text-sm">Albümler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-guitar w-5"></i>
+                                    <span class="text-sm">Türler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-building w-5"></i>
+                                    <span class="text-sm">Sektörler</span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Bottom Card - Free User with Upgrade -->
+                        <div class="border-t border-white/10 p-3 bg-black/30">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center text-white font-bold">
+                                    N
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white font-medium text-sm">Nurullah</p>
+                                    <p class="text-gray-500 text-xs">Ücretsiz Üye</p>
+                                </div>
+                            </div>
+                            <a href="#" class="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black py-2.5 rounded-lg text-sm font-bold mb-2">
+                                <i class="fas fa-crown"></i>
+                                <span>Premium'a Geç</span>
+                            </a>
+                            <div class="flex gap-2">
+                                <a href="#" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-gray-400 rounded-lg text-xs bg-white/5">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Ayarlar</span>
+                                </a>
+                                <a href="#" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-red-400 rounded-lg text-xs bg-red-500/10">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Çıkış</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C - Logged Out -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-sm text-red-400">Giriş Yapmamış</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto p-3">
+                            <div class="mb-4">
+                                <h4 class="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Keşfet</h4>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-list w-5"></i>
+                                    <span class="text-sm">Çalma Listeleri</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-compact-disc w-5"></i>
+                                    <span class="text-sm">Albümler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-guitar w-5"></i>
+                                    <span class="text-sm">Türler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-building w-5"></i>
+                                    <span class="text-sm">Sektörler</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 text-gray-300 rounded-lg">
+                                    <i class="fas fa-broadcast-tower w-5"></i>
+                                    <span class="text-sm">Radyolar</span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Bottom Login Card -->
+                        <div class="m-3 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-4">
+                            <div class="text-center mb-3">
+                                <i class="fas fa-music text-white/50 text-2xl mb-2"></i>
+                                <p class="text-white font-semibold text-sm">Hesabına Giriş Yap</p>
+                                <p class="text-white/70 text-xs">Playlist oluştur, favori ekle</p>
+                            </div>
+                            <a href="#" class="block w-full bg-white text-black text-center py-2.5 rounded-lg text-sm font-bold mb-2">
+                                Giriş Yap
+                            </a>
+                            <a href="#" class="block w-full text-white/80 text-center py-2 text-xs">
+                                Hesabın yok mu? <span class="text-white font-semibold">Kayıt Ol</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STYLE D: Spotify Minimal ==================== -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-black font-bold">D</span>
+                Spotify Tarzı (Minimal)
+            </h2>
+            <div class="pair-container">
+                <!-- D - Logged In -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-green-400">Giriş Yapmış</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto">
+                            <!-- Spotify style user header -->
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5">
+                                <img src="https://ui-avatars.com/api/?name=Nurullah&background=1db954&color=fff&size=32" class="w-8 h-8 rounded-full">
+                                <span class="text-white font-semibold text-sm">Nurullah</span>
+                                <i class="fas fa-chevron-right text-gray-500 text-xs ml-auto"></i>
+                            </a>
+                            <div class="px-3 py-2">
+                                <a href="#" class="nav-item flex items-center gap-4 px-3 py-3 text-gray-300 rounded-lg">
+                                    <i class="fas fa-home w-6 text-xl"></i>
+                                    <span class="font-semibold">Ana Sayfa</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-4 px-3 py-3 text-gray-300 rounded-lg">
+                                    <i class="fas fa-search w-6 text-xl"></i>
+                                    <span class="font-semibold">Ara</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-4 px-3 py-3 text-gray-300 rounded-lg">
+                                    <i class="fas fa-book-open w-6 text-xl"></i>
+                                    <span class="font-semibold">Kitaplığın</span>
+                                </a>
+                            </div>
+                            <div class="h-px bg-white/10 mx-3 my-2"></div>
+                            <div class="px-3 py-2">
+                                <a href="#" class="nav-item flex items-center gap-4 px-3 py-3 text-gray-300 rounded-lg">
+                                    <div class="w-6 h-6 bg-white/10 rounded flex items-center justify-center">
+                                        <i class="fas fa-plus text-sm"></i>
+                                    </div>
+                                    <span class="font-medium">Çalma Listesi Oluştur</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-4 px-3 py-3 text-gray-300 rounded-lg">
+                                    <div class="w-6 h-6 bg-gradient-to-br from-purple-700 to-blue-300 rounded flex items-center justify-center">
+                                        <i class="fas fa-heart text-white text-xs"></i>
+                                    </div>
+                                    <span class="font-medium">Beğenilen Şarkılar</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="border-t border-white/10 p-2">
+                            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 rounded-lg text-sm">
+                                <i class="fas fa-sign-out-alt w-5"></i>
+                                <span>Çıkış Yap</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- D - Logged Out -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-sm text-red-400">Giriş Yapmamış</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto">
+                            <div class="px-3 py-2">
+                                <a href="#" class="nav-item flex items-center gap-4 px-3 py-3 text-gray-300 rounded-lg">
+                                    <i class="fas fa-home w-6 text-xl"></i>
+                                    <span class="font-semibold">Ana Sayfa</span>
+                                </a>
+                                <a href="#" class="nav-item flex items-center gap-4 px-3 py-3 text-gray-300 rounded-lg">
+                                    <i class="fas fa-search w-6 text-xl"></i>
+                                    <span class="font-semibold">Ara</span>
+                                </a>
+                            </div>
+                            <div class="h-px bg-white/10 mx-3 my-2"></div>
+                            <div class="px-4 py-3">
+                                <div class="bg-gradient-to-r from-purple-800 to-blue-700 rounded-lg p-4 mb-4">
+                                    <p class="text-white font-bold text-sm mb-1">Çalma listesi oluştur</p>
+                                    <p class="text-white/70 text-xs mb-3">Giriş yaparak playlist oluştur</p>
+                                    <a href="#" class="inline-block bg-white text-black px-4 py-1.5 rounded-full text-xs font-bold">
+                                        Giriş Yap
+                                    </a>
+                                </div>
+                                <div class="bg-gradient-to-r from-green-800 to-green-600 rounded-lg p-4">
+                                    <p class="text-white font-bold text-sm mb-1">Podcast'leri keşfet</p>
+                                    <p class="text-white/70 text-xs mb-3">Binlerce içeriği dinle</p>
+                                    <a href="#" class="inline-block bg-white text-black px-4 py-1.5 rounded-full text-xs font-bold">
+                                        Keşfet
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 space-y-2">
+                            <a href="#" class="block w-full bg-white text-black text-center py-3 rounded-full text-sm font-bold">
+                                Ücretsiz Kaydol
+                            </a>
+                            <a href="#" class="block w-full text-gray-400 text-center py-2 text-sm font-semibold">
+                                Giriş Yap
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STYLE E: Icon Grid ==================== -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-pink-400 mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center text-black font-bold">E</span>
+                İkon Grid Tarzı
+            </h2>
+            <div class="pair-container">
+                <!-- E - Logged In -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-green-400">Giriş Yapmış</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto p-4">
+                            <!-- Icon Grid -->
+                            <div class="grid grid-cols-3 gap-3 mb-4">
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-heart text-pink-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Favoriler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-list text-purple-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Listeler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-compact-disc text-orange-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Albümler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-guitar text-blue-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Türler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-building text-green-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Sektörler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-broadcast-tower text-red-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Radyolar</span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- User Footer -->
+                        <div class="border-t border-white/10 p-3">
+                            <div class="flex items-center gap-3 p-2 bg-white/5 rounded-xl">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                                    N
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-white text-sm font-medium">Nurullah</p>
+                                    <p class="text-yellow-400 text-xs"><i class="fas fa-crown mr-1"></i>Premium</p>
+                                </div>
+                                <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:text-white">
+                                    <i class="fas fa-ellipsis-v text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E - Logged Out -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-sm text-red-400">Giriş Yapmamış</span>
+                    </div>
+                    <div class="sidebar-mock">
+                        <div class="flex-1 overflow-y-auto p-4">
+                            <!-- Icon Grid -->
+                            <div class="grid grid-cols-3 gap-3 mb-4">
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5 opacity-50">
+                                    <div class="w-12 h-12 bg-gray-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-heart text-gray-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-500">Favoriler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5 opacity-50">
+                                    <div class="w-12 h-12 bg-gray-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-list text-gray-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-500">Listeler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-compact-disc text-orange-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Albümler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-guitar text-blue-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Türler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-building text-green-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Sektörler</span>
+                                </a>
+                                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5">
+                                    <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-broadcast-tower text-red-400"></i>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">Radyolar</span>
+                                </a>
+                            </div>
+                            <!-- Login Prompt -->
+                            <div class="bg-white/5 rounded-xl p-4 text-center">
+                                <p class="text-gray-400 text-xs mb-3">Favoriler ve playlistler için giriş yap</p>
+                                <a href="#" class="inline-block bg-white text-black px-6 py-2 rounded-full text-sm font-bold">
+                                    Giriş Yap
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="mt-12 p-6 bg-white/5 border border-white/10 rounded-xl">
+            <h2 class="text-xl font-bold text-white mb-4">📋 Özet</h2>
+            <div class="grid md:grid-cols-5 gap-4 text-sm">
+                <div class="p-3 bg-emerald-500/10 rounded-lg">
+                    <h4 class="font-bold text-emerald-400 mb-2">A - Minimal</h4>
+                    <p class="text-gray-400 text-xs">Sadece navigasyon, footer'da ayarlar</p>
+                </div>
+                <div class="p-3 bg-blue-500/10 rounded-lg">
+                    <h4 class="font-bold text-blue-400 mb-2">B - Üst User</h4>
+                    <p class="text-gray-400 text-xs">Üstte user card, tıklanabilir profil</p>
+                </div>
+                <div class="p-3 bg-purple-500/10 rounded-lg">
+                    <h4 class="font-bold text-purple-400 mb-2">C - Alt User</h4>
+                    <p class="text-gray-400 text-xs">Altta gradient card, premium vurgusu</p>
+                </div>
+                <div class="p-3 bg-green-500/10 rounded-lg">
+                    <h4 class="font-bold text-green-400 mb-2">D - Spotify</h4>
+                    <p class="text-gray-400 text-xs">Büyük ikonlar, minimal tasarım</p>
+                </div>
+                <div class="p-3 bg-pink-500/10 rounded-lg">
+                    <h4 class="font-bold text-pink-400 mb-2">E - Grid</h4>
+                    <p class="text-gray-400 text-xs">3x2 ikon grid, kompakt görünüm</p>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-center text-gray-600 text-xs mt-8">Claude AI - Muzibu Mobile Sidebar</p>
+    </div>
+</body>
+</html>

@@ -1,1 +1,268 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Sistemi - Basit Sorular</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 40px 20px;
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .meta {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        .info-box {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        .question {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .question h2 {
+            color: #8b5cf6;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        .option {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #8b5cf6;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: translateX(5px);
+        }
+        .option strong {
+            color: #06b6d4;
+            font-size: 1.1rem;
+        }
+        .recommended {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .recommended strong::after {
+            content: " ✅";
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        th {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid #f59e0b;
+        }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Device Sistemi - Basit Sorular</h1>
+        <div class="meta">26 Kasım 2025 | Muzibu (Tenant 1001)</div>
+
+        <div class="info-box">
+            <strong>✅ İYİ HABER:</strong> Device sistemi zaten var ve çalışıyor!<br>
+            Sadece Muzibu için özelleştirme yapacağız.
+        </div>
+
+        <!-- SORU 1 -->
+        <div class="question">
+            <h2>❓ Soru 1: Premium Kullanıcı Kaç Cihaz Kullanabilir?</h2>
+
+            <div class="option recommended">
+                <strong>Seçenek A: 1 Cihaz (Şimdilik)</strong>
+                <p>Premium → 1 cihaz kullanabilir</p>
+                <p>İleride "Multi-Device Paketi" satarsak artırırız</p>
+            </div>
+
+            <div class="option">
+                <strong>Seçenek B: 3 Cihaz (Hemen)</strong>
+                <p>Premium → 3 cihaz kullanabilir</p>
+                <p>Spotify/Netflix gibi</p>
+            </div>
+
+            <div class="option">
+                <strong>Seçenek C: Sınırsız</strong>
+                <p>Premium → İstediği kadar cihaz</p>
+            </div>
+        </div>
+
+        <!-- SORU 2 -->
+        <div class="question">
+            <h2>❓ Soru 2: Aynı Anda 2 Cihazda Müzik Çalabilir mi?</h2>
+
+            <p style="margin-bottom: 20px;">Kullanıcı telefonda müzik dinlerken, bilgisayardan da play'e basarsa:</p>
+
+            <div class="option recommended">
+                <strong>Seçenek A: Telefon Dursun (Netflix Tarzı)</strong>
+                <p>Bilgisayar play'e basınca → Telefon otomatik durur</p>
+                <p>Modal: "Başka cihazda oynatma başlatıldı"</p>
+            </div>
+
+            <div class="option">
+                <strong>Seçenek B: İkisi Birden Çalsın</strong>
+                <p>2 cihazda aynı anda müzik dinleyebilir</p>
+                <p>Hesap paylaşımı artabilir</p>
+            </div>
+        </div>
+
+        <!-- SORU 3 -->
+        <div class="question">
+            <h2>❓ Soru 3: Günlük Şarkı Limiti?</h2>
+
+            <table>
+                <tr>
+                    <th>Kullanıcı Tipi</th>
+                    <th>Günlük Limit</th>
+                    <th>Doğru mu?</th>
+                </tr>
+                <tr>
+                    <td>Üye Olmayan (Guest)</td>
+                    <td>30 saniye önizleme</td>
+                    <td><strong style="color: #10b981;">✅ Evet</strong></td>
+                </tr>
+                <tr>
+                    <td>Üye (Normal)</td>
+                    <td>3 şarkı/gün</td>
+                    <td><strong style="color: #10b981;">✅ Evet</strong></td>
+                </tr>
+                <tr>
+                    <td>Premium</td>
+                    <td>Sınırsız</td>
+                    <td><strong style="color: #10b981;">✅ Evet</strong></td>
+                </tr>
+            </table>
+
+            <div class="alert alert-warning">
+                <strong>Onay:</strong> Bu limitler doğru mu? Değişiklik var mı?
+            </div>
+        </div>
+
+        <!-- SORU 4 -->
+        <div class="question">
+            <h2>❓ Soru 4: Session Süresi (Oturum Açık Kalma)?</h2>
+
+            <p style="margin-bottom: 20px;">Kullanıcı şifreyi kaç günde bir girecek?</p>
+
+            <table>
+                <tr>
+                    <th>Kullanıcı Tipi</th>
+                    <th>Önerim</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Normal Kullanıcı</td>
+                    <td>365 gün (1 yıl)</td>
+                    <td>Sen dedin: "5 yıl olsun, her gün kullanacak"</td>
+                </tr>
+                <tr>
+                    <td>Admin/Editör</td>
+                    <td>1 gün</td>
+                    <td>Güvenlik için kısa</td>
+                </tr>
+            </table>
+
+            <div class="alert alert-warning">
+                <strong>Onay:</strong> Normal user → 1 yıl yeterli mi? Yoksa gerçekten 5 yıl mı?
+            </div>
+        </div>
+
+        <!-- SORU 5 -->
+        <div class="question">
+            <h2>❓ Soru 5: Tenant Settings Tablosu?</h2>
+
+            <p style="margin-bottom: 20px;">Her tenant kendi ayarlarını nereden alsın?</p>
+
+            <div class="option recommended">
+                <strong>Seçenek A: tenant_settings Tablosu Oluştur</strong>
+                <p>Database'de her tenant için ayarlar:</p>
+                <p>→ session_lifetime (365 gün vs 1 gün)</p>
+                <p>→ device_limit (1 cihaz vs 3 cihaz)</p>
+                <p>→ Admin panel'den değiştirilebilir</p>
+            </div>
+
+            <div class="option">
+                <strong>Seçenek B: Sadece Muzibu için Hardcode</strong>
+                <p>Kod içinde: if (tenant_id == 1001) { ... }</p>
+                <p>Basit ama esnek değil</p>
+            </div>
+        </div>
+
+        <!-- SORU 6 -->
+        <div class="question">
+            <h2>❓ Soru 6: 2. Cihaz Durdurmayı Nasıl Yapalım?</h2>
+
+            <p style="margin-bottom: 20px;">Eğer "2. cihaz oynatınca 1. durur" dersen:</p>
+
+            <div class="option recommended">
+                <strong>Seçenek A: Basit Polling (Her 5 Saniye Kontrol)</strong>
+                <p>Frontend: Her 5 saniyede backend'e sorar "Başka cihaz oynatıyor mu?"</p>
+                <p>Backend: Redis'te "user_123_playing" flag'i tutar</p>
+                <p>Başka cihazdan play gelince → Flag değişir → 1. cihaz durur</p>
+                <p><strong>Avantaj:</strong> Basit, kolay</p>
+            </div>
+
+            <div class="option">
+                <strong>Seçenek B: WebSocket (Gerçek Zamanlı)</strong>
+                <p>Pusher/Laravel Reverb ile anlık bildirim</p>
+                <p>2. cihaz play'e basınca → 1. cihaz 0.1 saniyede durur</p>
+                <p><strong>Dezavantaj:</strong> Kompleks kurulum</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>🤖 Claude AI | 26 Kasım 2025</p>
+            <p style="margin-top: 10px;">Sorulara cevap ver, hemen sistemi kuralım! 🚀</p>
+        </footer>
+    </div>
+</body>
+</html>

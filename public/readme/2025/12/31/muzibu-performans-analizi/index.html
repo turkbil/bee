@@ -1,1 +1,245 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Performans Analizi - 31 Aralık 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-full text-sm mb-4">
+                <i class="fas fa-chart-line"></i>
+                <span>Performans Analizi</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Muzibu.com.tr Performans Raporu</h1>
+            <p class="text-slate-400">31 Aralık 2025 - 04:00</p>
+        </header>
+
+        <!-- Sonuç Özeti -->
+        <section class="mb-8">
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-green-900/30 border border-green-700 rounded-xl p-6 text-center">
+                    <div class="text-4xl font-bold text-green-400 mb-2">0.5-0.6s</div>
+                    <div class="text-green-300 font-medium">Warm Cache TTFB</div>
+                    <div class="text-slate-400 text-sm mt-1">Config cache sonrası</div>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-xl p-6 text-center">
+                    <div class="text-4xl font-bold text-yellow-400 mb-2">2.1s</div>
+                    <div class="text-yellow-300 font-medium">Cold Cache TTFB</div>
+                    <div class="text-slate-400 text-sm mt-1">Ilk yükleme</div>
+                </div>
+                <div class="bg-blue-900/30 border border-blue-700 rounded-xl p-6 text-center">
+                    <div class="text-4xl font-bold text-blue-400 mb-2">28MB</div>
+                    <div class="text-blue-300 font-medium">Memory Peak</div>
+                    <div class="text-slate-400 text-sm mt-1">Cold cache'de</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-semibold text-green-400 mb-4">
+                <i class="fas fa-book-open mr-2"></i>Basit Anlatım (Herkes Icin)
+            </h3>
+            <div class="space-y-3 text-slate-300">
+                <p><strong>Ne bulundu?</strong></p>
+                <ul class="list-disc ml-6 space-y-2">
+                    <li><strong>Config cache eksikti</strong> - Sistem her seferinde ayarlari yeniden okuyordu. Duzeltildi!</li>
+                    <li><strong>Redis cache calisiyor</strong> - Sorgu sonuclari bellekte saklanip hizli erisilebiliyor</li>
+                    <li><strong>Ilk yukleme yavas</strong> - Normal, cunku view'lar derleniyor ve cache doluyor</li>
+                    <li><strong>Sonraki yuklemeler hizli</strong> - 0.5-0.6 saniye kabul edilebilir seviye</li>
+                </ul>
+                <p class="mt-4"><strong>Ne duzeltildi?</strong></p>
+                <ul class="list-disc ml-6 space-y-2">
+                    <li>Config cache yeniden olusturuldu (php artisan config:cache)</li>
+                    <li>Route cache yeniden olusturuldu</li>
+                    <li>Dosya izinleri duzeltildi</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-semibold text-blue-400 mb-4">
+                <i class="fas fa-code mr-2"></i>Teknik Detaylar (Gelistiriciler Icin)
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Cache Sistemi -->
+                <div>
+                    <h4 class="font-semibold text-blue-300 mb-2">Cache Sistemi</h4>
+                    <div class="bg-slate-800 rounded-lg p-4 font-mono text-sm">
+                        <div class="text-green-400">Cache Driver: redis</div>
+                        <div class="text-green-400">Cache Store: redis (DB 1)</div>
+                        <div class="text-green-400">Tenant Prefix: tenant:1001</div>
+                        <div class="text-yellow-400">Response Cache: file (iyilestirilebilir)</div>
+                    </div>
+                </div>
+
+                <!-- Aktif Cache Key'leri -->
+                <div>
+                    <h4 class="font-semibold text-blue-300 mb-2">Aktif Home Cache Key'leri</h4>
+                    <div class="bg-slate-800 rounded-lg p-4 font-mono text-sm space-y-1">
+                        <div class="text-green-400"><i class="fas fa-check mr-2"></i>home_featured_playlists_v2</div>
+                        <div class="text-green-400"><i class="fas fa-check mr-2"></i>home_new_releases_v2</div>
+                        <div class="text-green-400"><i class="fas fa-check mr-2"></i>home_popular_songs_v2</div>
+                        <div class="text-green-400"><i class="fas fa-check mr-2"></i>home_genres_v2</div>
+                        <div class="text-green-400"><i class="fas fa-check mr-2"></i>home_radios_v2</div>
+                        <div class="text-green-400"><i class="fas fa-check mr-2"></i>home_sectors_v2</div>
+                    </div>
+                </div>
+
+                <!-- Telescope Metrikleri -->
+                <div>
+                    <h4 class="font-semibold text-blue-300 mb-2">Telescope Metrikleri (HomeController@index)</h4>
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-700">
+                            <tr>
+                                <th class="px-4 py-2 text-left">Durum</th>
+                                <th class="px-4 py-2 text-left">Sure</th>
+                                <th class="px-4 py-2 text-left">Memory</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-slate-800">
+                            <tr class="border-t border-slate-700">
+                                <td class="px-4 py-2 text-yellow-400">Cold Cache</td>
+                                <td class="px-4 py-2">2127ms</td>
+                                <td class="px-4 py-2">28MB</td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="px-4 py-2 text-green-400">Warm Cache</td>
+                                <td class="px-4 py-2">508-530ms</td>
+                                <td class="px-4 py-2">12-14MB</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Response Cache Durumu -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-semibold text-purple-400 mb-4">
+                <i class="fas fa-shield-halved mr-2"></i>Response Cache Politikasi
+            </h3>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-purple-300 mb-2">Cache'lenmeyen Sayfalar</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-times-circle text-red-400"></i>
+                            <span>Admin paneli (admin/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-times-circle text-red-400"></i>
+                            <span>Dashboard (/dashboard/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-times-circle text-red-400"></i>
+                            <span>Favoriler (/favorites/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-times-circle text-red-400"></i>
+                            <span>Playlist'lerim (/my-playlists/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-times-circle text-red-400"></i>
+                            <span>Dinleme Gecmisi (/listening-history/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-times-circle text-red-400"></i>
+                            <span>Kurumsal (/corporate/*)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-purple-300 mb-2">Cache'lenen Sayfalar</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                            <span>Ana Sayfa (/)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                            <span>Albumler (/albums/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                            <span>Sanatcilar (/artists/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                            <span>Turler (/genres/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                            <span>Radyolar (/radios/*)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                            <span>Sektorler (/sectors/*)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Oneriler -->
+        <section class="bg-orange-900/20 border border-orange-800 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-semibold text-orange-400 mb-4">
+                <i class="fas fa-lightbulb mr-2"></i>Iyilestirme Onerileri
+            </h3>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">1</span>
+                        <div>
+                            <h4 class="font-semibold text-orange-300">Response Cache'i Redis'e Al</h4>
+                            <p class="text-slate-400 text-sm mt-1">
+                                Simdi file kullaniliyor. RESPONSE_CACHE_DRIVER=redis yapilabilir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">2</span>
+                        <div>
+                            <h4 class="font-semibold text-orange-300">View Cache Optimizasyonu</h4>
+                            <p class="text-slate-400 text-sm mt-1">
+                                php artisan view:cache ile view'lar onceden derlenebilir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">3</span>
+                        <div>
+                            <h4 class="font-semibold text-orange-300">OPcache Warm-up</h4>
+                            <p class="text-slate-400 text-sm mt-1">
+                                Deployment sonrasi OPcache preload yapilandirmasi cold start'i azaltir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>Olusturulma: 31 Aralik 2025, 04:15</p>
+            <p class="mt-1">Claude AI - Performans Analiz Raporu</p>
+        </footer>
+    </div>
+</body>
+</html>

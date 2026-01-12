@@ -1,1 +1,559 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Login - Alternatif Tasarimlar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'mz': {
+                            '50': '#fef7f0',
+                            '100': '#fceee0',
+                            '200': '#f9d5b3',
+                            '300': '#f4b885',
+                            '400': '#ed9254',
+                            '500': '#e87533',
+                            '600': '#d95d24',
+                            '700': '#b4471f',
+                            '800': '#903a21',
+                            '900': '#74321e',
+                        },
+                        'dark': {
+                            '900': '#0a0a0b',
+                            '800': '#111113',
+                            '700': '#18181b',
+                            '600': '#1f1f23',
+                            '500': '#27272a',
+                            '400': '#3f3f46',
+                            '300': '#52525b',
+                            '200': '#71717a',
+                            '100': '#a1a1aa',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #e87533 0%, #f4b885 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(232, 117, 51, 0.3), 0 0 40px rgba(232, 117, 51, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <div class="bg-dark-800 border-b border-dark-600 py-6 mb-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-3xl font-bold">
+                <i class="fas fa-palette text-mz-500 mr-3"></i>
+                Muzibu Login - Alternatif Tasarimlar
+            </h1>
+            <p class="text-dark-200 mt-2">4 farkli tasarim secenegi. Begendiginizi secin.</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 pb-20 space-y-20">
+
+        <!-- ==================== ALTERNATIF 1: MINIMAL CENTER ==================== -->
+        <section>
+            <div class="flex items-center gap-4 mb-6">
+                <span class="bg-mz-500 text-white text-sm font-bold px-4 py-2 rounded-full">1</span>
+                <div>
+                    <h2 class="text-2xl font-bold">Minimal Center</h2>
+                    <p class="text-dark-300">Sade, merkezi, odakli tasarim</p>
+                </div>
+            </div>
+
+            <div class="bg-dark-800 rounded-2xl overflow-hidden border border-dark-600">
+                <!-- Preview -->
+                <div class="min-h-[700px] bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 flex items-center justify-center p-8 relative">
+                    <!-- Background Pattern -->
+                    <div class="absolute inset-0 opacity-30">
+                        <div class="absolute top-20 left-20 w-72 h-72 bg-mz-500/10 rounded-full blur-3xl"></div>
+                        <div class="absolute bottom-20 right-20 w-96 h-96 bg-mz-600/10 rounded-full blur-3xl"></div>
+                    </div>
+
+                    <div class="relative w-full max-w-md">
+                        <!-- Logo -->
+                        <div class="text-center mb-10">
+                            <div class="inline-flex items-center gap-3 mb-4">
+                                <div class="w-14 h-14 bg-gradient-to-br from-mz-500 to-mz-600 rounded-2xl flex items-center justify-center shadow-xl">
+                                    <i class="fas fa-music text-white text-2xl"></i>
+                                </div>
+                            </div>
+                            <h1 class="text-3xl font-bold text-white">Muzibu</h1>
+                            <p class="text-dark-300 mt-2">Isletmeniz icin profesyonel muzik</p>
+                        </div>
+
+                        <!-- Tabs -->
+                        <div class="flex bg-dark-700/50 rounded-xl p-1 mb-8">
+                            <button class="flex-1 py-3 bg-mz-500 text-white rounded-lg font-medium transition-all">
+                                Giris Yap
+                            </button>
+                            <button class="flex-1 py-3 text-dark-300 hover:text-white rounded-lg font-medium transition-all">
+                                Kayit Ol
+                            </button>
+                        </div>
+
+                        <!-- Form -->
+                        <div class="space-y-5">
+                            <div>
+                                <input type="email" placeholder="E-posta adresiniz"
+                                    class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-400 focus:border-mz-500 focus:outline-none transition-all">
+                            </div>
+                            <div>
+                                <input type="password" placeholder="Sifreniz"
+                                    class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-400 focus:border-mz-500 focus:outline-none transition-all">
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <label class="flex items-center gap-2 text-dark-300 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 rounded bg-dark-600 border-dark-500">
+                                    Beni hatirla
+                                </label>
+                                <a href="#" class="text-mz-400 hover:text-mz-300">Sifremi unuttum</a>
+                            </div>
+                            <button class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-mz-500/25">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Giris Yap
+                            </button>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="flex items-center gap-4 my-8">
+                            <div class="flex-1 h-px bg-dark-600"></div>
+                            <span class="text-dark-400 text-sm">veya</span>
+                            <div class="flex-1 h-px bg-dark-600"></div>
+                        </div>
+
+                        <!-- Social Login -->
+                        <div class="flex gap-4">
+                            <button class="flex-1 py-3 bg-dark-700 hover:bg-dark-600 border border-dark-500 rounded-xl transition-all flex items-center justify-center gap-2">
+                                <i class="fab fa-google text-red-500"></i>
+                                <span class="text-dark-200">Google</span>
+                            </button>
+                            <button class="flex-1 py-3 bg-dark-700 hover:bg-dark-600 border border-dark-500 rounded-xl transition-all flex items-center justify-center gap-2">
+                                <i class="fab fa-apple text-white"></i>
+                                <span class="text-dark-200">Apple</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ALTERNATIF 2: GLASSMORPHISM ==================== -->
+        <section>
+            <div class="flex items-center gap-4 mb-6">
+                <span class="bg-mz-500 text-white text-sm font-bold px-4 py-2 rounded-full">2</span>
+                <div>
+                    <h2 class="text-2xl font-bold">Glassmorphism</h2>
+                    <p class="text-dark-300">Seffaf cam efekti, modern gorunum</p>
+                </div>
+            </div>
+
+            <div class="bg-dark-800 rounded-2xl overflow-hidden border border-dark-600">
+                <div class="min-h-[700px] relative flex items-center justify-center p-8" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);">
+                    <!-- Animated Background Orbs -->
+                    <div class="absolute inset-0 overflow-hidden">
+                        <div class="absolute top-1/4 left-1/4 w-80 h-80 bg-mz-500/30 rounded-full blur-[100px] animate-pulse"></div>
+                        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] animate-pulse" style="animation-delay: 1s;"></div>
+                        <div class="absolute top-1/2 right-1/3 w-64 h-64 bg-blue-500/20 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s;"></div>
+                    </div>
+
+                    <div class="relative w-full max-w-md">
+                        <!-- Glass Card -->
+                        <div class="glass rounded-3xl p-8">
+                            <!-- Logo -->
+                            <div class="text-center mb-8">
+                                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-mz-500/80 to-mz-600/80 rounded-2xl mb-4 neon-glow">
+                                    <i class="fas fa-music text-white text-3xl"></i>
+                                </div>
+                                <h1 class="text-2xl font-bold text-white">Hos Geldiniz</h1>
+                                <p class="text-white/60 mt-1">Muzibu hesabiniza giris yapin</p>
+                            </div>
+
+                            <!-- Tabs -->
+                            <div class="flex gap-2 mb-8">
+                                <button class="flex-1 py-3 bg-white/10 backdrop-blur text-white rounded-xl font-medium border border-white/20">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Giris
+                                </button>
+                                <button class="flex-1 py-3 text-white/50 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all">
+                                    <i class="fas fa-user-plus mr-2"></i>Kayit
+                                </button>
+                            </div>
+
+                            <!-- Form -->
+                            <div class="space-y-4">
+                                <div class="relative">
+                                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-white/40"></i>
+                                    <input type="email" placeholder="E-posta"
+                                        class="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:border-mz-500/50 focus:bg-white/10 focus:outline-none transition-all">
+                                </div>
+                                <div class="relative">
+                                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-white/40"></i>
+                                    <input type="password" placeholder="Sifre"
+                                        class="w-full pl-12 pr-12 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:border-mz-500/50 focus:bg-white/10 focus:outline-none transition-all">
+                                    <button class="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center justify-between text-sm pt-2">
+                                    <label class="flex items-center gap-2 text-white/60 cursor-pointer">
+                                        <input type="checkbox" class="w-4 h-4 rounded bg-white/10 border-white/20">
+                                        Beni hatirla
+                                    </label>
+                                    <a href="#" class="text-mz-400 hover:text-mz-300">Sifremi unuttum?</a>
+                                </div>
+
+                                <button class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 text-white font-semibold rounded-xl transition-all hover:opacity-90 neon-glow mt-4">
+                                    Giris Yap
+                                </button>
+                            </div>
+
+                            <!-- Social -->
+                            <div class="mt-8 pt-6 border-t border-white/10">
+                                <p class="text-center text-white/40 text-sm mb-4">Sosyal hesabinizla giris yapin</p>
+                                <div class="flex justify-center gap-4">
+                                    <button class="w-12 h-12 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl flex items-center justify-center transition-all">
+                                        <i class="fab fa-google text-white/70"></i>
+                                    </button>
+                                    <button class="w-12 h-12 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl flex items-center justify-center transition-all">
+                                        <i class="fab fa-facebook-f text-white/70"></i>
+                                    </button>
+                                    <button class="w-12 h-12 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl flex items-center justify-center transition-all">
+                                        <i class="fab fa-apple text-white/70"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ALTERNATIF 3: SPLIT MUSIC VISUAL ==================== -->
+        <section>
+            <div class="flex items-center gap-4 mb-6">
+                <span class="bg-mz-500 text-white text-sm font-bold px-4 py-2 rounded-full">3</span>
+                <div>
+                    <h2 class="text-2xl font-bold">Split Music Visual</h2>
+                    <p class="text-dark-300">Muzik temalı gorsel ile bolunmus ekran</p>
+                </div>
+            </div>
+
+            <div class="bg-dark-800 rounded-2xl overflow-hidden border border-dark-600">
+                <div class="min-h-[700px] flex">
+                    <!-- Left - Visual -->
+                    <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-mz-600 via-mz-500 to-orange-400 items-center justify-center p-12">
+                        <!-- Floating Music Elements -->
+                        <div class="absolute inset-0 overflow-hidden">
+                            <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full flex items-center justify-center animate-bounce" style="animation-duration: 3s;">
+                                <i class="fas fa-headphones text-white/50 text-2xl"></i>
+                            </div>
+                            <div class="absolute top-1/4 right-16 w-16 h-16 bg-white/10 rounded-full flex items-center justify-center animate-bounce" style="animation-duration: 2.5s; animation-delay: 0.5s;">
+                                <i class="fas fa-music text-white/50 text-xl"></i>
+                            </div>
+                            <div class="absolute bottom-1/4 left-20 w-14 h-14 bg-white/10 rounded-full flex items-center justify-center animate-bounce" style="animation-duration: 2s; animation-delay: 1s;">
+                                <i class="fas fa-volume-up text-white/50"></i>
+                            </div>
+                            <div class="absolute bottom-20 right-24 w-24 h-24 bg-white/10 rounded-full flex items-center justify-center animate-bounce" style="animation-duration: 3.5s; animation-delay: 0.3s;">
+                                <i class="fas fa-compact-disc text-white/50 text-3xl"></i>
+                            </div>
+                        </div>
+
+                        <div class="relative text-center text-white z-10">
+                            <div class="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur">
+                                <i class="fas fa-music text-5xl"></i>
+                            </div>
+                            <h2 class="text-4xl font-bold mb-4">Muzibu</h2>
+                            <p class="text-xl text-white/80 max-w-sm">
+                                Isletmeniz icin lisansli, profesyonel muzik platformu
+                            </p>
+
+                            <!-- Stats -->
+                            <div class="flex justify-center gap-8 mt-12">
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold">50K+</div>
+                                    <div class="text-white/70 text-sm">Sarki</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold">1000+</div>
+                                    <div class="text-white/70 text-sm">Playlist</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold">%100</div>
+                                    <div class="text-white/70 text-sm">Lisansli</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right - Form -->
+                    <div class="flex-1 bg-dark-900 flex items-center justify-center p-8">
+                        <div class="w-full max-w-md">
+                            <!-- Mobile Logo -->
+                            <div class="lg:hidden text-center mb-8">
+                                <div class="inline-flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-mz-500 to-mz-600 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-music text-white text-xl"></i>
+                                    </div>
+                                    <span class="text-2xl font-bold">Muzibu</span>
+                                </div>
+                            </div>
+
+                            <h2 class="text-3xl font-bold mb-2">Giris Yap</h2>
+                            <p class="text-dark-300 mb-8">Hesabiniza giris yapin ve muzige baslayın</p>
+
+                            <!-- Pill Tabs -->
+                            <div class="inline-flex bg-dark-700 rounded-full p-1 mb-8">
+                                <button class="px-6 py-2 bg-mz-500 text-white rounded-full text-sm font-medium">
+                                    Giris
+                                </button>
+                                <button class="px-6 py-2 text-dark-300 hover:text-white rounded-full text-sm font-medium transition-all">
+                                    Kayit Ol
+                                </button>
+                            </div>
+
+                            <!-- Form -->
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="block text-sm font-medium text-dark-200 mb-2">E-posta</label>
+                                    <div class="relative">
+                                        <input type="email" placeholder="ornek@email.com"
+                                            class="w-full px-4 py-3.5 bg-dark-800 border border-dark-600 rounded-xl text-white placeholder-dark-400 focus:border-mz-500 focus:outline-none">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <label class="text-sm font-medium text-dark-200">Sifre</label>
+                                        <a href="#" class="text-sm text-mz-400 hover:text-mz-300">Unuttum</a>
+                                    </div>
+                                    <input type="password" placeholder="••••••••"
+                                        class="w-full px-4 py-3.5 bg-dark-800 border border-dark-600 rounded-xl text-white placeholder-dark-400 focus:border-mz-500 focus:outline-none">
+                                </div>
+
+                                <button class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
+                                    <span>Giris Yap</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+
+                                <div class="text-center text-dark-400 text-sm">
+                                    Hesabiniz yok mu?
+                                    <a href="#" class="text-mz-400 hover:text-mz-300 font-medium">Ucretsiz kayit olun</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ALTERNATIF 4: FLOATING CARD ==================== -->
+        <section>
+            <div class="flex items-center gap-4 mb-6">
+                <span class="bg-mz-500 text-white text-sm font-bold px-4 py-2 rounded-full">4</span>
+                <div>
+                    <h2 class="text-2xl font-bold">Floating Card</h2>
+                    <p class="text-dark-300">Havada duran kart, golge efekti, premium his</p>
+                </div>
+            </div>
+
+            <div class="bg-dark-800 rounded-2xl overflow-hidden border border-dark-600">
+                <div class="min-h-[700px] relative flex items-center justify-center p-8" style="background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0f 100%);">
+                    <!-- Grid Pattern -->
+                    <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(rgba(232,117,51,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(232,117,51,0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
+
+                    <!-- Glow -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-mz-500/10 rounded-full blur-[150px]"></div>
+
+                    <div class="relative w-full max-w-lg">
+                        <!-- Main Card -->
+                        <div class="bg-dark-800 rounded-3xl p-10 shadow-2xl shadow-black/50 border border-dark-600">
+                            <!-- Logo & Header -->
+                            <div class="flex items-center justify-between mb-10">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-mz-500 to-mz-600 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-music text-white"></i>
+                                    </div>
+                                    <span class="text-xl font-bold">Muzibu</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-dark-400 text-sm">Hesabiniz yok mu?</div>
+                                    <a href="#" class="text-mz-400 hover:text-mz-300 font-medium">Kayit Ol</a>
+                                </div>
+                            </div>
+
+                            <!-- Welcome -->
+                            <div class="mb-8">
+                                <h1 class="text-3xl font-bold mb-2">Tekrar Hosgeldiniz!</h1>
+                                <p class="text-dark-300">Hesabiniza giris yapin</p>
+                            </div>
+
+                            <!-- Form -->
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="block text-sm font-medium text-dark-100 mb-2">E-posta Adresi</label>
+                                    <div class="relative group">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-envelope text-dark-400 group-focus-within:text-mz-500 transition-colors"></i>
+                                        </div>
+                                        <input type="email" placeholder="ornek@email.com"
+                                            class="w-full pl-12 pr-4 py-4 bg-dark-700 border-2 border-dark-600 rounded-xl text-white placeholder-dark-400 focus:border-mz-500 focus:outline-none transition-all">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <label class="text-sm font-medium text-dark-100">Sifre</label>
+                                        <a href="#" class="text-sm text-mz-400 hover:text-mz-300">Sifremi Unuttum</a>
+                                    </div>
+                                    <div class="relative group">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-lock text-dark-400 group-focus-within:text-mz-500 transition-colors"></i>
+                                        </div>
+                                        <input type="password" placeholder="••••••••"
+                                            class="w-full pl-12 pr-12 py-4 bg-dark-700 border-2 border-dark-600 rounded-xl text-white placeholder-dark-400 focus:border-mz-500 focus:outline-none transition-all">
+                                        <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-dark-400 hover:text-white">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="remember" class="w-5 h-5 rounded bg-dark-700 border-dark-500 text-mz-500 focus:ring-mz-500">
+                                    <label for="remember" class="text-dark-200">Beni hatirla</label>
+                                </div>
+
+                                <button class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-mz-500/30 text-lg">
+                                    Giris Yap
+                                </button>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="flex items-center gap-4 my-8">
+                                <div class="flex-1 h-px bg-dark-600"></div>
+                                <span class="text-dark-400 text-sm">veya devam et</span>
+                                <div class="flex-1 h-px bg-dark-600"></div>
+                            </div>
+
+                            <!-- Social Buttons -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <button class="py-3.5 bg-dark-700 hover:bg-dark-600 border border-dark-500 rounded-xl transition-all flex items-center justify-center gap-3">
+                                    <i class="fab fa-google text-lg"></i>
+                                    <span>Google</span>
+                                </button>
+                                <button class="py-3.5 bg-dark-700 hover:bg-dark-600 border border-dark-500 rounded-xl transition-all flex items-center justify-center gap-3">
+                                    <i class="fab fa-apple text-lg"></i>
+                                    <span>Apple</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Badge -->
+                        <div class="text-center mt-6">
+                            <span class="inline-flex items-center gap-2 text-dark-400 text-sm">
+                                <i class="fas fa-shield-check text-emerald-500"></i>
+                                256-bit SSL ile guvenli baglanti
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== COMPARISON TABLE ==================== -->
+        <section class="bg-dark-800 rounded-2xl border border-dark-600 p-8">
+            <h2 class="text-2xl font-bold mb-6">
+                <i class="fas fa-table text-mz-500 mr-3"></i>Karsilastirma
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-dark-600">
+                            <th class="text-left py-4 px-4 text-dark-300 font-medium">Ozellik</th>
+                            <th class="text-center py-4 px-4 text-dark-300 font-medium">1. Minimal</th>
+                            <th class="text-center py-4 px-4 text-dark-300 font-medium">2. Glass</th>
+                            <th class="text-center py-4 px-4 text-dark-300 font-medium">3. Split</th>
+                            <th class="text-center py-4 px-4 text-dark-300 font-medium">4. Floating</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-700">
+                        <tr>
+                            <td class="py-4 px-4">Gorunum</td>
+                            <td class="py-4 px-4 text-center">Sade</td>
+                            <td class="py-4 px-4 text-center">Modern</td>
+                            <td class="py-4 px-4 text-center">Gorsel Agirlikli</td>
+                            <td class="py-4 px-4 text-center">Premium</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4">Mobil Uyum</td>
+                            <td class="py-4 px-4 text-center"><i class="fas fa-check text-emerald-500"></i></td>
+                            <td class="py-4 px-4 text-center"><i class="fas fa-check text-emerald-500"></i></td>
+                            <td class="py-4 px-4 text-center"><i class="fas fa-check text-emerald-500"></i></td>
+                            <td class="py-4 px-4 text-center"><i class="fas fa-check text-emerald-500"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4">Animasyon</td>
+                            <td class="py-4 px-4 text-center">Az</td>
+                            <td class="py-4 px-4 text-center">Orta</td>
+                            <td class="py-4 px-4 text-center">Cok</td>
+                            <td class="py-4 px-4 text-center">Orta</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4">Sosyal Giris</td>
+                            <td class="py-4 px-4 text-center"><i class="fas fa-check text-emerald-500"></i></td>
+                            <td class="py-4 px-4 text-center"><i class="fas fa-check text-emerald-500"></i></td>
+                            <td class="py-4 px-4 text-center"><i class="fas fa-minus text-dark-400"></i></td>
+                            <td class="py-4 px-4 text-center"><i class="fas fa-check text-emerald-500"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4">Branding Alani</td>
+                            <td class="py-4 px-4 text-center">Minimal</td>
+                            <td class="py-4 px-4 text-center">Minimal</td>
+                            <td class="py-4 px-4 text-center">Genis</td>
+                            <td class="py-4 px-4 text-center">Orta</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Selection -->
+        <section class="bg-gradient-to-r from-mz-500/10 to-mz-600/10 rounded-2xl border border-mz-500/20 p-8 text-center">
+            <h2 class="text-2xl font-bold mb-4">Hangi tasarimi seciyorsunuz?</h2>
+            <p class="text-dark-300 mb-6">Numara vererek (1, 2, 3, 4) veya isterseniz kombinasyon isteyebilirsiniz.</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="px-6 py-3 bg-dark-700 rounded-xl text-dark-200">1 - Minimal</span>
+                <span class="px-6 py-3 bg-dark-700 rounded-xl text-dark-200">2 - Glass</span>
+                <span class="px-6 py-3 bg-dark-700 rounded-xl text-dark-200">3 - Split</span>
+                <span class="px-6 py-3 bg-dark-700 rounded-xl text-dark-200">4 - Floating</span>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark-800 border-t border-dark-600 py-6 text-center text-dark-400">
+        <p>Claude AI tarafindan olusturuldu - Aralık 2025</p>
+    </footer>
+
+</body>
+</html>

@@ -1,1 +1,793 @@
-v5/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Otomatik Ses Kalitesi - Database Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .code-block {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="dark bg-slate-950 text-slate-100">
+    <!-- Header -->
+    <header class="gradient-bg border-b border-slate-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="badge bg-red-600 text-white">🔴 KRİTİK BULGU</span>
+                        <span class="badge bg-slate-700 text-slate-300">v5</span>
+                        <span class="badge bg-purple-600 text-white">📊 Database Analizi</span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mb-2">Muzibu Ses Kalitesi - Database Durumu</h1>
+                    <p class="text-slate-400">HLS Conversion Hiç Yapılmamış! (file_path = hls_path)</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-slate-500">8 Ocak 2026</div>
+                    <div class="text-xs text-slate-600 mt-1">muzibu.com.tr</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 max-w-6xl">
+
+        <!-- KRİTİK DATABASE BULGUSU -->
+        <section class="mb-8">
+            <div class="bg-red-900/30 border-2 border-red-700 rounded-lg p-6 card-hover">
+                <h2 class="text-2xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                    <span>🔴</span> KRİTİK DATABASE BULGUSU
+                </h2>
+
+                <div class="space-y-6">
+
+                    <!-- Ana Problem -->
+                    <div class="bg-slate-900/70 border border-red-800 rounded-lg p-5">
+                        <h3 class="text-xl font-bold text-red-300 mb-4">⚠️ Ana Problem: HLS Hiç Dönüştürülmemiş!</h3>
+
+                        <div class="bg-red-950/50 rounded-lg p-4 mb-4">
+                            <p class="text-red-200 text-lg mb-3">
+                                <strong>Bulgu:</strong> <code class="bg-slate-900 px-2 py-1 rounded">file_path</code> ve
+                                <code class="bg-slate-900 px-2 py-1 rounded">hls_path</code> kolonları
+                                <strong class="text-yellow-400">AYNI DEĞERLERİ</strong> içeriyor!
+                            </p>
+                            <p class="text-slate-300 text-sm">
+                                Her iki kolon da <strong>aynı MP3 dosyasını</strong> gösteriyor. HLS playlist path'i yok!
+                            </p>
+                        </div>
+
+                        <!-- Örnek Kayıtlar -->
+                        <div class="code-block">
+                            <pre class="text-sm text-slate-300"><code>song_id | title              | file_path                              | hls_path
+--------|--------------------|-----------------------------------------|------------------------------------------
+51      | Şehir              | 1/blues-rock-turkce--xx--3/ah-bu-...  | 1/blues-rock-turkce--xx--3/ah-bu-...
+159     | Black Dust Boogie  | 1/british-blues--xx--7/black-dust-... | 1/british-blues--xx--7/black-dust-...
+160     | Blackwater Lament  | 1/british-blues--xx--7/blackwater-... | 1/british-blues--xx--7/blackwater-...
+
+<span class="text-red-400">❌ YANLIŞ:</span> file_path = hls_path = <span class="text-yellow-400">"1/blues-rock-turkce--xx--3/ah-bu-sehir.mp3"</span>
+<span class="text-green-400">✅ DOĞRU OLABİLİRDİ:</span> hls_path = <span class="text-green-400">"muzibu/hls/51/playlist.m3u8"</span></code></pre>
+                        </div>
+                    </div>
+
+                    <!-- İstatistikler -->
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-blue-900/30 border border-blue-800 rounded-lg p-4">
+                            <div class="text-3xl font-bold text-blue-400 mb-1">28,211</div>
+                            <div class="text-sm text-slate-400">Toplam Şarkı</div>
+                        </div>
+                        <div class="bg-yellow-900/30 border border-yellow-800 rounded-lg p-4">
+                            <div class="text-3xl font-bold text-yellow-400 mb-1">28,208</div>
+                            <div class="text-sm text-slate-400">hls_path Dolu (YANLIŞ!)</div>
+                        </div>
+                        <div class="bg-green-900/30 border border-green-800 rounded-lg p-4">
+                            <div class="text-3xl font-bold text-green-400 mb-1">3</div>
+                            <div class="text-sm text-slate-400">file_path NULL</div>
+                        </div>
+                    </div>
+
+                    <!-- Sonuç -->
+                    <div class="bg-slate-800/70 border border-slate-700 rounded-lg p-5">
+                        <h4 class="font-semibold text-white mb-3">📊 Sonuç:</h4>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-400">❌</span>
+                                <div>
+                                    <strong>HLS conversion hiç yapılmamış</strong><br>
+                                    <span class="text-sm text-slate-400">ConvertToHLSJob.php kodu var ama hiç çalıştırılmamış</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-400">❌</span>
+                                <div>
+                                    <strong>hls_path kolonu yanlış doldurulmuş</strong><br>
+                                    <span class="text-sm text-slate-400">MP3 path yazılmış, HLS playlist path değil</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400">✅</span>
+                                <div>
+                                    <strong>Sistem şu anda direkt MP3 stream ediyor</strong><br>
+                                    <span class="text-sm text-slate-400">file_path ve hls_path aynı dosyayı gösteriyor</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-yellow-400">⚠️</span>
+                                <div>
+                                    <strong>Backend FFmpeg filtreleri hiç uygulanmamış</strong><br>
+                                    <span class="text-sm text-slate-400">Loudnorm, EQ, Stereo, Lowpass → Hiçbiri yok!</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Database Schema -->
+        <section class="mb-8">
+            <div class="bg-indigo-900/20 border border-indigo-800 rounded-lg p-6 card-hover">
+                <h2 class="text-2xl font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                    <span>🗄️</span> Database Schema Analizi
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-white mb-3">📋 muzibu_songs Tablosu - İlgili Kolonlar:</h3>
+                        <div class="code-block">
+                            <pre class="text-sm text-slate-300"><code>Field          | Type          | Null | Default
+---------------|---------------|------|--------
+song_id        | bigint(20)    | NO   | AUTO
+file_path      | varchar(255)  | YES  | NULL      ← Orijinal MP3 path
+hls_path       | varchar(500)  | YES  | NULL      ← HLS playlist path (YANLIŞ KULLANILMIŞ!)
+encryption_key | varchar(32)   | YES  | NULL
+encryption_iv  | varchar(32)   | YES  | NULL</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-900/30 border border-yellow-800 rounded-lg p-5">
+                        <h4 class="font-semibold text-yellow-300 mb-3">⚠️ Neden file_path = hls_path?</h4>
+                        <p class="text-slate-300 mb-3">
+                            Muhtemelen şarkı upload olurken:
+                        </p>
+                        <div class="code-block">
+                            <pre class="text-sm text-slate-300"><code>// Upload işlemi (tahmini):
+$song->file_path = $mp3Path;    // "1/genre/song-slug.mp3"
+$song->hls_path  = $mp3Path;    // ❌ YANLIŞ! (aynı path kopyalandı)
+$song->save();
+
+// Doğru olsaydı:
+$song->file_path = $mp3Path;              // "1/genre/song-slug.mp3"
+$song->hls_path  = null;                  // ✅ NULL olmalıydı (henüz dönüşmedi)
+// Sonra ConvertToHLSJob çalışınca:
+$song->hls_path  = "muzibu/hls/51/playlist.m3u8";  // ✅ HLS path yazılmalıydı</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖNEMLİ DÜZELTME (v4'ten) -->
+        <section class="mb-8">
+            <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 card-hover">
+                <h2 class="text-2xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                    <span>🔴</span> HATA DÜZELTMESİ (v3'ten)
+                </h2>
+                <div class="space-y-4 text-slate-300">
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-white mb-3">❌ v3'te Yanlış Olan:</h3>
+                        <p class="text-red-300 mb-3">
+                            "Free kullanıcılar Standard kalitede dinler" denilmişti. <strong>BU YANLIŞ!</strong>
+                        </p>
+                        <div class="bg-red-900/30 border border-red-800 rounded p-4">
+                            <p class="text-sm text-red-200">
+                                <strong>Gerçek Sistem:</strong> Free kullanıcılar <strong>hiç müzik dinleyemez!</strong><br>
+                                Backend API (<code>SongStreamController.php</code>) free kullanıcıya 402 döner,
+                                subscription sayfasına yönlendirir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-900/30 border border-green-800 rounded-lg p-5">
+                        <h3 class="text-lg font-semibold text-green-400 mb-3">✅ v4'te Doğru Olan:</h3>
+                        <p class="text-green-200 text-lg">
+                            <strong>Sadece Premium/Trial kullanıcılar müzik dinleyebilir.</strong><br>
+                            Kalite seçimi algoritması sadece onlar için çalışır.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-8">
+            <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 card-hover">
+                <h2 class="text-2xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                    <span>📝</span> Basit Anlatım (Herkes İçin)
+                </h2>
+
+                <div class="space-y-4 text-slate-300">
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">🎯 Ne Yapacağız?</h3>
+                        <p class="leading-relaxed text-lg">
+                            <strong class="text-yellow-400">Premium/Trial kullanıcılar</strong> için sistem
+                            <strong>otomatik olarak</strong> en uygun ses kalitesini seçecek.
+                            <strong class="text-green-400">Kullanıcı hiçbir buton görmeyecek, hiç uğraşmayacak!</strong>
+                        </p>
+                    </div>
+
+                    <div class="bg-red-900/30 border border-red-800 rounded-lg p-5">
+                        <h4 class="font-semibold text-red-300 mb-3">🔴 Neden Frontend'de Yapıyoruz?</h4>
+                        <p class="text-slate-300 mb-3">
+                            Backend'de HLS conversion hiç yapılmamış. <strong>28,000+ şarkıyı backend'de yeniden işlemek:</strong>
+                        </p>
+                        <ul class="space-y-2 text-sm text-slate-400 ml-4">
+                            <li>• 📦 <strong>Disk:</strong> 28K şarkı × 3 kalite = 84K dosya (yüzlerce GB)</li>
+                            <li>• ⏱️ <strong>Süre:</strong> 28K şarkı × 30 saniye = 234 saat (10 gün non-stop!)</li>
+                            <li>• 💰 <strong>Maliyet:</strong> Sunucu CPU, disk, bandwidth</li>
+                            <li>• 🐛 <strong>Risk:</strong> 28K şarkının tamamı yeniden işlenmeli</li>
+                        </ul>
+                        <div class="mt-3 bg-green-900/30 border border-green-800 rounded p-3">
+                            <p class="text-green-200 text-sm">
+                                <strong>✅ Frontend Çözümü:</strong> Web Audio API ile <strong>real-time</strong> filtre uygula.
+                                Disk kullanmaz, backend'e yük bindirmez, anında çalışır!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-900/30 border border-yellow-800 rounded-lg p-5">
+                        <h4 class="font-semibold text-yellow-300 mb-2">⚠️ Önemli: Kimler Müzik Dinleyebilir?</h4>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-green-900/30 border border-green-800 rounded p-3">
+                                <div class="text-green-400 font-semibold mb-1">✅ Premium/Trial Kullanıcılar:</div>
+                                <p class="text-slate-300">Müzik dinleyebilir, otomatik kalite seçimi çalışır.</p>
+                            </div>
+                            <div class="bg-red-900/30 border border-red-800 rounded p-3">
+                                <div class="text-red-400 font-semibold mb-1">❌ Free Kullanıcılar:</div>
+                                <p class="text-slate-300">Play butonuna basınca subscription sayfasına yönlendirilir. <strong>Hiç çalmaz!</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-900/30 border border-blue-800 rounded-lg p-5">
+                        <h4 class="font-semibold text-blue-300 mb-3">🤖 Sistem Neye Göre Karar Verir?</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <span class="text-2xl">📶</span>
+                                <div>
+                                    <strong class="text-white">1. İnternet Hızı:</strong>
+                                    <p class="text-slate-400 text-sm mt-1">
+                                        • Yavaş bağlantı (4G, 3G, < 5 Mbps) → <span class="text-green-400">Optimized</span><br>
+                                        • Orta hız (WiFi, 5-10 Mbps) → <span class="text-yellow-400">EQ Balanced</span><br>
+                                        • Hızlı (WiFi 5GHz, Fiber, > 10 Mbps) → <span class="text-red-400">Ultimate</span>
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-2xl">📱</span>
+                                <div>
+                                    <strong class="text-white">2. Cihaz Tipi:</strong>
+                                    <p class="text-slate-400 text-sm mt-1">
+                                        • Mobil (telefon) → Batarya ve CPU dostu kalite<br>
+                                        • Tablet → Orta-yüksek kalite<br>
+                                        • Desktop → En yüksek kalite (Ultimate)
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-2xl">🔋</span>
+                                <div>
+                                    <strong class="text-white">3. Batarya Durumu (Mobil):</strong>
+                                    <p class="text-slate-400 text-sm mt-1">
+                                        • Batarya %20'nin altında → <span class="text-green-400">Optimized</span> (enerji tasarrufu)<br>
+                                        • Batarya normal → İnternet hızına göre
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-800">
+                        <h4 class="font-semibold text-slate-200 mb-3">🎚️ Otomatik Seçilen Kalite Seviyeleri:</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-slate-500">🟢</span>
+                                <div>
+                                    <strong class="text-green-400">Optimized:</strong>
+                                    <span class="text-slate-400">Yavaş internet, mobil veri, düşük batarya (256 kbps + Loudnorm)</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-slate-500">🟡</span>
+                                <div>
+                                    <strong class="text-yellow-400">EQ Balanced:</strong>
+                                    <span class="text-slate-400">Orta hız WiFi, tablet (Optimized + EQ)</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-slate-500">🔴</span>
+                                <div>
+                                    <strong class="text-red-400">Ultimate:</strong>
+                                    <span class="text-slate-400">Hızlı WiFi + desktop (Tüm filtreler - Backend FFmpeg ile aynı)</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="mt-3 bg-slate-800/50 rounded p-3">
+                            <p class="text-xs text-slate-500">
+                                <strong>Not:</strong> Standard kalitesi kaldırıldı. Premium kullanıcılar minimum Optimized kalitede dinler.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">✨ Kullanıcı Deneyimi</h3>
+                        <div class="bg-indigo-900/30 border border-indigo-800 rounded-lg p-5">
+                            <ol class="space-y-2 text-slate-300">
+                                <li><strong>1.</strong> Premium kullanıcı sitede geziniyor</li>
+                                <li><strong>2.</strong> Şarkıya play basıyor</li>
+                                <li><strong>3.</strong> Sistem arka planda 0.5 saniyede analiz ediyor:
+                                    <ul class="ml-6 mt-1 text-sm text-slate-400">
+                                        <li>• İnternet: WiFi 50 Mbps ✓</li>
+                                        <li>• Cihaz: Desktop ✓</li>
+                                        <li>• Batarya: Tam (desktop) ✓</li>
+                                    </ul>
+                                </li>
+                                <li><strong>4.</strong> <span class="text-red-400">→ Karar: Ultimate kalite</span></li>
+                                <li><strong>5.</strong> Web Audio API filtreleri devreye giriyor (kullanıcı fark etmiyor)</li>
+                                <li><strong>6.</strong> Müzik profesyonel kalitede çalıyor 🎵</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">⚙️ Ayarlar Sayfasında (Opsiyonel)</h3>
+                        <p class="text-slate-400 mb-3">
+                            Premium kullanıcı istersa <strong>Ayarlar > Ses Kalitesi</strong> bölümünden global tercihini değiştirebilir:
+                        </p>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700 text-sm">
+                            <ul class="space-y-2 text-slate-400">
+                                <li>• <strong>Otomatik (Önerilen):</strong> Sistem karar verir (varsayılan) ✓</li>
+                                <li>• <strong>Her Zaman Yüksek Kalite:</strong> Her durumda Ultimate kullan</li>
+                                <li>• <strong>Veri/Batarya Tasarrufu:</strong> Her durumda Optimized kullan</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Otomatik Seçim Algoritması -->
+        <section class="mb-8">
+            <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 card-hover">
+                <h2 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                    <span>🤖</span> Otomatik Seçim Algoritması (Basitleştirilmiş)
+                </h2>
+
+                <div class="space-y-4">
+
+                    <!-- Akış Diyagramı -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-white mb-3">📊 Karar Akışı:</h3>
+                        <div class="code-block">
+                            <pre class="text-sm text-slate-300"><code>1. CİHAZ TİPİ & BATARYA
+   ├─ Mobil cihaz?
+   │  ├─ Batarya < %20?
+   │  │  └─ YES → 🟢 OPTIMIZED (enerji tasarrufu)
+   │  └─ NO → 2. ADIMA GEÇ
+   │
+   └─ Desktop/Tablet → 2. ADIMA GEÇ
+
+2. İNTERNET HIZI (Navigator.connection API)
+   ├─ Çok yavaş (< 1 Mbps, 2G/3G)?
+   │  └─ YES → 🟢 OPTIMIZED
+   │
+   ├─ Yavaş (1-5 Mbps, 4G)?
+   │  └─ YES → 🟢 OPTIMIZED
+   │
+   ├─ Orta (5-10 Mbps, LTE/WiFi)?
+   │  └─ YES → 🟡 EQ BALANCED
+   │
+   └─ Hızlı (> 10 Mbps, WiFi 5GHz/Fiber)?
+      ├─ Desktop? → 🔴 ULTIMATE
+      └─ Mobil/Tablet? → 🟡 EQ BALANCED
+
+3. KULLANICI TERCİHİ (Ayarlar sayfası - opsiyonel override)
+   ├─ "Otomatik" seçili? → Yukarıdaki algoritma geçerli
+   ├─ "Her Zaman Yüksek Kalite"? → 🔴 ULTIMATE (zorla)
+   └─ "Veri/Batarya Tasarrufu"? → 🟢 OPTIMIZED (zorla)</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Örnek Senaryolar -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-3">🎬 Örnek Senaryolar:</h3>
+
+                        <div class="space-y-3">
+                            <!-- Senaryo 1 -->
+                            <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                                <h4 class="font-semibold text-green-400 mb-2">📱 Senaryo 1: Mobil + 4G + Premium</h4>
+                                <div class="text-sm text-slate-300">
+                                    <div class="mb-2">
+                                        <strong>Durum:</strong> Telefon, 4G (3 Mbps), Premium üyelik, Batarya %60<br>
+                                        <strong>Analiz:</strong> Mobil + Batarya OK → İnternet yavaş (4G, 3 Mbps)<br>
+                                        <strong class="text-green-400">Sonuç: 🟢 OPTIMIZED</strong>
+                                    </div>
+                                    <p class="text-xs text-slate-400">
+                                        Mobil veri tasarrufu + CPU dostu. 4G'de buffering olmasın.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Senaryo 2 -->
+                            <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                                <h4 class="font-semibold text-red-400 mb-2">💻 Senaryo 2: Desktop + WiFi Fiber + Premium</h4>
+                                <div class="text-sm text-slate-300">
+                                    <div class="mb-2">
+                                        <strong>Durum:</strong> Desktop, WiFi 100 Mbps, Premium üyelik<br>
+                                        <strong>Analiz:</strong> Desktop ✓ → Hızlı internet (100 Mbps) ✓<br>
+                                        <strong class="text-red-400">Sonuç: 🔴 ULTIMATE</strong>
+                                    </div>
+                                    <p class="text-xs text-slate-400">
+                                        En yüksek kalite: Loudnorm + Stereo + EQ + Lowpass (Backend FFmpeg ile aynı)
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Senaryo 3 -->
+                            <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-400 mb-2">📱 Senaryo 3: Mobil + WiFi + Düşük Batarya + Premium</h4>
+                                <div class="text-sm text-slate-300">
+                                    <div class="mb-2">
+                                        <strong>Durum:</strong> Telefon, WiFi 50 Mbps, Premium, Batarya %15<br>
+                                        <strong>Analiz:</strong> Mobil + Batarya %15 → Batarya tasarrufu öncelikli<br>
+                                        <strong class="text-green-400">Sonuç: 🟢 OPTIMIZED</strong>
+                                    </div>
+                                    <p class="text-xs text-slate-400">
+                                        WiFi hızlı olsa bile batarya %20'nin altında ise enerji tasarrufu önemli.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Senaryo 4 -->
+                            <div class="bg-indigo-900/20 border border-indigo-800 rounded-lg p-4">
+                                <h4 class="font-semibold text-indigo-400 mb-2">📱 Senaryo 4: Tablet + WiFi + Premium</h4>
+                                <div class="text-sm text-slate-300">
+                                    <div class="mb-2">
+                                        <strong>Durum:</strong> iPad, WiFi 30 Mbps, Premium, Batarya %80<br>
+                                        <strong>Analiz:</strong> Tablet → Batarya OK ✓ → WiFi orta-hızlı (30 Mbps)<br>
+                                        <strong class="text-yellow-400">Sonuç: 🟡 EQ BALANCED</strong>
+                                    </div>
+                                    <p class="text-xs text-slate-400">
+                                        Tablet'te iyi kalite ama Ultimate kadar CPU yükü yok.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-8">
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 card-hover">
+                <h2 class="text-2xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                    <span>🔧</span> Teknik Detaylar (Geliştiriciler İçin)
+                </h2>
+
+                <div class="space-y-6 text-slate-300">
+
+                    <!-- Otomatik Seçim Fonksiyonu -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-3">🎯 Otomatik Seçim Fonksiyonu (Basitleştirilmiş)</h3>
+                        <div class="code-block">
+                            <pre class="text-sm text-slate-300"><code>async function autoSelectQuality() {
+  // NOT: Bu fonksiyon sadece Premium/Trial kullanıcılar için çağrılır
+  // Free kullanıcılar zaten API'dan 402 alır, müzik çalmaz
+
+  // 1. Kullanıcı tercihi (ayarlar sayfası - opsiyonel override)
+  const userPreference = localStorage.getItem('audio_quality_preference');
+  if (userPreference === 'always_high') {
+    return 'ultimate'; // Kullanıcı zorladı
+  }
+  if (userPreference === 'data_saver') {
+    return 'optimized'; // Kullanıcı zorladı
+  }
+
+  // 2. Mobil cihaz + batarya kontrolü
+  if (isMobile) {
+    try {
+      const battery = await navigator.getBattery();
+      if (battery.level < 0.2 && !battery.charging) {
+        return 'optimized'; // Düşük batarya → Tasarruf
+      }
+    } catch (e) {
+      // Battery API desteklenmiyorsa devam et
+    }
+  }
+
+  // 3. İnternet hızı kontrolü
+  const connection = navigator.connection;
+  if (connection) {
+    const downlink = connection.downlink; // Mbps
+    const effectiveType = connection.effectiveType;
+
+    // Çok yavaş/yavaş bağlantı
+    if (downlink < 5 || effectiveType === 'slow-2g' || effectiveType === '2g' || effectiveType === '3g') {
+      return 'optimized';
+    }
+
+    // Orta hız (LTE, WiFi orta)
+    if (downlink < 10) {
+      return 'eq_balanced';
+    }
+
+    // Hızlı bağlantı (WiFi 5GHz, Fiber)
+    return isDesktop ? 'ultimate' : 'eq_balanced';
+  }
+
+  // 4. Fallback: Cihaz tipine göre varsayılan
+  if (isDesktop) {
+    return 'ultimate'; // Desktop → En yüksek kalite
+  } else if (isTablet) {
+    return 'eq_balanced'; // Tablet → Orta-yüksek
+  } else {
+    return 'optimized'; // Mobil → Dengeli
+  }
+}
+
+// Kullanımı (player-core.js içinde):
+const selectedQuality = await autoSelectQuality();
+player.applyQualityPreset(selectedQuality);
+console.log('Otomatik seçilen kalite:', selectedQuality);</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Kalite Presets -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-3">🎚️ Kalite Presets (3 Seviye - Standard Kaldırıldı)</h3>
+                        <div class="code-block">
+                            <pre class="text-sm text-slate-300"><code>const QUALITY_PRESETS = {
+  // Standard KALDIRILDI - Premium kullanıcılar minimum Optimized
+
+  optimized: {
+    label: 'Optimized',
+    description: '256 kbps + Loudness normalize',
+    filters: {
+      gain: 1.2,           // +2dB (loudness normalize)
+      eq: [],              // EQ YOK
+      stereo: 0,           // Stereo YOK
+      lowpass: false       // Lowpass YOK
+    }
+  },
+
+  eq_balanced: {
+    label: 'EQ Balanced',
+    description: '256 kbps + Loudness + EQ',
+    filters: {
+      gain: 1.2,
+      eq: [
+        { type: 'peaking', frequency: 100, Q: 1, gain: 1 },    // Bass +1dB
+        { type: 'peaking', frequency: 8000, Q: 1, gain: -2 }   // Treble -2dB
+      ],
+      stereo: 0,
+      lowpass: false
+    }
+  },
+
+  ultimate: {
+    label: 'Ultimate',
+    description: 'Tüm filtreler (Backend FFmpeg ile aynı)',
+    filters: {
+      gain: 1.2,           // Loudness
+      eq: [
+        { type: 'peaking', frequency: 100, Q: 1, gain: 1 },    // Bass +1dB @ 100Hz
+        { type: 'peaking', frequency: 8000, Q: 1, gain: -2 }   // Treble -2dB @ 8kHz
+      ],
+      stereo: 0.2,         // Stereo widening (20%)
+      lowpass: 14000       // 14kHz lowpass
+    }
+  }
+};</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- API'ler (v3'ten aynı) -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-3">📡 Kullanılacak JavaScript API'ler</h3>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <ul class="space-y-2 text-sm text-slate-400">
+                                <li>• <code class="bg-slate-900 px-2 py-1 rounded text-blue-400">Navigator.connection</code> → İnternet hızı (Mbps, 4G/3G/WiFi)</li>
+                                <li>• <code class="bg-slate-900 px-2 py-1 rounded text-green-400">Battery Status API</code> → Batarya seviyesi (mobil)</li>
+                                <li>• <code class="bg-slate-900 px-2 py-1 rounded text-purple-400">User Agent</code> → Mobil/Desktop tespiti</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Dosya Konumları -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-3">📁 Dosya Konumları</h3>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <ul class="space-y-2 text-sm font-mono text-slate-300">
+                                <li><span class="text-blue-400">JS:</span> public/themes/muzibu/js/player/features/auto-quality.js</li>
+                                <li><span class="text-blue-400">Core:</span> public/themes/muzibu/js/player/core/player-core.js (güncellenecek)</li>
+                                <li><span class="text-blue-400">Ayarlar:</span> resources/views/themes/muzibu/profile/settings.blade.php (opsiyonel)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section class="mb-8">
+            <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 card-hover">
+                <h2 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                    <span>📊</span> Yapılacaklar (Adım Adım)
+                </h2>
+
+                <div class="space-y-4">
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                            <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                            Auto Quality Modülü Oluştur
+                        </h3>
+                        <ul class="space-y-2 text-slate-300 ml-10">
+                            <li>✅ <code class="bg-slate-900 px-2 py-1 rounded text-blue-400">auto-quality.js</code> dosyası</li>
+                            <li>✅ <code class="bg-slate-900 px-2 py-1 rounded text-blue-400">autoSelectQuality()</code> fonksiyonu (Premium için)</li>
+                            <li>✅ Network, Battery, Device detection API'leri</li>
+                            <li>✅ QUALITY_PRESETS (3 seviye: Optimized, EQ Balanced, Ultimate)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                            <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                            Player Core Entegrasyonu
+                        </h3>
+                        <ul class="space-y-2 text-slate-300 ml-10">
+                            <li>✅ AudioContext + Web Audio pipeline</li>
+                            <li>✅ Şarkı başlamadan önce <code class="bg-slate-900 px-2 py-1 rounded">autoSelectQuality()</code> çağır</li>
+                            <li>✅ Seçilen preset'i uygula (GainNode, EQ, Stereo, Lowpass)</li>
+                            <li>✅ Console log: "Seçilen kalite: Ultimate (Desktop + WiFi 100Mbps)"</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                            <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                            Ayarlar Sayfası (Opsiyonel)
+                        </h3>
+                        <ul class="space-y-2 text-slate-300 ml-10">
+                            <li>✅ Settings > "Müzik & Ses" bölümü</li>
+                            <li>✅ 3 radio button: Otomatik / Her Zaman Yüksek / Veri Tasarrufu</li>
+                            <li>✅ LocalStorage kaydet: <code class="bg-slate-900 px-2 py-1 rounded">audio_quality_preference</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                            <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
+                            Test
+                        </h3>
+                        <ul class="space-y-2 text-slate-300 ml-10">
+                            <li>✅ Premium + Desktop + WiFi → Ultimate</li>
+                            <li>✅ Premium + Mobil + 4G → Optimized</li>
+                            <li>✅ Premium + Mobil + Düşük batarya → Optimized</li>
+                            <li>✅ Premium + Tablet + WiFi → EQ Balanced</li>
+                            <li>✅ Ultimate = Backend FFmpeg ile aynı çıktı?</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonraki Adım -->
+        <section class="mb-8">
+            <div class="bg-indigo-900/20 border border-indigo-800 rounded-lg p-6 card-hover">
+                <h2 class="text-2xl font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                    <span>🚀</span> Sonraki Adım: Onay
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-5">
+                        <h3 class="text-lg font-semibold text-blue-300 mb-3">💬 Bu planı onaylıyor musunuz?</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 text-xl">✅</span>
+                                <div>
+                                    <strong class="text-white">Evet:</strong>
+                                    <span class="text-slate-400">Koda geçiyoruz (auto-quality.js + player entegrasyonu)</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-400 text-xl">❌</span>
+                                <div>
+                                    <strong class="text-white">Hayır:</strong>
+                                    <span class="text-slate-400">Neyi değiştirmek istersiniz?</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                        <h4 class="font-semibold text-slate-200 mb-2">📌 v5 Değişiklik Özeti (v4'ten farklar):</h4>
+                        <ul class="space-y-1 text-sm text-slate-400">
+                            <li>• <strong class="text-red-400">EKLENDI:</strong> Database durumu analizi (file_path = hls_path bulgusu)</li>
+                            <li>• <strong class="text-red-400">EKLENDI:</strong> HLS conversion hiç yapılmamış açıklaması</li>
+                            <li>• <strong class="text-green-400">EKLENDI:</strong> Neden frontend çözümü tercih edildiği (maliyet, süre, risk)</li>
+                            <li>• <strong>Değişmedi:</strong> Algoritma, Web Audio API, kalite presets</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-12">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center justify-between text-sm text-slate-500">
+                <div>
+                    🤖 Generated by <strong class="text-slate-400">Claude Sonnet 4.5</strong>
+                </div>
+                <div>
+                    muzibu.com.tr • 8 Ocak 2026 • v5 (Database Analizi)
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

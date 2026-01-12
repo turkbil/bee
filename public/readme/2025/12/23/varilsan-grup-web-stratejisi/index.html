@@ -1,1 +1,899 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varilsan Grup - Master Web Stratejisi (Birleştirilmiş Plan)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #134e4a 100%); }
+        .brand-polimer { border-left: 4px solid #3b82f6; background: linear-gradient(90deg, rgba(59,130,246,0.1) 0%, transparent 100%); }
+        .brand-ambalaj { border-left: 4px solid #10b981; background: linear-gradient(90deg, rgba(16,185,129,0.1) 0%, transparent 100%); }
+        .brand-plastik { border-left: 4px solid #8b5cf6; background: linear-gradient(90deg, rgba(139,92,246,0.1) 0%, transparent 100%); }
+        .section-divider { background: linear-gradient(90deg, transparent, #3b82f6, transparent); height: 1px; }
+        .nav-sticky { backdrop-filter: blur(12px); background: rgba(15, 23, 42, 0.95); }
+        .toc-link:hover { background: rgba(59,130,246,0.2); }
+        .toc-link.active { background: rgba(59,130,246,0.3); border-left: 3px solid #3b82f6; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased">
+
+    <!-- Sticky Navigation -->
+    <nav class="nav-sticky fixed top-0 left-0 right-0 z-50 border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-industry text-blue-400 text-xl"></i>
+                    <span class="font-bold text-lg">Varilsan Grup - Master Plan</span>
+                    <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 text-green-300 rounded text-xs">
+                        <i class="fas fa-check-circle"></i> v1.0 Final
+                    </span>
+                </div>
+                <div class="hidden lg:flex items-center gap-4 text-sm">
+                    <a href="#grup" class="hover:text-blue-400 transition">Grup</a>
+                    <a href="#polimer" class="hover:text-blue-400 transition">Polimer</a>
+                    <a href="#ambalaj" class="hover:text-green-400 transition">Ambalaj</a>
+                    <a href="#plastik" class="hover:text-purple-400 transition">Plastik</a>
+                    <a href="#sitemap" class="hover:text-yellow-400 transition">Site Haritası</a>
+                    <a href="#seo" class="hover:text-red-400 transition">SEO</a>
+                    <a href="#rekabet" class="hover:text-orange-400 transition">Rekabet</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="gradient-hero pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm mb-6">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Birleştirilmiş Master Strateji Belgesi</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="text-blue-400">VARİLSAN</span> GRUP
+                </h1>
+                <p class="text-xl text-slate-300 max-w-3xl mx-auto mb-2">
+                    Web Sitesi Strateji + İçerik Mimarisi + Marka Konumlandırma + Rekabet Analizi
+                </p>
+                <p class="text-sm text-slate-500">3 kaynak birleştirildi: a-html.txt + b-html.txt + Claude Analizi</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8">
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-blue-400">3</div>
+                    <div class="text-xs text-slate-400">Alt Marka</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-green-400">4</div>
+                    <div class="text-xs text-slate-400">Web Sitesi</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-purple-400">2</div>
+                    <div class="text-xs text-slate-400">Lokasyon</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-yellow-400">6</div>
+                    <div class="text-xs text-slate-400">Kanıt Taşı</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-red-400">4</div>
+                    <div class="text-xs text-slate-400">Rakip Hedef</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- VARİLSAN GRUP - ANA MARKA -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="grup" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-teal-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-building text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Varilsan Grup — Ana Marka</h2>
+                    <p class="text-slate-400 text-sm">Holding Yapısı | varilsan.com</p>
+                </div>
+            </div>
+
+            <!-- Konumlandırma -->
+            <div class="bg-gradient-to-r from-blue-900/40 to-teal-900/40 rounded-2xl p-6 border border-blue-500/30 mb-6">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-crosshairs text-blue-400"></i>
+                    Marka Konumlandırması
+                </h3>
+                <p class="text-lg leading-relaxed">
+                    <strong>Varilsan Grup</strong>, endüstriyel ambalajın üretim ve yaşam döngüsü hizmetlerini
+                    (üretim–yenileme–geri kazanım) uluslararası standartlarda birleştiren, sürdürülebilirliği
+                    operasyonun merkezine koyan bir <em>sanayi grubudur</em>.
+                </p>
+            </div>
+
+            <!-- Motto & Sloganlar -->
+            <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-quote-left text-yellow-400"></i>
+                        Ana Motto
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="bg-yellow-900/20 rounded-xl p-4 border border-yellow-500/20">
+                            <p class="text-lg font-semibold text-yellow-300">"Endüstriyel Döngünün Mimarı"</p>
+                            <p class="text-xs text-slate-500 mt-1">Alt: Ambalajın Yaşam Döngüsünü Endüstriyel Disiplinle Yönetiriz</p>
+                        </div>
+                        <div class="bg-blue-900/20 rounded-xl p-4 border border-blue-500/20">
+                            <p class="text-lg font-semibold text-blue-300">"The Architect of Industrial Cycle"</p>
+                            <p class="text-xs text-slate-500 mt-1">EN: We Manage the Packaging Life Cycle with Industrial Discipline</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-list-ol text-green-400"></i>
+                        Slogan Alternatifleri
+                    </h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2 p-2 bg-slate-700/30 rounded-lg">
+                            <span class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-xs">1</span>
+                            <span>"Üretimin Gücü, Dönüşümün Geleceği"</span>
+                        </div>
+                        <div class="flex items-center gap-2 p-2 bg-slate-700/30 rounded-lg">
+                            <span class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-xs">2</span>
+                            <span>"Sıfır Atık Hedefinde Endüstriyel Çözüm Ortağı"</span>
+                        </div>
+                        <div class="flex items-center gap-2 p-2 bg-slate-700/30 rounded-lg">
+                            <span class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-xs">3</span>
+                            <span>"Endüstriyel Ambalajda Güven ve Süreklilik"</span>
+                        </div>
+                        <div class="flex items-center gap-2 p-2 bg-slate-700/30 rounded-lg">
+                            <span class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-xs">4</span>
+                            <span>"Standartlarla Çalışır, Sürdürülebilirliği Büyütür"</span>
+                        </div>
+                        <div class="flex items-center gap-2 p-2 bg-slate-700/30 rounded-lg">
+                            <span class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-xs">5</span>
+                            <span>"Kapasite + Kalite + Mevzuat: Tek Çatı, Üç Uzmanlık"</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hakkımızda -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-info-circle text-blue-400"></i>
+                    Grup Hakkımızda (Kurumsal Ton)
+                </h3>
+                <div class="bg-slate-700/30 rounded-xl p-5 leading-relaxed space-y-4">
+                    <p>
+                        <strong>Varilsan Grup</strong>, yarım asra yaklaşan sanayi tecrübesiyle endüstriyel ambalaj sektörünün
+                        küresel standartlardaki temsilcisidir. İstanbul ve İzmir'deki yüksek teknolojiye sahip tesislerimizde;
+                        polimer üretiminden döngüsel ekonomi odaklı geri kazanım süreçlerine kadar uçtan uca çözümler sunuyoruz.
+                    </p>
+                    <p>
+                        <em>Varilsan Polimer</em> ile üretimde mükemmeliyeti, <em>Varilsan Ambalaj</em> ve <em>Varilsan Plastik</em>
+                        ile sürdürülebilir geleceği inşa ediyoruz. Biz sadece ambalaj üretmiyoruz; endüstrinin ihtiyaç duyduğu
+                        güveni, kaliteyi ve çevreci dönüşümü tasarlıyoruz.
+                    </p>
+                    <p class="text-slate-400 text-sm">
+                        Ambalajın ilk üretiminden yeniden kullanımına ve geri kazanımına kadar tüm aşamalarda; mevzuat uyumu,
+                        izlenebilirlik, kalite güvence ve sürdürülebilirlik ilkeleriyle çalışır.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Vizyon, Misyon, Değerler -->
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/10 rounded-2xl p-5 border border-blue-500/20">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fas fa-eye text-blue-400"></i>
+                        <h3 class="font-semibold">Vizyon</h3>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Ambalajın yaşam döngüsünü (Life Cycle Management) yöneterek küresel pazarda sürdürülebilirlik lideri olmak.
+                        Türkiye'den bölgesel pazarlara uzanan ölçekte; güvenilir, standart temelli lider yapılardan biri olmak.
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/10 rounded-2xl p-5 border border-green-500/20">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fas fa-bullseye text-green-400"></i>
+                        <h3 class="font-semibold">Misyon</h3>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Müşterilerimize en dayanıklı ürünleri sunarken, karbon ayak izini minimize eden geri kazanım modelleriyle
+                        dünyaya değer katmak. Maliyet/verim dengesini iyileştiren ambalaj çözümleri sunmak.
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/10 rounded-2xl p-5 border border-purple-500/20">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fas fa-gem text-purple-400"></i>
+                        <h3 class="font-semibold">Değerler</h3>
+                    </div>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li><i class="fas fa-check text-purple-400 mr-1 text-xs"></i> Endüstriyel Disiplin</li>
+                        <li><i class="fas fa-check text-purple-400 mr-1 text-xs"></i> Teknik Şeffaflık</li>
+                        <li><i class="fas fa-check text-purple-400 mr-1 text-xs"></i> Çevresel Sorumluluk</li>
+                        <li><i class="fas fa-check text-purple-400 mr-1 text-xs"></i> Operasyonel Çeviklik</li>
+                        <li><i class="fas fa-check text-purple-400 mr-1 text-xs"></i> Mevzuata Tam Uyum</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 6 Kanıt Taşı -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-shield-alt text-yellow-400"></i>
+                    Tek Omurga: 6 Temel Kanıt Taşı
+                </h3>
+                <p class="text-sm text-slate-400 mb-4">Her markanın dilini ayrı tutarken aynı altyapı kanıtları:</p>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                            <span class="font-semibold text-sm">Mevzuat/Uyum</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Lisanslar, atık kodları, prosedürler</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                            <span class="font-semibold text-sm">Kalite Sistemleri</span>
+                        </div>
+                        <p class="text-xs text-slate-400">ISO yaklaşımı, testler, sürekli iyileştirme</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                            <span class="font-semibold text-sm">UN & ADR</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Tehlikeli madde taşımacılığı uygunluğu</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                            <span class="font-semibold text-sm">İzlenebilir Süreç</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Toplama–ayıklama–temizleme–test–yenileme–sevkiyat</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold">5</span>
+                            <span class="font-semibold text-sm">Sürdürülebilirlik</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Döngüsel ekonomi, geri kazanım oranı</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold">6</span>
+                            <span class="font-semibold text-sm">Endüstriyel Ölçek</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Kapasite, saha hizmeti, termin disiplini</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider my-12"></div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- VARİLSAN POLİMER -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="polimer" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-cogs text-blue-400 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Varilsan Polimer</h2>
+                    <p class="text-slate-400 text-sm">İstanbul | Üretim Odaklı | varilsanpolimer.com</p>
+                </div>
+                <div class="ml-auto flex gap-2">
+                    <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">Teknik</span>
+                    <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">Üretim</span>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="space-y-6">
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 brand-polimer">
+                        <h3 class="font-semibold mb-3">Marka Kimliği</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-xs text-slate-500">KONUMLANDIRMA</span>
+                                <p class="text-slate-200 text-sm">Endüstriyel ambalajın hammaddeden ürüne uzanan üretim zincirinde; polimer altyapı ve üretim süreçlerini kalite standardı ile yöneten üretim markası.</p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-500">ANA SLOGAN</span>
+                                <p class="text-lg font-semibold text-blue-300">"Kusursuz Form, Endüstriyel Performans"</p>
+                                <p class="text-sm text-slate-400">Alt: "Üretimin Temeli: Standart Polimer, Güvenli Ambalaj"</p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-500">MARKA TONU</span>
+                                <p class="text-sm text-slate-300">Otoriter, teknik, mühendislik odaklı. Proses odaklı: kontrol, standart, stabilite, uyumluluk</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Alternatif Sloganlar</h3>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fas fa-angle-right text-blue-400 mr-2"></i>"Hammadde Disiplini, Ürün Güvencesi"</li>
+                            <li><i class="fas fa-angle-right text-blue-400 mr-2"></i>"Endüstriyel Ölçekte Polimer Üretimi"</li>
+                            <li><i class="fas fa-angle-right text-blue-400 mr-2"></i>"Süreç Kontrolüyle Üretilen Güç"</li>
+                            <li><i class="fas fa-angle-right text-blue-400 mr-2"></i>"Ambalajın Dayanımı Üretimde Başlar"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Hakkımızda</h3>
+                        <div class="bg-slate-700/30 rounded-xl p-4 text-sm text-slate-300 leading-relaxed space-y-2">
+                            <p>İstanbul merkezli üretim tesisimizde, yıllık 5.000 ton HDPE işleme kapasitesiyle 30 litreden 1000 litreye kadar UN onaylı ambalajlar üretiyoruz.</p>
+                            <p>Kimya, gıda ve ilaç sanayisinin en zorlu standartlarını karşılayan üretim hatlarımızla, Türkiye'nin ihracat gücüne katkı sağlıyoruz.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Ürün Portföyü</h3>
+                        <div class="space-y-3">
+                            <div class="bg-blue-900/20 rounded-lg p-3 border border-blue-500/20">
+                                <p class="font-semibold text-blue-300 text-sm">Polimer Hammadde / Granül (HDPE)</p>
+                                <p class="text-xs text-slate-400">Endüstriyel kullanımda stabilite ve süreklilik</p>
+                            </div>
+                            <div class="bg-blue-900/20 rounded-lg p-3 border border-blue-500/20">
+                                <p class="font-semibold text-blue-300 text-sm">IBC Tank (1000L)</p>
+                                <p class="text-xs text-slate-400">Gıda ve tehlikeli madde taşımacılığına uygun, UN onaylı</p>
+                            </div>
+                            <div class="bg-blue-900/20 rounded-lg p-3 border border-blue-500/20">
+                                <p class="font-semibold text-blue-300 text-sm">Endüstriyel Bidonlar (30L-220L)</p>
+                                <p class="text-xs text-slate-400">İstiflenebilir, sızdırmazlık garantili HDPE</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Hedef Sektörler</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-xs">Kimya</span>
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-xs">Boya/Kaplama</span>
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-xs">Gıda</span>
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-xs">İlaç</span>
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-xs">Tarım</span>
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-xs">Petrokimya</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider my-12"></div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- VARİLSAN AMBALAJ -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="ambalaj" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-recycle text-green-400 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Varilsan Ambalaj</h2>
+                    <p class="text-slate-400 text-sm">İstanbul/Kocaeli | Geri Dönüşüm & Yenileme | varilsan.com.tr</p>
+                </div>
+                <div class="ml-auto flex gap-2">
+                    <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Sürdürülebilir</span>
+                    <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Mevzuat</span>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="space-y-6">
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 brand-ambalaj">
+                        <h3 class="font-semibold mb-3">Marka Kimliği</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-xs text-slate-500">KONUMLANDIRMA</span>
+                                <p class="text-slate-200 text-sm">Endüstriyel ambalajların toplanması–temizlenmesi–test edilmesi–yenilenmesi süreçlerini mevzuata uygun ve izlenebilir şekilde yöneten geri kazanım ve yenileme markası.</p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-500">ANA SLOGAN</span>
+                                <p class="text-lg font-semibold text-green-300">"Geleceği Yeniden Şekillendiriyoruz"</p>
+                                <p class="text-sm text-slate-400">Alt: "Yenile. Yeniden Kullan. Güvenle Taşı."</p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-500">MARKA TONU</span>
+                                <p class="text-sm text-slate-300">Vizyoner, çevreci, profesyonel. Hizmet dili: sahadan tesise, prosedür ve güvenlik</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Alternatif Sloganlar</h3>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fas fa-angle-right text-green-400 mr-2"></i>"Döngüsel Ekonomiyi Operasyona Dönüştürür"</li>
+                            <li><i class="fas fa-angle-right text-green-400 mr-2"></i>"Kontamine Ambalajda Mevzuata Uygun Çözüm"</li>
+                            <li><i class="fas fa-angle-right text-green-400 mr-2"></i>"IBC Yenilemede İzlenebilir Süreç"</li>
+                            <li><i class="fas fa-angle-right text-green-400 mr-2"></i>"Rebottle ile Ekonomik ve Sorumlu Alternatif"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Hakkımızda</h3>
+                        <div class="bg-slate-700/30 rounded-xl p-4 text-sm text-slate-300 leading-relaxed space-y-2">
+                            <p>Marmara Bölgesi'nin en gelişmiş geri kazanım hatlarına sahip olan tesisimizde, endüstriyel ambalajları lisanslı süreçlerle ekonomiye kazandırıyoruz.</p>
+                            <p>IBC yenileme ve "Re-bottle" çözümlerimizle, şirketlerin maliyetlerini düşürürken çevresel sürdürülebilirlik hedeflerine ulaşmalarını sağlıyoruz.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Hizmetler</h3>
+                        <div class="space-y-3">
+                            <div class="bg-green-900/20 rounded-lg p-3 border border-green-500/20">
+                                <p class="font-semibold text-green-300 text-sm">IBC Yenileme (Reconditioning)</p>
+                                <p class="text-xs text-slate-400">Temizleme + Test + Yenileme süreçleri</p>
+                            </div>
+                            <div class="bg-green-900/20 rounded-lg p-3 border border-green-500/20">
+                                <p class="font-semibold text-green-300 text-sm">Rebottle IBC</p>
+                                <p class="text-xs text-slate-400">İç şişe yeni, kafes/palet yenilenmiş - maliyet avantajlı</p>
+                            </div>
+                            <div class="bg-green-900/20 rounded-lg p-3 border border-green-500/20">
+                                <p class="font-semibold text-green-300 text-sm">Kontamine Ambalaj Geri Kazanımı</p>
+                                <p class="text-xs text-slate-400">Lisanslı tesis, mevzuata tam uyum</p>
+                            </div>
+                            <div class="bg-green-900/20 rounded-lg p-3 border border-green-500/20">
+                                <p class="font-semibold text-green-300 text-sm">Toplama & Lojistik</p>
+                                <p class="text-xs text-slate-400">Türkiye geneli hizmet ağı</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider my-12"></div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- VARİLSAN PLASTİK -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="plastik" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-boxes text-purple-400 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Varilsan Plastik</h2>
+                    <p class="text-slate-400 text-sm">İzmir | Ürün Portföyü & Ege Üssü | varilsan.com</p>
+                </div>
+                <div class="ml-auto flex gap-2">
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">Ürün</span>
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">Katalog</span>
+                </div>
+            </div>
+
+            <!-- Dikkat Notu -->
+            <div class="bg-amber-900/30 border border-amber-500/30 rounded-xl p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-exclamation-triangle text-amber-400 mt-0.5"></i>
+                    <div>
+                        <p class="font-semibold text-amber-300 text-sm">Ambalaj ≠ Plastik - Farklı Anlatım Zorunlu</p>
+                        <p class="text-xs text-slate-300">Ambalaj: "hizmet/proses/uyum" dili | Plastik: "ürün/katalog/teknik özellik" dili</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="space-y-6">
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 brand-plastik">
+                        <h3 class="font-semibold mb-3">Marka Kimliği</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-xs text-slate-500">KONUMLANDIRMA</span>
+                                <p class="text-slate-200 text-sm">Endüstriyel ambalaj portföyünü (IBC, plastik varil, metal varil) sürdürülebilirlik yaklaşımı ve kalite standardı ile sunan; üretim/tedarik sürekliliği odaklı ürün markası.</p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-500">ANA SLOGAN</span>
+                                <p class="text-lg font-semibold text-purple-300">"Ege'nin Dönüşüm Gücü"</p>
+                                <p class="text-sm text-slate-400">Alt: "Endüstriyel Ambalajda Portföy ve Süreklilik"</p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-500">MARKA TONU</span>
+                                <p class="text-sm text-slate-300">Dinamik, çözüm odaklı, erişilebilir. Katalog dili: ölçü, özellik, standart, varyant</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Alternatif Sloganlar</h3>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fas fa-angle-right text-purple-400 mr-2"></i>"İzmir'den Türkiye'ye Sürdürülebilir Çözümler"</li>
+                            <li><i class="fas fa-angle-right text-purple-400 mr-2"></i>"IBC'den Varile: Tek Portföy, Tek Standart"</li>
+                            <li><i class="fas fa-angle-right text-purple-400 mr-2"></i>"Batı Anadolu'nun Geri Dönüşüm Partneri"</li>
+                            <li><i class="fas fa-angle-right text-purple-400 mr-2"></i>"Ürün Disiplini, Operasyon Güvencesi"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Hakkımızda</h3>
+                        <div class="bg-slate-700/30 rounded-xl p-4 text-sm text-slate-300 leading-relaxed space-y-2">
+                            <p>Ege sanayisinin kalbi İzmir'de, tekstil ve tarım kimyası başta olmak üzere bölgenin ambalaj ihtiyaçlarına hızlı ve etkili geri kazanım çözümleri sunuyoruz.</p>
+                            <p>Ambalaj yönetimini bir lojistik yük olmaktan çıkarıp, katma değerli bir sürece dönüştürüyoruz.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                        <h3 class="font-semibold mb-3">Ürün Portföyü</h3>
+                        <div class="space-y-3">
+                            <div class="bg-purple-900/20 rounded-lg p-3 border border-purple-500/20">
+                                <p class="font-semibold text-purple-300 text-sm">IBC Tank</p>
+                                <p class="text-xs text-slate-400">Plastik/Metal/Tahta paletli varyantlar</p>
+                            </div>
+                            <div class="bg-purple-900/20 rounded-lg p-3 border border-purple-500/20">
+                                <p class="font-semibold text-purple-300 text-sm">Plastik Varil</p>
+                                <p class="text-xs text-slate-400">60L, 120L, 200L - UN sertifikalı</p>
+                            </div>
+                            <div class="bg-purple-900/20 rounded-lg p-3 border border-purple-500/20">
+                                <p class="font-semibold text-purple-300 text-sm">Metal Varil</p>
+                                <p class="text-xs text-slate-400">Yenileme + UN sertifika uygunluğu</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/10 rounded-2xl p-5 border border-purple-500/20">
+                        <h3 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt text-purple-400"></i>
+                            Bölgesel Avantajlar
+                        </h3>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-ship text-blue-400 mr-2"></i>İzmir Limanı yakınlığı - İhracat avantajı</li>
+                            <li><i class="fas fa-industry text-blue-400 mr-2"></i>Ege OSB'lerine hızlı erişim</li>
+                            <li><i class="fas fa-road text-blue-400 mr-2"></i>Manisa, Aydın, Denizli, Uşak kapsama</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider my-12"></div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- SİTE HARİTASI -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="sitemap" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-sitemap text-yellow-400 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Site Haritası</h2>
+                    <p class="text-slate-400 text-sm">Information Architecture — Tüm Siteler</p>
+                </div>
+            </div>
+
+            <!-- Grup Site -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-globe text-blue-400"></i>
+                    varilsan.com — Grup Ana Sitesi
+                </h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <p class="font-semibold text-blue-300 mb-2">Grup</p>
+                        <ul class="space-y-1 text-slate-400">
+                            <li>Hakkımızda</li>
+                            <li>Tarihçe</li>
+                            <li>Vizyon & Misyon</li>
+                            <li>Değerler</li>
+                            <li>Politika ve Taahhütler</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-blue-300 mb-2">İştiraklerimiz</p>
+                        <ul class="space-y-1 text-slate-400">
+                            <li>Varilsan Polimer</li>
+                            <li>Varilsan Ambalaj</li>
+                            <li>Varilsan Plastik</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-green-300 mb-2">Sürdürülebilirlik</p>
+                        <ul class="space-y-1 text-slate-400">
+                            <li>Döngüsel Ekonomi</li>
+                            <li>Atık Yönetimi ve Uyum</li>
+                            <li>Sürdürülebilir Kalkınma</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-yellow-300 mb-2">Kalite & Uyum</p>
+                        <ul class="space-y-1 text-slate-400">
+                            <li>UN & ADR Nedir?</li>
+                            <li>Sertifikalar / Belgeler</li>
+                            <li>Süreç Güvencesi</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alt Markalar -->
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="bg-slate-800/50 rounded-2xl p-5 border border-blue-500/30">
+                    <h4 class="font-semibold mb-3 text-blue-300">varilsanpolimer.com</h4>
+                    <ul class="space-y-1 text-sm text-slate-400">
+                        <li>Ana Sayfa</li>
+                        <li>Kurumsal (Hakkımızda, Vizyon, Politikalar)</li>
+                        <li>Ürünler (Granül, Bileşenler, Bidon)</li>
+                        <li>Üretim & Kalite Güvence</li>
+                        <li>Sürdürülebilirlik</li>
+                        <li>İletişim / Teklif Talep</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-2xl p-5 border border-green-500/30">
+                    <h4 class="font-semibold mb-3 text-green-300">varilsan.com.tr</h4>
+                    <ul class="space-y-1 text-sm text-slate-400">
+                        <li>Ana Sayfa</li>
+                        <li>Kurumsal (Hakkımızda, Politikalar)</li>
+                        <li>Hizmetler (IBC Yenileme, Rebottle, Geri Kazanım)</li>
+                        <li>Ürünler (IBC Tank, Rebottle, Varil)</li>
+                        <li>UN & ADR Sertifikaları</li>
+                        <li>Belgelerimiz</li>
+                        <li>Blog / İletişim</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-2xl p-5 border border-purple-500/30">
+                    <h4 class="font-semibold mb-3 text-purple-300">varilsan.com (Plastik)</h4>
+                    <ul class="space-y-1 text-sm text-slate-400">
+                        <li>Ana Sayfa</li>
+                        <li>Kurumsal / Belgelerimiz</li>
+                        <li>Ürünler (IBC, Plastik Varil, Metal Varil)</li>
+                        <li>Katalog (PDF + ürün listesi)</li>
+                        <li>Galeri / Fuar</li>
+                        <li>İletişim</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider my-12"></div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- SEO STRATEJİSİ -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="seo" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-search text-red-400 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">SEO & İçerik Stratejisi</h2>
+                    <p class="text-slate-400 text-sm">Anahtar Kelimeler ve Sayfa Önerileri</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Polimer SEO -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-blue-500/30">
+                    <h3 class="font-semibold mb-4 text-blue-300">Polimer — Anahtar Kelimeler</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-blue-900/30 text-blue-300 rounded text-xs">HDPE granül</span>
+                        <span class="px-2 py-1 bg-blue-900/30 text-blue-300 rounded text-xs">polimer granül üretimi</span>
+                        <span class="px-2 py-1 bg-blue-900/30 text-blue-300 rounded text-xs">IBC iç şişe üretimi</span>
+                        <span class="px-2 py-1 bg-blue-900/30 text-blue-300 rounded text-xs">endüstriyel bidon üretimi</span>
+                        <span class="px-2 py-1 bg-blue-900/30 text-blue-300 rounded text-xs">1000 litre tank</span>
+                    </div>
+                    <p class="text-xs text-slate-500">Landing önerileri: /urunler/hdpe-granul, /cozumler/ambalaj-bilesenleri</p>
+                </div>
+
+                <!-- Ambalaj SEO -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-green-500/30">
+                    <h3 class="font-semibold mb-4 text-green-300">Ambalaj — Anahtar Kelimeler</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-green-900/30 text-green-300 rounded text-xs">IBC yenileme</span>
+                        <span class="px-2 py-1 bg-green-900/30 text-green-300 rounded text-xs">IBC yıkama</span>
+                        <span class="px-2 py-1 bg-green-900/30 text-green-300 rounded text-xs">rebottle IBC</span>
+                        <span class="px-2 py-1 bg-green-900/30 text-green-300 rounded text-xs">varil geri dönüşüm</span>
+                        <span class="px-2 py-1 bg-green-900/30 text-green-300 rounded text-xs">kontamine varil</span>
+                        <span class="px-2 py-1 bg-green-900/30 text-green-300 rounded text-xs">UN sertifikalı varil</span>
+                    </div>
+                    <p class="text-xs text-slate-500">Landing önerileri: /hizmetler/ibc-yenileme, /urunler/rebottle-ibc</p>
+                </div>
+
+                <!-- Plastik SEO -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-purple-500/30">
+                    <h3 class="font-semibold mb-4 text-purple-300">Plastik — Anahtar Kelimeler</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-purple-900/30 text-purple-300 rounded text-xs">İzmir IBC tank</span>
+                        <span class="px-2 py-1 bg-purple-900/30 text-purple-300 rounded text-xs">Ege geri dönüşüm</span>
+                        <span class="px-2 py-1 bg-purple-900/30 text-purple-300 rounded text-xs">plastik varil 60 litre</span>
+                        <span class="px-2 py-1 bg-purple-900/30 text-purple-300 rounded text-xs">plastik varil 200 litre</span>
+                        <span class="px-2 py-1 bg-purple-900/30 text-purple-300 rounded text-xs">metal varil UN</span>
+                    </div>
+                    <p class="text-xs text-slate-500">Landing önerileri: /urunler/ibc-tank, /urunler/plastik-varil</p>
+                </div>
+
+                <!-- Grup SEO -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-yellow-500/30">
+                    <h3 class="font-semibold mb-4 text-yellow-300">Grup — Anahtar Kelimeler</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-yellow-900/30 text-yellow-300 rounded text-xs">endüstriyel ambalaj çözümleri</span>
+                        <span class="px-2 py-1 bg-yellow-900/30 text-yellow-300 rounded text-xs">IBC tedarik</span>
+                        <span class="px-2 py-1 bg-yellow-900/30 text-yellow-300 rounded text-xs">ambalaj yenileme</span>
+                        <span class="px-2 py-1 bg-yellow-900/30 text-yellow-300 rounded text-xs">ADR ambalaj</span>
+                    </div>
+                    <p class="text-xs text-slate-500">Landing önerileri: /kalite-uyum/un-adr-nedir, /surdurulebilirlik/dongusel-ekonomi</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider my-12"></div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- REKABET ANALİZİ -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="rekabet" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-chess-knight text-orange-400 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Rekabet Analizi & Ayrışma</h2>
+                    <p class="text-slate-400 text-sm">Deren, Mauser, Greif, NCG karşısında konumlanma</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Polimer vs Rakipler -->
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/10 rounded-2xl p-6 border border-blue-500/30">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-chess text-blue-400"></i>
+                        Polimer vs Deren/Mauser/Greif
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <p class="font-semibold text-slate-200">"Ürün" değil, üretimin temeli</p>
+                                <p class="text-slate-400">Proses kontrol + stabil kalite + tedarik sürekliliği</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <p class="font-semibold text-slate-200">Global dev değil, çeviklik</p>
+                                <p class="text-slate-400">Özel reçete/özel üretim kabiliyeti, müşteri uyumu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <p class="font-semibold text-slate-200">Yerli üretim avantajı</p>
+                                <p class="text-slate-400">Hızlı teslimat, Türkçe teknik destek, fiyat avantajı</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ambalaj vs NCG -->
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/10 rounded-2xl p-6 border border-green-500/30">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-chess text-green-400"></i>
+                        Ambalaj/Plastik vs NCG (DNB Group)
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <p class="font-semibold text-slate-200">Mevzuat + tesis tasarımı</p>
+                                <p class="text-slate-400">Kontamine yönetimi, risk azaltma vurgusu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <p class="font-semibold text-slate-200">Rebottle standardı</p>
+                                <p class="text-slate-400">"İçi yeni / dış sistem yenilenmiş" net tanım</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <p class="font-semibold text-slate-200">UN/ADR içerik otoritesi</p>
+                                <p class="text-slate-400">Açıklama sayfaları + doküman CTA</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <p class="font-semibold text-slate-200">2 Lokasyon avantajı</p>
+                                <p class="text-slate-400">İstanbul + İzmir = Türkiye geneli kapsama</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider my-12"></div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- DİL & TON KURALLARI -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="dil" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-comment-alt text-pink-400 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Dil & Ton Kuralları</h2>
+                    <p class="text-slate-400 text-sm">Tüm İçeriklerde Uyulacak Standartlar</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 rounded-2xl p-6 border border-green-500/30">
+                    <h3 class="font-semibold mb-4 text-green-300"><i class="fas fa-check-circle mr-2"></i>Yapılacaklar</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Kısa cümle, net fiil: "yönetir", "uygular", "test eder"</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Kanıtla destekle: belge, standart, süreç</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Teknik terim varsa açıkla: UN/ADR, rebottle</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>"Teklif Talep", "Teknik doküman iste" CTA'ları</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>"Atık" yerine "İkincil Hammadde" / "Değerli Kaynak"</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-900/20 rounded-2xl p-6 border border-red-500/30">
+                    <h3 class="font-semibold mb-4 text-red-300"><i class="fas fa-times-circle mr-2"></i>Yapılmayacaklar</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>"En iyi", "lider", "rakipsiz" gibi abartılar</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>"Satın al" yerine teklif odaklı dil</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>Emoji ve informal dil (B2B endüstriyel site)</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>Belirsiz vaatler: "Hızlı" yerine "48 saat içinde"</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>Rakip eleştirisi veya doğrudan karşılaştırma</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-robot text-blue-400"></i>
+                    <span class="text-slate-400 text-sm">Claude AI ile birleştirildi</span>
+                </div>
+                <div class="text-slate-500 text-sm text-center">
+                    Kaynaklar: a-html.txt + b-html.txt + Claude Analizi | 23 Aralık 2025
+                </div>
+                <a href="https://ixtif.com/readme/" class="text-blue-400 hover:text-blue-300 text-sm">
+                    <i class="fas fa-arrow-left mr-1"></i> Tüm Raporlar
+                </a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

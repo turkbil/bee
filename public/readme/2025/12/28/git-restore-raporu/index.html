@@ -1,1 +1,206 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Restore Raporu - 28 Aralık 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-900/30 border border-green-700 rounded-full text-green-400 text-sm mb-4">
+                <i class="fas fa-check-circle"></i>
+                <span>Geri Yükleme Tamamlandı</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-2">Git Restore Raporu</h1>
+            <p class="text-slate-400">28 Aralık 2025 - 03:05</p>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 text-center">
+                <div class="text-4xl font-bold text-green-400 mb-2">752</div>
+                <div class="text-slate-400">Design Dosyası Geri Yüklendi</div>
+                <i class="fas fa-undo text-green-500/30 text-5xl mt-4"></i>
+            </div>
+            <div class="bg-red-900/20 border border-red-800 rounded-xl p-6 text-center">
+                <div class="text-4xl font-bold text-red-400 mb-2">369</div>
+                <div class="text-slate-400">Şüpheli Dosya (Silinecek)</div>
+                <i class="fas fa-virus text-red-500/30 text-5xl mt-4"></i>
+            </div>
+            <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 text-center">
+                <div class="text-4xl font-bold text-blue-400 mb-2">1121</div>
+                <div class="text-slate-400">Toplam Tespit Edilen</div>
+                <i class="fas fa-search text-blue-500/30 text-5xl mt-4"></i>
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-user"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p><strong>Ne oldu?</strong> Sistemde 1121 dosyanın silindiği tespit edildi. Bunların 752 tanesi önemli tasarım dosyalarıydı (design klasörü), 369 tanesi ise şüpheli dosyalar.</p>
+                <p><strong>Ne yaptık?</strong> Tüm tasarım dosyalarını (752 adet) git'ten geri yükledik. Şüpheli görünen 369 dosyayı ise geri yüklemedik - bunlar muhtemelen zararlı yazılım.</p>
+                <p><strong>Sonuç:</strong> Tasarım sistemi (/design/templates/, /design/sectors/ vb.) artık çalışıyor. Şüpheli dosyalar silinmiş durumda kalacak.</p>
+            </div>
+        </div>
+
+        <!-- Geri Yüklenen Dosyalar -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-check-circle"></i>
+                Geri Yüklenen Dosyalar (752 Adet)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">public/design/templates/</h3>
+                    <ul class="text-sm text-slate-400 space-y-1">
+                        <li><i class="fas fa-file-code text-green-500 mr-2"></i>index.php (Ana şablon sistemi)</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>kurumsal-anasayfa/</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>varilsan-group/</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>endustriyel-ambalaj/</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>madencilik/</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">public/design/sectors/</h3>
+                    <ul class="text-sm text-slate-400 space-y-1">
+                        <li><i class="fas fa-file-code text-green-500 mr-2"></i>index.html (Sektör seçici)</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>holding/</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>finans/</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>saglik/</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>... ve diğerleri</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">public/design/auth-themes/</h3>
+                    <ul class="text-sm text-slate-400 space-y-1">
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>login/ (5 tasarım)</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>register/ (5 tasarım)</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>forgot-password/</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>2fa-code/</li>
+                        <li><i class="fas fa-folder text-blue-500 mr-2"></i>profile/</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">Diğer Tasarım Dosyaları</h3>
+                    <ul class="text-sm text-slate-400 space-y-1">
+                        <li><i class="fas fa-file text-green-500 mr-2"></i>design-about-*.html (10 adet)</li>
+                        <li><i class="fas fa-file text-green-500 mr-2"></i>design-blog-*.html (10 adet)</li>
+                        <li><i class="fas fa-file text-green-500 mr-2"></i>design-contact-*.html (14 adet)</li>
+                        <li><i class="fas fa-file text-green-500 mr-2"></i>design-accordion-*.html</li>
+                        <li><i class="fas fa-file text-green-500 mr-2"></i>... ve 700+ diğer dosya</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Şüpheli Dosyalar -->
+        <div class="bg-red-900/20 border border-red-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle"></i>
+                Şüpheli Dosyalar - GERİ YÜKLENMEDİ (369 Adet)
+            </h2>
+
+            <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                <h3 class="font-semibold text-yellow-400 mb-2">Neden Geri Yüklenmediler?</h3>
+                <ul class="text-sm text-slate-400 space-y-2">
+                    <li><i class="fas fa-times-circle text-red-500 mr-2"></i><strong>Random hash isimli klasörler:</strong> public/01a5e/, public/04b74/, public/adc7c/ gibi</li>
+                    <li><i class="fas fa-times-circle text-red-500 mr-2"></i><strong>cache.php dosyaları:</strong> Genellikle backdoor olarak kullanılır</li>
+                    <li><i class="fas fa-times-circle text-red-500 mr-2"></i><strong>Rastgele isimli medya dosyaları:</strong> swfqFpgEY.mkv, grEKGRXqbWsICjc.mp4</li>
+                    <li><i class="fas fa-times-circle text-red-500 mr-2"></i><strong>Şüpheli zip dosyaları:</strong> wbmp_694f537ac1604.zip, wmv_694f5381c75ce.zip</li>
+                    <li><i class="fas fa-times-circle text-red-500 mr-2"></i><strong>Hash isimli PHP dosyaları:</strong> public/453bbb9eb16f.php</li>
+                </ul>
+            </div>
+
+            <div class="bg-slate-900/50 rounded-lg p-4">
+                <h3 class="font-semibold text-white mb-2">Örnek Şüpheli Dosyalar</h3>
+                <div class="font-mono text-xs text-red-300 space-y-1 max-h-48 overflow-y-auto">
+                    <div>public/01a5e/index.php</div>
+                    <div>public/04b74/04b74/cache.php</div>
+                    <div>public/04b74/04b74/swfqFpgEY.mkv</div>
+                    <div>public/21e01/21e01/cache.php</div>
+                    <div>public/21e01/21e01/wbmp_694f537ac1604.zip</div>
+                    <div>public/adc7c/adc7c/CXbSThLcKeqEuAmBWJ.fla</div>
+                    <div>public/adc7c/adc7c/cache.php</div>
+                    <div>public/d4d0c/d4d0c/grEKGRXqbWsICjc.mp4</div>
+                    <div>public/eaa78/eaa78/vjNKrTMPXkUpBFinItsq.jpg</div>
+                    <div>public/ed759/ed759/ed759/cache.php</div>
+                    <div>public/admin-assets/libs/js-cookie@3.0.5/js-cookie@3.0.5/cache.php</div>
+                    <div>public/453bbb9eb16f.php</div>
+                    <div>public/6f9a917dcb4919dc6e6ba723466c6af1.txt</div>
+                    <div class="text-slate-500">... ve 356 dosya daha</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-terminal"></i>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">Çalıştırılan Komutlar</h3>
+                    <div class="font-mono text-sm text-green-400 space-y-2">
+                        <div class="bg-slate-800 p-2 rounded"># Design dosyalarını geri yükle<br>git checkout -- public/design/</div>
+                        <div class="bg-slate-800 p-2 rounded"># İzinleri düzelt<br>sudo chown -R tuufi.com_:psaserv public/design/<br>sudo find public/design/ -type f -exec chmod 644 {} \;<br>sudo find public/design/ -type d -exec chmod 755 {} \;</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">Sonraki Adımlar (Önerilen)</h3>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li><i class="fas fa-arrow-right text-yellow-500 mr-2"></i>Şüpheli dosyaları git'ten kalıcı olarak silmek için: <code class="bg-slate-800 px-2 py-1 rounded">git rm -r public/01a5e/ public/04b74/ ...</code></li>
+                        <li><i class="fas fa-arrow-right text-yellow-500 mr-2"></i>Git geçmişinden temizlemek için: git filter-branch veya BFG Repo-Cleaner kullanılabilir</li>
+                        <li><i class="fas fa-arrow-right text-yellow-500 mr-2"></i>Güvenlik taraması: tüm PHP dosyalarını malware için tara</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Önemli Uyarı -->
+        <div class="bg-yellow-900/20 border border-yellow-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-shield-alt"></i>
+                Güvenlik Uyarısı
+            </h2>
+            <p class="text-slate-300 mb-4">
+                Git geçmişinde 369 adet şüpheli dosya tespit edildi. Bu dosyalar muhtemelen önceden sisteme sızmış malware/backdoor olabilir.
+                Git'e commit edilmiş olmaları, geçmişte bir güvenlik ihlali yaşandığını gösterebilir.
+            </p>
+            <div class="flex gap-4 flex-wrap">
+                <span class="px-3 py-1 bg-red-900/50 border border-red-700 rounded-full text-sm text-red-400">
+                    <i class="fas fa-virus mr-1"></i> Potansiyel Malware
+                </span>
+                <span class="px-3 py-1 bg-orange-900/50 border border-orange-700 rounded-full text-sm text-orange-400">
+                    <i class="fas fa-door-open mr-1"></i> Backdoor Şüphesi
+                </span>
+                <span class="px-3 py-1 bg-yellow-900/50 border border-yellow-700 rounded-full text-sm text-yellow-400">
+                    <i class="fas fa-history mr-1"></i> Git Geçmişinde Mevcut
+                </span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>Bu rapor Claude AI tarafından otomatik oluşturuldu</p>
+            <p class="mt-1">28 Aralık 2025 - 03:05</p>
+        </footer>
+
+    </div>
+</body>
+</html>

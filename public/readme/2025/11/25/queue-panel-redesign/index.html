@@ -1,1 +1,909 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Queue Panel - Yeni Tasarım</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(145deg, #0a0a0a, #121212);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Queue Panel Container */
+        .queue-panel {
+            width: 420px;
+            max-height: 85vh;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16161a 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header */
+        .queue-header {
+            padding: 24px 24px 20px;
+            background: linear-gradient(180deg, rgba(29, 185, 84, 0.15) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .queue-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #b3b3b3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .queue-header h2 i {
+            background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: #b3b3b3;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        /* Now Playing Section */
+        .now-playing {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(29, 185, 84, 0.08) 0%, rgba(29, 185, 84, 0.02) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1DB954;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(29, 185, 84, 0.3) 0%, transparent 100%);
+        }
+
+        .now-playing-card {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(29, 185, 84, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .now-playing-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(29, 185, 84, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .now-playing-cover {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            flex-shrink: 0;
+        }
+
+        .now-playing-cover img {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .playing-indicator {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 24px;
+            height: 24px;
+            background: #1DB954;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .playing-indicator i {
+            font-size: 10px;
+            color: #000;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4); }
+            50% { box-shadow: 0 4px 20px rgba(29, 185, 84, 0.7); }
+        }
+
+        /* Equalizer Animation */
+        .equalizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 16px;
+        }
+
+        .equalizer span {
+            width: 3px;
+            background: #1DB954;
+            border-radius: 1px;
+            animation: equalizer 0.8s ease-in-out infinite;
+        }
+
+        .equalizer span:nth-child(1) { animation-delay: 0s; }
+        .equalizer span:nth-child(2) { animation-delay: 0.2s; }
+        .equalizer span:nth-child(3) { animation-delay: 0.4s; }
+        .equalizer span:nth-child(4) { animation-delay: 0.1s; }
+
+        @keyframes equalizer {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+
+        .now-playing-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .now-playing-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .now-playing-artist {
+            font-size: 13px;
+            color: #b3b3b3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .now-playing-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .meta-item {
+            font-size: 11px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meta-item i {
+            font-size: 10px;
+            color: #1DB954;
+        }
+
+        /* Queue List Section */
+        .queue-list-section {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .queue-list-header {
+            padding: 20px 24px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .queue-list-header .section-title {
+            margin-bottom: 0;
+        }
+
+        .queue-count {
+            font-size: 12px;
+            color: #6b7280;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .queue-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 16px 16px;
+        }
+
+        /* Custom Scrollbar */
+        .queue-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .queue-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .queue-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .queue-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Queue Item */
+        .queue-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            margin-bottom: 4px;
+        }
+
+        .queue-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            background: linear-gradient(90deg, rgba(29, 185, 84, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .queue-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(4px);
+        }
+
+        .queue-item:hover::before {
+            opacity: 1;
+        }
+
+        .queue-item.active {
+            background: linear-gradient(90deg, rgba(29, 185, 84, 0.15), rgba(29, 185, 84, 0.05));
+            border-left: 3px solid #1DB954;
+            padding-left: 9px;
+        }
+
+        .queue-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+
+        /* Drag Handle */
+        .drag-handle {
+            width: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            color: #4b5563;
+            transition: all 0.2s ease;
+            opacity: 0;
+        }
+
+        .queue-item:hover .drag-handle {
+            opacity: 1;
+        }
+
+        .drag-handle:hover {
+            color: #1DB954;
+            transform: scale(1.1);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        /* Track Number */
+        .track-number {
+            width: 24px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.2s ease;
+        }
+
+        .queue-item.active .track-number {
+            color: #1DB954;
+        }
+
+        .queue-item:hover .track-number:not(.play-icon) {
+            opacity: 0;
+        }
+
+        .play-icon {
+            position: absolute;
+            left: 44px;
+            opacity: 0;
+            color: #1DB954;
+        }
+
+        .queue-item:hover .play-icon {
+            opacity: 1;
+        }
+
+        .queue-item.active .play-icon {
+            opacity: 1;
+            animation: pulse-play 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-play {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.85); }
+        }
+
+        /* Track Cover */
+        .track-cover {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .queue-item:hover .track-cover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .queue-item.active .track-cover {
+            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.3);
+        }
+
+        .track-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Track Info */
+        .track-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .track-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.2s ease;
+        }
+
+        .queue-item.active .track-title {
+            color: #1DB954;
+        }
+
+        .track-artist {
+            font-size: 12px;
+            color: #9ca3af;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Track Duration */
+        .track-duration {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        /* Track Actions */
+        .track-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .queue-item:hover .track-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: #b3b3b3;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .action-btn.like-btn:hover,
+        .action-btn.like-btn.active {
+            color: #1DB954;
+        }
+
+        .action-btn.remove-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(29, 185, 84, 0.1) 0%, rgba(29, 185, 84, 0.02) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .empty-icon i {
+            font-size: 32px;
+            color: #4b5563;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .empty-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        /* Footer Actions */
+        .queue-footer {
+            padding: 16px 24px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            gap: 12px;
+        }
+
+        .footer-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            color: #b3b3b3;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .footer-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-btn.primary {
+            background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+            border: none;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .footer-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(29, 185, 84, 0.4);
+        }
+
+        /* Demo Info */
+        .demo-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 300px;
+        }
+
+        .demo-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1DB954;
+            margin-bottom: 8px;
+        }
+
+        .demo-info p {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="queue-panel">
+        <!-- Header -->
+        <div class="queue-header">
+            <h2><i class="fas fa-stream"></i> Calma Sirasi</h2>
+            <div class="header-actions">
+                <button class="header-btn" title="Listeyi temizle">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <button class="header-btn" title="Kapat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Now Playing -->
+        <div class="now-playing">
+            <div class="section-title">
+                <i class="fas fa-headphones"></i>
+                Su An Caliniyor
+            </div>
+            <div class="now-playing-card">
+                <div class="now-playing-cover">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&h=200&fit=crop" alt="Album">
+                    <div class="playing-indicator">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <div class="now-playing-info">
+                    <div class="now-playing-title">Gecenin Ucunda</div>
+                    <div class="now-playing-artist">Sezen Aksu</div>
+                    <div class="now-playing-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-compact-disc"></i>
+                            <span>Gulseni</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>4:32</span>
+                        </div>
+                        <div class="equalizer">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Queue List -->
+        <div class="queue-list-section">
+            <div class="queue-list-header">
+                <div class="section-title">
+                    <i class="fas fa-list-ol"></i>
+                    Siradaki Sarkilar
+                </div>
+                <span class="queue-count">8 sarki</span>
+            </div>
+
+            <div class="queue-list">
+                <!-- Item 1 -->
+                <div class="queue-item">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <span class="track-number">1</span>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="track-cover">
+                        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=100&h=100&fit=crop" alt="Track">
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">Firuze</div>
+                        <div class="track-artist">Sezen Aksu</div>
+                    </div>
+                    <span class="track-duration">3:45</span>
+                    <div class="track-actions">
+                        <button class="action-btn like-btn" title="Begeni">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="action-btn remove-btn" title="Kaldir">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 2 - Active -->
+                <div class="queue-item active">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <span class="track-number">2</span>
+                    <i class="fas fa-pause play-icon"></i>
+                    <div class="track-cover">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&h=100&fit=crop" alt="Track">
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">Tarkovsky</div>
+                        <div class="track-artist">Anathema</div>
+                    </div>
+                    <span class="track-duration">5:22</span>
+                    <div class="track-actions">
+                        <button class="action-btn like-btn active" title="Begenildi">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button class="action-btn remove-btn" title="Kaldir">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="queue-item">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <span class="track-number">3</span>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="track-cover">
+                        <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=100&h=100&fit=crop" alt="Track">
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">Istanbul Istanbul Olali</div>
+                        <div class="track-artist">Zeki Muren</div>
+                    </div>
+                    <span class="track-duration">4:18</span>
+                    <div class="track-actions">
+                        <button class="action-btn like-btn" title="Begeni">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="action-btn remove-btn" title="Kaldir">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="queue-item">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <span class="track-number">4</span>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="track-cover">
+                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop" alt="Track">
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">Aldirma Gonul</div>
+                        <div class="track-artist">Baris Manco</div>
+                    </div>
+                    <span class="track-duration">3:56</span>
+                    <div class="track-actions">
+                        <button class="action-btn like-btn" title="Begeni">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="action-btn remove-btn" title="Kaldir">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="queue-item">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <span class="track-number">5</span>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="track-cover">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&h=100&fit=crop" alt="Track">
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">Leyla ile Mecnun</div>
+                        <div class="track-artist">Cem Karaca</div>
+                    </div>
+                    <span class="track-duration">6:12</span>
+                    <div class="track-actions">
+                        <button class="action-btn like-btn" title="Begeni">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="action-btn remove-btn" title="Kaldir">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="queue-item">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <span class="track-number">6</span>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="track-cover">
+                        <img src="https://images.unsplash.com/photo-1484755560615-a4c64e778a6c?w=100&h=100&fit=crop" alt="Track">
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">Bir Teselli Ver</div>
+                        <div class="track-artist">Mazhar Fuat Ozkan</div>
+                    </div>
+                    <span class="track-duration">4:45</span>
+                    <div class="track-actions">
+                        <button class="action-btn like-btn" title="Begeni">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="action-btn remove-btn" title="Kaldir">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 7 -->
+                <div class="queue-item">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <span class="track-number">7</span>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="track-cover">
+                        <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=100&h=100&fit=crop" alt="Track">
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">Yorgun Demokrat</div>
+                        <div class="track-artist">Cem Karaca</div>
+                    </div>
+                    <span class="track-duration">5:33</span>
+                    <div class="track-actions">
+                        <button class="action-btn like-btn active" title="Begenildi">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button class="action-btn remove-btn" title="Kaldir">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 8 -->
+                <div class="queue-item">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <span class="track-number">8</span>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="track-cover">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Track">
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">Nereden Sevdim</div>
+                        <div class="track-artist">Erkin Koray</div>
+                    </div>
+                    <span class="track-duration">4:08</span>
+                    <div class="track-actions">
+                        <button class="action-btn like-btn" title="Begeni">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="action-btn remove-btn" title="Kaldir">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="queue-footer">
+            <button class="footer-btn">
+                <i class="fas fa-random"></i>
+                Karistir
+            </button>
+            <button class="footer-btn primary">
+                <i class="fas fa-save"></i>
+                Playlist Olustur
+            </button>
+        </div>
+    </div>
+
+    <!-- Demo Info -->
+    <div class="demo-info">
+        <h3>Yeni Queue Panel Tasarimi</h3>
+        <p>
+            Modern, temiz ve kullanici dostu bir tasarim.
+            Spotify'dan ilham alinmis, glassmorphism efektleri,
+            yumusak animasyonlar ve drag-drop siralama destegi.
+        </p>
+    </div>
+</body>
+</html>

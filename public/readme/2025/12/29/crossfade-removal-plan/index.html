@@ -1,1 +1,357 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crossfade Kaldirilma ve Gapless Playback Plani - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-400 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Planlama Dokumani</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">Crossfade Kaldirilma Plani</h1>
+            <p class="text-slate-400">29 Aralik 2025 - Muzibu Player Refactoring</p>
+        </header>
+
+        <!-- Mevcut Durum -->
+        <section class="bg-red-900/20 border border-red-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle text-red-400"></i>
+                Mevcut Sorun
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p><strong>Crossfade neden sorun cikariyor?</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><code class="bg-slate-700 px-1 rounded">bufferAppendError</code> - HLS buffer'a veri eklenemiyor</li>
+                    <li><code class="bg-slate-700 px-1 rounded">mediaError</code> - MediaSource API hatalari</li>
+                    <li>Iki HLS instance ayni anda calisinca browser kaynagi tuketiyor</li>
+                    <li>Mobile Safari'de zaten calismiyordu (devre disi)</li>
+                    <li>Background tab'da ses kesiliyor</li>
+                    <li>Fatal error olunca player tamamen duruyor</li>
+                </ul>
+                <div class="mt-4 p-4 bg-green-900/30 rounded-lg border border-green-700">
+                    <p class="text-green-400 font-semibold"><i class="fas fa-check mr-2"></i>GECICI COZUM: Crossfade simdi devre disi!</p>
+                    <p class="text-sm text-slate-400 mt-1">player-core.js:172 - crossfadeEnabled: false</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buyuk Platformlar Nasil Yapiyor -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-headphones text-purple-400"></i>
+                Buyuk Platformlar Nasil Yapiyor?
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Spotify -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fab fa-spotify text-green-500 text-2xl"></i>
+                        <h3 class="font-semibold text-green-400">Spotify</h3>
+                    </div>
+                    <ul class="text-sm space-y-2 text-slate-300">
+                        <li><i class="fas fa-check text-green-500 mr-1"></i><strong>Gapless Playback</strong> varsayilan</li>
+                        <li><i class="fas fa-cog text-slate-500 mr-1"></i>Crossfade <strong>opsiyonel</strong> (0-12sn)</li>
+                        <li><i class="fas fa-music text-slate-500 mr-1"></i>Preload: Sonraki sarki onceden yuklenir</li>
+                        <li><i class="fas fa-code text-slate-500 mr-1"></i>Web Audio API + MSE kullanir</li>
+                    </ul>
+                    <div class="mt-3 p-2 bg-slate-700/50 rounded text-xs">
+                        <strong>Anahtar:</strong> Tek audio context, buffer swap
+                    </div>
+                </div>
+
+                <!-- Apple Music -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fab fa-apple text-white text-2xl"></i>
+                        <h3 class="font-semibold text-white">Apple Music</h3>
+                    </div>
+                    <ul class="text-sm space-y-2 text-slate-300">
+                        <li><i class="fas fa-check text-green-500 mr-1"></i><strong>Gapless Playback</strong> varsayilan</li>
+                        <li><i class="fas fa-times text-red-500 mr-1"></i>Crossfade <strong>yok</strong> (web'de)</li>
+                        <li><i class="fas fa-music text-slate-500 mr-1"></i>Native HLS (Safari optimized)</li>
+                        <li><i class="fas fa-code text-slate-500 mr-1"></i>MusicKit JS framework</li>
+                    </ul>
+                    <div class="mt-3 p-2 bg-slate-700/50 rounded text-xs">
+                        <strong>Anahtar:</strong> Native HLS, seek-to-end tekniği
+                    </div>
+                </div>
+
+                <!-- YouTube Music -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fab fa-youtube text-red-500 text-2xl"></i>
+                        <h3 class="font-semibold text-red-400">YouTube Music</h3>
+                    </div>
+                    <ul class="text-sm space-y-2 text-slate-300">
+                        <li><i class="fas fa-check text-green-500 mr-1"></i><strong>Gapless</strong> album icinde</li>
+                        <li><i class="fas fa-times text-red-500 mr-1"></i>Crossfade <strong>yok</strong></li>
+                        <li><i class="fas fa-music text-slate-500 mr-1"></i>Adaptive streaming (DASH/HLS)</li>
+                        <li><i class="fas fa-code text-slate-500 mr-1"></i>Shaka Player (Google)</li>
+                    </ul>
+                    <div class="mt-3 p-2 bg-slate-700/50 rounded text-xs">
+                        <strong>Anahtar:</strong> ended event + instant load
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-900/30 rounded-lg border border-blue-700">
+                <h4 class="font-semibold text-blue-400 mb-2"><i class="fas fa-lightbulb mr-2"></i>Ortak Ozellikler</h4>
+                <ul class="text-sm space-y-1 text-slate-300">
+                    <li>1. <strong>Gapless playback varsayilan</strong> - Crossfade opsiyonel veya yok</li>
+                    <li>2. <strong>Preload sistemi</strong> - Sonraki sarki onceden yukleniyor (ilk segment)</li>
+                    <li>3. <strong>Tek player instance</strong> - Iki player ayni anda calismaz</li>
+                    <li>4. <strong>ended event'e guven</strong> - Sarki bitince hemen sonrakini cal</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Onerilen Mimari -->
+        <section class="bg-cyan-900/20 border border-cyan-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-drafting-compass text-cyan-400"></i>
+                Onerilen Yeni Mimari
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Gapless Playback -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-emerald-400 mb-3">
+                        <i class="fas fa-play-circle mr-2"></i>1. Gapless Playback (Varsayilan)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-slate-400 mb-2">Nasil Calisir:</p>
+                            <ol class="text-sm space-y-1 text-slate-300 list-decimal list-inside">
+                                <li>Sarki calarken sonraki sarkinin URL'ini al</li>
+                                <li>Sonraki sarkinin ilk segmentini preload et</li>
+                                <li><code class="bg-slate-700 px-1 rounded">ended</code> event tetiklenince</li>
+                                <li>Mevcut HLS'i destroy et</li>
+                                <li>Preload edilmis sarkiyi hemen cal</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 mb-2">Avantajlari:</p>
+                            <ul class="text-sm space-y-1 text-slate-300">
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Tek HLS instance - kaynak tasarrufu</li>
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Buffer hatalari olmaz</li>
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Mobile'da calisisr</li>
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Background tab'da calisisr</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preload Sistemi -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-3">
+                        <i class="fas fa-bolt mr-2"></i>2. Akilli Preload Sistemi
+                    </h3>
+                    <div class="text-sm space-y-2 text-slate-300">
+                        <p><strong>Mevcut sistem zaten var:</strong> <code class="bg-slate-700 px-1 rounded">preloadNextSong()</code></p>
+                        <p>Gelistirme onerileri:</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>Preload basari durumunu state'e kaydet</li>
+                            <li>Preload basarisizsa tekrar dene (3 deneme)</li>
+                            <li>Cache'e alinan URL'i <code class="bg-slate-700 px-1 rounded">streamUrlCache</code>'de sakla</li>
+                            <li>Sarki gecisinde cache'den hemen kullan</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Opsiyonel Crossfade -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-orange-400 mb-3">
+                        <i class="fas fa-sliders-h mr-2"></i>3. Opsiyonel Crossfade (Gelecekte)
+                    </h3>
+                    <div class="text-sm space-y-2 text-slate-300">
+                        <p class="text-orange-300"><strong>Simdilik implement ETME!</strong> Once gapless duzgun calismali.</p>
+                        <p>Eger gelecekte eklenecekse:</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>Web Audio API kullan (AudioContext + GainNode)</li>
+                            <li>Sadece MP3 icin aktif et (HLS'de sorunlu)</li>
+                            <li>Kullanici ayarlarindan acilip kapanabilmeli</li>
+                            <li>Mobile'da otomatik devre disi</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Crossfade Kodunu Temizleme Plani -->
+        <section class="bg-red-900/20 border border-red-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-trash-alt text-red-400"></i>
+                Crossfade Kodunu Temizleme Plani
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-2">Adim 1: State Degiskenleri (Silinecek)</h3>
+                    <div class="font-mono text-xs text-slate-400 space-y-1">
+                        <p>- crossfadeEnabled (satir 172)</p>
+                        <p>- crossfadeDuration (satir 173)</p>
+                        <p>- isCrossfading (satir 175)</p>
+                        <p>- crossfadeTimeoutId (satir 176)</p>
+                        <p>- crossfadeNextIndex (satir 177)</p>
+                        <p>- howlNext (satir 179)</p>
+                        <p>- hlsNext (satir 181)</p>
+                        <p>- nextHlsAudioId</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-2">Adim 2: Fonksiyonlar (Silinecek)</h3>
+                    <div class="font-mono text-xs text-slate-400 space-y-1">
+                        <p>- startCrossfade() (~satir 1486)</p>
+                        <p>- createNextHowlerPlayer() (~satir 1670)</p>
+                        <p>- createNextHlsPlayer() (~satir 1703)</p>
+                        <p>- completeCrossfade() (~satir 1831)</p>
+                        <p>- fadeAudioElement() (crossfade icin kullanilan)</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-2">Adim 3: Event Listener'lar (Duzeltilecek)</h3>
+                    <div class="font-mono text-xs text-slate-400 space-y-1">
+                        <p>- timeupdate: crossfade trigger kodunu kaldir</p>
+                        <p>- ended: crossfade kontrolunu kaldir, direkt onTrackEnded()</p>
+                        <p>- BUFFER_EOS: crossfade kontrolunu kaldir</p>
+                        <p>- pause: crossfade completion kodunu kaldir</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-2">Adim 4: HTML Elementler (Temizlenecek)</h3>
+                    <div class="font-mono text-xs text-slate-400 space-y-1">
+                        <p>- hlsAudioNext audio elementi (artik gerekli degil)</p>
+                        <p>- Sadece tek hlsAudio elementi yeterli</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-300 mb-2">Adim 5: Korunacak Kodlar</h3>
+                    <div class="font-mono text-xs text-slate-400 space-y-1">
+                        <p>+ preloadNextSong() - Bu kalmali!</p>
+                        <p>+ streamUrlCache - Bu kalmali!</p>
+                        <p>+ onTrackEnded() - Bu zaten var</p>
+                        <p>+ playNextSong() - Bu zaten var</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yeni Sarki Gecis Akisi -->
+        <section class="bg-emerald-900/20 border border-emerald-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-exchange-alt text-emerald-400"></i>
+                Yeni Sarki Gecis Akisi (Gapless)
+            </h2>
+
+            <div class="space-y-3">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center shrink-0 text-sm font-bold">1</div>
+                    <div>
+                        <p class="font-semibold text-emerald-300">Sarki Calmaya Basladiginda</p>
+                        <p class="text-sm text-slate-400">currentTime > 2sn olunca preloadNextSong() cagir</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center shrink-0 text-sm font-bold">2</div>
+                    <div>
+                        <p class="font-semibold text-emerald-300">Preload Islemi</p>
+                        <p class="text-sm text-slate-400">API'den URL al, streamUrlCache'e kaydet (HLS instance OLUSTURMA!)</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center shrink-0 text-sm font-bold">3</div>
+                    <div>
+                        <p class="font-semibold text-emerald-300">Sarki Bittiginde (ended event)</p>
+                        <p class="text-sm text-slate-400">onTrackEnded() &rarr; playNextSong() &rarr; playSongFromQueue()</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center shrink-0 text-sm font-bold">4</div>
+                    <div>
+                        <p class="font-semibold text-emerald-300">Sonraki Sarkiyi Cal</p>
+                        <p class="text-sm text-slate-400">Cache'de URL varsa kullan, yoksa API'den al. Tek HLS instance ile cal.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-slate-800/50 rounded-lg">
+                <h4 class="font-semibold text-slate-300 mb-2">Pseudocode:</h4>
+                <pre class="text-xs text-green-400 overflow-x-auto">
+// Sarki bittiginde (ended event)
+onTrackEnded() {
+    // Mevcut HLS'i temizle
+    if (this.hls) {
+        this.hls.destroy();
+        this.hls = null;
+    }
+
+    // Sonraki sarkiya gec
+    const nextIndex = this.getNextSongIndex();
+    if (nextIndex >= 0) {
+        // playSongFromQueue cache'den URL alacak
+        this.playSongFromQueue(nextIndex);
+    }
+}
+
+// playSongFromQueue zaten cache kontrolu yapiyor:
+// const cached = this.getCachedStream(song.song_id);
+// if (cached) { data = cached; } else { fetch from API }
+                </pre>
+            </div>
+        </section>
+
+        <!-- Oncelik Sirasi -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-tasks text-yellow-400"></i>
+                Uygulama Oncelik Sirasi
+            </h2>
+            <div class="space-y-3">
+                <div class="flex items-center gap-3 p-3 bg-green-900/30 rounded-lg border border-green-700">
+                    <span class="text-green-400 font-bold">1</span>
+                    <span class="text-green-300"><i class="fas fa-check mr-2"></i>Crossfade'i devre disi birak (TAMAMLANDI)</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-yellow-900/30 rounded-lg border border-yellow-700">
+                    <span class="text-yellow-400 font-bold">2</span>
+                    <span class="text-yellow-300">Test et: Gapless playback (ended event) duzgun calisiyor mu?</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-blue-900/30 rounded-lg border border-blue-700">
+                    <span class="text-blue-400 font-bold">3</span>
+                    <span class="text-blue-300">Preload sistemini guclendir (sadece URL cache, HLS instance degil)</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-slate-700/50 rounded-lg">
+                    <span class="text-slate-400 font-bold">4</span>
+                    <span class="text-slate-300">Crossfade kodlarini tamamen temizle (refactoring)</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-slate-700/50 rounded-lg">
+                    <span class="text-slate-400 font-bold">5</span>
+                    <span class="text-slate-300">(Opsiyonel) Web Audio API ile soft crossfade ekle</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>
+                <i class="fas fa-robot mr-1"></i>
+                Claude AI tarafindan olusturuldu
+            </p>
+            <p class="mt-1">29 Aralik 2025</p>
+        </footer>
+
+    </div>
+</body>
+</html>

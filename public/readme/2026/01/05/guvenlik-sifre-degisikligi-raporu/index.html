@@ -1,1 +1,270 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Güvenlik Saldırısı Sonrası Şifre Değişikliği Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-2 rounded-full text-sm mb-4">
+                <i class="fas fa-key"></i>
+                <span>Şifre Değişikliği Protokolü</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4">Backdoor Saldırısı Sonrası Şifre Yenileme</h1>
+            <p class="text-xl text-gray-400">Kritik Güvenlik Önlemleri</p>
+            <p class="text-sm text-gray-500 mt-2">
+                <i class="fas fa-calendar-alt mr-1"></i> 5 Ocak 2026
+                <span class="mx-2">|</span>
+                <i class="fas fa-clock mr-1"></i> <strong class="text-red-400">ACİL</strong>
+            </p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">
+                <i class="fas fa-user-check mr-2"></i>Basit Anlatım (Herkes İçin)
+            </h2>
+            <p class="text-gray-300 mb-4">
+                <strong>4 Ocak 2026</strong> tarihinde sisteminize backdoor webshell yüklendi.
+                Saldırganlar şunlara erişmiş olabilir:
+            </p>
+            <ul class="space-y-2 text-gray-300">
+                <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i><strong>Veritabanı şifreleri</strong> (.env dosyası)</li>
+                <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i><strong>FTP/SSH kullanıcı bilgileri</strong></li>
+                <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i><strong>Admin panel şifreleri</strong></li>
+                <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i><strong>API anahtarları ve token'lar</strong></li>
+                <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i><strong>Email/SMTP bilgileri</strong></li>
+            </ul>
+            <p class="text-yellow-400 mt-4 font-bold">
+                <i class="fas fa-shield-alt mr-1"></i>
+                TÜM ŞİFRELERİ HEMEN DEĞİŞTİRMELİSİNİZ!
+            </p>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-code mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+            <p class="text-gray-300 mb-4">
+                <strong>Bulunan backdoor dosyaları:</strong>
+            </p>
+            <ul class="space-y-2 text-gray-300 bg-black/30 p-4 rounded-lg font-mono text-sm">
+                <li><i class="fas fa-file-code text-red-400 mr-2"></i><code>public/453bbb9eb16f.php</code></li>
+                <li><i class="fas fa-file-code text-red-400 mr-2"></i><code>public/assets/453bbb9eb16f.php</code></li>
+                <li><i class="fas fa-file-code text-red-400 mr-2"></i><code>public/vendor/453bbb9eb16f.php</code></li>
+                <li><i class="fas fa-file-alt text-yellow-400 mr-2"></i><code>public/caf0ff6a98503e87e30fb8b7fe4901b6.txt</code> (marker)</li>
+            </ul>
+            
+            <p class="text-gray-300 mt-4 mb-2"><strong>Backdoor özellikleri:</strong></p>
+            <ul class="space-y-2 text-gray-400 text-sm">
+                <li>▸ Cookie tabanlı kimlik doğrulama (MD5 hash)</li>
+                <li>▸ Uzaktan kod çalıştırma: <code class="text-red-400">eval(base64_decode($_REQUEST['id']))</code></li>
+                <li>▸ Dosya yükleme yeteneği</li>
+                <li>▸ Hex/Octal encoding ile gizlenmiş</li>
+            </ul>
+
+            <p class="text-gray-300 mt-4 mb-2"><strong>Log analizi sonuçları:</strong></p>
+            <ul class="space-y-2 text-gray-400 text-sm bg-black/30 p-4 rounded-lg">
+                <li>📅 <strong>1 Ocak 2026:</strong> İlk saldırı denemesi (IP: 194.110.207.198)</li>
+                <li>📅 <strong>2 Ocak 2026:</strong> Birden fazla IP'den POST denemeleri → 403</li>
+                <li>📅 <strong>4 Ocak 2026, 04:55:</strong> Backdoor yükleme (IP: 5.129.251.17)</li>
+                <li>✅ <strong>İyi haber:</strong> Tüm PHP execution denemeleri 403 aldı (.htaccess koruması)</li>
+                <li>⚠️ <strong>Marker dosyası:</strong> Bing Bot tarafından 3 Ocak'ta index'lendi (200 OK)</li>
+            </ul>
+        </section>
+
+        <!-- Acil Yapılacaklar -->
+        <h2 class="text-2xl font-bold mb-6 text-center text-red-400">
+            <i class="fas fa-exclamation-circle mr-2"></i>ACİL YAPILACAK İŞLEMLER
+        </h2>
+
+        <!-- Adım 1 -->
+        <section class="bg-red-900/30 border border-red-700 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold">1</span>
+                <h3 class="text-xl font-bold text-red-400">Hosting/Server Şifrelerini Değiştir</h3>
+            </div>
+            <ul class="space-y-3 text-gray-300 ml-13">
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">FTP/SFTP Şifresi</div>
+                    <div class="text-sm text-gray-400">Plesk Panel → FTP Accounts → Şifreyi değiştir</div>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">SSH Şifresi</div>
+                    <div class="text-sm text-gray-400">Plesk Panel → SSH Access → Yeni şifre belirle</div>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Plesk Admin Şifresi</div>
+                    <div class="text-sm text-gray-400">Plesk Panel → Admin bilgilerim → Şifreyi değiştir</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Adım 2 -->
+        <section class="bg-orange-900/30 border border-orange-700 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold">2</span>
+                <h3 class="text-xl font-bold text-orange-400">Veritabanı Şifrelerini Değiştir</h3>
+            </div>
+            <ul class="space-y-3 text-gray-300 ml-13">
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">MySQL/MariaDB Şifresi</div>
+                    <div class="text-sm text-gray-400">Plesk Panel → Databases → Change Password</div>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">.env Dosyasını Güncelle</div>
+                    <pre class="bg-black/50 p-2 rounded mt-2 text-green-400 text-xs">DB_PASSWORD=yeni_guvenli_sifre</pre>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Config Cache Temizle</div>
+                    <pre class="bg-black/50 p-2 rounded mt-2 text-green-400 text-xs">php artisan config:clear && php artisan config:cache</pre>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Adım 3 -->
+        <section class="bg-purple-900/30 border border-purple-700 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-purple-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold">3</span>
+                <h3 class="text-xl font-bold text-purple-400">Uygulama Şifrelerini Değiştir</h3>
+            </div>
+            <ul class="space-y-3 text-gray-300 ml-13">
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Laravel APP_KEY</div>
+                    <pre class="bg-black/50 p-2 rounded mt-2 text-green-400 text-xs">php artisan key:generate --force</pre>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Session Encryption Key</div>
+                    <div class="text-sm text-gray-400">.env'de yeni APP_KEY otomatik güncellenecek</div>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">API Token'ları Yenile</div>
+                    <div class="text-sm text-gray-400">Tüm personal access token'ları iptal et, yenilerini oluştur</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Adım 4 -->
+        <section class="bg-blue-900/30 border border-blue-700 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold">4</span>
+                <h3 class="text-xl font-bold text-blue-400">Kullanıcı Şifrelerini Sıfırla</h3>
+            </div>
+            <ul class="space-y-3 text-gray-300 ml-13">
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Admin Kullanıcıları</div>
+                    <div class="text-sm text-gray-400">Tüm admin şifrelerini zorunlu sıfırlama</div>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Aktif Session'ları Temizle</div>
+                    <pre class="bg-black/50 p-2 rounded mt-2 text-green-400 text-xs">php artisan session:table && php artisan migrate && php artisan session:gc</pre>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Email ile Bildirim</div>
+                    <div class="text-sm text-gray-400">Tüm kullanıcılara şifre değişikliği uyarısı gönder</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Adım 5 -->
+        <section class="bg-cyan-900/30 border border-cyan-700 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-cyan-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold">5</span>
+                <h3 class="text-xl font-bold text-cyan-400">Üçüncü Parti Servisler</h3>
+            </div>
+            <ul class="space-y-3 text-gray-300 ml-13">
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Email/SMTP Şifresi</div>
+                    <div class="text-sm text-gray-400">.env → MAIL_PASSWORD değiştir</div>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Payment Gateway API</div>
+                    <div class="text-sm text-gray-400">Stripe/PayPal secret key'leri yenile</div>
+                </li>
+                <li>
+                    <div class="font-bold text-yellow-400 mb-1">Cloud Storage Keys</div>
+                    <div class="text-sm text-gray-400">AWS, DigitalOcean Spaces access key'leri yenile</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Güvenlik Kontrol Listesi -->
+        <section class="bg-green-900/30 border border-green-700 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold text-green-400 mb-4">
+                <i class="fas fa-tasks mr-2"></i>Kontrol Listesi (Hepsini Tamamlayın!)
+            </h3>
+            <div class="space-y-2">
+                <label class="flex items-center gap-3 p-3 bg-slate-800 rounded hover:bg-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded text-green-500">
+                    <span class="text-gray-300">✅ FTP/SSH şifreleri değiştirildi</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-slate-800 rounded hover:bg-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded text-green-500">
+                    <span class="text-gray-300">✅ Veritabanı şifresi değiştirildi</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-slate-800 rounded hover:bg-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded text-green-500">
+                    <span class="text-gray-300">✅ Laravel APP_KEY yenilendi</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-slate-800 rounded hover:bg-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded text-green-500">
+                    <span class="text-gray-300">✅ Admin kullanıcı şifreleri sıfırlandı</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-slate-800 rounded hover:bg-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded text-green-500">
+                    <span class="text-gray-300">✅ Email/SMTP şifresi değiştirildi</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-slate-800 rounded hover:bg-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded text-green-500">
+                    <span class="text-gray-300">✅ API anahtarları yenilendi</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-slate-800 rounded hover:bg-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded text-green-500">
+                    <span class="text-gray-300">✅ Aktif session'lar temizlendi</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-slate-800 rounded hover:bg-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded text-green-500">
+                    <span class="text-gray-300">✅ .env cache temizlendi</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Gelecek Önlemler -->
+        <section class="bg-yellow-900/30 border border-yellow-700 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold text-yellow-400 mb-4">
+                <i class="fas fa-shield-alt mr-2"></i>Gelecek İçin Güvenlik Önerileri
+            </h3>
+            <ul class="space-y-3 text-gray-300">
+                <li><i class="fas fa-check text-green-400 mr-2"></i>2FA (İki faktörlü doğrulama) aktif edin</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Güçlü şifreler kullanın (min 16 karakter, rastgele)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Şifre yöneticisi kullanın (1Password, Bitwarden)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>SSH anahtarı kullanın (şifre değil)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>IP whitelist aktif edin (admin paneli için)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Fail2ban aktif edin (brute force koruması)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Düzenli yedek alın (otomatik, off-site)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Web Application Firewall (WAF) kullanın</li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm mt-12 pb-6">
+            <p>
+                <i class="fas fa-robot text-blue-400 mr-1"></i>
+                Bu rapor <a href="https://claude.com/claude-code" class="text-blue-400 hover:underline">Claude Code</a> tarafından otomatik oluşturulmuştur.
+            </p>
+            <p class="mt-2">
+                <i class="fas fa-link mr-1"></i>
+                <a href="https://ixtif.com/readme/2026/01/05/guvenlik-tarama-sonuclari/" class="text-cyan-400 hover:underline">Güvenlik Tarama Raporu</a>
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>

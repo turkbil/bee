@@ -1,1 +1,391 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AI Görsel Üretim - Yol Haritası</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        
+        section {
+            margin-bottom: 50px;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #93c5fd;
+        }
+        
+        .status-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid #f59e0b;
+            margin-bottom: 20px;
+        }
+        
+        .roadmap-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .roadmap-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+        
+        .roadmap-item h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .roadmap-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        .code-box {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #86efac;
+            overflow-x: auto;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+        
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left-color: #ef4444;
+            border: 1px solid #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            border-left-color: #22c55e;
+            border: 1px solid #22c55e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+            color: #cbd5e1;
+        }
+        
+        strong {
+            color: #60a5fa;
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Blog AI Görsel Üretim - Yol Haritası</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-29 | 🎯 Tenant: ixtif.com | 👤 Kullanıcı Talebi: "Her blog konusunun içeriğine dair görsel üretimi"
+            </div>
+        </header>
+
+        <section>
+            <h2>🔍 Mevcut Sistem Analizi</h2>
+            
+            <div class="status-box">
+                <h3>✅ Tespit Edilen Sistem:</h3>
+                <p><strong>BlogAIContentWriter.php</strong> (satır 130-200) zaten Leonardo AI entegrasyonu mevcut!</p>
+                
+                <div class="code-box">
+// Mevcut kod (BlogAIContentWriter.php:137-140)
+$leonardoService = app(\App\Services\Media\LeonardoAIService::class);
+$imageResult = $leonardoService->generateForBlog($blogData['title'], 'blog');
+                </div>
+                
+                <p><strong>Nasıl Çalışıyor:</strong></p>
+                <ul>
+                    <li>Blog taslağından tam içerik üretilirken otomatik görsel oluşturuluyor</li>
+                    <li>Leonardo AI servisi blog başlığını kullanarak görsel üretiyor</li>
+                    <li>Görsel <span class="tech-term">featured_image</span> collection'ına kaydediliyor</li>
+                    <li>SEO metadata (alt_text, title, description) otomatik ekleniyor</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <h3>⚠️ Sorun:</h3>
+                <p>Yeni blog üretimi sırasında Leonardo API kullanılıyor, ancak:</p>
+                <ul>
+                    <li><strong>Mevcut 284 blog</strong> görselsiz kaldı (az önce temizledik)</li>
+                    <li>Geçmişe dönük görsel üretimi yok</li>
+                    <li>Her blog için manuel görsel atama gerekiyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Hedef</h2>
+            
+            <div class="success">
+                <p><strong>284 mevcut blog</strong> için içeriğine uygun Leonardo AI görselleri üretmek</p>
+                <p>Her blog başlığı → Özgün sektörel AI görsel</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🗺️ Yol Haritası</h2>
+
+            <div class="roadmap-item">
+                <h4><span class="step-number">1</span>Orphan Media Temizliği</h4>
+                <p><strong>Durum:</strong> ✅ Tamamlandı (0 orphan media)</p>
+                <p><strong>Ne Yapıldı:</strong> Blog ile ilişkili tüm media kayıtları ve fiziksel dosyalar silindi</p>
+            </div>
+
+            <div class="roadmap-item">
+                <h4><span class="step-number">2</span>Leonardo AI Servis Kontrolü</h4>
+                <p><strong>Yapılacak:</strong> <span class="tech-term">LeonardoAIService</span> sınıfını kontrol et</p>
+                <ul>
+                    <li>generateForBlog() metodunun parametrelerini incele</li>
+                    <li>API key kontrolü (.env'de LEONARDO_API_KEY mevcut)</li>
+                    <li>Generation ayarları (model, size, style vb.)</li>
+                    <li>Rate limiting ve error handling</li>
+                </ul>
+                <div class="code-box">
+# Kontrol edilecek dosya
+app/Services/Media/LeonardoAIService.php
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <h4><span class="step-number">3</span>Batch İşlem Stratejisi Belirleme</h4>
+                <p><strong>Seçenekler:</strong></p>
+                
+                <h5>Seçenek A: Senkron (Basit, Yavaş)</h5>
+                <ul>
+                    <li>284 blog için tek tek görsel üret</li>
+                    <li>Her blog: API call → görsel indir → media kaydet</li>
+                    <li>Tahmini süre: ~15-20 dakika (API limitlerine bağlı)</li>
+                    <li>✅ Basit, hata ayıklaması kolay</li>
+                    <li>❌ Yavaş, API rate limit riski</li>
+                </ul>
+                
+                <h5>Seçenek B: Queue Job (Önerilen)</h5>
+                <ul>
+                    <li>Laravel Queue sistemi ile background işleme</li>
+                    <li>Batch'ler halinde işle (örn: 10'ar 10'ar)</li>
+                    <li>Retry mekanizması (API fail ederse)</li>
+                    <li>Progress tracking</li>
+                    <li>✅ Hızlı, güvenli, takip edilebilir</li>
+                    <li>❌ Daha karmaşık kurulum</li>
+                </ul>
+            </div>
+
+            <div class="roadmap-item">
+                <h4><span class="step-number">4</span>Prompt Optimizasyonu</h4>
+                <p><strong>Her blog için özgün prompt oluştur:</strong></p>
+                <ul>
+                    <li>Blog başlığından anahtar kelimeler çıkar</li>
+                    <li>Sektörel bağlam ekle (forklift, transpalet, istif makinesi)</li>
+                    <li>Görsel stil: "professional product photography"</li>
+                    <li>Tutarlılık için şablon kullan</li>
+                </ul>
+                <div class="code-box">
+// Örnek prompt şablonu
+"Professional industrial photography of {keyword} in modern warehouse, 
+high quality product shot, industrial equipment, professional lighting"
+
+// Örnek:
+"Professional industrial photography of electric forklift in modern warehouse..."
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <h4><span class="step-number">5</span>Geliştirme & Test</h4>
+                <p><strong>Adımlar:</strong></p>
+                <ol>
+                    <li>LeonardoAIService kodunu incele</li>
+                    <li>5 blog ile test et (küçük batch)</li>
+                    <li>Görsellerin kalitesini kontrol et</li>
+                    <li>API response time ve rate limit gözlemle</li>
+                    <li>Hata durumları için retry logic ekle</li>
+                </ol>
+            </div>
+
+            <div class="roadmap-item">
+                <h4><span class="step-number">6</span>Mass Production</h4>
+                <p><strong>284 blog için toplu üretim:</strong></p>
+                <ul>
+                    <li>Batch script veya queue job çalıştır</li>
+                    <li>Progress monitoring (kaç tane tamamlandı?)</li>
+                    <li>Failed jobs tracking (başarısızları tekrar dene)</li>
+                    <li>Final verification (tüm bloglar görsel aldı mı?)</li>
+                </ul>
+            </div>
+
+            <div class="roadmap-item">
+                <h4><span class="step-number">7</span>Kalite Kontrolü</h4>
+                <p><strong>Üretim sonrası kontroller:</strong></p>
+                <ul>
+                    <li>Her blog'un featured_image media kaydı var mı?</li>
+                    <li>Fiziksel dosyalar storage'da mevcut mu?</li>
+                    <li>Görseller blog sayfalarında görünüyor mu?</li>
+                    <li>SEO metadata (alt_text, title) eklenmiş mi?</li>
+                    <li>Manuel inceleme: 10-15 blog detay sayfasını kontrol et</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚙️ Teknik Detaylar</h2>
+
+            <h3>Leonardo AI Entegrasyonu</h3>
+            <div class="code-box">
+// Mevcut kullanım (BlogAIContentWriter.php'den)
+$leonardoService = app(\App\Services\Media\LeonardoAIService::class);
+$imageResult = $leonardoService->generateForBlog($blogData['title'], 'blog');
+
+// İncelenecek:
+// - generateForBlog() metodu ne bekliyor?
+// - Prompt nasıl oluşturuluyor?
+// - Response format nedir?
+// - Rate limiting var mı?
+            </div>
+
+            <h3>Media Collection Yapısı</h3>
+            <p>Spatie Media Library kullanılıyor:</p>
+            <ul>
+                <li><strong>Collection:</strong> featured_image (blog ana görseli)</li>
+                <li><strong>Disk:</strong> tenant (storage/tenant2/app/public/)</li>
+                <li><strong>Metadata:</strong> custom_properties (provider, prompt, alt_text vb.)</li>
+            </ul>
+
+            <h3>Batch Processing Önerisi</h3>
+            <div class="code-box">
+// Pseudo-code
+foreach (284 blog) {
+    // 1. Blog başlığından prompt oluştur
+    $prompt = createPromptFromTitle($blog->title);
+    
+    // 2. Leonardo AI ile görsel üret
+    $image = LeonardoAI::generate($prompt);
+    
+    // 3. Blog'a ekle
+    $blog->addMedia($image)
+         ->toMediaCollection('featured_image', 'tenant');
+    
+    // 4. Progress log
+    echo "Blog #{$blog->id} ✅\n";
+}
+            </div>
+        </section>
+
+        <section>
+            <h2>🚀 Sonraki Adım</h2>
+            
+            <div class="success">
+                <p><strong>Öncelik 1:</strong> LeonardoAIService kodunu incele</p>
+                <p>Dosya: <span class="tech-term">app/Services/Media/LeonardoAIService.php</span></p>
+                <p>Amaç: generateForBlog() metodunun nasıl çalıştığını anlamak</p>
+            </div>
+
+            <div class="roadmap-item">
+                <p><strong>Sana ihtiyacım olan bilgi:</strong></p>
+                <ul>
+                    <li>Hangi stratejiyle devam edelim? (Senkron vs Queue)</li>
+                    <li>Test için kaç blog ile başlayalım? (öneri: 5)</li>
+                    <li>Görsel stili tercihin nedir? (professional, realistic, artistic vb.)</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından analiz edildi • 2025-11-29
+        </footer>
+    </div>
+</body>
+</html>

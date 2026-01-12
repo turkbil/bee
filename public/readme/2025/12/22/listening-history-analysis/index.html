@@ -1,1 +1,984 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Dinleme Geçmişi Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#020617'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .status-badge { font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 600; }
+        .timeline-line { position: relative; }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 1.5rem;
+            top: 2.5rem;
+            bottom: -1rem;
+            width: 2px;
+            background: linear-gradient(to bottom, #3b82f6, transparent);
+        }
+        .json-field { 
+            font-family: 'Courier New', monospace; 
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 p-8">
+    
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto mb-12">
+        <div class="gradient-bg rounded-2xl p-8 shadow-2xl border border-slate-800">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-bold text-white mb-2">🎵 Muzibu Dinleme Geçmişi Analizi</h1>
+                    <p class="text-slate-400 text-lg">Kullanıcı dinleme davranışları ve otomatik geçiş analizi</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-slate-400 text-sm">Rapor Tarihi</div>
+                    <div class="text-white text-xl font-bold">22 Aralık 2025</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İstatistikler -->
+    <div class="max-w-7xl mx-auto mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-800 card-hover">
+                <div class="text-slate-400 text-sm mb-2">Toplam Dinleme</div>
+                <div class="text-3xl font-bold text-blue-400">17</div>
+                <div class="text-slate-500 text-xs mt-1">Kayıt</div>
+            </div>
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-800 card-hover">
+                <div class="text-slate-400 text-sm mb-2">Aktif Kullanıcı</div>
+                <div class="text-3xl font-bold text-green-400">2</div>
+                <div class="text-slate-500 text-xs mt-1">Kişi</div>
+            </div>
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-800 card-hover">
+                <div class="text-slate-400 text-sm mb-2">Benzersiz Şarkı</div>
+                <div class="text-3xl font-bold text-purple-400">8</div>
+                <div class="text-slate-500 text-xs mt-1">Farklı</div>
+            </div>
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-800 card-hover">
+                <div class="text-slate-400 text-sm mb-2">En Çok Dinlenen</div>
+                <div class="text-3xl font-bold text-orange-400">9x</div>
+                <div class="text-slate-500 text-xs mt-1">Bulk Upload Test 3</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Basit Anlatım -->
+    <div class="max-w-7xl mx-auto mb-12">
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-green-400 mb-4">📝 Basit Anlatım (Herkes İçin)</h3>
+            <div class="space-y-3 text-slate-300">
+                <p class="leading-relaxed">
+                    Muzibu müzik platformunda <strong>2 kullanıcının</strong> dinleme geçmişi analiz edildi. 
+                    Toplam <strong>17 dinleme</strong> kaydı bulundu ve bu kayıtlar <strong>8 farklı şarkıya</strong> ait.
+                </p>
+                <p class="leading-relaxed">
+                    <strong>Nurullah</strong> kullanıcısı (nurullah@nurullah.net) sisteme kayıtlı ancak <strong>henüz müzik dinlememiş</strong>. 
+                    <strong>Türk Bilişim</strong> kullanıcısı (info@turkbilisim.com.tr) <strong>16 şarkı</strong> dinlemiş ve 
+                    <strong>Serkan Şimşek</strong> (info@muzibu.com) <strong>1 şarkı</strong> dinlemiş.
+                </p>
+                <p class="leading-relaxed">
+                    En popüler şarkı <strong>"Bulk Upload Test 3"</strong> - toplam <strong>9 kez</strong> dinlendi. 
+                    Kullanıcılar çoğunlukla <strong>Elektronik</strong> ve <strong>Klasik</strong> müzik türlerini tercih etmiş.
+                </p>
+                <div class="bg-slate-900/50 rounded-lg p-4 mt-4">
+                    <h4 class="text-green-300 font-semibold mb-2">🔄 Otomatik Geçiş Durumu:</h4>
+                    <p class="text-slate-300">
+                        Sistemde <strong>otomatik geçiş kayıtları bulunmuyor</strong>. Mevcut <code class="json-field bg-slate-800 px-2 py-1 rounded">muzibu_song_plays</code> 
+                        tablosu sadece <strong>hangi şarkının ne zaman dinlendiğini</strong> kaydediyor. 
+                        Bir şarkı bitince hangi şarkının geldiğini takip etmiyor.
+                    </p>
+                    <p class="text-slate-300 mt-2">
+                        <strong>Sonsuz döngü kontrolü</strong> için şarkılar arası geçiş bilgisi (next_song_id) kaydetmek gerekiyor.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teknik Detaylar -->
+    <div class="max-w-7xl mx-auto mb-12">
+        <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-blue-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="text-blue-300 font-semibold mb-2">📊 Veritabanı Yapısı:</h4>
+                    <ul class="list-disc list-inside text-slate-300 space-y-1 ml-4">
+                        <li><code class="json-field bg-slate-800 px-2 py-1 rounded">tenant_muzibu_1528d0.muzibu_song_plays</code> - Dinleme kayıtları</li>
+                        <li><code class="json-field bg-slate-800 px-2 py-1 rounded">muzibu_songs</code> - Şarkı bilgileri (title, album_id, genre_id)</li>
+                        <li><code class="json-field bg-slate-800 px-2 py-1 rounded">muzibu_albums</code> - Albüm bilgileri (title, artist_id)</li>
+                        <li><code class="json-field bg-slate-800 px-2 py-1 rounded">muzibu_artists</code> - Sanatçı bilgileri (title)</li>
+                        <li><code class="json-field bg-slate-800 px-2 py-1 rounded">muzibu_genres</code> - Tür bilgileri (title)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-blue-300 font-semibold mb-2">⚠️ Mevcut Limitasyonlar:</h4>
+                    <ul class="list-disc list-inside text-slate-300 space-y-1 ml-4">
+                        <li><strong>Otomatik geçiş takibi yok:</strong> <code class="json-field">next_song_id</code> veya <code class="json-field">is_auto_transition</code> field'ları mevcut değil</li>
+                        <li><strong>Queue sistemi:</strong> Hangi şarkının sıraya eklendiği, hangi şarkıdan sonra geldiği kayıtlı değil</li>
+                        <li><strong>Manuel/Otomatik ayrımı:</strong> Kullanıcının manuel seçip seçmediği bilinmiyor</li>
+                        <li><strong>Dinleme süresi:</strong> Şarkının ne kadar süre dinlendiği (completion rate) yok</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-blue-300 font-semibold mb-2">🔍 Analiz Yöntemi:</h4>
+                    <p class="text-slate-300">
+                        Ardışık dinlemeler arasındaki zaman farkı analiz edildi. 
+                        Aynı kullanıcının <strong>5 dakika içinde</strong> dinlediği şarkılar "muhtemel otomatik geçiş" olarak işaretlendi.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kullanıcı Bazlı Analiz -->
+    <div class="max-w-7xl mx-auto mb-12">
+        <h2 class="text-2xl font-bold text-white mb-6">👥 Kullanıcı Bazlı Dinleme Analizi</h2>
+        
+        <!-- User 1: Nurullah -->
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white">Nurullah</h3>
+                    <p class="text-slate-400 text-sm">nurullah@nurullah.net</p>
+                </div>
+                <div class="status-badge bg-red-900/30 text-red-400 border border-red-800">
+                    Dinleme Yok
+                </div>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg p-4">
+                <p class="text-slate-400">Bu kullanıcı henüz hiç müzik dinlememiş.</p>
+            </div>
+        </div>
+
+        <!-- User 2: Türk Bilişim -->
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white">Türk Bilişim</h3>
+                    <p class="text-slate-400 text-sm">info@turkbilisim.com.tr · User ID: 2</p>
+                </div>
+                <div class="status-badge bg-green-900/30 text-green-400 border border-green-800">
+                    16 Dinleme
+                </div>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="space-y-4 timeline-line">
+                
+                <!-- Play 1 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        1
+                    </div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">Test Upload - 01:56:57</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 457</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">18 Aralık 2025</div>
+                                <div class="text-slate-500">15:44:39</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 2 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        2
+                    </div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">Bulk Upload Test 3 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 460</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">12:01:07</div>
+                                <div class="text-orange-400 font-semibold mt-1">↓ 20 saat 16 dk sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 3 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        3
+                    </div>
+                    <div class="flex-1 bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">🔄 Bulk Upload Test 3 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 460 (TEKRAR)</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">13:40:11</div>
+                                <div class="text-green-400 font-semibold mt-1">↓ 1 saat 39 dk sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-purple-300 text-sm bg-purple-950/50 rounded px-3 py-1 inline-block">
+                            ⚠️ Aynı şarkı tekrar dinleniyor
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 4 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        4
+                    </div>
+                    <div class="flex-1 bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">🔄 Bulk Upload Test 3 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 460 (TEKRAR)</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">13:52:53</div>
+                                <div class="text-green-400 font-semibold mt-1">↓ 12 dk 42 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-purple-300 text-sm bg-purple-950/50 rounded px-3 py-1 inline-block">
+                            ⚠️ Aynı şarkı tekrar dinleniyor
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 5 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        5
+                    </div>
+                    <div class="flex-1 bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">🔄 Bulk Upload Test 3 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 460 (TEKRAR)</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">13:57:43</div>
+                                <div class="text-green-400 font-semibold mt-1">↓ 4 dk 50 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-green-300 text-sm bg-green-950/50 rounded px-3 py-1 inline-block">
+                            ✅ Muhtemel otomatik geçiş (5 dk içinde)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 6 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        6
+                    </div>
+                    <div class="flex-1 bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">🔄 Bulk Upload Test 3 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 460 (TEKRAR)</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">14:12:44</div>
+                                <div class="text-orange-400 font-semibold mt-1">↓ 15 dk 1 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 7 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        7
+                    </div>
+                    <div class="flex-1 bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">🔄 Bulk Upload Test 3 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 460 (TEKRAR)</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">14:19:22</div>
+                                <div class="text-green-400 font-semibold mt-1">↓ 6 dk 38 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 8 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        8
+                    </div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">ALONE</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 323</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">14:32:10</div>
+                                <div class="text-orange-400 font-semibold mt-1">↓ 12 dk 48 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">Good Vibes</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">Muzibu Türk Halk Müziği</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Alternative</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 9 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        9
+                    </div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">Cigarette Daydreams</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 434</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">14:50:52</div>
+                                <div class="text-orange-400 font-semibold mt-1">↓ 18 dk 42 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">Muzibu Türk Halk Müziği Albümü</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">Turkish Heritage Band</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Klasik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 10 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        10
+                    </div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">A Great Day</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 316</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">14:56:36</div>
+                                <div class="text-green-400 font-semibold mt-1">↓ 5 dk 44 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">Good Vibes</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">Muzibu Türk Halk Müziği</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Alternative</span>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-green-300 text-sm bg-green-950/50 rounded px-3 py-1 inline-block">
+                            ✅ Muhtemel otomatik geçiş (5 dk içinde)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 11 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        11
+                    </div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">Dancin</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 437</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">15:01:43</div>
+                                <div class="text-green-400 font-semibold mt-1">↓ 5 dk 7 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">Muzibu Türk Halk Müziği Albümü</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">Turkish Heritage Band</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Klasik</span>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-green-300 text-sm bg-green-950/50 rounded px-3 py-1 inline-block">
+                            ✅ Muhtemel otomatik geçiş (5 dk içinde)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 12 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        12
+                    </div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">Don't You Worry</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 442</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">15:20:35</div>
+                                <div class="text-orange-400 font-semibold mt-1">↓ 18 dk 52 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">Muzibu Türk Halk Müziği Albümü</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">Turkish Heritage Band</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Klasik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 13 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        13
+                    </div>
+                    <div class="flex-1 bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">🔄 Bulk Upload Test 3 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 460 (TEKRAR)</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">15:29:54</div>
+                                <div class="text-orange-400 font-semibold mt-1">↓ 9 dk 19 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 14 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        14
+                    </div>
+                    <div class="flex-1 bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">🔄 Don't You Worry</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 442 (TEKRAR)</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">16:39:35</div>
+                                <div class="text-orange-400 font-semibold mt-1">↓ 1 saat 9 dk sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">Muzibu Türk Halk Müziği Albümü</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">Turkish Heritage Band</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Klasik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 15 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        15
+                    </div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">Bulk Upload Test 1 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 458</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">19:43:06</div>
+                                <div class="text-orange-400 font-semibold mt-1">↓ 3 saat 3 dk sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Play 16 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        16
+                    </div>
+                    <div class="flex-1 bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="text-white font-semibold">🔄 Bulk Upload Test 3 - 01:59:24</h4>
+                                <p class="text-slate-400 text-sm">Şarkı ID: 460 (TEKRAR)</p>
+                            </div>
+                            <div class="text-right text-sm">
+                                <div class="text-slate-400">19 Aralık 2025</div>
+                                <div class="text-slate-500">19:50:03</div>
+                                <div class="text-green-400 font-semibold mt-1">↓ 6 dk 57 sn sonra</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Albüm:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Sanatçı:</span>
+                                <span class="text-slate-300 ml-2">-</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Tür:</span>
+                                <span class="text-slate-300 ml-2">Elektronik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- User 7: Serkan -->
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white">Serkan Şimşek</h3>
+                    <p class="text-slate-400 text-sm">info@muzibu.com · User ID: 7</p>
+                </div>
+                <div class="status-badge bg-blue-900/30 text-blue-400 border border-blue-800">
+                    1 Dinleme
+                </div>
+            </div>
+            
+            <!-- Single Play -->
+            <div class="flex gap-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                    1
+                </div>
+                <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <h4 class="text-white font-semibold">Bulk Upload Test 3 - 01:59:24</h4>
+                            <p class="text-slate-400 text-sm">Şarkı ID: 460</p>
+                        </div>
+                        <div class="text-right text-sm">
+                            <div class="text-slate-400">22 Aralık 2025</div>
+                            <div class="text-slate-500">00:04:20</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <span class="text-slate-500">Albüm:</span>
+                            <span class="text-slate-300 ml-2">-</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500">Sanatçı:</span>
+                            <span class="text-slate-300 ml-2">-</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500">Tür:</span>
+                            <span class="text-slate-300 ml-2">Elektronik</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sonsuz Döngü Analizi -->
+    <div class="max-w-7xl mx-auto mb-12">
+        <h2 class="text-2xl font-bold text-white mb-6">🔄 Sonsuz Döngü Analizi</h2>
+        
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <div class="space-y-6">
+                
+                <!-- Mevcut Durum -->
+                <div>
+                    <h3 class="text-lg font-bold text-red-400 mb-3">❌ Mevcut Durum</h3>
+                    <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                        <p class="text-slate-300 mb-3">
+                            Sistemde <strong>otomatik geçiş takibi olmadığı için</strong> sonsuz döngü kontrolü yapılamıyor.
+                        </p>
+                        <ul class="list-disc list-inside text-slate-300 space-y-2 ml-4">
+                            <li>Hangi şarkının ardından hangi şarkının geldiği kayıtlı değil</li>
+                            <li>Kullanıcının manuel mi seçtiği, otomatik mi geçiş yaptığı bilinmiyor</li>
+                            <li>Queue (sıra) sistemi yok</li>
+                            <li>Şarkı tekrarları sadece timestamp analizi ile tahmin edilebiliyor</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tespit Edilen Patternler -->
+                <div>
+                    <h3 class="text-lg font-bold text-yellow-400 mb-3">⚠️ Tespit Edilen Patternler</h3>
+                    <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4">
+                        <p class="text-slate-300 mb-3">
+                            Zaman analizi ile şu patternler tespit edildi:
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-slate-800/50 rounded p-3">
+                                <div class="text-purple-400 font-semibold mb-2">🔁 Tekrarlanan Şarkı</div>
+                                <div class="text-slate-300 text-sm">
+                                    <strong>Bulk Upload Test 3</strong><br>
+                                    9 kez dinlendi (53% toplam dinleme)
+                                </div>
+                            </div>
+                            <div class="bg-slate-800/50 rounded p-3">
+                                <div class="text-green-400 font-semibold mb-2">⏱️ Hızlı Geçişler</div>
+                                <div class="text-slate-300 text-sm">
+                                    4 adet 5 dakika içi geçiş<br>
+                                    (Muhtemel otomatik geçiş)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Önerilen Çözüm -->
+                <div>
+                    <h3 class="text-lg font-bold text-green-400 mb-3">✅ Önerilen Çözüm</h3>
+                    <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                        <p class="text-slate-300 mb-3">
+                            Sonsuz döngü kontrolü için sisteme şu field'lar eklenmeli:
+                        </p>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="bg-slate-800/50 rounded p-3">
+                                <code class="text-green-400">next_song_id</code>
+                                <p class="text-slate-400 text-sm mt-1">Bu şarkı bitince hangi şarkı çaldı?</p>
+                            </div>
+                            <div class="bg-slate-800/50 rounded p-3">
+                                <code class="text-green-400">is_auto_transition</code>
+                                <p class="text-slate-400 text-sm mt-1">Otomatik geçiş mi, manuel seçim mi?</p>
+                            </div>
+                            <div class="bg-slate-800/50 rounded p-3">
+                                <code class="text-green-400">queue_position</code>
+                                <p class="text-slate-400 text-sm mt-1">Sıradaki pozisyonu (döngü tespiti için)</p>
+                            </div>
+                            <div class="bg-slate-800/50 rounded p-3">
+                                <code class="text-green-400">completion_rate</code>
+                                <p class="text-slate-400 text-sm mt-1">Şarkının yüzde kaçı dinlendi? (skip tespiti)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- En Popüler Şarkılar -->
+    <div class="max-w-7xl mx-auto mb-12">
+        <h2 class="text-2xl font-bold text-white mb-6">🏆 En Popüler Şarkılar</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- #1 -->
+            <div class="bg-gradient-to-br from-yellow-900/30 to-slate-900 rounded-xl p-6 border border-yellow-800">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        1
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-white font-bold text-lg">Bulk Upload Test 3 - 01:59:24</h3>
+                        <p class="text-slate-400 text-sm">Şarkı ID: 460</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold text-yellow-400">9x</div>
+                        <div class="text-slate-500 text-sm">dinleme</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                        <span class="text-slate-500">Tür:</span>
+                        <span class="text-slate-300 ml-2">Elektronik</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500">Albüm:</span>
+                        <span class="text-slate-300 ml-2">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- #2 -->
+            <div class="bg-gradient-to-br from-slate-700/30 to-slate-900 rounded-xl p-6 border border-slate-700">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-16 h-16 bg-slate-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        2
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-white font-bold text-lg">Don't You Worry</h3>
+                        <p class="text-slate-400 text-sm">Şarkı ID: 442</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold text-slate-400">2x</div>
+                        <div class="text-slate-500 text-sm">dinleme</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                        <span class="text-slate-500">Tür:</span>
+                        <span class="text-slate-300 ml-2">Klasik</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500">Albüm:</span>
+                        <span class="text-slate-300 ml-2">Muzibu THM Albümü</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diğerleri (1x) -->
+            <div class="col-span-full bg-slate-900 rounded-xl p-6 border border-slate-800">
+                <h4 class="text-white font-semibold mb-4">Diğer Şarkılar (1x dinleme)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="bg-slate-800/50 rounded p-3">
+                        <div class="text-white font-medium">Test Upload - 01:56:57</div>
+                        <div class="text-slate-400 text-sm">Elektronik</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-3">
+                        <div class="text-white font-medium">ALONE</div>
+                        <div class="text-slate-400 text-sm">Alternative · Good Vibes</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-3">
+                        <div class="text-white font-medium">Cigarette Daydreams</div>
+                        <div class="text-slate-400 text-sm">Klasik · THB</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-3">
+                        <div class="text-white font-medium">A Great Day</div>
+                        <div class="text-slate-400 text-sm">Alternative · Good Vibes</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-3">
+                        <div class="text-white font-medium">Dancin</div>
+                        <div class="text-slate-400 text-sm">Klasik · THB</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-3">
+                        <div class="text-white font-medium">Bulk Upload Test 1</div>
+                        <div class="text-slate-400 text-sm">Elektronik</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800">
+        <div class="text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından otomatik oluşturuldu</p>
+            <p class="mt-2">Muzibu · Dinleme Geçmişi Analizi · 22 Aralık 2025</p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,1 +1,532 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sag Sidebar Tasarim Calisma - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); }
+        .glass-dark { background: rgba(0,0,0,0.4); backdrop-filter: blur(20px); }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(255,90,95,0.3); } 50% { box-shadow: 0 0 40px rgba(255,90,95,0.5); } }
+        .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        @keyframes slide-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu': { coral: '#FF5A5F', 'coral-light': '#FF7A7F', gray: '#1a1a1a', dark: '#0a0a0a' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-zinc-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <header class="mb-12 pb-6 border-b border-white/10">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-orange-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-palette text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+                        Sag Sidebar Tasarim Calisma
+                    </h1>
+                    <p class="text-zinc-500 text-sm">Muzibu - Preview Panel Design Drafts</p>
+                </div>
+            </div>
+            <div class="flex gap-4 text-sm text-zinc-500">
+                <span><i class="far fa-calendar mr-1"></i> 14 Aralik 2025</span>
+                <span><i class="fas fa-layer-group mr-1"></i> 4 Tasarim Varyasyonu</span>
+                <span><i class="fas fa-mobile-alt mr-1"></i> Responsive Ready</span>
+            </div>
+        </header>
+
+        <!-- Intro -->
+        <div class="mb-12 p-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+            <h2 class="text-xl font-bold text-blue-400 mb-3"><i class="fas fa-info-circle mr-2"></i>Tasarim Hedefleri</h2>
+            <ul class="space-y-2 text-zinc-300 text-sm">
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Spotify/Apple Music kalitesinde profesyonel gorunum</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Liste sayfalarinda tek tikla preview (sarki listesi)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Cift tikla detay sayfasina gitme</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Hover efektleri ile kullanici etkilesimi</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i>Minimal ama bilgi dolu tasarim</li>
+            </ul>
+        </div>
+
+        <!-- Design Variations Grid -->
+        <div class="grid lg:grid-cols-2 gap-8 mb-12">
+
+            <!-- DRAFT 1: Premium Card Design -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-3 py-1 bg-amber-500/20 text-amber-400 rounded-full text-xs font-bold">DRAFT 1</span>
+                    <h3 class="text-lg font-bold text-white">Premium Card Design</h3>
+                </div>
+                <p class="text-zinc-500 text-sm mb-4">Apple Music ilhamli, zengin gorsel, buyuk cover, gradient aksanlar</p>
+
+                <!-- Sidebar Mock -->
+                <div class="w-[280px] bg-black/60 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                    <!-- Header with Large Cover -->
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-4">
+                            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Playlist</span>
+                            <h3 class="text-xl font-bold text-white mt-1">Summer Vibes 2024</h3>
+                            <p class="text-xs text-zinc-400 mt-1">24 sarki • 1s 42dk</p>
+                        </div>
+                        <!-- Play All Button -->
+                        <button class="absolute top-4 right-4 w-12 h-12 bg-amber-500 hover:bg-amber-400 rounded-full flex items-center justify-center shadow-xl pulse-glow transition-all">
+                            <i class="fas fa-play text-black text-lg ml-0.5"></i>
+                        </button>
+                    </div>
+
+                    <!-- Track List -->
+                    <div class="p-3 space-y-1 max-h-[300px] overflow-y-auto scrollbar-hide">
+                        <!-- Track Item -->
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all">
+                            <span class="w-5 text-center text-xs text-zinc-500 group-hover:hidden">1</span>
+                            <i class="fas fa-play text-amber-400 text-xs hidden group-hover:block w-5 text-center"></i>
+                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80" class="w-10 h-10 rounded-lg object-cover">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-white truncate group-hover:text-amber-400 transition-colors">Blinding Lights</p>
+                                <p class="text-xs text-zinc-500 truncate">The Weeknd</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">3:20</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all">
+                            <span class="w-5 text-center text-xs text-zinc-500 group-hover:hidden">2</span>
+                            <i class="fas fa-play text-amber-400 text-xs hidden group-hover:block w-5 text-center"></i>
+                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=80" class="w-10 h-10 rounded-lg object-cover">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-white truncate group-hover:text-amber-400 transition-colors">Dance Monkey</p>
+                                <p class="text-xs text-zinc-500 truncate">Tones and I</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">3:29</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all bg-amber-500/10 border border-amber-500/20">
+                            <span class="w-5 text-center text-xs text-amber-400 group-hover:hidden">3</span>
+                            <i class="fas fa-volume-up text-amber-400 text-xs w-5 text-center animate-pulse"></i>
+                            <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=80" class="w-10 h-10 rounded-lg object-cover">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-amber-400 truncate">Watermelon Sugar</p>
+                                <p class="text-xs text-zinc-400 truncate">Harry Styles</p>
+                            </div>
+                            <span class="text-xs text-amber-400">2:54</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all">
+                            <span class="w-5 text-center text-xs text-zinc-500 group-hover:hidden">4</span>
+                            <i class="fas fa-play text-amber-400 text-xs hidden group-hover:block w-5 text-center"></i>
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=80" class="w-10 h-10 rounded-lg object-cover">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-white truncate group-hover:text-amber-400 transition-colors">Levitating</p>
+                                <p class="text-xs text-zinc-500 truncate">Dua Lipa</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">3:23</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all">
+                            <span class="w-5 text-center text-xs text-zinc-500 group-hover:hidden">5</span>
+                            <i class="fas fa-play text-amber-400 text-xs hidden group-hover:block w-5 text-center"></i>
+                            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80" class="w-10 h-10 rounded-lg object-cover">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-white truncate group-hover:text-amber-400 transition-colors">Save Your Tears</p>
+                                <p class="text-xs text-zinc-500 truncate">The Weeknd</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">3:35</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Actions -->
+                    <div class="p-3 border-t border-white/5 flex items-center justify-between">
+                        <button class="text-xs text-zinc-500 hover:text-white transition-colors">
+                            <i class="far fa-heart mr-1"></i> Favorilere Ekle
+                        </button>
+                        <button class="text-xs text-amber-400 hover:text-amber-300 transition-colors font-semibold">
+                            Tumu <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DRAFT 2: Glassmorphism Design -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-bold">DRAFT 2</span>
+                    <h3 class="text-lg font-bold text-white">Glassmorphism Design</h3>
+                </div>
+                <p class="text-zinc-500 text-sm mb-4">Modern cam efekti, blur arkaplan, yumusak geçişler</p>
+
+                <!-- Sidebar Mock -->
+                <div class="w-[280px] glass rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                    <!-- Compact Header -->
+                    <div class="p-4 border-b border-white/10">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80" class="w-14 h-14 rounded-xl object-cover shadow-lg">
+                                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                                    <i class="fas fa-play text-white text-[8px] ml-0.5"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <span class="text-[9px] font-bold text-purple-400 uppercase tracking-widest">Album</span>
+                                <h3 class="text-sm font-bold text-white truncate">After Hours</h3>
+                                <p class="text-xs text-zinc-400">The Weeknd • 14 sarki</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Waveform Visual -->
+                    <div class="px-4 py-3 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10">
+                        <div class="flex items-end justify-center gap-0.5 h-8">
+                            <div class="w-1 bg-purple-400/50 rounded-full animate-pulse" style="height: 40%"></div>
+                            <div class="w-1 bg-purple-400/70 rounded-full animate-pulse" style="height: 70%; animation-delay: 0.1s"></div>
+                            <div class="w-1 bg-purple-400 rounded-full animate-pulse" style="height: 100%; animation-delay: 0.2s"></div>
+                            <div class="w-1 bg-pink-400 rounded-full animate-pulse" style="height: 80%; animation-delay: 0.3s"></div>
+                            <div class="w-1 bg-purple-400/70 rounded-full animate-pulse" style="height: 60%; animation-delay: 0.4s"></div>
+                            <div class="w-1 bg-purple-400/50 rounded-full animate-pulse" style="height: 45%; animation-delay: 0.5s"></div>
+                            <div class="w-1 bg-purple-400/70 rounded-full animate-pulse" style="height: 75%; animation-delay: 0.6s"></div>
+                            <div class="w-1 bg-pink-400 rounded-full animate-pulse" style="height: 90%; animation-delay: 0.7s"></div>
+                            <div class="w-1 bg-purple-400/70 rounded-full animate-pulse" style="height: 55%; animation-delay: 0.8s"></div>
+                            <div class="w-1 bg-purple-400/50 rounded-full animate-pulse" style="height: 35%; animation-delay: 0.9s"></div>
+                        </div>
+                        <p class="text-center text-[10px] text-purple-300 mt-2">Simdi Caliniyor</p>
+                    </div>
+
+                    <!-- Track List -->
+                    <div class="p-2 space-y-0.5 max-h-[280px] overflow-y-auto scrollbar-hide">
+                        <div class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer group transition-all">
+                            <div class="w-5 h-5 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold text-white">1</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-white truncate group-hover:text-purple-300">Alone Again</p>
+                                <p class="text-[10px] text-zinc-500">4:10</p>
+                            </div>
+                            <i class="far fa-heart text-zinc-600 text-xs opacity-0 group-hover:opacity-100 hover:text-pink-400 transition-all cursor-pointer"></i>
+                        </div>
+
+                        <div class="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30">
+                            <div class="w-5 h-5 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-white text-[8px] animate-pulse"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-purple-300 truncate">Too Late</p>
+                                <p class="text-[10px] text-purple-400">3:59</p>
+                            </div>
+                            <i class="fas fa-heart text-pink-400 text-xs"></i>
+                        </div>
+
+                        <div class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer group transition-all">
+                            <div class="w-5 h-5 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold text-white">3</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-white truncate group-hover:text-purple-300">Hardest To Love</p>
+                                <p class="text-[10px] text-zinc-500">3:31</p>
+                            </div>
+                            <i class="far fa-heart text-zinc-600 text-xs opacity-0 group-hover:opacity-100 hover:text-pink-400 transition-all cursor-pointer"></i>
+                        </div>
+
+                        <div class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer group transition-all">
+                            <div class="w-5 h-5 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold text-white">4</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-white truncate group-hover:text-purple-300">Scared To Live</p>
+                                <p class="text-[10px] text-zinc-500">3:11</p>
+                            </div>
+                            <i class="far fa-heart text-zinc-600 text-xs opacity-0 group-hover:opacity-100 hover:text-pink-400 transition-all cursor-pointer"></i>
+                        </div>
+
+                        <div class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer group transition-all">
+                            <div class="w-5 h-5 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold text-white">5</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-white truncate group-hover:text-purple-300">Snowchild</p>
+                                <p class="text-[10px] text-zinc-500">4:07</p>
+                            </div>
+                            <i class="far fa-heart text-zinc-600 text-xs opacity-0 group-hover:opacity-100 hover:text-pink-400 transition-all cursor-pointer"></i>
+                        </div>
+
+                        <div class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer group transition-all">
+                            <div class="w-5 h-5 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold text-white">6</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-white truncate group-hover:text-purple-300">Blinding Lights</p>
+                                <p class="text-[10px] text-zinc-500">3:20</p>
+                            </div>
+                            <i class="far fa-heart text-zinc-600 text-xs opacity-0 group-hover:opacity-100 hover:text-pink-400 transition-all cursor-pointer"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DRAFT 3: Minimalist Design -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-bold">DRAFT 3</span>
+                    <h3 class="text-lg font-bold text-white">Minimalist Design</h3>
+                </div>
+                <p class="text-zinc-500 text-sm mb-4">Sade, temiz, beyaz alan odakli, dikkat dagitici ogeler yok</p>
+
+                <!-- Sidebar Mock -->
+                <div class="w-[280px] bg-zinc-900/90 rounded-xl overflow-hidden border border-zinc-800">
+                    <!-- Simple Header -->
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=80" class="w-12 h-12 rounded-lg object-cover">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[10px] text-emerald-500 font-medium uppercase tracking-wider mb-0.5">Genre</p>
+                                <h3 class="text-sm font-semibold text-white">Pop Hits</h3>
+                                <p class="text-[11px] text-zinc-500 mt-0.5">156 sarki</p>
+                            </div>
+                            <button class="w-9 h-9 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center transition-all">
+                                <i class="fas fa-play text-black text-xs ml-0.5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="h-px bg-zinc-800 mx-4"></div>
+
+                    <!-- Track List - Ultra Clean -->
+                    <div class="py-2 max-h-[320px] overflow-y-auto scrollbar-hide">
+                        <div class="flex items-center px-4 py-2 hover:bg-zinc-800/50 cursor-pointer group transition-all">
+                            <span class="w-6 text-xs text-zinc-600 group-hover:text-emerald-500 transition-colors">01</span>
+                            <div class="flex-1 min-w-0 ml-2">
+                                <p class="text-sm text-zinc-200 truncate group-hover:text-white transition-colors">Anti-Hero</p>
+                                <p class="text-xs text-zinc-600">Taylor Swift</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">3:20</span>
+                        </div>
+
+                        <div class="flex items-center px-4 py-2 hover:bg-zinc-800/50 cursor-pointer group transition-all">
+                            <span class="w-6 text-xs text-zinc-600 group-hover:text-emerald-500 transition-colors">02</span>
+                            <div class="flex-1 min-w-0 ml-2">
+                                <p class="text-sm text-zinc-200 truncate group-hover:text-white transition-colors">As It Was</p>
+                                <p class="text-xs text-zinc-600">Harry Styles</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">2:47</span>
+                        </div>
+
+                        <div class="flex items-center px-4 py-2 bg-emerald-500/10 border-l-2 border-emerald-500">
+                            <span class="w-6 text-xs text-emerald-500">03</span>
+                            <div class="flex-1 min-w-0 ml-2">
+                                <p class="text-sm text-emerald-400 truncate font-medium">Bad Habit</p>
+                                <p class="text-xs text-emerald-600">Steve Lacy</p>
+                            </div>
+                            <i class="fas fa-volume-up text-emerald-500 text-xs animate-pulse"></i>
+                        </div>
+
+                        <div class="flex items-center px-4 py-2 hover:bg-zinc-800/50 cursor-pointer group transition-all">
+                            <span class="w-6 text-xs text-zinc-600 group-hover:text-emerald-500 transition-colors">04</span>
+                            <div class="flex-1 min-w-0 ml-2">
+                                <p class="text-sm text-zinc-200 truncate group-hover:text-white transition-colors">Heat Waves</p>
+                                <p class="text-xs text-zinc-600">Glass Animals</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">3:58</span>
+                        </div>
+
+                        <div class="flex items-center px-4 py-2 hover:bg-zinc-800/50 cursor-pointer group transition-all">
+                            <span class="w-6 text-xs text-zinc-600 group-hover:text-emerald-500 transition-colors">05</span>
+                            <div class="flex-1 min-w-0 ml-2">
+                                <p class="text-sm text-zinc-200 truncate group-hover:text-white transition-colors">About Damn Time</p>
+                                <p class="text-xs text-zinc-600">Lizzo</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">3:11</span>
+                        </div>
+
+                        <div class="flex items-center px-4 py-2 hover:bg-zinc-800/50 cursor-pointer group transition-all">
+                            <span class="w-6 text-xs text-zinc-600 group-hover:text-emerald-500 transition-colors">06</span>
+                            <div class="flex-1 min-w-0 ml-2">
+                                <p class="text-sm text-zinc-200 truncate group-hover:text-white transition-colors">Flowers</p>
+                                <p class="text-xs text-zinc-600">Miley Cyrus</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">3:21</span>
+                        </div>
+
+                        <div class="flex items-center px-4 py-2 hover:bg-zinc-800/50 cursor-pointer group transition-all">
+                            <span class="w-6 text-xs text-zinc-600 group-hover:text-emerald-500 transition-colors">07</span>
+                            <div class="flex-1 min-w-0 ml-2">
+                                <p class="text-sm text-zinc-200 truncate group-hover:text-white transition-colors">Kill Bill</p>
+                                <p class="text-xs text-zinc-600">SZA</p>
+                            </div>
+                            <span class="text-xs text-zinc-600">2:33</span>
+                        </div>
+                    </div>
+
+                    <!-- Simple Footer -->
+                    <div class="px-4 py-3 border-t border-zinc-800 text-center">
+                        <span class="text-xs text-zinc-500">Cift tikla detay sayfasina git</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DRAFT 4: Spotify-Style Gradient -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-bold">DRAFT 4</span>
+                    <h3 class="text-lg font-bold text-white">Spotify Gradient Style</h3>
+                </div>
+                <p class="text-zinc-500 text-sm mb-4">Spotify ilhamli, dinamik gradient, yeşil aksan, kompakt liste</p>
+
+                <!-- Sidebar Mock -->
+                <div class="w-[280px] rounded-xl overflow-hidden shadow-2xl" style="background: linear-gradient(180deg, #1a4a3a 0%, #121212 30%)">
+                    <!-- Gradient Header -->
+                    <div class="p-4 pb-6">
+                        <div class="flex items-end gap-3">
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100" class="w-16 h-16 rounded shadow-2xl">
+                            <div class="flex-1 min-w-0 pb-1">
+                                <span class="text-[9px] font-bold text-white/60 uppercase">Playlist</span>
+                                <h3 class="text-base font-bold text-white leading-tight">Chill Beats</h3>
+                                <p class="text-[11px] text-white/50 mt-0.5">32 sarki • 2s 15dk</p>
+                            </div>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex items-center gap-3 mt-4">
+                            <button class="w-12 h-12 bg-green-500 hover:bg-green-400 hover:scale-105 rounded-full flex items-center justify-center shadow-xl transition-all">
+                                <i class="fas fa-play text-black text-lg ml-0.5"></i>
+                            </button>
+                            <button class="text-white/60 hover:text-white transition-colors">
+                                <i class="far fa-heart text-2xl"></i>
+                            </button>
+                            <button class="text-white/60 hover:text-white transition-colors">
+                                <i class="fas fa-ellipsis text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Track List -->
+                    <div class="px-2 pb-2 space-y-px max-h-[280px] overflow-y-auto scrollbar-hide">
+                        <div class="flex items-center gap-3 px-2 py-2 rounded hover:bg-white/10 cursor-pointer group transition-all">
+                            <span class="w-4 text-center text-sm text-zinc-500 group-hover:hidden">1</span>
+                            <i class="fas fa-play text-white text-xs hidden group-hover:block w-4 text-center"></i>
+                            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60" class="w-10 h-10 rounded">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-white truncate group-hover:text-green-400 transition-colors">Lofi Study</p>
+                                <p class="text-xs text-zinc-400 truncate">ChilledCow</p>
+                            </div>
+                            <span class="text-xs text-zinc-500">2:45</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 px-2 py-2 rounded bg-white/5">
+                            <div class="w-4 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-green-500 text-xs animate-pulse"></i>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=60" class="w-10 h-10 rounded">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-green-500 truncate font-medium">Coffee Shop</p>
+                                <p class="text-xs text-zinc-400 truncate">Jazzy Beats</p>
+                            </div>
+                            <span class="text-xs text-green-500">3:12</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 px-2 py-2 rounded hover:bg-white/10 cursor-pointer group transition-all">
+                            <span class="w-4 text-center text-sm text-zinc-500 group-hover:hidden">3</span>
+                            <i class="fas fa-play text-white text-xs hidden group-hover:block w-4 text-center"></i>
+                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=60" class="w-10 h-10 rounded">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-white truncate group-hover:text-green-400 transition-colors">Rainy Days</p>
+                                <p class="text-xs text-zinc-400 truncate">Lofi Girl</p>
+                            </div>
+                            <span class="text-xs text-zinc-500">4:01</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 px-2 py-2 rounded hover:bg-white/10 cursor-pointer group transition-all">
+                            <span class="w-4 text-center text-sm text-zinc-500 group-hover:hidden">4</span>
+                            <i class="fas fa-play text-white text-xs hidden group-hover:block w-4 text-center"></i>
+                            <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=60" class="w-10 h-10 rounded">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-white truncate group-hover:text-green-400 transition-colors">Night Drive</p>
+                                <p class="text-xs text-zinc-400 truncate">Synthwave</p>
+                            </div>
+                            <span class="text-xs text-zinc-500">3:33</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 px-2 py-2 rounded hover:bg-white/10 cursor-pointer group transition-all">
+                            <span class="w-4 text-center text-sm text-zinc-500 group-hover:hidden">5</span>
+                            <i class="fas fa-play text-white text-xs hidden group-hover:block w-4 text-center"></i>
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=60" class="w-10 h-10 rounded">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-white truncate group-hover:text-green-400 transition-colors">Afternoon Tea</p>
+                                <p class="text-xs text-zinc-400 truncate">Ambient</p>
+                            </div>
+                            <span class="text-xs text-zinc-500">2:58</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="mt-16 p-8 rounded-2xl bg-gradient-to-br from-muzibu-coral/10 via-orange-500/5 to-yellow-500/10 border border-muzibu-coral/20">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-lightbulb text-yellow-400"></i>
+                Onerilen Tasarim
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-muzibu-coral">Muzibunya Ozel Hibrit Yaklasim</h3>
+                    <p class="text-zinc-300 text-sm leading-relaxed">
+                        Draftlardan en iyi ozellikleri birlestiren, Muzibu'ya ozel tasarim:
+                    </p>
+                    <ul class="space-y-2 text-sm text-zinc-400">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-0.5"></i>
+                            <span><strong class="text-white">Draft 1'den:</strong> Buyuk cover image ile gorsel zenginlik</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-0.5"></i>
+                            <span><strong class="text-white">Draft 2'den:</strong> Glassmorphism efektleri ve waveform gorseli</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-0.5"></i>
+                            <span><strong class="text-white">Draft 3'ten:</strong> Minimalist sarki listesi, temiz tipografi</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-0.5"></i>
+                            <span><strong class="text-white">Draft 4'ten:</strong> Spotify tarz dinamik gradient ve play butonu</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-blue-400">Teknik Notlar</h3>
+                    <ul class="space-y-2 text-sm text-zinc-400">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-code text-blue-400 mt-0.5"></i>
+                            <span>Alpine.js store yapisi mevcut, sadece UI guncellemesi gerekli</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-palette text-purple-400 mt-0.5"></i>
+                            <span>Muzibu-coral (#FF5A5F) ana aksan rengi olarak korunmali</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-mobile-alt text-green-400 mt-0.5"></i>
+                            <span>280px sabit genislik, mobile'da gizlenebilir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-bolt text-yellow-400 mt-0.5"></i>
+                            <span>Lazy loading ve cache sistemi mevcut</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-white/10 text-center text-zinc-600 text-sm">
+            <p>Claude AI tarafindan tasarlandi • Tailwind CSS</p>
+        </footer>
+    </div>
+</body>
+</html>

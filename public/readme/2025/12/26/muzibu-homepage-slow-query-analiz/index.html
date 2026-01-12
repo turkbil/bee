@@ -1,1 +1,392 @@
-v3/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Performans Optimizasyonu - Kapsamlı Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-6xl mx-auto p-6">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">PLAN v3</span>
+                <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Kapsamlı Optimizasyon</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Muzibu Ana Sayfa Performans Optimizasyonu</h1>
+            <p class="text-slate-400">2864ms → ~400ms hedefi</p>
+            <p class="text-slate-500 text-sm">26 Aralık 2025 - v3 (Dinamik güncellemeler dahil)</p>
+        </header>
+
+        <!-- Özet -->
+        <div class="bg-purple-900/20 border border-purple-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">📊 Optimizasyon Özeti</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-red-400">284</div>
+                    <div class="text-slate-400 text-sm">Mevcut Query</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-green-400">~30</div>
+                    <div class="text-slate-400 text-sm">Hedef Query</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-red-400">2864ms</div>
+                    <div class="text-slate-400 text-sm">Mevcut Süre</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-green-400">~400ms</div>
+                    <div class="text-slate-400 text-sm">Hedef Süre</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BÖLÜM 1: Favorites N+1 -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">P1</span>
+                <h2 class="text-xl font-bold text-blue-400">Favorites N+1 Çözümü</h2>
+                <span class="text-slate-500 text-sm">(174 query → 1 query)</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-4">
+                <div class="bg-green-900/20 border border-green-800 rounded p-4">
+                    <h3 class="font-semibold text-green-400 mb-2">📝 Basit Anlatım</h3>
+                    <p class="text-slate-300 text-sm">
+                        Şu anda her şarkı kartı için "Bu favorilerde mi?" diye ayrı ayrı
+                        soruyoruz. Bunun yerine sayfa açılırken tüm favorileri tek seferde
+                        çekip JavaScript'e vereceğiz. Kullanıcı favori eklerse anında
+                        güncellenir, sayfa yenilemeye gerek kalmaz.
+                    </p>
+                </div>
+                <div class="bg-slate-800 rounded p-4">
+                    <h3 class="font-semibold text-white mb-2">🔧 Teknik Özet</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• FavoriteService: Tek query ile tüm favorite ID'ler</li>
+                        <li>• Layout'ta window.userFavorites inject</li>
+                        <li>• favorites.js: Server data ile init (API call yok)</li>
+                        <li>• Blade'deki isFavoritedBy() kaldırılacak</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-slate-400 text-sm">
+                <strong>Kazanç:</strong> ~80ms, 173 query azalma
+            </div>
+        </div>
+
+        <!-- BÖLÜM 2: songs_count + total_duration Cache -->
+        <div class="bg-orange-900/20 border border-orange-800 rounded-lg p-6 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-orange-600 text-white px-2 py-1 rounded text-xs font-bold">P2</span>
+                <h2 class="text-xl font-bold text-orange-400">songs_count + total_duration Cache</h2>
+                <span class="text-slate-500 text-sm">(Subquery → Cached Field)</span>
+            </div>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800 rounded p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">📝 Basit Anlatım (Herkes İçin)</h3>
+                <p class="text-slate-300 text-sm mb-3">
+                    Şu anda her playlist/albüm için "Kaç şarkı var? Toplam süre ne?" diye
+                    ayrı ayrı hesaplıyoruz. Bu çok yavaş. Bunun yerine bu bilgiyi
+                    <strong>önceden hesaplayıp saklayacağız</strong>.
+                </p>
+                <div class="bg-slate-800 rounded p-3 text-sm">
+                    <p class="text-slate-300">
+                        <strong>Örnek:</strong> Bir playlist'te 50 şarkı var. Her seferinde
+                        saymak yerine, tabloya "songs_count: 50, total_duration: 10800" yazacağız.
+                        Yeni şarkı eklenince bu sayıları otomatik güncelleyeceğiz.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Teknik Plan -->
+            <div class="bg-slate-800 rounded p-4 mb-6">
+                <h3 class="font-semibold text-white mb-3">🔧 Teknik Plan</h3>
+
+                <!-- Adım 1: Migration -->
+                <div class="border-l-4 border-orange-500 pl-4 mb-4">
+                    <h4 class="font-semibold text-orange-400 mb-2">1. Migration (Tenant Only)</h4>
+                    <p class="text-slate-400 text-sm mb-2">database/migrations/tenant/</p>
+                    <div class="bg-slate-900 rounded p-3 text-sm font-mono">
+                        <p class="text-yellow-300">// muzibu_playlists tablosu</p>
+                        <p class="text-slate-300">$table->unsignedInteger('songs_count')->nullable();</p>
+                        <p class="text-slate-300">$table->unsignedInteger('total_duration')->nullable();</p>
+                        <p class="text-slate-500 mt-2">// NULL = henüz hesaplanmamış (eski veri)</p>
+                        <p class="text-slate-500">// 0 = hesaplandı, gerçekten 0</p>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-2">
+                        <strong>Not:</strong> Central'a eklemeye gerek yok çünkü
+                        muzibu_playlists/albums sadece tenant DB'de.
+                    </p>
+                </div>
+
+                <!-- Adım 2: Model Accessor -->
+                <div class="border-l-4 border-orange-500 pl-4 mb-4">
+                    <h4 class="font-semibold text-orange-400 mb-2">2. Model Accessor (Lazy Calculation)</h4>
+                    <p class="text-slate-400 text-sm mb-2">Playlist.php, Album.php</p>
+                    <div class="bg-slate-900 rounded p-3 text-sm font-mono">
+                        <p class="text-green-300">// getSongsCountAttribute()</p>
+                        <p class="text-slate-300">if ($this->attributes['songs_count'] === null) {</p>
+                        <p class="text-slate-300 pl-4">$count = $this->songs()->count();</p>
+                        <p class="text-slate-300 pl-4">$this->updateQuietly(['songs_count' => $count]);</p>
+                        <p class="text-slate-300 pl-4">return $count;</p>
+                        <p class="text-slate-300">}</p>
+                        <p class="text-slate-300">return $this->attributes['songs_count'];</p>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-2">
+                        <strong>Nasıl çalışır:</strong> İlk çekildiğinde null ise hesaplar ve DB'ye yazar.
+                        Sonraki isteklerde direkt DB'den okur (query yok).
+                    </p>
+                </div>
+
+                <!-- Adım 3: Observer -->
+                <div class="border-l-4 border-orange-500 pl-4 mb-4">
+                    <h4 class="font-semibold text-orange-400 mb-2">3. Song Observer (Otomatik Güncelleme)</h4>
+                    <p class="text-slate-400 text-sm mb-2">Modules/Muzibu/app/Observers/SongObserver.php</p>
+                    <div class="bg-slate-900 rounded p-3 text-sm">
+                        <table class="w-full text-slate-300">
+                            <tr class="border-b border-slate-700">
+                                <td class="py-1 text-yellow-300">created()</td>
+                                <td class="py-1">→ Album songs_count++, total_duration += duration</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-1 text-yellow-300">deleted()</td>
+                                <td class="py-1">→ Album songs_count--, total_duration -= duration</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-1 text-yellow-300">updated()</td>
+                                <td class="py-1">→ duration değiştiyse total_duration güncelle</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 text-yellow-300">restored()</td>
+                                <td class="py-1">→ Soft delete'den geri gelirse ekle</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Adım 4: Pivot Observer -->
+                <div class="border-l-4 border-orange-500 pl-4 mb-4">
+                    <h4 class="font-semibold text-orange-400 mb-2">4. Playlist Pivot Observer</h4>
+                    <p class="text-slate-400 text-sm mb-2">Playlist-Song pivot tablosu için</p>
+                    <div class="bg-slate-900 rounded p-3 text-sm">
+                        <table class="w-full text-slate-300">
+                            <tr class="border-b border-slate-700">
+                                <td class="py-1 text-yellow-300">attach()</td>
+                                <td class="py-1">→ Playlist songs_count++, total_duration += song.duration</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 text-yellow-300">detach()</td>
+                                <td class="py-1">→ Playlist songs_count--, total_duration -= song.duration</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-2">
+                        <strong>Not:</strong> Playlist many-to-many ilişkisi olduğu için
+                        pivot event'lerini yakalamalıyız.
+                    </p>
+                </div>
+
+                <!-- Adım 5: Artisan Command -->
+                <div class="border-l-4 border-green-500 pl-4">
+                    <h4 class="font-semibold text-green-400 mb-2">5. Artisan Recalculate Command</h4>
+                    <p class="text-slate-400 text-sm mb-2">İlk çalıştırma + eski veri fix</p>
+                    <div class="bg-slate-900 rounded p-3 text-sm font-mono">
+                        <p class="text-green-300">php artisan muzibu:recalculate-counts</p>
+                        <p class="text-slate-500 mt-2">// Tüm playlist ve album'leri tarar</p>
+                        <p class="text-slate-500">// songs_count ve total_duration hesaplar</p>
+                        <p class="text-slate-500">// Progress bar ile gösterir</p>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-2">
+                        <strong>Ne zaman kullanılır:</strong>
+                        <br>• Eski DB'den veri import edilince
+                        <br>• Manuel düzeltme gerekince
+                        <br>• Tutarsızlık tespit edilince
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dinamik Senaryo -->
+            <div class="bg-purple-900/20 border border-purple-800 rounded p-4 mb-4">
+                <h3 class="font-semibold text-purple-400 mb-3">🔄 Dinamik Güncellemeler (Senin Sorduğun)</h3>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-800 rounded p-3">
+                        <h4 class="text-white font-semibold mb-2">Senaryo 1: Yeni şarkı yükleniyor</h4>
+                        <ol class="text-slate-300 text-sm space-y-1">
+                            <li>1. Admin panelden şarkı yüklenir → Song::create()</li>
+                            <li>2. SongObserver::created() tetiklenir</li>
+                            <li>3. Album->increment('songs_count')</li>
+                            <li>4. Album->increment('total_duration', $song->duration)</li>
+                            <li class="text-green-400">5. ✅ Anında güncellendi!</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-slate-800 rounded p-3">
+                        <h4 class="text-white font-semibold mb-2">Senaryo 2: Playlist'e şarkı ekleniyor</h4>
+                        <ol class="text-slate-300 text-sm space-y-1">
+                            <li>1. Kullanıcı "Playlist'e ekle" tıklar</li>
+                            <li>2. $playlist->songs()->attach($songId)</li>
+                            <li>3. Playlist model event tetiklenir</li>
+                            <li>4. songs_count ve total_duration güncellenir</li>
+                            <li class="text-green-400">5. ✅ Anında güncellendi!</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-slate-800 rounded p-3">
+                        <h4 class="text-white font-semibold mb-2">Senaryo 3: Eski DB'den veri geldi (NULL)</h4>
+                        <ol class="text-slate-300 text-sm space-y-1">
+                            <li>1. Import sonrası songs_count = NULL</li>
+                            <li>2. İlk sayfa yüklemesinde getSongsCountAttribute() çağrılır</li>
+                            <li>3. NULL görünce → $this->songs()->count() hesaplar</li>
+                            <li>4. updateQuietly() ile DB'ye yazar</li>
+                            <li class="text-green-400">5. ✅ Sonraki isteklerde query yok!</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-slate-400 text-sm">
+                <strong>Kazanç:</strong> ~100ms, subquery'ler kaldırılıyor
+            </div>
+        </div>
+
+        <!-- BÖLÜM 3: Diğer Optimizasyonlar -->
+        <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-yellow-600 text-white px-2 py-1 rounded text-xs font-bold">P3</span>
+                <h2 class="text-xl font-bold text-yellow-400">Diğer Optimizasyonlar</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800 rounded p-4">
+                    <h3 class="font-semibold text-white mb-2">Subscription Session Cache</h3>
+                    <p class="text-slate-400 text-sm">3 query → Session</p>
+                    <p class="text-slate-300 text-sm mt-2">
+                        Aynı kullanıcının subscription'ı 3 kez sorgulanıyor.
+                        Session'a cache'le.
+                    </p>
+                </div>
+                <div class="bg-slate-800 rounded p-4">
+                    <h3 class="font-semibold text-white mb-2">Corporate Account Check</h3>
+                    <p class="text-slate-400 text-sm">27ms → Session</p>
+                    <p class="text-slate-300 text-sm mt-2">
+                        Kurumsal hesap kontrolü de session'a alınabilir.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uygulama Sırası -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4">📋 Uygulama Sırası</h2>
+            <ol class="space-y-3">
+                <li class="flex items-start gap-3">
+                    <span class="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
+                    <div>
+                        <p class="font-semibold text-white">P1: Favorites N+1 Çözümü</p>
+                        <p class="text-slate-400 text-sm">En kolay, en büyük kazanç (174 query → 1)</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
+                    <div>
+                        <p class="font-semibold text-white">P2: Migration oluştur ve çalıştır</p>
+                        <p class="text-slate-400 text-sm">songs_count + total_duration nullable field'lar</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
+                    <div>
+                        <p class="font-semibold text-white">P2: Model accessor'ları ekle</p>
+                        <p class="text-slate-400 text-sm">Lazy calculation - null ise hesapla</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>
+                    <div>
+                        <p class="font-semibold text-white">P2: Observer'ları oluştur</p>
+                        <p class="text-slate-400 text-sm">Song + Playlist pivot event'leri</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">5</span>
+                    <div>
+                        <p class="font-semibold text-white">P2: Recalculate command</p>
+                        <p class="text-slate-400 text-sm">Mevcut verileri hesapla</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">6</span>
+                    <div>
+                        <p class="font-semibold text-white">Test & Karşılaştırma</p>
+                        <p class="text-slate-400 text-sm">Telescope'da query sayısı kontrolü</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Dosya Listesi -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4">📁 Oluşturulacak/Güncellenecek Dosyalar</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="text-green-400 font-semibold mb-2">Yeni Oluşturulacak:</h3>
+                    <ul class="space-y-1 text-slate-300 font-mono">
+                        <li>• Modules/Favorite/app/Services/FavoriteService.php</li>
+                        <li>• database/migrations/tenant/xxx_add_cache_fields.php</li>
+                        <li>• Modules/Muzibu/app/Observers/SongObserver.php</li>
+                        <li>• Modules/Muzibu/app/Console/RecalculateCounts.php</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-yellow-400 font-semibold mb-2">Güncellenecek:</h3>
+                    <ul class="space-y-1 text-slate-300 font-mono">
+                        <li>• Modules/Muzibu/app/Models/Playlist.php</li>
+                        <li>• Modules/Muzibu/app/Models/Album.php</li>
+                        <li>• resources/views/themes/muzibu/layouts/app.blade.php</li>
+                        <li>• public/themes/muzibu/js/player/features/favorites.js</li>
+                        <li>• ~15 blade component (isFavoritedBy kaldır)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onay -->
+        <div class="bg-green-900/20 border border-green-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">✅ Onay Bekleniyor</h2>
+            <p class="text-slate-300 mb-4">
+                Bu plan onaylanırsa P1'den başlayarak uygulamaya geçeceğim.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="text-white font-semibold mb-2">Garantiler:</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>✓ Mevcut sistem çalışmaya devam edecek</li>
+                        <li>✓ Geriye dönük uyumluluk korunacak</li>
+                        <li>✓ NULL değerler otomatik hesaplanacak</li>
+                        <li>✓ Dinamik güncellemeler çalışacak</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-2">Beklenen Sonuç:</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• 284 query → ~30 query</li>
+                        <li>• 2864ms → ~400ms</li>
+                        <li>• ~7x performans artışı</li>
+                        <li>• Daha iyi kullanıcı deneyimi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-700 pt-6">
+            <p>Claude AI - Kapsamlı Performans Optimizasyon Planı</p>
+            <p>26 Aralık 2025 - v3</p>
+        </footer>
+    </div>
+</body>
+</html>

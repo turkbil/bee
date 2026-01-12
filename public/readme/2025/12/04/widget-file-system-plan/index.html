@@ -1,1 +1,453 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget FILE Sistemi Analiz & Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #60a5fa;
+            font-size: 2rem;
+            margin: 50px 0 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #334155;
+        }
+        h3 {
+            color: #93c5fd;
+            font-size: 1.5rem;
+            margin: 30px 0 15px;
+        }
+        .summary {
+            background: rgba(59,130,246,0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .problem {
+            background: rgba(239,68,68,0.1);
+            border-left: 4px solid #ef4444;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .solution {
+            background: rgba(16,185,129,0.1);
+            border-left: 4px solid #10b981;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .code {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #334155;
+        }
+        .step {
+            background: rgba(30,41,59,0.5);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #22d3ee;
+        }
+        .step h4 {
+            color: #22d3ee;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30,41,59,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background: rgba(59,130,246,0.2);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+        .tag-static { background: #dc2626; color: white; }
+        .tag-dynamic { background: #10b981; color: white; }
+        .tag-empty { background: #f59e0b; color: white; }
+        .tag-ready { background: #3b82f6; color: white; }
+        ul, ol { margin: 15px 0 15px 25px; }
+        li { margin: 8px 0; }
+        .highlight { color: #fbbf24; font-weight: 600; }
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Widget FILE Sistemi Analiz & Planlama</h1>
+        
+        <div class="meta">
+            📅 Tarih: 2025-12-04 | 🎯 Tenant: ixtif.com | 👨‍💻 Analiz: Widget Sistem Mimarisi
+        </div>
+
+        <div class="summary">
+            <h3>📋 Analiz Özeti</h3>
+            <p>Widget Management sisteminde <span class="highlight">FILE type widget'lar</span> için şema sisteminin eksik olduğu tespit edildi. Mevcut widget'lar statik HTML içeriyor, ayarlanabilir değil. Hero ve Form Builder widget'ları için dinamik şema sistemi kurulacak.</p>
+        </div>
+
+        <h2>🏗️ Mevcut Sistem Mimarisi</h2>
+
+        <h3>1. Widget Tipleri</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tip</th>
+                    <th>Açıklama</th>
+                    <th>Veri Kaynağı</th>
+                    <th>Örnek</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>MODULE</strong></td>
+                    <td>Backend modüllerden veri çeker</td>
+                    <td>Database (Blog, Product vb.)</td>
+                    <td>Blog Listesi, Ürün Kartları</td>
+                </tr>
+                <tr>
+                    <td><strong>FILE</strong></td>
+                    <td>Blade view dosyasından render</td>
+                    <td>Static view dosyası</td>
+                    <td>Hero, Contact Form, Layout'lar</td>
+                </tr>
+                <tr>
+                    <td><strong>CUSTOM</strong></td>
+                    <td>Kullanıcı tanımlı HTML/CSS/JS</td>
+                    <td>Widget içinde saklanan kod</td>
+                    <td>Özel banner, embed kod</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>2. FILE Widget Sistemi Nasıl Çalışıyor?</h3>
+
+        <div class="step">
+            <h4>Adım 1: Widget Tanımı (Database)</h4>
+            <div class="code">
+id: 69<br>
+name: "Hero - Ana Banner"<br>
+type: "file"<br>
+file_path: "hero.ixtif-hero.view"<br>
+has_items: 1<br>
+settings_schema: NULL  <span style="color: #ef4444;">← SORUN!</span><br>
+item_schema: NULL      <span style="color: #ef4444;">← SORUN!</span>
+            </div>
+        </div>
+
+        <div class="step">
+            <h4>Adım 2: View Dosyası</h4>
+            <div class="code">
+📁 Modules/WidgetManagement/resources/views/blocks/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hero/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ixtif-hero/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view.blade.php  <span style="color: #10b981;">← Render edilen dosya</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;settings.json   <span style="color: #ef4444;">← YOK! (Olmalı)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;items.json      <span style="color: #ef4444;">← YOK! (Olmalı)</span>
+            </div>
+        </div>
+
+        <div class="step">
+            <h4>Adım 3: Render İşlemi (WidgetService.php)</h4>
+            <ol>
+                <li>file_path parse edilir → "hero.ixtif-hero.view"</li>
+                <li>Blade view bulunur → blocks/hero/ixtif-hero/view.blade.php</li>
+                <li>Settings ve Items verileri ile render edilir</li>
+                <li>HTML output döner</li>
+            </ol>
+        </div>
+
+        <h2>🚨 Tespit Edilen Problemler</h2>
+
+        <div class="problem">
+            <h3>Problem 1: Statik Widget'lar</h3>
+            <p><strong>Durum:</strong> Mevcut FILE widget'ları sadece hardcoded HTML içeriyor.</p>
+            <div class="code">
+&lt;!-- Mevcut: contact-form/view.blade.php --&gt;<br>
+&lt;form&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" placeholder="Adınız"&gt;  <span style="color: #ef4444;">← Sabit değer!</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="email" placeholder="Email"&gt;   <span style="color: #ef4444;">← Değiştirilemez!</span><br>
+&lt;/form&gt;
+            </div>
+            <p><strong>Sonuç:</strong> Tenant'lar widget'ı özelleştiremez. Form alanlarını değiştiremez.</p>
+        </div>
+
+        <div class="problem">
+            <h3>Problem 2: Schema Sisteminin Eksikliği</h3>
+            <p><strong>Durum:</strong> settings.json ve items.json dosyaları YOK.</p>
+            <p><strong>Sonuç:</strong></p>
+            <ul>
+                <li>Form Builder kullanılamıyor (schema boş)</li>
+                <li>Widget ayarları manuel kod ile değiştiriliyor</li>
+                <li>Tenant'lar bağımsız customization yapamıyor</li>
+            </ul>
+        </div>
+
+        <div class="problem">
+            <h3>Problem 3: Hero Widget Yarım Kaldı</h3>
+            <p><strong>Durum:</strong> ixtif-hero widget'ı <code>has_items=1</code> ama item_schema tanımlı değil.</p>
+            <p><strong>Sonuç:</strong> Items eklenemiyor, sadece settings kullanılabiliyor.</p>
+        </div>
+
+        <h2>✅ Çözüm Planı</h2>
+
+        <div class="solution">
+            <h3>Hedef</h3>
+            <p>FILE type widget'ları için <span class="highlight">tam dinamik schema sistemi</span> kurmak:</p>
+            <ol>
+                <li><strong>settings.json</strong> → Widget ayarları (renkler, başlıklar, buttonlar)</li>
+                <li><strong>items.json</strong> → Dinamik içerik elemanları (slider items, form fields)</li>
+                <li><strong>Form Builder entegrasyonu</strong> → Admin panelden drag&drop ile düzenleme</li>
+            </ol>
+        </div>
+
+        <h2>📐 İmplementasyon Planı</h2>
+
+        <h3>Faz 1: Hero Widget Tamamlama (Öncelik: YÜKSEK)</h3>
+
+        <div class="step">
+            <h4>1.1. Hero Settings Schema (settings.json)</h4>
+            <p><strong>Dosya:</strong> <code>blocks/hero/ixtif-hero/settings.json</code></p>
+            <p><strong>İçerik:</strong> Başlık, alt başlık, buton metni, renkler, arka plan</p>
+            <div class="code">
+{<br>
+&nbsp;&nbsp;"title_line1": { "type": "text", "label": "Ana Başlık (1. Satır)" },<br>
+&nbsp;&nbsp;"title_line2": { "type": "text", "label": "Ana Başlık (2. Satır)" },<br>
+&nbsp;&nbsp;"description": { "type": "textarea", "label": "Açıklama" },<br>
+&nbsp;&nbsp;"cta_text": { "type": "text", "label": "Buton Metni" },<br>
+&nbsp;&nbsp;"cta_url": { "type": "text", "label": "Buton URL" },<br>
+&nbsp;&nbsp;"cta_icon": { "type": "text", "label": "Buton İkon (FontAwesome)" },<br>
+&nbsp;&nbsp;"hero_image": { "type": "media", "label": "Hero Görseli" }<br>
+}
+            </div>
+        </div>
+
+        <div class="step">
+            <h4>1.2. Hero Items Schema (items.json)</h4>
+            <p><strong>Dosya:</strong> <code>blocks/hero/ixtif-hero/items.json</code></p>
+            <p><strong>İçerik:</strong> Feature listesi (ikonlu özellik kartları)</p>
+            <div class="code">
+{<br>
+&nbsp;&nbsp;"title": { "type": "text", "label": "Özellik Başlığı", "required": true },<br>
+&nbsp;&nbsp;"content": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"subtitle": { "type": "text", "label": "Alt Başlık" },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"icon": { "type": "text", "label": "İkon (FontAwesome)" }<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+
+        <div class="step">
+            <h4>1.3. View Template Güncellemesi</h4>
+            <p><strong>Dosya:</strong> <code>blocks/hero/ixtif-hero/view.blade.php</code></p>
+            <p><strong>Değişiklik:</strong> Hardcoded değerler → $settings ve $items kullanımı</p>
+            <p><strong>Durum:</strong> <span class="tag tag-ready">Zaten yapıldı!</span> (View dosyası hazır)</p>
+        </div>
+
+        <div class="step">
+            <h4>1.4. Database Güncelleme</h4>
+            <p><strong>İşlem:</strong> Widget #69'un settings_schema ve item_schema'sını doldur</p>
+            <div class="code">
+UPDATE widgets SET<br>
+&nbsp;&nbsp;settings_schema = <span style="color: #10b981;">/* settings.json içeriği */</span>,<br>
+&nbsp;&nbsp;item_schema = <span style="color: #10b981;">/* items.json içeriği */</span><br>
+WHERE id = 69;
+            </div>
+        </div>
+
+        <h3>Faz 2: Contact Form Widget (Öncelik: ORTA)</h3>
+
+        <div class="step">
+            <h4>2.1. Contact Form Settings Schema</h4>
+            <p><strong>Amaç:</strong> Form başlığı, açıklama, başarı mesajı ayarlanabilir olacak</p>
+            <div class="code">
+{<br>
+&nbsp;&nbsp;"form_title": { "type": "text", "label": "Form Başlığı" },<br>
+&nbsp;&nbsp;"form_description": { "type": "textarea", "label": "Açıklama" },<br>
+&nbsp;&nbsp;"submit_text": { "type": "text", "label": "Gönder Butonu Metni" },<br>
+&nbsp;&nbsp;"success_message": { "type": "text", "label": "Başarı Mesajı" },<br>
+&nbsp;&nbsp;"notification_email": { "type": "email", "label": "Bildirim Email" }<br>
+}
+            </div>
+        </div>
+
+        <div class="step">
+            <h4>2.2. Contact Form Items Schema (Form Builder!)</h4>
+            <p><strong>Amaç:</strong> Form alanları dinamik olarak eklenebilecek</p>
+            <div class="code">
+{<br>
+&nbsp;&nbsp;"field_type": { "type": "select", "options": ["text", "email", "tel", "textarea"] },<br>
+&nbsp;&nbsp;"field_label": { "type": "text", "label": "Alan Etiketi" },<br>
+&nbsp;&nbsp;"field_name": { "type": "text", "label": "Alan Adı (name)" },<br>
+&nbsp;&nbsp;"field_placeholder": { "type": "text", "label": "Placeholder" },<br>
+&nbsp;&nbsp;"field_required": { "type": "checkbox", "label": "Zorunlu Alan?" }<br>
+}
+            </div>
+        </div>
+
+        <div class="step">
+            <h4>2.3. Backend Form Handling</h4>
+            <p><strong>Gerekli:</strong> Form submit işlemi için Livewire component</p>
+            <p><strong>Özellikler:</strong></p>
+            <ul>
+                <li>Validation (dinamik items'a göre)</li>
+                <li>Email gönderimi</li>
+                <li>Database kayıt (opsiyonel)</li>
+                <li>Success/Error handling</li>
+            </ul>
+        </div>
+
+        <h3>Faz 3: Form Builder UI Tamamlama (Öncelik: DÜŞÜK)</h3>
+
+        <div class="step">
+            <h4>3.1. Drag & Drop Form Builder</h4>
+            <p><strong>Durum:</strong> Mevcut Form Builder component var ama eksik</p>
+            <p><strong>Yapılacaklar:</strong></p>
+            <ul>
+                <li>Form element palette (text, email, select, checkbox, radio)</li>
+                <li>Drag & drop sıralaması</li>
+                <li>Element özellikleri paneli</li>
+                <li>Conditional logic (gelişmiş)</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h4>3.2. Schema Preview</h4>
+            <p><strong>Özellik:</strong> Oluşturulan form'un canlı önizlemesi</p>
+            <p><strong>Teknoloji:</strong> Alpine.js + Livewire</p>
+        </div>
+
+        <h2>🎯 Öncelik Sıralaması</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Sıra</th>
+                    <th>İşlem</th>
+                    <th>Widget</th>
+                    <th>Süre</th>
+                    <th>Etki</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Hero settings.json + items.json</td>
+                    <td>ixtif-hero</td>
+                    <td>2-3 saat</td>
+                    <td>Ana banner özelleştirilebilir</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Hero DB güncelleme + test</td>
+                    <td>ixtif-hero</td>
+                    <td>1 saat</td>
+                    <td>Hero widget tamamlanır</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Contact Form schema'ları</td>
+                    <td>contact-form</td>
+                    <td>3-4 saat</td>
+                    <td>Form özelleştirilebilir</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Form submit backend</td>
+                    <td>contact-form</td>
+                    <td>4-5 saat</td>
+                    <td>Form çalışır hale gelir</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Form Builder UI</td>
+                    <td>Genel</td>
+                    <td>1-2 gün</td>
+                    <td>Admin panelden form oluşturma</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>💡 Öneriler</h2>
+
+        <div class="solution">
+            <h3>Başlangıç için</h3>
+            <ul>
+                <li><strong>Hero widget ile başla</strong> - Zaten view hazır, sadece schema eklenecek</li>
+                <li><strong>Basit tut</strong> - İlk versiyonda temel ayarlar yeterli</li>
+                <li><strong>Test et</strong> - Her widget için tenant'larda test et</li>
+                <li><strong>Dokümante et</strong> - Schema formatını belge haline getir</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h3>İleri Adımlar</h3>
+            <ul>
+                <li>Diğer layout widget'ları için schema ekle</li>
+                <li>Media widget için gallery schema</li>
+                <li>Testimonial widget için review schema</li>
+                <li>Tüm FILE widget'ları standardize et</li>
+            </ul>
+        </div>
+
+        <h2>📝 Sonuç</h2>
+
+        <div class="summary">
+            <p>Widget FILE sistemi <span class="highlight">büyük potansiyele</span> sahip ama şu anda <span class="highlight">yarım kalmış</span> durumda. Schema sistemi tamamlandığında:</p>
+            <ul>
+                <li>✅ Tenant'lar kendi widget'larını özelleştirebilir</li>
+                <li>✅ Form Builder ile dinamik formlar oluşturulabilir</li>
+                <li>✅ Hero banner tenant'a özel olur</li>
+                <li>✅ Kod tekrarı azalır, bakım kolaylaşır</li>
+            </ul>
+            <p style="margin-top: 20px;"><strong>İlk adım:</strong> Hero widget için settings.json ve items.json oluştur!</p>
+        </div>
+
+        <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; text-align: center; color: #64748b;">
+            🤖 Claude AI - Widget Sistem Analizi - 2025-12-04
+        </div>
+    </div>
+</body>
+</html>

@@ -1,1 +1,477 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatura Bilgileri - Compact Minimal (Final)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        [x-cloak] { display: none !important; }
+        .bg-spotify-gray {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .muzibu-coral { color: #FF6B6B; }
+        .bg-muzibu-coral { background-color: #FF6B6B; }
+        .border-muzibu-coral { border-color: #FF6B6B; }
+
+        /* Tooltip */
+        [data-tooltip] {
+            position: relative;
+        }
+        [data-tooltip]:hover::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-4px);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        [data-tooltip]:hover::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="mb-12 pb-6 border-b border-slate-700">
+            <h1 class="text-3xl font-bold mb-3 text-white">📋 Fatura Bilgileri - Compact Minimal (Final)</h1>
+            <div class="space-y-2 text-slate-400">
+                <p>✅ En minimal tasarım - tek satır özet</p>
+                <p>✅ Inline edit form - toggle açılır/kapanır</p>
+                <p>✅ Tooltip ile açıklamalar</p>
+                <p>✅ Mevcut tasarıma tam uyumlu</p>
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 12 Aralık 2025</span>
+                <span>🎯 Muzibu Checkout</span>
+            </div>
+        </header>
+
+        <!-- ============================================ -->
+        <!-- COMPACT MINIMAL - FINAL VERSION -->
+        <!-- ============================================ -->
+        <section class="mb-16">
+            <div class="bg-slate-800/30 rounded-2xl p-8">
+                <div x-data="{
+                    showList: false,
+                    selectedProfile: null,
+                    editingProfileId: null,
+                    profiles: [
+                        { id: 1, type: 'individual', title: 'Evim', identity: '12345678901', isDefault: true },
+                        { id: 2, type: 'corporate', company: 'ABC Ltd. Şti.', tax: '1234567890', office: 'Kadıköy V.D.', isDefault: false },
+                        { id: 3, type: 'individual', title: 'İşyerim', identity: '98765432109', isDefault: false }
+                    ],
+
+                    selectProfile(profile) {
+                        this.selectedProfile = profile;
+                        this.showList = false;
+                        this.editingProfileId = null;
+                        console.log('✅ Selected:', profile);
+                        // Livewire: $wire.selectBillingProfile(profile.id)
+                    },
+
+                    deleteProfile(profile, event) {
+                        event.stopPropagation();
+                        if(confirm(`${profile.title || profile.company} silinecek. Emin misiniz?`)) {
+                            this.profiles = this.profiles.filter(p => p.id !== profile.id);
+                            if(this.selectedProfile?.id === profile.id) {
+                                this.selectedProfile = this.profiles.find(p => p.isDefault) || this.profiles[0] || null;
+                            }
+                            this.editingProfileId = null;
+                            console.log('🗑️ Deleted:', profile.id);
+                            // Livewire: $wire.deleteBillingProfile(profile.id)
+                        }
+                    },
+
+                    setDefault(profile, event) {
+                        event.stopPropagation();
+                        this.profiles = this.profiles.map(p => ({ ...p, isDefault: p.id === profile.id }));
+                        console.log('⭐ Set as default:', profile.id);
+                        // Livewire: $wire.setDefaultBillingProfile(profile.id)
+                    },
+
+                    toggleEdit(profileId, event) {
+                        event.stopPropagation();
+                        this.editingProfileId = this.editingProfileId === profileId ? null : profileId;
+                        console.log('✏️ Toggle edit:', profileId, 'Open:', this.editingProfileId === profileId);
+                        // Livewire: $wire.set('editing_profile_id', this.editingProfileId)
+                    },
+
+                    closeEdit() {
+                        this.editingProfileId = null;
+                        console.log('❌ Close edit form');
+                    },
+
+                    saveEdit(profileId) {
+                        console.log('💾 Save edit:', profileId);
+                        this.editingProfileId = null;
+                        // Livewire: $wire.saveBillingProfile(profileId)
+                    }
+                }"
+                x-init="selectedProfile = profiles.find(p => p.isDefault) || profiles[0]">
+
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fa-solid fa-file-invoice text-gray-500 mr-3"></i>
+                            Fatura Bilgileri
+                        </h3>
+                        <button @click="console.log('➕ Add new profile')"
+                                data-tooltip="Yeni Profil Ekle"
+                                class="text-sm text-gray-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fa-solid fa-plus mr-1"></i>Ekle
+                        </button>
+                    </div>
+
+                    <!-- Seçili Profil (Tek Satır Özet) -->
+                    <div class="flex items-center justify-between py-3 px-4 mb-3 bg-spotify-gray rounded-xl">
+                        <template x-if="selectedProfile">
+                            <p class="text-sm text-gray-400 flex-1">
+                                <span class="text-white font-medium"
+                                      x-text="selectedProfile.type === 'corporate' ? selectedProfile.company : selectedProfile.title"></span>
+                                <span x-show="selectedProfile.isDefault"
+                                      class="mx-2 text-yellow-400" title="Varsayılan Profil">★</span>
+                                <span class="mx-2 text-gray-600">•</span>
+                                <span x-text="selectedProfile.type === 'corporate' ? `Vergi No: ${selectedProfile.tax}` : `TC: ${selectedProfile.identity}`"></span>
+                            </p>
+                        </template>
+                        <button @click="showList = !showList"
+                                data-tooltip="Profilleri Düzenle"
+                                class="text-gray-400 hover:text-white p-1 transition-colors">
+                            <i class="fa-solid fa-pen text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Profil Listesi (Collapsible) -->
+                    <div x-show="showList" x-cloak x-transition
+                         class="space-y-2">
+                        <template x-for="profile in profiles" :key="profile.id">
+                            <div class="relative group">
+                                <!-- Profil Kartı -->
+                                <div @click="selectProfile(profile)"
+                                     class="p-3 rounded-xl border-2 transition-all cursor-pointer"
+                                     :class="selectedProfile?.id === profile.id ? 'border-gray-400 bg-spotify-gray' : 'border-white/10 hover:border-gray-500'">
+                                    <div class="flex items-center justify-between">
+                                        <!-- Sol: Profil Bilgisi -->
+                                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                                            <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-700 flex-shrink-0">
+                                                <i class="fa-solid"
+                                                   :class="profile.type === 'corporate' ? 'fa-building text-blue-400' : 'fa-user text-green-400'"></i>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-sm font-medium text-white truncate"
+                                                          x-text="profile.type === 'corporate' ? profile.company : profile.title"></span>
+                                                    <span x-show="profile.isDefault"
+                                                          class="text-[10px] bg-yellow-600 text-white px-1.5 py-0.5 rounded flex-shrink-0">
+                                                        ★
+                                                    </span>
+                                                    <span class="text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded flex-shrink-0"
+                                                          x-text="profile.type === 'corporate' ? 'Kurumsal' : 'Bireysel'"></span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-0.5 truncate"
+                                                   x-text="profile.type === 'corporate' ? `Vergi No: ${profile.tax}` : `TC: ${profile.identity}`"></p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sağ: Minimal Butonlar -->
+                                        <div class="flex items-center gap-2 flex-shrink-0">
+                                            <!-- Varsayılan Yap -->
+                                            <button @click="setDefault(profile, $event)"
+                                                    x-show="!profile.isDefault"
+                                                    data-tooltip="Varsayılan Yap"
+                                                    class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-yellow-500/20 rounded text-yellow-400 hover:text-yellow-300">
+                                                <i class="fas fa-star text-xs"></i>
+                                            </button>
+                                            <!-- Düzenle (Toggle) -->
+                                            <button @click="toggleEdit(profile.id, $event)"
+                                                    data-tooltip="Düzenle"
+                                                    class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-blue-500/20 rounded transition-colors"
+                                                    :class="editingProfileId === profile.id ? 'text-blue-300 bg-blue-500/20 opacity-100' : 'text-blue-400'">
+                                                <i class="fas fa-edit text-xs"></i>
+                                            </button>
+                                            <!-- Sil -->
+                                            <button @click="deleteProfile(profile, $event)"
+                                                    data-tooltip="Sil"
+                                                    class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300">
+                                                <i class="fas fa-trash text-xs"></i>
+                                            </button>
+                                            <!-- Checkbox -->
+                                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                                                 :class="selectedProfile?.id === profile.id ? 'border-white bg-white' : 'border-gray-600'">
+                                                <i class="fa-solid fa-check text-[10px] text-gray-900"
+                                                   :class="selectedProfile?.id === profile.id ? 'opacity-100' : 'opacity-0'"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Inline Edit Form (Profil Altında) -->
+                                <div x-show="editingProfileId === profile.id"
+                                     x-cloak
+                                     x-transition
+                                     @click.stop
+                                     class="mt-2 bg-gray-800/80 border border-gray-700 rounded-xl p-5">
+
+                                    <!-- Edit Header -->
+                                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-700">
+                                        <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+                                            <i class="fa-solid fa-edit text-blue-400"></i>
+                                            Profil Düzenle
+                                        </h4>
+                                        <button @click="closeEdit()"
+                                                data-tooltip="Kapat"
+                                                class="text-gray-400 hover:text-white p-1 transition-colors">
+                                            <i class="fa-solid fa-times"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Edit Form Fields -->
+                                    <div class="space-y-4">
+                                        <!-- Profil Tipi -->
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-2">Profil Tipi</label>
+                                            <div class="flex gap-2">
+                                                <button type="button"
+                                                        :class="profile.type === 'individual' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-400'"
+                                                        class="flex-1 py-2 text-xs font-medium rounded-lg hover:bg-gray-600 transition-colors">
+                                                    <i class="fa-solid fa-user mr-1.5"></i>Bireysel
+                                                </button>
+                                                <button type="button"
+                                                        :class="profile.type === 'corporate' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-400'"
+                                                        class="flex-1 py-2 text-xs font-medium rounded-lg hover:bg-gray-600 transition-colors">
+                                                    <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Bireysel Fields -->
+                                        <template x-if="profile.type === 'individual'">
+                                            <div class="space-y-3">
+                                                <div>
+                                                    <label class="block text-xs text-gray-400 mb-1">Profil Adı <span class="text-red-500">*</span></label>
+                                                    <input type="text"
+                                                           :value="profile.title"
+                                                           placeholder="Örn: Evim, İşyerim"
+                                                           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-blue-500 focus:outline-none">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-xs text-gray-400 mb-1">TC Kimlik No</label>
+                                                    <input type="text"
+                                                           :value="profile.identity"
+                                                           maxlength="11"
+                                                           placeholder="XXXXXXXXXXX"
+                                                           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-blue-500 focus:outline-none">
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <!-- Kurumsal Fields -->
+                                        <template x-if="profile.type === 'corporate'">
+                                            <div class="space-y-3">
+                                                <div>
+                                                    <label class="block text-xs text-gray-400 mb-1">Şirket Ünvanı <span class="text-red-500">*</span></label>
+                                                    <input type="text"
+                                                           :value="profile.company"
+                                                           placeholder="ABC Ltd. Şti."
+                                                           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-blue-500 focus:outline-none">
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label class="block text-xs text-gray-400 mb-1">Vergi No <span class="text-red-500">*</span></label>
+                                                        <input type="text"
+                                                               :value="profile.tax"
+                                                               maxlength="10"
+                                                               class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-blue-500 focus:outline-none">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-xs text-gray-400 mb-1">Vergi Dairesi <span class="text-red-500">*</span></label>
+                                                        <input type="text"
+                                                               :value="profile.office"
+                                                               class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-blue-500 focus:outline-none">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <!-- Actions -->
+                                        <div class="flex gap-2 pt-3 border-t border-gray-700">
+                                            <button @click="saveEdit(profile.id)"
+                                                    class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                                                <i class="fa-solid fa-check mr-1"></i>Kaydet
+                                            </button>
+                                            <button @click="closeEdit()"
+                                                    class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 text-sm font-medium rounded-lg transition-colors">
+                                                <i class="fa-solid fa-times mr-1"></i>İptal
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Özellikler -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-green-400">✅ Compact Minimal - Özellikler</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/30 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Kullanıcı Deneyimi</h3>
+                    <ul class="text-slate-300 space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                            <span>Tek satır özet - en minimal görünüm</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                            <span>Hover'da görünen küçük butonlar</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                            <span>Tooltip açıklamaları (hover ile görünür)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                            <span>Inline edit form - profil altında açılır</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                            <span>Toggle mantığı - tekrar tıkla kapatır</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                            <span>X butonu ile kapat</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/30 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Teknik Detaylar</h3>
+                    <ul class="text-slate-300 space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-code text-blue-400 mt-1"></i>
+                            <span><code class="bg-slate-700 px-2 py-0.5 rounded text-xs">editingProfileId</code> state ile toggle</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-code text-blue-400 mt-1"></i>
+                            <span><code class="bg-slate-700 px-2 py-0.5 rounded text-xs">@click.stop</code> ile event bubbling engellenir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-code text-blue-400 mt-1"></i>
+                            <span>CSS tooltip - JavaScript gerektirmez</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-code text-blue-400 mt-1"></i>
+                            <span>Alpine.js x-transition animasyonları</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-code text-blue-400 mt-1"></i>
+                            <span>Livewire entegrasyonuna hazır</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kullanım Kılavuzu -->
+        <section class="mb-16">
+            <div class="bg-blue-900/20 border border-blue-700/50 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-blue-400 mb-4">🧪 Nasıl Test Edilir?</h3>
+                <div class="space-y-3 text-slate-300 text-sm">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">1</span>
+                        <p><strong class="text-white">Kalem ikonuna tıkla</strong> → Profil listesi açılır</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">2</span>
+                        <p><strong class="text-white">Profil kartına hover et</strong> → Minimal butonlar görünür</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">3</span>
+                        <p><strong class="text-white">Edit butonuna tıkla</strong> → Altında edit formu açılır (mavi glow)</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">4</span>
+                        <p><strong class="text-white">Tekrar edit butonuna tıkla</strong> → Form kapanır (toggle)</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">5</span>
+                        <p><strong class="text-white">X butonuna tıkla</strong> → Form kapanır</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">6</span>
+                        <p><strong class="text-white">F12 aç</strong> → Console'da tüm işlemler loglanıyor</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Livewire Entegrasyon Kılavuzu -->
+        <section class="mb-16">
+            <div class="bg-purple-900/20 border border-purple-700/50 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-purple-400 mb-4">🔌 Livewire Entegrasyonu</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="text-sm font-semibold text-white mb-2">1. State Yönetimi</h4>
+                        <pre class="bg-slate-800 p-4 rounded-lg text-xs text-slate-300 overflow-x-auto"><code>// Alpine.js
+editingProfileId: null
+
+// Livewire (checkout component)
+public $editing_profile_id = null;</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-white mb-2">2. Toggle Edit</h4>
+                        <pre class="bg-slate-800 p-4 rounded-lg text-xs text-slate-300 overflow-x-auto"><code>// Console log yerine:
+$wire.set('editing_profile_id', this.editingProfileId);</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-white mb-2">3. Save Edit</h4>
+                        <pre class="bg-slate-800 p-4 rounded-lg text-xs text-slate-300 overflow-x-auto"><code>// Console log yerine:
+$wire.saveBillingProfile(profileId);</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-white mb-2">4. Input Binding</h4>
+                        <pre class="bg-slate-800 p-4 rounded-lg text-xs text-slate-300 overflow-x-auto"><code>// Örnek:
+&lt;input type="text"
+       wire:model="edit_title"
+       class="..." /&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Compact Minimal Design</p>
+            <p class="mt-2">Inline edit form, toggle logic, tooltips - Production ready!</p>
+        </footer>
+    </div>
+</body>
+</html>

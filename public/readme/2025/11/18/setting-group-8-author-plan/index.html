@@ -1,1 +1,255 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting Group 8 - Author Alanları Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        section {
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .current-state, .planned-layout {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .field-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .type-text { background: #10b981; color: white; }
+        .type-textarea { background: #f59e0b; color: white; }
+        .type-url { background: #8b5cf6; color: white; }
+        .type-image { background: #ec4899; color: white; }
+        .layout-preview {
+            background: rgba(59, 130, 246, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .row { display: flex; gap: 20px; margin: 15px 0; }
+        .col-6 { flex: 1; background: rgba(30, 41, 59, 0.3); padding: 15px; border-radius: 8px; }
+        .form-field {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .field-label {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .field-help {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        code {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #60a5fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Setting Group 8 - Author Alanları Planı</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-18 |
+                🎯 Tenant: ixtif.com |
+                👤 Form Builder Layout Planlaması
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Mevcut Durum</h2>
+            <div class="current-state">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">Setting Group 8'deki Tüm Alanlar:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alan Adı</th>
+                            <th>Key</th>
+                            <th>Tip</th>
+                            <th>Sıra</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Varsayılan Yazar</td>
+                            <td><code>seo_default_author</code></td>
+                            <td><span class="field-type type-text">text</span></td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Varsayılan Yazar Web Sitesi</td>
+                            <td><code>seo_default_author_url</code></td>
+                            <td><span class="field-type type-url">url</span></td>
+                            <td>14</td>
+                        </tr>
+                        <tr>
+                            <td>Varsayılan Yazar Ünvanı</td>
+                            <td><code>seo_default_author_title</code></td>
+                            <td><span class="field-type type-text">text</span></td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>Varsayılan Yazar Biyografisi</td>
+                            <td><code>seo_default_author_bio</code></td>
+                            <td><span class="field-type type-textarea">textarea</span></td>
+                            <td>16</td>
+                        </tr>
+                        <tr>
+                            <td>Varsayılan Yazar Görseli</td>
+                            <td><code>seo_default_author_image</code></td>
+                            <td><span class="field-type type-image">image</span></td>
+                            <td>17</td>
+                        </tr>
+                        <tr>
+                            <td>Twitter Creator Hesabı</td>
+                            <td><code>seo_default_twitter_creator</code></td>
+                            <td><span class="field-type type-text">text</span></td>
+                            <td>3</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p style="color: #fbbf24; margin-top: 20px;"><strong>⚠️ Sorun:</strong> Author alanları dağınık ve analitik ayarları ile karışık durumda.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Planlanan Layout (Form Builder Kurallarına Göre)</h2>
+            
+            <div class="planned-layout">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">Yeni Yapı:</h3>
+                
+                <div class="layout-preview">
+                    <h4 style="color: #94a3b8; margin-bottom: 15px;">📌 Bölüm 1: Varsayılan Yazar Bilgileri</h4>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-field">
+                                <div class="field-label">Yazar Adı</div>
+                                <div class="field-help">Blog yazılarında gösterilecek varsayılan yazar adı</div>
+                            </div>
+                            <div class="form-field">
+                                <div class="field-label">Yazar Ünvanı</div>
+                                <div class="field-help">Yazarın mesleği veya ünvanı (Google E-E-A-T için)</div>
+                            </div>
+                            <div class="form-field">
+                                <div class="field-label">Yazar Biyografisi (textarea)</div>
+                                <div class="field-help">Yazarın kısa özgeçmişi (Google E-E-A-T için)</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-field">
+                                <div class="field-label">Yazar Fotoğrafı (image)</div>
+                                <div class="field-help">Yazarın profil fotoğrafı (önerilen: 400x400px)</div>
+                            </div>
+                            <div class="form-field">
+                                <div class="field-label">Web Sitesi (url)</div>
+                                <div class="field-help">Yazarın web sitesi veya profil sayfası</div>
+                            </div>
+                            <div class="form-field">
+                                <div class="field-label">Twitter Hesabı</div>
+                                <div class="field-help">Yazarın Twitter hesabı (@ ile başlamalı)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layout-preview" style="margin-top: 30px;">
+                    <h4 style="color: #94a3b8; margin-bottom: 15px;">📌 Bölüm 2: Analitik Ayarları</h4>
+                    <p style="color: #94a3b8;">Google Analytics, GTM, Pixel kodları vb.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔧 Implementation Plan</h2>
+            <div class="planned-layout">
+                <h3 style="color: #60a5fa; margin-bottom: 20px;">Adım Adım İşlemler:</h3>
+                
+                <p style="color: #10b981; margin-bottom: 10px;">✅ <strong>1. Mevcut Alanlar:</strong> Tüm author alanları zaten mevcut (settings tablosunda)</p>
+                
+                <p style="color: #10b981; margin-bottom: 10px;">✅ <strong>2. Layout Güncelleme:</strong> <code>SettingsGroupsTableSeeder::getSeoAyarlariLayout()</code> metodunu güncelleyeceğiz</p>
+                
+                <p style="color: #10b981; margin-bottom: 10px;">✅ <strong>3. Kullanılacak Form Builder Elementleri:</strong></p>
+                <ul style="list-style: none; padding-left: 20px; color: #cbd5e1;">
+                    <li>• <code>heading</code> → "Varsayılan Yazar Bilgileri"</li>
+                    <li>• <code>row</code> → 2 kolonlu satır (width: 6-6)</li>
+                    <li>• <code>text</code> → Yazar adı, ünvan, Twitter</li>
+                    <li>• <code>textarea</code> → Biyografi (rows: 4)</li>
+                    <li>• <code>url</code> → Web sitesi</li>
+                    <li>• <code>image</code> → Profil fotoğrafı</li>
+                </ul>
+
+                <p style="color: #fbbf24; margin-top: 20px;"><strong>⚠️ Kritik:</strong> Twitter Site Hesabı kaldırılacak, sadece Twitter Creator kalacak</p>
+            </div>
+        </section>
+
+        <footer style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; color: #64748b; font-size: 0.9rem; text-align: center;">
+            🤖 Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>

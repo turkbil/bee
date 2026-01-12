@@ -1,1 +1,172 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transpalet Sorunu - AI Ürün Göstermiyor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-red-400 mb-4">❌ Yeni Sorun Bulundu</h1>
+            <p class="text-slate-400 text-lg">"Transpalet var mı" → AI ürün göstermiyor</p>
+        </div>
+
+        <!-- Sorun Ne? -->
+        <div class="bg-red-900/30 rounded-lg p-8 mb-8 border border-red-700">
+            <h2 class="text-2xl font-bold text-red-400 mb-6">🐛 Sorun Ne?</h2>
+
+            <div class="space-y-6">
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Test Sonucu:</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <div class="text-2xl">✅</div>
+                            <div>
+                                <p class="text-green-400 font-bold">"merhaba" → Kısa yanıt (DÜZELDİ)</p>
+                                <p class="text-slate-300 text-sm">"Merhaba! 😊 Size nasıl yardımcı olabilirim?"</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="text-2xl">❌</div>
+                            <div>
+                                <p class="text-red-400 font-bold">"transpalet var mı" → Ürün göstermiyor (YENİ SORUN)</p>
+                                <p class="text-slate-300 text-sm">"Telefon numaranızı paylaşır mısınız?" (Yanlış!)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Sorunun Kaynağı:</h3>
+                    <div class="space-y-3 text-slate-300">
+                        <p>✅ <span class="text-green-400">MeiliSearch çalışıyor</span> (Kontrol edildi)</p>
+                        <p>✅ <span class="text-green-400">Transpalet ürünleri var</span> (2 ürün bulundu)</p>
+                        <p>✅ <span class="text-green-400">Index doğru</span> (shop_products_tenant_2)</p>
+                        <p>❌ <span class="text-red-400">AI bu ürünleri göstermiyor</span></p>
+                    </div>
+                    <div class="mt-4 bg-yellow-900/30 border border-yellow-700 rounded p-4">
+                        <p class="text-yellow-400 font-bold">📌 Muhtemel Sebep:</p>
+                        <ul class="list-disc list-inside text-slate-300 text-sm mt-2 space-y-1">
+                            <li>AI "transpalet" kelimesini shop modülüne yönlendirmiyor</li>
+                            <li>Veya search çalışıyor ama sonuç AI'a ulaşmıyor</li>
+                            <li>Veya AI sonuçları ignore ediyor</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Şimdi Ne Yapmalısın? -->
+        <div class="bg-blue-900/30 rounded-lg p-8 mb-8 border border-blue-600">
+            <h2 class="text-2xl font-bold text-blue-400 mb-6">🎯 Şimdi Ne Yapmalısın?</h2>
+
+            <div class="space-y-6">
+                <!-- Adım 1 -->
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">1</div>
+                        <h3 class="text-xl font-bold text-white">Bana Ekran Görüntüsü At</h3>
+                    </div>
+                    <p class="text-slate-300 mb-4">AI chatbot'a "transpalet var mı" yazınca ne yanıt veriyor, ekran görüntüsü at.</p>
+                    <div class="bg-slate-700 p-4 rounded text-sm">
+                        <p class="text-slate-400 mb-2">Görüntüde şunlar olmalı:</p>
+                        <ul class="list-disc list-inside text-slate-300 space-y-1">
+                            <li>Senin mesajın: "transpalet var mı"</li>
+                            <li>AI'ın yanıtı (tamamı)</li>
+                            <li>Eğer quick action butonları gösteriyorsa onlar da</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">2</div>
+                        <h3 class="text-xl font-bold text-white">Ben Debug Yapacağım</h3>
+                    </div>
+                    <p class="text-slate-300 mb-4">Ekran görüntüsünü gördükten sonra:</p>
+                    <ul class="list-disc list-inside text-slate-300 space-y-2">
+                        <li>AI log'larını kontrol edeceğim</li>
+                        <li>Module detection çalışıyor mu bakacağım</li>
+                        <li>Search sonuçları AI'a ulaşıyor mu test edeceğim</li>
+                        <li>Sorunu bulup düzelteceğim</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">3</div>
+                        <h3 class="text-xl font-bold text-white">Alternatif Test</h3>
+                    </div>
+                    <p class="text-slate-300 mb-4">Eğer ekran görüntüsü atmak zor gelirse, farklı kelimeler dene:</p>
+                    <div class="bg-slate-700 p-4 rounded">
+                        <p class="text-sm text-slate-400 mb-3">Test mesajları:</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center gap-3">
+                                <span class="text-blue-400 font-mono text-sm">1.</span>
+                                <span class="text-slate-300">"forklift var mı"</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="text-blue-400 font-mono text-sm">2.</span>
+                                <span class="text-slate-300">"istif makinesi arıyorum"</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="text-blue-400 font-mono text-sm">3.</span>
+                                <span class="text-slate-300">"elektrikli transpalet"</span>
+                            </li>
+                        </ul>
+                        <p class="text-yellow-400 text-sm mt-3">Hangilerinde ürün gösteriyor, hangilerinde göstermiyor - bana yaz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Durum -->
+        <div class="bg-slate-800 rounded-lg p-8 border border-slate-700">
+            <h2 class="text-2xl font-bold text-white mb-6">🔧 Teknik Durum</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold text-green-400 mb-3">✅ Çalışan Sistemler</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>✅ MeiliSearch (200 OK)</li>
+                        <li>✅ Ürün indexleme (2 transpalet bulundu)</li>
+                        <li>✅ AI selamlama (kısa yanıt)</li>
+                        <li>✅ PromptBuilder sistemi</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-red-400 mb-3">❌ Sorunlu Kısım</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>❌ AI ürün gösterme</li>
+                        <li>❓ Module detection (kontrol edilmeli)</li>
+                        <li>❓ Search → AI akışı (kontrol edilmeli)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-blue-900/30 border border-blue-700 rounded p-4">
+                <p class="text-blue-400 font-bold mb-2">🔍 Debug Planı:</p>
+                <ol class="list-decimal list-inside text-slate-300 text-sm space-y-1">
+                    <li>Kullanıcıdan ekran görüntüsü al</li>
+                    <li>AI conversation log'unu kontrol et</li>
+                    <li>Module detection çalışıyor mu bak</li>
+                    <li>ShopSearchService çağrılıyor mu kontrol et</li>
+                    <li>Search sonuçları AI'a ulaşıyor mu test et</li>
+                    <li>Sorunu bul ve düzelt</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu</p>
+            <p class="mt-2">📅 2025-12-20 03:25</p>
+        </div>
+    </div>
+</body>
+</html>

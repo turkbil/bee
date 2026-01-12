@@ -1,1 +1,845 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Suistimal Tespit Sistemi - Yeni Nesil Koruma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #ff7f50, #ff6b6b, #ee5a24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        .card-glow { box-shadow: 0 0 40px rgba(255, 127, 80, 0.1); }
+        .card-glow:hover { box-shadow: 0 0 60px rgba(255, 127, 80, 0.2); }
+        .pattern-card { transition: all 0.3s ease; }
+        .pattern-card:hover { transform: translateY(-5px); }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-pulse-slow { animation: pulse 3s ease-in-out infinite; }
+        .comparison-arrow { position: relative; }
+        .comparison-arrow::after { content: '→'; position: absolute; right: -30px; top: 50%; transform: translateY(-50%); font-size: 2rem; color: #22c55e; }
+        .timeline-line { background: linear-gradient(to bottom, #ff7f50, #22c55e); }
+        .glow-green { box-shadow: 0 0 30px rgba(34, 197, 94, 0.3); }
+        .glow-red { box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
+        .stat-counter { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="gradient-bg text-white min-h-screen" x-data="{ activeTab: 'overview', showDemo: false }">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-[#ff7f50] to-[#ff6b6b] rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold">Muzibu Koruma Sistemi</span>
+                </div>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#problem" class="text-slate-400 hover:text-white transition">Problem</a>
+                    <a href="#solution" class="text-slate-400 hover:text-white transition">Çözüm</a>
+                    <a href="#features" class="text-slate-400 hover:text-white transition">Özellikler</a>
+                    <a href="#comparison" class="text-slate-400 hover:text-white transition">Karşılaştırma</a>
+                    <a href="#benefits" class="text-slate-400 hover:text-white transition">Faydalar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-30">
+            <div class="absolute top-20 left-20 w-72 h-72 bg-[#ff7f50] rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 rounded-full blur-[150px]"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto relative">
+            <div class="text-center mb-16">
+                <div class="flex flex-wrap justify-center gap-3 mb-6">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-full text-green-400 text-sm">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Yeni Sistem Aktif</span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-400 text-sm">
+                        <i class="fas fa-building"></i>
+                        <span>B2B İşletme Müzik Platformu</span>
+                    </div>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black mb-6">
+                    <span class="gradient-text">Akıllı Suistimal</span><br>
+                    <span class="text-white">Tespit Sistemi</span>
+                </h1>
+                <p class="text-xl text-slate-400 max-w-3xl mx-auto mb-8">
+                    Restoran, kafe, mağaza ve işletmelere özel müzik platformu için tasarlandı.
+                    Sunucu kaynaklarını tüketmeden, <strong class="text-white">4 farklı suistimal pattern'ini</strong> tespit eder.
+                    <span class="block mt-2 text-slate-500">İşletme çalışma saatleri (08:00-24:00) baz alınarak optimize edildi.</span>
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#comparison" class="px-8 py-4 bg-gradient-to-r from-[#ff7f50] to-[#ff6b6b] rounded-xl font-semibold hover:opacity-90 transition">
+                        <i class="fas fa-play-circle mr-2"></i>Karşılaştırmayı Gör
+                    </a>
+                    <a href="#features" class="px-8 py-4 bg-white/10 border border-white/20 rounded-xl font-semibold hover:bg-white/20 transition">
+                        <i class="fas fa-info-circle mr-2"></i>Detayları İncele
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-slate-800/50 backdrop-blur border border-white/10 rounded-2xl p-6 text-center card-glow">
+                    <div class="text-4xl font-black text-[#ff7f50] mb-2">4</div>
+                    <div class="text-slate-400">Tespit Pattern'i</div>
+                </div>
+                <div class="bg-slate-800/50 backdrop-blur border border-white/10 rounded-2xl p-6 text-center card-glow">
+                    <div class="text-4xl font-black text-green-400 mb-2">%0</div>
+                    <div class="text-slate-400">Anlık CPU Yükü</div>
+                </div>
+                <div class="bg-slate-800/50 backdrop-blur border border-white/10 rounded-2xl p-6 text-center card-glow">
+                    <div class="text-4xl font-black text-blue-400 mb-2">24/7</div>
+                    <div class="text-slate-400">Arka Plan Tarama</div>
+                </div>
+                <div class="bg-slate-800/50 backdrop-blur border border-white/10 rounded-2xl p-6 text-center card-glow">
+                    <div class="text-4xl font-black text-purple-400 mb-2">∞</div>
+                    <div class="text-slate-400">Geçmiş Analizi</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section id="problem" class="py-20 px-6 bg-red-950/20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-500/20 border border-red-500/30 rounded-full text-red-400 text-sm mb-6">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Eski Sistem Problemi</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Anlık Device Limit Sistemi<br>
+                    <span class="text-red-400">Sunucuyu Çökertiyordu</span>
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Problem Visual -->
+                <div class="relative">
+                    <div class="bg-slate-800/80 border border-red-500/30 rounded-2xl p-8 glow-red">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-server text-red-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-red-400">Eski Sistem: Real-Time Pool</h3>
+                                <p class="text-slate-500 text-sm">Anlık cihaz limiti kontrolü</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3 p-3 bg-red-500/10 rounded-lg">
+                                <i class="fas fa-times-circle text-red-400"></i>
+                                <span>Her şarkı çalışında Redis sorgusu</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-red-500/10 rounded-lg">
+                                <i class="fas fa-times-circle text-red-400"></i>
+                                <span>Saniyede yüzlerce kontrol işlemi</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-red-500/10 rounded-lg">
+                                <i class="fas fa-times-circle text-red-400"></i>
+                                <span>CPU sürekli %80+ kullanımda</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-red-500/10 rounded-lg">
+                                <i class="fas fa-times-circle text-red-400"></i>
+                                <span>Site yavaşlaması ve timeout'lar</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-red-500/10 rounded-lg">
+                                <i class="fas fa-times-circle text-red-400"></i>
+                                <span>Sadece anlık tespit, geçmiş analizi yok</span>
+                            </div>
+                        </div>
+
+                        <!-- CPU Graph Simulation -->
+                        <div class="mt-6 p-4 bg-slate-900/50 rounded-xl">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-slate-400">CPU Kullanımı</span>
+                                <span class="text-red-400 font-bold">%87</span>
+                            </div>
+                            <div class="h-3 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full" style="width: 87%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem Description -->
+                <div class="space-y-6">
+                    <div class="bg-slate-800/50 border border-white/10 rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bolt text-red-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Anlık Kontrol Sistemi</h4>
+                                <p class="text-slate-400">Her kullanıcı şarkı çaldığında Redis'e yazma/okuma işlemi yapılıyordu. Bu, yoğun saatlerde saniyede 500+ sorgu demekti.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 border border-white/10 rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-memory text-red-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Kaynak Tüketimi</h4>
+                                <p class="text-slate-400">Pool sistemi sürekli aktif tutuluyordu. Her session için memory ayrılıyor, expire kontrolleri yapılıyordu.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 border border-white/10 rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-eye-slash text-red-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Kör Noktalar</h4>
+                                <p class="text-slate-400">Sistem sadece anlık cihaz sayısı kontrolü yapıyordu. Geçmişe dönük analiz ve detaylı raporlama yoktu.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solution" class="py-20 px-6 bg-green-950/20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-full text-green-400 text-sm mb-6">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Yeni Çözüm</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Asenkron Tarama Sistemi<br>
+                    <span class="text-green-400">Sıfır Performans Etkisi</span>
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Solution Description -->
+                <div class="space-y-6 order-2 md:order-1">
+                    <div class="bg-slate-800/50 border border-white/10 rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-clock text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Arka Plan İşleme</h4>
+                                <p class="text-slate-400">Tüm analizler Laravel Horizon job queue ile arka planda yapılır. Kullanıcı deneyimi hiç etkilenmez.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 border border-white/10 rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-database text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Geçmiş Veri Analizi</h4>
+                                <p class="text-slate-400">Son 7, 14, 30 veya 90 gün gibi dönemleri analiz edebilir. Kalıpları tespit eder, trendleri gösterir.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 border border-white/10 rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-brain text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Akıllı Pattern Tespiti</h4>
+                                <p class="text-slate-400">4 farklı suistimal pattern'ini tespit eder: Eşzamanlı çalma (overlap), yüksek hacim, çoklu cihaz, şüpheli IP.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 border border-white/10 rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-chart-bar text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Detaylı Raporlama</h4>
+                                <p class="text-slate-400">Timeline görünümü, günlük istatistikler, çakışma detayları, pattern skorları - hepsi tek panelde.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solution Visual -->
+                <div class="relative order-1 md:order-2">
+                    <div class="bg-slate-800/80 border border-green-500/30 rounded-2xl p-8 glow-green">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-green-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-green-400">Yeni Sistem: Async Analysis</h3>
+                                <p class="text-slate-500 text-sm">Arka plan tarama ve analiz</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3 p-3 bg-green-500/10 rounded-lg">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span>Zamanlanmış arka plan taraması</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-green-500/10 rounded-lg">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span>Sıfır anlık CPU yükü</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-green-500/10 rounded-lg">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span>4 farklı pattern tespiti</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-green-500/10 rounded-lg">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span>Geçmişe dönük tam analiz</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-green-500/10 rounded-lg">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span>Görsel timeline ve raporlar</span>
+                            </div>
+                        </div>
+
+                        <!-- CPU Graph Simulation -->
+                        <div class="mt-6 p-4 bg-slate-900/50 rounded-xl">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-slate-400">CPU Kullanımı</span>
+                                <span class="text-green-400 font-bold">%3</span>
+                            </div>
+                            <div class="h-3 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full" style="width: 3%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section - 4 Patterns -->
+    <section id="features" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-400 text-sm mb-6">
+                    <i class="fas fa-fingerprint"></i>
+                    <span>4 Pattern Tespiti</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Tespit Edilen<br>
+                    <span class="gradient-text">Suistimal Davranışları</span>
+                </h2>
+                <p class="text-xl text-slate-400 max-w-3xl mx-auto">
+                    Her pattern kendi skorlama sistemine sahip. Toplam skor hesaplanarak kullanıcı risk seviyesi belirlenir.
+                </p>
+            </div>
+
+            <!-- Ana Pattern: Eşzamanlı Çalma (Full Width) -->
+            <div class="mb-6">
+                <div class="pattern-card bg-gradient-to-br from-red-900/40 to-slate-800/50 border-2 border-red-500/50 rounded-2xl p-8 card-glow relative overflow-hidden">
+                    <div class="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-sm font-bold rounded-lg">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>ANA TESPİT
+                    </div>
+
+                    <!-- Başlık -->
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-red-500/30 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-clone text-red-400 text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold">Eşzamanlı Çalma (Overlap)</h3>
+                            <span class="text-red-400 font-medium">Hesap Paylaşımı Tespiti</span>
+                        </div>
+                    </div>
+
+                    <!-- Açıklama -->
+                    <div class="bg-slate-900/50 rounded-xl p-6 mb-6">
+                        <p class="text-lg text-slate-300 mb-4">
+                            <strong class="text-white">Aynı hesap, aynı anda, birden fazla stream açık.</strong>
+                        </p>
+                        <p class="text-slate-400 mb-3">
+                            Bir kişi aynı anda iki şarkı dinleyemez. Eğer aynı hesaptan aynı anda birden fazla
+                            müzik stream'i çalıyorsa, bu hesabın suistimal edildiği anlamına gelir.
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-sm">
+                            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full">Aynı cihaz, 2 tarayıcı</span>
+                            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full">Aynı tarayıcı, 2 sekme</span>
+                            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full">Mobil + PC</span>
+                            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full">Farklı şubeler</span>
+                        </div>
+                    </div>
+
+                    <!-- Görsel Örnek: Timeline -->
+                    <div class="bg-slate-800/80 rounded-xl p-6 mb-6">
+                        <h4 class="text-sm font-semibold text-slate-400 mb-4 flex items-center gap-2">
+                            <i class="fas fa-clock"></i> ÖRNEK: Overlap Nasıl Tespit Edilir?
+                        </h4>
+
+                        <!-- Timeline Gösterimi -->
+                        <div class="space-y-3">
+                            <!-- Zaman çizelgesi -->
+                            <div class="flex items-center text-xs text-slate-500 mb-2">
+                                <span class="w-24"></span>
+                                <div class="flex-1 flex justify-between px-2">
+                                    <span>14:00</span>
+                                    <span>14:01</span>
+                                    <span>14:02</span>
+                                    <span>14:03</span>
+                                    <span>14:04</span>
+                                    <span>14:05</span>
+                                </div>
+                            </div>
+
+                            <!-- Stream 1: Chrome -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-24 flex items-center gap-2">
+                                    <i class="fab fa-chrome text-blue-400"></i>
+                                    <span class="text-sm text-slate-400">Chrome</span>
+                                </div>
+                                <div class="flex-1 h-8 bg-slate-700/50 rounded relative">
+                                    <div class="absolute left-0 top-0 bottom-0 w-3/5 bg-blue-500/40 rounded-l flex items-center px-3">
+                                        <span class="text-xs text-blue-200 truncate">🎵 Şarkı 1</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stream 2: Mobil -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-24 flex items-center gap-2">
+                                    <i class="fas fa-mobile-alt text-green-400"></i>
+                                    <span class="text-sm text-slate-400">Mobil</span>
+                                </div>
+                                <div class="flex-1 h-8 bg-slate-700/50 rounded relative">
+                                    <div class="absolute left-[40%] top-0 bottom-0 w-3/5 bg-green-500/40 rounded-r flex items-center px-3">
+                                        <span class="text-xs text-green-200 truncate">🎵 Şarkı 2</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Overlap gösterimi -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-24 flex items-center gap-2">
+                                    <i class="fas fa-exclamation-triangle text-red-400"></i>
+                                    <span class="text-sm text-red-400 font-semibold">OVERLAP</span>
+                                </div>
+                                <div class="flex-1 h-8 bg-slate-700/50 rounded relative">
+                                    <div class="absolute left-[40%] top-0 bottom-0 w-[20%] bg-red-500/60 rounded flex items-center justify-center border-2 border-red-500 border-dashed">
+                                        <span class="text-xs text-red-200 font-bold">1 dk</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-slate-500 mt-4 text-center">
+                            ↑ Aynı anda 2 stream açık = <strong class="text-red-400">Suistimal tespit edildi!</strong>
+                        </p>
+                    </div>
+
+                    <!-- Alt bilgi kutuları -->
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-red-400">2+ Stream</div>
+                            <div class="text-xs text-slate-500">Eşzamanlı çalma</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-red-400">Saniye Bazlı</div>
+                            <div class="text-xs text-slate-500">Hassas tespit</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-red-400">Kesin Kanıt</div>
+                            <div class="text-xs text-slate-500">İtiraz edilemez</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Destekleyici Pattern'ler (3'lü grid) -->
+            <div class="grid md:grid-cols-3 gap-6">
+
+                <!-- Pattern 2: High Volume -->
+                <div class="pattern-card bg-slate-800/50 border border-white/10 rounded-2xl p-6 card-glow">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 bg-red-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-chart-line text-red-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">Yüksek Hacim</h3>
+                            <span class="text-red-400 text-sm font-medium">Max 400 puan</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 mb-4">Günde 600+ şarkı dinleme tespit edilir. Normal işletme 16 saatte ~300 şarkı dinler (08:00-24:00).</p>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500">Örnek:</span>
+                            <span class="text-red-400">850 şarkı/gün</span>
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500">
+                            <i class="fas fa-arrow-right mr-1"></i> Limit aşımı: 250 şarkı → Yüksek Risk (çoklu cihaz?)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 3: Multi Device -->
+                <div class="pattern-card bg-slate-800/50 border border-white/10 rounded-2xl p-6 card-glow">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-laptop text-purple-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">Çoklu Cihaz</h3>
+                            <span class="text-purple-400 text-sm font-medium">Max 200 puan</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 mb-4">24 saatte 5+ farklı cihazdan erişim tespit edilir. Hesap paylaşımı göstergesi.</p>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500">Örnek:</span>
+                            <span class="text-purple-400">8 farklı cihaz/gün</span>
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500">
+                            <i class="fas fa-arrow-right mr-1"></i> Hesap paylaşımı şüphesi
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 4: Suspicious IP -->
+                <div class="pattern-card bg-slate-800/50 border border-white/10 rounded-2xl p-6 card-glow">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-network-wired text-orange-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">Şüpheli IP</h3>
+                            <span class="text-orange-400 text-sm font-medium">Max 150 puan</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 mb-4">Günde 5+ farklı IP adresi tespit edilir. VPN veya hesap paylaşımı göstergesi.</p>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500">Örnek:</span>
+                            <span class="text-orange-400">12 farklı IP/gün</span>
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500">
+                            <i class="fas fa-arrow-right mr-1"></i> VPN/Proxy kullanımı şüphesi
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section id="comparison" class="py-20 px-6 bg-slate-800/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Sistem<br>
+                    <span class="gradient-text">Karşılaştırması</span>
+                </h2>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-white/10">
+                            <th class="py-4 px-6 text-left">Özellik</th>
+                            <th class="py-4 px-6 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <i class="fas fa-times-circle text-red-400"></i>
+                                    <span class="text-red-400">Eski Sistem</span>
+                                </div>
+                            </th>
+                            <th class="py-4 px-6 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <i class="fas fa-check-circle text-green-400"></i>
+                                    <span class="text-green-400">Yeni Sistem</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-microchip text-slate-500 mr-2"></i>CPU Kullanımı</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">%80-95 sürekli</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">%0-5 tarama anı</span></td>
+                        </tr>
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-clock text-slate-500 mr-2"></i>Çalışma Modu</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">Anlık (Her request)</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Asenkron (Arka plan)</span></td>
+                        </tr>
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-fingerprint text-slate-500 mr-2"></i>Tespit Sayısı</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">1 (Cihaz sayısı)</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">4 (3 pattern + overlap)</span></td>
+                        </tr>
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-history text-slate-500 mr-2"></i>Geçmiş Analizi</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">Yok</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">3-90 gün</span></td>
+                        </tr>
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-chart-pie text-slate-500 mr-2"></i>Görsel Raporlama</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">Yok</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Timeline + Charts</span></td>
+                        </tr>
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-clock text-slate-500 mr-2"></i>Tarama Periyodu</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">Yok (anlık)</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Özel tarih aralığı</span></td>
+                        </tr>
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-user-shield text-slate-500 mr-2"></i>Hesap Paylaşımı</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-sm">Sadece anlık</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Cihaz + IP analizi</span></td>
+                        </tr>
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-user-cog text-slate-500 mr-2"></i>Admin Paneli</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">Basit liste</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Detaylı dashboard</span></td>
+                        </tr>
+                        <tr class="hover:bg-white/5">
+                            <td class="py-4 px-6"><i class="fas fa-tachometer-alt text-slate-500 mr-2"></i>Site Hızı Etkisi</td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">Yavaşlatır</span></td>
+                            <td class="py-4 px-6 text-center"><span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Etkilemez</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Neden Bu Sistem<br>
+                    <span class="gradient-text">Daha İyi?</span>
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Benefit 1 -->
+                <div class="bg-gradient-to-br from-green-900/30 to-slate-800/50 border border-green-500/20 rounded-2xl p-8">
+                    <div class="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-tachometer-alt text-green-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Performans</h3>
+                    <p class="text-slate-400 mb-4">Site hızınız korunur. Kullanıcılar gecikme yaşamaz. Sunucu kaynakları verimli kullanılır.</p>
+                    <div class="flex items-center gap-2 text-green-400">
+                        <i class="fas fa-arrow-down"></i>
+                        <span class="font-semibold">CPU kullanımı %95 → %5</span>
+                    </div>
+                </div>
+
+                <!-- Benefit 2 -->
+                <div class="bg-gradient-to-br from-blue-900/30 to-slate-800/50 border border-blue-500/20 rounded-2xl p-8">
+                    <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-search-plus text-blue-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Derin Analiz</h3>
+                    <p class="text-slate-400 mb-4">Sadece anlık değil, geçmişe dönük tüm veriler analiz edilir. Kalıplar tespit edilir.</p>
+                    <div class="flex items-center gap-2 text-blue-400">
+                        <i class="fas fa-arrow-up"></i>
+                        <span class="font-semibold">1 → 4 tespit kriteri</span>
+                    </div>
+                </div>
+
+                <!-- Benefit 3 -->
+                <div class="bg-gradient-to-br from-purple-900/30 to-slate-800/50 border border-purple-500/20 rounded-2xl p-8">
+                    <div class="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-bar text-purple-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Görselleştirme</h3>
+                    <p class="text-slate-400 mb-4">Timeline görünümü, çakışma grafikleri, pattern kartları. Her şey tek bakışta anlaşılır.</p>
+                    <div class="flex items-center gap-2 text-purple-400">
+                        <i class="fas fa-eye"></i>
+                        <span class="font-semibold">Profesyonel dashboard</span>
+                    </div>
+                </div>
+
+                <!-- Benefit 4 -->
+                <div class="bg-gradient-to-br from-orange-900/30 to-slate-800/50 border border-orange-500/20 rounded-2xl p-8">
+                    <div class="w-16 h-16 bg-orange-500/20 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-network-wired text-orange-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">IP Analizi</h3>
+                    <p class="text-slate-400 mb-4">Farklı lokasyonlardan erişimler tespit edilir. VPN/Proxy kullanımı ve coğrafi tutarsızlıklar belirlenir.</p>
+                    <div class="flex items-center gap-2 text-orange-400">
+                        <i class="fas fa-globe"></i>
+                        <span class="font-semibold">Lokasyon korelasyonu</span>
+                    </div>
+                </div>
+
+                <!-- Benefit 5 -->
+                <div class="bg-gradient-to-br from-pink-900/30 to-slate-800/50 border border-pink-500/20 rounded-2xl p-8">
+                    <div class="w-16 h-16 bg-pink-500/20 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-users text-pink-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Hesap Paylaşımı</h3>
+                    <p class="text-slate-400 mb-4">Çoklu cihaz ve IP analizi ile hesap paylaşımı tespit edilir. Gelir kaybı önlenir.</p>
+                    <div class="flex items-center gap-2 text-pink-400">
+                        <i class="fas fa-user-lock"></i>
+                        <span class="font-semibold">Cihaz + IP korelasyonu</span>
+                    </div>
+                </div>
+
+                <!-- Benefit 6 -->
+                <div class="bg-gradient-to-br from-cyan-900/30 to-slate-800/50 border border-cyan-500/20 rounded-2xl p-8">
+                    <div class="w-16 h-16 bg-cyan-500/20 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-gavel text-cyan-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Kanıt Bazlı</h3>
+                    <p class="text-slate-400 mb-4">Her tespit için detaylı kanıtlar sunulur. Kullanıcıya gösterilebilir, itiraz edilebilir.</p>
+                    <div class="flex items-center gap-2 text-cyan-400">
+                        <i class="fas fa-file-alt"></i>
+                        <span class="font-semibold">Detaylı raporlar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="py-20 px-6 bg-slate-800/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Sistem<br>
+                    <span class="gradient-text">Mimarisi</span>
+                </h2>
+            </div>
+
+            <div class="bg-slate-800/50 border border-white/10 rounded-2xl p-8">
+                <div class="grid md:grid-cols-5 gap-4 items-center">
+                    <!-- Step 1 -->
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-play text-blue-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">1. Dinleme</h4>
+                        <p class="text-sm text-slate-400">Kullanıcı şarkı dinler, play kaydedilir</p>
+                    </div>
+
+                    <div class="hidden md:block text-center">
+                        <i class="fas fa-arrow-right text-slate-500 text-2xl"></i>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-database text-purple-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">2. Depolama</h4>
+                        <p class="text-sm text-slate-400">Veriler veritabanında birikir</p>
+                    </div>
+
+                    <div class="hidden md:block text-center">
+                        <i class="fas fa-arrow-right text-slate-500 text-2xl"></i>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-cogs text-green-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">3. Analiz</h4>
+                        <p class="text-sm text-slate-400">Arka plan job'ları çalışır</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-white/10">
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-layer-group text-red-400"></i>
+                            </div>
+                            <div class="text-sm text-slate-400">Overlap Tespiti</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-chart-line text-yellow-400"></i>
+                            </div>
+                            <div class="text-sm text-slate-400">Hacim Analizi</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-laptop text-blue-400"></i>
+                            </div>
+                            <div class="text-sm text-slate-400">Cihaz Analizi</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-network-wired text-pink-400"></i>
+                            </div>
+                            <div class="text-sm text-slate-400">IP Analizi</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-white/10 text-center">
+                    <div class="inline-flex items-center gap-4 px-6 py-4 bg-green-500/10 border border-green-500/30 rounded-xl">
+                        <i class="fas fa-chart-pie text-green-400 text-2xl"></i>
+                        <div class="text-left">
+                            <div class="font-semibold">Sonuç: Detaylı Rapor</div>
+                            <div class="text-sm text-slate-400">Score hesaplama, durum belirleme, admin bildirimi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="bg-gradient-to-br from-[#ff7f50]/20 to-purple-500/20 border border-white/10 rounded-3xl p-12">
+                <div class="w-20 h-20 bg-gradient-to-br from-[#ff7f50] to-[#ff6b6b] rounded-2xl flex items-center justify-center mx-auto mb-8 animate-float">
+                    <i class="fas fa-shield-alt text-white text-4xl"></i>
+                </div>
+                <h2 class="text-4xl font-bold mb-6">Sistem Aktif ve Hazır</h2>
+                <p class="text-xl text-slate-400 mb-8">
+                    Yeni suistimal tespit sistemi şu anda aktif. Admin panelinden tarama başlatabilir,
+                    raporları inceleyebilir ve gerekli aksiyonları alabilirsiniz.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="https://muzibu.com.tr/admin/muzibu/abuse-reports" target="_blank" class="px-8 py-4 bg-gradient-to-r from-[#ff7f50] to-[#ff6b6b] rounded-xl font-semibold hover:opacity-90 transition">
+                        <i class="fas fa-external-link-alt mr-2"></i>Admin Paneli Aç
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/10">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500">
+                <i class="fas fa-wand-magic-sparkles mr-2"></i>
+                Bu sunum Claude AI tarafından 30 Aralık 2025 tarihinde hazırlanmıştır.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

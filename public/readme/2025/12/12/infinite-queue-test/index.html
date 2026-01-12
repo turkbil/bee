@@ -1,1 +1,268 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Infinite Queue Test v2 - AUTO-CONTEXT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-12">
+
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <div class="inline-block px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-full mb-4">
+                ✨ YENİ: AUTO-CONTEXT AKTİF!
+            </div>
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                🧪 Infinite Queue Test v2 - AUTO-CONTEXT
+            </h1>
+            <p class="text-xl text-slate-300 mb-6">
+                Artık her yerden tıklanan şarkılar otomatik olarak infinite loop'a giriyor!
+            </p>
+            <div class="flex gap-4 text-sm text-slate-400">
+                <span>📅 12 Aralık 2025</span>
+                <span>⚡ Auto-Context Detection</span>
+                <span>♾️ Infinite Loop Garantili</span>
+            </div>
+        </header>
+
+        <!-- Yenilikler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✨ v2 Yenilikleri</h2>
+
+            <div class="space-y-4">
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-300 mb-3">🎯 Otomatik Context Algılama</h3>
+                    <p class="text-slate-300 mb-3">
+                        Artık kullanıcı <strong>herhangi bir yerden</strong> şarkı tıkladığında sistem otomatik olarak context belirliyor:
+                    </p>
+                    <ul class="text-slate-300 space-y-2 ml-6">
+                        <li>✅ Anasayfadan tıklanan şarkı → Auto-context</li>
+                        <li>✅ Popular listesinden tıklanan şarkı → Auto-context</li>
+                        <li>✅ Arama sonuçlarından tıklanan şarkı → Auto-context</li>
+                        <li>✅ Random başlatılan şarkı → Auto-context</li>
+                        <li>✅ Player'dan direkt başlatılan şarkı → Auto-context</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">🔄 Akıllı Context Seçimi</h3>
+                    <p class="text-slate-300 mb-3">
+                        Sistem şarkının özelliklerine göre en uygun context'i seçiyor:
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-4 space-y-2 text-sm">
+                        <p class="text-yellow-300">
+                            <strong>Öncelik 1:</strong> <span class="text-slate-300">Şarkının albümü varsa</span> → <span class="text-green-400">Album context</span>
+                        </p>
+                        <p class="text-slate-400 ml-8">
+                            Album biter → Genre'ye geçiş → Infinite loop
+                        </p>
+                        <p class="text-yellow-300 mt-3">
+                            <strong>Öncelik 2:</strong> <span class="text-slate-300">Albüm yoksa ama genre varsa</span> → <span class="text-green-400">Genre context</span>
+                        </p>
+                        <p class="text-slate-400 ml-8">
+                            Direkt infinite loop (genre kendi içinde döner)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-purple-900/20 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-300 mb-3">♾️ Garanti Infinite Loop</h3>
+                    <p class="text-slate-300">
+                        Her durumda müzik sonsuza kadar çalmaya devam eder:
+                    </p>
+                    <div class="mt-3 space-y-1 text-sm text-slate-400">
+                        <p>→ Anasayfa şarkısı → Album context → Genre infinite loop</p>
+                        <p>→ Arama şarkısı → Album context → Genre infinite loop</p>
+                        <p>→ Random şarkı → Genre context → Infinite loop</p>
+                        <p>→ Albümlü şarkı → Album → Genre → Infinite loop</p>
+                        <p>→ Albümsüz şarkı → Genre → Infinite loop</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Adımları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">📋 Test Adımları</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300 mb-2">Muzibu'ya Git</h3>
+                            <p class="text-slate-300 mb-3">
+                                <a href="https://muzibu.com.tr" target="_blank" class="text-green-400 hover:text-green-300 underline">
+                                    https://muzibu.com.tr
+                                </a>
+                            </p>
+                            <p class="text-slate-400 text-sm">✨ YENİ: Artık her yerden test edebilirsiniz!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-300 mb-2">Herhangi Bir Şarkı Başlat</h3>
+                            <p class="text-slate-300 mb-3">İstediğiniz yerden bir şarkı başlatın:</p>
+                            <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                <li>✅ <strong class="text-green-300">Anasayfa:</strong> Günün şarkıları → Otomatik context</li>
+                                <li>✅ <strong class="text-blue-300">Popular:</strong> Popular listesi → Otomatik context</li>
+                                <li>✅ <strong class="text-purple-300">Arama:</strong> Arama sonuçları → Otomatik context</li>
+                                <li>✅ <strong class="text-red-300">Genre:</strong> Genre sayfası → Manuel context (hala çalışıyor)</li>
+                                <li>✅ <strong class="text-yellow-300">Album:</strong> Album sayfası → Manuel context (hala çalışıyor)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-300 mb-2">Console'u Aç ve İzle</h3>
+                            <p class="text-slate-300 mb-3">Browser console'da auto-context loglarını görün:</p>
+                            <div class="bg-slate-900/50 rounded p-4 mt-3 space-y-2 text-sm font-mono">
+                                <p class="text-green-400">🎯 AUTO-CONTEXT: No context detected, setting automatically...</p>
+                                <p class="text-blue-400">✅ AUTO-CONTEXT: Album 12 (Kind of Blue)</p>
+                                <p class="text-slate-500">🎯 Play Context Set: {type: "album", id: 12, ...}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-300 mb-2">Test Script'ini Çalıştır (Opsiyonel)</h3>
+                            <p class="text-slate-300 mb-3">
+                                Otomatik test için <a href="../test-script.js" target="_blank" class="text-blue-400 hover:text-blue-300 underline">test-script.js</a>
+                            </p>
+                            <div class="bg-slate-900/50 rounded p-4 mt-3">
+                                <button
+                                    onclick="copyTestScript()"
+                                    class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-bold mb-3">
+                                    📋 Test Script Kopyala
+                                </button>
+                                <pre id="testScript" class="text-green-400 text-xs overflow-x-auto">fetch('https://muzibu.com.tr/readme/2025/12/12/infinite-queue-test/test-script.js')
+  .then(r => r.text())
+  .then(code => eval(code));</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">Infinite Loop'u Doğrula</h3>
+                            <p class="text-slate-300 mb-3">Console'da şu logları görmelisiniz:</p>
+                            <ul class="text-slate-400 text-sm space-y-2">
+                                <li>• <code class="text-green-400">🎯 AUTO-CONTEXT</code> - Otomatik context belirlendi</li>
+                                <li>• <code class="text-blue-400">🔄 Context Transition</code> - Album → Genre geçişi</li>
+                                <li>• <code class="text-purple-400">♾️ Infinite Loop</code> - Sonsuz döngü aktif</li>
+                                <li>• <code class="text-yellow-400">🔍 Queue Check</code> - Queue otomatik doluyor</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beklenen Sonuçlar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Beklenen Sonuçlar</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="font-bold text-green-300 mb-3">Anasayfa / Arama / Random</h3>
+                    <p class="text-slate-300 text-sm mb-2">Auto-context aktif</p>
+                    <p class="text-slate-400 text-sm mb-3">Album varsa → Album context → Genre</p>
+                    <p class="text-slate-400 text-sm">Album yoksa → Genre context → Infinite loop</p>
+                    <code class="block text-green-400 text-xs mt-2">Auto → Album → Genre ♾️</code>
+                </div>
+
+                <div class="bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="font-bold text-blue-300 mb-3">Genre Sayfası</h3>
+                    <p class="text-slate-300 text-sm mb-2">Manuel context (eski sistem)</p>
+                    <p class="text-slate-400 text-sm">Direkt infinite loop</p>
+                    <code class="block text-blue-400 text-xs mt-2">Genre → Genre ♾️</code>
+                </div>
+
+                <div class="bg-purple-900/20 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="font-bold text-purple-300 mb-3">Album Sayfası</h3>
+                    <p class="text-slate-300 text-sm mb-2">Manuel context (eski sistem)</p>
+                    <p class="text-slate-400 text-sm">Album biter → Genre geçişi</p>
+                    <code class="block text-purple-400 text-xs mt-2">Album → Genre ♾️</code>
+                </div>
+
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="font-bold text-red-300 mb-3">Sector Sayfası</h3>
+                    <p class="text-slate-300 text-sm mb-2">Manuel context (eski sistem)</p>
+                    <p class="text-slate-400 text-sm">Self-loop (genre'ye GEÇMİYOR)</p>
+                    <code class="block text-red-400 text-xs mt-2">Sector → Sector ♾️</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">🔧 Teknik Detaylar</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <h3 class="text-xl font-bold text-cyan-300 mb-4">Backend Değişiklikler</h3>
+                <div class="space-y-2 text-sm text-slate-300">
+                    <p>✅ <code class="text-green-400">SongStreamController.php</code> - Album & Genre bilgileri eklendi</p>
+                    <p class="text-slate-400 ml-6">Stream API artık album_id, genre_id, album_name, genre_name döndürüyor</p>
+                </div>
+
+                <h3 class="text-xl font-bold text-cyan-300 mb-4 mt-6">Frontend Değişiklikler</h3>
+                <div class="space-y-2 text-sm text-slate-300">
+                    <p>✅ <code class="text-green-400">player-core.js</code> - Auto-context detection eklendi</p>
+                    <p class="text-slate-400 ml-6">playSong() fonksiyonu context yoksa otomatik belirliyor</p>
+                    <p class="text-slate-400 ml-6">Öncelik: Album → Genre (infinite loop garantili)</p>
+                </div>
+
+                <h3 class="text-xl font-bold text-cyan-300 mb-4 mt-6">Context Transition Akışı</h3>
+                <div class="bg-slate-900/50 rounded p-4 space-y-1 text-xs font-mono text-slate-300">
+                    <p class="text-yellow-300">// Anasayfa şarkısı (album var)</p>
+                    <p>1. User clicks song → playSong(id)</p>
+                    <p>2. No context detected</p>
+                    <p class="text-green-400">3. AUTO-CONTEXT: Album 12 set</p>
+                    <p>4. Album songs play...</p>
+                    <p class="text-blue-400">5. Album ends → Genre transition</p>
+                    <p class="text-purple-400">6. Genre infinite loop ♾️</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Muzibu Infinite Queue Test v2</p>
+            <p class="mt-2">
+                <a href="https://muzibu.com.tr" target="_blank" class="text-blue-400 hover:text-blue-300">
+                    muzibu.com.tr'ye git →
+                </a>
+            </p>
+            <p class="mt-4 text-xs">
+                <a href="../v1/" class="text-slate-600 hover:text-slate-400">← v1 (Manuel context)</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+    function copyTestScript() {
+        const code = document.getElementById('testScript').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('✅ Test kodu kopyalandı! Console\'a yapıştırın.');
+        });
+    }
+    </script>
+</body>
+</html>

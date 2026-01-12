@@ -1,1 +1,255 @@
-v3/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeviceService Aktif/Pasif Yapma Rehberi - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-block { background: #1e293b; border-radius: 8px; padding: 16px; overflow-x: auto; }
+        .code-block code { color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 14px; }
+        .keyword { color: #c792ea; }
+        .function { color: #82aaff; }
+        .string { color: #c3e88d; }
+        .comment { color: #546e7a; }
+        .boolean { color: #ff9cac; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-red-900/50 to-orange-900/50 border-b border-red-800/50">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-600 text-white text-sm font-medium rounded-full">Sistem Yönetimi</span>
+                <span class="px-3 py-1 bg-slate-700 text-slate-300 text-sm rounded-full">Muzibu</span>
+                <span class="px-3 py-1 bg-orange-600 text-white text-sm rounded-full">v3</span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">DeviceService Aktif/Pasif Yapma Rehberi</h1>
+            <p class="text-slate-400">Cihaz limiti sisteminin açılması ve kapatılması (Backend + Frontend TAM)</p>
+            <div class="mt-4 text-sm text-slate-500">
+                <span>26 Aralık 2025</span> · <span>Claude AI</span> · <span class="text-orange-400">v3: Tüm endpoint'ler kapatıldı</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-10 space-y-10">
+
+        <!-- Mevcut Durum -->
+        <section class="bg-red-900/30 border border-red-700/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                </svg>
+                Mevcut Durum (26 Aralık 2025)
+            </h2>
+            <div class="bg-red-950/50 rounded-lg p-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-4 h-4 bg-red-500 rounded-full animate-pulse"></span>
+                    <span class="text-red-300 font-bold text-lg">SİSTEM TAMAMEN DEVRE DIŞI</span>
+                </div>
+                <p class="text-slate-400 mb-4">Backend ve Frontend'de toplam <strong class="text-white">4 fonksiyon</strong> devre dışı bırakıldı.</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 rounded p-3">
+                        <span class="text-slate-400 text-sm">Backend (1 dosya)</span>
+                        <p class="text-red-400 font-mono text-sm mt-1">DeviceService::shouldRun() → return false;</p>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-3">
+                        <span class="text-slate-400 text-sm">Frontend (2 dosya, 3 fonksiyon)</span>
+                        <p class="text-red-400 font-mono text-sm mt-1">startSessionPolling() → return;<br>fetchActiveDevices() → return;<br>checkDeviceLimitOnPageLoad() → return;</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Telescope Sonuç -->
+        <section class="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Telescope'da Artık Görünmeyecekler
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-red-400 font-bold mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        Durdurulan İstekler
+                    </h3>
+                    <ul class="space-y-2 font-mono text-sm">
+                        <li class="text-red-300 line-through">/api/auth/check-session</li>
+                        <li class="text-red-300 line-through">/api/auth/active-devices</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-green-400 font-bold mb-3">Beklenen Sonuç</h3>
+                    <p class="text-slate-300">Tarayıcıda <strong>hard refresh (Ctrl+Shift+R)</strong> yaptıktan sonra Telescope'da bu endpoint'ler <strong>görünmeyecek</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Değiştirilen Dosyalar - TAM LİSTE -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-slate-200 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Değiştirilen Dosyalar (TAM LİSTE)
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="py-3 px-4 text-slate-400">Katman</th>
+                            <th class="py-3 px-4 text-slate-400">Dosya</th>
+                            <th class="py-3 px-4 text-slate-400">Fonksiyon</th>
+                            <th class="py-3 px-4 text-slate-400">Satır</th>
+                            <th class="py-3 px-4 text-slate-400">Endpoint</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800 bg-purple-900/10">
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-purple-600 text-white text-xs rounded">Backend</span></td>
+                            <td class="py-3 px-4 font-mono text-cyan-400 text-xs">DeviceService.php</td>
+                            <td class="py-3 px-4 font-mono text-xs">shouldRun()</td>
+                            <td class="py-3 px-4">32-33</td>
+                            <td class="py-3 px-4 text-slate-500">Tüm device işlemleri</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-yellow-900/10">
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-yellow-600 text-white text-xs rounded">Frontend</span></td>
+                            <td class="py-3 px-4 font-mono text-cyan-400 text-xs">session.js</td>
+                            <td class="py-3 px-4 font-mono text-xs">startSessionPolling()</td>
+                            <td class="py-3 px-4">26-28</td>
+                            <td class="py-3 px-4 text-red-400">/api/auth/check-session</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-yellow-900/10">
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-yellow-600 text-white text-xs rounded">Frontend</span></td>
+                            <td class="py-3 px-4 font-mono text-cyan-400 text-xs">player-core.js</td>
+                            <td class="py-3 px-4 font-mono text-xs">startSessionPolling()</td>
+                            <td class="py-3 px-4">4252-4254</td>
+                            <td class="py-3 px-4 text-red-400">/api/auth/check-session</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-yellow-900/10">
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-yellow-600 text-white text-xs rounded">Frontend</span></td>
+                            <td class="py-3 px-4 font-mono text-cyan-400 text-xs">player-core.js</td>
+                            <td class="py-3 px-4 font-mono text-xs">fetchActiveDevices()</td>
+                            <td class="py-3 px-4">4670-4672</td>
+                            <td class="py-3 px-4 text-red-400">/api/auth/active-devices</td>
+                        </tr>
+                        <tr class="bg-yellow-900/10">
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-yellow-600 text-white text-xs rounded">Frontend</span></td>
+                            <td class="py-3 px-4 font-mono text-cyan-400 text-xs">player-core.js</td>
+                            <td class="py-3 px-4 font-mono text-xs">checkDeviceLimitOnPageLoad()</td>
+                            <td class="py-3 px-4">4739-4741</td>
+                            <td class="py-3 px-4 text-red-400">/api/auth/active-devices</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tekrar Aktif Etme -->
+        <section class="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                Tekrar Aktif Etme Rehberi
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-purple-400 font-bold mb-2">1. Backend: DeviceService.php</h3>
+                    <p class="text-slate-400 text-sm mb-2">Satır 32-33'teki kodu sil veya yorum yap:</p>
+                    <div class="code-block">
+<pre><code><span class="comment">// 🔴 GEÇİCİ: Device limit sistemi tamamen devre dışı</span>
+<span class="keyword">return</span> <span class="boolean">false</span>;  <span class="comment">← BU SATIRI SİL</span></code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-yellow-400 font-bold mb-2">2. Frontend: session.js (satır 26-28)</h3>
+                    <div class="code-block">
+<pre><code><span class="comment">// 🔴 GEÇİCİ: Polling tamamen devre dışı</span>
+console.<span class="function">log</span>(<span class="string">'...'</span>);
+<span class="keyword">return</span>;  <span class="comment">← BU 3 SATIRI SİL</span></code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-yellow-400 font-bold mb-2">3. Frontend: player-core.js (3 yerde)</h3>
+                    <ul class="text-slate-400 text-sm space-y-1 mb-2">
+                        <li>• startSessionPolling() - Satır 4252-4254</li>
+                        <li>• fetchActiveDevices() - Satır 4670-4672</li>
+                        <li>• checkDeviceLimitOnPageLoad() - Satır 4739-4741</li>
+                    </ul>
+                    <p class="text-slate-500 text-xs">Her fonksiyondaki <code class="bg-slate-700 px-1 rounded">return;</code> satırını sil</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-cyan-400 font-bold mb-2">4. Cache Temizle</h3>
+                    <div class="code-block">
+<pre><code>php artisan view:clear
+php artisan responsecache:clear
+curl https://muzibu.com.tr/opcache-reset.php</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">Basit Anlatım (Herkes İçin)</h2>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>Ne yapıldı?</strong><br>
+                    Muzibu'da "cihaz limiti" özelliği geçici olarak kapatıldı. Bu özellik normalde kullanıcının kaç cihazdan aynı anda dinleyebildiğini kontrol ediyordu.
+                </p>
+                <p>
+                    <strong>Neden kapatıldı?</strong><br>
+                    Test/geliştirme aşamasında. Telescope'da gereksiz istek görmemek için tamamen devre dışı bırakıldı.
+                </p>
+                <p>
+                    <strong>Şimdi ne olacak?</strong><br>
+                    - Kullanıcılar sınırsız cihazdan giriş yapabilir<br>
+                    - "Başka cihazdan atıldınız" uyarısı çıkmaz<br>
+                    - Telescope temiz kalır (device istekleri yok)
+                </p>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="bg-gradient-to-r from-slate-800 to-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">Özet</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-3xl font-bold text-red-400">4</span>
+                    <p class="text-slate-400 text-sm mt-1">Fonksiyon Kapatıldı</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-3xl font-bold text-yellow-400">3</span>
+                    <p class="text-slate-400 text-sm mt-1">Dosya Değiştirildi</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-3xl font-bold text-cyan-400">2</span>
+                    <p class="text-slate-400 text-sm mt-1">Endpoint Durduruldu</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-3xl font-bold text-green-400">0</span>
+                    <p class="text-slate-400 text-sm mt-1">Telescope İsteği</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-10">
+        <div class="max-w-6xl mx-auto px-6 py-6 text-center text-slate-500 text-sm">
+            <p>Claude AI tarafından oluşturuldu · 26 Aralık 2025 · v3 (Tüm endpoint'ler kapatıldı)</p>
+        </div>
+    </footer>
+</body>
+</html>

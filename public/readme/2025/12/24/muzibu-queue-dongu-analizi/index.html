@@ -1,1 +1,335 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Queue Dongu Sorunu Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+
+        <!-- Header -->
+        <header class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-500/20 text-red-400 text-xs font-bold rounded-full border border-red-500/30">
+                    <i class="fas fa-bug mr-1"></i> Bug Analizi
+                </span>
+                <span class="text-slate-500 text-sm">24 Aralik 2025</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-3">Muzibu Queue Dongu Sorunu</h1>
+            <p class="text-slate-400">Albumde ayni 3 sarki surekli tekrarlaniyor - Kok neden analizi ve cozum plani</p>
+        </header>
+
+        <!-- Sorun Ozeti -->
+        <section class="mb-10">
+            <div class="bg-red-900/20 border border-red-800/50 rounded-xl p-6">
+                <h2 class="text-xl font-bold text-red-400 mb-4"><i class="fas fa-exclamation-triangle mr-2"></i>Sorun</h2>
+
+                <!-- Basit Anlatim -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-4">
+                    <h3 class="text-sm font-bold text-green-400 mb-2"><i class="fas fa-user mr-1"></i> Basit Anlatim (Herkes Icin)</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Erkin Koray albumunden bir sarki dinlediginde, kuyrukta (queue) ayni 3 sarki surekli tekrarlaniyor.
+                        "Saksidaki Cicekler", "Yalniz Kurt" ve "Cold Love" sarkilari 11 kez listeleniyor.
+                        Normalde album bitince farkli sarkalar gelmeli ama sistem ayni sarkilari donguye sokuyor.
+                    </p>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                    <h3 class="text-sm font-bold text-blue-400 mb-2"><i class="fas fa-code mr-1"></i> Teknik Detaylar</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li><i class="fas fa-file-code text-slate-500 mr-2"></i><code>b-html.txt</code> - Queue overlay HTML dump</li>
+                        <li><i class="fas fa-database text-slate-500 mr-2"></i>Album: 3 sarki (unique)</li>
+                        <li><i class="fas fa-list text-slate-500 mr-2"></i>Queue: 11 sarki (ayni 3 sarki 3-4 kez tekrarlaniyor)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mevcut Sistem Akisi -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold mb-6"><i class="fas fa-project-diagram mr-2 text-purple-400"></i>Mevcut Sistem Akisi</h2>
+
+            <div class="grid gap-4">
+                <!-- Adim 1 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 font-bold flex-shrink-0">1</div>
+                        <div>
+                            <h3 class="font-bold text-white mb-2">Sarki Tiklandiginda</h3>
+                            <p class="text-slate-400 text-sm mb-2">Kullanici bir sarkiya tikliyor</p>
+                            <div class="bg-slate-900/50 rounded-lg p-3 text-xs font-mono text-slate-300">
+                                <code>playSong(id)</code> cagriliyor<br>
+                                <span class="text-purple-400">→</span> AUTO-CONTEXT: Album veya Genre otomatik set ediliyor<br>
+                                <span class="text-purple-400">→</span> <code>refillQueue(1, 15)</code> cagriliyor (15 sarki istiyor)<br>
+                                <span class="text-purple-400">→</span> <code>this.queue = [song, ...nextSongs]</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adim 2 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 font-bold flex-shrink-0">2</div>
+                        <div>
+                            <h3 class="font-bold text-white mb-2">Backend Queue Refill</h3>
+                            <p class="text-slate-400 text-sm mb-2">QueueRefillController sarki donduruyor</p>
+                            <div class="bg-slate-900/50 rounded-lg p-3 text-xs font-mono text-slate-300">
+                                <code>getAlbumSongs($albumId, $offset, $limit, $excludeSongIds)</code><br>
+                                <span class="text-yellow-400">→</span> Album'de 3 sarki var, 15 istenildi<br>
+                                <span class="text-yellow-400">→</span> <code>inRandomOrder()->limit(15)</code> = 3 sarki donuyor<br>
+                                <span class="text-yellow-400">→</span> <code>$songs->isEmpty()</code> = <span class="text-red-400">FALSE</span> (3 sarki var)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adim 3 - SORUN -->
+                <div class="bg-red-900/30 border border-red-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-red-500/30 rounded-lg flex items-center justify-center text-red-400 font-bold flex-shrink-0">3</div>
+                        <div>
+                            <h3 class="font-bold text-red-400 mb-2"><i class="fas fa-bug mr-2"></i>SORUN: Transition Asla Olmuyor!</h3>
+                            <p class="text-slate-400 text-sm mb-2">Album bitmeden Genre'ye gecis yapilamiyor</p>
+                            <div class="bg-slate-900/50 rounded-lg p-3 text-xs font-mono text-slate-300">
+                                <span class="text-red-400">// Backend kontrolu:</span><br>
+                                if ($songs->isEmpty()) { <span class="text-green-400">// TRANSITION: Album → Genre</span> }<br><br>
+                                <span class="text-red-400">// PROBLEM:</span><br>
+                                - Album'de 3 sarki var<br>
+                                - <code>isEmpty()</code> hic TRUE olmuyor<br>
+                                - TRANSITION asla tetiklenmiyor<br>
+                                - Ayni 3 sarki sonsuza kadar donuyor
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adim 4 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 font-bold flex-shrink-0">4</div>
+                        <div>
+                            <h3 class="font-bold text-white mb-2">Sarki Bittiginde</h3>
+                            <p class="text-slate-400 text-sm mb-2">Crossfade veya nextTrack cagriliyor</p>
+                            <div class="bg-slate-900/50 rounded-lg p-3 text-xs font-mono text-slate-300">
+                                <code>onTrackEnded()</code> → <code>nextTrack()</code><br>
+                                <span class="text-purple-400">→</span> <code>queueIndex++</code><br>
+                                <span class="text-purple-400">→</span> Queue sonuna gelince <code>repeatMode='all'</code> veya <code>b2bMode</code> ile basa don<br>
+                                <span class="text-yellow-400">→</span> Veya yeni refillQueue cagriliyor → Ayni sarkalar tekrar ekleniyor
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kok Nedenler -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold mb-6"><i class="fas fa-search mr-2 text-orange-400"></i>Kok Nedenler</h2>
+
+            <div class="space-y-4">
+                <!-- Neden 1 -->
+                <div class="bg-orange-900/20 border border-orange-800/50 rounded-xl p-5">
+                    <h3 class="font-bold text-orange-400 mb-3"><i class="fas fa-1 mr-2"></i>Transition Mantigi Hatali</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-red-400 font-bold mb-2">MEVCUT (Yanlis)</p>
+                            <p class="text-slate-300 text-sm">
+                                <code>isEmpty()</code> kontrolu: Album'de sarki varsa TRANSITION yok.<br>
+                                3 sarkili album → Hic bitmez → Sonsuz dongu
+                            </p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-green-400 font-bold mb-2">OLMASI GEREKEN</p>
+                            <p class="text-slate-300 text-sm">
+                                Exclude listesi album sarki sayisina esit/yakin olunca TRANSITION.<br>
+                                Veya offset toplam sarki sayisini gecince TRANSITION.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Neden 2 -->
+                <div class="bg-orange-900/20 border border-orange-800/50 rounded-xl p-5">
+                    <h3 class="font-bold text-orange-400 mb-3"><i class="fas fa-2 mr-2"></i>Random Selection Sorunu</h3>
+                    <p class="text-slate-300 text-sm mb-3">
+                        <code>inRandomOrder()</code> her seferinde ayni 3 sarkiyi farkli sirada donduruyor.
+                        Exclude listesi cok buyuk olmadigi surece ayni sarkalar geliyor.
+                    </p>
+                    <div class="bg-slate-900/50 rounded-lg p-3 text-xs font-mono text-slate-300">
+                        Refill 1: [Cold Love, Saksidaki, Yalniz] <span class="text-slate-500">// 3 sarki</span><br>
+                        Refill 2: [Yalniz, Cold Love, Saksidaki] <span class="text-slate-500">// ayni 3 sarki</span><br>
+                        Refill 3: [Saksidaki, Yalniz, Cold Love] <span class="text-slate-500">// yine ayni!</span>
+                    </div>
+                </div>
+
+                <!-- Neden 3 -->
+                <div class="bg-orange-900/20 border border-orange-800/50 rounded-xl p-5">
+                    <h3 class="font-bold text-orange-400 mb-3"><i class="fas fa-3 mr-2"></i>Frontend Exclude Listesi Yetersiz</h3>
+                    <p class="text-slate-300 text-sm mb-3">
+                        <code>recentlyPlayed</code> listesi gonderiliyor ama album kuculuk nedeniyle yetersiz kaliyor.
+                    </p>
+                    <div class="bg-slate-900/50 rounded-lg p-3 text-xs font-mono text-slate-300">
+                        Album: 3 sarki<br>
+                        Exclude: [1, 2] <span class="text-slate-500">// 2 sarki exclude</span><br>
+                        Kalan: 1 sarki → Cok az, ama <code>isEmpty()</code> yine FALSE
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cozum Plani -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold mb-6"><i class="fas fa-tools mr-2 text-green-400"></i>Cozum Plani</h2>
+
+            <div class="space-y-4">
+                <!-- Cozum 1 -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 font-bold flex-shrink-0">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-green-400 mb-2">1. Backend: Akilli Transition Mantigi</h3>
+                            <p class="text-slate-300 text-sm mb-3">
+                                Album/Playlist sarki sayisi az ise otomatik Genre'ye gec
+                            </p>
+                            <div class="bg-slate-900/50 rounded-lg p-4 text-xs font-mono">
+                                <span class="text-green-400">// QueueRefillController.php - getAlbumSongs()</span><br><br>
+                                $totalSongs = $album->songs()->where('is_active', 1)->count();<br>
+                                $excludeCount = count($excludeSongIds);<br><br>
+                                <span class="text-yellow-400">// Eger tum sarkilar dinlendiyse → Genre'ye gec</span><br>
+                                if ($excludeCount >= $totalSongs || $songs->count() < 3) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-green-400">// TRANSITION: Album → Genre</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;return $this->getGenreSongs($genre_id, 0, $limit, []);<br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cozum 2 -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 font-bold flex-shrink-0">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-green-400 mb-2">2. Frontend: Queue Duplicate Kontrolu</h3>
+                            <p class="text-slate-300 text-sm mb-3">
+                                Queue'ya eklenmeden once ayni sarki var mi kontrol et
+                            </p>
+                            <div class="bg-slate-900/50 rounded-lg p-4 text-xs font-mono">
+                                <span class="text-green-400">// player-core.js - playSong() icinde</span><br><br>
+                                <span class="text-yellow-400">// Mevcut queue'daki sarki ID'lerini al</span><br>
+                                const existingIds = new Set(this.queue.map(s => s.song_id));<br><br>
+                                <span class="text-yellow-400">// Sadece yeni sarkilari ekle</span><br>
+                                const newSongs = nextSongs.filter(s => !existingIds.has(s.song_id));<br>
+                                this.queue = [song, ...newSongs];
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cozum 3 -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 font-bold flex-shrink-0">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-green-400 mb-2">3. Backend: Transition Response ile Bildir</h3>
+                            <p class="text-slate-300 text-sm mb-3">
+                                Album bittiginde frontend'e "Genre'ye gectim" bilgisi gonder
+                            </p>
+                            <div class="bg-slate-900/50 rounded-lg p-4 text-xs font-mono">
+                                <span class="text-green-400">// Response</span><br>
+                                {<br>
+                                &nbsp;&nbsp;"success": true,<br>
+                                &nbsp;&nbsp;"songs": [...],<br>
+                                &nbsp;&nbsp;<span class="text-yellow-400">"transition"</span>: {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"type": "genre",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"id": 5,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"name": "Rock",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"reason": "album_exhausted"<br>
+                                &nbsp;&nbsp;}<br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Etkilenen Dosyalar -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold mb-6"><i class="fas fa-folder-open mr-2 text-cyan-400"></i>Etkilenen Dosyalar</h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-900/50">
+                        <tr>
+                            <th class="text-left px-4 py-3 text-slate-400 font-medium">Dosya</th>
+                            <th class="text-left px-4 py-3 text-slate-400 font-medium">Degisiklik</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs text-cyan-400">Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php</td>
+                            <td class="px-4 py-3 text-slate-300">Akilli transition mantigi ekle</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs text-cyan-400">public/themes/muzibu/js/player/core/player-core.js</td>
+                            <td class="px-4 py-3 text-slate-300">Duplicate kontrolu ekle</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs text-cyan-400">public/themes/muzibu/js/muzibu-store.js</td>
+                            <td class="px-4 py-3 text-slate-300">refillQueue transition handler</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Akis Diagrami -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold mb-6"><i class="fas fa-sitemap mr-2 text-indigo-400"></i>Beklenen Akis (Duzeltme Sonrasi)</h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <div class="flex flex-wrap gap-3 items-center justify-center text-sm">
+                    <div class="px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-purple-300">
+                        <i class="fas fa-play mr-2"></i>Sarki Tikla
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <div class="px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300">
+                        <i class="fas fa-compact-disc mr-2"></i>Album Sarkilari
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <div class="px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 rounded-lg text-yellow-300">
+                        <i class="fas fa-check-circle mr-2"></i>Tumu Dinlendi?
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <div class="px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-lg text-green-300">
+                        <i class="fas fa-music mr-2"></i>Genre'ye Gec
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <div class="px-4 py-2 bg-indigo-500/20 border border-indigo-500/30 rounded-lg text-indigo-300">
+                        <i class="fas fa-infinity mr-2"></i>Sonsuz Muzik
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-slate-800 text-center">
+            <p class="text-slate-500 text-sm">
+                <i class="fas fa-robot mr-2"></i>Claude AI tarafindan olusturuldu - 24 Aralik 2025
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

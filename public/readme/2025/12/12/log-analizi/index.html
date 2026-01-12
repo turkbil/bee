@@ -1,1 +1,500 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Log Analizi & Temizlik Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                📊 Sistem Log Analizi & Temizlik Planı
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Tüm central ve tenant loglarının detaylı incelemesi, sorun tespiti ve temizlik stratejisi
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 12 Aralık 2025</span>
+                <span>🗄️ Toplam Log Boyutu: ~644KB</span>
+                <span>📂 Central + 3 Tenant</span>
+            </div>
+        </header>
+
+        <!-- Özet İstatistikler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">📈 Log Boyut Dağılımı</h2>
+
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-red-900/30 to-red-800/20 border border-red-700/50 rounded-lg p-6">
+                    <div class="text-red-400 text-sm font-semibold mb-2">Central Logs</div>
+                    <div class="text-3xl font-bold text-white mb-1">596 KB</div>
+                    <div class="text-slate-400 text-sm">18 dosya</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/20 border border-blue-700/50 rounded-lg p-6">
+                    <div class="text-blue-400 text-sm font-semibold mb-2">Tenant2 (ixtif)</div>
+                    <div class="text-3xl font-bold text-white mb-1">40 KB</div>
+                    <div class="text-slate-400 text-sm">4 dosya</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-700/50 rounded-lg p-6">
+                    <div class="text-green-400 text-sm font-semibold mb-2">Tenant1001 (muzibu)</div>
+                    <div class="text-3xl font-bold text-white mb-1">8 KB</div>
+                    <div class="text-slate-400 text-sm">4 dosya</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-900/30 to-gray-800/20 border border-gray-700/50 rounded-lg p-6">
+                    <div class="text-gray-400 text-sm font-semibold mb-2">Tenant1 (tuufi)</div>
+                    <div class="text-3xl font-bold text-white mb-1">0 KB</div>
+                    <div class="text-slate-400 text-sm">2 dosya (boş)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Büyük Dosyalar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🔥 En Büyük Log Dosyaları</h2>
+
+            <div class="space-y-4">
+                <!-- 1. laravel-2025-12-12.log -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-red-300 mb-2">
+                                storage/logs/laravel-2025-12-12.log
+                                <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">515 KB</span>
+                            </h3>
+
+                            <div class="mb-4">
+                                <div class="text-slate-300 mb-2"><strong>📊 İçerik:</strong> 1,007 satır | 3 ERROR | 2 WARNING</div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded p-4 mb-3">
+                                <div class="font-semibold text-yellow-300 mb-2">⚠️ Tespit Edilen Hatalar:</div>
+                                <ul class="space-y-2 text-sm text-slate-300">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-orange-400 mt-1">❌</span>
+                                        <div>
+                                            <strong class="text-white">Symfony Console Hatası (2x):</strong><br>
+                                            <code class="text-xs bg-slate-950 px-2 py-1 rounded">An option named "quiet" already exists</code><br>
+                                            <span class="text-slate-400">→ Kod hatası, artisan komutlarında çift tanımlama. Kritik değil ama düzeltilmeli.</span>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-orange-400 mt-1">❌</span>
+                                        <div>
+                                            <strong class="text-white">Cron Hatası (1x):</strong><br>
+                                            <code class="text-xs bg-slate-950 px-2 py-1 rounded">plesk:clean-orphan-databases failed with exit code [1]</code><br>
+                                            <span class="text-slate-400">→ Scheduled task başarısız oluyor. Komut düzeltilmeli veya devre dışı bırakılmalı.</span>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-yellow-400 mt-1">⚠️</span>
+                                        <div>
+                                            <strong class="text-white">Slow Query Uyarıları:</strong><br>
+                                            <code class="text-xs bg-slate-950 px-2 py-1 rounded">settings_values: 104ms, cart_addresses: 415ms, activity_log: 280ms</code><br>
+                                            <span class="text-slate-400">→ Performans sorunu! Index'ler eksik veya optimize edilmeli.</span>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">ℹ️</span>
+                                        <div>
+                                            <strong class="text-white">Media Upload Warning (1x):</strong><br>
+                                            <code class="text-xs bg-slate-950 px-2 py-1 rounded">The "/tmp/phpPcqG6W" file does not exist or is not readable</code><br>
+                                            <span class="text-slate-400">→ Geçici dosya hatası, kritik değil.</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <span class="px-3 py-1 bg-red-900/50 text-red-300 text-xs rounded-full">🔄 Aktif Hata: Cron + Slow Query</span>
+                                <span class="px-3 py-1 bg-orange-900/50 text-orange-300 text-xs rounded-full">⚡ Performans Sorunu</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. queue-health.log -->
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-blue-300 mb-2">
+                                storage/logs/queue-health.log
+                                <span class="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded-full">3.2 KB</span>
+                            </h3>
+
+                            <div class="mb-3">
+                                <div class="text-slate-300"><strong>📊 İçerik:</strong> Horizon health check logları (tekrar eden)</div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded p-4 mb-3">
+                                <div class="font-semibold text-green-300 mb-2">✅ Normal Çalışma:</div>
+                                <ul class="space-y-1 text-sm text-slate-300">
+                                    <li>• Her 5 dakikada bir Horizon kontrol yapılıyor</li>
+                                    <li>• Aktif worker: 0 (job yoksa normal)</li>
+                                    <li>• Sistem sağlıklı çalışıyor</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <span class="px-3 py-1 bg-green-900/50 text-green-300 text-xs rounded-full">✅ Sorun Yok</span>
+                                <span class="px-3 py-1 bg-blue-900/50 text-blue-300 text-xs rounded-full">🔄 Döngüsel (Normal)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. tenant-2025-12-12.log (Tenant2) -->
+                <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-orange-300 mb-2">
+                                storage/tenant2/logs/tenant-2025-12-12.log
+                                <span class="ml-3 px-3 py-1 bg-orange-600 text-white text-xs rounded-full">39 KB</span>
+                                <span class="ml-2 px-2 py-1 bg-purple-700 text-white text-xs rounded-full">Tenant: ixtif.com</span>
+                            </h3>
+
+                            <div class="mb-4">
+                                <div class="text-slate-300 mb-2"><strong>📊 İçerik:</strong> OpenAI API istekleri ve yanıtları (blog yazıları için)</div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded p-4 mb-3">
+                                <div class="font-semibold text-orange-300 mb-2">⚠️ Loglama Seviyesi Problemi:</div>
+                                <ul class="space-y-2 text-sm text-slate-300">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-red-400 mt-1">🔥</span>
+                                        <div>
+                                            <strong class="text-white">EMERGENCY Seviyesi Yanlış Kullanım:</strong><br>
+                                            <code class="text-xs bg-slate-950 px-2 py-1 rounded">production.EMERGENCY: FULL OpenAI API REQUEST PAYLOAD</code><br>
+                                            <span class="text-slate-400">→ OpenAI API logları EMERGENCY seviyesinde! DEBUG veya INFO olmalı.</span>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-orange-400 mt-1">📝</span>
+                                        <div>
+                                            <strong class="text-white">Detaylı API Logging:</strong><br>
+                                            <span class="text-slate-400">→ Her transpalet blog yazısında full request/response loglanıyor.<br>
+                                            → Production'da bu kadar detay gereksiz, dosya boyutunu şişiriyor.</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded p-3 mb-3 text-sm text-blue-200">
+                                <strong>💡 Çözüm:</strong> Blog AI servisindeki log seviyesi DEBUG'a çekilmeli ve production'da kapatılmalı.
+                            </div>
+
+                            <div class="flex gap-2">
+                                <span class="px-3 py-1 bg-orange-900/50 text-orange-300 text-xs rounded-full">⚠️ Log Seviyesi Yanlış</span>
+                                <span class="px-3 py-1 bg-purple-900/50 text-purple-300 text-xs rounded-full">🎯 Optimizasyon Gerekli</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. tenant-2025-12-12.log (Tenant1001) -->
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-green-300 mb-2">
+                                storage/tenant1001/logs/tenant-2025-12-12.log
+                                <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">5.3 KB</span>
+                                <span class="ml-2 px-2 py-1 bg-purple-700 text-white text-xs rounded-full">Tenant: muzibu.com</span>
+                            </h3>
+
+                            <div class="mb-3">
+                                <div class="text-slate-300"><strong>📊 İçerik:</strong> Login flow, credit balance, normal işlem logları</div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded p-4 mb-3">
+                                <div class="font-semibold text-green-300 mb-2">✅ Sağlıklı Loglar:</div>
+                                <ul class="space-y-1 text-sm text-slate-300">
+                                    <li>• INFO: Login flow detayları (session, cart merge, LIFO)</li>
+                                    <li>• DEBUG: Credit balance refresh</li>
+                                    <li>• Hata veya uyarı yok</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <span class="px-3 py-1 bg-green-900/50 text-green-300 text-xs rounded-full">✅ Sorun Yok</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Boş Dosyalar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-gray-400">📁 Boş Log Dosyaları (Temizlenebilir)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <div class="font-semibold text-slate-300 mb-3">Central (storage/logs/):</div>
+                        <ul class="space-y-1 text-slate-400 font-mono text-xs">
+                            <li>• laravel.log</li>
+                            <li>• laravel-2025-12-09.log</li>
+                            <li>• laravel-2025-12-10.log</li>
+                            <li>• laravel-2025-12-11.log</li>
+                            <li>• currency-updates.log</li>
+                            <li>• subscription-check.log</li>
+                            <li>• subscription-payments.log</li>
+                            <li>• subscription-reminders.log</li>
+                            <li>• subscription-trial.log</li>
+                            <li>• subscription-verification.log</li>
+                            <li>• paytr-installments.log</li>
+                            <li>• telescope-prune.log</li>
+                            <li>• worker.log</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-slate-300 mb-3">Tenant Logs:</div>
+                        <ul class="space-y-1 text-slate-400 font-mono text-xs">
+                            <li>• tenant1/tenant-2025-12-10.log</li>
+                            <li>• tenant1/tenant-2025-12-11.log</li>
+                            <li>• tenant2/tenant-2025-12-09.log</li>
+                            <li>• tenant2/tenant-2025-12-10.log</li>
+                            <li>• tenant2/tenant-2025-12-11.log</li>
+                            <li>• tenant1001/tenant-2025-12-09.log</li>
+                            <li>• tenant1001/tenant-2025-12-10.log</li>
+                            <li>• tenant1001/tenant-2025-12-11.log</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-green-900/30 border border-green-700/50 rounded text-sm text-green-200">
+                    <strong>✅ Güvenli Temizleme:</strong> Tüm boş dosyalar silinebilir, herhangi bir veri kaybı olmaz.
+                </div>
+            </div>
+        </section>
+
+        <!-- Sorun Özeti -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🚨 Tespit Edilen Sorunlar</h2>
+
+            <div class="space-y-4">
+                <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">❌</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">1. Symfony Console Hatası (Kod Hatası)</h3>
+                            <p class="text-slate-300 mb-2">Artisan komutlarında "quiet" option'ı iki kez tanımlanmış.</p>
+                            <div class="bg-slate-950 rounded p-3 text-xs font-mono text-slate-400">
+                                InputDefinition.php:220 → LogicException: An option named "quiet" already exists
+                            </div>
+                            <p class="mt-2 text-slate-400"><strong class="text-white">Durum:</strong> Kritik değil ama her artisan komutunda tekrar ediyor.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-orange-900/20 border border-orange-700/50 rounded-lg p-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-300 mb-2">2. Cron Hatası (Aktif Sorun)</h3>
+                            <p class="text-slate-300 mb-2">Scheduled task her çalıştığında başarısız oluyor.</p>
+                            <div class="bg-slate-950 rounded p-3 text-xs font-mono text-slate-400">
+                                plesk:clean-orphan-databases failed with exit code [1]
+                            </div>
+                            <p class="mt-2 text-slate-400"><strong class="text-white">Durum:</strong> Günde birkaç kez tekrar ediyor, düzeltilmeli.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">⚡</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-300 mb-2">3. Slow Query Uyarıları (Performans Sorunu)</h3>
+                            <p class="text-slate-300 mb-2">Birkaç veritabanı sorgusu çok yavaş çalışıyor.</p>
+                            <ul class="space-y-1 text-sm text-slate-300 mt-2">
+                                <li>• <code class="bg-slate-950 px-2 py-1 rounded text-xs">settings_values</code> → 104-105ms</li>
+                                <li>• <code class="bg-slate-950 px-2 py-1 rounded text-xs">cart_addresses</code> → 415ms (çok yavaş!)</li>
+                                <li>• <code class="bg-slate-950 px-2 py-1 rounded text-xs">activity_log count</code> → 280ms</li>
+                            </ul>
+                            <p class="mt-2 text-slate-400"><strong class="text-white">Durum:</strong> Index eksikliği veya optimize edilmemiş sorgular.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-purple-900/20 border border-purple-700/50 rounded-lg p-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">🔥</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-300 mb-2">4. OpenAI API Log Seviyesi Yanlış (Tenant2)</h3>
+                            <p class="text-slate-300 mb-2">Blog AI servisinde loglama seviyesi EMERGENCY olarak ayarlanmış, production'da çok fazla log üretiyor.</p>
+                            <div class="bg-slate-950 rounded p-3 text-xs font-mono text-slate-400">
+                                production.EMERGENCY: FULL OpenAI API REQUEST PAYLOAD
+                            </div>
+                            <p class="mt-2 text-slate-400"><strong class="text-white">Durum:</strong> Her blog yazısında full request/response loglanıyor, dosya boyutu şişiyor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Temizlik Planı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🎯 Temizlik & Düzeltme Planı</h2>
+
+            <!-- Adım 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Boş Log Dosyalarını Temizle
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Güvenli</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Tüm 0 byte boyutundaki log dosyalarını sil. Hiçbir veri kaybı olmaz.
+                        </p>
+                        <div class="bg-slate-950 rounded p-3 text-xs font-mono text-slate-400">
+                            find storage/logs/ -type f -size 0 -delete<br>
+                            find storage/tenant*/logs/ -type f -size 0 -delete
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> 21 boş dosya temizlenecek</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300 mb-2">
+                            Cron Hatasını Düzelt veya Devre Dışı Bırak
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">Yüksek Öncelik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            <code class="bg-slate-950 px-2 py-1 rounded text-xs">plesk:clean-orphan-databases</code> komutu sürekli başarısız oluyor. Komutu kontrol et, düzelt veya schedule'dan kaldır.
+                        </p>
+                        <div class="bg-slate-950 rounded p-3 text-xs font-mono text-slate-400">
+                            php artisan plesk:clean-orphan-databases --dry-run
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> Cron hataları durur, loglar temiz kalır</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            OpenAI API Log Seviyesini Düzelt (Tenant2)
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">Yüksek Öncelik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Blog AI servisinde loglama seviyesini EMERGENCY'den DEBUG veya INFO'ya düşür. Production'da detaylı API logging'i kapat.
+                        </p>
+                        <div class="bg-slate-950 rounded p-3 text-xs font-mono text-slate-400 mb-3">
+                            grep -r "EMERGENCY.*OpenAI" Modules/
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> Tenant2 log boyutu dramatik azalacak (39KB → ~1-2KB)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">
+                            Slow Query'leri Optimize Et
+                            <span class="ml-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">Performans</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Yavaş çalışan sorguları optimize etmek için index'ler ekle veya query'leri düzelt.
+                        </p>
+                        <div class="bg-slate-950 rounded p-3 text-xs text-slate-400 mb-3">
+                            <strong class="text-white">Tespit Edilen Yavaş Sorgular:</strong><br>
+                            1. settings_values (setting_id) → Index var mı kontrol et<br>
+                            2. cart_addresses (user_id + address_type + is_default_billing) → Composite index ekle<br>
+                            3. activity_log count (created_at) → Index ekle veya cache kullan
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> Query süreleri 100ms altına düşer</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 5 -->
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-orange-300 mb-2">
+                            Symfony Console Hatasını Düzelt
+                            <span class="ml-3 px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Orta Öncelik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Artisan komutlarında "quiet" option'ı çift tanımlanmış. Custom command dosyalarını kontrol et.
+                        </p>
+                        <div class="bg-slate-950 rounded p-3 text-xs font-mono text-slate-400">
+                            grep -r "addOption.*quiet" app/Console/
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> Artisan komutları hata vermeden çalışacak</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">📊 Genel Değerlendirme</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-green-900/30 border border-green-700/50 rounded-lg p-6">
+                    <div class="text-4xl mb-3">✅</div>
+                    <h3 class="text-xl font-bold text-green-300 mb-2">Sağlıklı Alanlar</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Horizon çalışıyor</li>
+                        <li>• Tenant1001 sorunsuz</li>
+                        <li>• Queue system normal</li>
+                        <li>• Log rotation var</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/30 border border-yellow-700/50 rounded-lg p-6">
+                    <div class="text-4xl mb-3">⚠️</div>
+                    <h3 class="text-xl font-bold text-yellow-300 mb-2">Optimizasyon Gerekli</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Slow query'ler</li>
+                        <li>• OpenAI log seviyesi</li>
+                        <li>• Symfony console hatası</li>
+                        <li>• Log dosya boyutları</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-700/50 rounded-lg p-6">
+                    <div class="text-4xl mb-3">🔥</div>
+                    <h3 class="text-xl font-bold text-red-300 mb-2">Acil Düzeltme</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Cron hatası (tekrar ediyor)</li>
+                        <li>• Tenant2 log şişmesi</li>
+                        <li>• Cart query 415ms</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+            <p class="mt-2">📊 Analiz tarihi: 12 Aralık 2025 - Toplam log boyutu: ~644KB</p>
+        </footer>
+    </div>
+</body>
+</html>

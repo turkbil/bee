@@ -1,1 +1,790 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Modülü & Sepete Ekle Butonu - Kapsamlı Analiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #818cf8;
+        }
+
+        .analysis-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .analysis-card:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .flow-diagram {
+            background: rgba(30, 41, 59, 0.3);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #334155;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #60a5fa;
+        }
+
+        .flow-step .number {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .flow-step .content {
+            flex: 1;
+        }
+
+        .flow-step .title {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .flow-step .description {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .explanation {
+            display: inline-block;
+            margin-left: 5px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .strength {
+            background: rgba(34, 197, 94, 0.1);
+            border-left-color: #22c55e;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .strength::before {
+            content: "✅ ";
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .improvement {
+            background: rgba(251, 191, 36, 0.1);
+            border-left-color: #f59e0b;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .improvement::before {
+            content: "⚠️ ";
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .module-box {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 1px solid #6366f1;
+        }
+
+        .module-box .module-title {
+            color: #818cf8;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .module-box .module-desc {
+            color: #cbd5e1;
+            margin-left: 28px;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15));
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #3b82f6;
+        }
+
+        .highlight-box .title {
+            color: #60a5fa;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box p {
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 1.2rem;
+            margin-right: 5px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛒 Cart Modülü & Sepete Ekle Butonu - Kapsamlı Analiz</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-02 |
+                🎯 Tenant: ixtif.com (Tenant 2 - Endüstriyel Ekipman) |
+                👤 Talep: Cart modülü ve homepage add to basket butonu analizi
+            </div>
+        </header>
+
+        <!-- 1. SİSTEM MİMARİSİ -->
+        <section>
+            <h2><span class="icon">🏗️</span> Sistem Mimarisi</h2>
+
+            <div class="highlight-box">
+                <div class="title">Multi-Tenant E-Ticaret Sistemi</div>
+                <p>Sistem, <span class="tech-term">Multi-Tenant</span> <span class="explanation">(Çok kiracılı)</span> mimari üzerine kurulu. Her tenant'ın kendi database'i var ve sepet verileri tenant database'lerinde saklanıyor.</p>
+                <p><strong>Modüler Yapı:</strong> Cart modülü ve Shop modülü birbirinden bağımsız ama <span class="tech-term">Bridge Service</span> <span class="explanation">(Köprü Servisi)</span> ile entegre çalışıyor.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="module-box">
+                    <div class="module-title">📦 Cart Modülü</div>
+                    <div class="module-desc">
+                        <strong>Sorumluluk:</strong> Sepet yönetimi, item ekleme/çıkarma, fiyat hesaplama, vergi, kupon, sipariş dönüşümü
+                        <ul>
+                            <li><strong>CartService:</strong> İş mantığı merkezi</li>
+                            <li><strong>Cart Model:</strong> Sepet verisi (session/customer tracking)</li>
+                            <li><strong>CartItem Model:</strong> Sepet içerikleri (polymorphic)</li>
+                            <li><strong>CartWidget:</strong> Header'da mini sepet (Livewire)</li>
+                            <li><strong>CartApiController:</strong> API endpoint'leri</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-box">
+                    <div class="module-title">🛍️ Shop Modülü</div>
+                    <div class="module-desc">
+                        <strong>Sorumluluk:</strong> Ürün yönetimi, stok kontrolü, fiyatlandırma, cart entegrasyonu
+                        <ul>
+                            <li><strong>ShopProduct Model:</strong> Ürün verisi</li>
+                            <li><strong>ShopCartBridge:</strong> Shop → Cart entegrasyonu</li>
+                            <li><strong>AddToCartButton:</strong> Sepete ekle component (Livewire)</li>
+                            <li><strong>Product Card:</strong> Ürün kartı (Alpine.js + API)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. VERİ AKIŞI -->
+        <section>
+            <h2><span class="icon">🔄</span> Veri Akışı - Sepete Ekleme İşlemi</h2>
+
+            <div class="flow-diagram">
+                <h3>Homepage Add to Cart Flow (Alpine.js + API)</h3>
+
+                <div class="flow-step">
+                    <div class="number">1</div>
+                    <div class="content">
+                        <div class="title">Kullanıcı Tıklar</div>
+                        <div class="description">Product card üzerindeki "Sepete Ekle" butonuna tıklar. Alpine.js <code>addToCart()</code> metodu tetiklenir.</div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">2</div>
+                    <div class="content">
+                        <div class="title">localStorage Cart ID Kontrolü</div>
+                        <div class="description">Alpine.js, localStorage'dan <code>cart_id</code> okur. Varsa API'ye gönderilir (persistent cart).</div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">3</div>
+                    <div class="content">
+                        <div class="title">API Request</div>
+                        <div class="description"><code>POST /api/cart/add</code> endpoint'ine istek gönderilir. Payload: <code>{ product_id, quantity, cart_id }</code></div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">4</div>
+                    <div class="content">
+                        <div class="title">CartApiController</div>
+                        <div class="description">Gelen isteği alır, ürünü database'den çeker, <span class="tech-term">ShopCartBridge</span> ile stok/fiyat kontrolü yapar.</div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">5</div>
+                    <div class="content">
+                        <div class="title">CartService - Sepet Bulma</div>
+                        <div class="description">
+                            <strong>1. Öncelik:</strong> localStorage'dan gelen <code>cart_id</code> ile sepet bulunur.<br>
+                            <strong>2. Fallback:</strong> Session ID ile sepet bulunur.<br>
+                            <strong>3. Oluşturma:</strong> Yoksa yeni sepet oluşturulur.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">6</div>
+                    <div class="content">
+                        <div class="title">CartService - Item Ekleme</div>
+                        <div class="description">
+                            <strong>Aynı ürün zaten sepette mi?</strong><br>
+                            → Varsa: Quantity artırılır, fiyatlar yeniden hesaplanır.<br>
+                            → Yoksa: Yeni <span class="tech-term">CartItem</span> oluşturulur. Fiyat, vergi, currency conversion hesaplanır.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">7</div>
+                    <div class="content">
+                        <div class="title">Cart Recalculation</div>
+                        <div class="description">Sepet toplamları yeniden hesaplanır: <code>subtotal</code>, <code>tax_amount</code>, <code>total</code>, <code>items_count</code></div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">8</div>
+                    <div class="content">
+                        <div class="title">API Response</div>
+                        <div class="description">Başarılı response döner: <code>{ success: true, data: { cart_id, item_count, total } }</code></div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">9</div>
+                    <div class="content">
+                        <div class="title">Frontend Update</div>
+                        <div class="description">
+                            <strong>1. localStorage Güncelleme:</strong> <code>cart_id</code> kaydedilir.<br>
+                            <strong>2. Event Dispatch:</strong> <code>window.dispatchEvent('cart-updated')</code> ve <code>Livewire.dispatch('cartUpdated')</code><br>
+                            <strong>3. CartWidget Refresh:</strong> Header'daki mini sepet güncellenir (badge + item count).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-diagram">
+                <h3>Shop Pages Add to Cart Flow (Livewire)</h3>
+
+                <div class="flow-step">
+                    <div class="number">1</div>
+                    <div class="content">
+                        <div class="title">Kullanıcı Tıklar</div>
+                        <div class="description">Ürün detay/kategori sayfasında "Sepete Ekle" butonuna tıklar. Livewire <code>AddToCartButton</code> component tetiklenir.</div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">2</div>
+                    <div class="content">
+                        <div class="title">Livewire Component (AddToCartButton)</div>
+                        <div class="description">Server-side işlem başlar. Session/Customer ID otomatik tanınır (Livewire native).</div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">3</div>
+                    <div class="content">
+                        <div class="title">CartService - Direct Call</div>
+                        <div class="description">API kullanmadan doğrudan <code>CartService::addItem()</code> çağrılır. Aynı mantık: sepet bul/oluştur, item ekle, hesapla.</div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">4</div>
+                    <div class="content">
+                        <div class="title">Event Dispatch (Livewire)</div>
+                        <div class="description"><code>$this->dispatch('cartUpdated')</code> ve <code>$this->js('window.dispatchEvent...')</code> ile CartWidget bilgilendirilir.</div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="number">5</div>
+                    <div class="content">
+                        <div class="title">CartWidget Refresh</div>
+                        <div class="description">Livewire CartWidget component <code>#[On('cartUpdated')]</code> ile güncellenir.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CART MODÜLÜNDEKİ DETAYLAR -->
+        <section>
+            <h2><span class="icon">🔧</span> Cart Modülü - Teknik Detaylar</h2>
+
+            <div class="analysis-card">
+                <h3>CartService - İş Mantığı Merkezi</h3>
+                <p><strong>Sorumluluk:</strong> Tüm sepet işlemlerinin merkezi koordinasyonu.</p>
+                <ul>
+                    <li><strong>getCart():</strong> Session veya Customer ID ile mevcut sepeti bulur.</li>
+                    <li><strong>findOrCreateCart():</strong> Sepet bulur veya oluşturur (guest/registered user için).</li>
+                    <li><strong>addItem():</strong> Ürünü sepete ekler. Aynı ürün varsa quantity artırır, yoksa yeni <span class="tech-term">CartItem</span> oluşturur.</li>
+                    <li><strong>updateItemQuantity():</strong> Sepetteki ürün miktarını günceller.</li>
+                    <li><strong>removeItem():</strong> Sepetten ürün kaldırır.</li>
+                    <li><strong>clearCart():</strong> Sepeti tamamen boşaltır.</li>
+                    <li><strong>applyCoupon():</strong> İndirim kuponu uygular.</li>
+                    <li><strong>convertToOrder():</strong> Sepeti siparişe dönüştürür.</li>
+                    <li><strong>mergeGuestCart():</strong> Misafir sepetini kayıtlı kullanıcı sepetine birleştirir (login sonrası).</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>💡 Önemli Özellik:</strong> <code>ensureTenantContext()</code> metodu sayesinde central database'de yanlışlıkla cart sorgusu yapılması engellenir. Tenant context yoksa işlem yapılmaz.</p>
+            </div>
+
+            <div class="analysis-card">
+                <h3>Cart Model - Sepet Verisi</h3>
+                <p><strong>Database Tablosu:</strong> <code>carts</code></p>
+                <ul>
+                    <li><strong>customer_id:</strong> Kayıtlı kullanıcı (nullable - guest için null)</li>
+                    <li><strong>session_id:</strong> Session tracking (guest için zorunlu)</li>
+                    <li><strong>status:</strong> active, converted, abandoned, merged</li>
+                    <li><strong>items_count:</strong> Toplam ürün adedi</li>
+                    <li><strong>subtotal:</strong> Ara toplam (vergi hariç)</li>
+                    <li><strong>tax_amount:</strong> Toplam vergi tutarı</li>
+                    <li><strong>total:</strong> Genel toplam (vergi dahil)</li>
+                    <li><strong>coupon_code + coupon_discount:</strong> İndirim kuponu</li>
+                    <li><strong>billing_address + shipping_address:</strong> Adres bilgileri (JSON)</li>
+                    <li><strong>abandoned_at:</strong> Terk edilme zamanı</li>
+                    <li><strong>recovery_token:</strong> Sepet kurtarma linki için</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>💡 Tenant Protection:</strong> Model'de <code>booted()</code> metodu ile global scope ekleniyor. Tenant context yoksa hiçbir sorgu sonuç döndürmez.</p>
+            </div>
+
+            <div class="analysis-card">
+                <h3>CartItem Model - Polymorphic Items</h3>
+                <p><strong>Database Tablosu:</strong> <code>cart_items</code></p>
+                <ul>
+                    <li><strong>cartable_type + cartable_id:</strong> <span class="tech-term">Polymorphic Relationship</span> <span class="explanation">(Esnek ilişki - ShopProduct, Subscription, Service vb. olabilir)</span></li>
+                    <li><strong>product_id:</strong> Backward compatibility için (eski sistemlerle uyumluluk)</li>
+                    <li><strong>quantity:</strong> Ürün adedi</li>
+                    <li><strong>unit_price:</strong> Birim fiyat</li>
+                    <li><strong>discount_amount:</strong> İndirim miktarı</li>
+                    <li><strong>final_price:</strong> İndirimli fiyat (unit_price - discount)</li>
+                    <li><strong>tax_rate + tax_amount:</strong> Vergi oranı ve tutarı</li>
+                    <li><strong>subtotal:</strong> Ara toplam (final_price × quantity)</li>
+                    <li><strong>total:</strong> Toplam (subtotal + tax_amount)</li>
+                    <li><strong>item_title, item_image, item_sku:</strong> Display bilgileri (snapshot - ürün silinse bile sepette görünür)</li>
+                    <li><strong>original_currency, original_price, conversion_rate:</strong> Para birimi dönüşümü metadata</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>💡 Polymorphic Design:</strong> Bu sayede sadece Shop ürünleri değil, Subscription planları, Service hizmetleri de sepete eklenebilir. Esnek yapı!</p>
+            </div>
+
+            <div class="analysis-card">
+                <h3>CartWidget - Header Mini Sepet (Livewire)</h3>
+                <p><strong>Sorumluluk:</strong> Header'da sepet badge'i ve dropdown menu.</p>
+                <ul>
+                    <li><strong>mount():</strong> Component başlatıldığında sepet yüklenmez (localStorage ile senkron kalmak için).</li>
+                    <li><strong>refreshCart():</strong> <code>@On('cartUpdated')</code> event'i ile tetiklenir. Session ile cart bulup yükler.</li>
+                    <li><strong>refreshCartById():</strong> localStorage'dan gelen <code>cart_id</code> ile direkt yükleme (performanslı).</li>
+                    <li><strong>removeItem():</strong> Mini sepetten ürün silme.</li>
+                    <li><strong>increaseQuantity() / decreaseQuantity():</strong> Mini sepetten miktar değiştirme.</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>⚠️ İyileştirme Fırsatı:</strong> localStorage sync gecikmesi var. <code>@script</code> directive ile sayfa yüklendiğinde cart_id localStorage'dan okunup <code>refreshCartById()</code> tetiklenmeli.</p>
+            </div>
+        </section>
+
+        <!-- 4. SHOP ENTEGRASYONU -->
+        <section>
+            <h2><span class="icon">🔗</span> Shop Modülü Entegrasyonu</h2>
+
+            <div class="analysis-card">
+                <h3>ShopCartBridge - Köprü Servisi</h3>
+                <p><strong>Amaç:</strong> Shop modülü ile Cart modülü arasındaki veri dönüşümü ve iş kurallarını yönetir.</p>
+
+                <p style="margin-top: 15px;"><strong>prepareProductForCart() Metodu:</strong></p>
+                <ul>
+                    <li><strong>Stok Kontrolü:</strong> <code>validateStock()</code> ile stok yeterliliği kontrol edilir. <code>stock_tracking</code> aktifse ve stok yetersizse, <code>allow_backorder</code> kontrolü yapılır.</li>
+                    <li><strong>Display Bilgileri:</strong> <code>getProductDisplayInfo()</code> ile ürün başlığı, resmi, SKU kodu alınır. Snapshot olarak cart_items tablosuna kaydedilir.</li>
+                    <li><strong>Fiyat Bilgileri:</strong> <code>getProductPriceInfo()</code> ile final_price, currency bilgisi alınır.</li>
+                    <li><strong>Vergi Bilgileri:</strong> <code>getProductTaxInfo()</code> ile tax_rate alınır (varsayılan %20 KDV).</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>canAddToCart() Metodu:</strong></p>
+                <ul>
+                    <li>Ürün aktif mi? (<code>is_active</code>)</li>
+                    <li>Stok yeterli mi? (stok takibi varsa)</li>
+                    <li>Backorder izni var mı? (stok yoksa)</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>getCartItemErrors() Metodu:</strong></p>
+                <p>Kullanıcıya gösterilecek hata mesajlarını döner:</p>
+                <ul>
+                    <li>"Ürün şu anda satışta değil."</li>
+                    <li>"Stok yetersiz. Mevcut stok: X"</li>
+                    <li>"Ürün şu anda stokta yok. Sipariş verebilirsiniz, tedarik süresi: X gün."</li>
+                </ul>
+            </div>
+
+            <div class="analysis-card">
+                <h3>AddToCartButton - Livewire Component (Shop Sayfalarında)</h3>
+                <p><strong>Kullanım Yeri:</strong> Ürün detay sayfası, kategori sayfası.</p>
+                <p><strong>Özellikler:</strong></p>
+                <ul>
+                    <li><strong>Quantity Selector:</strong> <code>showQuantity</code> prop'u ile adet seçimi gösterilebilir.</li>
+                    <li><strong>Loading State:</strong> <code>isAdding</code> ile buton disable edilir, spinner gösterilir.</li>
+                    <li><strong>Event Dispatch:</strong> Sepete eklenince hem Livewire event (<code>cartUpdated</code>) hem browser event (<code>cart-updated</code>) gönderilir.</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>🎯 Akış:</strong></p>
+                <ol>
+                    <li>Kullanıcı buton tıklar → <code>addToCart()</code> metodu çağrılır.</li>
+                    <li>Stok kontrolü → <code>ShopCartBridge::canAddToCart()</code></li>
+                    <li>Session/Customer ID alınır.</li>
+                    <li>CartService ile sepet bulunur/oluşturulur.</li>
+                    <li>Bridge ile ürün bilgileri hazırlanır (<code>prepareProductForCart()</code>).</li>
+                    <li>CartService ile item eklenir.</li>
+                    <li>Event dispatch → CartWidget refresh.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 5. HOMEPAGE PRODUCT CARD -->
+        <section>
+            <h2><span class="icon">🏠</span> Homepage Product Card - Alpine.js + API</h2>
+
+            <div class="analysis-card">
+                <h3>Product Card Component</h3>
+                <p><strong>Dosya:</strong> <code>resources/views/components/ixtif/product-card.blade.php</code></p>
+                <p><strong>Kullanım Yeri:</strong> Homepage ürün listesi.</p>
+
+                <p style="margin-top: 15px;"><strong>Özellikler:</strong></p>
+                <ul>
+                    <li><strong>Alpine.js Component:</strong> <code>x-data="productCard()"</code> ile client-side reactive state.</li>
+                    <li><strong>API Call:</strong> <code>addToCart()</code> metodu <code>fetch('/api/cart/add')</code> ile API'ye istek gönderir.</li>
+                    <li><strong>localStorage Sync:</strong> <code>cart_id</code> localStorage'a kaydedilir ve API'ye gönderilir.</li>
+                    <li><strong>Loading/Success States:</strong> <code>loading</code> ve <code>success</code> reactive değişkenleri ile buton durumu kontrol edilir.</li>
+                    <li><strong>Event Dispatch:</strong> API başarılı response dönünce <code>window.dispatchEvent('cart-updated')</code> ve <code>Livewire.dispatch('cartUpdated')</code> gönderilir.</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>🎯 Akış:</strong></p>
+                <ol>
+                    <li>Kullanıcı buton tıklar → Alpine.js <code>addToCart()</code> tetiklenir.</li>
+                    <li>localStorage'dan <code>cart_id</code> okunur.</li>
+                    <li><code>POST /api/cart/add</code> isteği gönderilir (product_id, quantity, cart_id).</li>
+                    <li>API response → başarılıysa <code>cart_id</code> localStorage'a kaydedilir.</li>
+                    <li>Event dispatch → CartWidget refresh.</li>
+                    <li>Success state → 2 saniye sonra reset.</li>
+                </ol>
+            </div>
+
+            <div class="analysis-card">
+                <h3>CartApiController - API Endpoint</h3>
+                <p><strong>Endpoint:</strong> <code>POST /api/cart/add</code></p>
+                <p><strong>Request Validation:</strong></p>
+                <ul>
+                    <li><code>product_id</code> - zorunlu, integer, <code>shop_products</code> tablosunda var mı?</li>
+                    <li><code>quantity</code> - opsiyonel, integer, minimum 1 (varsayılan: 1)</li>
+                    <li><code>variant_id</code> - opsiyonel, integer (varyant desteği)</li>
+                    <li><code>cart_id</code> - opsiyonel, integer (localStorage'dan gelen persistent cart)</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>İşlem Adımları:</strong></p>
+                <ol>
+                    <li>Ürünü database'den çek (<code>ShopProduct::findOrFail()</code>).</li>
+                    <li>Stok kontrolü (<code>ShopCartBridge::canAddToCart()</code>).</li>
+                    <li>Session ID ve Customer ID al.</li>
+                    <li>localStorage'dan gelen <code>cart_id</code> ile sepet bul. Yoksa session ile bul/oluştur.</li>
+                    <li>Bridge ile ürün bilgilerini hazırla (<code>prepareProductForCart()</code>).</li>
+                    <li>CartService ile item ekle.</li>
+                    <li>Cart refresh → item_count hesapla.</li>
+                    <li>JSON response dön: <code>{ success, message, data: { cart_id, item_count, total } }</code></li>
+                </ol>
+
+                <p style="margin-top: 15px;"><strong>💡 Önemli:</strong> API, <code>cart_id</code> parametresini destekliyor. Bu sayede localStorage ile persistent cart çalışıyor. Kullanıcı sayfayı yenileyip sepete ürün eklese bile aynı sepet kullanılıyor.</p>
+            </div>
+        </section>
+
+        <!-- 6. GÜÇLÜ YÖNLER -->
+        <section>
+            <h2><span class="icon">✅</span> Güçlü Yönler</h2>
+
+            <div class="strength">
+                <strong>Polymorphic Design - Esnek Item Sistemi:</strong> CartItem modeli polymorphic relationship kullanıyor. Sadece Shop ürünleri değil, Subscription, Service, Course gibi her türlü item sepete eklenebilir. Gelecekte yeni item türleri eklemek çok kolay.
+            </div>
+
+            <div class="strength">
+                <strong>Currency Conversion - Döviz Dönüşümü:</strong> Ürünler USD/EUR gibi dövizlerle fiyatlandırılabilir. CartService otomatik olarak TRY'ye çevirir. <code>original_currency</code>, <code>original_price</code>, <code>conversion_rate</code> metadata olarak saklanır.
+            </div>
+
+            <div class="strength">
+                <strong>Stock Validation - Stok Kontrolü:</strong> ShopCartBridge servisi ile stok kontrolü yapılıyor. <code>stock_tracking</code>, <code>allow_backorder</code>, <code>lead_time_days</code> gibi özellikler destekleniyor.
+            </div>
+
+            <div class="strength">
+                <strong>Tax Calculation - Vergi Hesaplama:</strong> Her item için ayrı vergi oranı (<code>tax_rate</code>) saklanıyor. Sepet toplamında vergi ayrı ayrı hesaplanıp gösteriliyor.
+            </div>
+
+            <div class="strength">
+                <strong>Guest + Registered User Support - Misafir ve Üye Desteği:</strong> Hem misafir kullanıcılar (session_id ile) hem kayıtlı kullanıcılar (customer_id ile) sepet oluşturabiliyor. Login sonrası <code>mergeGuestCart()</code> ile sepetler birleştiriliyor.
+            </div>
+
+            <div class="strength">
+                <strong>API-First Approach - API Öncelikli Yaklaşım:</strong> Homepage product card API kullanıyor. Bu sayede gelecekte mobile app, SPA, headless commerce gibi farklı frontend'ler kolayca entegre edilebilir.
+            </div>
+
+            <div class="strength">
+                <strong>Event-Driven Updates - Olay Bazlı Güncellemeler:</strong> Sepete ürün eklenince CartWidget otomatik güncelleniyor. Event sistemi sayesinde farklı componentler birbirine bağlı çalışıyor.
+            </div>
+
+            <div class="strength">
+                <strong>localStorage Persistence - Kalıcı Sepet:</strong> <code>cart_id</code> localStorage'da saklanıyor. Kullanıcı sayfayı yenilese bile sepet korunuyor.
+            </div>
+
+            <div class="strength">
+                <strong>Tenant Context Protection - Tenant Koruma:</strong> Cart ve CartItem modellerinde global scope ile tenant context kontrolü yapılıyor. Central database'de yanlışlıkla cart sorgusu yapılması engelleniyor.
+            </div>
+
+            <div class="strength">
+                <strong>Display Data Snapshot - Veri Anlık Görüntüsü:</strong> <code>item_title</code>, <code>item_image</code>, <code>item_sku</code> gibi display bilgileri cart_items tablosuna kaydediliyor. Ürün silinse veya güncellense bile sepette doğru bilgiler gösteriliyor.
+            </div>
+        </section>
+
+        <!-- 7. İYİLEŞTİRME FIRSATLARI -->
+        <section>
+            <h2><span class="icon">⚡</span> İyileştirme Fırsatları</h2>
+
+            <div class="improvement">
+                <strong>Homepage vs Shop Pages - Tutarlılık Eksikliği:</strong> Homepage product card Alpine.js + API kullanırken, shop sayfaları Livewire kullanıyor. İki farklı yaklaşım kafa karıştırıcı. Öneri: Tüm sayfalar API kullansın veya tüm sayfalar Livewire kullansın.
+            </div>
+
+            <div class="improvement">
+                <strong>CartWidget localStorage Sync - Senkronizasyon Gecikmesi:</strong> CartWidget component mount() metodunda sepet yüklenmiyor. localStorage'da <code>cart_id</code> varsa sayfa yüklendiğinde CartWidget otomatik refresh edilmeli. Öneri: <code>@script</code> directive ile DOMContentLoaded event'inde <code>refreshCartById()</code> çağır.
+            </div>
+
+            <div class="improvement">
+                <strong>Event Duplication - Olay Duplikasyonu:</strong> Hem <code>Livewire.dispatch('cartUpdated')</code> hem <code>window.dispatchEvent('cart-updated')</code> kullanılıyor. İki farklı event sistemi gereksiz. Öneri: Tek bir event sistemi seç (Livewire events daha güçlü, Alpine.js ile de uyumlu).
+            </div>
+
+            <div class="improvement">
+                <strong>Error Handling - Hata Yönetimi:</strong> API hata mesajları kullanıcıya <code>alert()</code> ile gösteriliyor. Modern UX için toast notification veya inline error message kullanılmalı. Öneri: Alpine.js notification component veya Livewire flash messages.
+            </div>
+
+            <div class="improvement">
+                <strong>Optimistic Updates - İyimser Güncellemeler:</strong> Sepete ürün eklenince buton "loading" state'e geçiyor ama CartWidget hemen güncellenmiyor. API response beklenene kadar kullanıcı badge güncellemesini görmüyor. Öneri: Optimistic update - item_count anında artırılsın, API fail olursa geri alınsın.
+            </div>
+
+            <div class="improvement">
+                <strong>Cart Abandonment - Terk Edilen Sepet:</strong> <code>abandoned_at</code>, <code>recovery_token</code>, <code>recovery_email_sent_at</code> fieldları var ama recovery sistemi pasif. Öneri: Cron job ile terk edilen sepetler tespit edilip kullanıcıya e-posta gönderilebilir.
+            </div>
+
+            <div class="improvement">
+                <strong>Real-time Stock Check - Gerçek Zamanlı Stok Kontrolü:</strong> Sepete ekleme sırasında stok kontrolü yapılıyor ama sepet sayfasında güncel stok durumu kontrol edilmiyor. Kullanıcı 1 saat önce eklediği ürünü satın almaya çalışırken stok bitmiş olabilir. Öneri: Checkout başlamadan önce <code>checkStock()</code> metodu çağrılmalı.
+            </div>
+
+            <div class="improvement">
+                <strong>Coupon Validation - Kupon Doğrulama:</strong> <code>applyCoupon()</code> metodu var ama kupon validasyonu yok. Kupon kodu kontrol edilmiyor, indirim miktarı direk parametre olarak geliyor. Öneri: Coupon modülü eklenmeli, kupon kodları database'de tutulmalı, geçerlilik, kullanım limiti, minimum tutar gibi kurallar uygulanmalı.
+            </div>
+
+            <div class="improvement">
+                <strong>Performance - N+1 Query Problemi:</strong> Product card'da <code>getFirstMediaWithFallback()</code> her ürün için ayrı media sorgusu yapıyor olabilir. Öneri: Homepage controller'da ürünler çekilirken <code>with('media')</code> ile eager loading yapılmalı.
+            </div>
+
+            <div class="improvement">
+                <strong>Analytics - Sepet Analitiği:</strong> Sepete ekleme, sepetten çıkarma, terk edilme gibi olaylar track edilmiyor. Öneri: Google Analytics veya internal analytics sistemi ile sepet olayları loglanmalı. Hangi ürünler çok sepete ekleniyor ama satın alınmıyor? (conversion funnel analysis)
+            </div>
+        </section>
+
+        <!-- 8. GELİŞTİRME ÖNERİLERİ -->
+        <section>
+            <h2><span class="icon">🚀</span> Geliştirme Önerileri</h2>
+
+            <div class="analysis-card">
+                <h3>Kısa Vadeli İyileştirmeler (1-2 Hafta)</h3>
+                <ol>
+                    <li><strong>CartWidget localStorage sync düzelt:</strong> Sayfa yüklendiğinde localStorage <code>cart_id</code> ile otomatik refresh.</li>
+                    <li><strong>Toast notification ekle:</strong> Alpine.js notification component ile kullanıcıya başarı/hata mesajları göster.</li>
+                    <li><strong>Optimistic update:</strong> Sepete ekleme butonunda anında success state, API fail olursa geri al.</li>
+                    <li><strong>Event sistemi standartlaştır:</strong> Sadece Livewire events kullan veya sadece browser events kullan.</li>
+                    <li><strong>Homepage product card eager loading:</strong> N+1 query problemini çöz.</li>
+                </ol>
+            </div>
+
+            <div class="analysis-card">
+                <h3>Orta Vadeli İyileştirmeler (1-2 Ay)</h3>
+                <ol>
+                    <li><strong>Coupon modülü:</strong> Kupon kodu validasyonu, kullanım limiti, minimum tutar, geçerlilik tarihi.</li>
+                    <li><strong>Real-time stock check:</strong> Checkout öncesi sepetteki tüm ürünlerin stok durumunu kontrol et.</li>
+                    <li><strong>Cart abandonment recovery:</strong> Cron job ile terk edilen sepetler tespit et, recovery e-postası gönder.</li>
+                    <li><strong>Analytics integration:</strong> Google Analytics veya internal analytics ile sepet olaylarını track et.</li>
+                    <li><strong>Homepage/Shop sayfaları tutarlılık:</strong> Tüm sayfalarda aynı add to cart yaklaşımını kullan (API veya Livewire - birini seç).</li>
+                </ol>
+            </div>
+
+            <div class="analysis-card">
+                <h3>Uzun Vadeli İyileştirmeler (3-6 Ay)</h3>
+                <ol>
+                    <li><strong>Wishlist entegrasyonu:</strong> Sepet ile wishlist arasında ürün taşıma (<code>moved_from_wishlist</code> field var ama kullanılmıyor).</li>
+                    <li><strong>Cart sharing:</strong> Kullanıcı sepetini başkasıyla paylaşabilsin (recovery_token ile public cart URL).</li>
+                    <li><strong>Saved carts:</strong> Kullanıcı birden fazla sepet oluşturabilsin ("Ofis Alışverişi", "Ev Alışverişi" gibi).</li>
+                    <li><strong>Bulk operations:</strong> Sepetteki tüm ürünleri hızlıca temizle, wishlist'e taşı, başka sepete kopyala.</li>
+                    <li><strong>Subscription support:</strong> Subscription planları için recurring cart (aylık/yıllık otomatik yenileme).</li>
+                    <li><strong>Mobile app API:</strong> Tüm cart işlemleri için RESTful API dokümantasyonu ve versiyonlama.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 9. SONUÇ -->
+        <section>
+            <h2><span class="icon">📊</span> Genel Değerlendirme</h2>
+
+            <div class="highlight-box">
+                <div class="title">Sistem Sağlamlığı: 8/10</div>
+                <p><strong>Güçlü Yönler:</strong> Polymorphic design, currency conversion, stock validation, tax calculation, guest/registered user support, event-driven updates.</p>
+                <p><strong>İyileştirme Alanları:</strong> CartWidget localStorage sync, event duplication, error handling, optimistic updates, coupon validation, analytics.</p>
+            </div>
+
+            <div class="highlight-box">
+                <div class="title">Kod Kalitesi: 7.5/10</div>
+                <p><strong>İyi Yanlar:</strong> Modüler yapı, service pattern, bridge pattern, tenant protection, display data snapshot.</p>
+                <p><strong>İyileştirilmesi Gerekenler:</strong> Homepage vs Shop tutarlılığı, N+1 query problemi, error handling, analytics eksikliği.</p>
+            </div>
+
+            <div class="highlight-box">
+                <div class="title">Kullanıcı Deneyimi: 7/10</div>
+                <p><strong>İyi Yanlar:</strong> localStorage persistence, mini cart widget, loading states, success feedback.</p>
+                <p><strong>İyileştirilmesi Gerekenler:</strong> Toast notifications, optimistic updates, real-time stock check, cart abandonment recovery.</p>
+            </div>
+
+            <div class="highlight-box">
+                <div class="title">Ölçeklenebilirlik: 9/10</div>
+                <p><strong>Neden Yüksek?</strong> API-first approach, polymorphic design, multi-tenant architecture, event-driven updates. Gelecekte mobile app, SPA, headless commerce kolayca entegre edilebilir.</p>
+            </div>
+
+            <div class="highlight-box">
+                <div class="title">Öncelikli Aksiyonlar</div>
+                <ol>
+                    <li>CartWidget localStorage sync düzelt (en kritik - sayfa yenilemede sepet badge'i kaybolmasın).</li>
+                    <li>Toast notification ekle (kullanıcı deneyimi - alert() çirkin).</li>
+                    <li>Homepage/Shop tutarlılığı sağla (kod kalitesi - iki yaklaşım kafa karıştırıcı).</li>
+                    <li>Real-time stock check ekle (iş mantığı - checkout'ta stok bitmiş hatası almasın).</li>
+                    <li>Analytics integration (veri odaklı karar - hangi ürünler sepete ekleniyor ama satın alınmıyor?).</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu • 2025-12-02
+        </footer>
+    </div>
+</body>
+</html>

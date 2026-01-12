@@ -1,1 +1,118 @@
-v1/index.html
+<!doctype html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Muzibu Subscription & Payment Analizi - 2025-12-22</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.14/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { background: radial-gradient(circle at 10% 20%, rgba(56,189,248,0.08), transparent 30%), radial-gradient(circle at 90% 10%, rgba(249,115,22,0.1), transparent 25%), #0b1220; }
+    .card { background: rgba(15,23,42,0.75); border: 1px solid rgba(148,163,184,0.15); box-shadow: 0 20px 60px rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
+  </style>
+</head>
+<body class="h-full text-slate-100">
+  <div class="max-w-6xl mx-auto px-4 py-10 space-y-10">
+    <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <p class="text-sm uppercase tracking-[0.3em] text-slate-400">muzibu.com.tr · subscription / payment / cart</p>
+        <h1 class="text-3xl sm:text-4xl font-semibold text-white">Muzibu üyelik ve kredi kartı akış analizi</h1>
+      </div>
+      <div class="px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-200 text-sm font-medium">22 Aralık 2025</div>
+    </header>
+
+    <section class="grid gap-4 md:grid-cols-2">
+      <div class="card rounded-2xl p-6">
+        <h3 class="text-lg font-semibold text-emerald-300 mb-2">📝 Basit Anlatım (Herkes İçin)</h3>
+        <p class="text-slate-200 leading-relaxed">Kartla ödeme PayTR üzerinden alınıyor; PayTR başarı dönüşü geldiği anda sipariş otomatik tamamlanıyor ve üyeliğin süresi uzuyor, ekstra onaya gerek kalmıyor. Ancak ödeme alınmadan oluşturulan bekleyen abonelik kayıtları deneme hakkını yanlış kilitleyebiliyor ve bazı premium kontrolleri veriyi yanlış yerden okuduğu için üyeyi yine de kısıtlayabiliyor.</p>
+      </div>
+      <div class="card rounded-2xl p-6">
+        <h3 class="text-lg font-semibold text-sky-300 mb-2">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+        <ul class="space-y-2 text-slate-200 text-sm leading-relaxed">
+          <li>PayTR callback: <span class="text-slate-100">Modules/Payment/App/Services/PayTRCallbackService::handleSuccessPayment()</span> → <span class="text-slate-100">Order::onPaymentCompleted()</span> → <span class="text-slate-100">Order::activateSubscriptionItems()</span> mevcut aboneliği uzatıyor veya yeni abonelik oluşturuyor.</li>
+          <li>CSRF istisnası aktif (<span class="text-slate-100">payment/callback/*</span>), callback çalıştığında <span class="text-slate-100">SubscriptionObserver</span> cache temizliyor; premium cache 5 dakikalık TTL ile güncelleniyor.</li>
+          <li>Checkout akışında <span class="text-slate-100">CheckoutPage::createSubscriptionsFromOrder()</span> ödeme öncesi <span class="text-slate-100">status=pending_payment</span> abonelik kaydı açıyor; ödeme sonrası aynı sipariş için <span class="text-slate-100">activateSubscriptionItems()</span> yeni aktif kayıt oluşturuyor, mevcut bekleyen kayıt güncellenmiyor.</li>
+          <li>Premium middleware (<span class="text-slate-100">Modules/Muzibu/app/Http/Middleware/CheckPremiumSubscription.php</span>) central DB ve <span class="text-slate-100">ends_at</span> kolonunu kullanıyor; gerçek veriler tenant DB ve <span class="text-slate-100">current_period_end</span> alanında tutuluyor.</li>
+          <li>PayTR Direct servisinde (<span class="text-slate-100">PayTRDirectService::prepareDirectPayment()</span>) <span class="text-slate-100">merchant_oid</span> için olmayan <span class="text-slate-100">transaction_id</span> alanı kullanılıyor; callback eşlemesi yapılamıyor.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card rounded-2xl p-6 space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-200 text-xl">⚡</div>
+        <div>
+          <h2 class="text-xl font-semibold text-white">Kredi kartı sonrası üyelik uzaması</h2>
+          <p class="text-slate-300 text-sm">PayTR başarı callback'i otomatik olarak siparişi tamamlıyor ve abonelik süresini anında güncelliyor.</p>
+        </div>
+      </div>
+      <ul class="grid gap-3 md:grid-cols-2 text-sm text-slate-200">
+        <li class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-400/30">
+          <p class="font-semibold text-emerald-200 mb-1">Akış</p>
+          <p>PayTR callback → ödeme <span class="text-white">completed</span> → <span class="text-white">Order::onPaymentCompleted</span> çalışır → <span class="text-white">activateSubscriptionItems</span> mevcut <span class="text-white">current_period_end</span> üzerine gün ekler veya yeni abonelik açar.</p>
+        </li>
+        <li class="p-4 rounded-xl bg-sky-500/10 border border-sky-400/30">
+          <p class="font-semibold text-sky-200 mb-1">Hız</p>
+          <p>Callback yanıtı alındığı anda çalışıyor; manuel onay ya da bekleme yok. Tek bağımlılık PayTR'in <span class="text-white">merchant_oid</span> ile dönmesi ve <span class="text-white">payment/callback/paytr</span> endpoint'inin erişilebilir olması.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="grid gap-4 lg:grid-cols-3">
+      <div class="card rounded-2xl p-6 space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-200 text-lg">⚠️</div>
+          <div>
+            <h3 class="text-lg font-semibold text-white">Bekleyen abonelikler trial'ı kilitliyor</h3>
+            <p class="text-slate-300 text-sm">Ödeme alınmadan açılan pending kayıtlar, ödeme başarısız olsa bile "trial kullandı" izini bırakıyor.</p>
+          </div>
+        </div>
+        <ul class="text-sm text-slate-200 space-y-2">
+          <li><strong>Sebep:</strong> <span class="text-white">CheckoutPage::createSubscriptionsFromOrder()</span> ödeme öncesi <span class="text-white">has_trial=true</span> abonelik kaydediyor.</li>
+          <li><strong>Sonuç:</strong> <span class="text-white">Subscription::userHasUsedTrial()</span> status filtresi olmadan çalıştığı için başarısız/iptal siparişlerde bile trial hakkı tüketilmiş görünüyor; aynı plan için ikinci aktif kayıt da açılabiliyor.</li>
+          <li><strong>Öneri:</strong> Pending kaydı hiç oluşturma ya da ödeme sonrası bu kaydı <span class="text-white">active</span>'e çevir; trial kullanım kontrolünde <span class="text-white">status IN (active,trial)</span> filtresi ekle.</li>
+        </ul>
+      </div>
+
+      <div class="card rounded-2xl p-6 space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-lg bg-red-500/20 border border-red-400/40 flex items-center justify-center text-red-200 text-lg">🚫</div>
+          <div>
+            <h3 class="text-lg font-semibold text-white">Premium middleware yanlış DB'yi okuyor</h3>
+            <p class="text-slate-300 text-sm">API'deki premium kontrolü central DB'deki <span class="text-white">subscriptions.ends_at</span> alanını sorguluyor.</p>
+          </div>
+        </div>
+        <ul class="text-sm text-slate-200 space-y-2">
+          <li><strong>Sebep:</strong> <span class="text-white">Modules/Muzibu/app/Http/Middleware/CheckPremiumSubscription.php</span> → <span class="text-white">DB::connection('central')</span> ve <span class="text-white">ends_at</span> sütunu kullanıyor.</li>
+          <li><strong>Sonuç:</strong> Muzibu tenant DB'deki (<span class="text-white">current_period_end</span>) gerçek abonelikler görülmüyor; AI/play endpoint'leri premium kullanıcıyı dahi 403 ile çevirebilir.</li>
+          <li><strong>Öneri:</strong> Tenant bağlantısını ve <span class="text-white">User::isPremiumOrTrial()</span> / <span class="text-white">current_period_end &gt; now()</span> kontrolünü kullanacak şekilde middleware'i güncelle.</li>
+        </ul>
+      </div>
+
+      <div class="card rounded-2xl p-6 space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-lg bg-orange-500/20 border border-orange-400/40 flex items-center justify-center text-orange-200 text-lg">🧾</div>
+          <div>
+            <h3 class="text-lg font-semibold text-white">PayTR Direct merchant_oid boş kalıyor</h3>
+            <p class="text-slate-300 text-sm">Direct (kart formu) entegrasyonu <span class="text-white">transaction_id</span> alanını kullanıyor, tablo ve modelde bu alan yok.</p>
+          </div>
+        </div>
+        <ul class="text-sm text-slate-200 space-y-2">
+          <li><strong>Sebep:</strong> <span class="text-white">PayTRDirectService::prepareDirectPayment()</span> ve <span class="text-white">PayTRPaymentService</span> <span class="text-white">merchant_oid</span> için olmayan <span class="text-white">->transaction_id</span>'yi alıyor.</li>
+          <li><strong>Sonuç:</strong> Direct ödeme başlatılırsa PayTR'e boş/yanlış <span class="text-white">merchant_oid</span> gider; callback <span class="text-white">gateway_transaction_id</span> ile eşleşmez, abonelik uzamaz.</li>
+          <li><strong>Öneri:</strong> Direct akışını devre dışı bırak ya da <span class="text-white">payment_number</span> / <span class="text-white">gateway_transaction_id</span> ile tutarlı <span class="text-white">merchant_oid</span> üretip callback aramasını buna göre yap.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card rounded-2xl p-6 space-y-3">
+      <h2 class="text-xl font-semibold text-white">Öncelikli aksiyonlar</h2>
+      <ol class="list-decimal list-inside text-slate-200 space-y-2 text-sm">
+        <li>Checkout'taki önceden oluşturulan <span class="text-white">pending_payment</span> abonelikleri kaldır veya ödeme sonrası aktif hale getir; trial kullanım kontrolünü status filtresiyle düzelt.</li>
+        <li>Premium middleware'i tenant DB ve <span class="text-white">current_period_end</span> alanına geçir; API 403 hataları için bir health test ekle.</li>
+        <li>PayTR Direct için <span class="text-white">merchant_oid</span> üretimini <span class="text-white">payment_number/gateway_transaction_id</span> bazlı yap ya da bu modu kapatıp iframe akışını tek kaynak olarak tut.</li>
+        <li>Callback loglarını (success/fail) gözlemleyip eksik dönüş var mı kontrol et; gerekirse <span class="text-white">payment/callback/paytr</span> için uptime monitörü ekle.</li>
+      </ol>
+    </section>
+  </div>
+</body>
+</html>

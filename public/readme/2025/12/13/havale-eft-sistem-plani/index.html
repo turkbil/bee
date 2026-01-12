@@ -1,1 +1,197 @@
-v3/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banka Settings - Copy Paste</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 p-8">
+    <div class="max-w-3xl mx-auto space-y-8">
+
+        <h1 class="text-2xl font-bold text-white mb-8">Banka Settings - Copy Paste Format</h1>
+
+        <!-- GENEL -->
+        <div class="bg-gray-800 rounded-lg p-6">
+            <h2 class="text-lg font-bold text-blue-400 mb-4">Genel Havale Ayarlari</h2>
+            <table class="w-full text-sm">
+                <tr class="border-b border-gray-700">
+                    <td class="py-2 text-gray-400">Label</td>
+                    <td class="py-2 font-mono">Havale/EFT Aktif</td>
+                </tr>
+                <tr class="border-b border-gray-700">
+                    <td class="py-2 text-gray-400">Key</td>
+                    <td class="py-2 font-mono text-green-400">payment_bank_transfer_enabled</td>
+                </tr>
+                <tr class="border-b border-gray-700">
+                    <td class="py-2 text-gray-400">Type</td>
+                    <td class="py-2 font-mono">select</td>
+                </tr>
+                <tr>
+                    <td class="py-2 text-gray-400">Options</td>
+                    <td class="py-2 font-mono">["Kapali", "Acik"]</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6">
+            <table class="w-full text-sm">
+                <tr class="border-b border-gray-700">
+                    <td class="py-2 text-gray-400">Label</td>
+                    <td class="py-2 font-mono">Bildirim E-posta</td>
+                </tr>
+                <tr class="border-b border-gray-700">
+                    <td class="py-2 text-gray-400">Key</td>
+                    <td class="py-2 font-mono text-green-400">payment_bank_transfer_notify_email</td>
+                </tr>
+                <tr class="border-b border-gray-700">
+                    <td class="py-2 text-gray-400">Type</td>
+                    <td class="py-2 font-mono">email</td>
+                </tr>
+                <tr>
+                    <td class="py-2 text-gray-400">Placeholder</td>
+                    <td class="py-2 font-mono">muhasebe@sirket.com</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6">
+            <table class="w-full text-sm">
+                <tr class="border-b border-gray-700">
+                    <td class="py-2 text-gray-400">Label</td>
+                    <td class="py-2 font-mono">Havale Aciklamasi</td>
+                </tr>
+                <tr class="border-b border-gray-700">
+                    <td class="py-2 text-gray-400">Key</td>
+                    <td class="py-2 font-mono text-green-400">payment_bank_transfer_description</td>
+                </tr>
+                <tr>
+                    <td class="py-2 text-gray-400">Type</td>
+                    <td class="py-2 font-mono">textarea</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- BANKA 1 -->
+        <div class="bg-gray-800 rounded-lg p-6">
+            <h2 class="text-lg font-bold text-green-400 mb-4">Banka 1</h2>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 1 - Adi</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_1_name</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 1 - Hesap Sahibi</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_1_holder</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 1 - IBAN</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_1_iban</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 1 - Sube</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_1_branch</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 1 - Aktif</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_1_active</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">select</span></p>
+                    <p><span class="text-gray-500">Options:</span> <span class="font-mono">["Kapali", "Acik"]</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BANKA 2 -->
+        <div class="bg-gray-800 rounded-lg p-6">
+            <h2 class="text-lg font-bold text-yellow-400 mb-4">Banka 2</h2>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 2 - Adi</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_2_name</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 2 - Hesap Sahibi</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_2_holder</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 2 - IBAN</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_2_iban</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 2 - Sube</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_2_branch</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 2 - Aktif</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_2_active</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">select</span></p>
+                    <p><span class="text-gray-500">Options:</span> <span class="font-mono">["Kapali", "Acik"]</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BANKA 3 -->
+        <div class="bg-gray-800 rounded-lg p-6">
+            <h2 class="text-lg font-bold text-purple-400 mb-4">Banka 3</h2>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 3 - Adi</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_3_name</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 3 - Hesap Sahibi</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_3_holder</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 3 - IBAN</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_3_iban</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 3 - Sube</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_3_branch</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">text</span></p>
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded">
+                    <p><span class="text-gray-500">Label:</span> <span class="text-white">Banka 3 - Aktif</span></p>
+                    <p><span class="text-gray-500">Key:</span> <span class="text-green-400 font-mono">payment_bank_3_active</span></p>
+                    <p><span class="text-gray-500">Type:</span> <span class="font-mono">select</span></p>
+                    <p><span class="text-gray-500">Options:</span> <span class="font-mono">["Kapali", "Acik"]</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOPLAM -->
+        <div class="bg-blue-900/50 rounded-lg p-4 text-center">
+            <p class="text-lg">Toplam: <strong class="text-green-400">18 setting</strong></p>
+            <p class="text-sm text-gray-400">3 genel + (5 x 3 banka)</p>
+        </div>
+
+    </div>
+</body>
+</html>

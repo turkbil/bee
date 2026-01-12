@@ -1,1 +1,427 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI Free Imagination Mode - Uygulama Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600/20 border border-emerald-500 rounded-full mb-4">
+                <i class="fas fa-check-circle text-emerald-400"></i>
+                <span class="text-emerald-300 text-sm font-medium">Uygulama Tamamland&#305;</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                Leonardo AI: Free Imagination Mode
+            </h1>
+            <p class="text-gray-400 text-lg">Tenant 2 (ixtif.com) + Tenant 1001 (muzibu.com)</p>
+            <p class="text-gray-500 text-sm mt-2">26 Aral&#305;k 2025 - v2</p>
+        </header>
+
+        <!-- Basit Anlatim -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-lightbulb"></i>
+                Basit Anlat&#305;m (Herkes Icin)
+            </h2>
+            <div class="space-y-4 text-gray-300">
+                <p>
+                    <strong>Ne Yap&#305;ld&#305;?</strong> Leonardo AI gorsel uretim sistemi tamamen yenilendi. Art&#305;k AI kendi hayal gucunu kullan&#305;yor, biz yonlendirmiyoruz.
+                </p>
+                <p>
+                    <strong>Onceki Sistem:</strong> "Forklift" yaz&#305;nca sadece forklift gorseli, "Rock" yaz&#305;nca sadece rock muzik gorseli uretiyordu. Her seyi biz belirliyorduk.
+                </p>
+                <p>
+                    <strong>Yeni Sistem:</strong> Sadece basl&#305;g&#305; ver, AI ne hayal ederse onu uretsin. "Sar&#305;lma" yaz&#305;nca sar&#305;lan insanlar olabilir, "Yalniz Kurt" yaz&#305;nca kar&#305;n icinde bir kurt olabilir.
+                </p>
+                <div class="bg-slate-800/50 rounded-lg p-4 mt-4">
+                    <p class="text-emerald-300 font-semibold mb-2">Ozel Durumlar:</p>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                        <li>Anlams&#305;z basliklar ("a", "asdf") &rarr; Abstract veya muzik temali gorsel</li>
+                        <li>Mustehcen basliklar &rarr; Abstract veya muzik temali gorsel</li>
+                        <li>Sadece c&#305;plaklik yasak (NSFW)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-code"></i>
+                Teknik Detaylar (Gelistiriciler Icin)
+            </h2>
+            <div class="space-y-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-blue-300 mb-2">Degistirilen Dosyalar:</h3>
+                        <ul class="text-sm text-gray-400 space-y-1 font-mono">
+                            <li>app/Services/Media/LeonardoAIService.php</li>
+                            <li>Modules/Muzibu/app/Jobs/GenerateSongCover.php</li>
+                            <li>Modules/Muzibu/app/Jobs/GenerateGenericMuzibyCover.php</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-blue-300 mb-2">Etkilenen Tenant'lar:</h3>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li><i class="fas fa-industry text-orange-400 mr-2"></i>Tenant 2 - ixtif.com (Blog gorselleri)</li>
+                            <li><i class="fas fa-music text-purple-400 mr-2"></i>Tenant 1001 - muzibu.com (Sarki/Album/Genre)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Degisiklik Detaylari -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <i class="fas fa-code-branch text-cyan-400"></i>
+                Degisiklik Detaylar&#305;
+            </h2>
+
+            <!-- LeonardoAIService.php -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-cyan-600/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-file-code text-cyan-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">LeonardoAIService.php</h3>
+                        <span class="text-xs text-gray-500">app/Services/Media/</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- buildDynamicPrompt -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="text-sm font-semibold text-yellow-300 mb-2">
+                            <i class="fas fa-function mr-1"></i>
+                            buildDynamicPrompt() - FREE MODE
+                        </h4>
+                        <div class="text-xs text-gray-400 space-y-2">
+                            <p class="text-red-400">
+                                <i class="fas fa-times-circle mr-1"></i>
+                                <strong>DISABLED:</strong> buildIndustrialDynamicPrompt() (Tenant 2)
+                            </p>
+                            <p class="text-red-400">
+                                <i class="fas fa-times-circle mr-1"></i>
+                                <strong>DISABLED:</strong> buildMusicDynamicPrompt() (Tenant 1001)
+                            </p>
+                            <p class="text-emerald-400">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                <strong>ACTIVE:</strong> buildFreeImaginationPrompt() (Tum tenant'lar)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- buildFreeImaginationPrompt -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="text-sm font-semibold text-emerald-300 mb-2">
+                            <i class="fas fa-plus-circle mr-1"></i>
+                            buildFreeImaginationPrompt() - YENI METOD
+                        </h4>
+                        <ul class="text-xs text-gray-400 space-y-1">
+                            <li>&bull; GPT-4 ile 11 alt&#305;n kurala gore zenginlestirir</li>
+                            <li>&bull; Hicbir yonlendirme, kisitlama YOK</li>
+                            <li>&bull; Random style secer (cinematic, dynamic, film, moody, vibrant, neutral)</li>
+                        </ul>
+                    </div>
+
+                    <!-- createGeneration -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="text-sm font-semibold text-yellow-300 mb-2">
+                            <i class="fas fa-function mr-1"></i>
+                            createGeneration() - MINIMAL NEGATIVE PROMPT
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <p class="text-red-400 font-semibold mb-1">Eski (DISABLED):</p>
+                                <p class="text-gray-500 line-through">text, letters, words, numbers, Toyota, Yale, Linde, Crown... (50+ kelime)</p>
+                            </div>
+                            <div>
+                                <p class="text-emerald-400 font-semibold mb-1">Yeni (ACTIVE):</p>
+                                <p class="text-gray-300">nsfw, nude, naked, porn, explicit sexual content</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- enhanceWithGPT4FreeMode -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="text-sm font-semibold text-emerald-300 mb-2">
+                            <i class="fas fa-robot mr-1"></i>
+                            enhanceWithGPT4FreeMode() - GPT-4 PROMPT
+                        </h4>
+                        <div class="bg-slate-800 rounded p-3 text-xs font-mono text-gray-300">
+                            <p class="text-purple-300 mb-2">System Prompt:</p>
+                            <p>Baslik ne diyorsa ONU hayal et. Tamamen serbest ol.</p>
+                            <p class="mt-2">OZEL DURUMLAR:</p>
+                            <p>- Anlamsiz baslik &rarr; abstract/muzik temali</p>
+                            <p>- Mustehcen baslik &rarr; abstract/muzik temali</p>
+                            <p class="mt-2">11 ALTIN KURAL: Photo Type, Subject, Environment...</p>
+                        </div>
+                    </div>
+
+                    <!-- generateFreeImagination -->
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="text-sm font-semibold text-emerald-300 mb-2">
+                            <i class="fas fa-plus-circle mr-1"></i>
+                            generateFreeImagination() - YENI METOD (Muzibu icin)
+                        </h4>
+                        <ul class="text-xs text-gray-400 space-y-1">
+                            <li>&bull; Sarki/Album/Genre/Radio/Playlist icin</li>
+                            <li>&bull; Sadece baslik al&#305;r, GPT-4 zenginlestirir</li>
+                            <li>&bull; createGenerationFreeMode() kullan&#305;r</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GenerateSongCover.php -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-purple-600/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-music text-purple-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">GenerateSongCover.php</h3>
+                        <span class="text-xs text-gray-500">Modules/Muzibu/app/Jobs/</span>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-400 space-y-2">
+                    <p class="text-red-400">
+                        <i class="fas fa-times-circle mr-1"></i>
+                        <strong>KALDIRILDI:</strong> AIPromptEnhancer import ve kullan&#305;m&#305;
+                    </p>
+                    <p class="text-emerald-400">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        <strong>EKLENDI:</strong> generateFreeImagination($prompt) cagr&#305;s&#305;
+                    </p>
+                </div>
+            </div>
+
+            <!-- GenerateGenericMuzibyCover.php -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-pink-600/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-compact-disc text-pink-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">GenerateGenericMuzibyCover.php</h3>
+                        <span class="text-xs text-gray-500">Modules/Muzibu/app/Jobs/</span>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-400 space-y-2">
+                    <p class="text-red-400">
+                        <i class="fas fa-times-circle mr-1"></i>
+                        <strong>KALDIRILDI:</strong> AIPromptEnhancer import ve kullan&#305;m&#305;
+                    </p>
+                    <p class="text-emerald-400">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        <strong>EKLENDI:</strong> generateFreeImagination($prompt) cagr&#305;s&#305;
+                    </p>
+                    <p class="text-gray-500 text-xs mt-2">
+                        Etkilenen icerik turleri: Album, Genre, Sector, Radio, Playlist
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Onceki vs Sonraki -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <i class="fas fa-exchange-alt text-yellow-400"></i>
+                Onceki vs Sonraki Karsilastirma
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-800">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-gray-400">Ozellik</th>
+                            <th class="px-4 py-3 text-left text-red-400">Onceki Sistem</th>
+                            <th class="px-4 py-3 text-left text-emerald-400">Yeni Sistem</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-medium">Prompt Yontemi</td>
+                            <td class="px-4 py-3 text-red-300">Tenant-spesifik sabit sablonlar</td>
+                            <td class="px-4 py-3 text-emerald-300">GPT-4 serbest hayal gucu</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-medium">Insan Gorseli</td>
+                            <td class="px-4 py-3 text-red-300">Zorla ekleniyor (musician, hands, fingers)</td>
+                            <td class="px-4 py-3 text-emerald-300">AI karar veriyor (basliga gore)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-medium">Negative Prompt</td>
+                            <td class="px-4 py-3 text-red-300">50+ kelime (text, logos, brands...)</td>
+                            <td class="px-4 py-3 text-emerald-300">5 kelime (sadece NSFW)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-medium">Tenant 2 (ixtif)</td>
+                            <td class="px-4 py-3 text-red-300">buildIndustrialDynamicPrompt</td>
+                            <td class="px-4 py-3 text-emerald-300">buildFreeImaginationPrompt</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-medium">Tenant 1001 (muzibu)</td>
+                            <td class="px-4 py-3 text-red-300">buildMusicDynamicPrompt</td>
+                            <td class="px-4 py-3 text-emerald-300">buildFreeImaginationPrompt</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-medium">Anlamsiz Baslik</td>
+                            <td class="px-4 py-3 text-red-300">Hata veya bos gorsel</td>
+                            <td class="px-4 py-3 text-emerald-300">Abstract/muzik temali gorsel</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-medium">Eski Kod</td>
+                            <td class="px-4 py-3 text-red-300">-</td>
+                            <td class="px-4 py-3 text-emerald-300">Yorum satirinda (geri donulebilir)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Gorsel Uretilen Icerikler -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <i class="fas fa-images text-purple-400"></i>
+                Etkilenen Icerik Turleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Tenant 2 -->
+                <div class="bg-orange-900/20 border border-orange-800 rounded-xl p-6">
+                    <h3 class="font-bold text-orange-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-industry"></i>
+                        Tenant 2 - ixtif.com
+                    </h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-blog text-orange-300"></i>
+                            <span class="text-gray-300">Blog gorselleri (generateForBlog)</span>
+                        </li>
+                    </ul>
+                    <p class="text-xs text-gray-500 mt-4">
+                        BlogAIContentWriter.php &rarr; LeonardoAIService::generateForBlog()
+                    </p>
+                </div>
+
+                <!-- Tenant 1001 -->
+                <div class="bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+                    <h3 class="font-bold text-purple-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-music"></i>
+                        Tenant 1001 - muzibu.com
+                    </h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-music text-purple-300"></i>
+                            <span class="text-gray-300">Sarki (Song)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-compact-disc text-purple-300"></i>
+                            <span class="text-gray-300">Album</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-guitar text-purple-300"></i>
+                            <span class="text-gray-300">Tur (Genre)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-building text-purple-300"></i>
+                            <span class="text-gray-300">Sektor (Sector)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-broadcast-tower text-purple-300"></i>
+                            <span class="text-gray-300">Radyo (Radio)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-list text-purple-300"></i>
+                            <span class="text-gray-300">Calma Listesi (Playlist)</span>
+                        </li>
+                    </ul>
+                    <p class="text-xs text-gray-500 mt-4">
+                        GenerateSongCover.php + GenerateGenericMuzibyCover.php
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- GPT-4 System Prompt -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <i class="fas fa-robot text-cyan-400"></i>
+                GPT-4 System Prompt (11 Altin Kural)
+            </h2>
+
+            <div class="bg-slate-800 rounded-xl p-6 font-mono text-sm">
+                <p class="text-purple-300 mb-4">// enhanceWithGPT4FreeMode() icindeki system prompt:</p>
+                <div class="text-gray-300 space-y-2">
+                    <p>Sen profesyonel bir fotograf yonetmenisin.</p>
+                    <p>Baslik ne diyorsa ONU hayal et. Tamamen serbest ol.</p>
+                    <p class="mt-4 text-yellow-300">OZEL DURUMLAR:</p>
+                    <p>- Anlamsiz baslik (a, asdf, xxx) &rarr; abstract/muzik temali</p>
+                    <p>- Mustehcen baslik &rarr; abstract/muzik temali</p>
+                    <p class="mt-4 text-cyan-300">11 ALTIN KURAL:</p>
+                    <ol class="list-decimal list-inside space-y-1 text-gray-400">
+                        <li>Photo Type (Photo of, Editorial photograph of, Cinematic shot of)</li>
+                        <li>Subject (basliktan ilham al)</li>
+                        <li>Environment (sen sec)</li>
+                        <li>Camera Angle (sen sec)</li>
+                        <li>Composition (sen sec)</li>
+                        <li>Lighting (sen sec)</li>
+                        <li>Camera + Lens (Canon R5, Sony A7R vs.)</li>
+                        <li>Film Stock (Kodak Portra, Fuji Velvia vs.)</li>
+                        <li>Imperfections (lens dust, grain, vignette)</li>
+                        <li>Mood (sen sec)</li>
+                        <li>Post-Processing (sen sec)</li>
+                    </ol>
+                    <p class="mt-4 text-emerald-300">OUTPUT: Tek paragraf Ingilizce prompt. Max 150 kelime.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Geri Donus -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-6 flex items-center gap-2">
+                <i class="fas fa-undo"></i>
+                Geri Donus (Rollback)
+            </h2>
+
+            <div class="bg-yellow-900/20 border border-yellow-800 rounded-xl p-6">
+                <p class="text-gray-300 mb-4">
+                    Eski sistem silinmedi, yorum satirina alindi. Geri donmek icin:
+                </p>
+                <div class="bg-slate-800 rounded-lg p-4 font-mono text-xs">
+                    <p class="text-gray-500">// LeonardoAIService.php - buildDynamicPrompt() icinde:</p>
+                    <p class="text-red-400 mt-2">// Yorum satirindan cikar:</p>
+                    <p class="text-gray-300">if ($tenantId == 2) {'{'}</p>
+                    <p class="text-gray-300 pl-4">return $this-&gt;buildIndustrialDynamicPrompt($title);</p>
+                    <p class="text-gray-300">{'}'}</p>
+                    <p class="text-emerald-400 mt-2">// Yorum satirina al:</p>
+                    <p class="text-gray-300">return $this-&gt;buildFreeImaginationPrompt($title);</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-700 text-center text-gray-500 text-sm">
+            <p>
+                <i class="fas fa-robot mr-1"></i>
+                Claude AI tarafindan olusturuldu | 26 Aralik 2025
+            </p>
+            <p class="mt-2">
+                <a href="../v1/" class="text-cyan-400 hover:underline">
+                    <i class="fas fa-history mr-1"></i>
+                    Onceki versiyon (v1 - Analiz Raporu)
+                </a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

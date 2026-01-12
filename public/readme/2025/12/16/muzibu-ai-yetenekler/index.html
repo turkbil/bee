@@ -1,1 +1,440 @@
-v3/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu AI Assistant - Yetkilendirme Sistemi v3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-16">
+        <!-- Header -->
+        <div class="mb-16 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/20 border border-orange-500/30 rounded-full mb-6">
+                <span class="text-orange-400 text-sm font-medium">🔒 v3 - Auth & Premium Requirement Added</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Muzibu AI Assistant
+            </h1>
+            <p class="text-xl text-slate-400 mb-8">
+                Yetenekler & Yetkilendirme Sistemi Raporu (v3)
+            </p>
+        </div>
+
+        <!-- YETKİLENDİRME SİSTEMİ -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                <span class="text-orange-400">🔒</span>
+                Yetkilendirme Sistemi
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <!-- Guest Users -->
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-red-400 mb-4">❌ Guest Users</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="text-emerald-400">✓ Subscription planları sorabilir</div>
+                        <div class="text-emerald-400">✓ Fiyat bilgisi alabilir</div>
+                        <div class="text-emerald-400">✓ Genel sorular sorabilir</div>
+                        <div class="text-red-400 mt-4 pt-4 border-t border-red-500/30">❌ Müzik dinleyemez</div>
+                        <div class="text-red-400">❌ Playlist oluşturamaz</div>
+                        <div class="text-red-400">❌ Şarkı çalamaz</div>
+                    </div>
+                </div>
+
+                <!-- Free Users -->
+                <div class="bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-yellow-400 mb-4">⚠️ Authenticated (Free)</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="text-emerald-400">✓ Auth yapabilir</div>
+                        <div class="text-emerald-400">✓ Sorular sorabilir</div>
+                        <div class="text-emerald-400">✓ Browse edebilir</div>
+                        <div class="text-emerald-400">✓ Playlist oluşturabilir</div>
+                        <div class="text-emerald-400">✓ ACTION button kullanabilir</div>
+                        <div class="text-red-400 mt-4 pt-4 border-t border-yellow-500/30">❌ Müzik dinleyemez</div>
+                        <div class="text-red-400">❌ Şarkı çalamaz</div>
+                    </div>
+                </div>
+
+                <!-- Premium Users -->
+                <div class="bg-emerald-900/20 border-l-4 border-emerald-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-emerald-400 mb-4">✅ Authenticated + Premium</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="text-emerald-400">✓ TÜM Free özellikleri +</div>
+                        <div class="text-emerald-400">✓ Müzik dinleyebilir</div>
+                        <div class="text-emerald-400">✓ Şarkı çalabilir</div>
+                        <div class="text-emerald-400">✓ Playlist dinleyebilir</div>
+                        <div class="text-emerald-400">✓ Queue yönetimi</div>
+                        <div class="text-emerald-400">✓ Kalan gün görüntüleme</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-500/30 rounded-xl p-6">
+                <div class="flex items-start gap-4">
+                    <span class="text-3xl">🔒</span>
+                    <div>
+                        <h4 class="text-lg font-semibold text-orange-400 mb-2">KRİTİK: Yetkilendirme Sistemi!</h4>
+                        <p class="text-slate-300 text-sm mb-4">
+                            <strong>Playlist oluşturma:</strong> Authenticated (Free) kullanıcılar yapabilir<br>
+                            <strong>Müzik dinleme:</strong> Sadece Premium aboneliği olan kullanıcılar dinleyebilir
+                        </p>
+                        <div class="grid md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <div class="text-red-400 font-semibold mb-2">❌ Guest Users:</div>
+                                <div class="text-slate-400">
+                                    • AI ile sohbet<br>
+                                    • Paket bilgisi<br>
+                                    • Müzik dinleme YOK
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-yellow-400 font-semibold mb-2">⚠️ Auth (Free):</div>
+                                <div class="text-slate-300">
+                                    • Playlist oluşturma ✓<br>
+                                    • ACTION button ✓<br>
+                                    • Müzik dinleme ✗
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-emerald-400 font-semibold mb-2">✅ Auth + Premium:</div>
+                                <div class="text-slate-300">
+                                    • Playlist oluşturma ✓<br>
+                                    • Müzik dinleme ✓<br>
+                                    • TÜM özellikler ✓
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI YETENEKLERİ (TÜM KULLANICILAR - HERKES İÇİN) -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                <span class="text-blue-400">💬</span>
+                Tüm Kullanıcılar için AI Yetenekleri
+            </h2>
+            <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4 mb-6">
+                <p class="text-slate-300 text-sm">
+                    <strong>Herkes sorabilir:</strong> Guest, Free, Premium - tüm kullanıcılar subscription bilgisi alabilir
+                </p>
+            </div>
+            <div class="grid gap-6">
+                <!-- Subscription Info -->
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-400 mb-2">1. Subscription Planları & Fiyatları</h3>
+                            <p class="text-slate-300">Guest, Free, Premium - herkes sorabilir</p>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">Herkes</span>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm mb-4">
+                        <div class="grid grid-cols-2 gap-2 text-slate-300">
+                            <div>• Premium Aylık: <span class="text-white font-semibold">299 TRY</span></div>
+                            <div>• Premium Yıllık: <span class="text-white font-semibold">2999 TRY</span></div>
+                            <div>• Premium 3 Aylık: <span class="text-white font-semibold">849 TRY</span></div>
+                            <div>• Premium 6 Aylık: <span class="text-white font-semibold">1699 TRY</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-900/20 border border-blue-500/30 rounded p-3">
+                        <div class="text-blue-400 font-semibold mb-2 text-sm">💡 Neden Herkes Sorabilir?</div>
+                        <div class="text-slate-300 text-sm space-y-1">
+                            <div>• <strong>Guest:</strong> Premium almak için fiyat öğrenme</div>
+                            <div>• <strong>Free:</strong> Upgrade yapmak için paketleri inceleme</div>
+                            <div>• <strong>Premium:</strong> Uzatma/yenileme için paket seçimi</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package Recommendation -->
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-400 mb-2">2. Paket Önerisi</h3>
+                            <p class="text-slate-300">AI kullanıcıya uygun paketi öneriyor</p>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">Herkes</span>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                        Kullanıcı ihtiyacına göre en uygun subscription planını önerir
+                    </div>
+                </div>
+
+                <!-- Music Browse -->
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-400 mb-2">3. Müzik Kataloğu Görüntüleme</h3>
+                            <p class="text-slate-300">Şarkı, album, sanatçı bilgileri görülebilir</p>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">Herkes</span>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                        AI müzik kataloğundan bilgi verebilir, AMA çalma/dinleme özelliği yok
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTHENTICATED USERS İÇİN YETENEKLER -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                <span class="text-yellow-400">🔓</span>
+                Authenticated Users için AI Yetenekleri
+            </h2>
+
+            <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-6 mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">🔓</span>
+                    <div>
+                        <h3 class="text-xl font-semibold text-yellow-400">Auth Required Features</h3>
+                        <p class="text-slate-400 text-sm">Bu özellikler login olmuş tüm kullanıcılara açık (Free + Premium)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid gap-6">
+                <!-- Playlist Creation with ACTION Button -->
+                <div class="bg-gradient-to-br from-yellow-900/30 to-blue-900/30 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-yellow-400 mb-2">🎯 1. Playlist Oluşturma (ACTION Button)</h3>
+                            <p class="text-slate-300">AI playlist önerip otomatik kaydetme butonu ekliyor</p>
+                        </div>
+                        <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-sm">Auth</span>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-6 mb-4">
+                        <div class="text-slate-400 mb-4 font-semibold">🔥 Nasıl Çalışıyor:</div>
+                        <div class="space-y-3 text-sm text-slate-300">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400 font-bold">1.</span>
+                                <div>Premium user: "arabesk müziklerden playlist oluştur"</div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400 font-bold">2.</span>
+                                <div>AI database'den 9 şarkı öneriyor</div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400 font-bold">3.</span>
+                                <div>Backend otomatik ACTION button ekliyor</div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400 font-bold">4.</span>
+                                <div>Frontend "Playlist Olarak Kaydet" butonu gösteriyor</div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400 font-bold">5.</span>
+                                <div>Tek tıkla user'ın hesabına kaydediliyor</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-900/20 border border-yellow-500/30 rounded p-4">
+                        <div class="text-yellow-400 font-semibold mb-2">🔒 Auth Required:</div>
+                        <div class="text-slate-300 text-sm">
+                            • User login olmalı (Free veya Premium)<br>
+                            • Playlist user'ın hesabına kaydedilir<br>
+                            • <strong>NOT:</strong> Playlist oluşturulur AMA dinleme için Premium gerekir
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREMIUM ONLY FEATURES -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                <span class="text-emerald-400">👑</span>
+                Premium Only AI Yetenekleri
+            </h2>
+
+            <div class="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-6 mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">👑</span>
+                    <div>
+                        <h3 class="text-xl font-semibold text-emerald-400">Premium Exclusive - Music Playback</h3>
+                        <p class="text-slate-400 text-sm">Bu özellikler sadece Premium subscription olan kullanıcılara özel</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid gap-6">
+                <!-- Music Playback -->
+                <div class="bg-gradient-to-br from-emerald-900/30 to-green-900/30 border-l-4 border-emerald-500 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-emerald-400 mb-2">🎵 1. Müzik Çalma & Dinleme</h3>
+                            <p class="text-slate-300">Şarkı, playlist, album, radio çalma</p>
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm">Premium</span>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm">
+                        <div class="grid grid-cols-2 gap-2 text-slate-300">
+                            <div>• /api/muzibu/ai/play/song/{id}</div>
+                            <div>• /api/muzibu/ai/play/playlist/{id}</div>
+                            <div>• /api/muzibu/ai/play/album/{id}</div>
+                            <div>• /api/muzibu/ai/play/radio/{id}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Queue Management -->
+                <div class="bg-slate-800/50 border-l-4 border-emerald-500 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-emerald-400 mb-2">📋 3. Queue Yönetimi</h3>
+                            <p class="text-slate-300">Şarkı sırasına ekleme, sıralama</p>
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm">Premium</span>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                        POST /api/muzibu/ai/queue/add - Toplu şarkı ekleme
+                    </div>
+                </div>
+
+                <!-- Remaining Days -->
+                <div class="bg-slate-800/50 border-l-4 border-emerald-500 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-emerald-400 mb-2">📅 4. Kalan Gün Bilgisi</h3>
+                            <p class="text-slate-300">Premium subscription'ın kalan süresi</p>
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm">Premium</span>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                        getUserSubscriptionContext() - Auth user için kalan gün hesaplaması
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEKNİK ÖZELLIKLER -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                <span class="text-purple-400">⚙️</span>
+                Teknik Özellikler (Backend)
+            </h2>
+            <div class="grid gap-6">
+                <!-- Database-Only Songs -->
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-purple-400 mb-2">1. Database-Only Şarkı Sistemi</h3>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm">
+                        <div class="text-emerald-400 mb-2">✓ AI SADECE database'deki şarkıları öneriyor</div>
+                        <div class="text-red-400">✗ Highway to Hell, Bohemian Rhapsody gibi hallucination YOK</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Genre Extraction -->
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-purple-400 mb-2">2. Dinamik Genre Extraction</h3>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                        Playlist başlıkları database'den dinamik çekiliyor (hardcoded değil)
+                    </div>
+                </div>
+
+                <!-- UTF-8 Clean -->
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-purple-400 mb-2">3. UTF-8 Clean System</h3>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                        Model Observer aktif, 30 bin şarkı için production-ready
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SONRAKI ADIMLAR -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                <span class="text-blue-400">🎯</span>
+                Sonraki Adımlar
+            </h2>
+            <div class="grid gap-4">
+                <div class="bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-blue-400 mb-4">1. Frontend ACTION Button Parser (Premium Users)</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div>• AI yanıtını parse edip <code>[ACTION:CREATE_PLAYLIST:...]</code> tespit etmek</div>
+                        <div>• <strong>Auth check:</strong> User login mi? Premium mi?</div>
+                        <div>• "Playlist Olarak Kaydet" butonu göstermek</div>
+                        <div>• Butona tıklayınca <code>POST /api/muzibu/ai/playlist/create</code> (auth header ile)</div>
+                        <div>• Success mesajı göstermek</div>
+                    </div>
+                </div>
+
+                <div class="bg-orange-900/20 border-l-4 border-orange-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-orange-400 mb-4">2. Auth & Premium Middleware</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div>• Playlist create endpoint'ine auth middleware ekle</div>
+                        <div>• Premium subscription kontrolü ekle</div>
+                        <div>• Free user playlist oluşturursa: "Premium gerekli" mesajı</div>
+                    </div>
+                </div>
+
+                <div class="bg-purple-900/20 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-purple-400 mb-4">3. Dinamik İçerik Genişletme</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div>• Album bazlı playlist</div>
+                        <div>• Sanatçı bazlı playlist</div>
+                        <div>• Sektör bazlı playlist</div>
+                        <div>• Radio bazlı playlist</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl p-8">
+            <h2 class="text-2xl font-bold mb-6 text-blue-400">📊 Özet (v3)</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                    <h3 class="font-semibold text-blue-400 mb-3">💬 Guest/Free (3)</h3>
+                    <div class="space-y-1 text-sm text-slate-300">
+                        <div>• Subscription bilgisi</div>
+                        <div>• Paket önerisi</div>
+                        <div>• Müzik kataloğu görüntüleme</div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-emerald-400 mb-3">👑 Premium Only (4)</h3>
+                    <div class="space-y-1 text-sm text-slate-300">
+                        <div>• Playlist oluşturma (ACTION)</div>
+                        <div>• Müzik çalma & dinleme</div>
+                        <div>• Queue yönetimi</div>
+                        <div>• Kalan gün bilgisi</div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-purple-400 mb-3">⚙️ Backend (3)</h3>
+                    <div class="space-y-1 text-sm text-slate-300">
+                        <div>• Database-only songs</div>
+                        <div>• Dinamik genre extraction</div>
+                        <div>• UTF-8 clean system</div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-slate-700">
+                <div class="text-slate-400 text-sm">
+                    <div class="mb-2"><strong>v2 → v3 Değişiklikler:</strong></div>
+                    <div class="space-y-1 text-slate-500">
+                        <div>• 🔒 Auth & Premium requirement açıklandı</div>
+                        <div>• 👑 Premium-only features ayrıldı</div>
+                        <div>• 💬 Guest user capabilities belirlendi</div>
+                        <div>• ⚠️ Müzik dinleme = Premium only vurgulandı</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-16 pt-8 border-t border-slate-700 text-center text-slate-400 text-sm">
+            <p>🤖 Muzibu AI Assistant Yetenekler & Yetkilendirme Raporu v3</p>
+            <p class="mt-2">Tenant 1001 • 16 Aralık 2025</p>
+            <p class="mt-1 text-slate-500">
+                <a href="../v2/" class="hover:text-blue-400">← v2'ye dön</a> |
+                <a href="../v1/" class="hover:text-blue-400">v1'e dön</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

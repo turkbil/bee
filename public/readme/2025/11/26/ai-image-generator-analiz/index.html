@@ -1,1 +1,625 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator Analizi - Tenant Aware Sistem</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #a78bfa;
+            margin-bottom: 15px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-purple {
+            border-left-color: #a78bfa;
+        }
+
+        .card-green {
+            border-left-color: #10b981;
+        }
+
+        .card-orange {
+            border-left-color: #f59e0b;
+        }
+
+        .card-red {
+            border-left-color: #ef4444;
+        }
+
+        .card h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: #cbd5e1;
+            margin-bottom: 12px;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .flow-diagram {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .arrow {
+            text-align: center;
+            color: #4ade80;
+            font-size: 1.5rem;
+            margin: 10px 0 10px 20px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+        }
+
+        .feature-box h5 {
+            color: #a78bfa;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge-blue { background: #3b82f6; color: white; }
+        .badge-purple { background: #8b5cf6; color: white; }
+        .badge-green { background: #10b981; color: white; }
+        .badge-orange { background: #f59e0b; color: white; }
+        .badge-red { background: #ef4444; color: white; }
+
+        .rule-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .rule-title {
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        li::before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .todo-item {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .todo-number {
+            background: #10b981;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .switch-preview {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #334155;
+        }
+
+        .switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .switch-row:last-child {
+            border-bottom: none;
+        }
+
+        .switch-label {
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .switch-hint {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .switch-toggle {
+            width: 50px;
+            height: 26px;
+            background: #10b981;
+            border-radius: 13px;
+            position: relative;
+        }
+
+        .switch-toggle::after {
+            content: "";
+            position: absolute;
+            right: 3px;
+            top: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .switch-toggle.off {
+            background: #475569;
+        }
+
+        .switch-toggle.off::after {
+            right: auto;
+            left: 3px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Image Generator Analizi</h1>
+            <div class="meta">
+                Tarih: 2025-11-26 |
+                Tenant: muzibu.com (1001) |
+                Konu: Prompt Gelistirme & Tenant Aware Sistem
+            </div>
+        </header>
+
+        <!-- MEVCUT SİSTEM ANALİZİ -->
+        <section>
+            <h2>Mevcut Sistem Analizi</h2>
+
+            <div class="card">
+                <h4>AI Image Generator Nasil Calisiyor?</h4>
+                <p>Sistem <span class="tech-term">Leonardo AI</span> kullanarak gorsel uretiyor. Prompt gelistirme icin <span class="tech-term">OpenAI GPT-4o</span> entegre edilmis.</p>
+
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Kullanici Promptu</div>
+                            <div class="step-desc">Basit bir prompt girer: "Modern stüdyoda sarki kaydeden sarki"</div>
+                        </div>
+                    </div>
+                    <div class="arrow">|</div>
+                    <div class="flow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">AI Prompt Enhancer (OpenAI GPT-4o)</div>
+                            <div class="step-desc">7 KURAL FORMULU ile profesyonel fotografcilik talimatina donusturur</div>
+                        </div>
+                    </div>
+                    <div class="arrow">|</div>
+                    <div class="flow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Leonardo AI</div>
+                            <div class="step-desc">Lucid Origin modeli ile gorseli uretir</div>
+                        </div>
+                    </div>
+                    <div class="arrow">|</div>
+                    <div class="flow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Media Library</div>
+                            <div class="step-desc">Gorsel MediaLibraryItem olarak kaydedilir</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-purple">
+                <h4>7 Kural Formulu (Prompt Enhancement)</h4>
+                <p><span class="tech-term">AIPromptEnhancer</span> servisi basit promptlari profesyonel fotograf talimatina donusturur:</p>
+
+                <div class="feature-grid">
+                    <div class="feature-box">
+                        <h5>1. Photo of</h5>
+                        <p>Modeli fotograf moduna gecirir</p>
+                    </div>
+                    <div class="feature-box">
+                        <h5>2. Subject</h5>
+                        <p>Ana konu detayli tanimi</p>
+                    </div>
+                    <div class="feature-box">
+                        <h5>3. Angle</h5>
+                        <p>Cekim acisi (top-down, side view, 3/4 angle)</p>
+                    </div>
+                    <div class="feature-box">
+                        <h5>4. Background</h5>
+                        <p>Arka plan ve sahne hikayesi</p>
+                    </div>
+                    <div class="feature-box">
+                        <h5>5. Lighting</h5>
+                        <p>Isik (golden hour, Rembrandt, dramatic)</p>
+                    </div>
+                    <div class="feature-box">
+                        <h5>6. Camera</h5>
+                        <p>Kamera + Lens + Aperture</p>
+                    </div>
+                    <div class="feature-box">
+                        <h5>7. Natural Texture</h5>
+                        <p>Dogal doku + Kusurlar + Duygu</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TENANT AWARE YAPI -->
+        <section>
+            <h2>Tenant Aware Yapi</h2>
+
+            <div class="card card-orange">
+                <h4>Mevcut Tenant Aware Ozellikler</h4>
+
+                <div class="rule-box">
+                    <div class="rule-title">1. Kredi Sistemi (Tenant Bazli)</div>
+                    <ul>
+                        <li><span class="tech-term">tenant('id')</span> ile tenant ID alinir</li>
+                        <li>Her tenant kendi kredi havuzuna sahip</li>
+                        <li>AICreditPurchase ve AICreditUsage tablolari tenant_id iceriyor</li>
+                        <li>Kredi bakiyesi tenant bazli hesaplaniyor</li>
+                    </ul>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-title">2. TenantServiceFactory Sistemi</div>
+                    <ul>
+                        <li>Her tenant icin ozel PromptService olusturulabilir</li>
+                        <li><span class="tech-term">Tenant2PromptService</span> - ixtif.com (endustriyel ekipman)</li>
+                        <li>DefaultPromptService - diger tum tenant'lar</li>
+                        <li>Yeni tenant eklenince kod degismez, sadece yeni service dosyasi</li>
+                    </ul>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-title">3. Settings Bazli Ayarlar</div>
+                    <ul>
+                        <li><span class="tech-term">setting('ai_image_prompt_enhancement')</span> - Tenant ozel gorsel prompt eki</li>
+                        <li>PromptGenerator bu ayari kullanarak tenant-specific icerik ekliyor</li>
+                        <li>Her tenant kendi settings tablosuna sahip</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card card-red">
+                <h4>Eksik Olan: AI Image Generator'da Tenant Context</h4>
+                <p>AIPromptEnhancer simdi <span class="tech-term">generic</span> calisiyor. Tenant'a ozel ayarlar kullanilmiyor!</p>
+
+                <ul>
+                    <li>ixtif.com icin: "Turkiye endustriyel/is ortami context'i" var ama hardcoded</li>
+                    <li>muzibu.com icin: Muzik/studyo context'i OLMALI ama YOK</li>
+                    <li>Site ayarlari (site_name, sektor vb.) prompt'a eklenmiyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- YAPILACAKLAR -->
+        <section>
+            <h2>Yapilacaklar</h2>
+
+            <div class="todo-item">
+                <div class="todo-number">1</div>
+                <div>
+                    <strong>Site Ayarlarini Kullan Switch'i Ekle</strong>
+                    <p style="color: #94a3b8; margin-top: 5px;">AI Image Generator formuna "Site Ayarlarini Kullan" switch'i eklenmeli. Acik oldugunda tenant'in settings tablosundan bilgiler alinip prompt'a eklenmeli.</p>
+                </div>
+            </div>
+
+            <div class="todo-item">
+                <div class="todo-number">2</div>
+                <div>
+                    <strong>Tenant Aware Prompt Enhancement</strong>
+                    <p style="color: #94a3b8; margin-top: 5px;">AIPromptEnhancer'a tenant context'i gonderilmeli. Tenant'in sektoru, site adi ve ozel ayarlari prompt'a eklenmeli.</p>
+                </div>
+            </div>
+
+            <div class="todo-item">
+                <div class="todo-number">3</div>
+                <div>
+                    <strong>Settings'e Yeni Alanlar</strong>
+                    <p style="color: #94a3b8; margin-top: 5px;">AI modulu icin tenant bazli ayarlar eklenmeli: ai_image_sector, ai_image_style_preference, ai_image_brand_context</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- UI TASARIMI -->
+        <section>
+            <h2>UI Tasarimi - Yeni Switch'ler</h2>
+
+            <div class="card card-green">
+                <h4>Onerilen Form Gorunumu</h4>
+
+                <div class="switch-preview">
+                    <div class="switch-row">
+                        <div>
+                            <div class="switch-label">AI ile Prompt Gelistir</div>
+                            <div class="switch-hint">Basit promptunuzu profesyonel fotograf talimatina cevirir</div>
+                        </div>
+                        <div class="switch-toggle"></div>
+                    </div>
+
+                    <div class="switch-row">
+                        <div>
+                            <div class="switch-label">Site Ayarlarini Kullan</div>
+                            <div class="switch-hint">Tenant'a ozel sektor ve marka bilgilerini prompt'a ekler</div>
+                        </div>
+                        <div class="switch-toggle"></div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 15px;"><span class="badge badge-green">YENi</span> "Site Ayarlarini Kullan" switch'i acildiginda:</p>
+                <ul>
+                    <li>site_name prompt'a eklenir (marka bilinirlik)</li>
+                    <li>Sektor bilgisi context olarak eklenir (muzik, endustri vb.)</li>
+                    <li>ai_image_prompt_enhancement setting'i kullanilir</li>
+                    <li>Tenant'in dili ve kulturel context'i eklenir</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TENANT OZEL KURALLAR -->
+        <section>
+            <h2>Tenant Ozel Kurallar</h2>
+
+            <div class="feature-grid">
+                <div class="card">
+                    <h4><span class="badge badge-blue">Tenant 2</span> ixtif.com</h4>
+                    <p><strong>Sektor:</strong> Endustriyel Ekipman</p>
+                    <p><strong>Context:</strong> Turkiye endustriyel/is ortami, depo, fabrika</p>
+                    <p><strong>Stil:</strong> Profesyonel, temiz, ticari fotograf</p>
+                </div>
+
+                <div class="card card-purple">
+                    <h4><span class="badge badge-purple">Tenant 1001</span> muzibu.com</h4>
+                    <p><strong>Sektor:</strong> Muzik Platformu</p>
+                    <p><strong>Context:</strong> Studyo, sahne, muzik aletleri, sanatci</p>
+                    <p><strong>Stil:</strong> Sinematik, dramatik isik, artistik</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>Tenant 1001 (Muzibu) icin Onerilen Prompt Context</h3>
+                <p style="margin-top: 10px; color: #cbd5e1;">
+                    "Music industry context, professional recording studio environment, concert stage atmosphere,
+                    Turkish music culture, artistic and creative mood, dramatic stage lighting,
+                    musical instruments as props, artist performance energy"
+                </p>
+            </div>
+        </section>
+
+        <!-- TEKNIK DETAYLAR -->
+        <section>
+            <h2>Teknik Uygulama Plani</h2>
+
+            <div class="card">
+                <h4>Dosya Degisiklikleri</h4>
+
+                <div class="rule-box">
+                    <div class="rule-title">AiImageGeneratorComponent.php</div>
+                    <ul>
+                        <li>Yeni property: <span class="tech-term">$useSiteSettings = false</span></li>
+                        <li>generate() metodunda: useSiteSettings true ise tenant context'i al</li>
+                        <li>getTenantContext() metodu ekle</li>
+                    </ul>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-title">AIPromptEnhancer.php</div>
+                    <ul>
+                        <li>enhancePrompt() metoduna <span class="tech-term">$tenantContext</span> parametresi ekle</li>
+                        <li>buildSevenRuleSystemPrompt() tenant context'i kullansin</li>
+                        <li>Tenant sektorune gore stil onerileri</li>
+                    </ul>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-title">Blade View</div>
+                    <ul>
+                        <li>Yeni switch: "Site Ayarlarini Kullan"</li>
+                        <li>wire:model="useSiteSettings"</li>
+                        <li>Aciklama metni ekle</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEVCUT ALTIN KURALLAR -->
+        <section>
+            <h2>Korunan Altin Kurallar</h2>
+
+            <div class="card card-green">
+                <h4>7 Kural Formulu - Devam Ediyor</h4>
+                <p>Mevcut prompt enhancement sistemi korunuyor ve gelistiriliyor:</p>
+
+                <ul>
+                    <li>"Photo of" ile basla - degismez</li>
+                    <li>Kusurlar ZORUNLU - gercekcilik icin</li>
+                    <li>Duygu ZORUNLU - atmosfer icin</li>
+                    <li>Kamera ve lens ZORUNLU - profesyonel kalite</li>
+                    <li>ASLA "photorealistic" kelimesi - AI algisi</li>
+                    <li>ASLA text/label - temiz gorsel</li>
+                </ul>
+            </div>
+
+            <div class="card card-orange">
+                <h4>Yeni Eklenen Kurallar</h4>
+                <ul>
+                    <li><span class="badge badge-orange">YENi</span> Tenant sektoru context'e eklenir</li>
+                    <li><span class="badge badge-orange">YENi</span> Site adi marka olarak kullanilabilir</li>
+                    <li><span class="badge badge-orange">YENi</span> Kulturel context (Turkiye muzik kulturu vb.)</li>
+                    <li><span class="badge badge-orange">YENi</span> Sektor bazli stil onerileri</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafindan olusturuldu | 2025-11-26
+        </footer>
+    </div>
+</body>
+</html>

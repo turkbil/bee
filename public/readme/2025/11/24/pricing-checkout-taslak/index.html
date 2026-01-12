@@ -1,1 +1,600 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing & Checkout Sayfaları - Tasarım Taslağı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        [x-cloak] { display: none !important; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        .pricing-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+        }
+
+        .feature-row:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            ring: 2px solid #6366f1;
+        }
+
+        .payment-method {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-method.selected {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-100 py-12 px-4">
+
+    <div class="max-w-7xl mx-auto" x-data="{
+        currentPage: 'pricing',
+        billingPeriod: 'monthly',
+        selectedPlan: null,
+        couponCode: '',
+        couponDiscount: 0,
+
+        plans: {
+            free: { name: 'Free', price: 0, features: ['5 Şarkı Yükleme', 'Temel İstatistikler', '1 Albüm', 'Standart Destek', 'Sınırlı Depolama'] },
+            basic: { name: 'Basic', price: 49, features: ['50 Şarkı Yükleme', 'Gelişmiş İstatistikler', '5 Albüm', 'Öncelikli Destek', '10 GB Depolama', 'Playlist Oluşturma', 'Mobil Uygulama', 'Reklamsız Deneyim', 'Sosyal Medya Entegrasyonu', 'Özel Profil URL'] },
+            premium: { name: 'Premium', price: 99, features: ['Sınırsız Şarkı Yükleme', 'Premium İstatistikler', 'Sınırsız Albüm', 'VIP Destek', 'Sınırsız Depolama', 'Playlist Oluşturma', 'Mobil Uygulama', 'Reklamsız Deneyim', 'Sosyal Medya Entegrasyonu', 'Özel Profil URL', 'AI Şarkı Önerileri', 'Canlı Yayın', 'Gelişmiş Analitik', 'API Erişimi', 'Özel Domain'] }
+        },
+
+        get currentPrice() {
+            if (!this.selectedPlan) return 0;
+            const plan = this.plans[this.selectedPlan];
+            const price = this.billingPeriod === 'yearly' ? plan.price * 12 * 0.8 : plan.price;
+            return price;
+        },
+
+        get discountAmount() {
+            return this.currentPrice * (this.couponDiscount / 100);
+        },
+
+        get totalPrice() {
+            return this.currentPrice - this.discountAmount;
+        },
+
+        applyCoupon() {
+            if (this.couponCode === 'INDIRIM20') {
+                this.couponDiscount = 20;
+                alert('✅ Kupon uygulandı! %20 indirim');
+            } else {
+                alert('❌ Geçersiz kupon kodu');
+            }
+        },
+
+        selectPlan(plan) {
+            this.selectedPlan = plan;
+            this.currentPage = 'checkout';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+                Pricing & Checkout Sayfaları
+            </h1>
+            <p class="text-gray-400 text-lg">Modern, responsive tasarım taslağı</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex justify-center gap-4 mb-12">
+            <button @click="currentPage = 'pricing'"
+                    :class="currentPage === 'pricing' ? 'active' : ''"
+                    class="tab-button px-8 py-3 rounded-lg font-semibold bg-gray-800">
+                <i class="fas fa-tags mr-2"></i> Pricing Sayfası
+            </button>
+            <button @click="currentPage = 'checkout'"
+                    :class="currentPage === 'checkout' ? 'active' : ''"
+                    class="tab-button px-8 py-3 rounded-lg font-semibold bg-gray-800">
+                <i class="fas fa-shopping-cart mr-2"></i> Checkout Sayfası
+            </button>
+        </div>
+
+        <!-- PRICING SAYFASI -->
+        <div x-show="currentPage === 'pricing'" x-cloak>
+
+            <!-- Billing Period Toggle -->
+            <div class="flex justify-center mb-12">
+                <div class="inline-flex bg-gray-800 rounded-full p-1">
+                    <button @click="billingPeriod = 'monthly'"
+                            :class="billingPeriod === 'monthly' ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white' : 'text-gray-400'"
+                            class="px-8 py-3 rounded-full font-semibold transition-all">
+                        Aylık
+                    </button>
+                    <button @click="billingPeriod = 'yearly'"
+                            :class="billingPeriod === 'yearly' ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white' : 'text-gray-400'"
+                            class="px-8 py-3 rounded-full font-semibold transition-all relative">
+                        Yıllık
+                        <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                            %20 İndirim
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+
+                <!-- Free Plan -->
+                <div class="pricing-card bg-gray-800 rounded-2xl p-8 border border-gray-700">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">Free</h3>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-bold">₺0</span>
+                            <span class="text-gray-400">/ay</span>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start gap-3" x-show="plans.free.features.length >= 1">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span x-text="plans.free.features[0]"></span>
+                        </li>
+                        <li class="flex items-start gap-3" x-show="plans.free.features.length >= 2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span x-text="plans.free.features[1]"></span>
+                        </li>
+                        <li class="flex items-start gap-3" x-show="plans.free.features.length >= 3">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span x-text="plans.free.features[2]"></span>
+                        </li>
+                        <li class="flex items-start gap-3" x-show="plans.free.features.length >= 4">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span x-text="plans.free.features[3]"></span>
+                        </li>
+                        <li class="flex items-start gap-3" x-show="plans.free.features.length >= 5">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span x-text="plans.free.features[4]"></span>
+                        </li>
+                    </ul>
+
+                    <button @click="selectPlan('free')"
+                            class="w-full py-3 rounded-lg font-semibold bg-gray-700 hover:bg-gray-600 transition-all">
+                        Ücretsiz Başla
+                    </button>
+                </div>
+
+                <!-- Basic Plan -->
+                <div class="pricing-card bg-gray-800 rounded-2xl p-8 border border-gray-700">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">Basic</h3>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-bold" x-text="billingPeriod === 'yearly' ? '₺' + (plans.basic.price * 12 * 0.8).toFixed(0) : '₺' + plans.basic.price"></span>
+                            <span class="text-gray-400" x-text="billingPeriod === 'yearly' ? '/yıl' : '/ay'"></span>
+                        </div>
+                        <p class="text-sm text-green-500 mt-1" x-show="billingPeriod === 'yearly'">
+                            Yıllık ₺<span x-text="(plans.basic.price * 12 * 0.2).toFixed(0)"></span> tasarruf
+                        </p>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <template x-for="feature in plans.basic.features.slice(0, 5)" :key="feature">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span x-text="feature"></span>
+                            </li>
+                        </template>
+                    </ul>
+
+                    <button @click="selectPlan('basic')"
+                            class="w-full py-3 rounded-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all">
+                        Planı Seç
+                    </button>
+                </div>
+
+                <!-- Premium Plan (Önerilen) -->
+                <div class="pricing-card gradient-border rounded-2xl p-8 relative">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full font-semibold text-sm">
+                        <i class="fas fa-star mr-1"></i> Önerilen
+                    </div>
+
+                    <div class="mb-6 mt-4">
+                        <h3 class="text-2xl font-bold mb-2">Premium</h3>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-bold" x-text="billingPeriod === 'yearly' ? '₺' + (plans.premium.price * 12 * 0.8).toFixed(0) : '₺' + plans.premium.price"></span>
+                            <span class="text-gray-400" x-text="billingPeriod === 'yearly' ? '/yıl' : '/ay'"></span>
+                        </div>
+                        <p class="text-sm text-green-500 mt-1" x-show="billingPeriod === 'yearly'">
+                            Yıllık ₺<span x-text="(plans.premium.price * 12 * 0.2).toFixed(0)"></span> tasarruf
+                        </p>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <template x-for="feature in plans.premium.features.slice(0, 5)" :key="feature">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span x-text="feature"></span>
+                            </li>
+                        </template>
+                        <li class="text-purple-400 font-semibold">+ 10 özellik daha...</li>
+                    </ul>
+
+                    <button @click="selectPlan('premium')"
+                            class="w-full py-3 rounded-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all">
+                        Premium'a Yükselt
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Kupon Kodu -->
+            <div class="max-w-md mx-auto mb-16">
+                <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">
+                        <i class="fas fa-tag text-purple-500 mr-2"></i>
+                        Kupon Kodunuz Var mı?
+                    </h3>
+                    <div class="flex gap-3">
+                        <input type="text"
+                               x-model="couponCode"
+                               placeholder="Kupon kodu girin..."
+                               class="flex-1 px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                        <button @click="applyCoupon()"
+                                class="px-6 py-3 rounded-lg font-semibold bg-purple-600 hover:bg-purple-700 transition-all">
+                            Uygula
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-400 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Demo: INDIRIM20 kodunu deneyin (%20 indirim)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Karşılaştırma Tablosu -->
+            <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700">
+                <h2 class="text-3xl font-bold mb-8 text-center">
+                    <i class="fas fa-list-check mr-2 text-purple-500"></i>
+                    Özellik Karşılaştırması
+                </h2>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="text-left py-4 px-4">Özellik</th>
+                                <th class="text-center py-4 px-4">Free</th>
+                                <th class="text-center py-4 px-4">Basic</th>
+                                <th class="text-center py-4 px-4 bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-t-lg">Premium</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">Şarkı Yükleme</td>
+                                <td class="text-center py-4 px-4">5</td>
+                                <td class="text-center py-4 px-4">50</td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10">Sınırsız</td>
+                            </tr>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">Albüm Sayısı</td>
+                                <td class="text-center py-4 px-4">1</td>
+                                <td class="text-center py-4 px-4">5</td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10">Sınırsız</td>
+                            </tr>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">Depolama</td>
+                                <td class="text-center py-4 px-4">Sınırlı</td>
+                                <td class="text-center py-4 px-4">10 GB</td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10">Sınırsız</td>
+                            </tr>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">İstatistikler</td>
+                                <td class="text-center py-4 px-4">Temel</td>
+                                <td class="text-center py-4 px-4">Gelişmiş</td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10">Premium</td>
+                            </tr>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">Playlist Oluşturma</td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">Mobil Uygulama</td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">Reklamsız Deneyim</td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">AI Şarkı Önerileri</td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="feature-row border-b border-gray-700/50 transition-all">
+                                <td class="py-4 px-4">Canlı Yayın</td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="feature-row transition-all">
+                                <td class="py-4 px-4">API Erişimi</td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-4 px-4 bg-purple-900/10 rounded-b-lg"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CHECKOUT SAYFASI -->
+        <div x-show="currentPage === 'checkout'" x-cloak>
+
+            <div class="grid lg:grid-cols-5 gap-8">
+
+                <!-- Sol: Sipariş Özeti -->
+                <div class="lg:col-span-2">
+                    <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 sticky top-8">
+                        <h2 class="text-2xl font-bold mb-6">
+                            <i class="fas fa-shopping-cart mr-2 text-purple-500"></i>
+                            Sipariş Özeti
+                        </h2>
+
+                        <div class="space-y-4 mb-6">
+                            <div class="flex justify-between items-start pb-4 border-b border-gray-700">
+                                <div>
+                                    <p class="font-semibold text-lg capitalize" x-text="selectedPlan || 'Plan Seçilmedi'"></p>
+                                    <p class="text-sm text-gray-400" x-text="billingPeriod === 'yearly' ? 'Yıllık Abonelik' : 'Aylık Abonelik'"></p>
+                                </div>
+                                <p class="text-xl font-bold" x-text="'₺' + currentPrice.toFixed(2)"></p>
+                            </div>
+
+                            <div class="flex justify-between items-center text-sm" x-show="couponDiscount > 0">
+                                <p class="text-gray-400">
+                                    <i class="fas fa-tag mr-1"></i>
+                                    Kupon İndirimi (<span x-text="couponDiscount"></span>%)
+                                </p>
+                                <p class="text-green-500 font-semibold">-₺<span x-text="discountAmount.toFixed(2)"></span></p>
+                            </div>
+
+                            <div class="flex justify-between items-center pt-4 border-t border-gray-700">
+                                <p class="text-xl font-bold">Toplam</p>
+                                <p class="text-3xl font-bold text-purple-400" x-text="'₺' + totalPrice.toFixed(2)"></p>
+                            </div>
+                        </div>
+
+                        <div class="bg-purple-900/30 rounded-lg p-4 mb-6">
+                            <p class="text-sm text-gray-300">
+                                <i class="fas fa-info-circle mr-2 text-purple-400"></i>
+                                İlk ödemeniz bugün yapılacaktır. Sonraki ödemeler otomatik olarak tahsil edilecektir.
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-3 text-sm text-gray-400">
+                            <i class="fas fa-shield-halved text-green-500 text-lg"></i>
+                            <p>256-bit SSL şifreleme ile güvenli ödeme</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ: Fatura & Ödeme Bilgileri -->
+                <div class="lg:col-span-3">
+                    <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700">
+
+                        <!-- Fatura Bilgileri -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold mb-6">
+                                <i class="fas fa-file-invoice mr-2 text-purple-500"></i>
+                                Fatura Bilgileri
+                            </h3>
+
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Ad Soyad *</label>
+                                    <input type="text" placeholder="Ahmet Yılmaz" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">E-posta *</label>
+                                    <input type="email" placeholder="ahmet@example.com" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Telefon *</label>
+                                    <input type="tel" placeholder="+90 555 123 45 67" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">TC Kimlik / Vergi No *</label>
+                                    <input type="text" placeholder="12345678901" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium mb-2">Adres *</label>
+                                    <textarea rows="3" placeholder="Mahalle, sokak, bina no..." class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Şehir *</label>
+                                    <select class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                        <option>İstanbul</option>
+                                        <option>Ankara</option>
+                                        <option>İzmir</option>
+                                        <option>Diğer...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Posta Kodu</label>
+                                    <input type="text" placeholder="34000" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ödeme Yöntemi -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold mb-6">
+                                <i class="fas fa-credit-card mr-2 text-purple-500"></i>
+                                Ödeme Yöntemi
+                            </h3>
+
+                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                <div class="payment-method selected border-2 border-gray-700 rounded-lg p-4 flex items-center gap-4">
+                                    <i class="fas fa-credit-card text-3xl text-purple-500"></i>
+                                    <div>
+                                        <p class="font-semibold">Kredi Kartı</p>
+                                        <p class="text-sm text-gray-400">Visa, Mastercard</p>
+                                    </div>
+                                </div>
+                                <div class="payment-method border-2 border-gray-700 rounded-lg p-4 flex items-center gap-4 opacity-50">
+                                    <i class="fas fa-building-columns text-3xl text-gray-500"></i>
+                                    <div>
+                                        <p class="font-semibold">Havale / EFT</p>
+                                        <p class="text-sm text-gray-400">Yakında</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Kart Numarası *</label>
+                                    <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Son Kullanma Tarihi *</label>
+                                        <input type="text" placeholder="MM/YY" maxlength="5" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">CVV *</label>
+                                        <input type="text" placeholder="123" maxlength="3" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Kart Üzerindeki İsim *</label>
+                                    <input type="text" placeholder="AHMET YILMAZ" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:border-purple-500 transition-all">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sözleşmeler -->
+                        <div class="space-y-3 mb-6">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-5 h-5 rounded border-gray-700 bg-gray-900 text-purple-600 focus:ring-purple-500">
+                                <span class="text-sm text-gray-300">
+                                    <a href="#" class="text-purple-400 hover:underline">Kullanım Şartları</a> ve
+                                    <a href="#" class="text-purple-400 hover:underline">Gizlilik Politikası</a>'nı okudum, kabul ediyorum. *
+                                </span>
+                            </label>
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-5 h-5 rounded border-gray-700 bg-gray-900 text-purple-600 focus:ring-purple-500">
+                                <span class="text-sm text-gray-300">
+                                    Otomatik yenileme şartlarını kabul ediyorum. İptal etmediğim sürece abonelik otomatik olarak yenilenecektir.
+                                </span>
+                            </label>
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-5 h-5 rounded border-gray-700 bg-gray-900 text-purple-600 focus:ring-purple-500">
+                                <span class="text-sm text-gray-300">
+                                    Kampanya ve yeniliklerden haberdar olmak istiyorum. (İsteğe bağlı)
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Ödeme Butonu -->
+                        <button class="w-full py-4 rounded-lg font-bold text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-purple-500/50">
+                            <i class="fas fa-lock mr-2"></i>
+                            Güvenli Ödeme Yap - ₺<span x-text="totalPrice.toFixed(2)"></span>
+                        </button>
+
+                        <!-- Güvenlik Bilgisi & Powered By -->
+                        <div class="mt-6 space-y-4">
+                            <div class="flex items-center justify-center gap-6 text-sm text-gray-400 flex-wrap">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-shield-halved text-green-500"></i>
+                                    <span>256-bit SSL</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-lock text-green-500"></i>
+                                    <span>PCI DSS Uyumlu</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fab fa-cc-visa text-2xl"></i>
+                                    <i class="fab fa-cc-mastercard text-2xl"></i>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-center gap-2 text-gray-500">
+                                <span class="text-sm">Powered by</span>
+                                <img src="https://www.paytr.com/img/logo.png" alt="PayTR" class="h-6 opacity-70">
+                            </div>
+
+                            <p class="text-center text-xs text-gray-500">
+                                Ödemeniz PayTR güvencesi altında işleme alınır. Kart bilgileriniz bizimle paylaşılmaz.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-gray-700 text-center text-gray-500">
+            <p class="mb-2">
+                <i class="fas fa-palette mr-2 text-purple-500"></i>
+                Modern Pricing & Checkout Tasarım Taslağı
+            </p>
+            <p class="text-sm">
+                📅 2025-11-24 | 🎨 Tailwind CSS + Alpine.js | 🎯 Muzibu Teması
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

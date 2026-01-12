@@ -1,1 +1,397 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Fallback Sistemi - Harita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                🗺️ Theme Fallback Sistemi
+            </h1>
+            <p class="text-slate-400 text-lg">Cart / Checkout / Payment Sayfalarının Çalışma Mantığı</p>
+        </header>
+
+        <!-- Ana Konsept -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-blue-400">🎯 Ana Konsept</h2>
+            <div class="bg-slate-800/50 rounded-xl p-8 border border-slate-700">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="text-center p-6 bg-blue-900/30 rounded-lg border-2 border-blue-500">
+                        <div class="text-4xl mb-3">🖼️</div>
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">LAYOUT</h3>
+                        <p class="text-slate-300">Header + Footer</p>
+                        <p class="text-sm text-slate-400 mt-2">Tenant temasından gelir</p>
+                        <div class="mt-4 text-xs bg-blue-800/50 rounded px-3 py-2">
+                            themes/<strong>ixtif</strong>/layouts/app.blade.php
+                        </div>
+                    </div>
+                    <div class="text-center p-6 bg-green-900/30 rounded-lg border-2 border-green-500">
+                        <div class="text-4xl mb-3">📄</div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">VIEW (İçerik)</h3>
+                        <p class="text-slate-300">Orta Kısım (Content)</p>
+                        <p class="text-sm text-slate-400 mt-2">Module default'tan gelir</p>
+                        <div class="mt-4 text-xs bg-green-800/50 rounded px-3 py-2">
+                            Modules/<strong>Cart</strong>/resources/views/
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sayfa Yapısı Görsel -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-purple-400">📐 Sayfa Yapısı</h2>
+            <div class="bg-slate-800/50 rounded-xl p-8 border border-slate-700">
+                <div class="max-w-md mx-auto">
+                    <!-- Header -->
+                    <div class="bg-blue-600 text-white text-center py-4 rounded-t-lg font-bold">
+                        🔵 HEADER
+                        <div class="text-xs font-normal opacity-80">themes/ixtif/layouts/header.blade.php</div>
+                    </div>
+                    <!-- Content -->
+                    <div class="bg-green-600 text-white text-center py-16 font-bold border-x-4 border-green-400">
+                        🟢 İÇERİK (CART / CHECKOUT / PAYMENT)
+                        <div class="text-xs font-normal opacity-80 mt-2">Modules/Cart/resources/views/livewire/front/cart-page.blade.php</div>
+                        <div class="text-xs mt-4 bg-green-800/50 inline-block px-3 py-1 rounded">
+                            {{ $slot }} ile enjekte edilir
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div class="bg-blue-600 text-white text-center py-4 rounded-b-lg font-bold">
+                        🔵 FOOTER
+                        <div class="text-xs font-normal opacity-80">themes/ixtif/layouts/footer.blade.php</div>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-center gap-8 text-sm">
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 bg-blue-600 rounded"></div>
+                        <span class="text-slate-400">Tenant Teması (ixtif)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 bg-green-600 rounded"></div>
+                        <span class="text-slate-400">Module Default</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Flow Diagram -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-yellow-400">🔄 Çalışma Akışı</h2>
+            <div class="bg-slate-800/50 rounded-xl p-8 border border-slate-700">
+
+                <!-- Step 1 -->
+                <div class="flex items-start gap-4 mb-8">
+                    <div class="bg-yellow-500 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-yellow-300 mb-2">Kullanıcı ixtif.com/cart'a girer</h3>
+                        <div class="bg-slate-700/50 rounded-lg p-4">
+                            <code class="text-green-400">Route: cart.index → CartPage::class (Livewire)</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="flex justify-center mb-6">
+                    <div class="text-3xl text-slate-500">↓</div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex items-start gap-4 mb-8">
+                    <div class="bg-yellow-500 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-yellow-300 mb-2">CartPage render() çalışır</h3>
+                        <div class="bg-slate-700/50 rounded-lg p-4 space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-slate-400">a)</span>
+                                <code class="text-blue-400">$theme = tenant()->theme</code>
+                                <span class="text-slate-500">→</span>
+                                <span class="text-white">"ixtif"</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-slate-400">b)</span>
+                                <code class="text-blue-400">$layoutPath = "themes.ixtif.layouts.app"</code>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-slate-400">c)</span>
+                                <code class="text-green-400">view('cart::livewire.front.cart-page')</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="flex justify-center mb-6">
+                    <div class="text-3xl text-slate-500">↓</div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex items-start gap-4 mb-8">
+                    <div class="bg-yellow-500 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-yellow-300 mb-2">Layout çözümlenir</h3>
+                        <div class="bg-slate-700/50 rounded-lg p-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-blue-900/30 p-3 rounded border border-blue-500">
+                                    <div class="text-xs text-blue-400 mb-1">LAYOUT (themes.ixtif.layouts.app)</div>
+                                    <div class="text-sm">
+                                        <div class="text-slate-300">→ header.blade.php</div>
+                                        <div class="text-slate-300">→ footer.blade.php</div>
+                                        <div class="text-slate-300">→ notification.blade.php</div>
+                                    </div>
+                                </div>
+                                <div class="bg-green-900/30 p-3 rounded border border-green-500">
+                                    <div class="text-xs text-green-400 mb-1">VIEW (cart::livewire.front.cart-page)</div>
+                                    <div class="text-sm text-slate-300">
+                                        → Modules/Cart/resources/views/<br>
+                                        &nbsp;&nbsp;&nbsp;livewire/front/cart-page.blade.php
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="flex justify-center mb-6">
+                    <div class="text-3xl text-slate-500">↓</div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-yellow-300 mb-2">{{ $slot }} ile birleşir</h3>
+                        <div class="bg-slate-700/50 rounded-lg p-4">
+                            <p class="text-slate-300 mb-3">Layout'taki <code class="text-pink-400">{{ $slot }}</code> yerine cart içeriği enjekte edilir</p>
+                            <div class="bg-slate-900 rounded p-3 text-sm font-mono">
+                                <div class="text-blue-400">@include('themes.ixtif.layouts.header')</div>
+                                <div class="text-pink-400 my-2">{{ $slot }} <span class="text-slate-500">← Cart içeriği buraya</span></div>
+                                <div class="text-blue-400">@include('themes.ixtif.layouts.footer')</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tenant Karşılaştırması -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-red-400">🏢 Tenant Karşılaştırması</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+
+                <!-- İxtif -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-orange-500">
+                    <h3 class="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">🏭</span> İxtif
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Tenant ID:</span>
+                            <span class="text-white">2</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Theme ID:</span>
+                            <span class="text-white">2</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Theme Folder:</span>
+                            <span class="text-orange-400 font-mono">ixtif</span>
+                        </div>
+                        <hr class="border-slate-600">
+                        <div class="text-slate-300">
+                            <div class="text-xs text-slate-500 mb-1">Layout:</div>
+                            <div class="font-mono text-xs bg-slate-700 rounded px-2 py-1">themes/ixtif/layouts/app</div>
+                        </div>
+                        <div class="text-slate-300">
+                            <div class="text-xs text-slate-500 mb-1">Cart View:</div>
+                            <div class="font-mono text-xs bg-slate-700 rounded px-2 py-1">cart::livewire.front.cart-page</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Muzibu -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-pink-500">
+                    <h3 class="text-xl font-bold text-pink-400 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">🎵</span> Muzibu
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Tenant ID:</span>
+                            <span class="text-white">1001</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Theme ID:</span>
+                            <span class="text-white">7</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Theme Folder:</span>
+                            <span class="text-pink-400 font-mono">muzibu</span>
+                        </div>
+                        <hr class="border-slate-600">
+                        <div class="text-slate-300">
+                            <div class="text-xs text-slate-500 mb-1">Layout:</div>
+                            <div class="font-mono text-xs bg-slate-700 rounded px-2 py-1">themes/muzibu/layouts/app</div>
+                        </div>
+                        <div class="text-slate-300">
+                            <div class="text-xs text-slate-500 mb-1">Cart View:</div>
+                            <div class="font-mono text-xs bg-slate-700 rounded px-2 py-1">cart::livewire.front.cart-page</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simple (Fallback) -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-500">
+                    <h3 class="text-xl font-bold text-slate-400 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">📦</span> Simple (Fallback)
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Tenant ID:</span>
+                            <span class="text-white">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Theme ID:</span>
+                            <span class="text-white">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Theme Folder:</span>
+                            <span class="text-slate-400 font-mono">simple</span>
+                        </div>
+                        <hr class="border-slate-600">
+                        <div class="text-slate-300">
+                            <div class="text-xs text-slate-500 mb-1">Kullanım:</div>
+                            <div class="font-mono text-xs bg-yellow-900/30 border border-yellow-600 rounded px-2 py-1 text-yellow-300">
+                                Tenant layout yoksa devreye girer
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dosya Yapısı -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-cyan-400">📁 Dosya Yapısı</h2>
+            <div class="bg-slate-800/50 rounded-xl p-8 border border-slate-700 font-mono text-sm">
+                <pre class="text-slate-300">
+resources/views/themes/
+├── <span class="text-orange-400">ixtif/</span>                          <span class="text-slate-500"># İxtif Teması</span>
+│   └── layouts/
+│       ├── app.blade.php              <span class="text-blue-400"># Ana layout</span>
+│       ├── header.blade.php           <span class="text-blue-400"># Header</span>
+│       └── footer.blade.php           <span class="text-blue-400"># Footer</span>
+│
+├── <span class="text-pink-400">muzibu/</span>                         <span class="text-slate-500"># Muzibu Teması</span>
+│   └── layouts/
+│       ├── app.blade.php              <span class="text-blue-400"># Ana layout</span>
+│       ├── header.blade.php           <span class="text-blue-400"># Header</span>
+│       └── footer.blade.php           <span class="text-blue-400"># Footer</span>
+│
+└── <span class="text-slate-400">simple/</span>                         <span class="text-yellow-400"># Fallback Tema</span>
+    └── layouts/
+        ├── app.blade.php              <span class="text-yellow-400"># Fallback layout</span>
+        ├── header.blade.php
+        └── footer.blade.php
+
+Modules/
+├── <span class="text-green-400">Cart/</span>
+│   └── resources/views/livewire/front/
+│       ├── <span class="text-green-300">cart-page.blade.php</span>        <span class="text-slate-500"># ← TÜM TENANT'LAR KULLANIR</span>
+│       └── <span class="text-green-300">checkout-page.blade.php</span>   <span class="text-slate-500"># ← TÜM TENANT'LAR KULLANIR</span>
+│
+└── <span class="text-green-400">Payment/</span>
+    └── resources/views/livewire/front/
+        └── <span class="text-green-300">payment-page.blade.php</span>     <span class="text-slate-500"># ← TÜM TENANT'LAR KULLANIR</span>
+                </pre>
+            </div>
+        </section>
+
+        <!-- Kod Örneği -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-emerald-400">💻 Kod: CartPage render()</h2>
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <pre class="text-sm overflow-x-auto"><code class="text-slate-300">
+<span class="text-purple-400">public function</span> <span class="text-yellow-300">render</span>()
+{
+    <span class="text-slate-500">// 1. Tenant temasını al (accessor: theme_id → folder_name)</span>
+    <span class="text-blue-400">$theme</span> = tenant()->theme ?? <span class="text-green-400">'simple'</span>;
+
+    <span class="text-slate-500">// 2. Layout path'i oluştur</span>
+    <span class="text-blue-400">$layoutPath</span> = <span class="text-green-400">"themes.{$theme}.layouts.app"</span>;
+
+    <span class="text-slate-500">// 3. Layout yoksa simple'a fallback</span>
+    <span class="text-purple-400">if</span> (!view()->exists(<span class="text-blue-400">$layoutPath</span>)) {
+        <span class="text-blue-400">$layoutPath</span> = <span class="text-green-400">'themes.simple.layouts.app'</span>;
+    }
+
+    <span class="text-slate-500">// 4. View her zaman module default</span>
+    <span class="text-purple-400">return</span> view(<span class="text-green-400">'cart::livewire.front.cart-page'</span>)
+        ->layout(<span class="text-blue-400">$layoutPath</span>);
+}
+                </code></pre>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-green-400">✅ Özet</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border border-green-500 rounded-xl p-6">
+                    <h3 class="font-bold text-green-400 mb-4">Layout (Header/Footer)</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            Tenant temasından gelir
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            İxtif → ixtif header/footer
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            Muzibu → muzibu header/footer
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            Tema yoksa → simple fallback
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-blue-900/20 border border-blue-500 rounded-xl p-6">
+                    <h3 class="font-bold text-blue-400 mb-4">View (İçerik)</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-center gap-2">
+                            <span class="text-blue-400">✓</span>
+                            Module default'tan gelir
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-blue-400">✓</span>
+                            Cart → Modules/Cart/views/
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-blue-400">✓</span>
+                            Payment → Modules/Payment/views/
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-blue-400">✓</span>
+                            Tüm tenant'lar aynı içeriği kullanır
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - 14 Aralık 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

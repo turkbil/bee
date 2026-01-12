@@ -1,1 +1,418 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription DateTime Picker - Saat-Dakika Desteği</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                ⏰ Subscription DateTime Picker
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Başlangıç ve bitiş tarihlerine saat-dakika desteği ekleyerek saatlik/günlük kısa üyelikleri destekleyin
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 12 Aralık 2025</span>
+                <span>🎯 Tenant: muzibu.com.tr</span>
+                <span>👤 Saat-dakika ekleme talebi</span>
+            </div>
+        </header>
+
+        <!-- Mevcut Durum -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">❌ Mevcut Durum (Sadece Tarih)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-300 mb-4">Başlangıç Tarihi</h3>
+                        <div class="bg-slate-900 border border-slate-600 rounded p-4">
+                            <code class="text-green-400">type="date"</code>
+                            <div class="mt-2 text-slate-400">Format: <span class="text-yellow-300">2025-12-12</span></div>
+                            <div class="mt-1 text-slate-500 text-sm">Sadece gün/ay/yıl</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-300 mb-4">Bitiş Tarihi</h3>
+                        <div class="bg-slate-900 border border-slate-600 rounded p-4">
+                            <code class="text-green-400">type="date" readonly</code>
+                            <div class="mt-2 text-slate-400">Format: <span class="text-yellow-300">2025-12-13</span></div>
+                            <div class="mt-1 text-red-400 text-sm">⚠️ Readonly - Manuel değiştirilemiyor</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-red-900/30 border-l-4 border-red-500 rounded p-4">
+                    <h4 class="font-bold text-red-300 mb-2">Sorunlar:</h4>
+                    <ul class="text-slate-300 space-y-1 text-sm">
+                        <li>❌ Saatlik üyelik tanımlanamıyor (ör: 14:00 - 15:00)</li>
+                        <li>❌ Günlük üyelik saati belirlenemiyor (ör: 12 Aralık 09:00 - 13 Aralık 09:00)</li>
+                        <li>❌ Bitiş tarihi manuel ayarlanamıyor</li>
+                        <li>❌ Kısa süreli kampanyalar oluşturulamıyor</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yeni Durum -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Yeni Durum (Tarih + Saat-Dakika)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-4">Başlangıç Tarihi + Saat</h3>
+                        <div class="bg-slate-900 border border-green-600 rounded p-4">
+                            <code class="text-green-400">type="datetime-local"</code>
+                            <div class="mt-2 text-slate-400">Format: <span class="text-yellow-300">2025-12-12T14:30</span></div>
+                            <div class="mt-1 text-slate-300 text-sm">✅ Gün/ay/yıl + saat/dakika</div>
+                        </div>
+                        <div class="mt-3 bg-blue-900/30 border border-blue-500 rounded p-3 text-sm text-slate-300">
+                            <strong class="text-blue-300">Örnek:</strong> 12 Aralık 2025, 14:30
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-4">Bitiş Tarihi + Saat</h3>
+                        <div class="bg-slate-900 border border-green-600 rounded p-4">
+                            <code class="text-green-400">type="datetime-local"</code>
+                            <div class="mt-2 text-slate-400">Format: <span class="text-yellow-300">2025-12-12T15:30</span></div>
+                            <div class="mt-1 text-green-300 text-sm">✅ Manuel değiştirilebilir</div>
+                        </div>
+                        <div class="mt-3 bg-purple-900/30 border border-purple-500 rounded p-3 text-sm text-slate-300">
+                            <strong class="text-purple-300">Otomatik Hesaplama:</strong> Başlangıç + Duration
+                            <br><span class="text-slate-400">Ama manuel override edilebilir!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-green-900/30 border-l-4 border-green-500 rounded p-4">
+                    <h4 class="font-bold text-green-300 mb-2">Avantajlar:</h4>
+                    <ul class="text-slate-300 space-y-1 text-sm">
+                        <li>✅ Saatlik üyelik oluşturulabilir (1 saat, 3 saat, 6 saat)</li>
+                        <li>✅ Günlük üyelik saati belirlenebilir (09:00 - 09:00 arası)</li>
+                        <li>✅ Bitiş tarihi manuel ayarlanabilir</li>
+                        <li>✅ Kampanya saatleri belirlenebilir (14:00 - 18:00 arası %50 indirim)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özellikler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🎯 Yapılacak İşlemler</h2>
+
+            <!-- 1. Frontend Değişikliği -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Frontend Input Değişikliği
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Kolay</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Blade view'de input type'ları değiştirilecek
+                        </p>
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-slate-400 text-sm mb-2">Değişiklik:</div>
+                            <div class="space-y-2">
+                                <div>
+                                    <code class="text-red-400">type="date"</code>
+                                    <span class="text-slate-500 mx-2">→</span>
+                                    <code class="text-green-400">type="datetime-local"</code>
+                                </div>
+                                <div>
+                                    <code class="text-red-400">readonly</code>
+                                    <span class="text-slate-500 mx-2">→</span>
+                                    <code class="text-green-400">(kaldırılacak)</code>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Dosya:</strong> subscription-manage-component.blade.php</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Backend Format Değişikliği -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            Backend Format Güncellemesi
+                            <span class="ml-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">Orta</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Livewire component'te tarih formatları güncellenecek
+                        </p>
+                        <div class="bg-slate-900 rounded p-4 space-y-3">
+                            <div>
+                                <div class="text-slate-400 text-sm mb-2">Mount fonksiyonu:</div>
+                                <div>
+                                    <code class="text-red-400">Y-m-d</code>
+                                    <span class="text-slate-500 mx-2">→</span>
+                                    <code class="text-green-400">Y-m-d\TH:i</code>
+                                </div>
+                                <div class="text-slate-500 text-sm mt-1">datetime-local input'un beklediği format</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-400 text-sm mb-2">Validation:</div>
+                                <div><code class="text-green-400">required|date</code> → Aynı kalacak (datetime de kabul eder)</div>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Dosya:</strong> SubscriptionManageComponent.php</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Otomatik Hesaplama Mantığı -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">
+                            Otomatik Hesaplama (Güncellenmiş)
+                            <span class="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Önemli</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Başlangıç tarihi değişince bitiş tarihi otomatik hesaplanacak, ama manuel değiştirilebilecek
+                        </p>
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-slate-400 text-sm mb-2">Mantık:</div>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div>1️⃣ Başlangıç tarihi seçilir: <code class="text-blue-300">2025-12-12 14:30</code></div>
+                                <div>2️⃣ Duration (ör: 7 gün) eklenir: <code class="text-green-300">+7 gün</code></div>
+                                <div>3️⃣ Bitiş tarihi otomatik doldurulur: <code class="text-purple-300">2025-12-19 14:30</code></div>
+                                <div>4️⃣ Kullanıcı manuel değiştirebilir: <code class="text-yellow-300">2025-12-19 18:00</code></div>
+                            </div>
+                        </div>
+                        <div class="mt-3 bg-blue-900/30 border border-blue-500 rounded p-3 text-sm text-slate-300">
+                            <strong class="text-blue-300">Not:</strong> updatePeriodEnd() fonksiyonu <code class="text-yellow-300">addDays()</code> kullanacak. Carbon saat-dakikayı koruyarak ekler.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Manuel Müdahale -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Manuel Müdahale Desteği
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Yeni Özellik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Bitiş tarihinden readonly kaldırılarak manuel düzenleme yapılabilecek
+                        </p>
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-slate-400 text-sm mb-2">Kullanım Senaryoları:</div>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div>✅ <strong>Saatlik üyelik:</strong> 12 Ara 14:00 → 12 Ara 15:00 (1 saat)</div>
+                                <div>✅ <strong>Yarım günlük:</strong> 12 Ara 09:00 → 12 Ara 13:00 (4 saat)</div>
+                                <div>✅ <strong>Hafta sonu:</strong> 13 Ara 00:00 → 15 Ara 00:00 (2 gün)</div>
+                                <div>✅ <strong>Özel kampanya:</strong> 12 Ara 14:00 → 19 Ara 18:00 (7 gün 4 saat)</div>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> Tam esneklik, otomatik + manuel kontrol</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kullanım Örnekleri -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">💡 Kullanım Senaryoları</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Saatlik Üyelik -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">
+                        <span class="text-2xl">⏱️</span> Saatlik Üyelik
+                    </h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="bg-slate-900 rounded p-3">
+                            <div class="text-slate-400">Başlangıç:</div>
+                            <div class="text-blue-300 font-bold">12 Aralık 2025, 14:00</div>
+                        </div>
+                        <div class="bg-slate-900 rounded p-3">
+                            <div class="text-slate-400">Bitiş:</div>
+                            <div class="text-green-300 font-bold">12 Aralık 2025, 15:00</div>
+                        </div>
+                        <div class="bg-blue-900/30 border border-blue-500 rounded p-3">
+                            <strong class="text-blue-300">Süre:</strong> 1 saat
+                            <br><span class="text-slate-400">Kısa süreli test veya deneme üyeliği için ideal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Günlük Üyelik (Saate Hassas) -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">
+                        <span class="text-2xl">📅</span> Günlük Üyelik (Saate Hassas)
+                    </h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="bg-slate-900 rounded p-3">
+                            <div class="text-slate-400">Başlangıç:</div>
+                            <div class="text-blue-300 font-bold">12 Aralık 2025, 09:00</div>
+                        </div>
+                        <div class="bg-slate-900 rounded p-3">
+                            <div class="text-slate-400">Bitiş:</div>
+                            <div class="text-green-300 font-bold">13 Aralık 2025, 09:00</div>
+                        </div>
+                        <div class="bg-green-900/30 border border-green-500 rounded p-3">
+                            <strong class="text-green-300">Süre:</strong> 24 saat (1 gün)
+                            <br><span class="text-slate-400">Tam 24 saat üyelik garantisi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hafta Sonu Kampanyası -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">
+                        <span class="text-2xl">🎉</span> Hafta Sonu Kampanyası
+                    </h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="bg-slate-900 rounded p-3">
+                            <div class="text-slate-400">Başlangıç:</div>
+                            <div class="text-blue-300 font-bold">13 Aralık 2025, 00:00 (Cumartesi)</div>
+                        </div>
+                        <div class="bg-slate-900 rounded p-3">
+                            <div class="text-slate-400">Bitiş:</div>
+                            <div class="text-green-300 font-bold">15 Aralık 2025, 23:59 (Pazar)</div>
+                        </div>
+                        <div class="bg-purple-900/30 border border-purple-500 rounded p-3">
+                            <strong class="text-purple-300">Süre:</strong> 2 gün (Cumartesi-Pazar)
+                            <br><span class="text-slate-400">Hafta sonu özel kampanya üyeliği</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Özel Süre -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">
+                        <span class="text-2xl">⚡</span> Özel Kampanya Süresi
+                    </h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="bg-slate-900 rounded p-3">
+                            <div class="text-slate-400">Başlangıç:</div>
+                            <div class="text-blue-300 font-bold">12 Aralık 2025, 14:00</div>
+                        </div>
+                        <div class="bg-slate-900 rounded p-3">
+                            <div class="text-slate-400">Bitiş:</div>
+                            <div class="text-green-300 font-bold">19 Aralık 2025, 18:00</div>
+                        </div>
+                        <div class="bg-yellow-900/30 border border-yellow-500 rounded p-3">
+                            <strong class="text-yellow-300">Süre:</strong> 7 gün 4 saat
+                            <br><span class="text-slate-400">Tam esneklik: Otomatik 7 gün + manuel 4 saat ekleme</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-slate-300">🔧 Teknik Detaylar</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-300 mb-3">Frontend (Blade View)</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-slate-400">Input Type:</div>
+                                <code class="text-green-300">datetime-local</code>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-slate-400">Wire Model:</div>
+                                <code class="text-green-300">wire:model.live</code>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-slate-400">Readonly:</div>
+                                <code class="text-red-300">Kaldırılacak</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-purple-300 mb-3">Backend (Livewire Component)</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-slate-400">Format:</div>
+                                <code class="text-green-300">Y-m-d\TH:i</code>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-slate-400">Validation:</div>
+                                <code class="text-green-300">date (datetime kabul eder)</code>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-slate-400">Carbon:</div>
+                                <code class="text-green-300">addDays() saat korur</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-blue-900/30 border-l-4 border-blue-500 rounded p-4">
+                    <h4 class="font-bold text-blue-300 mb-2">Not:</h4>
+                    <p class="text-slate-300 text-sm">
+                        <code class="text-yellow-300">datetime-local</code> input'un formatı: <code class="text-green-300">YYYY-MM-DDTHH:MM</code> (ISO 8601)
+                        <br>Örnek: <code class="text-blue-300">2025-12-12T14:30</code>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beklenen Sonuç -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">🎯 Beklenen Sonuç</h2>
+
+            <div class="bg-gradient-to-r from-green-900/50 to-blue-900/50 border-l-4 border-green-500 rounded-lg p-6">
+                <div class="space-y-3 text-slate-200">
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-xl">✅</span>
+                        <div>
+                            <strong>Saat-Dakika Desteği:</strong> Başlangıç ve bitiş tarihlerinde saat-dakika seçilebilecek
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-xl">✅</span>
+                        <div>
+                            <strong>Otomatik Hesaplama:</strong> Başlangıç + Duration = Bitiş (saat-dakika korunarak)
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-xl">✅</span>
+                        <div>
+                            <strong>Manuel Müdahale:</strong> Bitiş tarihi manuel düzenlenebilecek (readonly kaldırıldı)
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-xl">✅</span>
+                        <div>
+                            <strong>Saatlik/Günlük Üyelik:</strong> 1 saat, 6 saat, 12 saat gibi kısa süreler tanımlanabilecek
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-xl">✅</span>
+                        <div>
+                            <strong>Geriye Uyumluluk:</strong> Mevcut tarih-bazlı üyelikler çalışmaya devam edecek
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+            <p class="mt-2">📊 <a href="https://muzibu.com.tr/admin/subscription/manage" class="text-blue-400 hover:text-blue-300">Subscription Manage</a></p>
+        </footer>
+    </div>
+</body>
+</html>

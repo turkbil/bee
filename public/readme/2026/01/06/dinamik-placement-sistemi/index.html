@@ -1,1 +1,864 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinamik Placement Sistemi - Neyi Nerede Göstereceğiz?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                    <i class="fas fa-map-marker-alt mr-1"></i> PLACEMENT SYSTEM
+                </span>
+                <span class="text-slate-400 text-sm">6 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent mb-4">
+                Dinamik Placement Sistemi
+            </h1>
+            <p class="text-slate-300 text-lg">Neyi Nerede Göstereceğiz? - Spotify Business Pattern</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-8">
+            <div class="bg-green-900/20 border border-green-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-green-300">
+                    <i class="fas fa-book-reader mr-2"></i>
+                    📝 Basit Anlatım (Herkes İçin)
+                </h2>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold text-white mb-3">Ne İstiyoruz?</h3>
+                    <div class="text-slate-200 space-y-3">
+                        <p class="text-lg">
+                            Spotify Business'ın yaptığı gibi: <strong>Farklı sayfalarda farklı koleksiyonlar göstermek!</strong>
+                        </p>
+                        <div class="bg-blue-900/20 rounded p-4 border border-blue-700">
+                            <div class="font-bold text-blue-300 mb-2">Örnek:</div>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-home text-blue-400 mt-1"></i>
+                                    <span><strong>Anasayfa:</strong> "Editör Seçkisi", "Premium Özel", "Yeni Çıkanlar"</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-coffee text-orange-400 mt-1"></i>
+                                    <span><strong>Cafe Sayfası:</strong> "Recommended cafe playlists", "Popular cafe playlists", "Family-friendly"</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-dumbbell text-green-400 mt-1"></i>
+                                    <span><strong>Gym Sayfası:</strong> "Workout Energy", "Cardio Hits", "Cool Down"</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-900/20 rounded-lg p-6 border border-yellow-700">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-3">Nasıl Çalışacak?</h3>
+                    <ol class="space-y-3 text-slate-200">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-yellow-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 font-bold text-sm">1</span>
+                            <div>
+                                <strong>Admin panel'den koleksiyon oluştururken:</strong>
+                                <div class="text-sm mt-1 text-slate-300">"Bu koleksiyonu hangi sayfalarda göster?" seçilir</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-yellow-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 font-bold text-sm">2</span>
+                            <div>
+                                <strong>Kullanıcı o sayfaya girdiğinde:</strong>
+                                <div class="text-sm mt-1 text-slate-300">Backend otomatik olarak o sayfa için olan koleksiyonları getirir</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-yellow-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 font-bold text-sm">3</span>
+                            <div>
+                                <strong>Saat/Gün/Abonelik kontrolü:</strong>
+                                <div class="text-sm mt-1 text-slate-300">Sadece uygun olanlar gösterilir (önceki sistemle aynı)</div>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spotify Business Analizi -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-orange-900/30 to-red-900/30 border border-orange-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center">
+                    <i class="fas fa-spotify text-green-400 mr-2"></i>
+                    Spotify Business - Cafe Sayfası Analizi
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Ekran Görüntüsü Analizi -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-orange-400 mb-4">Ekran Görüntüsünde Görülenler:</h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="bg-slate-800 rounded p-4 border-l-4 border-blue-500">
+                                <div class="font-bold text-blue-400 mb-2">1. Sayfa: Cafe</div>
+                                <div class="text-slate-300">URL: spotify.com/business/genre/cafe</div>
+                            </div>
+
+                            <div class="bg-slate-800 rounded p-4 border-l-4 border-purple-500">
+                                <div class="font-bold text-purple-400 mb-2">2. Tag Filters (Üstte)</div>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span class="bg-red-600 px-3 py-1 rounded-full text-xs">Discover</span>
+                                    <span class="bg-slate-700 px-3 py-1 rounded-full text-xs">All</span>
+                                    <span class="bg-slate-700 px-3 py-1 rounded-full text-xs">Acoustic</span>
+                                    <span class="bg-slate-700 px-3 py-1 rounded-full text-xs">Bossa nova</span>
+                                    <span class="bg-slate-700 px-3 py-1 rounded-full text-xs">Instrumental</span>
+                                    <span class="bg-slate-700 px-3 py-1 rounded-full text-xs">Pop</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800 rounded p-4 border-l-4 border-green-500">
+                                <div class="font-bold text-green-400 mb-2">3. Collection: "Recommended cafe playlists"</div>
+                                <div class="text-slate-300 text-xs">6 playlist, horizontal scroll</div>
+                            </div>
+
+                            <div class="bg-slate-800 rounded p-4 border-l-4 border-orange-500">
+                                <div class="font-bold text-orange-400 mb-2">4. Collection: "Popular cafe playlists"</div>
+                                <div class="text-slate-300 text-xs">Subtitle: "Barista favourites", 6 playlist</div>
+                            </div>
+
+                            <div class="bg-slate-800 rounded p-4 border-l-4 border-pink-500">
+                                <div class="font-bold text-pink-400 mb-2">5. Collection: "Family-friendly music for cafes"</div>
+                                <div class="text-slate-300 text-xs">6 playlist, horizontal scroll</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bizim Sistemde Nasıl? -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-green-400 mb-4">Bizim Sistemde Nasıl Yaparız?</h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="bg-green-900/20 rounded p-4 border border-green-700">
+                                <div class="font-bold text-green-400 mb-2">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    ✅ TAM OLARAK AYNI ŞEKİLDE!
+                                </div>
+                                <div class="text-slate-300">
+                                    <code>placement_rules</code> JSON field ekleyeceğiz
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800 rounded p-4">
+                                <div class="font-bold text-cyan-400 mb-2">Cafe Sayfası için:</div>
+                                <div class="text-xs font-mono text-slate-300 bg-slate-900 rounded p-3">
+<pre>{
+  "placement_rules": {
+    "pages": ["sector_show"],
+    "sector_ids": [1],
+    "position": 1
+  }
+}</pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800 rounded p-4">
+                                <div class="font-bold text-purple-400 mb-2">Anasayfa için:</div>
+                                <div class="text-xs font-mono text-slate-300 bg-slate-900 rounded p-3">
+<pre>{
+  "placement_rules": {
+    "pages": ["home"],
+    "sector_ids": null,
+    "position": 2
+  }
+}</pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800 rounded p-4">
+                                <div class="font-bold text-orange-400 mb-2">Tüm Sektör Sayfalarında:</div>
+                                <div class="text-xs font-mono text-slate-300 bg-slate-900 rounded p-3">
+<pre>{
+  "placement_rules": {
+    "pages": ["sector_show"],
+    "sector_ids": null,
+    "position": 3
+  }
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-8">
+            <div class="bg-blue-900/20 border border-blue-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-300">
+                    <i class="fas fa-code mr-2"></i>
+                    🔧 Teknik Detaylar (Geliştiriciler İçin)
+                </h2>
+
+                <!-- Database Schema Update -->
+                <div class="bg-slate-900/50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold text-cyan-400 mb-4">Database Schema Güncelleme</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <div class="font-bold text-yellow-400 mb-3">Mevcut (v3):</div>
+                            <div class="bg-slate-800 rounded p-4 text-xs font-mono text-slate-300">
+<pre>muzibu_content_collections:
+  - display_rules JSON
+  - visibility_conditions JSON
+  - priority INT</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-bold text-green-400 mb-3">Yeni (v4 - Placement):</div>
+                            <div class="bg-slate-800 rounded p-4 text-xs font-mono text-slate-300">
+<pre>muzibu_content_collections:
+  - display_rules JSON
+  - visibility_conditions JSON
+  <span class="text-green-400">- placement_rules JSON ⭐ YENİ!</span>
+  - priority INT</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- placement_rules JSON -->
+                <div class="bg-slate-900/50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold text-purple-400 mb-4">placement_rules JSON Schema</h3>
+                    <div class="bg-slate-800 rounded p-4 text-xs font-mono text-slate-300 overflow-x-auto">
+<pre>{
+  "pages": ["home", "sector_show", "sector_index", "playlists_index"],
+  "sector_ids": [1, 2, 3],  // null = tüm sektörler
+  "category_ids": [5, 6],   // null = tüm kategoriler
+  "tag_ids": [2, 3],        // null = tüm taglar
+  "position": 1,            // Sayfa içinde sıralama (1,2,3...)
+  "zone": "main"            // "main", "sidebar", "footer"
+}</pre>
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-blue-900/20 rounded p-3 border border-blue-700">
+                            <div class="text-blue-400 font-bold mb-2">pages (Array)</div>
+                            <div class="text-slate-300 space-y-1">
+                                <div>• home (Anasayfa)</div>
+                                <div>• sector_show (Cafe sayfası)</div>
+                                <div>• sector_index (Tüm sektörler)</div>
+                                <div>• playlists_index (Playlist listesi)</div>
+                                <div>• albums_index (Album listesi)</div>
+                            </div>
+                        </div>
+                        <div class="bg-purple-900/20 rounded p-3 border border-purple-700">
+                            <div class="text-purple-400 font-bold mb-2">sector_ids (Array|null)</div>
+                            <div class="text-slate-300 space-y-1">
+                                <div>• [1] = Sadece Cafe</div>
+                                <div>• [1,2] = Cafe + Restaurant</div>
+                                <div>• null = Tüm sektörler</div>
+                            </div>
+                        </div>
+                        <div class="bg-green-900/20 rounded p-3 border border-green-700">
+                            <div class="text-green-400 font-bold mb-2">position (Int)</div>
+                            <div class="text-slate-300 space-y-1">
+                                <div>• 1 = En üstte</div>
+                                <div>• 2 = İkinci sıra</div>
+                                <div>• 3 = Üçüncü sıra</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend Service Logic -->
+                <div class="bg-slate-900/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-orange-400 mb-4">SmartRecommendationService.php (Güncellenmiş)</h3>
+                    <div class="bg-slate-800 rounded p-4 text-xs font-mono text-slate-300 overflow-x-auto">
+<pre>public function getCollectionsForPage(
+    string $page,
+    $sectorId = null,
+    $categoryId = null,
+    $tagId = null,
+    $user = null
+): Collection {
+    $now = now();
+    $dayOfWeek = $now->format('D');
+    $currentTime = $now->format('H:i');
+
+    return ContentCollection::where('is_active', true)
+        ->get()
+        ->filter(function($collection) use (
+            $page, $sectorId, $categoryId, $tagId,
+            $user, $dayOfWeek, $currentTime
+        ) {
+            // 1. Placement Rules Check ⭐ YENİ!
+            if (!$this->checkPlacementRules(
+                $collection,
+                $page,
+                $sectorId,
+                $categoryId,
+                $tagId
+            )) {
+                return false;
+            }
+
+            // 2. Display Rules Check (mevcut)
+            if (!$this->checkDisplayRules(
+                $collection,
+                $dayOfWeek,
+                $currentTime,
+                $sectorId
+            )) {
+                return false;
+            }
+
+            // 3. Visibility Conditions Check (mevcut)
+            if (!$this->checkVisibilityConditions(
+                $collection,
+                $user
+            )) {
+                return false;
+            }
+
+            return true;
+        })
+        ->sortBy(function($collection) {
+            return $collection->placement_rules['position'] ?? 999;
+        });
+}
+
+private function checkPlacementRules(
+    $collection,
+    $page,
+    $sectorId,
+    $categoryId,
+    $tagId
+): bool {
+    $rules = $collection->placement_rules;
+
+    // Page check
+    if (isset($rules['pages']) && !in_array($page, $rules['pages'])) {
+        return false;
+    }
+
+    // Sector check
+    if (isset($rules['sector_ids']) && $rules['sector_ids'] !== null) {
+        if ($sectorId && !in_array($sectorId, $rules['sector_ids'])) {
+            return false;
+        }
+    }
+
+    // Category check
+    if (isset($rules['category_ids']) && $rules['category_ids'] !== null) {
+        if ($categoryId && !in_array($categoryId, $rules['category_ids'])) {
+            return false;
+        }
+    }
+
+    // Tag check
+    if (isset($rules['tag_ids']) && $rules['tag_ids'] !== null) {
+        if ($tagId && !in_array($tagId, $rules['tag_ids'])) {
+            return false;
+        }
+    }
+
+    return true;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Örnek Senaryolar -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center">
+                    <i class="fas fa-theater-masks mr-2"></i>
+                    Gerçek Senaryolar (Admin Panel'den Oluşturma)
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Senaryo 1: Cafe Recommended -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-orange-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-orange-600 rounded-full w-12 h-12 flex items-center justify-center font-bold flex-shrink-0">
+                                <i class="fas fa-coffee"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-orange-300 mb-3">
+                                    Senaryo 1: "Recommended cafe playlists"
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="font-bold text-cyan-400 mb-2 text-sm">Admin Panel Input:</div>
+                                        <div class="bg-slate-800 rounded p-3 text-xs space-y-2">
+                                            <div><strong>Koleksiyon:</strong> "Recommended cafe playlists"</div>
+                                            <div><strong>Tip:</strong> editorial</div>
+                                            <div><strong>İçerik:</strong> 15 playlist seçildi</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-purple-400 mb-2 text-sm">Kurallar (3 Tab):</div>
+                                        <div class="bg-slate-800 rounded p-3 text-xs space-y-2">
+                                            <div class="text-green-400"><strong>Display Rules:</strong> Her zaman göster</div>
+                                            <div class="text-blue-400"><strong>Visibility:</strong> Herkes</div>
+                                            <div class="text-orange-400"><strong>Placement:</strong> pages=["sector_show"], sector_ids=[1], position=1</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 bg-green-900/20 rounded p-3 border border-green-700">
+                                    <div class="text-green-400 font-bold text-sm mb-1">Sonuç:</div>
+                                    <div class="text-slate-300 text-xs">
+                                        Cafe sayfasına (muzibu.com/sectors/cafe) girince EN ÜSTTE görünür!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Senaryo 2: Anasayfa Premium -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 rounded-full w-12 h-12 flex items-center justify-center font-bold flex-shrink-0">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-blue-300 mb-3">
+                                    Senaryo 2: "Premium Özel Seçkiler" (Anasayfa)
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="font-bold text-cyan-400 mb-2 text-sm">Admin Panel Input:</div>
+                                        <div class="bg-slate-800 rounded p-3 text-xs space-y-2">
+                                            <div><strong>Koleksiyon:</strong> "👑 Premium Seçkiler"</div>
+                                            <div><strong>Tip:</strong> editorial</div>
+                                            <div><strong>İçerik:</strong> 20 premium playlist</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-purple-400 mb-2 text-sm">Kurallar (3 Tab):</div>
+                                        <div class="bg-slate-800 rounded p-3 text-xs space-y-2">
+                                            <div class="text-green-400"><strong>Display Rules:</strong> Her zaman</div>
+                                            <div class="text-blue-400"><strong>Visibility:</strong> subscription_types=["premium"]</div>
+                                            <div class="text-orange-400"><strong>Placement:</strong> pages=["home"], position=1</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 bg-purple-900/20 rounded p-3 border border-purple-700">
+                                    <div class="text-purple-400 font-bold text-sm mb-1">Sonuç:</div>
+                                    <div class="text-slate-300 text-xs">
+                                        Anasayfada EN ÜSTTE, SADECE premium kullanıcılara gösterilir!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Senaryo 3: Sabah Enerjisi (Tüm Sektörler) -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-green-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-green-600 rounded-full w-12 h-12 flex items-center justify-center font-bold flex-shrink-0">
+                                <i class="fas fa-sun"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-green-300 mb-3">
+                                    Senaryo 3: "☀️ Güne Enerjik Başla" (Tüm Sektörler)
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="font-bold text-cyan-400 mb-2 text-sm">Admin Panel Input:</div>
+                                        <div class="bg-slate-800 rounded p-3 text-xs space-y-2">
+                                            <div><strong>Koleksiyon:</strong> "☀️ Güne Enerjik Başla"</div>
+                                            <div><strong>Tip:</strong> time_based</div>
+                                            <div><strong>İçerik:</strong> 15 playlist (tüm sektörler)</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-purple-400 mb-2 text-sm">Kurallar (3 Tab):</div>
+                                        <div class="bg-slate-800 rounded p-3 text-xs space-y-2">
+                                            <div class="text-green-400"><strong>Display Rules:</strong> 06:00-12:00, Mon-Fri</div>
+                                            <div class="text-blue-400"><strong>Visibility:</strong> Herkes</div>
+                                            <div class="text-orange-400"><strong>Placement:</strong> pages=["home","sector_show"], sector_ids=null, position=2</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 bg-yellow-900/20 rounded p-3 border border-yellow-700">
+                                    <div class="text-yellow-400 font-bold text-sm mb-1">Sonuç:</div>
+                                    <div class="text-slate-300 text-xs space-y-1">
+                                        <div>• Anasayfa + TÜM sektör sayfalarında gösterilir</div>
+                                        <div>• SADECE 06:00-12:00 arası, hafta içi</div>
+                                        <div>• Position=2 → "Recommended" altında gösterilir</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Panel (Tab 6 Ekleniyor) -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border border-cyan-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center">
+                    <i class="fas fa-tools mr-2"></i>
+                    Admin Panel Güncelleme (v2 → v4)
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Mevcut 5 Tab -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-slate-400 mb-4">Mevcut (v2 - 5 Tab):</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                                <span>Temel Bilgiler</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                                <span>Görünürlük Kuralları (display_rules)</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                                <span>Kullanıcı Koşulları (visibility_conditions)</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
+                                <span>İçerik Seçimi (collection_items)</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-pink-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">5</span>
+                                <span>Önizleme (JSON + Frontend)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yeni 6 Tab -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-2 border-cyan-600">
+                        <h3 class="text-xl font-bold text-cyan-400 mb-4">Yeni (v4 - 6 Tab): ⭐</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                                <span>Temel Bilgiler</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                                <span>Görünürlük Kuralları</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                                <span>Kullanıcı Koşulları</span>
+                            </div>
+                            <div class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded p-3 flex items-center gap-3 font-bold border-2 border-cyan-400">
+                                <span class="bg-white text-cyan-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
+                                <span>Sayfa Yerleşimi (placement_rules) ⭐ YENİ!</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">5</span>
+                                <span>İçerik Seçimi</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 flex items-center gap-3">
+                                <span class="bg-pink-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">6</span>
+                                <span>Önizleme</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4 Mockup -->
+                <div class="mt-8 bg-slate-900/50 rounded-lg p-6 border-2 border-cyan-600">
+                    <h3 class="text-xl font-bold text-cyan-400 mb-4">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        Tab 4: Sayfa Yerleşimi (Mockup)
+                    </h3>
+
+                    <div class="space-y-6">
+                        <!-- Pages Selection -->
+                        <div class="bg-slate-800 rounded p-4">
+                            <label class="font-bold text-white mb-3 block">Hangi Sayfalarda Gösterilsin?</label>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded" checked>
+                                    <span class="text-sm">Anasayfa</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded" checked>
+                                    <span class="text-sm">Sektör Sayfası</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="text-sm">Tüm Sektörler</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="text-sm">Playlist Listesi</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="text-sm">Album Listesi</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="text-sm">Kategori Sayfası</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Sector Selection -->
+                        <div class="bg-slate-800 rounded p-4">
+                            <label class="font-bold text-white mb-3 block">Hangi Sektörlerde? (Boş = Tümü)</label>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded" checked>
+                                    <span class="text-sm">☕ Cafe</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="text-sm">🍽️ Restaurant</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="text-sm">💪 Gym</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="text-sm">🧘 SPA</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Position -->
+                        <div class="bg-slate-800 rounded p-4">
+                            <label class="font-bold text-white mb-3 block">Sayfa İçinde Sıralama</label>
+                            <div class="flex items-center gap-4">
+                                <input type="number" value="1" min="1" max="10" class="bg-slate-700 border border-slate-600 rounded px-4 py-2 w-24">
+                                <span class="text-sm text-slate-400">1 = En üstte, 2 = İkinci sıra, vb.</span>
+                            </div>
+                        </div>
+
+                        <!-- Zone (Optional) -->
+                        <div class="bg-slate-800 rounded p-4">
+                            <label class="font-bold text-white mb-3 block">Bölge (Opsiyonel)</label>
+                            <div class="flex gap-3">
+                                <label class="flex items-center gap-2 bg-blue-600 rounded p-3 cursor-pointer">
+                                    <input type="radio" name="zone" checked>
+                                    <span class="text-sm">Ana İçerik</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="radio" name="zone">
+                                    <span class="text-sm">Sidebar</span>
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-700 rounded p-3 cursor-pointer hover:bg-slate-600">
+                                    <input type="radio" name="zone">
+                                    <span class="text-sm">Footer</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- JSON Preview -->
+                        <div class="bg-gradient-to-r from-cyan-900/30 to-blue-900/30 rounded p-4 border border-cyan-700">
+                            <div class="font-bold text-cyan-400 mb-2">Oluşturulan JSON:</div>
+                            <div class="bg-slate-900 rounded p-3 text-xs font-mono text-slate-300">
+<pre>{
+  "placement_rules": {
+    "pages": ["home", "sector_show"],
+    "sector_ids": [1],
+    "position": 1,
+    "zone": "main"
+  }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sector Page Layout -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-orange-900/30 to-red-900/30 border border-orange-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center">
+                    <i class="fas fa-coffee mr-2"></i>
+                    Cafe Sayfası Layout (Spotify Business Pattern)
+                </h2>
+
+                <div class="bg-slate-900 rounded-lg p-6 border-2 border-orange-600">
+                    <!-- Header -->
+                    <div class="bg-gradient-to-r from-orange-600 to-red-600 rounded-lg p-6 mb-6">
+                        <h1 class="text-3xl font-bold mb-2">Cafe</h1>
+                        <p class="text-sm opacity-90">Cafe işletmeniz için özel seçilmiş müzikler</p>
+                    </div>
+
+                    <!-- Tag Filters -->
+                    <div class="mb-6">
+                        <div class="flex gap-2 overflow-x-auto pb-2">
+                            <button class="bg-red-600 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap">Discover</button>
+                            <button class="bg-slate-700 px-4 py-2 rounded-full text-sm whitespace-nowrap hover:bg-slate-600">All</button>
+                            <button class="bg-slate-700 px-4 py-2 rounded-full text-sm whitespace-nowrap hover:bg-slate-600">Acoustic</button>
+                            <button class="bg-slate-700 px-4 py-2 rounded-full text-sm whitespace-nowrap hover:bg-slate-600">Bossa nova</button>
+                            <button class="bg-slate-700 px-4 py-2 rounded-full text-sm whitespace-nowrap hover:bg-slate-600">Jazz</button>
+                            <button class="bg-slate-700 px-4 py-2 rounded-full text-sm whitespace-nowrap hover:bg-slate-600">Pop</button>
+                        </div>
+                    </div>
+
+                    <!-- Collections (Dynamic - from placement_rules) -->
+                    <div class="space-y-8">
+                        <!-- Collection 1: Recommended (position=1, sector_ids=[1]) -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <h3 class="text-xl font-bold">Recommended cafe playlists</h3>
+                                <span class="text-xs text-slate-500 ml-auto">Cafe için özel</span>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collection 2: Popular (position=2, sector_ids=[1]) -->
+                        <div>
+                            <div class="mb-3">
+                                <h3 class="text-xl font-bold">Popular cafe playlists</h3>
+                                <p class="text-sm text-slate-400">Barista favourites</p>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collection 3: Family-friendly (position=3, sector_ids=[1]) -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <h3 class="text-xl font-bold">Family-friendly music for cafes</h3>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:bg-slate-700">
+                                    <i class="fas fa-music text-slate-600 text-3xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="mt-8 bg-green-900/20 rounded p-4 border border-green-700">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-info-circle text-green-400 text-xl"></i>
+                            <div class="text-sm text-slate-300">
+                                <strong class="text-green-400">Dinamik Yerleşim:</strong>
+                                Bu 3 koleksiyon admin panel'den "pages=['sector_show'], sector_ids=[1], position=1/2/3" ayarlanarak
+                                otomatik olarak Cafe sayfasında gösterildi!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonuç -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-green-900/40 to-emerald-900/40 border-4 border-green-600 rounded-xl p-8 text-center">
+                <div class="text-6xl mb-4">🎯</div>
+                <h2 class="text-4xl font-bold text-green-300 mb-4">
+                    Evet! TAM Spotify Business Gibi Yapabiliriz!
+                </h2>
+                <p class="text-xl text-slate-200 mb-6">
+                    placement_rules ile neyi nerede göstereceğimizi dinamik olarak kontrol ediyoruz
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <div class="text-orange-400 font-bold mb-3 text-lg">
+                            <i class="fas fa-magic mr-2"></i>
+                            Dinamik
+                        </div>
+                        <div class="text-sm text-slate-300">
+                            Admin panel'den hangi sayfalarda gösterileceğini seç
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <div class="text-blue-400 font-bold mb-3 text-lg">
+                            <i class="fas fa-layer-group mr-2"></i>
+                            Çoklu Sayfa
+                        </div>
+                        <div class="text-sm text-slate-300">
+                            Aynı koleksiyon birden fazla sayfada gösterilebilir
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <div class="text-purple-400 font-bold mb-3 text-lg">
+                            <i class="fas fa-sort mr-2"></i>
+                            Sıralama
+                        </div>
+                        <div class="text-sm text-slate-300">
+                            Position field ile sıralamayı kontrol et
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-yellow-900/30 rounded-lg p-6 border border-yellow-700">
+                    <div class="font-bold text-yellow-300 mb-3 text-lg">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Sonraki Adım: Uygulama
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <div>1. Migration: <code>placement_rules</code> JSON field ekle</div>
+                        <div>2. Admin Panel: Tab 4 ekle (Sayfa Yerleşimi)</div>
+                        <div>3. Service: <code>getCollectionsForPage()</code> method ekle</div>
+                        <div>4. Controller: Sector sayfası için koleksiyonları getir</div>
+                        <div>5. View: Sector page layout oluştur</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

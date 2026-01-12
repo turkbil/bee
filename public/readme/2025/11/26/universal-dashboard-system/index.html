@@ -1,1 +1,448 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Dashboard Sistemi - Mimari Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+
+        section { margin-bottom: 50px; }
+
+        h2 {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h3 {
+            font-size: 1.2rem;
+            color: #f8fafc;
+            margin-bottom: 15px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+        .card.purple { border-left-color: #8b5cf6; }
+        .card.green { border-left-color: #10b981; }
+        .card.orange { border-left-color: #f59e0b; }
+        .card.red { border-left-color: #ef4444; }
+
+        .card p { color: #cbd5e1; margin-bottom: 12px; }
+        .card p:last-child { margin-bottom: 0; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .badge.blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .badge.purple { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+        .badge.green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .badge.orange { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .badge.red { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+        ul { margin-left: 20px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; color: #cbd5e1; }
+        li strong { color: #f8fafc; }
+
+        .diagram {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre;
+            color: #94a3b8;
+        }
+
+        .flow-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+        .flow-num {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .flow-content { flex: 1; }
+        .flow-title { font-weight: 600; color: #f8fafc; margin-bottom: 4px; }
+        .flow-desc { font-size: 0.9rem; color: #94a3b8; }
+
+        .widget-example {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .widget-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px dashed rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #60a5fa;
+        }
+        .widget-box.full { grid-column: span 4; }
+        .widget-box.half { grid-column: span 2; }
+        .widget-box.third { grid-column: span 1; }
+        .widget-box.empty {
+            background: rgba(100, 116, 139, 0.1);
+            border-color: rgba(100, 116, 139, 0.3);
+            color: #64748b;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .highlight strong { color: #fbbf24; }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Universal Dashboard Sistemi</h1>
+            <div class="meta">
+                Tarih: 2025-11-26 |
+                Kapsam: Tum Tenant'lar |
+                Hedef: Dinamik, Yetki-Bazli, Esnek Dashboard
+            </div>
+        </header>
+
+        <!-- TEMEL PRENSIP -->
+        <section>
+            <h2>Temel Prensipler</h2>
+
+            <div class="card">
+                <h3>1. Tenant-Agnostic Tasarim</h3>
+                <p>Dashboard hicbir tenant'a ozgu icerik barindirmaz. Muzibu, ixtif veya baska herhangi bir tenant icin ayni kod calısır. Tenant-spesifik veriler (logo, isim, tema rengi) dinamik olarak cekilir.</p>
+            </div>
+
+            <div class="card purple">
+                <h3>2. Widget-Based Mimari</h3>
+                <p>Her bilgi parcası bagimsiz bir "widget" olarak tasarlanır. Widget'lar modullere bagli olarak otomatik gosterilir veya gizlenir. Eksik widget olunca diger widget'lar boslugu doldurur.</p>
+            </div>
+
+            <div class="card green">
+                <h3>3. Graceful Degradation</h3>
+                <p>Editor sadece 1 module yetkili olsa bile dashboard sik gorunur. 10 module yetkili olsa da ayni sekilde sik gorunur. Bosluk, kirik gorunum, dagınık tasarim OLMAZ.</p>
+            </div>
+        </section>
+
+        <!-- ROL BAZLI GORUNUM -->
+        <section>
+            <h2>Rol Bazli Gorunum</h2>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Root / Admin</h3>
+                    <span class="badge green">Tam Erisim</span>
+                    <ul>
+                        <li>Tum widget'lari gorur</li>
+                        <li>Sistem durumu widget'i</li>
+                        <li>Kullanici yonetimi ozeti</li>
+                        <li>AI kredisi (varsa)</li>
+                        <li>Tum modul istatistikleri</li>
+                    </ul>
+                </div>
+
+                <div class="card orange">
+                    <h3>Editor</h3>
+                    <span class="badge orange">Sinirli Erisim</span>
+                    <ul>
+                        <li>Sadece yetkili modul widget'lari</li>
+                        <li>Kisisel profil karti</li>
+                        <li>Son aktiviteler (kendi islemleri)</li>
+                        <li>Hizli islemler (yetkili moduller)</li>
+                        <li>AI Chat (eger AI yetkisi varsa)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- WIDGET SISTEMI -->
+        <section>
+            <h2>Widget Sistemi</h2>
+
+            <div class="card">
+                <h3>Widget Kategorileri</h3>
+                <p><span class="badge blue">Sistem</span> PHP, Laravel, Cache, DB durumu - Sadece Admin/Root</p>
+                <p><span class="badge purple">AI</span> Kredi durumu, AI Chat - AI modulu aktifse</p>
+                <p><span class="badge green">Modul</span> Page, Portfolio, Blog vs. - Modul aktif ve yetkili ise</p>
+                <p><span class="badge orange">Kisisel</span> Profil, Son aktiviteler - Herkes gorur</p>
+            </div>
+
+            <div class="card purple">
+                <h3>Widget Oncelik Sirasi</h3>
+                <div class="flow-item">
+                    <div class="flow-num">1</div>
+                    <div class="flow-content">
+                        <div class="flow-title">Hosgeldin Banner</div>
+                        <div class="flow-desc">Her zaman gosterilir, kullanici adı ve ozet istatistikler</div>
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-num">2</div>
+                    <div class="flow-content">
+                        <div class="flow-title">Stat Kartlari (Dinamik)</div>
+                        <div class="flow-desc">Yetkili modullere gore 2-4 kart gosterilir. Az modul = buyuk kartlar</div>
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-num">3</div>
+                    <div class="flow-content">
+                        <div class="flow-title">Hizli Islemler</div>
+                        <div class="flow-desc">Sadece CREATE yetkisi olan moduller icin butonlar</div>
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-num">4</div>
+                    <div class="flow-content">
+                        <div class="flow-title">Modul Widget'lari</div>
+                        <div class="flow-desc">Son sayfalar, son portfolyolar vs. - yetkiye gore</div>
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-num">5</div>
+                    <div class="flow-content">
+                        <div class="flow-title">Yan Panel</div>
+                        <div class="flow-desc">Profil + Sistem durumu (admin) veya Profil + AI Chat (editor)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GRID SISTEMI -->
+        <section>
+            <h2>Responsive Grid Sistemi</h2>
+
+            <div class="highlight">
+                <strong>Altin Kural:</strong> Widget sayisi azalinca, kalan widget'lar BUYUR. Hicbir zaman bosluk kalmaz, hicbir zaman tek basina kucuk widget olmaz.
+            </div>
+
+            <h3>Admin/Root - 4+ Modul Yetkisi</h3>
+            <div class="widget-example">
+                <div class="widget-box third">Kredi</div>
+                <div class="widget-box third">Sayfa</div>
+                <div class="widget-box third">User</div>
+                <div class="widget-box third">Ziyaret</div>
+                <div class="widget-box half">Hizli Islemler</div>
+                <div class="widget-box half">Son Aktivite</div>
+                <div class="widget-box half">Modul Liste</div>
+                <div class="widget-box half">Sistem + Profil</div>
+            </div>
+
+            <h3>Editor - 2 Modul Yetkisi (Ornek: Page + Blog)</h3>
+            <div class="widget-example">
+                <div class="widget-box half">Sayfalar (32)</div>
+                <div class="widget-box half">Blog (15)</div>
+                <div class="widget-box half">Hizli Islemler</div>
+                <div class="widget-box half">Son Aktivitelerim</div>
+                <div class="widget-box half">Son Sayfalar</div>
+                <div class="widget-box half">Profil</div>
+            </div>
+
+            <h3>Editor - 1 Modul Yetkisi (Ornek: Sadece Page)</h3>
+            <div class="widget-example">
+                <div class="widget-box full">Hosgeldin + Sayfa Istatistigi</div>
+                <div class="widget-box half">Son Sayfalar (Liste)</div>
+                <div class="widget-box half">Hizli Islemler + Profil</div>
+            </div>
+        </section>
+
+        <!-- TEKNIK YAPI -->
+        <section>
+            <h2>Teknik Mimari</h2>
+
+            <div class="diagram">
+DashboardWidget.php
+├── mount()
+│   ├── checkUserRole()         → isRoot, isAdmin, isEditor
+│   ├── loadActiveModules()     → Tenant modulleri + Yetki filtresi
+│   └── loadWidgetData()        → Her widget icin veri yukle
+│
+├── getVisibleWidgets()         → Yetkiye gore widget listesi
+│   ├── Admin: Tum widget'lar
+│   └── Editor: allowedModulesView'daki widget'lar
+│
+├── getGridLayout()             → Widget sayisina gore grid hesapla
+│   ├── 4+ widget  → 4 kolonlu grid
+│   ├── 2-3 widget → 2 kolonlu grid
+│   └── 1 widget   → Tek kolon, genis kartlar
+│
+└── render() → dashboard-widget.blade.php
+            </div>
+
+            <div class="card green">
+                <h3>Widget Veri Yukleme</h3>
+                <p>Her widget bagimsiz olarak veri yukler. Modul aktif degilse veya yetki yoksa, o widget'in verisi YUKLENMEZ (performans). Blade'de @if ile kontrol edilir.</p>
+            </div>
+        </section>
+
+        <!-- HOSGELDIN MESAJI -->
+        <section>
+            <h2>Hosgeldin Mesaji Mantigi</h2>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Admin/Root</h3>
+                    <p>"Hos geldin, [Ad]!"</p>
+                    <p>"Sistemde [X] aktif modul var. [Y] yeni kullanici bu hafta katildi."</p>
+                </div>
+
+                <div class="card orange">
+                    <h3>Editor</h3>
+                    <p>"Hos geldin, [Ad]!"</p>
+                    <p>"[Modul adlari] modullerini yonetebilirsin. Bugun [X] icerik guncellendi."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HIZLI ISLEMLER -->
+        <section>
+            <h2>Hizli Islemler Mantigi</h2>
+
+            <div class="card">
+                <h3>Kural: Sadece CREATE Yetkisi Olanlar</h3>
+                <ul>
+                    <li><strong>canCreateModule('page')</strong> → "Yeni Sayfa" butonu goster</li>
+                    <li><strong>canCreateModule('blog')</strong> → "Yeni Blog" butonu goster</li>
+                    <li><strong>canCreateModule('portfolio')</strong> → "Yeni Portfolio" butonu goster</li>
+                    <li>Hicbir CREATE yetkisi yoksa → Hizli islemler paneli GIZLE</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>Onemli:</strong> VIEW yetkisi varsa ama CREATE yoksa, o modul istatistik kartinda gosterilir ama hizli islemlerde buton OLMAZ.
+            </div>
+        </section>
+
+        <!-- AI CHAT -->
+        <section>
+            <h2>AI Chat Widget</h2>
+
+            <div class="card purple">
+                <h3>Gosterim Kosullari</h3>
+                <ul>
+                    <li>AI modulu tenant'ta aktif mi? → Hayirsa GIZLE</li>
+                    <li>Kullanici Admin/Root mu? → Goster</li>
+                    <li>Kullanici Editor ve AI yetkisi var mi? → Goster</li>
+                    <li>Kredi 0 mi? → Goster ama "Kredi tukendi" uyarisi</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SONRAKI ADIMLAR -->
+        <section>
+            <h2>Uygulama Adimlari</h2>
+
+            <div class="flow-item">
+                <div class="flow-num">1</div>
+                <div class="flow-content">
+                    <div class="flow-title">DashboardWidget.php Guncelle</div>
+                    <div class="flow-desc">getVisibleWidgets(), getGridLayout() metodlari ekle</div>
+                </div>
+            </div>
+            <div class="flow-item">
+                <div class="flow-num">2</div>
+                <div class="flow-content">
+                    <div class="flow-title">Blade Sablonu Yeniden Yaz</div>
+                    <div class="flow-desc">Dinamik grid sistemi, widget loop'u, responsive tasarim</div>
+                </div>
+            </div>
+            <div class="flow-item">
+                <div class="flow-num">3</div>
+                <div class="flow-content">
+                    <div class="flow-title">CSS Grid Utility</div>
+                    <div class="flow-desc">widget-sm, widget-md, widget-lg, widget-full class'lari</div>
+                </div>
+            </div>
+            <div class="flow-item">
+                <div class="flow-num">4</div>
+                <div class="flow-content">
+                    <div class="flow-title">Test</div>
+                    <div class="flow-desc">Admin, Editor (cok modul), Editor (tek modul) senaryolari</div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafindan olusturuldu | Universal Dashboard Sistemi v1
+        </footer>
+    </div>
+</body>
+</html>

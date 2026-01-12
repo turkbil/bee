@@ -1,1 +1,452 @@
-v6/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Hesap Oluşturma & Şube Bağlama - Modal Tasarımları</title>
+    <!-- Tabler CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #1a2234; }
+        .page-wrapper { padding: 20px; }
+        .demo-label {
+            background: #206bc4;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        .demo-label-green {
+            background: #2fb344;
+        }
+        .demo-label-orange {
+            background: #f76707;
+        }
+        .modal-demo {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .user-search-input {
+            position: relative;
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            border: 1px solid #3b5998;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .user-dropdown-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid #334155;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-dropdown-item:hover {
+            background: #334155;
+        }
+        .user-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        .selected-user-card {
+            background: rgba(32, 107, 196, 0.15);
+            border: 1px solid #206bc4;
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            align-items-center;
+            gap: 12px;
+        }
+        .code-preview {
+            background: #0f172a;
+            border: 1px dashed #475569;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        .code-preview code {
+            font-size: 1.2rem;
+            color: #60a5fa;
+        }
+    </style>
+</head>
+<body class="theme-dark">
+    <div class="page-wrapper">
+        <div class="container-xl">
+            <!-- Header -->
+            <div class="page-header mb-4">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <h2 class="page-title">
+                            <i class="fas fa-building me-2"></i>
+                            Kurumsal Hesap Yönetimi - Modal Tasarımları
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Butonlar -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="btn-list">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-building me-2"></i>
+                            Yeni Ana Firma
+                        </button>
+                        <button class="btn btn-azure">
+                            <i class="fas fa-link me-2"></i>
+                            Şube Bağla
+                        </button>
+                    </div>
+                    <p class="text-muted mt-2 mb-0">
+                        <small>İki ayrı buton: Ana firma oluşturma ve mevcut firmaya şube bağlama</small>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modal 1: Yeni Ana Firma -->
+            <span class="demo-label">Modal 1: Yeni Ana Firma Oluştur</span>
+            <div class="modal-demo">
+                <div class="modal-dialog" style="max-width: 500px; margin: 0 auto;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="fas fa-building me-2"></i>
+                                Yeni Ana Firma Oluştur
+                            </h5>
+                            <button type="button" class="btn-close" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Kullanıcı Arama -->
+                            <div class="mb-3">
+                                <label class="form-label required">Hesap Sahibi</label>
+                                <div class="user-search-input">
+                                    <input type="text" class="form-control" placeholder="Kullanıcı ara (isim veya email)..." value="nur">
+                                    <div class="user-dropdown">
+                                        <div class="user-dropdown-item">
+                                            <span class="avatar avatar-sm bg-blue">NK</span>
+                                            <div>
+                                                <div class="fw-medium">Nurullah Kaya</div>
+                                                <small class="text-muted">nurullah@nurullah.net</small>
+                                            </div>
+                                        </div>
+                                        <div class="user-dropdown-item">
+                                            <span class="avatar avatar-sm bg-green">NA</span>
+                                            <div>
+                                                <div class="fw-medium">Nur Aktaş</div>
+                                                <small class="text-muted">nur@example.com</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <small class="form-hint">Mevcut kullanıcılardan birini seçin</small>
+                            </div>
+
+                            <!-- Seçilen Kullanıcı (alternatif görünüm) -->
+                            <!--
+                            <div class="mb-3">
+                                <label class="form-label">Seçilen Kullanıcı</label>
+                                <div class="selected-user-card">
+                                    <span class="avatar avatar-sm bg-blue">NK</span>
+                                    <div class="flex-fill">
+                                        <div class="fw-medium">Nurullah Kaya</div>
+                                        <small class="text-muted">nurullah@nurullah.net</small>
+                                    </div>
+                                    <button class="btn btn-ghost-danger btn-icon btn-sm">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            -->
+
+                            <!-- Firma Adı -->
+                            <div class="mb-3">
+                                <label class="form-label required">Firma Adı</label>
+                                <input type="text" class="form-control" placeholder="Örn: Nurullah Yazılım Ltd. Şti.">
+                            </div>
+
+                            <!-- Kurumsal Kod Önizleme -->
+                            <div class="mb-3">
+                                <label class="form-label">Kurumsal Kod</label>
+                                <div class="code-preview">
+                                    <code>MZB-XXXXXXXX</code>
+                                    <div class="text-muted mt-1">
+                                        <small>Otomatik oluşturulacak</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn me-auto" data-bs-dismiss="modal">İptal</button>
+                            <button type="button" class="btn btn-primary">
+                                <i class="fas fa-check me-2"></i>
+                                Ana Firma Oluştur
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal 2: Şube Bağla -->
+            <span class="demo-label demo-label-green">Modal 2: Şube Bağla</span>
+            <div class="modal-demo">
+                <div class="modal-dialog" style="max-width: 500px; margin: 0 auto;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="fas fa-link me-2"></i>
+                                Şube Bağla
+                            </h5>
+                            <button type="button" class="btn-close" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Ana Firma Seçimi -->
+                            <div class="mb-3">
+                                <label class="form-label required">Ana Firma</label>
+                                <select class="form-select">
+                                    <option value="">Ana firma seçin...</option>
+                                    <option value="1">Nurullah Yazılım Ltd. Şti. (1 şube)</option>
+                                    <option value="2">ABC Müzik Ltd. Şti. (3 şube)</option>
+                                    <option value="3">XYZ Prodüksiyon (0 şube)</option>
+                                </select>
+                                <small class="form-hint">Şubenin bağlanacağı ana firma</small>
+                            </div>
+
+                            <!-- Şube Sahibi -->
+                            <div class="mb-3">
+                                <label class="form-label required">Şube Sahibi</label>
+                                <div class="user-search-input">
+                                    <input type="text" class="form-control" placeholder="Kullanıcı ara...">
+                                </div>
+                                <small class="form-hint">Bu şubenin yöneticisi olacak kullanıcı</small>
+                            </div>
+
+                            <!-- Şube Adı -->
+                            <div class="mb-3">
+                                <label class="form-label required">Şube Adı</label>
+                                <input type="text" class="form-control" placeholder="Örn: Info Turkbilisim">
+                                <small class="form-hint">Şubenin görünen adı</small>
+                            </div>
+
+                            <!-- Bilgi Kutusu -->
+                            <div class="alert alert-info mb-0">
+                                <div class="d-flex">
+                                    <div>
+                                        <i class="fas fa-info-circle me-2"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Not:</strong> Şubelerin kurumsal kodu olmaz. Ana firmanın kodunu kullanırlar.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn me-auto" data-bs-dismiss="modal">İptal</button>
+                            <button type="button" class="btn btn-azure">
+                                <i class="fas fa-link me-2"></i>
+                                Şube Bağla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alternatif: Tek Modal -->
+            <span class="demo-label demo-label-orange">Alternatif: Tek Modal (Tab ile)</span>
+            <div class="modal-demo">
+                <div class="modal-dialog" style="max-width: 550px; margin: 0 auto;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="fas fa-building me-2"></i>
+                                Kurumsal Hesap Ekle
+                            </h5>
+                            <button type="button" class="btn-close" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Tab Navigation -->
+                            <ul class="nav nav-tabs mb-3">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#">
+                                        <i class="fas fa-building me-1"></i>
+                                        Ana Firma
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="fas fa-store me-1"></i>
+                                        Şube
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <!-- Ana Firma Tab İçeriği -->
+                            <div class="mb-3">
+                                <label class="form-label required">Hesap Sahibi</label>
+                                <input type="text" class="form-control" placeholder="Kullanıcı ara...">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label required">Firma Adı</label>
+                                <input type="text" class="form-control" placeholder="Örn: ABC Müzik Ltd. Şti.">
+                            </div>
+
+                            <div class="code-preview">
+                                <code>MZB-XXXXXXXX</code>
+                                <div class="text-muted mt-1">
+                                    <small>Kurumsal kod otomatik oluşturulacak</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn me-auto">İptal</button>
+                            <button type="button" class="btn btn-primary">
+                                <i class="fas fa-check me-2"></i>
+                                Oluştur
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Akış Açıklaması -->
+            <div class="row mt-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-building text-primary me-2"></i>
+                                Ana Firma Oluşturma Akışı
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <ol class="mb-0">
+                                <li class="mb-2">Admin "Yeni Ana Firma" butonuna tıklar</li>
+                                <li class="mb-2">Modal açılır</li>
+                                <li class="mb-2">Mevcut kullanıcıyı arar ve seçer</li>
+                                <li class="mb-2">Firma adı girer</li>
+                                <li class="mb-2">"Oluştur" → Kayıt oluşur</li>
+                                <li class="mb-0">Kurumsal kod otomatik: <code>MZB-XXXXXXXX</code></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-link text-azure me-2"></i>
+                                Şube Bağlama Akışı
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <ol class="mb-0">
+                                <li class="mb-2">Admin "Şube Bağla" butonuna tıklar</li>
+                                <li class="mb-2">Modal açılır</li>
+                                <li class="mb-2">Ana firmayı seçer (dropdown)</li>
+                                <li class="mb-2">Şube sahibi kullanıcıyı seçer</li>
+                                <li class="mb-2">Şube adı girer</li>
+                                <li class="mb-0">"Bağla" → <code>parent_id</code> ile kayıt oluşur</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Veritabanı Kaydı -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-database me-2"></i>
+                        Veritabanı Kaydı
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="mb-3">Ana Firma Kaydı</h4>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">user_id</td>
+                                    <td>Seçilen kullanıcı ID</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">parent_id</td>
+                                    <td><code>NULL</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">company_name</td>
+                                    <td>Girilen firma adı</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">corporate_code</td>
+                                    <td><code>MZB-XXXXXXXX</code> (otomatik)</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">is_active</td>
+                                    <td><code>true</code></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="mb-3">Şube Kaydı</h4>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">user_id</td>
+                                    <td>Şube sahibi kullanıcı ID</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">parent_id</td>
+                                    <td>Ana firma ID</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">company_name</td>
+                                    <td>Şube adı</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">corporate_code</td>
+                                    <td><code>NULL</code> (şubelerde yok)</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">is_active</td>
+                                    <td><code>true</code></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notlar -->
+            <div class="alert alert-info mt-4">
+                <h4 class="alert-title">
+                    <i class="fas fa-question-circle me-2"></i>
+                    Tercih?
+                </h4>
+                <ul class="mb-0">
+                    <li><strong>İki Ayrı Modal:</strong> Daha net, kullanıcı ne yapacağını biliyor</li>
+                    <li><strong>Tek Modal (Tab):</strong> Daha kompakt, tek yerden yönetim</li>
+                </ul>
+                <p class="mt-2 mb-0">Hangisini tercih edersiniz?</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+</body>
+</html>

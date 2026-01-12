@@ -1,1 +1,598 @@
-v3/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Ayarlar Özeti</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        header { margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid #334155; }
+        h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 15px; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        h2 { font-size: 1.5rem; margin: 40px 0 20px; color: #60a5fa; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+
+        /* Cards */
+        .setting-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3b82f6;
+        }
+        .setting-card.exists { border-left-color: #10b981; }
+        .setting-card.new { border-left-color: #f59e0b; }
+
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .setting-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .setting-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-exists { background: #10b981; color: white; }
+        .status-new { background: #f59e0b; color: white; }
+
+        .setting-desc {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .setting-example {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .setting-example strong {
+            color: #fcd34d;
+        }
+
+        /* Group Header */
+        .group-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.1));
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .group-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .group-count {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        /* Summary */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            border: 2px solid #10b981;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .summary-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Decision */
+        .decision-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .decision-title {
+            color: #fcd34d;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚙️ Üyelik Sistemi Ayarları</h1>
+            <div class="meta">
+                Her tenant (site) kendi ayarlarını yapabilir. Muzibu farklı, İxtif farklı çalışabilir.
+            </div>
+        </header>
+
+        <!-- Özet -->
+        <div class="summary-box">
+            <h3 style="color: #6ee7b7; margin-bottom: 10px;">📊 Genel Bakış</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-number">17</div>
+                    <div class="summary-label">Mevcut Ayar</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number" style="color: #f59e0b;">10</div>
+                    <div class="summary-label">Eklenecek Ayar</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number" style="color: #a78bfa;">27</div>
+                    <div class="summary-label">Toplam</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2FA Kararı -->
+        <div class="decision-box">
+            <div class="decision-title">❓ 2FA (İki Adımlı Doğrulama) Nasıl Çalışsın?</div>
+            <p style="color: #cbd5e1; margin-bottom: 15px;">
+                <strong>Öneri:</strong> Her site kendi kuralını belirlesin:
+            </p>
+            <ul style="padding-left: 20px; color: #94a3b8;">
+                <li><strong>Zorunlu:</strong> Herkes SMS kodu girmek zorunda (güvenlik yüksek)</li>
+                <li><strong>İsteğe Bağlı:</strong> Kullanıcı isterse açar (esnek)</li>
+                <li><strong>Kapalı:</strong> Hiç kimse kullanamaz (basit giriş)</li>
+            </ul>
+        </div>
+
+        <!-- KAYIT AYARLARI -->
+        <h2>📝 Kayıt Ayarları</h2>
+        <p style="color: #94a3b8; margin-bottom: 20px;">Yeni kullanıcıların siteye kayıt olmasıyla ilgili ayarlar</p>
+
+        <div class="group-header">
+            <span class="group-title">Kayıt İşlemleri</span>
+            <span class="group-count">5 mevcut + 2 yeni</span>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Kayıt Açık/Kapalı</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Siteye yeni üye kaydı yapılabilsin mi?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> İxtif'te açık (herkes kayıt olabilir), özel bir site kapatabilir
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Email Doğrulama</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Kayıttan sonra email'e gelen linke tıklaması gereksin mi?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Açıksa kullanıcı email'ini doğrulamadan giriş yapamaz
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Admin Onayı</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Kayıt olduktan sonra admin onayı beklensin mi?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> B2B sitelerde açık - her başvuruyu admin inceleyip onaylar
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Deneme Süresi</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Yeni üyelere kaç gün ücretsiz deneme verilsin?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Muzibu'da 7 gün ücretsiz premium deneme
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Giriş/Kayıt Teması</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Login ve kayıt sayfalarının görünümü (minimal, modern, vs.)
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Her tenant kendi marka rengine uygun tema seçebilir
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">Telefon Zorunlu mu?</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                Kayıt sırasında telefon numarası zorunlu olsun mu? (SMS doğrulama için gerekli)
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Muzibu'da zorunlu (SMS için), İxtif'te opsiyonel
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">Kullanım Şartları Onayı</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                Kayıt sırasında "Kullanım şartlarını kabul ediyorum" checkbox'ı zorunlu olsun mu?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> KVKK için genelde zorunlu tutulur
+            </div>
+        </div>
+
+        <!-- OTURUM AYARLARI -->
+        <h2>🔄 Oturum Ayarları</h2>
+        <p style="color: #94a3b8; margin-bottom: 20px;">Kullanıcının giriş yaptıktan sonraki oturumuyla ilgili ayarlar</p>
+
+        <div class="group-header">
+            <span class="group-title">Oturum Yönetimi</span>
+            <span class="group-count">2 mevcut</span>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Oturum Süresi</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Kullanıcı kaç dakika işlem yapmazsa otomatik çıkış yapsın?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> 525600 dakika = 1 yıl (beni hatırla seçiliyse)
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Cihaz Limiti</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Aynı anda kaç cihazdan giriş yapılabilsin? (Netflix gibi)
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Starter plan: 1 cihaz, Premium: 3 cihaz, Pro: 5 cihaz
+            </div>
+        </div>
+
+        <!-- GÜVENLİK AYARLARI -->
+        <h2>🔒 Güvenlik Ayarları</h2>
+        <p style="color: #94a3b8; margin-bottom: 20px;">Hesap güvenliği ve giriş korumasıyla ilgili ayarlar</p>
+
+        <div class="group-header">
+            <span class="group-title">Güvenlik</span>
+            <span class="group-count">4 mevcut + 4 yeni</span>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Maksimum Giriş Denemesi</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Yanlış şifre kaç kez girilirse hesap kilitlensin?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> 5 yanlış deneme sonrası hesap geçici olarak kilitlenir
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Kilitleme Süresi</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Hesap kilitlenince kaç dakika beklemesi gereksin?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> 30 dakika sonra tekrar deneyebilir
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">SMS Kod Süresi</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Gönderilen SMS kodu kaç dakika geçerli olsun?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> 5 dakika içinde girilmezse yeni kod istenmeli
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">2FA Modu (İki Adımlı Doğrulama)</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                SMS ile doğrulama sistemi nasıl çalışsın?
+            </div>
+            <div class="setting-example">
+                <strong>Seçenekler:</strong><br>
+                • <strong>Zorunlu:</strong> Herkes SMS kodu girmek zorunda<br>
+                • <strong>İsteğe Bağlı:</strong> Kullanıcı isterse profilinden açar<br>
+                • <strong>Kapalı:</strong> SMS doğrulama yok
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">2FA Yöntemi</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                Doğrulama kodu nasıl gönderilsin?
+            </div>
+            <div class="setting-example">
+                <strong>Seçenekler:</strong> SMS veya Email
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">Cihazı Hatırla</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                "Bu cihazı hatırla" seçeneği gösterilsin mi? (Her girişte SMS istememek için)
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Açıksa kullanıcı güvendiği cihazda SMS'siz giriş yapabilir
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">Cihaz Hatırlama Süresi</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                Hatırlanan cihaz kaç gün geçerli olsun?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> 30 gün sonra tekrar SMS kodu ister
+            </div>
+        </div>
+
+        <!-- ABONELİK AYARLARI -->
+        <h2>💳 Abonelik Ayarları</h2>
+        <p style="color: #94a3b8; margin-bottom: 20px;">Ücretli üyelik sistemiyle ilgili ayarlar (Muzibu gibi siteler için)</p>
+
+        <div class="group-header">
+            <span class="group-title">Abonelik Yönetimi</span>
+            <span class="group-count">4 mevcut</span>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Ücretli Üyelik Aktif mi?</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Sitede ücretli abonelik sistemi var mı?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Muzibu'da açık (aylık/yıllık planlar), İxtif'te kapalı
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Otomatik Yenileme</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Abonelik bitince otomatik olarak yenilensin mi?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Açıksa ay sonunda otomatik ödeme alınır
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Hatırlatma Günü</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Abonelik bitmeden kaç gün önce email ile hatırlatma gönderilsin?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> 7 gün önce "Aboneliğiniz yakında bitiyor" maili
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Tolerans Süresi</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Abonelik bittikten sonra kaç gün daha erişim verilsin? (Ödeme yapması için süre)
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> 3 gün tolerans - bu sürede ödeme yaparsa kesinti olmaz
+            </div>
+        </div>
+
+        <!-- KURUMSAL AYARLAR -->
+        <h2>🏢 Kurumsal Ayarlar</h2>
+        <p style="color: #94a3b8; margin-bottom: 20px;">Şirketlerin toplu üyelik almasıyla ilgili ayarlar</p>
+
+        <div class="group-header">
+            <span class="group-title">Kurumsal Üyelik</span>
+            <span class="group-count">2 mevcut</span>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Kurumsal Üyelik Aktif mi?</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Şirketler toplu üyelik alıp çalışanlarına dağıtabilsin mi?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> Muzibu'da açık - bir şirket 50 kişilik paket alabilir
+            </div>
+        </div>
+
+        <div class="setting-card exists">
+            <div class="setting-header">
+                <span class="setting-name">Maksimum Alt Kullanıcı</span>
+                <span class="setting-status status-exists">MEVCUT</span>
+            </div>
+            <div class="setting-desc">
+                Bir kurumsal hesap en fazla kaç alt kullanıcı ekleyebilsin?
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> 0 = sınırsız, 100 = en fazla 100 çalışan
+            </div>
+        </div>
+
+        <!-- SMS AYARLARI -->
+        <h2>📱 SMS Ayarları</h2>
+        <p style="color: #94a3b8; margin-bottom: 20px;">SMS gönderimi için gerekli teknik ayarlar (YENİ GRUP)</p>
+
+        <div class="group-header">
+            <span class="group-title">SMS Servisi</span>
+            <span class="group-count">4 yeni</span>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">SMS Sağlayıcı</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                SMS göndermek için hangi firma kullanılsın?
+            </div>
+            <div class="setting-example">
+                <strong>Seçenekler:</strong> NetGSM, İletimerkezi, Twilio
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">SMS API Anahtarı</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                SMS firmasından alınan gizli anahtar (kullanıcı adı gibi)
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> NetGSM panelinden alınan usercode
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">SMS API Şifresi</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                SMS firmasından alınan gizli şifre
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> NetGSM panelinden alınan password
+            </div>
+        </div>
+
+        <div class="setting-card new">
+            <div class="setting-header">
+                <span class="setting-name">SMS Gönderici Adı</span>
+                <span class="setting-status status-new">YENİ EKLENECEK</span>
+            </div>
+            <div class="setting-desc">
+                SMS'in kimden geldiği (kullanıcının telefonunda görünen ad)
+            </div>
+            <div class="setting-example">
+                <strong>Örnek:</strong> "MUZIBU" veya "IXTIF" - BTK onaylı başlık gerekir
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI | Üyelik Sistemi Ayarlar Özeti v3<br>
+            📅 2025-11-23 | Anlaşılır açıklamalarla
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,1 +1,693 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Duration & Count Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#0f1729',
+                            950: '#020617'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-800 pb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-4xl">🎵</span>
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">Muzibu Duration & Count Analizi</h1>
+                        <p class="text-slate-400 mt-1">Toplu özelliklerin anında güncelleme durumu</p>
+                    </div>
+                </div>
+                <span class="px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-600/30">
+                    🔍 Analiz
+                </span>
+            </div>
+            <div class="flex items-center gap-6 text-sm text-slate-400">
+                <span>📅 11 Ocak 2026</span>
+                <span>🏢 Tenant 1001 (muzibu.com.tr)</span>
+                <span>🤖 Claude Sonnet 4.5</span>
+            </div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-8">
+            <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <span class="text-3xl">📝</span>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-green-400 mb-3">Basit Anlatım (Herkes İçin)</h2>
+                        <div class="space-y-3 text-slate-300">
+                            <p>
+                                <strong>Sorun:</strong> Müzik platformunda albümlerin, sanatçıların, türlerin ve çalma listelerinin kaç şarkı içerdiği ve toplam süreleri saklanıyor.
+                                Yeni şarkı eklendiğinde, düzenlendiğinde veya silindiğinde bu sayılar otomatik güncellenmeli.
+                            </p>
+                            <p>
+                                <strong>Örnek:</strong> Bir albüme yeni şarkı eklediğinizde, albümün "5 şarkı, 18 dakika" bilgisi otomatik olarak "6 şarkı, 21 dakika" olmalı.
+                            </p>
+                            <p>
+                                <strong>Durum:</strong> Sistem <span class="text-yellow-400 font-semibold">KISMEN ÇALIŞIYOR</span>. Bazı durumlar otomatik, bazıları manuel güncelleme gerektiriyor.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Özet -->
+        <section class="mb-8">
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <span class="text-3xl">⚙️</span>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-blue-400 mb-3">Teknik Detaylar (Geliştiriciler İçin)</h2>
+                        <div class="space-y-2 text-slate-300">
+                            <p><strong>Migration:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-blue-300">2025_12_26_200000_add_cache_count_fields_to_muzibu_tables.php</code></p>
+                            <p><strong>Trait:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-blue-300">HasCachedCounts</code> (Modules/Muzibu/App/Traits/)</p>
+                            <p><strong>Observer'lar:</strong> SongObserver, AlbumObserver, PlaylistObserver</p>
+                            <p><strong>Güncelleme Yöntemleri:</strong> incrementCachedCount(), decrementCachedCount(), recalculateCachedCounts()</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tablo Analizi -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>📊</span>
+                Tablolardaki Duration & Count Field'ları
+            </h2>
+
+            <div class="grid grid-cols-1 gap-4">
+                <!-- Playlists -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <span>🎶</span> muzibu_playlists
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">Çalma Listeleri</p>
+                        </div>
+                        <span class="px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs font-semibold border border-yellow-600/30">
+                            ⚠️ Manuel
+                        </span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">songs_count</code>
+                                <span class="text-slate-400 text-sm">(int, nullable)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Playlist'teki aktif şarkı sayısı</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">total_duration</code>
+                                <span class="text-slate-400 text-sm">(int, nullable, saniye)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Playlist'teki tüm şarkıların toplam süresi</p>
+                        </div>
+                        <div class="bg-yellow-900/20 border border-yellow-700 rounded p-3 mt-3">
+                            <p class="text-sm text-yellow-300">
+                                <strong>⚠️ Manuel Güncelleme Gerekli:</strong> Playlist'e şarkı eklenirken/çıkarılırken
+                                <code class="bg-slate-800 px-2 py-1 rounded">attachSongWithCache()</code>,
+                                <code class="bg-slate-800 px-2 py-1 rounded">detachSongWithCache()</code>,
+                                <code class="bg-slate-800 px-2 py-1 rounded">syncSongsWithCache()</code> methodları kullanılmalı!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Albums -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <span>💿</span> muzibu_albums
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">Albümler</p>
+                        </div>
+                        <span class="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-xs font-semibold border border-green-600/30">
+                            ✅ Otomatik
+                        </span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">songs_count</code>
+                                <span class="text-slate-400 text-sm">(int, nullable)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Albümdeki aktif şarkı sayısı</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">total_duration</code>
+                                <span class="text-slate-400 text-sm">(int, nullable, saniye)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Albümdeki tüm şarkıların toplam süresi</p>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded p-3 mt-3">
+                            <p class="text-sm text-green-300">
+                                <strong>✅ Otomatik Güncelleme:</strong> SongObserver şarkı eklendiğinde/silindiğinde/güncellendiğinde
+                                otomatik olarak album count'larını günceller.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Genres -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <span>🎸</span> muzibu_genres
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">Müzik Türleri</p>
+                        </div>
+                        <span class="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-xs font-semibold border border-green-600/30">
+                            ✅ Otomatik
+                        </span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">songs_count</code>
+                                <span class="text-slate-400 text-sm">(int, nullable)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Bu türdeki aktif şarkı sayısı</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">total_duration</code>
+                                <span class="text-slate-400 text-sm">(int, nullable, saniye)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Bu türdeki tüm şarkıların toplam süresi</p>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded p-3 mt-3">
+                            <p class="text-sm text-green-300">
+                                <strong>✅ Otomatik Güncelleme:</strong> SongObserver şarkı genre_id'si değiştiğinde
+                                eski ve yeni genre count'larını otomatik günceller.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artists -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <span>🎤</span> muzibu_artists
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">Sanatçılar</p>
+                        </div>
+                        <span class="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-xs font-semibold border border-green-600/30">
+                            ✅ Otomatik
+                        </span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">albums_count</code>
+                                <span class="text-slate-400 text-sm">(int, nullable)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Sanatçının aktif albüm sayısı</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">songs_count</code>
+                                <span class="text-slate-400 text-sm">(int, nullable)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Sanatçının aktif şarkı sayısı (tüm albümlerden)</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-green-400">✅</span>
+                                <code class="text-blue-300">total_duration</code>
+                                <span class="text-slate-400 text-sm">(int, nullable, saniye)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Sanatçının tüm şarkılarının toplam süresi</p>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded p-3 mt-3">
+                            <p class="text-sm text-green-300">
+                                <strong>✅ Otomatik Güncelleme:</strong> SongObserver ve AlbumObserver sanatçı count'larını
+                                otomatik günceller (Album üzerinden hasManyThrough ilişkisi).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radios -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <span>📻</span> muzibu_radios
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">Radyo İstasyonları</p>
+                        </div>
+                        <span class="px-3 py-1 bg-red-600/20 text-red-400 rounded-full text-xs font-semibold border border-red-600/30">
+                            ❌ Cache Yok
+                        </span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-red-400">❌</span>
+                                <code class="text-slate-400">songs_count</code>
+                                <span class="text-slate-400 text-sm">(field yok)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Cache edilmiş field yok</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-red-400">❌</span>
+                                <code class="text-slate-400">total_duration</code>
+                                <span class="text-slate-400 text-sm">(field yok)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Cache edilmiş field yok</p>
+                        </div>
+                        <div class="bg-red-900/20 border border-red-700 rounded p-3 mt-3">
+                            <p class="text-sm text-red-300">
+                                <strong>❌ Runtime Hesaplama:</strong> Radio model'inde <code class="bg-slate-800 px-2 py-1 rounded">getTotalDuration()</code>
+                                methodu var ama DB'de cache field'ı YOK. Her seferinde tüm playlist'lerden hesaplıyor (YAVAŞ!).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sectors -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <span>🏢</span> muzibu_sectors
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">İş Sektörleri</p>
+                        </div>
+                        <span class="px-3 py-1 bg-red-600/20 text-red-400 rounded-full text-xs font-semibold border border-red-600/30">
+                            ❌ Cache Yok
+                        </span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-red-400">❌</span>
+                                <code class="text-slate-400">songs_count</code>
+                                <span class="text-slate-400 text-sm">(field yok)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Cache edilmiş field yok</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-3">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-red-400">❌</span>
+                                <code class="text-slate-400">total_duration</code>
+                                <span class="text-slate-400 text-sm">(field yok)</span>
+                            </div>
+                            <p class="text-sm text-slate-300 ml-6">Cache edilmiş field yok</p>
+                        </div>
+                        <div class="bg-red-900/20 border border-red-700 rounded p-3 mt-3">
+                            <p class="text-sm text-red-300">
+                                <strong>❌ Cache Sistemi Yok:</strong> Sector model'inde duration/count cache field'ları eklenmemiş.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Observer Sistemi -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>👀</span>
+                Observer (Otomatik Güncelleme) Sistemi
+            </h2>
+
+            <div class="grid grid-cols-1 gap-4">
+                <!-- SongObserver -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <span class="text-green-400">✅</span>
+                        SongObserver
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p><strong>Dosya:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-blue-300">Modules/Muzibu/App/Observers/SongObserver.php</code></p>
+                        <p><strong>Event'ler:</strong> created, updated, deleted, restored, forceDeleted</p>
+                        <div class="mt-3 space-y-2">
+                            <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                                <strong class="text-green-400">✅ created:</strong>
+                                <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                                    <li>Album: songs_count +1, total_duration +duration</li>
+                                    <li>Genre: songs_count +1, total_duration +duration</li>
+                                    <li>Artist (via Album): songs_count +1, total_duration +duration</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                                <strong class="text-green-400">✅ updated:</strong>
+                                <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                                    <li>is_active değişirse → count'ları artır/azalt</li>
+                                    <li>duration değişirse → total_duration'ı güncelle</li>
+                                    <li>album_id değişirse → eski album'den çıkar, yeni album'e ekle</li>
+                                    <li>genre_id değişirse → eski genre'den çıkar, yeni genre'ye ekle</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                                <strong class="text-green-400">✅ deleted/forceDeleted:</strong>
+                                <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                                    <li>Album: songs_count -1, total_duration -duration</li>
+                                    <li>Genre: songs_count -1, total_duration -duration</li>
+                                    <li>Artist: songs_count -1, total_duration -duration</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AlbumObserver -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <span class="text-green-400">✅</span>
+                        AlbumObserver
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p><strong>Dosya:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-blue-300">Modules/Muzibu/App/Observers/AlbumObserver.php</code></p>
+                        <p><strong>Event'ler:</strong> created, deleted, restored, forceDeleted</p>
+                        <div class="mt-3 space-y-2">
+                            <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                                <strong class="text-green-400">✅ created:</strong>
+                                <ul class="list-disc list-inside ml-4 mt-1">
+                                    <li>Artist: albums_count +1</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                                <strong class="text-green-400">✅ deleted/forceDeleted:</strong>
+                                <ul class="list-disc list-inside ml-4 mt-1">
+                                    <li>Artist: albums_count -1</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PlaylistObserver -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <span class="text-yellow-400">⚠️</span>
+                        PlaylistObserver
+                    </h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p><strong>Dosya:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-blue-300">Modules/Muzibu/App/Observers/PlaylistObserver.php</code></p>
+                        <p><strong>Event'ler:</strong> creating, created, updating, updated, saving, saved, deleting, deleted, restoring, restored, forceDeleting, forceDeleted</p>
+                        <div class="mt-3">
+                            <div class="bg-yellow-900/20 border border-yellow-700 rounded p-3">
+                                <strong class="text-yellow-400">⚠️ Sorun:</strong>
+                                <p class="mt-2">PlaylistObserver sadece cache temizleme yapıyor. Playlist'e şarkı eklendiğinde/çıkarıldığında
+                                <strong>songs_count ve total_duration OTOMATIK GÜNCELLENMİYOR!</strong></p>
+                                <p class="mt-2">
+                                    <strong>Sebep:</strong> Pivot tablo event'leri (attach/detach/sync) Observer'lar tarafından yakalanmıyor.
+                                    Laravel pivot event'leri emit etmiyor.
+                                </p>
+                                <p class="mt-2">
+                                    <strong>Çözüm:</strong> Manuel methodlar kullanılmalı:
+                                </p>
+                                <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                                    <li><code class="bg-slate-800 px-2 py-1 rounded">attachSongWithCache($song)</code></li>
+                                    <li><code class="bg-slate-800 px-2 py-1 rounded">detachSongWithCache($song)</code></li>
+                                    <li><code class="bg-slate-800 px-2 py-1 rounded">syncSongsWithCache($songIds)</code></li>
+                                    <li><code class="bg-slate-800 px-2 py-1 rounded">attachManySongsWithCache($songIds)</code></li>
+                                    <li><code class="bg-slate-800 px-2 py-1 rounded">detachManySongsWithCache($songIds)</code></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sorunlar ve Çözümler -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>🔧</span>
+                Tespit Edilen Sorunlar ve Çözüm Önerileri
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Sorun 1 -->
+                <div class="bg-red-900/20 border-l-4 border-red-600 rounded-r-lg p-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">❌</span>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-red-400 mb-2">1. Playlist Şarkı Ekleme/Çıkarma Otomatik Değil</h3>
+                            <p class="text-slate-300 mb-3">
+                                <strong>Sorun:</strong> Playlist'e şarkı eklendiğinde/çıkarıldığında songs_count ve total_duration
+                                otomatik güncellenmiyor. Manuel methodlar kullanılmak zorunda.
+                            </p>
+                            <div class="bg-slate-900/50 rounded p-4 mb-3">
+                                <strong class="text-blue-300">❌ Yanlış Kullanım:</strong>
+                                <pre class="text-sm mt-2 text-slate-300 overflow-x-auto"><code>$playlist->songs()->attach($songId);  // Count'lar güncellenMİYOR!</code></pre>
+                            </div>
+                            <div class="bg-slate-900/50 rounded p-4 mb-3">
+                                <strong class="text-green-300">✅ Doğru Kullanım:</strong>
+                                <pre class="text-sm mt-2 text-slate-300 overflow-x-auto"><code>$playlist->attachSongWithCache($songId);  // Count'lar güncellenir</code></pre>
+                            </div>
+                            <p class="text-blue-300 mb-2"><strong>Çözüm Önerileri:</strong></p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300">
+                                <li><strong>Seçenek A:</strong> Custom Pivot Model oluştur (BelongsToMany withPivot ile) ve Pivot Model'e Observer ekle</li>
+                                <li><strong>Seçenek B:</strong> Playlist Model'de songs() ilişkisini override et, attach/detach/sync methodlarını intercept et</li>
+                                <li><strong>Seçenek C:</strong> Her Playlist işleminde manuel methodları kullanmaya devam et (mevcut durum)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sorun 2 -->
+                <div class="bg-red-900/20 border-l-4 border-red-600 rounded-r-lg p-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">❌</span>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-red-400 mb-2">2. Radio ve Sector'de Cache Sistemi Yok</h3>
+                            <p class="text-slate-300 mb-3">
+                                <strong>Sorun:</strong> Radio ve Sector tablolarında songs_count ve total_duration field'ları yok.
+                                Her seferinde runtime'da hesaplama yapılıyor (YAVAŞ!).
+                            </p>
+                            <div class="bg-slate-900/50 rounded p-4 mb-3">
+                                <strong class="text-blue-300">Mevcut Durum:</strong>
+                                <pre class="text-sm mt-2 text-slate-300 overflow-x-auto"><code>// Radio Model - Her çağrıda playlists'leri foreach ile dolaşıyor
+public function getTotalDuration(): int {
+    $totalSeconds = 0;
+    foreach ($this->playlists as $playlist) {
+        $totalSeconds += $playlist->getTotalDuration();
+    }
+    return $totalSeconds;
+}</code></pre>
+                            </div>
+                            <p class="text-blue-300 mb-2"><strong>Çözüm Önerisi:</strong></p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300">
+                                <li>Radio ve Sector tablolarına da songs_count ve total_duration field'larını ekle (migration)</li>
+                                <li>HasCachedCounts trait'ini Radio ve Sector modellerine ekle</li>
+                                <li>RadioObserver ve SectorObserver'lara cache güncelleme mantığı ekle</li>
+                                <li>Playlist değişikliklerinde Radio/Sector count'larını da güncelle</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sorun 3 -->
+                <div class="bg-yellow-900/20 border-l-4 border-yellow-600 rounded-r-lg p-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-yellow-400 mb-2">3. Bulk İşlemlerde Performance Sorunu</h3>
+                            <p class="text-slate-300 mb-3">
+                                <strong>Sorun:</strong> attachManySongsWithCache ve detachManySongsWithCache methodları her şarkı için
+                                ayrı ayrı hesaplama yapıyor. 100 şarkı eklenirse 100 kez query çalışır.
+                            </p>
+                            <div class="bg-slate-900/50 rounded p-4 mb-3">
+                                <strong class="text-blue-300">Mevcut Kod:</strong>
+                                <pre class="text-sm mt-2 text-slate-300 overflow-x-auto"><code>// Her şarkı için ayrı query
+$addedSongs = Song::whereIn('song_id', $newSongIds)
+    ->where('is_active', true)
+    ->get();
+$addedCount = $addedSongs->count();
+$addedDuration = (int) $addedSongs->sum('duration');</code></pre>
+                            </div>
+                            <p class="text-blue-300 mb-2"><strong>Çözüm Önerisi:</strong></p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300">
+                                <li>Bulk işlemlerde tek query ile sum ve count hesapla</li>
+                                <li>Transaction kullan (başarısızlıkta rollback)</li>
+                                <li>Queue job ile asenkron güncelleme (çok fazla şarkı varsa)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kod Örnekleri -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>💻</span>
+                Kullanım Senaryoları
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Senaryo 1 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3">1. Yeni Şarkı Ekleme</h3>
+                    <div class="bg-slate-800 rounded p-4">
+                        <pre class="text-sm text-slate-300 overflow-x-auto"><code>// Şarkı oluştur
+$song = Song::create([
+    'album_id' => 5,
+    'genre_id' => 3,
+    'title' => ['tr' => 'Yeni Şarkı'],
+    'duration' => 240, // 4 dakika
+    'is_active' => true,
+]);
+
+// ✅ OTOMATIK: SongObserver tetiklenir
+// - Album 5: songs_count +1, total_duration +240
+// - Genre 3: songs_count +1, total_duration +240
+// - Artist (Album 5'in sahibi): songs_count +1, total_duration +240</code></pre>
+                    </div>
+                </div>
+
+                <!-- Senaryo 2 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3">2. Playlist'e Şarkı Ekleme</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <strong class="text-red-400">❌ YANLIŞ (Count güncellenMİYOR):</strong>
+                            <div class="bg-slate-800 rounded p-4 mt-2">
+                                <pre class="text-sm text-slate-300 overflow-x-auto"><code>$playlist = Playlist::find(10);
+$playlist->songs()->attach($songId);  // Count'lar GÜNCELLENMİYOR!</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <strong class="text-green-400">✅ DOĞRU (Count güncellenir):</strong>
+                            <div class="bg-slate-800 rounded p-4 mt-2">
+                                <pre class="text-sm text-slate-300 overflow-x-auto"><code>$playlist = Playlist::find(10);
+$playlist->attachSongWithCache($songId);  // songs_count ve total_duration güncellenir</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Senaryo 3 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3">3. Şarkı Süresi Değiştirme</h3>
+                    <div class="bg-slate-800 rounded p-4">
+                        <pre class="text-sm text-slate-300 overflow-x-auto"><code>$song = Song::find(25);
+$oldDuration = $song->duration; // 240 saniye
+$song->duration = 300; // 5 dakika
+$song->save();
+
+// ✅ OTOMATIK: SongObserver tetiklenir
+// Diff = 300 - 240 = +60 saniye
+// - Album: total_duration +60
+// - Genre: total_duration +60
+// - Artist: total_duration +60</code></pre>
+                    </div>
+                </div>
+
+                <!-- Senaryo 4 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3">4. Şarkıyı Farklı Albüme Taşıma</h3>
+                    <div class="bg-slate-800 rounded p-4">
+                        <pre class="text-sm text-slate-300 overflow-x-auto"><code>$song = Song::find(25);
+$oldAlbumId = $song->album_id; // 5
+$song->album_id = 8; // Yeni albüm
+$song->save();
+
+// ✅ OTOMATIK: SongObserver handleAlbumChange() tetiklenir
+// Eski Album 5:
+//   - songs_count -1
+//   - total_duration -240
+// Yeni Album 8:
+//   - songs_count +1
+//   - total_duration +240
+// Eski ve yeni Artist'ler de güncellenir!</code></pre>
+                    </div>
+                </div>
+
+                <!-- Senaryo 5 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-white mb-3">5. Toplu Cache Yenileme (Null Olanlar)</h3>
+                    <div class="bg-slate-800 rounded p-4">
+                        <pre class="text-sm text-slate-300 overflow-x-auto"><code>// Eğer cache field'ları NULL ise (henüz hesaplanmamışsa)
+$album = Album::find(5);
+if ($album->needsCachedCountRecalculation()) {
+    $values = $album->recalculateCachedCounts();
+    // ['songs_count' => 12, 'total_duration' => 2940]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dosya Lokasyonları -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>📁</span>
+                İlgili Dosyalar
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+                <div class="space-y-3 text-sm">
+                    <div>
+                        <strong class="text-blue-300">Migration:</strong>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/database/migrations/tenant/2025_12_26_200000_add_cache_count_fields_to_muzibu_tables.php</code>
+                    </div>
+                    <div>
+                        <strong class="text-blue-300">Trait:</strong>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Traits/HasCachedCounts.php</code>
+                    </div>
+                    <div>
+                        <strong class="text-blue-300">Model'ler:</strong>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Models/Playlist.php</code>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Models/Album.php</code>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Models/Genre.php</code>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Models/Artist.php</code>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Models/Song.php</code>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Models/Radio.php</code>
+                    </div>
+                    <div>
+                        <strong class="text-blue-300">Observer'lar:</strong>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Observers/SongObserver.php</code>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Observers/AlbumObserver.php</code>
+                        <code class="block bg-slate-800 px-3 py-2 rounded mt-1 text-slate-300">Modules/Muzibu/App/Observers/PlaylistObserver.php</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-800 text-center text-slate-400 text-sm">
+            <p>🤖 Bu rapor <strong class="text-white">Claude Sonnet 4.5</strong> tarafından otomatik oluşturulmuştur.</p>
+            <p class="mt-2">📅 11 Ocak 2026 - Muzibu Duration & Count Analizi v1</p>
+        </footer>
+    </div>
+</body>
+</html>

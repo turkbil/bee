@@ -1,1 +1,932 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Favoriler & Playlist Yönetim Sistemi - Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            margin-top: 25px;
+            color: #93c5fd;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-card.existing {
+            border-left: 4px solid #10b981;
+        }
+
+        .status-card.missing {
+            border-left: 4px solid #ef4444;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .badge-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .plan-item h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .plan-item p, .plan-item ul {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .plan-item ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .plan-item li {
+            margin-bottom: 8px;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #10b981; color: white; }
+        .priority-low { background: #6b7280; color: white; }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .code-snippet {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #93c5fd;
+            overflow-x: auto;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #1e293b;
+            padding: 15px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #334155;
+            color: #cbd5e1;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #3b82f6;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 30px;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -35px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid #0f172a;
+        }
+
+        .api-endpoint {
+            background: #1e293b;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .method-post { background: #10b981; color: white; }
+        .method-get { background: #3b82f6; color: white; }
+        .method-put { background: #f59e0b; color: white; }
+        .method-delete { background: #ef4444; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu Favoriler & Playlist Yönetim Sistemi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-29 |
+                🎯 Tenant: muzibu.com.tr (Tenant 1001) |
+                👤 Talep: Kapsamlı favoriler ve playlist yönetimi
+            </div>
+        </header>
+
+        <!-- MEVCUT DURUM ANALİZİ -->
+        <section class="section">
+            <h2>📊 Mevcut Durum Analizi</h2>
+            
+            <h3>✅ Halihazırda Çalışan Sistemler</h3>
+            <div class="status-grid">
+                <div class="status-card existing">
+                    <span class="status-badge badge-success">✅ MEVCUT</span>
+                    <h4>Favorite Modeli (Polymorphic)</h4>
+                    <p>Herhangi bir içeriğe favori eklenebilir yapı hazır</p>
+                </div>
+
+                <div class="status-card existing">
+                    <span class="status-badge badge-success">✅ MEVCUT</span>
+                    <h4>HasFavorites Trait</h4>
+                    <p>toggleFavorite, isFavoritedBy, favoritesCount methodları</p>
+                </div>
+
+                <div class="status-card existing">
+                    <span class="status-badge badge-success">✅ MEVCUT</span>
+                    <h4>Favorite API</h4>
+                    <p>/api/favorites/toggle endpoint çalışıyor</p>
+                </div>
+
+                <div class="status-card existing">
+                    <span class="status-badge badge-success">✅ MEVCUT</span>
+                    <h4>Favorite Button Component</h4>
+                    <p>Alpine.js ile hazır component (Song için çalışıyor)</p>
+                </div>
+
+                <div class="status-card existing">
+                    <span class="status-badge badge-success">✅ MEVCUT</span>
+                    <h4>Playlist Modeli</h4>
+                    <p>is_system field ile admin/user playlist ayrımı</p>
+                </div>
+
+                <div class="status-card existing">
+                    <span class="status-badge badge-success">✅ MEVCUT</span>
+                    <h4>Playlist-Song Pivot</h4>
+                    <p>position field ile sıralama desteği</p>
+                </div>
+            </div>
+
+            <h3>❌ Eksik Sistemler</h3>
+            <div class="status-grid">
+                <div class="status-card missing">
+                    <span class="status-badge badge-error">❌ EKSİK</span>
+                    <h4>Album Favorileri</h4>
+                    <p>Album modeli HasFavorites trait kullanmıyor</p>
+                </div>
+
+                <div class="status-card missing">
+                    <span class="status-badge badge-error">❌ EKSİK</span>
+                    <h4>Playlist Favorileri</h4>
+                    <p>Playlist modeli HasFavorites trait kullanmıyor</p>
+                </div>
+
+                <div class="status-card missing">
+                    <span class="status-badge badge-error">❌ EKSİK</span>
+                    <h4>Playlist Kopyalama</h4>
+                    <p>Sistem playlistlerini user playlist olarak kopyalama yok</p>
+                </div>
+
+                <div class="status-card missing">
+                    <span class="status-badge badge-error">❌ EKSİK</span>
+                    <h4>Anında Playlist Oluşturma</h4>
+                    <p>Şarkı ile birlikte anında playlist oluşturma API yok</p>
+                </div>
+
+                <div class="status-card missing">
+                    <span class="status-badge badge-error">❌ EKSİK</span>
+                    <h4>Şarkı Ekleme API</h4>
+                    <p>Mevcut playlist'e şarkı ekleme endpoint yok</p>
+                </div>
+
+                <div class="status-card missing">
+                    <span class="status-badge badge-error">❌ EKSİK</span>
+                    <h4>Frontend UI</h4>
+                    <p>Playlist işlemleri için dropdown menü ve favoriler sayfası yok</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BACKEND GELİŞTİRME PLANI -->
+        <section class="section">
+            <h2>🔧 Backend Geliştirme Planı</h2>
+
+            <div class="plan-item">
+                <h4>1. Model Güncellemeleri <span class="priority priority-critical">Kritik</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Album ve Playlist modellerine HasFavorites trait eklenecek</p>
+                <ul>
+                    <li><strong>Album Model:</strong> <span class="tech-term">use HasFavorites</span> trait'i ekle</li>
+                    <li><strong>Playlist Model:</strong> <span class="tech-term">use HasFavorites</span> trait'i ekle</li>
+                    <li><strong>Test:</strong> Her iki model için toggleFavorite methodunu test et</li>
+                </ul>
+                <p><strong>Sonuç:</strong> Album ve Playlist favorilere eklenebilir hale gelecek</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>2. Playlist Kopyalama Servisi <span class="priority priority-high">Yüksek</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Sistem playlistlerini kullanıcı playlistine kopyalayan servis</p>
+                <ul>
+                    <li><strong>PlaylistService:</strong> <span class="tech-term">clonePlaylist()</span> methodu ekle</li>
+                    <li><strong>Mantık:</strong> Sistem playlist verilerini kopyala, is_system = false yap, user_id set et</li>
+                    <li><strong>Şarkı İlişkileri:</strong> muzibu_playlist_song pivot tablosundaki tüm şarkıları kopyala (position korunacak)</li>
+                    <li><strong>Görsel:</strong> Cover image kopyalanacak (media_id)</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Kullanıcılar sistem playlistlerini kendi hesaplarına kopyalayıp düzenleyebilecek</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>3. Anında Playlist Oluşturma Servisi <span class="priority priority-high">Yüksek</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Tek adımda playlist oluştur + şarkı ekle</p>
+                <ul>
+                    <li><strong>PlaylistService:</strong> <span class="tech-term">createPlaylistWithSongs()</span> methodu</li>
+                    <li><strong>Parametreler:</strong> title, song_ids[], user_id, description (opsiyonel)</li>
+                    <li><strong>Mantık:</strong> Playlist oluştur → Şarkıları position sırasıyla ekle</li>
+                    <li><strong>Validasyon:</strong> Şarkı ID'lerinin geçerli olduğunu kontrol et</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Kullanıcı anında yeni playlist oluşturup şarkı ekleyebilecek</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>4. Mevcut Playlist'e Şarkı Ekleme <span class="priority priority-medium">Orta</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Kullanıcı kendi playlistine şarkı ekleyebilecek</p>
+                <ul>
+                    <li><strong>PlaylistService:</strong> <span class="tech-term">addSongToPlaylist()</span> methodu</li>
+                    <li><strong>Mantık:</strong> Playlist sahibi kontrolü → Şarkı zaten varsa skip → Position hesapla (mevcut max + 1)</li>
+                    <li><strong>Güvenlik:</strong> Sadece playlist sahibi ekleyebilir (user_id kontrolü)</li>
+                    <li><strong>Pivot:</strong> muzibu_playlist_song tablosuna insert</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Kullanıcılar playlistlerine şarkı ekleyebilecek</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>5. User Playlist CRUD İşlemleri <span class="priority priority-medium">Orta</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Kullanıcı kendi playlistlerini yönetebilecek</p>
+                <ul>
+                    <li><strong>Create:</strong> Yeni playlist oluşturma (title, description)</li>
+                    <li><strong>Update:</strong> Playlist bilgilerini güncelleme (sadece sahibi)</li>
+                    <li><strong>Delete:</strong> Playlist silme (soft delete)</li>
+                    <li><strong>Reorder:</strong> Playlist içindeki şarkı sıralamasını değiştirme (position update)</li>
+                    <li><strong>Remove Song:</strong> Playlist'ten şarkı çıkarma</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Tam fonksiyonel playlist yönetimi</p>
+            </div>
+        </section>
+
+        <!-- API ENDPOINT'LERİ -->
+        <section class="section">
+            <h2>🔌 API Endpoint'leri</h2>
+
+            <div class="info">
+                <strong>Not:</strong> Tüm endpoint'ler <span class="tech-term">auth:sanctum</span> middleware kullanacak (login zorunlu)
+            </div>
+
+            <h3>Favoriler API</h3>
+            <div class="api-endpoint">
+                <span class="method method-post">POST</span>
+                <code>/api/favorites/toggle</code>
+            </div>
+            <div class="code-snippet">
+Body: {
+  "model_class": "Modules\\Muzibu\\App\\Models\\Song",
+  "model_id": 123
+}
+
+Response: {
+  "success": true,
+  "message": "Favorilere eklendi",
+  "data": {
+    "action": "added",
+    "is_favorited": true,
+    "favorites_count": 42
+  }
+}
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method method-get">GET</span>
+                <code>/api/favorites/my-favorites</code>
+            </div>
+            <div class="code-snippet">
+Query: ?model_type=Modules\\Muzibu\\App\\Models\\Song&per_page=20
+
+Response: {
+  "data": [
+    {
+      "id": 1,
+      "favoritable": { ... },
+      "created_at": "2025-11-29T10:00:00"
+    }
+  ],
+  "links": { ... },
+  "meta": { ... }
+}
+            </div>
+
+            <h3>Playlist API (Yeni)</h3>
+            <div class="api-endpoint">
+                <span class="method method-post">POST</span>
+                <code>/api/playlists/clone</code>
+            </div>
+            <div class="code-snippet">
+Body: {
+  "playlist_id": 5
+}
+
+Response: {
+  "success": true,
+  "message": "Playlist kopyalandı",
+  "data": {
+    "playlist_id": 123,
+    "title": "Rock Classics (Kopyam)",
+    "song_count": 25
+  }
+}
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method method-post">POST</span>
+                <code>/api/playlists/quick-create</code>
+            </div>
+            <div class="code-snippet">
+Body: {
+  "title": "Çalışma Müzikleri",
+  "description": "Konsantre olurken dinlediklerim",
+  "song_ids": [1, 5, 8, 12]
+}
+
+Response: {
+  "success": true,
+  "message": "Playlist oluşturuldu",
+  "data": {
+    "playlist_id": 124,
+    "title": "Çalışma Müzikleri",
+    "song_count": 4
+  }
+}
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method method-post">POST</span>
+                <code>/api/playlists/{id}/add-song</code>
+            </div>
+            <div class="code-snippet">
+Body: {
+  "song_id": 42
+}
+
+Response: {
+  "success": true,
+  "message": "Şarkı playlist'e eklendi",
+  "data": {
+    "song_id": 42,
+    "position": 26
+  }
+}
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method method-delete">DELETE</span>
+                <code>/api/playlists/{id}/remove-song/{song_id}</code>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method method-put">PUT</span>
+                <code>/api/playlists/{id}/reorder</code>
+            </div>
+            <div class="code-snippet">
+Body: {
+  "song_positions": [
+    { "song_id": 1, "position": 1 },
+    { "song_id": 5, "position": 2 },
+    { "song_id": 8, "position": 3 }
+  ]
+}
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method method-get">GET</span>
+                <code>/api/playlists/my-playlists</code>
+            </div>
+            <div class="code-snippet">
+Response: Kullanıcının oluşturduğu tüm playlistler (is_system = false)
+            </div>
+        </section>
+
+        <!-- FRONTEND GELİŞTİRME PLANI -->
+        <section class="section">
+            <h2>🎨 Frontend Geliştirme Planı</h2>
+
+            <div class="plan-item">
+                <h4>1. Favorite Butonları Güncellemesi <span class="priority priority-critical">Kritik</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Mevcut favorite-button component'i Album ve Playlist için kullan</p>
+                <ul>
+                    <li><strong>Ana Sayfa:</strong> Her albüm/playlist kartına favorite butonu ekle</li>
+                    <li><strong>Detay Sayfaları:</strong> Album/Playlist detay sayfalarına favorite butonu</li>
+                    <li><strong>Component:</strong> Mevcut <span class="tech-term">favorite-button</span> component zaten hazır (polymorphic)</li>
+                    <li><strong>Kullanım:</strong> model prop'unu Album veya Playlist instance olarak gönder</li>
+                </ul>
+                <div class="code-snippet">
+&lt;x-common.favorite-button :model="$album" size="md" /&gt;
+&lt;x-common.favorite-button :model="$playlist" size="lg" /&gt;
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>2. Playlist İşlemleri Dropdown Menü <span class="priority priority-high">Yüksek</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Her şarkının yanında 3 nokta menü ekle</p>
+                <ul>
+                    <li><strong>Menü Seçenekleri:</strong>
+                        <ul>
+                            <li>➕ Playlist'e Ekle (kullanıcı playlistlerini listele)</li>
+                            <li>⭐ Yeni Playlist Oluştur (modal açılır)</li>
+                            <li>❤️ Favorilere Ekle/Çıkar</li>
+                            <li>📋 Kuyruk'a Ekle (mevcut queue sistemi)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Tasarım:</strong> Alpine.js dropdown (Spotify tarzı)</li>
+                    <li><strong>Konum:</strong> Ana sayfa, playlist detay, album detay, arama sonuçları</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>3. Playlist Kopyalama Butonu <span class="priority priority-high">Yüksek</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Sistem playlistlerinde "Kopyala" butonu</p>
+                <ul>
+                    <li><strong>Konum:</strong> Playlist detay sayfasında (sadece is_system = true için göster)</li>
+                    <li><strong>Davranış:</strong> Butona tıkla → API çağır → Toast bildirimi göster</li>
+                    <li><strong>Bildirim:</strong> "✅ Playlist kopyalandı! Kendi playlistlerim sayfasına git"</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>4. Anında Playlist Oluşturma Modal <span class="priority priority-medium">Orta</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Şarkı menüsünden "Yeni Playlist Oluştur" seçince modal açılır</p>
+                <ul>
+                    <li><strong>Form Alanları:</strong> Playlist adı (zorunlu), Açıklama (opsiyonel)</li>
+                    <li><strong>Davranış:</strong> Form gönder → API çağır (şarkı ID'si dahil) → Modal kapat → Toast göster</li>
+                    <li><strong>Tasarım:</strong> Modal popup (Alpine.js x-show)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>5. Favorilerim Sayfası <span class="priority priority-medium">Orta</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Kullanıcının tüm favorilerini listeleyen sayfa</p>
+                <ul>
+                    <li><strong>URL:</strong> /muzibu/favorites</li>
+                    <li><strong>Tab Sistemi:</strong> Tümü | Şarkılar | Albümler | Playlistler</li>
+                    <li><strong>Görünüm:</strong> Grid layout (ana sayfadaki gibi)</li>
+                    <li><strong>Fonksiyonlar:</strong> Her item için play butonu + favoriden çıkar butonu</li>
+                    <li><strong>Pagination:</strong> Infinite scroll veya sayfalama</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>6. Playlistlerim Sayfası <span class="priority priority-medium">Orta</span></h4>
+                <p><strong>Ne Yapılacak:</strong> Kullanıcının kendi oluşturduğu playlistler</p>
+                <ul>
+                    <li><strong>URL:</strong> /muzibu/my-playlists</li>
+                    <li><strong>Görünüm:</strong> Grid layout + "Yeni Playlist Oluştur" butonu</li>
+                    <li><strong>Düzenleme:</strong> Her playlist için dropdown (Düzenle | Sil)</li>
+                    <li><strong>Detay:</strong> Playlist'e tıkla → Detay sayfasına git (şarkı listesi + düzenleme seçenekleri)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- UI/UX TASARIM DETAYLARı -->
+        <section class="section">
+            <h2>🎭 UI/UX Tasarım Detayları</h2>
+
+            <div class="plan-item">
+                <h4>Şarkı Kartı - İşlemler Menüsü</h4>
+                <div class="code-snippet">
+[Şarkı Adı] - [Sanatçı]              [❤️] [⋮]
+                                      ↓
+                                [Dropdown Menü]
+                                ├─ ➕ Playlist'e Ekle
+                                │  └─ [Playlistlerim Listesi]
+                                ├─ ⭐ Yeni Playlist Oluştur
+                                ├─ ❤️ Favorilere Ekle
+                                └─ 📋 Kuyruk'a Ekle
+                </div>
+                <p><strong>Davranış:</strong> Alpine.js @click.away ile dropdown kapat</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>Playlist Kartı - Sistem/User Ayrımı</h4>
+                <div class="code-snippet">
+[Playlist Cover]
+[Playlist Adı]
+[Şarkı Sayısı]
+
+• Sistem Playlist ise: [❤️ Favorilere Ekle] [📋 Kopyala]
+• User Playlist ise:   [❤️ Favorilere Ekle] [✏️ Düzenle] [🗑️ Sil]
+                </div>
+                <p><strong>Gösterge:</strong> Sistem playlistlerde rozet göster (🎵 Sistem Playlist)</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>Favorilerim Sayfası - Tab Sistemi</h4>
+                <div class="code-snippet">
+┌─────────────────────────────────────────────┐
+│ Favorilerim                                 │
+├─────────────────────────────────────────────┤
+│ [Tümü] [Şarkılar] [Albümler] [Playlistler] │
+├─────────────────────────────────────────────┤
+│                                             │
+│  [Kart] [Kart] [Kart] [Kart]               │
+│  [Kart] [Kart] [Kart] [Kart]               │
+│                                             │
+└─────────────────────────────────────────────┘
+                </div>
+                <p><strong>Boş Durum:</strong> "Henüz favori eklemediniz" mesajı + keşfet butonu</p>
+            </div>
+        </section>
+
+        <!-- DATABASE DEĞİŞİKLİKLERİ -->
+        <section class="section">
+            <h2>💾 Database Değişiklikleri</h2>
+
+            <div class="success">
+                <strong>✅ Migration Gerekmez!</strong> Mevcut yapı zaten yeterli:
+                <ul style="margin-top: 10px;">
+                    <li>✅ <span class="tech-term">favorites</span> tablosu polymorphic yapıda (her model favoriye eklenebilir)</li>
+                    <li>✅ <span class="tech-term">muzibu_playlists</span> tablosunda user_id ve is_system field'leri var</li>
+                    <li>✅ <span class="tech-term">muzibu_playlist_song</span> pivot tablosunda position field var</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <strong>İsteğe Bağlı İyileştirmeler:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Playlist cover image (media_id) zaten var</li>
+                    <li>Playlist is_public field var (gizli playlist desteği)</li>
+                    <li>Soft delete var (silinen playlist'ler geri getirilebilir)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- GELİŞTİRME TIMELINE -->
+        <section class="section">
+            <h2>⏱️ Geliştirme Timeline</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Faz 1: Model & Backend (2-3 saat)</h4>
+                    <ul>
+                        <li>Album ve Playlist modellerine HasFavorites trait ekle</li>
+                        <li>PlaylistService: clonePlaylist() methodu</li>
+                        <li>PlaylistService: createPlaylistWithSongs() methodu</li>
+                        <li>PlaylistService: addSongToPlaylist() methodu</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Faz 2: API Routes & Controllers (2 saat)</h4>
+                    <ul>
+                        <li>API endpoint'lerini oluştur (routes/api.php)</li>
+                        <li>PlaylistController: clone, quickCreate, addSong methodları</li>
+                        <li>Validasyon kuralları ekle</li>
+                        <li>API testleri (Postman/Insomnia)</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Faz 3: Frontend Components (3-4 saat)</h4>
+                    <ul>
+                        <li>Favorite butonlarını album/playlist'lere ekle</li>
+                        <li>Şarkı işlemleri dropdown menü component</li>
+                        <li>Anında playlist oluşturma modal</li>
+                        <li>Alpine.js store entegrasyonu</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Faz 4: Sayfalar (3 saat)</h4>
+                    <ul>
+                        <li>Favorilerim sayfası (tab sistemi ile)</li>
+                        <li>Playlistlerim sayfası</li>
+                        <li>Playlist detay sayfası düzenleme eklentileri</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Faz 5: Test & Polish (2 saat)</h4>
+                    <ul>
+                        <li>End-to-end test (tüm işlevler)</li>
+                        <li>Responsive kontrol</li>
+                        <li>Toast bildirimleri</li>
+                        <li>Loading state'leri</li>
+                        <li>Error handling</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info">
+                <strong>Toplam Tahmini Süre:</strong> 12-14 saat (adım adım uygulama ile)
+            </div>
+        </section>
+
+        <!-- ÖNEMLİ NOTLAR -->
+        <section class="section">
+            <h2>⚠️ Önemli Notlar</h2>
+
+            <div class="warning">
+                <strong>Tenant Aware Sistemdir!</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Bu sistem SADECE Tenant 1001 (muzibu.com.tr) için geçerlidir</li>
+                    <li>Song, Album, Playlist modelleri tenant database'de</li>
+                    <li>Favorites tablosu tenant database'de</li>
+                    <li>Users tablosu central database'de (user_id foreign key)</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <strong>Güvenlik:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Playlist düzenleme/silme: Sadece playlist sahibi (user_id kontrolü)</li>
+                    <li>Sistem playlistler: is_system = true olanlar düzenlenemez/silinemez</li>
+                    <li>API endpoint'leri: auth:sanctum middleware ile korunacak</li>
+                    <li>CSRF token: Alpine.js fetch isteklerinde meta tag'tan alınacak</li>
+                </ul>
+            </div>
+
+            <div class="success">
+                <strong>Performans:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Favorite sayıları: withCount() ile eager load</li>
+                    <li>Playlist şarkıları: songs() relation eager load</li>
+                    <li>Cache: FavoriteService cache temizliği otomatik</li>
+                    <li>Pagination: Tüm listelerde sayfalama kullan</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- BAŞLANGIÇ ADIMLARI -->
+        <section class="section">
+            <h2>🚀 Başlangıç Adımları</h2>
+
+            <div class="plan-item">
+                <h4>1. Backend - Model Güncellemeleri</h4>
+                <div class="code-snippet">
+# Album.php
+use Modules\Favorite\App\Traits\HasFavorites;
+
+class Album extends BaseModel
+{
+    use HasFavorites; // ← Bu trait'i ekle
+}
+
+# Playlist.php  
+use Modules\Favorite\App\Traits\HasFavorites;
+
+class Playlist extends BaseModel
+{
+    use HasFavorites; // ← Bu trait'i ekle
+}
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>2. Backend - PlaylistService Genişletme</h4>
+                <div class="code-snippet">
+# Modules/Muzibu/app/Services/PlaylistService.php
+
+public function clonePlaylist(int $playlistId, int $userId): array
+{
+    // 1. Sistem playlist'i bul
+    // 2. Yeni user playlist oluştur (is_system = false)
+    // 3. Şarkıları kopyala (pivot tablo)
+    // 4. Cover image kopyala
+    // 5. Return new playlist
+}
+
+public function createPlaylistWithSongs(array $data, int $userId): array
+{
+    // 1. Playlist oluştur
+    // 2. Şarkıları ekle (position ile)
+    // 3. Return playlist
+}
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>3. Frontend - Favorite Butonları Ekle</h4>
+                <div class="code-snippet">
+&lt;!-- Ana sayfa - Album kartı --&gt;
+&lt;x-common.favorite-button :model="$album" size="md" iconOnly="true" /&gt;
+
+&lt;!-- Ana sayfa - Playlist kartı --&gt;
+&lt;x-common.favorite-button :model="$playlist" size="md" iconOnly="true" /&gt;
+
+&lt;!-- Detay sayfası --&gt;
+&lt;x-common.favorite-button :model="$album" size="lg" showText="true" /&gt;
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>4. Frontend - Şarkı İşlemleri Menü Component</h4>
+                <div class="code-snippet">
+&lt;!-- resources/views/components/muzibu/song-actions-menu.blade.php --&gt;
+
+@props(['song' => null])
+
+&lt;div x-data="{ open: false }" @click.away="open = false" class="relative"&gt;
+    &lt;button @click="open = !open"&gt;
+        &lt;i class="fas fa-ellipsis-v"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+    
+    &lt;div x-show="open" class="dropdown-menu"&gt;
+        &lt;button @click="addToPlaylist({{ $song-&gt;id }})"&gt;
+            ➕ Playlist'e Ekle
+        &lt;/button&gt;
+        &lt;button @click="createNewPlaylist({{ $song-&gt;id }})"&gt;
+            ⭐ Yeni Playlist
+        &lt;/button&gt;
+        &lt;button @click="toggleFavorite({{ $song-&gt;id }})"&gt;
+            ❤️ Favorilere Ekle
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | Muzibu Favoriler & Playlist Yönetim Sistemi Planı
+        </footer>
+    </div>
+</body>
+</html>

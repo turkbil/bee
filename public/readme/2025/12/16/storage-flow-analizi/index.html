@@ -1,1 +1,567 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Sistemi - Sayfa Yenilenme Akışı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-text { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(71, 85, 105, 0.3); }
+        .glow { box-shadow: 0 0 40px rgba(59, 130, 246, 0.2); }
+        .timeline-item { position: relative; padding-left: 3rem; padding-bottom: 2rem; }
+        .timeline-item::before { content: ''; position: absolute; left: 0.75rem; top: 2.5rem; bottom: 0; width: 2px; background: linear-gradient(180deg, #3b82f6 0%, #8b5cf6 100%); }
+        .timeline-item:last-child::before { display: none; }
+        .timeline-dot { position: absolute; left: 0; top: 0.5rem; width: 2.5rem; height: 2.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 3px solid; }
+        .code-block { background: #0f172a; border: 1px solid #334155; border-radius: 0.5rem; padding: 1rem; font-family: 'Courier New', monospace; font-size: 0.875rem; overflow-x: auto; }
+        .json-key { color: #93c5fd; }
+        .json-string { color: #86efac; }
+        .json-number { color: #fbbf24; }
+        .json-boolean { color: #f472b6; }
+        .badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .badge-yes { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-no { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-warn { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .ui-preview { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid #334155; border-radius: 1rem; padding: 1.5rem; }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); } 50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8); } }
+        .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-2xl pulse-glow">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold gradient-text">Storage Sistemi - Sayfa Yenilenme Akışı</h1>
+                    <p class="text-slate-400 text-sm">Muzıbu Player | Adım Adım Timeline</p>
+                </div>
+                <div class="ml-auto flex items-center gap-3">
+                    <span class="badge badge-info"><i class="fas fa-calendar"></i> 16 Aralık 2025</span>
+                    <span class="badge badge-yes"><i class="fas fa-check"></i> v2.0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- Overview -->
+        <section class="card rounded-2xl p-6 mb-8 glow">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-info-circle text-blue-400"></i>
+                Hızlı Özet
+            </h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                    <div class="text-3xl font-bold text-blue-400 mb-1">~30ms</div>
+                    <div class="text-sm text-slate-400">Initial Load (Placeholder)</div>
+                </div>
+                <div class="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
+                    <div class="text-3xl font-bold text-purple-400 mb-1">~2s</div>
+                    <div class="text-sm text-slate-400">Full Load (API Data)</div>
+                </div>
+                <div class="bg-pink-500/10 border border-pink-500/30 rounded-xl p-4">
+                    <div class="text-3xl font-bold text-pink-400 mb-1">0ms</div>
+                    <div class="text-sm text-slate-400">Blocking Time (Non-Blocking)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="card rounded-2xl p-6 mb-8">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-clock text-purple-400"></i>
+                Timeline: Sayfa Yenilendiğinde Ne Olur?
+            </h2>
+
+            <!-- T+0ms -->
+            <div class="timeline-item">
+                <div class="timeline-dot bg-blue-500 border-blue-400 text-white">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="ml-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl font-bold text-blue-400">T+0ms</span>
+                        <span class="badge badge-info">Sayfa Başladı</span>
+                    </div>
+                    <p class="text-slate-300 mb-3">Player initialize ediliyor, ilk fonksiyon çağrısı</p>
+                    <div class="code-block">
+<span class="text-gray-500">// Player init</span>
+Alpine.data('player', function() {
+    return {
+        init() {
+            <span class="text-green-400">this.loadQueueState();</span>  <span class="text-gray-500">// ← İlk çağrı</span>
+        }
+    }
+})</div>
+                </div>
+            </div>
+
+            <!-- T+10ms -->
+            <div class="timeline-item">
+                <div class="timeline-dot bg-cyan-500 border-cyan-400 text-white">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="ml-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl font-bold text-cyan-400">T+10ms</span>
+                        <span class="badge badge-info">localStorage Okuma</span>
+                    </div>
+                    <p class="text-slate-300 mb-3">Kaydedilmiş state localStorage'dan okunuyor</p>
+                    <div class="code-block">
+<span class="text-gray-500">// localStorage'dan oku</span>
+saved = safeStorage.getItem(<span class="json-string">'muzibu_queue_state'</span>);
+
+<span class="text-gray-500">// Örnek veri:</span>
+{
+    <span class="json-key">"queueIds"</span>: [<span class="json-number">123</span>, <span class="json-number">456</span>, <span class="json-number">789</span>, <span class="json-number">101</span>, <span class="json-number">202</span>],
+    <span class="json-key">"shuffle"</span>: <span class="json-boolean">true</span>,
+    <span class="json-key">"repeatMode"</span>: <span class="json-string">"all"</span>,
+    <span class="json-key">"volume"</span>: <span class="json-number">75</span>,
+    <span class="json-key">"playContext"</span>: {
+        <span class="json-key">"type"</span>: <span class="json-string">"album"</span>,
+        <span class="json-key">"id"</span>: <span class="json-number">42</span>,
+        <span class="json-key">"name"</span>: <span class="json-string">"Rock Hits"</span>
+    }
+}</div>
+                    <div class="mt-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-info-circle text-amber-400 mt-0.5"></i>
+                            <div class="text-sm">
+                                <strong class="text-amber-400">Eğer localStorage boşsa:</strong>
+                                <div class="text-slate-400 mt-1">Temiz başlangıç yapılır, hiçbir şey yüklenmez</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- T+15ms -->
+            <div class="timeline-item">
+                <div class="timeline-dot bg-green-500 border-green-400 text-white">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <div class="ml-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl font-bold text-green-400">T+15ms</span>
+                        <span class="badge badge-yes">Ayarlar Geri Yüklendi</span>
+                    </div>
+                    <p class="text-slate-300 mb-3">Kullanıcı tercihleri anında uygulanıyor</p>
+                    <div class="code-block">
+<span class="text-gray-500">// User preferences hemen uygula</span>
+this.shuffle = <span class="json-boolean">true</span>;        <span class="text-gray-500">// ← Shuffle modu aktif</span>
+this.repeatMode = <span class="json-string">'all'</span>;    <span class="text-gray-500">// ← Tekrar: Tüm şarkılar</span>
+this.volume = <span class="json-number">75</span>;           <span class="text-gray-500">// ← Ses seviyesi %75</span>
+
+console.log(<span class="json-string">'💾 Settings restored'</span>, {
+    shuffle: <span class="json-boolean">true</span>,
+    repeat: <span class="json-string">'all'</span>,
+    volume: <span class="json-number">75</span>
+});</div>
+                    <div class="mt-4 ui-preview">
+                        <div class="text-xs text-slate-400 mb-2">UI Görünümü:</div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+                                    <i class="fas fa-random text-white text-xs"></i>
+                                </div>
+                                <span class="text-sm">Shuffle <span class="text-blue-400 font-bold">AÇIK</span></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center">
+                                    <i class="fas fa-repeat text-white text-xs"></i>
+                                </div>
+                                <span class="text-sm">Repeat <span class="text-purple-400 font-bold">ALL</span></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center">
+                                    <i class="fas fa-volume-up text-white text-xs"></i>
+                                </div>
+                                <span class="text-sm">Volume <span class="text-green-400 font-bold">75%</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- T+20ms -->
+            <div class="timeline-item">
+                <div class="timeline-dot bg-purple-500 border-purple-400 text-white">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="ml-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl font-bold text-purple-400">T+20ms</span>
+                        <span class="badge badge-info">Context Geri Yüklendi</span>
+                    </div>
+                    <p class="text-slate-300 mb-3">Oynatma bağlamı (hangi albüm/genre) restore ediliyor</p>
+                    <div class="code-block">
+<span class="text-gray-500">// Play context'i geri yükle</span>
+muzibuStore.setPlayContext({
+    type: <span class="json-string">'album'</span>,
+    id: <span class="json-number">42</span>,
+    name: <span class="json-string">'Rock Hits'</span>
+});
+
+<span class="text-gray-500">// Bu ne işe yarar?</span>
+<span class="text-gray-500">// → Şarkı bitince bir sonraki şarkıyı bilir</span>
+<span class="text-gray-500">// → Infinite loop sistemi için gerekli</span></div>
+                </div>
+            </div>
+
+            <!-- T+25ms -->
+            <div class="timeline-item">
+                <div class="timeline-dot bg-orange-500 border-orange-400 text-white">
+                    <i class="fas fa-list"></i>
+                </div>
+                <div class="ml-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl font-bold text-orange-400">T+25ms</span>
+                        <span class="badge badge-warn">Queue Placeholder</span>
+                    </div>
+                    <p class="text-slate-300 mb-3">Queue ID'lerinden placeholder'lar anında oluşturuluyor</p>
+                    <div class="code-block">
+<span class="text-gray-500">// Placeholder songs oluştur</span>
+this.queue = queueIds.map(id => ({
+    song_id: id,
+    song_title: { tr: <span class="json-string">'Yükleniyor...'</span> },
+    artist_title: { tr: <span class="json-string">''</span> },
+    album_cover: <span class="json-boolean">null</span>,
+    _placeholder: <span class="json-boolean">true</span>
+}));
+
+console.log(<span class="json-string">'📋 Queue IDs found: 5 - Loading song info'</span>);</div>
+                    <div class="mt-4 ui-preview">
+                        <div class="text-xs text-slate-400 mb-3 flex items-center gap-2">
+                            <i class="fas fa-desktop"></i>
+                            UI'da Anında Görünür:
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-lg">
+                                <div class="w-10 h-10 bg-slate-700 rounded animate-pulse"></div>
+                                <div class="flex-1">
+                                    <div class="text-sm text-slate-400">Yükleniyor...</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-lg">
+                                <div class="w-10 h-10 bg-slate-700 rounded animate-pulse"></div>
+                                <div class="flex-1">
+                                    <div class="text-sm text-slate-400">Yükleniyor...</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-lg">
+                                <div class="w-10 h-10 bg-slate-700 rounded animate-pulse"></div>
+                                <div class="flex-1">
+                                    <div class="text-sm text-slate-400">Yükleniyor...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- T+30ms -->
+            <div class="timeline-item">
+                <div class="timeline-dot bg-blue-500 border-blue-400 text-white">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="ml-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl font-bold text-blue-400">T+30ms</span>
+                        <span class="badge badge-info">Background Fetch Başladı</span>
+                    </div>
+                    <p class="text-slate-300 mb-3">API istekleri background'da başlatılıyor (NON-BLOCKING)</p>
+                    <div class="code-block">
+<span class="text-gray-500">// Background'da çalışır, sayfa render'ını bloklamaz!</span>
+this.loadQueueSongData([<span class="json-number">123</span>, <span class="json-number">456</span>, <span class="json-number">789</span>, <span class="json-number">101</span>, <span class="json-number">202</span>]);
+
+<span class="text-gray-500">// Auto-save tekrar aktif</span>
+this._isRestoringState = <span class="json-boolean">false</span>;</div>
+                    <div class="mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                            <div class="text-sm">
+                                <strong class="text-green-400">Instant Feedback:</strong>
+                                <div class="text-slate-400 mt-1">Sayfa hemen kullanılabilir, API beklenmez!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- T+200ms -->
+            <div class="timeline-item">
+                <div class="timeline-dot bg-cyan-500 border-cyan-400 text-white">
+                    <i class="fas fa-cloud-download-alt"></i>
+                </div>
+                <div class="ml-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl font-bold text-cyan-400">T+200ms</span>
+                        <span class="badge badge-info">API İstekleri</span>
+                    </div>
+                    <p class="text-slate-300 mb-3">Her şarkı için API'den bilgi çekiliyor (max 10 şarkı)</p>
+                    <div class="code-block">
+<span class="text-gray-500">// Her şarkı için ayrı istek</span>
+for (const songId of [<span class="json-number">123</span>, <span class="json-number">456</span>, <span class="json-number">789</span>, <span class="json-number">101</span>, <span class="json-number">202</span>]) {
+    const response = await fetch(<span class="json-string">`/api/muzibu/songs/${songId}`</span>);
+    const song = await response.json();
+
+    <span class="text-gray-500">// Song data:</span>
+    {
+        id: <span class="json-number">123</span>,
+        title: { tr: <span class="json-string">"Bohemian Rhapsody"</span> },
+        artist_title: { tr: <span class="json-string">"Queen"</span> },
+        album_cover: <span class="json-string">"12345"</span>,
+        duration: <span class="json-string">"5:55"</span>
+    }
+}</div>
+                </div>
+            </div>
+
+            <!-- T+2000ms -->
+            <div class="timeline-item">
+                <div class="timeline-dot bg-green-500 border-green-400 text-white">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div class="ml-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl font-bold text-green-400">T+2000ms</span>
+                        <span class="badge badge-yes">Tamamlandı</span>
+                    </div>
+                    <p class="text-slate-300 mb-3">Tüm şarkı bilgileri yüklendi, queue güncellendi</p>
+                    <div class="code-block">
+<span class="text-gray-500">// Queue'yu gerçek data ile güncelle</span>
+this.queue = loadedSongs;  <span class="text-gray-500">// 5 şarkı</span>
+
+console.log(<span class="json-string">'✅ Queue song data loaded: 5'</span>);</div>
+                    <div class="mt-4 ui-preview">
+                        <div class="text-xs text-slate-400 mb-3 flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                            UI Güncellendi (Gerçek Data):
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-lg border border-green-500/20">
+                                <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded flex items-center justify-center text-xs">
+                                    <i class="fas fa-music"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm font-semibold text-white">Bohemian Rhapsody</div>
+                                    <div class="text-xs text-slate-400">Queen • 5:55</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-lg border border-green-500/20">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded flex items-center justify-center text-xs">
+                                    <i class="fas fa-music"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm font-semibold text-white">Stairway to Heaven</div>
+                                    <div class="text-xs text-slate-400">Led Zeppelin • 8:02</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-lg border border-green-500/20">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded flex items-center justify-center text-xs">
+                                    <i class="fas fa-music"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm font-semibold text-white">Hotel California</div>
+                                    <div class="text-xs text-slate-400">Eagles • 6:30</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- What Happens Table -->
+        <section class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="card rounded-2xl p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                    Geri Yüklenir
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <i class="fas fa-volume-up text-green-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-green-300">Volume (Ses Seviyesi)</div>
+                            <div class="text-sm text-slate-400">0-100 arası değer korunur</div>
+                        </div>
+                        <span class="badge badge-yes">T+15ms</span>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <i class="fas fa-random text-green-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-green-300">Shuffle (Karıştır)</div>
+                            <div class="text-sm text-slate-400">Açık/kapalı durumu saklanır</div>
+                        </div>
+                        <span class="badge badge-yes">T+15ms</span>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <i class="fas fa-repeat text-green-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-green-300">Repeat Mode</div>
+                            <div class="text-sm text-slate-400">off / all / one modu korunur</div>
+                        </div>
+                        <span class="badge badge-yes">T+15ms</span>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <i class="fas fa-link text-green-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-green-300">Play Context</div>
+                            <div class="text-sm text-slate-400">Hangi albüm/genre bağlamı</div>
+                        </div>
+                        <span class="badge badge-yes">T+20ms</span>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <i class="fas fa-list text-green-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-green-300">Queue IDs</div>
+                            <div class="text-sm text-slate-400">Sadece ID'ler (stream URL yok)</div>
+                        </div>
+                        <span class="badge badge-yes">T+25ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-2xl p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-times-circle text-red-400"></i>
+                    Geri Yüklenmez
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                        <i class="fas fa-music text-red-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-red-300">Current Song</div>
+                            <div class="text-sm text-slate-400">Stream URL expire olur</div>
+                        </div>
+                        <span class="badge badge-no">❌</span>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                        <i class="fas fa-clock text-red-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-red-300">Current Time</div>
+                            <div class="text-sm text-slate-400">Hatalı pozisyon hatası</div>
+                        </div>
+                        <span class="badge badge-no">❌</span>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                        <i class="fas fa-play-circle text-red-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-red-300">Is Playing</div>
+                            <div class="text-sm text-slate-400">Otomatik play yapılmaz</div>
+                        </div>
+                        <span class="badge badge-no">❌</span>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                        <i class="fas fa-sort-numeric-down text-red-400 mt-1"></i>
+                        <div class="flex-1">
+                            <div class="font-semibold text-red-300">Queue Index</div>
+                            <div class="text-sm text-slate-400">Hangi şarkıda olduğu saklanmaz</div>
+                        </div>
+                        <span class="badge badge-no">❌</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance -->
+        <section class="card rounded-2xl p-6 mb-8 border-purple-500/30">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-tachometer-alt text-purple-400"></i>
+                Performance Metrikleri
+            </h2>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 text-center">
+                    <div class="text-2xl font-bold text-purple-400 mb-1">~30ms</div>
+                    <div class="text-xs text-slate-400">Initial Load</div>
+                    <div class="text-xs text-slate-500 mt-1">Placeholder anında</div>
+                </div>
+                <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-400 mb-1">~2s</div>
+                    <div class="text-xs text-slate-400">Full Load</div>
+                    <div class="text-xs text-slate-500 mt-1">Tüm şarkı data</div>
+                </div>
+                <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-4 text-center">
+                    <div class="text-2xl font-bold text-green-400 mb-1">Max 10</div>
+                    <div class="text-xs text-slate-400">API İstekleri</div>
+                    <div class="text-xs text-slate-500 mt-1">Performance limit</div>
+                </div>
+                <div class="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4 text-center">
+                    <div class="text-2xl font-bold text-cyan-400 mb-1">0ms</div>
+                    <div class="text-xs text-slate-400">Blocking Time</div>
+                    <div class="text-xs text-slate-500 mt-1">Non-blocking</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Experience -->
+        <section class="card rounded-2xl p-6 glow">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-user text-pink-400"></i>
+                Kullanıcı Deneyimi
+            </h2>
+            <div class="space-y-4">
+                <div class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-xl p-4">
+                    <div class="font-semibold text-blue-300 mb-2 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">1</span>
+                        Normal Kullanım
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-1 ml-8">
+                        <div>✅ Ses seviyesi %75 (kaydedilen değer)</div>
+                        <div>✅ Shuffle AÇIK (kaydedilen mod)</div>
+                        <div>✅ Repeat "Tüm Şarkılar" (kaydedilen mod)</div>
+                        <div>✅ Queue'da 5 şarkı görünür</div>
+                        <div>❌ Hiçbir şarkı çalmıyor (temiz başlangıç)</div>
+                        <div class="pt-2 text-green-400">→ Kullanıcı Play'e basınca context'ten devam eder</div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-xl p-4">
+                    <div class="font-semibold text-amber-300 mb-2 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center text-xs text-white">2</span>
+                        Hata Durumu (API Fail)
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-1 ml-8">
+                        <div>⚠️ API 500 döndürdü (sunucu hatası)</div>
+                        <div>✅ Placeholder'lar korunur ("Yükleniyor...")</div>
+                        <div>✅ Sayfa çalışmaya devam eder</div>
+                        <div>✅ Kullanıcı context'ten çalabilir</div>
+                        <div class="pt-2 text-green-400">→ Sayfa crash etmez, graceful degradation</div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30 rounded-xl p-4">
+                    <div class="font-semibold text-red-300 mb-2 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-xs text-white">3</span>
+                        localStorage Yok (Private Mode)
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-1 ml-8">
+                        <div>⚠️ localStorage access denied</div>
+                        <div>✅ Default değerler kullanılır</div>
+                        <div>✅ Volume: 100, Shuffle: false</div>
+                        <div>✅ Sayfa normal çalışır</div>
+                        <div class="pt-2 text-green-400">→ Graceful fallback, hata vermez</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-6 text-center text-slate-500 text-sm">
+        <p>Claude AI tarafından hazırlandı | Muzibu Player Storage Sistemi</p>
+    </footer>
+
+</body>
+</html>

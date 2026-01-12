@@ -1,1 +1,358 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlistables Veri Taşıma Kılavuzu - AI için Dokümantasyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <span class="inline-block px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium mb-4">
+                <i class="fas fa-robot mr-2"></i>AI Dokümantasyonu
+            </span>
+            <h1 class="text-3xl font-bold text-white mb-2">
+                Playlistables Veri Taşıma Kılavuzu
+            </h1>
+            <p class="text-gray-400">Gerçek veri geldiğinde AI'ın kullanacağı rehber</p>
+            <p class="text-gray-500 text-sm mt-2">30 Aralık 2025</p>
+        </header>
+
+        <!-- Sistem Özeti -->
+        <section class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-green-300 mb-4">
+                <i class="fas fa-check-circle mr-2"></i>Sistem Özeti
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2">Yeni Tablo</h3>
+                    <p class="text-gray-400 text-sm font-mono">muzibu_playlistables</p>
+                </div>
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2">Eski Tablolar</h3>
+                    <p class="text-gray-400 text-sm font-mono">
+                        muzibu_playlist_sector<br>
+                        muzibu_playlist_radio
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tablo Yapısı -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-white mb-4">
+                <i class="fas fa-database mr-2 text-cyan-400"></i>Tablo Yapısı
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left border-b border-slate-600">
+                            <th class="p-3 text-gray-300">Kolon</th>
+                            <th class="p-3 text-gray-300">Tip</th>
+                            <th class="p-3 text-gray-300">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700 font-mono text-xs">
+                        <tr>
+                            <td class="p-3 text-cyan-400">id</td>
+                            <td class="p-3 text-gray-400">BIGINT UNSIGNED</td>
+                            <td class="p-3 text-gray-400">Primary Key</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-cyan-400">playlist_id</td>
+                            <td class="p-3 text-gray-400">BIGINT UNSIGNED</td>
+                            <td class="p-3 text-gray-400">FK → muzibu_playlists(playlist_id)</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-cyan-400">playlistable_type</td>
+                            <td class="p-3 text-gray-400">VARCHAR(50)</td>
+                            <td class="p-3 text-gray-400">Morph alias: sector, radio, corporate, mood</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-cyan-400">playlistable_id</td>
+                            <td class="p-3 text-gray-400">BIGINT UNSIGNED</td>
+                            <td class="p-3 text-gray-400">İlgili entity'nin ID'si</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-cyan-400">position</td>
+                            <td class="p-3 text-gray-400">INT UNSIGNED</td>
+                            <td class="p-3 text-gray-400">Sıralama (varsayılan: 0)</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-cyan-400">created_at</td>
+                            <td class="p-3 text-gray-400">TIMESTAMP</td>
+                            <td class="p-3 text-gray-400">Oluşturulma tarihi</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-cyan-400">updated_at</td>
+                            <td class="p-3 text-gray-400">TIMESTAMP</td>
+                            <td class="p-3 text-gray-400">Güncellenme tarihi</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Morph Map -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-purple-300 mb-4">
+                <i class="fas fa-map mr-2"></i>Morph Map (playlistable_type değerleri)
+            </h2>
+            <div class="bg-slate-900/50 p-4 rounded-lg font-mono text-sm">
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="text-cyan-400">'sector'</div>
+                    <div class="text-gray-400">→ Modules\Muzibu\App\Models\Sector</div>
+                    <div class="text-cyan-400">'radio'</div>
+                    <div class="text-gray-400">→ Modules\Muzibu\App\Models\Radio</div>
+                    <div class="text-cyan-400">'corporate'</div>
+                    <div class="text-gray-400">→ Modules\Muzibu\App\Models\MuzibuCorporateAccount</div>
+                    <div class="text-gray-500">'mood'</div>
+                    <div class="text-gray-500">→ (İleride eklenecek)</div>
+                </div>
+            </div>
+            <p class="text-gray-400 text-sm mt-3">
+                <i class="fas fa-info-circle mr-1"></i>
+                Morph map: <code class="bg-slate-700 px-1 rounded">Modules/Muzibu/Providers/MuzibuServiceProvider.php</code>
+            </p>
+        </section>
+
+        <!-- Veri Taşıma Adımları -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-white mb-4">
+                <i class="fas fa-truck-loading mr-2 text-amber-400"></i>Gerçek Veri Taşıma Adımları
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Adım 1 -->
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-amber-300 mb-2">
+                        <span class="bg-amber-500/20 text-amber-300 px-2 py-1 rounded mr-2">1</span>
+                        Mevcut Verileri Kontrol Et
+                    </h3>
+                    <div class="bg-slate-800 p-3 rounded font-mono text-xs text-gray-300 overflow-x-auto">
+<pre>-- Mevcut sector ilişkileri
+SELECT COUNT(*) FROM muzibu_playlist_sector;
+
+-- Mevcut radio ilişkileri
+SELECT COUNT(*) FROM muzibu_playlist_radio;
+
+-- Yeni tabloda ne var?
+SELECT playlistable_type, COUNT(*)
+FROM muzibu_playlistables
+GROUP BY playlistable_type;</pre>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-amber-300 mb-2">
+                        <span class="bg-amber-500/20 text-amber-300 px-2 py-1 rounded mr-2">2</span>
+                        Sector Verilerini Taşı
+                    </h3>
+                    <div class="bg-slate-800 p-3 rounded font-mono text-xs text-gray-300 overflow-x-auto">
+<pre>INSERT INTO muzibu_playlistables
+    (playlist_id, playlistable_type, playlistable_id, position, created_at, updated_at)
+SELECT
+    playlist_id,
+    'sector' as playlistable_type,
+    sector_id as playlistable_id,
+    0 as position,
+    NOW() as created_at,
+    NOW() as updated_at
+FROM muzibu_playlist_sector
+ON DUPLICATE KEY UPDATE updated_at = NOW();</pre>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-amber-300 mb-2">
+                        <span class="bg-amber-500/20 text-amber-300 px-2 py-1 rounded mr-2">3</span>
+                        Radio Verilerini Taşı
+                    </h3>
+                    <div class="bg-slate-800 p-3 rounded font-mono text-xs text-gray-300 overflow-x-auto">
+<pre>INSERT INTO muzibu_playlistables
+    (playlist_id, playlistable_type, playlistable_id, position, created_at, updated_at)
+SELECT
+    playlist_id,
+    'radio' as playlistable_type,
+    radio_id as playlistable_id,
+    0 as position,
+    NOW() as created_at,
+    NOW() as updated_at
+FROM muzibu_playlist_radio
+ON DUPLICATE KEY UPDATE updated_at = NOW();</pre>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-amber-300 mb-2">
+                        <span class="bg-amber-500/20 text-amber-300 px-2 py-1 rounded mr-2">4</span>
+                        Corporate Verilerini Ekle (Yeni)
+                    </h3>
+                    <div class="bg-slate-800 p-3 rounded font-mono text-xs text-gray-300 overflow-x-auto">
+<pre>-- Örnek: Playlist 5'i Corporate 2 ve 3'e dağıt
+INSERT INTO muzibu_playlistables
+    (playlist_id, playlistable_type, playlistable_id, position, created_at, updated_at)
+VALUES
+    (5, 'corporate', 2, 0, NOW(), NOW()),
+    (5, 'corporate', 3, 1, NOW(), NOW());</pre>
+                    </div>
+                </div>
+
+                <!-- Adım 5 -->
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-amber-300 mb-2">
+                        <span class="bg-amber-500/20 text-amber-300 px-2 py-1 rounded mr-2">5</span>
+                        Doğrulama
+                    </h3>
+                    <div class="bg-slate-800 p-3 rounded font-mono text-xs text-gray-300 overflow-x-auto">
+<pre>-- Toplam kontrol
+SELECT
+    playlistable_type,
+    COUNT(*) as count,
+    COUNT(DISTINCT playlist_id) as unique_playlists
+FROM muzibu_playlistables
+GROUP BY playlistable_type;
+
+-- Örnek playlist'in tüm dağıtımları
+SELECT * FROM muzibu_playlistables WHERE playlist_id = 5;</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Laravel Kullanımı -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-blue-300 mb-4">
+                <i class="fas fa-code mr-2"></i>Laravel Kullanımı
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Playlist Model -->
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2">Playlist Model Metodları</h3>
+                    <div class="bg-slate-800 p-3 rounded font-mono text-xs text-gray-300 overflow-x-auto">
+<pre>// Tüm dağıtımları getir
+$playlist->getAllDistributions();
+// Return: ['sectors' => [1,2], 'radios' => [3], 'corporates' => [5,6]]
+
+// Belirli bir entity type'a dağıt
+$playlist->distributeToEntity('corporate', 5);
+$playlist->distributeToEntity('sector', 3);
+
+// Entity'den kaldır
+$playlist->removeFromEntity('corporate', 5);
+
+// Sync (tamamen değiştir)
+$playlist->syncDistribution('corporate', [1, 2, 3]);
+
+// Polymorphic relations (Eloquent)
+$playlist->distributedToSectors;
+$playlist->distributedToRadios;
+$playlist->distributedToCorporates;</pre>
+                    </div>
+                </div>
+
+                <!-- Entity Model -->
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2">Entity Model Metodları (Trait)</h3>
+                    <div class="bg-slate-800 p-3 rounded font-mono text-xs text-gray-300 overflow-x-auto">
+<pre>// Sector, Radio, Corporate modellerinde
+use HasPlaylistDistribution;
+
+// Bu entity'e dağıtılmış playlist'ler
+$sector->playlists;
+$corporate->activePlaylists;
+$radio->publicPlaylists;
+
+// Playlist sayısı
+$corporate->playlists_count;
+
+// Playlist ekle/çıkar
+$corporate->attachPlaylist($playlist);
+$corporate->detachPlaylist($playlist);
+$corporate->syncPlaylists([1, 2, 3]);</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dosyalar -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-white mb-4">
+                <i class="fas fa-folder-open mr-2 text-green-400"></i>İlgili Dosyalar
+            </h2>
+
+            <div class="space-y-2 font-mono text-xs">
+                <div class="flex items-center p-2 bg-slate-900/50 rounded">
+                    <i class="fas fa-file-code text-blue-400 mr-3"></i>
+                    <span class="text-gray-300">Modules/Muzibu/database/migrations/2025_12_30_211700_create_playlistables_table.php</span>
+                </div>
+                <div class="flex items-center p-2 bg-slate-900/50 rounded">
+                    <i class="fas fa-file-code text-blue-400 mr-3"></i>
+                    <span class="text-gray-300">Modules/Muzibu/database/migrations/tenant/2025_12_30_211700_create_playlistables_table.php</span>
+                </div>
+                <div class="flex items-center p-2 bg-slate-900/50 rounded">
+                    <i class="fas fa-file-code text-purple-400 mr-3"></i>
+                    <span class="text-gray-300">Modules/Muzibu/app/Models/Playlist.php</span>
+                    <span class="text-gray-500 ml-2">(polymorphic relations)</span>
+                </div>
+                <div class="flex items-center p-2 bg-slate-900/50 rounded">
+                    <i class="fas fa-file-code text-amber-400 mr-3"></i>
+                    <span class="text-gray-300">Modules/Muzibu/app/Traits/HasPlaylistDistribution.php</span>
+                </div>
+                <div class="flex items-center p-2 bg-slate-900/50 rounded">
+                    <i class="fas fa-file-code text-green-400 mr-3"></i>
+                    <span class="text-gray-300">Modules/Muzibu/Providers/MuzibuServiceProvider.php</span>
+                    <span class="text-gray-500 ml-2">(morph map)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Önemli Notlar -->
+        <section class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-red-300 mb-4">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Önemli Notlar
+            </h2>
+            <ul class="space-y-2 text-gray-300">
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-red-400 mt-1 mr-2"></i>
+                    <span><strong>Eski tablolar silinmedi!</strong> muzibu_playlist_sector ve muzibu_playlist_radio hala mevcut. İleride silinebilir.</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-red-400 mt-1 mr-2"></i>
+                    <span><strong>Unique constraint:</strong> Aynı playlist aynı entity'ye bir kez bağlanabilir (playlist_id + type + id)</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-red-400 mt-1 mr-2"></i>
+                    <span><strong>Morph map güncellemesi:</strong> Yeni entity tipi eklerken MuzibuServiceProvider'daki morph map'i güncelle!</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-red-400 mt-1 mr-2"></i>
+                    <span><strong>Cache temizle:</strong> Morph map değişikliği sonrası <code class="bg-slate-700 px-1 rounded">php artisan config:clear</code></span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm">
+            <p>
+                <i class="fas fa-robot mr-2"></i>
+                Claude AI tarafından oluşturuldu | 30 Aralık 2025
+            </p>
+            <p class="mt-2">
+                <a href="../../corporate-playlist-system/" class="text-blue-400 hover:text-blue-300">
+                    Planlama Raporları →
+                </a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

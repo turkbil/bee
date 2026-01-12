@@ -1,1 +1,249 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Leonardo AI Boyut Karşılaştırması - Örnek Görseller</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .image-container img {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-2 border-purple-500 rounded-full px-8 py-3 mb-4">
+                <span class="text-purple-400 font-bold text-lg">📊 BOYUT KARŞILAŞTIRMASI</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+                3 Farklı Boyut - Yan Yana
+            </h1>
+            <p class="text-xl text-slate-400">
+                Aynı AI Model (Lucid Origin) - Farklı Boyutlar
+            </p>
+        </header>
+
+        <!-- Karşılaştırma Tablosu -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6">💰 Fiyat & Özellik Karşılaştırması</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="border-b-2 border-slate-600">
+                        <tr>
+                            <th class="pb-3 text-slate-400 font-semibold">Özellik</th>
+                            <th class="pb-3 text-green-400 font-semibold text-center">832x512<br>YATAY ✅</th>
+                            <th class="pb-3 text-yellow-400 font-semibold text-center">1664x1024<br>BÜYÜK</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 text-slate-300">Token/Görsel</td>
+                            <td class="py-3 text-center text-green-400 font-bold text-2xl">3</td>
+                            <td class="py-3 text-center text-yellow-400 font-bold text-xl">14</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">13,080 Şarkı</td>
+                            <td class="py-3 text-center text-green-400 font-bold">39,240 kredi</td>
+                            <td class="py-3 text-center text-yellow-400 font-bold">183,120 kredi</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Tasarruf (vs 1472x832)</td>
+                            <td class="py-3 text-center text-green-400 font-bold">%85</td>
+                            <td class="py-3 text-center text-yellow-400 font-bold">%30</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Dosya Boyutu</td>
+                            <td class="py-3 text-center text-green-400">256-319 KB</td>
+                            <td class="py-3 text-center text-yellow-400">994-1230 KB</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-slate-300">Format</td>
+                            <td class="py-3 text-center text-green-400">Yatay (13:8)</td>
+                            <td class="py-3 text-center text-yellow-400">Yatay (13:8)</td>
+                        </tr>
+                        <tr class="bg-green-900/20">
+                            <td class="py-3 text-slate-300 font-bold">Önerim</td>
+                            <td class="py-3 text-center text-green-400 font-bold text-2xl">✅</td>
+                            <td class="py-3 text-center text-slate-500">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Örnek 1: 832x512 -->
+        <div class="mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-green-400">✅ 832x512 YATAY (Önerilen!)</h2>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-green-400">3 token/görsel</div>
+                    <div class="text-sm text-slate-400">%85 tasarruf</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-green-500">
+                    <div class="p-4 bg-green-900/30">
+                        <h3 class="font-bold text-white">Les Bijoux Rient</h3>
+                        <p class="text-xs text-slate-400">832x512 | 295 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16789/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16789/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Les Bijoux Rient" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-green-500">
+                    <div class="p-4 bg-green-900/30">
+                        <h3 class="font-bold text-white">Smells Like Before</h3>
+                        <p class="text-xs text-slate-400">832x512 | 306 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16786/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16786/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Smells Like Before" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-green-500">
+                    <div class="p-4 bg-green-900/30">
+                        <h3 class="font-bold text-white">Almond Glow</h3>
+                        <p class="text-xs text-slate-400">832x512 | 257 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16785/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16785/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Almond Glow" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Örnek 2: 1664x1024 -->
+        <div class="mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-yellow-400">📐 1664x1024 BÜYÜK YATAY (2x)</h2>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-yellow-400">14 token/görsel</div>
+                    <div class="text-sm text-slate-400">%30 tasarruf (ama pahalı!)</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-yellow-500">
+                    <div class="p-4 bg-yellow-900/30">
+                        <h3 class="font-bold text-white">Some Distance Between</h3>
+                        <p class="text-xs text-slate-400">1664x1024 | 1038 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16899/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16899/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Some Distance Between" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-yellow-500">
+                    <div class="p-4 bg-yellow-900/30">
+                        <h3 class="font-bold text-white">Chocolat Syncopé</h3>
+                        <p class="text-xs text-slate-400">1664x1024 | 1151 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16898/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16898/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="Chocolat Syncopé" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-yellow-500">
+                    <div class="p-4 bg-yellow-900/30">
+                        <h3 class="font-bold text-white">No Plan In Hand</h3>
+                        <p class="text-xs text-slate-400">1664x1024 | 994 KB</p>
+                    </div>
+                    <div class="image-container">
+                        <a href="https://muzibu.com.tr/storage/tenant1001/16896/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" target="_blank">
+                            <img src="https://muzibu.com.tr/storage/tenant1001/16896/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg" alt="No Plan In Hand" class="w-full h-auto" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Karar Zamanı -->
+        <div class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-4 border-purple-500 rounded-lg p-10 mb-12">
+            <h2 class="text-4xl font-bold text-center text-white mb-8">🎯 Karar Zamanı!</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="bg-gradient-to-br from-green-900/70 to-emerald-900/70 rounded-lg p-8 border-4 border-green-500">
+                    <div class="text-center mb-4">
+                        <div class="text-5xl mb-2">✅</div>
+                        <h3 class="text-2xl font-bold text-green-400 mb-2">832x512 YATAY</h3>
+                    </div>
+                    <div class="space-y-3 text-white">
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Token/Görsel:</span>
+                            <span class="font-bold text-green-400">3</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>13,080 Şarkı:</span>
+                            <span class="font-bold text-green-400">39,240</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Tasarruf:</span>
+                            <span class="font-bold text-green-400">%85</span>
+                        </div>
+                        <div class="bg-green-900/50 rounded p-4 text-center mt-4">
+                            <p class="font-bold text-lg">ÖNERİLEN! 🚀</p>
+                            <p class="text-sm mt-2">Yatay format + Maksimum tasarruf</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-yellow-900/70 to-orange-900/70 rounded-lg p-8 border-4 border-yellow-500">
+                    <div class="text-center mb-4">
+                        <div class="text-5xl mb-2">📐</div>
+                        <h3 class="text-2xl font-bold text-yellow-400 mb-2">1664x1024 BÜYÜK</h3>
+                    </div>
+                    <div class="space-y-3 text-white">
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Token/Görsel:</span>
+                            <span class="font-bold text-yellow-400">14</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>13,080 Şarkı:</span>
+                            <span class="font-bold text-yellow-400">183,120</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800/50 rounded p-3">
+                            <span>Tasarruf:</span>
+                            <span class="font-bold text-yellow-400">%30</span>
+                        </div>
+                        <div class="bg-yellow-900/50 rounded p-4 text-center mt-4">
+                            <p class="font-bold text-lg">KALİTE MAKSİMUM</p>
+                            <p class="text-sm mt-2">Daha büyük ama 4.7x pahalı!</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>🤖 Bu karşılaştırma Claude Code (Sonnet 4.5) tarafından hazırlandı</p>
+            <p class="mt-2">Muzibu.com.tr - Leonardo AI Boyut Karşılaştırması</p>
+            <p class="mt-2 text-xs">11 Ocak 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

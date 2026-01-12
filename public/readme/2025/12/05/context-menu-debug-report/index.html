@@ -1,1 +1,242 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Menu Debug Raporu - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-12 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                🔍 Context Menu Debug Raporu
+            </h1>
+            <p class="text-slate-400 text-lg">Muzibu.com.tr - Sağ Tuş Menüsü Render Sorunu Analizi</p>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 5 Aralık 2025</span>
+                <span>🎯 Tenant: muzibu.com.tr (ID: 1001)</span>
+            </div>
+        </header>
+
+        <!-- Problem Summary -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-red-400">❌ PROBLEM</h2>
+            <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-6">
+                <p class="text-xl text-red-300 font-semibold mb-4">
+                    Context menu (sağ tuş menüsü) çalışmıyor çünkü <code class="bg-red-900/50 px-2 py-1 rounded">x-on:contextmenu</code> directive'leri HTML'de render edilmiyor!
+                </p>
+                <ul class="space-y-2 text-slate-300">
+                    <li>✅ <strong>home.blade.php</strong> dosyasında kod VAR (3 adet)</li>
+                    <li>✅ <strong>Blade compile</strong> test'i BAŞARILI (compiled view'da VAR)</li>
+                    <li>❌ <strong>Canlı sitede</strong> HTML içinde YOK (0 adet)</li>
+                    <li>❌ <strong>Tarayıcıda</strong> document.querySelector test'i: false</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Test Results -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-blue-400">🧪 TEST SONUÇLARI</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Test 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">✅ Blade Dosyası</h3>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>$ grep -c "x-on:contextmenu" home.blade.php
+3 adet bulundu</code></pre>
+                    <p class="mt-3 text-sm text-slate-400">Kaynak kodda directive'ler VAR</p>
+                </div>
+
+                <!-- Test 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">✅ Blade Compile</h3>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>$ php artisan tinker
+> Compiled blade test
+3 adet x-on:contextmenu bulundu</code></pre>
+                    <p class="mt-3 text-sm text-slate-400">Blade compiler çalışıyor</p>
+                </div>
+
+                <!-- Test 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-red-700">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">❌ Canlı HTML (curl)</h3>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>$ curl https://muzibu.com.tr/ | grep -c "x-on:contextmenu"
+0 adet bulundu</code></pre>
+                    <p class="mt-3 text-sm text-slate-400">HTTP response'da YOK!</p>
+                </div>
+
+                <!-- Test 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-red-700">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">❌ Tarayıcı DOM</h3>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>// Console test
+document.querySelector('.spa-content-wrapper')
+  .innerHTML.includes('x-on:contextmenu')
+  
+Result: false</code></pre>
+                    <p class="mt-3 text-sm text-slate-400">Browser DOM'da YOK!</p>
+                </div>
+
+                <!-- Test 5 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-green-700">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">✅ Statik HTML Test</h3>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>$ curl https://muzibu.com.tr/test-xon.html | grep -c "x-on:"
+2 adet bulundu</code></pre>
+                    <p class="mt-3 text-sm text-slate-400">Statik HTML çalışıyor, sorun Blade'de!</p>
+                </div>
+
+                <!-- Test 6 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-red-700">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">❌ Tinker Render Test</h3>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>$ php artisan tinker
+> HomeController render test
+x-on:contextmenu count: 0
+
+Şifre sayfası render ediliyor!</code></pre>
+                    <p class="mt-3 text-sm text-slate-400">Cookie auth problemi - şifre sayfası gösteriyor</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Attempted Fixes -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-yellow-400">🔧 DENENENeler</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h4 class="font-bold text-yellow-300 mb-2">1. addslashes() → json_encode() Değişikliği</h4>
+                    <p class="text-slate-400 mb-2">Blade rendering'de <code>addslashes()</code> sorun çıkarabileceği için <code>json_encode()</code> ile değiştirdik.</p>
+                    <p class="text-sm text-slate-500"><strong>Sonuç:</strong> ÇALIŞMADI</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h4 class="font-bold text-yellow-300 mb-2">2. Multi-line → Single-line Format</h4>
+                    <p class="text-slate-400 mb-2">Çok satırlı attribute'leri tek satıra çektik (Blade render sorunu olabilir diye).</p>
+                    <p class="text-sm text-slate-500"><strong>Sonuç:</strong> 2 adet render edildi ama diğerleri hala 0</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h4 class="font-bold text-yellow-300 mb-2">3. Cache Temizleme (Nuclear)</h4>
+                    <p class="text-slate-400 mb-2">Tüm cache'ler temizlendi: view, config, route, response, OPcache, compiled views.</p>
+                    <p class="text-sm text-slate-500"><strong>Sonuç:</strong> ÇALIŞMADI</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h4 class="font-bold text-yellow-300 mb-2">4. Git Reset + Yeniden Deneme</h4>
+                    <p class="text-slate-400 mb-2">Dosyayı git'ten reset edip sıfırdan başladık.</p>
+                    <p class="text-sm text-slate-500"><strong>Sonuç:</strong> ÇALIŞMADI</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <h4 class="font-bold text-green-300 mb-2">5. Middleware/Sanitizer Kontrolü</h4>
+                    <p class="text-slate-400 mb-2">Middleware ve HTML purifier araması yapıldı.</p>
+                    <p class="text-sm text-slate-500"><strong>Sonuç:</strong> Bulunmadı - sorun middleware'de değil</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hypothesis -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-purple-400">💡 HİPOTEZLER</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-purple-500/30">
+                    <h4 class="font-bold text-purple-300 mb-3">❓ Blade Syntax Hatası</h4>
+                    <p class="text-sm text-slate-400 mb-2">Çok satırlı attribute içinde `{{ }}` kullanımı sorun olabilir.</p>
+                    <p class="text-xs text-slate-500"><strong>Olasılık:</strong> YÜKSEK</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-purple-500/30">
+                    <h4 class="font-bold text-purple-300 mb-3">❓ Cookie Auth Sorunu</h4>
+                    <p class="text-sm text-slate-400 mb-2">Şifre koruması nedeniyle farklı HTML render ediliyor olabilir.</p>
+                    <p class="text-xs text-slate-500"><strong>Olasılık:</strong> ORTA</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-purple-500/30">
+                    <h4 class="font-bold text-purple-300 mb-3">❓ Blade Compiler Bug</h4>
+                    <p class="text-sm text-slate-400 mb-2">Laravel/Livewire Blade compiler'ında `x-on:` directive'leriyle ilgili bug.</p>
+                    <p class="text-xs text-slate-500"><strong>Olasılık:</strong> DÜŞÜK</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-purple-500/30">
+                    <h4 class="font-bold text-purple-300 mb-3">❓ Runtime Error (Silent)</h4>
+                    <p class="text-sm text-slate-400 mb-2">Blade rendering sırasında hata oluyor ama log'a düşmüyor.</p>
+                    <p class="text-xs text-slate-500"><strong>Olasılık:</strong> ORTA</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-green-400">🎯 ÖNERİLEN ADIMLAR</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-300 mb-2">ALTERNATİF YOL: Partial Kullan</h3>
+                            <p class="text-slate-300 mb-3">Context menu'yu ayrı bir partial component'e taşı:</p>
+                            <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>{{-- resources/views/themes/muzibu/partials/playlist-card.blade.php --}}
+&lt;div class="..." 
+     x-on:contextmenu.prevent.stop="..."&gt;
+    ...
+&lt;/div&gt;
+
+{{-- home.blade.php --}}
+@include('themes.muzibu.partials.playlist-card', ['playlist' => $playlist])</code></pre>
+                            <p class="mt-3 text-sm text-green-400"><strong>Avantaj:</strong> Blade rendering izole edilir, debug kolay</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300 mb-2">JavaScript İle Event Binding</h3>
+                            <p class="text-slate-300 mb-3">Alpine yerine native JavaScript ile event ekle:</p>
+                            <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>// DOM ready sonrası
+document.querySelectorAll('.playlist-card').forEach(el => {
+    el.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        Alpine.store('contextMenu').openContextMenu(e, 'playlist', {
+            id: el.dataset.playlistId,
+            title: el.dataset.playlistTitle,
+            ...
+        });
+    });
+});</code></pre>
+                            <p class="mt-3 text-sm text-blue-400"><strong>Avantaj:</strong> Blade'den tamamen bağımsız</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-300 mb-2">Livewire Component Kullan</h3>
+                            <p class="text-slate-300 mb-3">Home page'i Livewire component'e çevir:</p>
+                            <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>// app/Livewire/HomePage.php
+class HomePage extends Component {
+    public function render() {
+        return view('livewire.home-page');
+    }
+}
+
+// Livewire component'lerde Alpine directive'leri daha stabil</code></pre>
+                            <p class="mt-3 text-sm text-yellow-400"><strong>Avantaj:</strong> Livewire + Alpine daha uyumlu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI Debug Raporu - Tailwind CSS</p>
+            <p class="mt-2">📊 Rapor: https://muzibu.com.tr/readme/2025/12/05/context-menu-debug-report/</p>
+        </footer>
+    </div>
+</body>
+</html>

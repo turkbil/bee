@@ -1,1 +1,551 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AI Draft Sistemi Analiz - 1 Aralık 2025</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            margin-top: 25px;
+            color: #93c5fd;
+        }
+
+        .status-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-good {
+            border-left-color: #10b981;
+        }
+
+        .status-warning {
+            border-left-color: #f59e0b;
+        }
+
+        .status-error {
+            border-left-color: #dc2626;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid #334155;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .timeline-item {
+            padding-left: 30px;
+            border-left: 2px solid #334155;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #3b82f6;
+        }
+
+        .timeline-time {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .timeline-content {
+            color: #cbd5e1;
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #a5f3fc;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-success { background: #10b981; color: white; }
+        .badge-warning { background: #f59e0b; color: white; }
+        .badge-error { background: #dc2626; color: white; }
+        .badge-info { background: #3b82f6; color: white; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.5);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .solution-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            border: 2px solid #10b981;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .solution-box h4 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .issue-box {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(185, 28, 28, 0.1));
+            border: 2px solid #dc2626;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .issue-box h4 {
+            color: #dc2626;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        li {
+            margin: 8px 0;
+            color: #cbd5e1;
+        }
+
+        strong {
+            color: #60a5fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Blog AI Draft Sistemi Analizi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-01 18:30 |
+                🎯 Tenant: ixtif.com (Tenant #2) |
+                👤 Talep: AI blog draft yeni üretmeme sorunu
+            </div>
+        </header>
+
+        <!-- ÖZET DURUM -->
+        <section>
+            <h2>🎯 Özet Durum</h2>
+
+            <div class="status-box status-good">
+                <h3>✅ Çalışan Sistemler</h3>
+                <ul>
+                    <li><strong>Blog Üretimi:</strong> Cron düzenli çalışıyor (bugün 8 blog üretildi)</li>
+                    <li><strong>Draft Pool:</strong> 66 unused draft mevcut (healthy threshold üzerinde)</li>
+                    <li><strong>Sistem Ayarları:</strong> Blog AI enabled, günde 4 blog hedefi aktif</li>
+                    <li><strong>Queue System:</strong> Horizon çalışıyor, job'lar işleniyor</li>
+                </ul>
+            </div>
+
+            <div class="issue-box">
+                <h4>❌ Tespit Edilen Sorun</h4>
+                <p><strong>Yeni Draft Üretimi Durmuş!</strong></p>
+                <ul>
+                    <li>Son draft üretimi: <strong>29 Kasım 2025, 21:09</strong></li>
+                    <li>Bugün (1 Aralık): <strong>0 draft üretildi</strong></li>
+                    <li>Dün (30 Kasım): <strong>0 draft üretildi</strong></li>
+                    <li>Draft regeneration threshold: <strong>10 draft</strong> (çok düşük!)</li>
+                    <li>Mevcut 66 draft → Regeneration tetiklenmiyor!</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SİSTEM İSTATİSTİKLERİ -->
+        <section>
+            <h2>📊 Sistem İstatistikleri</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Toplam Draft</div>
+                    <div class="stat-value">120</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Kullanılmamış Draft</div>
+                    <div class="stat-value">66</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Kullanılan Draft</div>
+                    <div class="stat-value">54</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Bugün Üretilen Blog</div>
+                    <div class="stat-value">13</div>
+                </div>
+            </div>
+
+            <h3>📅 Draft Üretim Geçmişi (Son 7 Gün)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Üretilen Draft</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2025-12-01</td>
+                        <td><strong>0</strong></td>
+                        <td><span class="badge badge-error">Üretilmedi</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-11-30</td>
+                        <td><strong>0</strong></td>
+                        <td><span class="badge badge-error">Üretilmedi</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-11-29</td>
+                        <td><strong>75</strong></td>
+                        <td><span class="badge badge-success">Toplu Üretim</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-11-28</td>
+                        <td>0</td>
+                        <td><span class="badge badge-warning">-</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-11-27</td>
+                        <td><strong>45</strong></td>
+                        <td><span class="badge badge-success">Toplu Üretim</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>📝 Bugünkü Blog Üretim Zaman Çizelgesi</h3>
+            <div class="timeline-item">
+                <div class="timeline-time">09:41 - 09:46 (5 dakika)</div>
+                <div class="timeline-content">
+                    <strong>10 blog üretildi</strong> <span class="badge badge-warning">Anormal Hızlı</span>
+                    <br>EP ve HELI karşılaştırma serisi + Kiralık ekipman serisi
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">12:03 - 12:06</div>
+                <div class="timeline-content">
+                    <strong>2 blog üretildi</strong> <span class="badge badge-info">Normal</span>
+                    <br>Elektrikli transpalet, Fiyat rehberi
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">18:02</div>
+                <div class="timeline-content">
+                    <strong>1 blog üretildi</strong> <span class="badge badge-success">Cron Tetikleme</span>
+                    <br>İstif makinesi kullanım alanları
+                </div>
+            </div>
+        </section>
+
+        <!-- PROBLEM ANALİZİ -->
+        <section>
+            <h2>🔍 Problem Analizi</h2>
+
+            <div class="status-box status-error">
+                <h3>1️⃣ Draft Regeneration Threshold Çok Düşük</h3>
+                <p><strong>Kod mantığı:</strong></p>
+                <div class="code-block">const MINIMUM_DRAFT_THRESHOLD = 10;
+const DRAFT_REGENERATION_COUNT = 100;</div>
+                <p><strong>Sorun:</strong></p>
+                <ul>
+                    <li>Mevcut unused drafts: <strong>66</strong></li>
+                    <li>Regeneration trigger: <strong>≤ 10</strong></li>
+                    <li>66 > 10 → Draft regeneration <strong>tetiklenmiyor!</strong></li>
+                </ul>
+                <p><strong>Günlük tüketim:</strong></p>
+                <ul>
+                    <li>Hedef: 4 blog/gün</li>
+                    <li>Gerçek: 8-13 blog/gün (manuel + otomatik)</li>
+                    <li>66 draft / 10 blog/gün = <strong>~6 gün sürer</strong></li>
+                    <li>Threshold'a ulaşana kadar yeni draft üretilmeyecek!</li>
+                </ul>
+            </div>
+
+            <div class="status-box status-warning">
+                <h3>2️⃣ Manuel Blog Üretimi Draft Tüketiyor</h3>
+                <p><strong>Gözlem:</strong></p>
+                <ul>
+                    <li>Bugün toplam 13 blog üretildi</li>
+                    <li>Cron tarafından: 8 blog (4 active hour × 1 blog)</li>
+                    <li>Manuel üretim: ~5 blog (09:41-09:46 arasında)</li>
+                </ul>
+                <p><strong>Sonuç:</strong></p>
+                <ul>
+                    <li>Admin panel'den manuel blog üretimi draft pool'u hızla tüketiyor</li>
+                    <li>System draft tüketim hızını tahmin edemiyor</li>
+                </ul>
+            </div>
+
+            <div class="status-box status-info">
+                <h3>3️⃣ Cron Çalışıyor Ama Log Yazılmıyor</h3>
+                <p><strong>Test sonucu:</strong></p>
+                <ul>
+                    <li>Manuel çalıştırma: ✅ Mükemmel çalışıyor</li>
+                    <li>Log dosyası: ❌ "TENANT BLOG CRON" kaydı yok</li>
+                    <li>Blog üretimi: ✅ Arka planda çalışıyor</li>
+                </ul>
+                <p><strong>Muhtemel sebep:</strong></p>
+                <ul>
+                    <li>Log channel ayarı eksik</li>
+                    <li>Ya da log rotation ile dosya adı değişiyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ÇÖZÜM ÖNERİLERİ -->
+        <section>
+            <h2>💡 Çözüm Önerileri</h2>
+
+            <div class="solution-box">
+                <h4>✅ Öncelik 1: Draft Regeneration Threshold'u Artır</h4>
+                <p><strong>Önerilen değişiklik:</strong></p>
+                <div class="code-block">// ❌ Mevcut (çok düşük!)
+const MINIMUM_DRAFT_THRESHOLD = 10;
+
+// ✅ Önerilen (güvenli buffer)
+const MINIMUM_DRAFT_THRESHOLD = 30;</div>
+                <p><strong>Mantık:</strong></p>
+                <ul>
+                    <li>Günde ortalama 10 blog tüketiliyor (manuel + otomatik)</li>
+                    <li>30 draft = ~3 günlük buffer</li>
+                    <li>Yeni 100 draft üretilirken sistem kesintisiz çalışır</li>
+                </ul>
+                <p><strong>Dosya:</strong> <code>app/Console/Commands/GenerateTenantBlogs.php:46</code></p>
+            </div>
+
+            <div class="solution-box">
+                <h4>✅ Öncelik 2: Proaktif Draft Üretimi (Haftalık Batch)</h4>
+                <p><strong>Strategi:</strong></p>
+                <ul>
+                    <li>Her Pazar gece 02:00'de otomatik 200 draft üret</li>
+                    <li>Draft pool her zaman dolu kalır</li>
+                    <li>Threshold'a bağlı olmadan çalışır</li>
+                </ul>
+                <p><strong>Laravel Scheduler:</strong></p>
+                <div class="code-block">// app/Console/Kernel.php
+$schedule->command('generate:tenant-blogs --generate-drafts=200')
+         ->weeklyOn(0, '02:00')
+         ->name('weekly-draft-generation');</div>
+            </div>
+
+            <div class="solution-box">
+                <h4>✅ Öncelik 3: Manuel Üretim Kontrolü</h4>
+                <p><strong>İki seçenek:</strong></p>
+                <ul>
+                    <li><strong>Seçenek A:</strong> Manuel üretimde draft kullanmayı disable et</li>
+                    <li><strong>Seçenek B:</strong> Manuel üretim sonrası otomatik draft regeneration tetikle</li>
+                </ul>
+                <p><strong>Önerilen:</strong> Seçenek B (kullanıcı deneyimini bozmaz)</p>
+            </div>
+        </section>
+
+        <!-- HEMEN YAPILACAKLAR -->
+        <section>
+            <h2>🚀 Hemen Yapılacaklar</h2>
+
+            <div class="status-box">
+                <h3>1. Acil Draft Üretimi (Şimdi)</h3>
+                <p>Mevcut draft pool düşük, hemen 100 yeni draft üret:</p>
+                <div class="code-block">php artisan tinker
+
+use Modules\Blog\App\Jobs\GenerateDraftsJob;
+use App\Models\Tenant;
+
+$tenant = Tenant::find(2);
+tenancy()->initialize($tenant);
+GenerateDraftsJob::dispatch(100)->onQueue('blog-ai');
+tenancy()->end();</div>
+                <p><strong>Süre:</strong> ~5-10 dakika</p>
+            </div>
+
+            <div class="status-box">
+                <h3>2. Threshold'u Güncelle</h3>
+                <p>Dosya: <code>app/Console/Commands/GenerateTenantBlogs.php</code></p>
+                <div class="code-block">// Line 46
+const MINIMUM_DRAFT_THRESHOLD = 30; // 10 → 30</div>
+            </div>
+
+            <div class="status-box">
+                <h3>3. Haftalık Cron Ekle</h3>
+                <p>Dosya: <code>app/Console/Kernel.php</code></p>
+                <p>Schedule bloğuna ekle (line ~170 civarı):</p>
+                <div class="code-block">// Haftalık draft regeneration (Her Pazar 02:00)
+$schedule->call(function () {
+    $tenants = \App\Models\Tenant::all();
+    foreach ($tenants as $tenant) {
+        tenancy()->initialize($tenant);
+        $enabled = getTenantSetting('blog_ai_enabled', '0');
+        if ($enabled === '1' || $enabled === 1) {
+            \Modules\Blog\App\Jobs\GenerateDraftsJob::dispatch(200)
+                ->onQueue('blog-ai');
+        }
+        tenancy()->end();
+    }
+})->weeklyOn(0, '02:00')->name('weekly-draft-generation');</div>
+            </div>
+        </section>
+
+        <!-- BEKLENEN SONUÇ -->
+        <section>
+            <h2>🎯 Beklenen Sonuç</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metrik</th>
+                        <th>Şu An</th>
+                        <th>Sonra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Draft Regeneration</td>
+                        <td><span class="badge badge-error">66 draft'ta durmuş</span></td>
+                        <td><span class="badge badge-success">30 draft'ta tetiklenir</span></td>
+                    </tr>
+                    <tr>
+                        <td>Draft Pool Buffer</td>
+                        <td>~6 gün</td>
+                        <td>~3 gün (güvenli)</td>
+                    </tr>
+                    <tr>
+                        <td>Otomatik Yenileme</td>
+                        <td>Threshold bazlı (reactive)</td>
+                        <td>Haftalık + Threshold (proactive)</td>
+                    </tr>
+                    <tr>
+                        <td>Draft Pool</td>
+                        <td>66 unused</td>
+                        <td>100-200+ unused (her zaman dolu)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu • 2025-12-01 18:30
+        </footer>
+    </div>
+</body>
+</html>

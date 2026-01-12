@@ -1,1 +1,450 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Ürün 500 Error Analizi - Ampul 12V</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid #ef4444;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analysis-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+            backdrop-filter: blur(10px);
+        }
+
+        .analysis-box.info {
+            border-left-color: #3b82f6;
+        }
+
+        .analysis-box.success {
+            border-left-color: #10b981;
+        }
+
+        .analysis-box h3 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .analysis-box p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #fbbf24;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .test-result {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .test-result .icon {
+            font-size: 1.5rem;
+        }
+
+        .test-result.fail .icon { color: #ef4444; }
+        .test-result.pass .icon { color: #10b981; }
+
+        .solution-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .solution-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .solution-item h3 {
+            color: #34d399;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .url-box {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 12px;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔴 Shop Ürün 500 Error Analizi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 00:05 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                🔗 URL: /shop/ampul-12v-duysuz
+            </div>
+            <div class="status-badge status-error">
+                ❌ HTTP 500 Server Error
+            </div>
+        </header>
+
+        <section>
+            <h2>🔍 Sorun Özeti</h2>
+
+            <div class="analysis-box">
+                <h3>Ana Sorun</h3>
+                <p>
+                    <strong class="tech-term">ampul-12v-duysuz</strong> slug'ına sahip ürün
+                    database'de bulunamadı. Laravel route sistemi ürünü arayıp bulamayınca
+                    <strong>500 Internal Server Error</strong> döndü.
+                </p>
+                <div class="url-box">
+                    https://ixtif.com/shop/ampul-12v-duysuz → 404 olmalıydı ama 500 döndü
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="value">500</div>
+                    <div class="label">HTTP Hatası</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">0</div>
+                    <div class="label">Bulunan Ürün</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">1</div>
+                    <div class="label">Toplam Ürün</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🧪 Test Sonuçları</h2>
+
+            <div class="analysis-box info">
+                <h3>1️⃣ HTTP Durum Testi</h3>
+                <div class="test-result fail">
+                    <span class="icon">❌</span>
+                    <div>
+                        <strong>curl -I https://ixtif.com/shop/ampul-12v-duysuz</strong><br>
+                        <span style="color: #94a3b8;">Sonuç: HTTP/2 500 (Beklenen: 404)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-box info">
+                <h3>2️⃣ Database Slug Sorgusu</h3>
+                <div class="test-result fail">
+                    <span class="icon">❌</span>
+                    <div>
+                        <strong>ShopProduct slug='ampul-12v-duysuz' sorgusu</strong><br>
+                        <span style="color: #94a3b8;">Sonuç: 0 kayıt bulundu</span>
+                    </div>
+                </div>
+                <div class="code-block">
+                    SELECT * FROM shop_products
+                    WHERE JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"tr\"')) = 'ampul-12v-duysuz'
+                    → 0 rows
+                </div>
+            </div>
+
+            <div class="analysis-box info">
+                <h3>3️⃣ Trash Kontrolü</h3>
+                <div class="test-result fail">
+                    <span class="icon">❌</span>
+                    <div>
+                        <strong>Silinmiş ürünler içinde arama</strong><br>
+                        <span style="color: #94a3b8;">Sonuç: Trash'te de bulunamadı</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-box info">
+                <h3>4️⃣ Genel Ürün Envanteri</h3>
+                <div class="test-result pass">
+                    <span class="icon">✅</span>
+                    <div>
+                        <strong>Database'de toplam ürün sayısı</strong><br>
+                        <span style="color: #94a3b8;">Sonuç: 1 ürün var (Test Ürün - PayTR Ödeme Testi)</span>
+                    </div>
+                </div>
+                <p style="color: #94a3b8; margin-top: 10px;">
+                    "ampul" kelimesini içeren ürün bulunamadı. Bu ürün database'e hiç eklenmemiş veya tamamen silinmiş.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Kök Sebep Analizi</h2>
+
+            <div class="analysis-box">
+                <h3>Neden 500 Error?</h3>
+                <p>
+                    Laravel'in <span class="tech-term">ShopController::show()</span> metodu
+                    ürünü bulamadığında <span class="tech-term">abort(404)</span> çağırmalı.
+                    Ancak 500 döndüğü için muhtemelen:
+                </p>
+                <ul style="margin-left: 20px; color: #cbd5e1; margin-top: 10px;">
+                    <li>View dosyası bulunamıyor</li>
+                    <li>Theme servisinde hata var</li>
+                    <li>Bir Exception yakalanmamış</li>
+                </ul>
+            </div>
+
+            <div class="analysis-box">
+                <h3>Neden Ürün Yok?</h3>
+                <p style="margin-bottom: 10px;">Üç olasılık var:</p>
+                <ol style="margin-left: 20px; color: #cbd5e1;">
+                    <li><strong>Ürün hiç oluşturulmamış:</strong> Admin panelde ürün kaydı yapılmamış</li>
+                    <li><strong>Ürün silinmiş:</strong> Daha önce vardı ama hard delete ile kalıcı silindi</li>
+                    <li><strong>Farklı slug kaydedilmiş:</strong> Ürün var ama slug'ı "ampul-12v-duysuz" değil</li>
+                </ol>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Çözüm Önerileri</h2>
+
+            <div class="solution-item">
+                <h3>1. Admin Panel Kontrolü <span class="priority priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    Admin panelde <span class="tech-term">/admin/shop</span> sayfasına gidip
+                    "ampul" kelimesini arayın. Ürün varsa slug'ını kontrol edin.
+                </p>
+                <div class="code-block">
+                    https://ixtif.com/admin/shop
+                    Arama: "ampul"
+                </div>
+                <p style="color: #94a3b8; margin-top: 10px;">
+                    <strong>Beklenen Sonuç:</strong> Ürün yoksa yeniden oluşturun. Varsa doğru slug'ı öğrenin.
+                </p>
+            </div>
+
+            <div class="solution-item">
+                <h3>2. Ürün Yeniden Oluşturma <span class="priority priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    Eğer ürün tamamen silinmişse veya hiç yoksa, admin panelden yeniden oluşturun:
+                </p>
+                <ul style="margin-left: 20px; color: #cbd5e1; margin-top: 10px;">
+                    <li><strong>Başlık:</strong> Ampul 12V Duysuz (veya doğru isim)</li>
+                    <li><strong>Slug (TR):</strong> ampul-12v-duysuz</li>
+                    <li><strong>Durum:</strong> Aktif + Yayında</li>
+                    <li><strong>Kategori:</strong> İlgili kategoriyi seçin</li>
+                </ul>
+            </div>
+
+            <div class="solution-item">
+                <h3>3. Database Doğrudan Sorgu <span class="priority priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    Tüm ürünleri listeleyip "ampul" içeren varsa görmek için:
+                </p>
+                <div class="code-block">
+php artisan tinker
+$products = \Modules\Shop\App\Models\ShopProduct::all();
+foreach($products as $p) {
+    echo $p->product_id . ' | ' . $p->title['tr'] . ' | ' . $p->slug['tr'] . "\n";
+}
+                </div>
+                <p style="color: #94a3b8; margin-top: 10px;">
+                    <strong>Amaç:</strong> Tüm ürünleri görerek "ampul" ile ilgili ürün var mı kontrol edin.
+                </p>
+            </div>
+
+            <div class="solution-item">
+                <h3>4. 500 Error → 404 Düzeltmesi <span class="priority priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    Controller'da <span class="tech-term">ShopController.php:174-178</span> satırlarında
+                    ürün bulunamazsa <span class="tech-term">abort(404)</span> çağırılıyor.
+                    Bu doğru çalışmalı ama 500 döndüğü için bir Exception yakalanmamış olabilir.
+                </p>
+                <p style="color: #94a3b8; margin-top: 10px;">
+                    <strong>Geçici Çözüm:</strong> Laravel log dosyasına bakarak gerçek hatayı bulun.
+                </p>
+                <div class="code-block">
+tail -100 storage/logs/laravel.log | grep -i "shop\|ampul"
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📋 Hızlı Kontrol Listesi</h2>
+
+            <div class="analysis-box success">
+                <ul style="list-style: none; color: #cbd5e1;">
+                    <li style="margin-bottom: 10px;">☐ Admin panelde ürünü aradım</li>
+                    <li style="margin-bottom: 10px;">☐ Ürün yoksa yeniden oluşturdum</li>
+                    <li style="margin-bottom: 10px;">☐ Slug'ı "ampul-12v-duysuz" olarak ayarladım</li>
+                    <li style="margin-bottom: 10px;">☐ Ürün durumunu "Aktif" + "Yayında" yaptım</li>
+                    <li style="margin-bottom: 10px;">☐ Sayfayı test ettim (200 OK dönmeli)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔧 Teknik Detaylar</h2>
+
+            <div class="analysis-box info">
+                <h3>Route Yapısı</h3>
+                <div class="code-block">
+Route: /shop/{slug}
+Controller: ShopController::show()
+Method: GET
+Query: JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"tr\"')) = 'ampul-12v-duysuz'
+                </div>
+            </div>
+
+            <div class="analysis-box info">
+                <h3>Beklenen Database Kaydı</h3>
+                <div class="code-block">
+Table: shop_products
+slug: {"tr": "ampul-12v-duysuz", "en": "bulb-12v-socketless"}
+is_active: 1
+published_at: NOT NULL
+deleted_at: NULL
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu<br>
+            📊 Analiz Tarihi: 2025-12-03 00:05<br>
+            🏢 Tenant: ixtif.com (Endüstriyel Ekipman)
+        </footer>
+    </div>
+</body>
+</html>

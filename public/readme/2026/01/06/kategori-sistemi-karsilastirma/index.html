@@ -1,1 +1,573 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategori Sistemi Karşılaştırma - İnteraktif Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .demo-screen {
+            min-height: 500px;
+            background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
+            transition: all 0.3s ease;
+        }
+        .clickable-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .clickable-item:hover {
+            transform: translateX(8px);
+            background: rgba(59, 130, 246, 0.2) !important;
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <!-- Header -->
+    <header class="gradient-bg border-b border-slate-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-medium border border-blue-500/30">
+                    <i class="fas fa-play-circle mr-2"></i>İnteraktif Demo
+                </span>
+                <span class="text-slate-400 text-sm">6 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-folder-tree text-blue-400 mr-3"></i>
+                Kategori Sistemi: İki Yaklaşım
+            </h1>
+            <p class="text-slate-300 text-lg">Tıklayarak her iki sistemi test edin</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <!-- Basit Açıklama -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="bg-green-500/20 p-3 rounded-lg">
+                    <i class="fas fa-info-circle text-green-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white mb-2">📝 Nasıl Kullanılır?</h2>
+                    <p class="text-slate-300">Aşağıdaki kutulardaki <strong class="text-blue-400">renkli öğelere tıklayın</strong> ve sistemin nasıl çalıştığını görün. Her tıklamada içerik değişecek ve loading animasyonları gösterilecek.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- İnteraktif Demolar -->
+        <div class="grid lg:grid-cols-2 gap-8">
+
+            <!-- SİSTEM 1: Playlist Tabanlı -->
+            <div class="bg-slate-800/30 border border-purple-700/50 rounded-xl overflow-hidden">
+                <div class="bg-purple-900/40 px-6 py-4 border-b border-purple-700/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-purple-500/20 p-2 rounded-lg">
+                                <i class="fas fa-list text-purple-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Sistem 1: Playlist Tabanlı</h3>
+                                <p class="text-sm text-purple-300">Sahte alt kategori (Direkt playlist listesi)</p>
+                            </div>
+                        </div>
+                        <button class="reset-btn bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-sm text-white" data-demo="demo1">
+                            <i class="fas fa-redo mr-1"></i>Sıfırla
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Demo Ekranı 1 -->
+                <div id="demo1" class="demo-screen p-6"></div>
+
+                <!-- Bilgi -->
+                <div class="bg-purple-900/20 px-6 py-4 border-t border-purple-700/50">
+                    <p class="text-sm text-slate-300">
+                        <i class="fas fa-mouse-pointer text-purple-400 mr-2"></i>
+                        <strong class="text-purple-300">2 tıklama:</strong> Kategori → Playlist → Şarkılar
+                    </p>
+                </div>
+            </div>
+
+            <!-- SİSTEM 2: Hiyerarşik -->
+            <div class="bg-slate-800/30 border border-emerald-700/50 rounded-xl overflow-hidden">
+                <div class="bg-emerald-900/40 px-6 py-4 border-b border-emerald-700/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-emerald-500/20 p-2 rounded-lg">
+                                <i class="fas fa-sitemap text-emerald-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Sistem 2: Hiyerarşik</h3>
+                                <p class="text-sm text-emerald-300">Gerçek alt kategori (Kategori → Alt kategori → Playlist)</p>
+                            </div>
+                        </div>
+                        <button class="reset-btn bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-sm text-white" data-demo="demo2">
+                            <i class="fas fa-redo mr-1"></i>Sıfırla
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Demo Ekranı 2 -->
+                <div id="demo2" class="demo-screen p-6"></div>
+
+                <!-- Bilgi -->
+                <div class="bg-emerald-900/20 px-6 py-4 border-t border-emerald-700/50">
+                    <p class="text-sm text-slate-300">
+                        <i class="fas fa-mouse-pointer text-emerald-400 mr-2"></i>
+                        <strong class="text-emerald-300">3 tıklama:</strong> Ana Kategori → Alt Kategori → Playlist → Şarkılar
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Karşılaştırma Tablosu -->
+        <section class="mt-12 bg-slate-800/30 border border-slate-700 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-balance-scale text-orange-400"></i>
+                Hızlı Karşılaştırma
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-semibold">Özellik</th>
+                            <th class="text-left py-3 px-4 text-purple-300 font-semibold">Sistem 1: Playlist Tabanlı</th>
+                            <th class="text-left py-3 px-4 text-emerald-300 font-semibold">Sistem 2: Hiyerarşik</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Tıklama Sayısı</td>
+                            <td class="py-3 px-4"><span class="bg-green-900/30 text-green-400 px-2 py-1 rounded">2 tıklama</span></td>
+                            <td class="py-3 px-4"><span class="bg-yellow-900/30 text-yellow-400 px-2 py-1 rounded">3 tıklama</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Database Karmaşıklığı</td>
+                            <td class="py-3 px-4"><span class="bg-green-900/30 text-green-400 px-2 py-1 rounded">Basit</span></td>
+                            <td class="py-3 px-4"><span class="bg-yellow-900/30 text-yellow-400 px-2 py-1 rounded">Karmaşık</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Alt Kategori Esnekliği</td>
+                            <td class="py-3 px-4"><span class="bg-red-900/30 text-red-400 px-2 py-1 rounded">Yok</span></td>
+                            <td class="py-3 px-4"><span class="bg-green-900/30 text-green-400 px-2 py-1 rounded">Sınırsız</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Kullanıcı Deneyimi</td>
+                            <td class="py-3 px-4">Hızlı ama yanıltıcı</td>
+                            <td class="py-3 px-4">Organize ve profesyonel</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">SEO URL Yapısı</td>
+                            <td class="py-3 px-4">/rock/anadolu-rock-playlisti</td>
+                            <td class="py-3 px-4">/rock/anadolu-rock/playlist-1</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-medium">Ölçeklenebilirlik</td>
+                            <td class="py-3 px-4"><span class="bg-yellow-900/30 text-yellow-400 px-2 py-1 rounded">Sınırlı</span></td>
+                            <td class="py-3 px-4"><span class="bg-green-900/30 text-green-400 px-2 py-1 rounded">Yüksek</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mt-12 bg-blue-900/20 border border-blue-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <div class="bg-blue-500/20 p-3 rounded-lg">
+                    <i class="fas fa-code text-blue-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-2">🔧 Teknik Detaylar</h2>
+                    <p class="text-blue-300">Database yapıları ve ilişkiler</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Sistem 1 DB -->
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-purple-700/30">
+                    <h3 class="text-lg font-bold text-purple-300 mb-4">Sistem 1: Database</h3>
+                    <div class="font-mono text-xs text-slate-300 space-y-2">
+                        <div class="text-blue-400">genres (Ana Kategori)</div>
+                        <div class="ml-4">├── id: 1</div>
+                        <div class="ml-4">├── name: "Rock Türü"</div>
+                        <div class="ml-4">└── playlists (1-N)</div>
+                        <div class="ml-8 text-purple-400">├── id: 101, name: "Anadolu Rock Playlisti"</div>
+                        <div class="ml-8 text-purple-400">└── id: 102, name: "Hard Rock Playlisti"</div>
+                    </div>
+                    <div class="mt-4 bg-purple-900/20 rounded p-3 border border-purple-700/30">
+                        <p class="text-xs text-purple-200">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Playlist'ler direkt kategoriye bağlı. Alt kategori kavramı yok.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sistem 2 DB -->
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-emerald-700/30">
+                    <h3 class="text-lg font-bold text-emerald-300 mb-4">Sistem 2: Database</h3>
+                    <div class="font-mono text-xs text-slate-300 space-y-2">
+                        <div class="text-blue-400">genres (Ana + Alt Kategori)</div>
+                        <div class="ml-4">├── id: 1, name: "Rock Türü", parent_id: NULL</div>
+                        <div class="ml-4">└── sub_genres</div>
+                        <div class="ml-8 text-emerald-400">├── id: 10, name: "Anadolu Rock", parent_id: 1</div>
+                        <div class="ml-12 text-slate-400">└── playlists: [201, 202]</div>
+                        <div class="ml-8 text-emerald-400">└── id: 11, name: "Hard Rock", parent_id: 1</div>
+                        <div class="ml-12 text-slate-400">└── playlists: [203, 204]</div>
+                    </div>
+                    <div class="mt-4 bg-emerald-900/20 rounded p-3 border border-emerald-700/30">
+                        <p class="text-xs text-emerald-200">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Self-referencing: parent_id ile hiyerarşi kurulur.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg border-t border-slate-800 mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-8 text-center">
+            <div class="flex items-center justify-center gap-3 text-slate-400 mb-3">
+                <i class="fas fa-robot text-blue-400 text-xl"></i>
+                <span class="text-sm">Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300 underline">Claude Code</a></span>
+            </div>
+            <div class="text-xs text-slate-500">
+                Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Demo state
+        const state = {
+            demo1: 'initial',
+            demo2: 'initial'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sayfa yüklendi, demolar başlatılıyor...');
+            render('demo1', 'initial');
+            render('demo2', 'initial');
+
+            // Event delegation for clicks
+            document.addEventListener('click', function(e) {
+                const item = e.target.closest('[data-action]');
+                if (item) {
+                    e.preventDefault();
+                    const demo = item.dataset.demo;
+                    const nextState = item.dataset.next;
+                    console.log('Tıklama:', demo, nextState);
+                    handleClick(demo, nextState);
+                }
+            });
+
+            // Reset buttons
+            document.querySelectorAll('.reset-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const demo = this.dataset.demo;
+                    console.log('Sıfırlanıyor:', demo);
+                    render(demo, 'initial');
+                });
+            });
+        });
+
+        function handleClick(demo, nextState) {
+            if (nextState === 'playlists') {
+                render(demo, 'loading-playlists');
+                setTimeout(() => render(demo, 'playlists'), 1000);
+            } else if (nextState === 'subcategories') {
+                render(demo, 'loading-subcategories');
+                setTimeout(() => render(demo, 'subcategories'), 1000);
+            } else if (nextState === 'songs') {
+                render(demo, 'loading-songs');
+                setTimeout(() => render(demo, 'songs'), 1000);
+            }
+        }
+
+        function render(demoId, newState) {
+            state[demoId] = newState;
+            const container = document.getElementById(demoId);
+
+            if (demoId === 'demo1') {
+                container.innerHTML = getDemo1HTML(newState);
+            } else {
+                container.innerHTML = getDemo2HTML(newState);
+            }
+        }
+
+        function getDemo1HTML(s) {
+            if (s === 'initial') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Ana Sayfa</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-white">Türler</span>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-6">Müzik Türleri</h2>
+                        <div class="space-y-3">
+                            ${item('Rock Türü', 'folder', 'demo1', 'playlists', 'blue')}
+                            ${item('Pop Türü', 'folder', null, null, 'slate', true)}
+                            ${item('Jazz Türü', 'folder', null, null, 'slate', true)}
+                        </div>
+                    </div>`;
+            } else if (s === 'loading-playlists') {
+                return loading('Playlist\'ler yükleniyor...', 'blue');
+            } else if (s === 'playlists') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Ana Sayfa</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span>Türler</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-blue-400">Rock Türü</span>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Rock Türü</h2>
+                        <p class="text-slate-400 text-sm mb-6">Playlist'ler</p>
+                        <div class="space-y-3">
+                            ${item('Anadolu Rock Playlisti', 'music', 'demo1', 'songs', 'purple', false, '45 şarkı')}
+                            ${item('Hard Rock Playlisti', 'music', 'demo1', 'songs', 'purple', false, '38 şarkı')}
+                            ${item('Soft Rock Playlisti', 'music', null, null, 'slate', true, '52 şarkı')}
+                        </div>
+                    </div>`;
+            } else if (s === 'loading-songs') {
+                return loading('Şarkılar yükleniyor...', 'purple');
+            } else if (s === 'songs') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Ana Sayfa</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span>Rock Türü</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-purple-400">Anadolu Rock Playlisti</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="bg-purple-600 w-20 h-20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-music text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-white">Anadolu Rock Playlisti</h2>
+                                <p class="text-slate-400 text-sm">45 şarkı • 3 saat 24 dakika</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            ${song('Gül Pembe', 'Barış Manço', '3:45')}
+                            ${song('Dağlar Dağlar', 'Cem Karaca', '4:12')}
+                            ${song('Yalnızlık', 'Erkin Koray', '3:58')}
+                            ${song('Benimle Oynar mısın?', 'Barış Manço', '4:05')}
+                        </div>
+                        <div class="mt-6 bg-green-900/30 border border-green-700 rounded-lg p-4">
+                            <p class="text-green-300 text-sm flex items-center gap-2">
+                                <i class="fas fa-check-circle"></i>
+                                <strong>Hedefe ulaştınız!</strong> 2 tıklama ile şarkılara geldiniz.
+                            </p>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function getDemo2HTML(s) {
+            if (s === 'initial') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Ana Sayfa</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-white">Türler</span>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-6">Müzik Türleri</h2>
+                        <div class="space-y-3">
+                            ${item('Rock Türü', 'folder', 'demo2', 'subcategories', 'blue')}
+                            ${item('Pop Türü', 'folder', null, null, 'slate', true)}
+                            ${item('Jazz Türü', 'folder', null, null, 'slate', true)}
+                        </div>
+                    </div>`;
+            } else if (s === 'loading-subcategories') {
+                return loading('Alt kategoriler yükleniyor...', 'blue');
+            } else if (s === 'subcategories') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Ana Sayfa</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span>Türler</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-blue-400">Rock Türü</span>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Rock Türü</h2>
+                        <p class="text-slate-400 text-sm mb-6">Alt kategoriler</p>
+                        <div class="space-y-3">
+                            ${item('Anadolu Rock Türü', 'folder-open', 'demo2', 'playlists', 'emerald', false, '8 playlist')}
+                            ${item('Hard Rock Türü', 'folder-open', 'demo2', 'playlists', 'emerald', false, '6 playlist')}
+                            ${item('Soft Rock Türü', 'folder-open', null, null, 'slate', true, '12 playlist')}
+                        </div>
+                    </div>`;
+            } else if (s === 'loading-playlists') {
+                return loading('Playlist\'ler yükleniyor...', 'emerald');
+            } else if (s === 'playlists') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Ana Sayfa</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span>Rock Türü</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-emerald-400">Anadolu Rock Türü</span>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Anadolu Rock Türü</h2>
+                        <p class="text-slate-400 text-sm mb-6">Bu kategorideki playlist'ler</p>
+                        <div class="space-y-3">
+                            ${item('En İyi Anadolu Rock', 'music', 'demo2', 'songs', 'purple', false, '45 şarkı')}
+                            ${item('Klasik Anadolu Rock', 'music', 'demo2', 'songs', 'purple', false, '38 şarkı')}
+                            ${item('Modern Anadolu Rock', 'music', null, null, 'slate', true, '41 şarkı')}
+                        </div>
+                    </div>`;
+            } else if (s === 'loading-songs') {
+                return loading('Şarkılar yükleniyor...', 'purple');
+            } else if (s === 'songs') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Ana Sayfa</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span>Rock</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span>Anadolu Rock</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-purple-400">En İyi Anadolu Rock</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="bg-purple-600 w-20 h-20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-music text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-white">En İyi Anadolu Rock</h2>
+                                <p class="text-slate-400 text-sm">45 şarkı • 3 saat 24 dakika</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            ${song('Gül Pembe', 'Barış Manço', '3:45')}
+                            ${song('Dağlar Dağlar', 'Cem Karaca', '4:12')}
+                            ${song('Yalnızlık', 'Erkin Koray', '3:58')}
+                            ${song('Benimle Oynar mısın?', 'Barış Manço', '4:05')}
+                        </div>
+                        <div class="mt-6 bg-green-900/30 border border-green-700 rounded-lg p-4">
+                            <p class="text-green-300 text-sm flex items-center gap-2">
+                                <i class="fas fa-check-circle"></i>
+                                <strong>Hedefe ulaştınız!</strong> 3 tıklama ile şarkılara geldiniz.
+                            </p>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function item(title, icon, demo, next, color, disabled = false, meta = '') {
+            if (disabled) {
+                return `<div class="opacity-40 cursor-not-allowed bg-slate-800/30 border border-slate-700/50 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-${icon} text-slate-400 text-xl"></i>
+                            <div>
+                                <div class="text-white font-semibold">${title}</div>
+                                ${meta ? `<div class="text-slate-400 text-xs mt-1">${meta}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            const colors = {
+                blue: 'bg-blue-900/30 border-blue-700/50 text-blue-400',
+                purple: 'bg-purple-900/30 border-purple-700/50 text-purple-400',
+                emerald: 'bg-emerald-900/30 border-emerald-700/50 text-emerald-400',
+                slate: 'bg-slate-800/30 border-slate-700/50 text-slate-400'
+            };
+
+            return `<div class="clickable-item ${colors[color]} border rounded-lg p-4" data-action="click" data-demo="${demo}" data-next="${next}">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-${icon} text-${color}-400 text-xl"></i>
+                        <div>
+                            <div class="text-white font-semibold">${title}</div>
+                            ${meta ? `<div class="text-slate-400 text-xs mt-1">${meta}</div>` : ''}
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-${color}-400"></i>
+                </div>
+            </div>`;
+        }
+
+        function loading(text, color) {
+            return `<div class="flex items-center justify-center h-full">
+                <div class="text-center">
+                    <i class="fas fa-spinner loading-spinner text-${color}-400 text-4xl mb-4"></i>
+                    <p class="text-slate-300">${text}</p>
+                </div>
+            </div>`;
+        }
+
+        function song(title, artist, duration) {
+            return `<div class="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between hover:bg-slate-800/70 transition">
+                <div class="flex items-center gap-3">
+                    <div class="bg-slate-700 w-10 h-10 rounded flex items-center justify-center">
+                        <i class="fas fa-music text-slate-400 text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="text-white text-sm font-medium">${title}</div>
+                        <div class="text-slate-400 text-xs">${artist}</div>
+                    </div>
+                </div>
+                <div class="text-slate-400 text-xs">${duration}</div>
+            </div>`;
+        }
+    </script>
+
+</body>
+</html>

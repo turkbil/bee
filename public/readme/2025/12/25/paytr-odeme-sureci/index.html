@@ -1,1 +1,352 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayTR Ödeme Süreci - Adım Adım Akış</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="px-3 py-1 bg-blue-600 text-white text-sm rounded-full font-medium">📊 Analiz</span>
+                <span class="px-3 py-1 bg-slate-700 text-slate-300 text-sm rounded-full">25 Aralık 2025</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">PayTR Ödeme Süreci</h1>
+            <p class="text-slate-400 text-lg">Ödeme yapıldıktan sonra sistemde nasıl işleniyor?</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <span>📝</span> Basit Anlatım (Herkes İçin)
+            </h3>
+            <div class="space-y-3 text-slate-300">
+                <p class="leading-relaxed">
+                    Kullanıcı kredi kartı bilgilerini PayTR'ye girer ve ödeme yapar. 
+                    PayTR ödemeyi işledikten sonra sistemimize bir bildirim gönderir (webhook).
+                </p>
+                <p class="leading-relaxed">
+                    Sistemimiz bu bildirimi alır ve şu kontrolleri yapar:
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Ödeme gerçekten PayTR'den mi geliyor? (Güvenlik kontrolü)</li>
+                    <li>Tutar doğru mu? (Ödenen miktar sipariş tutarıyla eşleşiyor mu?)</li>
+                    <li>Bu ödeme daha önce işlendi mi? (Tekrar kontrolü)</li>
+                </ul>
+                <p class="leading-relaxed">
+                    Tüm kontroller başarılıysa:
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Ödeme durumu "completed" (tamamlandı) olarak işaretlenir</li>
+                    <li>Sipariş durumu güncellenir</li>
+                    <li>Kullanıcıya email/SMS bildirimi gider</li>
+                    <li>Abonelik varsa aktif edilir</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span>🔧</span> Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-semibold text-white mb-2">📁 İlgili Dosyalar:</h4>
+                    <div class="bg-slate-800 rounded p-3 font-mono text-sm space-y-1">
+                        <div>• <span class="text-yellow-400">Modules/Payment/app/Http/Controllers/PayTRCallbackController.php</span></div>
+                        <div>• <span class="text-yellow-400">Modules/Payment/app/Services/PayTRCallbackService.php</span></div>
+                        <div>• <span class="text-yellow-400">Modules/Payment/app/Models/Payment.php</span></div>
+                        <div>• <span class="text-yellow-400">app/Http/Middleware/VerifyCsrfToken.php</span> (CSRF bypass)</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">🔗 Callback URL:</h4>
+                    <div class="bg-slate-800 rounded p-3 font-mono text-sm">
+                        <span class="text-green-400">POST</span> https://tuufi.com/payment/paytr/callback
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">📊 Database Tabloları:</h4>
+                    <div class="bg-slate-800 rounded p-3 font-mono text-sm space-y-1">
+                        <div>• <span class="text-cyan-400">payments</span> (Central DB)</div>
+                        <div>• <span class="text-cyan-400">subscriptions</span> (Central DB)</div>
+                        <div>• <span class="text-cyan-400">shop_orders</span> (Tenant DB - İxtif)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adım Adım Akış -->
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-white mb-4">🔄 Adım Adım İşlem Akışı</h3>
+            
+            <!-- Adım 1 -->
+            <div class="mb-4 bg-slate-800 border-l-4 border-blue-500 rounded-r-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white font-bold text-lg">1</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-blue-400 mb-2">PayTR Webhook (POST Request)</h4>
+                        <p class="text-slate-300 mb-3">PayTR ödeme sonucunu sisteme bildirir</p>
+                        <div class="bg-slate-900 rounded p-3 text-sm">
+                            <div class="text-slate-400 mb-2">Gönderilen Veriler:</div>
+                            <div class="font-mono text-slate-300 space-y-1">
+                                <div>• <span class="text-yellow-400">merchant_oid:</span> "T2PAY202500010" (Sipariş numarası)</div>
+                                <div>• <span class="text-yellow-400">status:</span> "success" veya "failed"</div>
+                                <div>• <span class="text-yellow-400">total_amount:</span> "9900" (kuruş olarak)</div>
+                                <div>• <span class="text-yellow-400">hash:</span> "abc123..." (Güvenlik hash'i)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="mb-4 bg-slate-800 border-l-4 border-green-500 rounded-r-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 text-white font-bold text-lg">2</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-green-400 mb-2">Tenant ID Parse</h4>
+                        <p class="text-slate-300 mb-3">merchant_oid'den hangi tenant'a ait olduğu belirlenir</p>
+                        <div class="bg-slate-900 rounded p-3 text-sm">
+                            <div class="font-mono text-slate-300 space-y-1">
+                                <div><span class="text-green-400">T2PAY202500010</span> → Tenant ID: <span class="text-yellow-400">2</span> (İxtif)</div>
+                                <div><span class="text-green-400">T1001PAY202500020</span> → Tenant ID: <span class="text-yellow-400">1001</span> (Muzibu)</div>
+                            </div>
+                            <div class="mt-3 text-slate-400">
+                                <strong>Kod:</strong> PayTRCallbackController.php:103-119
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="mb-4 bg-slate-800 border-l-4 border-yellow-500 rounded-r-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-600 text-white font-bold text-lg">3</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-yellow-400 mb-2">Tenant Context Başlatma</h4>
+                        <p class="text-slate-300 mb-3">Tenant database'e bağlanılır</p>
+                        <div class="bg-slate-900 rounded p-3 text-sm">
+                            <div class="font-mono text-slate-300">
+                                <div>tenancy()->initialize($tenant);</div>
+                            </div>
+                            <div class="mt-3 text-slate-400">
+                                Bu noktadan sonra tüm database işlemleri tenant database'de yapılır
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="mb-4 bg-slate-800 border-l-4 border-purple-500 rounded-r-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold text-lg">4</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-purple-400 mb-2">Payment Kaydı Bulma</h4>
+                        <p class="text-slate-300 mb-3">merchant_oid kullanılarak payment kaydı bulunur</p>
+                        <div class="bg-slate-900 rounded p-3 text-sm">
+                            <div class="text-slate-400 mb-2">3 Farklı Yöntemle Arama:</div>
+                            <div class="font-mono text-slate-300 space-y-2">
+                                <div>1. <span class="text-cyan-400">gateway_transaction_id</span> ile ara</div>
+                                <div>2. Reconstruct edilmiş <span class="text-cyan-400">payment_number</span> ile ara</div>
+                                <div>3. Stripped merchant_oid ile ara</div>
+                            </div>
+                            <div class="mt-3 text-slate-400">
+                                <strong>Kod:</strong> PayTRCallbackService.php:38-59
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 5 -->
+            <div class="mb-4 bg-slate-800 border-l-4 border-red-500 rounded-r-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 text-white font-bold text-lg">5</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-red-400 mb-2">Güvenlik Kontrolleri</h4>
+                        <p class="text-slate-300 mb-3">Duplicate, Hash, ve Tutar kontrolleri</p>
+                        <div class="bg-slate-900 rounded p-3 text-sm">
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="text-yellow-400 font-semibold mb-1">✓ Duplicate Kontrolü:</div>
+                                    <div class="text-slate-300">Payment zaten işlenmiş mi? (completed, failed, refunded)</div>
+                                </div>
+                                <div>
+                                    <div class="text-yellow-400 font-semibold mb-1">✓ Hash Doğrulama:</div>
+                                    <div class="text-slate-300 font-mono text-xs">
+                                        hash = base64(hmac_sha256(<br>
+                                        &nbsp;&nbsp;merchant_oid + salt + status + total_amount,<br>
+                                        &nbsp;&nbsp;merchant_key<br>
+                                        ))
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-yellow-400 font-semibold mb-1">✓ Tutar Kontrolü:</div>
+                                    <div class="text-slate-300">PayTR'den gelen tutar ile payment tutarı eşleşmeli</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 6 -->
+            <div class="mb-4 bg-slate-800 border-l-4 border-emerald-500 rounded-r-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-600 text-white font-bold text-lg">6</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-emerald-400 mb-2">Payment Güncelleme</h4>
+                        <p class="text-slate-300 mb-3">Status "success" ise payment completed olarak işaretlenir</p>
+                        <div class="bg-slate-900 rounded p-3 text-sm">
+                            <div class="font-mono text-slate-300 space-y-1">
+                                <div>payment.status = <span class="text-green-400">"completed"</span></div>
+                                <div>payment.paid_at = <span class="text-green-400">now()</span></div>
+                                <div>payment.gateway_response = <span class="text-green-400">$callbackData</span></div>
+                            </div>
+                            <div class="mt-3 text-slate-400">
+                                <strong>Kod:</strong> PayTRCallbackService.php:145-149
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 7 -->
+            <div class="mb-4 bg-slate-800 border-l-4 border-cyan-500 rounded-r-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-cyan-600 text-white font-bold text-lg">7</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-cyan-400 mb-2">Payable İşlemleri (onPaymentCompleted)</h4>
+                        <p class="text-slate-300 mb-3">İlgili model'in onPaymentCompleted metodu çağrılır</p>
+                        <div class="bg-slate-900 rounded p-3 text-sm">
+                            <div class="text-slate-400 mb-2">Payable Model Örnekleri:</div>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="text-yellow-400 font-semibold mb-1">🛒 ShopOrder (E-Ticaret):</div>
+                                    <div class="text-slate-300 text-sm">
+                                        • Sipariş durumu "pending" → "processing" olur<br>
+                                        • Stok düşülür<br>
+                                        • Müşteriye "sipariş alındı" maili gider
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-yellow-400 font-semibold mb-1">🔄 Subscription (Abonelik):</div>
+                                    <div class="text-slate-300 text-sm">
+                                        • Status "pending_payment" → "active" olur<br>
+                                        • started_at, current_period_start tarihleri set edilir<br>
+                                        • Kullanıcıya "abonelik aktif" maili gider
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-slate-400">
+                                <strong>Kod:</strong> PayTRCallbackService.php:166-169
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 8 -->
+            <div class="mb-4 bg-slate-800 border-l-4 border-pink-500 rounded-r-lg p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-pink-600 text-white font-bold text-lg">8</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-pink-400 mb-2">PayTR'ye Yanıt Gönderme</h4>
+                        <p class="text-slate-300 mb-3">İşlem sonucu PayTR'ye bildirilir</p>
+                        <div class="bg-slate-900 rounded p-3 text-sm">
+                            <div class="space-y-2">
+                                <div class="text-green-400 font-mono">
+                                    Başarılı: return response("OK", 200);
+                                </div>
+                                <div class="text-red-400 font-mono">
+                                    Hatalı: return response("FAIL: {reason}", 400);
+                                </div>
+                            </div>
+                            <div class="mt-3 text-slate-400">
+                                PayTR bu yanıtı almazsa veya hata alırsa webhook'u tekrar gönderir
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hata Durumları -->
+        <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <span>⚠️</span> Olası Hata Durumları
+            </h3>
+            <div class="space-y-3 text-slate-300">
+                <div class="bg-slate-800 rounded p-3">
+                    <div class="font-semibold text-red-400 mb-1">❌ Tenant ID Parse Edilemedi</div>
+                    <div class="text-sm">merchant_oid formatı yanlış veya tanımsız</div>
+                </div>
+                <div class="bg-slate-800 rounded p-3">
+                    <div class="font-semibold text-red-400 mb-1">❌ Payment Bulunamadı</div>
+                    <div class="text-sm">Veritabanında eşleşen payment kaydı yok</div>
+                </div>
+                <div class="bg-slate-800 rounded p-3">
+                    <div class="font-semibold text-red-400 mb-1">❌ Hash Doğrulama Hatası</div>
+                    <div class="text-sm">Güvenlik hash'i eşleşmiyor (merchant_key/salt yanlış)</div>
+                </div>
+                <div class="bg-slate-800 rounded p-3">
+                    <div class="font-semibold text-red-400 mb-1">❌ Tutar Uyumsuzluğu</div>
+                    <div class="text-sm">PayTR'den gelen tutar ile payment tutarı farklı</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Takibi -->
+        <div class="bg-indigo-900/20 border border-indigo-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                <span>📋</span> Log Takibi
+            </h3>
+            <div class="space-y-3 text-slate-300">
+                <p>Tüm PayTR callback işlemleri detaylı loglanır:</p>
+                <div class="bg-slate-800 rounded p-3 font-mono text-sm space-y-1">
+                    <div class="text-green-400">📨 PayTR callback received</div>
+                    <div class="text-blue-400">🔵 PayTR callback: Processing</div>
+                    <div class="text-blue-400">🔵 Payment update result</div>
+                    <div class="text-blue-400">🔵 Payable check</div>
+                    <div class="text-green-400">✅ onPaymentCompleted called</div>
+                    <div class="text-green-400">📨 PayTR callback processed</div>
+                </div>
+                <div class="text-sm text-slate-400 mt-2">
+                    Log Dosyası: <span class="font-mono">storage/logs/laravel-{date}.log</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude Code tarafından oluşturuldu</p>
+            <p class="mt-1">Multi-Tenant PayTR Ödeme Sistemi Analizi</p>
+        </footer>
+    </div>
+</body>
+</html>

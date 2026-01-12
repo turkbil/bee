@@ -1,1 +1,387 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Slider - Modern Tasarım Taslağı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                🎨 Hero Slider - Modern Tasarım Taslağı
+            </h1>
+            <div class="text-slate-400 text-lg">
+                İxtif.com anasayfası için modern, şık 4 slide'lı hero slider tasarımı
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 10.12.2025</span>
+                <span>🎯 Tenant: ixtif.com</span>
+                <span>👤 Hero bölümünü modern slider'a dönüştür</span>
+            </div>
+        </header>
+
+        <!-- Ana İçerik -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🎯 Slider Özellikleri</h2>
+
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-blue-300 mb-4">📊 Teknik Özellikler</h3>
+                <div class="grid md:grid-cols-2 gap-4 text-slate-300">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">4 Slide:</strong> Her slide farklı içerik + görsel
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Dotted Pagination:</strong> Altta slide göstergeleri
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Progress Bar:</strong> Slide başına 5s animasyonlu bar
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Dragging:</strong> Mouse/touch ile kaydırma
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Lazy Loading:</strong> İlk slide hemen, diğerleri lazy
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Autoplay:</strong> 5 saniyede otomatik geçiş
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Loop Mode:</strong> Son slide'dan 1.'ye döner
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Responsive:</strong> PC'de 3 özellik, mobile'da 4 özellik grid
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide İçerikleri -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">📝 Slide İçerikleri</h2>
+
+            <!-- Slide 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-green-300 mb-3">
+                            Slide 1: Mevcut Hero İçeriği
+                        </h3>
+                        <div class="space-y-2 text-slate-300">
+                            <p><strong class="text-white">Başlık:</strong> TÜRKİYE'NİN İSTİF PAZARI</p>
+                            <p><strong class="text-white">Alt Başlık:</strong> Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı</p>
+                            <p><strong class="text-white">Görsel:</strong> hero.png (Forklift)</p>
+                            <p><strong class="text-white">CTA:</strong> Ürünleri İncele → /shop</p>
+                            <p><strong class="text-white">Özellikler (4 adet):</strong></p>
+                            <ul class="ml-6 space-y-1">
+                                <li>• Güçlü Stok - Zengin ürün çeşidi</li>
+                                <li>• Garantili Ürün - Teknik servis</li>
+                                <li>• Profesyonel Ekip - Uzman danışmanlık</li>
+                                <li>• Hızlı Teslimat - Aynı gün kargo (responsive'de gizli, 4. özellik olarak görünür)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-300 mb-3">
+                            Slide 2: Kiralama Hizmetleri
+                        </h3>
+                        <div class="space-y-2 text-slate-300">
+                            <p><strong class="text-white">Başlık:</strong> KİRALAMA HİZMETLERİ</p>
+                            <p><strong class="text-white">Alt Başlık:</strong> Günlük ve uzun dönem forklift kiralama seçenekleriyle esneklik</p>
+                            <p><strong class="text-white">Görsel:</strong> hero.png (aynı görsel, farklı içerik)</p>
+                            <p><strong class="text-white">CTA:</strong> Kiralama Bilgisi Al</p>
+                            <p><strong class="text-white">Özellikler:</strong> Günlük Kiralama, Uzun Dönem, Bakım Dahil, Yedek Araç</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-purple-300 mb-3">
+                            Slide 3: Teknik Servis
+                        </h3>
+                        <div class="space-y-2 text-slate-300">
+                            <p><strong class="text-white">Başlık:</strong> TEKNİK SERVİS VE BAKIM</p>
+                            <p><strong class="text-white">Alt Başlık:</strong> 7/24 teknik servis, periyodik bakım ve bakım anlaşmaları</p>
+                            <p><strong class="text-white">Görsel:</strong> hero.png</p>
+                            <p><strong class="text-white">CTA:</strong> Servis Talebi Oluştur</p>
+                            <p><strong class="text-white">Özellikler:</strong> 7/24 Destek, Hızlı Müdahale, Uzman Ekip, Orijinal Parça</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-yellow-300 mb-3">
+                            Slide 4: İkinci El Ekipman
+                        </h3>
+                        <div class="space-y-2 text-slate-300">
+                            <p><strong class="text-white">Başlık:</strong> İKİNCİ EL EKİPMAN</p>
+                            <p><strong class="text-white">Alt Başlık:</strong> Garantili ikinci el forklift ve istif makineleri uygun fiyatlarla</p>
+                            <p><strong class="text-white">Görsel:</strong> hero.png</p>
+                            <p><strong class="text-white">CTA:</strong> İkinci El Ürünleri Gör</p>
+                            <p><strong class="text-white">Özellikler:</strong> Test Edilmiş, Garantili, Uygun Fiyat, Sıfır Gibi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Görsel Taslak -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-pink-400">🎨 Görsel Taslak</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-8">
+                <div class="relative bg-white/5 rounded-2xl overflow-hidden" style="height: 500px;">
+                    <!-- Slider Container -->
+                    <div class="swiper heroSwiper h-full">
+                        <div class="swiper-wrapper">
+                            <!-- Slide 1 -->
+                            <div class="swiper-slide">
+                                <div class="grid lg:grid-cols-2 gap-8 items-center h-full p-8">
+                                    <!-- Sol: İçerik -->
+                                    <div class="text-slate-900 dark:text-white">
+                                        <h1 class="text-5xl font-black mb-4">
+                                            <span class="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                                TÜRKİYE'NİN
+                                            </span>
+                                            <span class="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                                İSTİF PAZARI
+                                            </span>
+                                        </h1>
+                                        <p class="text-xl text-slate-600 dark:text-slate-300 mb-8">
+                                            Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat
+                                        </p>
+                                        <button class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700">
+                                            Ürünleri İncele
+                                        </button>
+                                        <!-- Özellikler Grid -->
+                                        <div class="grid grid-cols-2 xl:grid-cols-3 gap-4 mt-8">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                                    <i class="fas fa-boxes-stacked text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-bold">Güçlü Stok</div>
+                                                    <div class="text-sm text-slate-500">Zengin ürün çeşidi</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                                    <i class="fas fa-certificate text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-bold">Garantili</div>
+                                                    <div class="text-sm text-slate-500">Teknik servis</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                                    <i class="fas fa-award text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-bold">Profesyonel</div>
+                                                    <div class="text-sm text-slate-500">Uzman ekip</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-3 xl:hidden">
+                                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                                    <i class="fas fa-truck-fast text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-bold">Hızlı Teslimat</div>
+                                                    <div class="text-sm text-slate-500">Aynı gün kargo</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Sağ: Görsel -->
+                                    <div class="flex items-center justify-center">
+                                        <div class="w-full aspect-square bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
+                                            <i class="fas fa-forklift text-9xl text-blue-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Diğer slide'lar benzer yapıda -->
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                            <div class="progress-bar h-full bg-gradient-to-r from-blue-500 to-purple-500 w-0"></div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="swiper-pagination absolute bottom-8 left-0 right-0"></div>
+                    </div>
+                </div>
+
+                <p class="text-slate-400 text-sm mt-4 text-center">
+                    ↑ Bu sadece görsel bir taslaktır. Gerçek implementasyonda Swiper.js ile tam fonksiyonel olacak.
+                </p>
+            </div>
+        </section>
+
+        <!-- Implementasyon Detayları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">⚙️ Implementasyon Detayları</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Swiper Config -->
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-cyan-300 mb-4">
+                        <i class="fas fa-cog mr-2"></i>
+                        Swiper Konfigürasyonu
+                    </h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>• <strong>effect:</strong> 'fade' (yumuşak geçiş)</li>
+                        <li>• <strong>speed:</strong> 800ms</li>
+                        <li>• <strong>autoplay:</strong> 5000ms delay</li>
+                        <li>• <strong>loop:</strong> true</li>
+                        <li>• <strong>grabCursor:</strong> true (drag cursor)</li>
+                        <li>• <strong>pagination:</strong> clickable dots</li>
+                        <li>• <strong>navigation:</strong> prev/next arrows</li>
+                        <li>• <strong>lazy:</strong> Slide 2-4 lazy load</li>
+                    </ul>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-cyan-300 mb-4">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        Progress Bar Animasyonu
+                    </h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>• Her slide değiştiğinde sıfırlanır</li>
+                        <li>• CSS transition ile 0% → 100%</li>
+                        <li>• 5 saniyelik animasyon</li>
+                        <li>• Gradient renk (blue → purple)</li>
+                        <li>• slideChangeTransitionEnd event'i dinler</li>
+                        <li>• Mouse hover → durdur (opsiyonel)</li>
+                    </ul>
+                </div>
+
+                <!-- Responsive -->
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-cyan-300 mb-4">
+                        <i class="fas fa-mobile-screen mr-2"></i>
+                        Responsive Davranış
+                    </h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>• <strong>Desktop (xl):</strong> Özellikler 3 kolonlu grid</li>
+                        <li>• <strong>Tablet (lg):</strong> 2 kolon grid</li>
+                        <li>• <strong>Mobile:</strong> 2x2 grid (4 özellik gösterilir)</li>
+                        <li>• <strong>Başlık:</strong> text-5xl → text-4xl → text-3xl</li>
+                        <li>• <strong>Görsel:</strong> Mobilde üstte, desktop'ta sağda</li>
+                        <li>• <strong>Padding:</strong> Responsive p-4 → p-8</li>
+                    </ul>
+                </div>
+
+                <!-- Performans -->
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-cyan-300 mb-4">
+                        <i class="fas fa-gauge-high mr-2"></i>
+                        Performans Optimizasyonları
+                    </h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>• <strong>İlk slide:</strong> loading="eager" (anında yükle)</li>
+                        <li>• <strong>Diğer slide'lar:</strong> loading="lazy"</li>
+                        <li>• <strong>Preload:</strong> Sonraki slide prefetch</li>
+                        <li>• <strong>WebP:</strong> Görsel formatı</li>
+                        <li>• <strong>Thumbmaker:</strong> thumb() helper ile optimize</li>
+                        <li>• <strong>No Console:</strong> Production'da log yok</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Onay Bölümü -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border-2 border-green-500 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-4 text-green-300">
+                    <i class="fas fa-check-circle mr-3"></i>
+                    Tasarım Onayı
+                </h2>
+                <p class="text-slate-300 text-lg mb-6">
+                    Bu tasarım taslağını onaylarsanız, implementasyona geçebilirim.
+                    <strong class="text-white">homepage.blade.php</strong> dosyasını güncelleyerek 4 slide'lı modern hero slider'ı oluşturacağım.
+                </p>
+                <div class="flex gap-4">
+                    <div class="flex-1 bg-green-600/20 border border-green-500 rounded-lg p-4">
+                        <div class="text-green-300 font-bold mb-2">✅ Onaylıyorum</div>
+                        <div class="text-slate-400 text-sm">
+                            "UYGUNDUR" yazarak implementasyona geç
+                        </div>
+                    </div>
+                    <div class="flex-1 bg-yellow-600/20 border border-yellow-500 rounded-lg p-4">
+                        <div class="text-yellow-300 font-bold mb-2">⚠️ Değişiklik İstiyorum</div>
+                        <div class="text-slate-400 text-sm">
+                            Hangi bölümü nasıl değiştirmek istediğinizi söyleyin
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS + Swiper.js</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <style>
+        .progress-bar {
+            animation: progressAnimation 5s linear;
+        }
+        @keyframes progressAnimation {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+    </style>
+</body>
+</html>

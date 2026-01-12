@@ -1,1 +1,153 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domains Central DB Fix - 500 Hatası Çözümü</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-green-600 text-white text-sm font-medium rounded-full">Tamamlandı</span>
+                <span class="px-3 py-1 bg-red-600/20 text-red-400 text-sm font-medium rounded-full">Kritik Bug Fix</span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">Domains Central DB Fix</h1>
+            <p class="text-slate-400">500 Internal Server Error - Şarkı Stream Hatası Çözümü</p>
+            <p class="text-slate-500 text-sm mt-2">27 Aralık 2025 - 04:15</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-green-400 mb-4">Basit Anlatım (Herkes İçin)</h3>
+            <div class="space-y-3 text-slate-300">
+                <p><strong>Ne oldu?</strong> Muzibu'da şarkı çalmaya çalışınca 500 hatası alınıyordu. Hiçbir şarkı çalmıyordu.</p>
+                <p><strong>Neden oldu?</strong> Sistem, "domains" tablosunu yanlış veritabanında arıyordu. Tıpkı bir dosyayı yanlış klasörde aramak gibi - dosya orada olmadığı için bulamıyordu.</p>
+                <p><strong>Ne yapıldı?</strong> Sisteme "domains tablosu ana veritabanında, oraya bak" dedik. Artık doğru yere bakıyor.</p>
+                <p><strong>Sonuç:</strong> Şarkılar tekrar çalıyor!</p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-blue-400 mb-4">Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-medium text-white mb-2">Hata Mesajı:</h4>
+                    <pre class="bg-slate-800 p-3 rounded text-sm text-red-400 overflow-x-auto">SQLSTATE[42S02]: Base table or view not found: 1146
+Table 'tenant_muzibu_1528d0.domains' doesn't exist
+(Connection: tenant, SQL: select `domain` from `domains` where `tenant_id` = 1001)</pre>
+                </div>
+
+                <div>
+                    <h4 class="font-medium text-white mb-2">Kök Neden:</h4>
+                    <ul class="list-disc list-inside text-slate-300 space-y-1">
+                        <li><code class="text-yellow-400">domains</code> tablosu <strong>central database</strong>'de (tuufi_4ekim)</li>
+                        <li>Tenant context aktifken DB sorguları <strong>tenant database</strong>'e gidiyor</li>
+                        <li><code>DB::table('domains')</code> tenant db'de arıyor → Tablo yok → 500 hatası</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-medium text-white mb-2">Çözüm:</h4>
+                    <p class="text-slate-300 mb-2">Tüm <code class="text-yellow-400">domains</code> sorgularına <code class="text-green-400">DB::connection('mysql')</code> eklendi:</p>
+                    <pre class="bg-slate-800 p-3 rounded text-sm overflow-x-auto">
+<span class="text-red-400">// HATALI (tenant db'ye gider)</span>
+DB::table('domains')->where('tenant_id', 1001)->first();
+
+<span class="text-green-400">// DOĞRU (central db'ye gider)</span>
+DB::connection('mysql')->table('domains')->where('tenant_id', 1001)->first();</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Düzeltilen Dosyalar -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-white mb-4">Düzeltilen Dosyalar</h3>
+
+            <div class="space-y-4">
+                <!-- Dosya 1 -->
+                <div class="border-l-4 border-green-500 pl-4">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-green-400 font-mono text-sm">app/Helpers/TenantHelpers.php</span>
+                        <span class="px-2 py-0.5 bg-green-600/20 text-green-400 text-xs rounded">:269</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">getTenantDomain() fonksiyonu - SignedUrlService tarafından kullanılıyor</p>
+                    <p class="text-slate-500 text-xs mt-1">Bu fonksiyon her şarkı stream isteğinde çağrılıyor, asıl hatanın kaynağı buydu.</p>
+                </div>
+
+                <!-- Dosya 2 -->
+                <div class="border-l-4 border-green-500 pl-4">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-green-400 font-mono text-sm">app/Jobs/ReissueLetsEncryptCertificate.php</span>
+                        <span class="px-2 py-0.5 bg-green-600/20 text-green-400 text-xs rounded">:93</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">getAllDomainAliases() fonksiyonu - SSL sertifika yenileme job'ı</p>
+                    <p class="text-slate-500 text-xs mt-1">Queue'dan çalışırken tenant context olabilir, önlem alındı.</p>
+                </div>
+
+                <!-- Dosya 3 -->
+                <div class="border-l-4 border-green-500 pl-4">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-green-400 font-mono text-sm">Modules/Muzibu/Providers/MuzibuServiceProvider.php</span>
+                        <span class="px-2 py-0.5 bg-green-600/20 text-green-400 text-xs rounded">:165, :184</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">loadWebRoutes() ve loadApiRoutes() fonksiyonları</p>
+                    <p class="text-slate-500 text-xs mt-1">Route tanımları için domain listesi alınırken kullanılıyor.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Neden Önemli -->
+        <div class="bg-amber-900/20 border border-amber-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-amber-400 mb-4">Neden Önemli?</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="font-medium text-white mb-2">Kullanıcı Etkisi:</h4>
+                    <ul class="list-disc list-inside text-slate-300 space-y-1">
+                        <li>Hiçbir şarkı çalmıyordu</li>
+                        <li>Tüm premium özellikler devre dışıydı</li>
+                        <li>Site kullanılamaz durumdaydı</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-white mb-2">Teknik Etki:</h4>
+                    <ul class="list-disc list-inside text-slate-300 space-y-1">
+                        <li>Her stream isteği 500 veriyordu</li>
+                        <li>Log dosyaları doluyordu</li>
+                        <li>Potansiyel SSL sorunları önlendi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Tenant Hatırlatma -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold text-purple-400 mb-4">Multi-Tenant Sistem Kuralı</h3>
+            <div class="text-slate-300">
+                <p class="mb-3"><strong>Central Database Tabloları:</strong></p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-purple-600/30 rounded text-sm">tenants</span>
+                    <span class="px-2 py-1 bg-purple-600/30 rounded text-sm">domains</span>
+                    <span class="px-2 py-1 bg-purple-600/30 rounded text-sm">users</span>
+                    <span class="px-2 py-1 bg-purple-600/30 rounded text-sm">roles</span>
+                    <span class="px-2 py-1 bg-purple-600/30 rounded text-sm">permissions</span>
+                    <span class="px-2 py-1 bg-purple-600/30 rounded text-sm">subscriptions</span>
+                </div>
+                <p class="text-amber-400 font-medium">Bu tablolara erişirken her zaman <code class="bg-slate-800 px-2 py-0.5 rounded">DB::connection('mysql')</code> kullan!</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-700">
+            <p>Claude AI tarafından oluşturuldu</p>
+            <p class="mt-1">Tenant: Muzibu (1001) | Fix Time: ~5 dakika</p>
+        </footer>
+
+    </div>
+</body>
+</html>

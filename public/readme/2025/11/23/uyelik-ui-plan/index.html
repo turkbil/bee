@@ -1,1 +1,592 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi UI/UX Plan - Frontend & Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .summary-card {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .summary-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .summary-card.create .number { color: #10b981; }
+        .summary-card.update .number { color: #f59e0b; }
+        .summary-card.remove .number { color: #ef4444; }
+        .summary-card.total .number { color: #60a5fa; }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            margin: 20px 0 15px;
+            padding-left: 15px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .task-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .task-item.create { border-left-color: #10b981; }
+        .task-item.update { border-left-color: #f59e0b; }
+        .task-item.remove { border-left-color: #ef4444; }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .task-type {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .task-type.create { background: #10b981; color: white; }
+        .task-type.update { background: #f59e0b; color: white; }
+        .task-type.remove { background: #ef4444; color: white; }
+
+        .task-desc {
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+
+        .task-details {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .task-details ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .task-details li {
+            margin-bottom: 5px;
+            color: #94a3b8;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+
+        .priority-high { background: #dc2626; }
+        .priority-medium { background: #f59e0b; }
+        .priority-low { background: #6b7280; }
+
+        .tech-stack {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .tech-badge {
+            background: rgba(59, 130, 246, 0.3);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #93c5fd;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .note-box.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Üyelik Sistemi UI/UX Plan</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-23 |
+                🎯 Tenant: Muzibu / İxtif |
+                📊 Versiyon: 1.0
+            </div>
+        </header>
+
+        <!-- Summary -->
+        <div class="summary-grid">
+            <div class="summary-card create">
+                <div class="number">8</div>
+                <div>Yeni Sayfa</div>
+            </div>
+            <div class="summary-card update">
+                <div class="number">4</div>
+                <div>Güncelleme</div>
+            </div>
+            <div class="summary-card remove">
+                <div class="number">2</div>
+                <div>Kaldırılacak</div>
+            </div>
+            <div class="summary-card total">
+                <div class="number">14</div>
+                <div>Toplam İş</div>
+            </div>
+        </div>
+
+        <!-- Section 1: YENİ OLUŞTURULACAK SAYFALAR -->
+        <section>
+            <h2>🆕 Yeni Oluşturulacak Sayfalar</h2>
+
+            <h3>Frontend - Kullanıcı Paneli</h3>
+
+            <div class="task-item create">
+                <div class="task-header">
+                    <span class="task-title">1. 2FA Code Input Sayfası</span>
+                    <span class="task-type create">OLUŞTUR</span>
+                </div>
+                <div class="task-desc">
+                    Giriş sonrası 2 faktörlü doğrulama kodu girişi için sayfa
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>6 haneli kod input (auto-focus, auto-tab)</li>
+                        <li>Geri sayım timer (5 dakika)</li>
+                        <li>Kod yeniden gönder butonu</li>
+                        <li>SMS/Email seçimi</li>
+                        <li>"Bu cihazı hatırla" checkbox</li>
+                    </ul>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-badge">Livewire</span>
+                    <span class="tech-badge">Alpine.js</span>
+                    <span class="tech-badge">Tailwind</span>
+                </div>
+            </div>
+
+            <div class="task-item create">
+                <div class="task-header">
+                    <span class="task-title">2. Profil Düzenleme Sayfası</span>
+                    <span class="task-type create">OLUŞTUR</span>
+                </div>
+                <div class="task-desc">
+                    Kullanıcının kişisel bilgilerini güncelleyeceği tam profil sayfası
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Avatar yükleme (mevcut component kullanılacak)</li>
+                        <li>Ad, soyad, email, telefon</li>
+                        <li>Şifre değiştirme bölümü</li>
+                        <li>2FA açma/kapama</li>
+                        <li>Bildirim tercihleri</li>
+                        <li>Hesap silme (soft delete)</li>
+                    </ul>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-badge">Livewire</span>
+                    <span class="tech-badge">Tailwind</span>
+                    <span class="tech-badge">MediaManagement</span>
+                </div>
+            </div>
+
+            <div class="task-item create">
+                <div class="task-header">
+                    <span class="task-title">3. Cihaz Yönetimi Sayfası</span>
+                    <span class="task-type create">OLUŞTUR</span>
+                </div>
+                <div class="task-desc">
+                    Kullanıcının aktif oturumlarını ve cihazlarını yönettiği sayfa
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Aktif cihaz listesi (browser, OS, IP, konum)</li>
+                        <li>Son giriş tarihi</li>
+                        <li>Mevcut cihaz vurgusu</li>
+                        <li>Tekil cihaz çıkış yap</li>
+                        <li>Tüm cihazlardan çıkış</li>
+                        <li>Giriş geçmişi (activity_log)</li>
+                    </ul>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-badge">Livewire</span>
+                    <span class="tech-badge">DeviceService</span>
+                    <span class="tech-badge">Sessions</span>
+                </div>
+            </div>
+
+            <div class="task-item create">
+                <div class="task-header">
+                    <span class="task-title">4. Abonelik Yönetimi (User Panel)</span>
+                    <span class="task-type create">OLUŞTUR</span>
+                </div>
+                <div class="task-desc">
+                    Kullanıcının kendi aboneliğini görüntüleyip yönettiği sayfa
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Mevcut plan bilgisi</li>
+                        <li>Dönem başlangıç/bitiş</li>
+                        <li>Plan yükseltme/düşürme</li>
+                        <li>Abonelik iptal (grace period)</li>
+                        <li>Kupon uygulama</li>
+                        <li>Otomatik yenileme aç/kapa</li>
+                    </ul>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-badge">Livewire</span>
+                    <span class="tech-badge">SubscriptionService</span>
+                    <span class="tech-badge">PayTR</span>
+                </div>
+            </div>
+
+            <h3>Frontend - Public Sayfalar</h3>
+
+            <div class="task-item create">
+                <div class="task-header">
+                    <span class="task-title">5. Fiyatlandırma Sayfası (Pricing)</span>
+                    <span class="task-type create">OLUŞTUR</span>
+                </div>
+                <div class="task-desc">
+                    Ziyaretçilere sunulan plan karşılaştırma ve satış sayfası
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Plan kartları (aylık/yıllık toggle)</li>
+                        <li>Öne çıkan plan vurgusu</li>
+                        <li>Özellik karşılaştırma tablosu</li>
+                        <li>Üstü çizili fiyat gösterimi</li>
+                        <li>CTA butonları</li>
+                        <li>SSS accordion</li>
+                    </ul>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-badge">Blade</span>
+                    <span class="tech-badge">Alpine.js</span>
+                    <span class="tech-badge">Tailwind</span>
+                </div>
+            </div>
+
+            <div class="task-item create">
+                <div class="task-header">
+                    <span class="task-title">6. Checkout/Ödeme Sayfası</span>
+                    <span class="task-type create">OLUŞTUR</span>
+                </div>
+                <div class="task-desc">
+                    Plan seçimi sonrası ödeme işlemi sayfası
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Seçilen plan özeti</li>
+                        <li>Kupon kodu girişi</li>
+                        <li>Fatura bilgileri formu</li>
+                        <li>PayTR iframe entegrasyonu</li>
+                        <li>Ödeme sonuç sayfası</li>
+                    </ul>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-badge">Livewire</span>
+                    <span class="tech-badge">PayTR</span>
+                    <span class="tech-badge">CouponService</span>
+                </div>
+            </div>
+
+            <div class="task-item create">
+                <div class="task-header">
+                    <span class="task-title">7. Ödeme Geçmişi Sayfası</span>
+                    <span class="task-type create">OLUŞTUR</span>
+                </div>
+                <div class="task-desc">
+                    Kullanıcının geçmiş ödemelerini ve faturalarını göreceği sayfa
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Ödeme listesi (tarih, tutar, durum)</li>
+                        <li>Fatura detay modal</li>
+                        <li>PDF fatura indirme</li>
+                        <li>Filtreleme (tarih, durum)</li>
+                    </ul>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-badge">Livewire</span>
+                    <span class="tech-badge">PDF</span>
+                </div>
+            </div>
+
+            <h3>Admin Panel</h3>
+
+            <div class="task-item create">
+                <div class="task-header">
+                    <span class="task-title">8. Kullanıcı Abonelik Detay (Admin)</span>
+                    <span class="task-type create">OLUŞTUR</span>
+                </div>
+                <div class="task-desc">
+                    Admin panelde kullanıcı abonelik detayı ve yönetimi
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Kullanıcı abonelik geçmişi</li>
+                        <li>Manuel abonelik oluşturma</li>
+                        <li>Süre uzatma/kısaltma</li>
+                        <li>Ödeme geçmişi</li>
+                        <li>Kupon kullanımları</li>
+                    </ul>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-badge">Livewire</span>
+                    <span class="tech-badge">Tabler</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: GÜNCELLENECEK SAYFALAR -->
+        <section>
+            <h2>🔄 Güncellenecek Sayfalar</h2>
+
+            <div class="task-item update">
+                <div class="task-header">
+                    <span class="task-title">1. Email Verification Sayfası</span>
+                    <span class="task-type update">GÜNCELLE</span>
+                </div>
+                <div class="task-desc">
+                    Mevcut sayfa Bootstrap stilinde, modern Tailwind tasarıma geçirilecek
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Tailwind CSS'e geçiş</li>
+                        <li>Animasyon ekleme</li>
+                        <li>Dark/Light mode desteği</li>
+                        <li>Yeniden gönder butonu iyileştirmesi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="task-item update">
+                <div class="task-header">
+                    <span class="task-title">2. Header User Dropdown</span>
+                    <span class="task-type update">GÜNCELLE</span>
+                </div>
+                <div class="task-desc">
+                    Abonelik bilgisi ve yeni menü linkleri eklenecek
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Abonelik durumu badge</li>
+                        <li>Cihazlarım linki</li>
+                        <li>Ödeme geçmişi linki</li>
+                        <li>Plan yükselt CTA</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="task-item update">
+                <div class="task-header">
+                    <span class="task-title">3. Login Sayfası</span>
+                    <span class="task-type update">GÜNCELLE</span>
+                </div>
+                <div class="task-desc">
+                    2FA desteği ve "Bu cihazı hatırla" özelliği eklenecek
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>2FA yönlendirme mantığı</li>
+                        <li>Remember device checkbox</li>
+                        <li>Failed attempts uyarısı</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="task-item update">
+                <div class="task-header">
+                    <span class="task-title">4. Register Sayfası</span>
+                    <span class="task-type update">GÜNCELLE</span>
+                </div>
+                <div class="task-desc">
+                    Kurumsal kod girişi ve telefon alanı eklenecek
+                </div>
+                <div class="task-details">
+                    <ul>
+                        <li>Kurumsal davet kodu input</li>
+                        <li>Telefon numarası (2FA için)</li>
+                        <li>Kullanım şartları checkbox</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: KALDIRILACAKLAR -->
+        <section>
+            <h2>🗑️ Kaldırılacak/Değiştirilecek</h2>
+
+            <div class="task-item remove">
+                <div class="task-header">
+                    <span class="task-title">1. Eski Bootstrap Auth Stilleri</span>
+                    <span class="task-type remove">KALDIR</span>
+                </div>
+                <div class="task-desc">
+                    Email verification sayfasındaki eski Bootstrap class'ları temizlenecek
+                </div>
+            </div>
+
+            <div class="task-item remove">
+                <div class="task-header">
+                    <span class="task-title">2. Duplicate Profil Componentleri</span>
+                    <span class="task-type remove">KALDIR</span>
+                </div>
+                <div class="task-desc">
+                    UserManagement'taki dağınık profil componentleri tek yerde toplanacak
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Consistency -->
+        <section>
+            <h2>🎨 Tasarım Tutarlılığı</h2>
+
+            <div class="note-box">
+                <strong>Frontend Standartları:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Tailwind CSS + Alpine.js</li>
+                    <li>Dark/Light mode toggle (tüm sayfalarda)</li>
+                    <li>Animasyonlar: Fade-in, slide, scale</li>
+                    <li>Form validation: Real-time Alpine.js</li>
+                    <li>Loading states: Skeleton + spinner</li>
+                </ul>
+            </div>
+
+            <div class="note-box warning">
+                <strong>Tenant-Aware Geliştirme:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Muzibu: Ücretli üyelik aktif, kurumsal aktif</li>
+                    <li>İxtif: Ücretli üyelik kapalı, kurumsal kapalı</li>
+                    <li>Tüm sayfalar setting() helper ile kontrol edilmeli</li>
+                    <li>Pricing sayfası: auth_subscription_paid_enabled kontrolü</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Priority -->
+        <section>
+            <h2>📋 Öncelik Sıralaması</h2>
+
+            <div class="task-details" style="background: rgba(30, 41, 59, 0.5); padding: 20px; border-radius: 12px;">
+                <p style="margin-bottom: 15px;"><strong>Yüksek Öncelik (Hemen):</strong></p>
+                <ul>
+                    <li>2FA Code Input Sayfası</li>
+                    <li>Profil Düzenleme</li>
+                    <li>Cihaz Yönetimi</li>
+                    <li>Login/Register güncellemeleri</li>
+                </ul>
+
+                <p style="margin: 15px 0;"><strong>Orta Öncelik:</strong></p>
+                <ul>
+                    <li>Fiyatlandırma Sayfası</li>
+                    <li>Abonelik Yönetimi (User)</li>
+                    <li>Checkout Sayfası</li>
+                </ul>
+
+                <p style="margin: 15px 0;"><strong>Düşük Öncelik:</strong></p>
+                <ul>
+                    <li>Ödeme Geçmişi</li>
+                    <li>Admin Abonelik Detay</li>
+                    <li>Email Verification güncelleme</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 2025-11-23
+        </footer>
+    </div>
+</body>
+</html>

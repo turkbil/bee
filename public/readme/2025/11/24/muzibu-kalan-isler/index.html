@@ -1,1 +1,703 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Teması - Kalan İşler</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #1DB954;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+
+        .category {
+            margin-bottom: 40px;
+        }
+
+        .task-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #1DB954;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .task-item h4 {
+            color: #1DB954;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .task-item ul {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+
+        .task-item ul li {
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #ef4444; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #10b981; color: white; }
+        .priority-low { background: #6366f1; color: white; }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .explanation {
+            display: inline-block;
+            margin-left: 5px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            border: 1px solid #475569;
+        }
+
+        .summary-box h3 {
+            color: #1DB954;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-card {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #1DB954;
+        }
+
+        .summary-card h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .summary-card p {
+            color: #94a3b8;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .completed {
+            background: rgba(16, 185, 129, 0.1);
+            border-left-color: #10b981;
+        }
+
+        .completed h4::before {
+            content: "✅ ";
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .warning-box h4 {
+            color: #ef4444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-box p {
+            color: #fca5a5;
+        }
+
+        code {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu Teması - Kalan İşler</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-24 |
+                🎯 Tenant: muzibu.com.tr (1001) |
+                💚 Tema: Spotify-Style Müzik Platformu
+            </div>
+        </header>
+
+        <div class="summary-box">
+            <h3>📊 Özet Durum</h3>
+            <div class="summary-grid">
+                <div class="summary-card completed">
+                    <h4>Tamamlanan</h4>
+                    <p>40%</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Kalan İşler</h4>
+                    <p>60%</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Kritik Öncelik</h4>
+                    <p>5 Görev</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Tahmini Süre</h4>
+                    <p>3-4 Gün</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Önemli Not</h4>
+            <p>
+                Şu anda <strong>statik UI/UX tasarımı tamamlandı</strong>.
+                Sırada gerçek müzik akışı, veritabanı entegrasyonu ve dinamik içerik yer alıyor.
+                Tüm kalan işler B2B müzik platformu için kritik özelliklerdir.
+            </p>
+        </div>
+
+        <section>
+            <h2>✅ Tamamlanan İşler</h2>
+
+            <div class="category">
+                <div class="task-item completed">
+                    <h4>1. Spotify-Style Layout</h4>
+                    <p>Sol sidebar, üst bar, alt player ile tam ekran responsive layout.</p>
+                    <ul>
+                        <li>64-karakter genişliğinde sol navigasyon menüsü</li>
+                        <li>Üst bar: Arama, kullanıcı menüsü, premium butonu</li>
+                        <li>Alt sabit player: Progress bar, kontroller, volüm</li>
+                        <li>Dark mode desteği (localStorage ile)</li>
+                    </ul>
+                </div>
+
+                <div class="task-item completed">
+                    <h4>2. Hero Carousel</h4>
+                    <p>Ana sayfada 3 slaytlı otomatik carousel (5 saniyede bir kayar).</p>
+                    <ul>
+                        <li>Smooth transition animasyonları</li>
+                        <li>Dot navigation (manuel geçiş)</li>
+                        <li>Responsive resimler</li>
+                    </ul>
+                </div>
+
+                <div class="task-item completed">
+                    <h4>3. Horizontal Scroll Sections</h4>
+                    <p>Spotify tarzı yatay kayan içerik kartları (Playlists, Albums, Artists).</p>
+                    <ul>
+                        <li>"Jump Back In" bölümü (son dinlenenler)</li>
+                        <li>"New Albums" bölümü</li>
+                        <li>"Popular Playlists" bölümü</li>
+                        <li>Mouse wheel ile kaydırma desteği</li>
+                    </ul>
+                </div>
+
+                <div class="task-item completed">
+                    <h4>4. Context Menus</h4>
+                    <p>Sağ tık menüleri: Share, Queue, Artist sayfasına git.</p>
+                    <ul>
+                        <li>Playlist/Album kartlarına sağ tık</li>
+                        <li>Fade-in animasyonu</li>
+                        <li>Dışarıya tıklayınca kapanma</li>
+                    </ul>
+                </div>
+
+                <div class="task-item completed">
+                    <h4>5. Favorite System UI</h4>
+                    <p>Kalp ikonları ile favorilere ekleme (sadece UI, backend yok).</p>
+                    <ul>
+                        <li>Tüm kartlarda kalp ikonu</li>
+                        <li>Tıklayınca kalp doluyor</li>
+                        <li>LocalStorage ile kayıt (geçici)</li>
+                    </ul>
+                </div>
+
+                <div class="task-item completed">
+                    <h4>6. Player UI</h4>
+                    <p>Tam özellikli müzik player görünümü (henüz gerçek ses yok).</p>
+                    <ul>
+                        <li>Play/Pause, Prev/Next butonları</li>
+                        <li>Shuffle ve Repeat butonları</li>
+                        <li>Progress bar (seek edilebilir)</li>
+                        <li>Volume slider</li>
+                        <li>Şarkı/Artist bilgisi gösterimi</li>
+                        <li>Pulse animasyonu (çalan şarkı)</li>
+                    </ul>
+                </div>
+
+                <div class="task-item completed">
+                    <h4>7. Guest vs Member Content</h4>
+                    <p>Giriş yapmış/yapmamış kullanıcılar için farklı içerik.</p>
+                    <ul>
+                        <li>Guest: Üst banner (7 gün ücretsiz deneme)</li>
+                        <li>Guest: Popüler playlistler + Yeni albümler + Tür kartları</li>
+                        <li>Member: "Jump Back In" + Horizontal scrolls</li>
+                        <li>Alpine.js <code>isLoggedIn</code> kontrolü</li>
+                    </ul>
+                </div>
+
+                <div class="task-item completed">
+                    <h4>8. Theme-Aware Auth System</h4>
+                    <p>Login, Register, Forgot Password, Reset Password sayfaları.</p>
+                    <ul>
+                        <li>Muzibu temasına özel Spotify-style auth sayfaları</li>
+                        <li>İxtif temasına özel endüstriyel auth sayfaları</li>
+                        <li>Dark/Light mode toggle (localStorage ile)</li>
+                        <li>ThemeService ile dinamik view yükleme</li>
+                        <li>Fallback sistemi (default Laravel auth views)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔥 Kritik Öncelik (Hemen Yapılmalı)</h2>
+
+            <div class="category">
+                <div class="task-item">
+                    <h4>1. SPA Navigation <span class="priority priority-critical">KRİTİK</span></h4>
+                    <p>
+                        <span class="tech-term">SPA</span>
+                        <span class="explanation">(Single Page Application - Sayfa yenilenmeden gezinme)</span>
+                        sistemi. Şu anda sayfalar arası geçişte müzik duruyor çünkü sayfa yeniden yükleniyor.
+                    </p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Client-side routing (JavaScript ile URL yönetimi)</li>
+                        <li><code>window.history.pushState()</code> ile sayfa değiştirme</li>
+                        <li>AJAX ile içerik yükleme (sayfa reload yok)</li>
+                        <li>Player state'i koruma (müzik kesintisiz devam)</li>
+                        <li>Back/Forward browser butonları çalışmalı</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Spotify gibi kesintisiz müzik deneyimi.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>2. Gerçek Müzik Playback <span class="priority priority-critical">KRİTİK</span></h4>
+                    <p>
+                        Player şu anda sadece UI. Gerçek müzik dosyalarını çalabilmeli.
+                        <span class="tech-term">HLS</span>
+                        <span class="explanation">(HTTP Live Streaming - Apple'ın akış protokolü)</span>
+                        ile adaptive bitrate streaming.
+                    </p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li><code>HLS.js</code> kütüphanesi entegrasyonu (zaten dahil)</li>
+                        <li>Audio element ile HLS stream bağlama</li>
+                        <li>Play/Pause/Seek fonksiyonlarını gerçek audio'ya bağlama</li>
+                        <li>Şarkı değiştiğinde yeni stream yükleme</li>
+                        <li>Hata yönetimi (stream bulunamadı, network hatası)</li>
+                        <li>Loading durumu gösterme</li>
+                        <li>MP3 fallback (HLS yoksa direkt MP3 çalma)</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Gerçek müzik dosyalarını kesintisiz akış yapabilme.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>3. Database Schema & Migrations <span class="priority priority-critical">KRİTİK</span></h4>
+                    <p>
+                        Müzik verileri için veritabanı yapısı. Şu anda Modules/Muzibu altında migration'lar var ama henüz çalıştırılmadı.
+                    </p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Mevcut migration'ları kontrol et (artists, albums, songs, playlists, genres, sectors)</li>
+                        <li>Tenant migration'ları çalıştır: <code>php artisan tenants:migrate</code></li>
+                        <li>Central migration'ları çalıştır: <code>php artisan migrate</code></li>
+                        <li>İlişkileri test et (HasMany, BelongsTo, BelongsToMany)</li>
+                        <li>Seed data oluştur (demo müzikler, playlistler)</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Database yapısı hazır, demo veriler yüklü.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>4. Backend API Endpoints <span class="priority priority-critical">KRİTİK</span></h4>
+                    <p>
+                        Frontend'in verileri çekebilmesi için API endpoint'leri.
+                    </p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li><code>GET /api/playlists</code> - Playlist listesi</li>
+                        <li><code>GET /api/playlists/{id}</code> - Playlist detayı (şarkılarla)</li>
+                        <li><code>GET /api/albums</code> - Albüm listesi</li>
+                        <li><code>GET /api/albums/{id}</code> - Albüm detayı (şarkılarla)</li>
+                        <li><code>GET /api/songs/recent</code> - Son dinlenen şarkılar</li>
+                        <li><code>GET /api/genres</code> - Tür listesi</li>
+                        <li><code>GET /api/sectors</code> - Sektör listesi</li>
+                        <li>Tenant-aware endpoint'ler (her tenant kendi verilerini görsün)</li>
+                        <li>Pagination (sayfa başına 20-50 kayıt)</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Frontend dinamik veri çekebilecek.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>5. Volume Normalization <span class="priority priority-critical">KRİTİK</span></h4>
+                    <p>
+                        Farklı şarkıların ses seviyesi farklı olabilir. B2B müzik platformu için ses dengelemesi şart.
+                    </p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li><span class="tech-term">Web Audio API</span> <span class="explanation">(Tarayıcıda gelişmiş ses işleme)</span> ile GainNode oluşturma</li>
+                        <li>Her şarkının <code>loudness</code> değerini database'de saklama</li>
+                        <li>Şarkı değiştiğinde GainNode'u ayarlama</li>
+                        <li>Hedef loudness: -14 LUFS (Spotify standardı)</li>
+                        <li>Kullanıcı volüm ayarı + normalization birleşimi</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Tüm şarkılar aynı ses seviyesinde çalacak.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔧 Yüksek Öncelik (1-2 Hafta İçinde)</h2>
+
+            <div class="category">
+                <div class="task-item">
+                    <h4>6. Playlist Detail Page <span class="priority priority-high">Yüksek</span></h4>
+                    <p>Playlist'e tıklayınca açılacak detay sayfası (Spotify'daki gibi).</p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Playlist header: Cover image, isim, açıklama, şarkı sayısı</li>
+                        <li>Şarkı listesi: Sıra no, kapak, isim, artist, albüm, süre</li>
+                        <li>Play butonu (playlist'i baştan çalmaya başla)</li>
+                        <li>Her şarkının yanında context menu (add to queue, add to playlist)</li>
+                        <li>Hover efekti: Üzerine gelince play butonu görünsün</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Kullanıcı playlist detaylarını görebilecek ve çalabilecek.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>7. Album Detail Page <span class="priority priority-high">Yüksek</span></h4>
+                    <p>Albüm detay sayfası (Playlist detayına benzer ama artist bilgisi daha ön planda).</p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Album header: Cover, isim, artist, yıl, toplam süre</li>
+                        <li>Şarkı listesi (track numarası ile)</li>
+                        <li>Artist bilgisi (artist sayfasına link)</li>
+                        <li>Play all butonu</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Albüm detayları görüntülenebilecek.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>8. Queue Management <span class="priority priority-high">Yüksek</span></h4>
+                    <p>Sırada hangi şarkılar var? Sırayı yönetme (silme, sıralama).</p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Sağ tarafta açılır Queue sidebar</li>
+                        <li>Şu an çalan şarkı en üstte vurgulu</li>
+                        <li>Sıradaki şarkılar altında listelenir</li>
+                        <li>Drag & drop ile sıralama değiştirme</li>
+                        <li>Şarkıyı sıradan çıkarma (X butonu)</li>
+                        <li>Queue'yu temizleme butonu</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Kullanıcı dinleme sırasını görebilecek ve düzenleyebilecek.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>9. Search Functionality <span class="priority priority-high">Yüksek</span></h4>
+                    <p>
+                        Üst bardaki arama çubuğu çalışmalı.
+                        <span class="tech-term">Meilisearch</span>
+                        <span class="explanation">(Hızlı arama motoru, Laravel Scout ile entegre)</span>
+                        ile gerçek zamanlı arama.
+                    </p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Meilisearch kurulumu (zaten sistemde olabilir)</li>
+                        <li>Laravel Scout konfigürasyonu</li>
+                        <li>Song, Album, Playlist, Artist modellerini indexleme</li>
+                        <li>Arama API endpoint: <code>GET /api/search?q=...</code></li>
+                        <li>Dropdown ile gerçek zamanlı sonuçlar (yazdıkça göster)</li>
+                        <li>Kategori bazlı sonuçlar (Songs, Albums, Playlists, Artists)</li>
+                        <li>Klavye navigasyonu (arrow keys ile gezinme, enter ile seçme)</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Kullanıcı yazdıkça sonuçları görecek.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>10. Favorites Backend <span class="priority priority-high">Yüksek</span></h4>
+                    <p>
+                        Kalp ikonları şu anda sadece localStorage kullanıyor. Database'e kaydetmeliyiz.
+                    </p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Polymorphic relation: <code>favorites</code> tablosu (user_id, favoritable_type, favoritable_id)</li>
+                        <li>API endpoint: <code>POST /api/favorites</code> (favorilere ekle)</li>
+                        <li>API endpoint: <code>DELETE /api/favorites/{id}</code> (favorilerden çıkar)</li>
+                        <li>API endpoint: <code>GET /api/favorites</code> (kullanıcının favorileri)</li>
+                        <li>Frontend'de kalp ikonlarını backend'e bağlama</li>
+                        <li>Favoriler sayfası (kullanıcının tüm favorileri)</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Favoriler kalıcı olacak, hesaba bağlı olacak.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚙️ Orta Öncelik (2-4 Hafta İçinde)</h2>
+
+            <div class="category">
+                <div class="task-item">
+                    <h4>11. Recently Played Tracking <span class="priority priority-medium">Orta</span></h4>
+                    <p>Kullanıcının son dinlediği şarkıları takip etme.</p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li><code>song_plays</code> tablosuna kayıt atma (user_id, song_id, played_at)</li>
+                        <li>Şarkı %50'sini geçince "dinlendi" sayma</li>
+                        <li>"Jump Back In" bölümünde son dinlenenleri gösterme</li>
+                        <li>Duplicate kaydı önleme (aynı şarkıyı arka arkaya dinlediyse)</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> "Jump Back In" bölümü dinamik olacak.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>12. Genre & Sector Pages <span class="priority priority-medium">Orta</span></h4>
+                    <p>Türlere ve sektörlere göre filtreleme sayfaları.</p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li><code>/genres/{slug}</code> sayfası (örn: /genres/pop)</li>
+                        <li><code>/sectors/{slug}</code> sayfası (örn: /sectors/cafe-restaurant)</li>
+                        <li>Filtrelenmiş playlist/albüm listesi</li>
+                        <li>Sidebar'da aktif genre/sector vurgulama</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Kullanıcılar sektörlerine özel müzik bulabilecek.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>13. Repeat Modes <span class="priority priority-medium">Orta</span></h4>
+                    <p>Repeat butonunun gerçekten çalışması (off, all, one).</p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Repeat state: <code>off</code>, <code>all</code>, <code>one</code></li>
+                        <li>Repeat butonu tıklanınca state değişsin</li>
+                        <li>Şarkı bitince repeat mode'a göre davranış:
+                            <ul>
+                                <li><code>off</code>: Sıradaki şarkıya geç, sıra bitince dur</li>
+                                <li><code>all</code>: Sıradaki şarkıya geç, sıra bitince başa dön</li>
+                                <li><code>one</code>: Aynı şarkıyı tekrar çal</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Kullanıcı tekrar modunu seçebilecek.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>14. Shuffle Mode <span class="priority priority-medium">Orta</span></h4>
+                    <p>Karıştırma modu (queue'yu rastgele sırala).</p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Shuffle butonuna tıklayınca queue'yu karıştır</li>
+                        <li>Fisher-Yates algoritması ile rastgele sıralama</li>
+                        <li>Şu an çalan şarkı yerinde kalsın</li>
+                        <li>Shuffle kapatınca orijinal sıraya dön</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Kullanıcı karışık dinleme yapabilecek.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>15. Device Limit Enforcement <span class="priority priority-medium">Orta</span></h4>
+                    <p>B2B plan: Aynı anda max X cihaz dinleyebilir (örn: 5 cihaz).</p>
+                    <p><strong>Yapılacaklar:</strong></p>
+                    <ul>
+                        <li>Device fingerprinting (browser, IP, user agent ile unique ID)</li>
+                        <li><code>active_sessions</code> tablosu (user_id, device_id, last_active)</li>
+                        <li>Play'e bastığında aktif cihaz sayısını kontrol et</li>
+                        <li>Limit aşıldıysa hata göster: "Max X cihaz aktif olabilir"</li>
+                        <li>Aktif cihazları listeleme sayfası (kullanıcı hangi cihazlardan dinliyor?)</li>
+                        <li>Cihazı deaktif etme butonu</li>
+                    </ul>
+                    <p><strong>Beklenen Sonuç:</strong> Şirketler plan limitlerini aşamayacak.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎨 Düşük Öncelik (Sonradan Eklenebilir)</h2>
+
+            <div class="category">
+                <div class="task-item">
+                    <h4>16. Artist Pages <span class="priority priority-low">Düşük</span></h4>
+                    <p>Artist detay sayfası (discography, bio, top songs).</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>17. Playlist Creation <span class="priority priority-low">Düşük</span></h4>
+                    <p>Kullanıcılar kendi playlistlerini oluşturabilsin.</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>18. Lyrics Display <span class="priority priority-low">Düşük</span></h4>
+                    <p>Şarkı sözlerini gösterme (sync'li veya statik).</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>19. Admin Panel <span class="priority priority-low">Düşük</span></h4>
+                    <p>Müzik yönetimi için admin paneli (şarkı yükleme, playlist düzenleme).</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>20. Analytics Dashboard <span class="priority priority-low">Düşük</span></h4>
+                    <p>Şirketler için dinleme istatistikleri (en çok dinlenen şarkılar, sektör analizi).</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🚀 Önerilen Çalışma Sırası</h2>
+
+            <div class="task-item">
+                <h4>Faz 1: Temel Fonksiyonellik (1. Hafta)</h4>
+                <p>Önce müzik çalabilmeli, sonra güzelleştiririz.</p>
+                <ol>
+                    <li>Database migrations çalıştır + seed data</li>
+                    <li>Backend API endpoints oluştur (playlists, albums, songs)</li>
+                    <li>Gerçek müzik playback (HLS.js entegrasyonu)</li>
+                    <li>Volume normalization</li>
+                </ol>
+            </div>
+
+            <div class="task-item">
+                <h4>Faz 2: Kesintisiz Deneyim (2. Hafta)</h4>
+                <p>Sayfa geçişlerinde müzik devam etmeli.</p>
+                <ol>
+                    <li>SPA navigation sistemi</li>
+                    <li>Player state persistence</li>
+                    <li>Queue management</li>
+                    <li>Repeat & Shuffle modes</li>
+                </ol>
+            </div>
+
+            <div class="task-item">
+                <h4>Faz 3: İçerik Sayfaları (3. Hafta)</h4>
+                <p>Detay sayfaları ve keşif.</p>
+                <ol>
+                    <li>Playlist detail page</li>
+                    <li>Album detail page</li>
+                    <li>Search functionality (Meilisearch)</li>
+                    <li>Genre & Sector pages</li>
+                </ol>
+            </div>
+
+            <div class="task-item">
+                <h4>Faz 4: Kullanıcı Özellikleri (4. Hafta)</h4>
+                <p>Kişiselleştirme ve takip.</p>
+                <ol>
+                    <li>Favorites backend</li>
+                    <li>Recently played tracking</li>
+                    <li>Device limit enforcement</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu |
+            📅 2025-11-24 |
+            💚 Muzibu - B2B Müzik Platformu
+        </footer>
+    </div>
+</body>
+</html>

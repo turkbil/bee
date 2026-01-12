@@ -1,1 +1,534 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu.com.tr - Tenant mi, Central mi? Karar Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+    <div class="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <header class="mb-12 border-b border-slate-800 pb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-900/30 text-purple-400 border border-purple-800">
+                    🤔 Mimari Karar
+                </span>
+                <span class="text-slate-500 text-sm">8 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4 leading-tight">
+                Muzibu.com.tr - Tenant mi, Central mi?
+            </h1>
+            <p class="text-slate-400 text-lg leading-relaxed">
+                Mevcut sistem tenant-aware kod yapısına sahip ve veriler tenant database'de. Hangi mimariyi seçmeliyiz?
+            </p>
+        </header>
+
+        <!-- Mevcut Durum -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
+                📊 Mevcut Durum
+            </h3>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">✅ Tenant Sistemi Hazır</h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Tenancy package yüklü (stancl/tenancy)</li>
+                        <li>✅ Tenant ID: 1001 kaydı mevcut</li>
+                        <li>✅ Tenant database: tenant_muzibu_1528d0</li>
+                        <li>✅ Domain mapping: muzibu.com.tr → 1001</li>
+                        <li>✅ Middleware'ler yapılandırılmış</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">📦 Veri Durumu</h4>
+                    <div class="bg-slate-900/50 rounded p-4 font-mono text-sm space-y-1">
+                        <div class="text-green-300">Şarkılar: 28,211 adet</div>
+                        <div class="text-green-300">Albümler: 650 adet</div>
+                        <div class="text-green-300">Sanatçılar: 43 adet</div>
+                        <div class="text-slate-400 mt-2 text-xs">📁 Konum: tenant_muzibu_1528d0 database</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-yellow-950/30 border border-yellow-800 rounded p-4">
+                <p class="text-yellow-300 text-sm"><strong>⚠️ Önemli:</strong></p>
+                <p class="text-slate-300 text-sm mt-2">
+                    Test sonuçları başarılı! Tenant context aktif olduğunda tüm veriler (28,211 şarkı) erişilebilir.
+                    Sistem zaten tenant-aware çalışıyor, sadece yapılandırma hatası vardı.
+                </p>
+            </div>
+        </div>
+
+        <!-- Seçenek 1: TENANT -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <div class="flex items-start gap-3 mb-4">
+                <span class="text-3xl">✅</span>
+                <div>
+                    <h3 class="text-2xl font-semibold text-green-400">Seçenek 1: Tenant Sistemi (ÖNERİLEN)</h3>
+                    <p class="text-slate-400 text-sm mt-1">Muzibu.com.tr tenant olarak çalışsın</p>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Basit Anlatım -->
+                <div class="bg-green-950/30 border border-green-800 rounded-lg p-5">
+                    <h4 class="text-lg font-medium text-green-400 mb-3">📝 Basit Anlatım</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Muzibu.com.tr sitesi "tenant" olarak çalışır. Yani sistem birden fazla siteyi destekler ama şu an sadece
+                        muzibu.com.tr var. İleride muzibu2.com, muzibu3.com gibi başka müzik siteleri eklenebilir. Her site kendi
+                        veritabanında çalışır, birbirlerinden tamamen ayrı.
+                    </p>
+                    <p class="text-slate-300 text-sm leading-relaxed mt-3">
+                        <strong>Örnek:</strong> Bir apartman düşünün. Her daire (tenant) bağımsız, ama bina (sistem) aynı.
+                        İleride yeni daireler eklenebilir.
+                    </p>
+                </div>
+
+                <!-- Avantajlar -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">✅ Avantajlar</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-green-400 font-medium mb-2">🚀 Hızlı Geçiş</p>
+                            <p class="text-slate-300 text-sm">
+                                Veriler zaten tenant database'de. Sadece yapılandırma düzeltilecek.
+                                5-10 dakika yeterli.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-green-400 font-medium mb-2">💾 Veri Taşıma YOK</p>
+                            <p class="text-slate-300 text-sm">
+                                28,211 şarkı, 650 albüm, 43 sanatçı zaten doğru yerde. Migration gerekmez.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-green-400 font-medium mb-2">🔮 Gelecek Hazır</p>
+                            <p class="text-slate-300 text-sm">
+                                İleride yeni müzik siteleri eklemek istersen çok kolay. Sadece yeni tenant ekle, hepsi hazır.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-green-400 font-medium mb-2">🛡️ İzolasyon</p>
+                            <p class="text-slate-300 text-sm">
+                                Her site kendi database'inde. Güvenlik, yedekleme, bakım her biri için ayrı yapılabilir.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-green-400 font-medium mb-2">📈 Ölçeklenebilir</p>
+                            <p class="text-slate-300 text-sm">
+                                Başka müzik platformları (jazz, rock, klasik) eklemek 1 saatte yapılır.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-green-400 font-medium mb-2">🔧 Kod Hazır</p>
+                            <p class="text-slate-300 text-sm">
+                                Tüm tenant altyapısı mevcut. Test başarılı. Sadece config düzeltilecek.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yapılacaklar -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">🔧 Yapılacaklar (5 Dakika)</h4>
+                    <ol class="space-y-3 text-sm">
+                        <li class="flex gap-3">
+                            <span class="text-green-400 font-bold">1.</span>
+                            <div>
+                                <p class="text-white font-medium">.env dosyasını düzelt:</p>
+                                <div class="bg-slate-900 rounded p-3 mt-2 font-mono text-xs">
+                                    <div class="text-slate-400"># Central domain boş bırak (tenant sistemi için)</div>
+                                    <div class="text-green-300">APP_DOMAIN=</div>
+                                    <div class="text-green-300">TENANT_PARENT_DOMAIN=muzibu.com.tr</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-green-400 font-bold">2.</span>
+                            <div>
+                                <p class="text-white font-medium">config/tenancy.php düzelt:</p>
+                                <div class="bg-slate-900 rounded p-3 mt-2 font-mono text-xs">
+                                    <div class="text-green-300">'central_domains' => [], // Boş array</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-green-400 font-bold">3.</span>
+                            <div class="text-slate-300">Cache temizle: <code class="bg-slate-800 px-2 py-1 rounded text-xs">php artisan config:clear</code></div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-green-400 font-bold">4.</span>
+                            <div class="text-slate-300">Siteyi test et → Şarkılar gözükecek ✅</div>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Sonuç -->
+                <div class="bg-green-950/50 border border-green-700 rounded p-4">
+                    <p class="text-green-300 font-medium mb-2">🎯 Sonuç:</p>
+                    <p class="text-slate-300 text-sm">
+                        <strong>En mantıklı seçenek bu!</strong> Sistem zaten tenant-aware, veriler doğru yerde,
+                        kod hazır. Sadece yapılandırmayı düzeltip devam ediyoruz. Gelecekte yeni siteler eklemek
+                        istersen altyapı hazır.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seçenek 2: CENTRAL -->
+        <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-8">
+            <div class="flex items-start gap-3 mb-4">
+                <span class="text-3xl">⚠️</span>
+                <div>
+                    <h3 class="text-2xl font-semibold text-red-400">Seçenek 2: Central/Bağımsız Sistem</h3>
+                    <p class="text-slate-400 text-sm mt-1">Tenant sistemini kaldır, basit Laravel uygulaması</p>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Basit Anlatım -->
+                <div class="bg-red-950/30 border border-red-800 rounded-lg p-5">
+                    <h4 class="text-lg font-medium text-red-400 mb-3">📝 Basit Anlatım</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Tenant sistemini tamamen kaldırıyoruz. Muzibu.com.tr tek başına, bağımsız bir site olur.
+                        Basit, sade, standart Laravel uygulaması. İleride başka site eklemek istersen yeni sunucu
+                        kurman veya sistemi sıfırdan tenant'a geçirmen gerekir.
+                    </p>
+                    <p class="text-slate-300 text-sm leading-relaxed mt-3">
+                        <strong>Örnek:</strong> Müstakil ev. Sadece sen oturursun, başka kimse yok. Basit ama ileride
+                        apartman yapmak istersen evin yıkılıp yeniden yapılması gerekir.
+                    </p>
+                </div>
+
+                <!-- Avantajlar (Az) -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">✅ Avantajlar (Sınırlı)</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-green-400 font-medium mb-2">🎯 Basitlik</p>
+                            <p class="text-slate-300 text-sm">
+                                Tenant sistemi yok, sade Laravel. Kod daha basit (ama tenant'ın zaten büyük etkisi yok).
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-green-400 font-medium mb-2">🧹 Temiz Kod</p>
+                            <p class="text-slate-300 text-sm">
+                                Tenant package'ları kaldırılır. Composer.json daha küçük.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dezavantajlar (ÇOK) -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">❌ Dezavantajlar (ÇOK ÖNEMLİ)</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-600">
+                            <p class="text-red-400 font-medium mb-2">💾 Veri Taşıma Zorunlu</p>
+                            <p class="text-slate-300 text-sm">
+                                28,211 şarkı, 650 albüm, 43 sanatçı + ilişkili tüm veriler (playlist, genre, sector, media)
+                                tenant database'den central'a taşınmalı.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-600">
+                            <p class="text-red-400 font-medium mb-2">⏱️ Uzun Süreç</p>
+                            <p class="text-slate-300 text-sm">
+                                Migration script yazma, test etme, veri taşıma: <strong>3-5 saat</strong>
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-600">
+                            <p class="text-red-400 font-medium mb-2">🚨 Risk: Veri Kaybı</p>
+                            <p class="text-slate-300 text-sm">
+                                28,211 şarkı taşınırken hata olursa? Media ilişkileri bozulursa? Backup zorunlu!
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-600">
+                            <p class="text-red-400 font-medium mb-2">🔒 Gelecek Kapalı</p>
+                            <p class="text-slate-300 text-sm">
+                                İleride yeni site eklemek istersen: Sistemi tekrar tenant'a geçir (daha uzun süreç).
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-600">
+                            <p class="text-red-400 font-medium mb-2">📦 Package Kaldırma</p>
+                            <p class="text-slate-300 text-sm">
+                                Tenancy package'ları, middleware'ler, config dosyaları kaldırılmalı.
+                                Kod revizyonu gerekir.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 border-l-4 border-red-600">
+                            <p class="text-red-400 font-medium mb-2">🧪 Test Süreci</p>
+                            <p class="text-slate-300 text-sm">
+                                Tüm özellikler test edilmeli: Şarkı ekleme, albüm yönetimi, player, playlist,
+                                medya yönetimi...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yapılacaklar (Karmaşık) -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">🔧 Yapılacaklar (3-5 Saat)</h4>
+                    <ol class="space-y-3 text-sm text-slate-300">
+                        <li><span class="text-red-400 font-bold">1.</span> Tenant database backup al</li>
+                        <li><span class="text-red-400 font-bold">2.</span> Migration script yaz (28,211 şarkı + ilişkiler)</li>
+                        <li><span class="text-red-400 font-bold">3.</span> Test ortamında migration çalıştır</li>
+                        <li><span class="text-red-400 font-bold">4.</span> Verileri doğrula (şarkılar, albümler, medya ilişkileri)</li>
+                        <li><span class="text-red-400 font-bold">5.</span> Tenant package'ları kaldır (composer remove)</li>
+                        <li><span class="text-red-400 font-bold">6.</span> Middleware'leri config'den çıkar</li>
+                        <li><span class="text-red-400 font-bold">7.</span> Model'lerdeki tenant ilişkilerini temizle</li>
+                        <li><span class="text-red-400 font-bold">8.</span> Route'ları güncelle (tenant middleware'i kaldır)</li>
+                        <li><span class="text-red-400 font-bold">9.</span> Storage path'leri düzelt (tenant storage → genel storage)</li>
+                        <li><span class="text-red-400 font-bold">10.</span> Tüm özellikleri test et</li>
+                    </ol>
+                </div>
+
+                <!-- Sonuç -->
+                <div class="bg-red-950/50 border border-red-700 rounded p-4">
+                    <p class="text-red-300 font-medium mb-2">⚠️ Sonuç:</p>
+                    <p class="text-slate-300 text-sm">
+                        <strong>Önerilmez!</strong> Çok iş, yüksek risk, uzun süre. Mevcut sistem zaten çalışıyor,
+                        neden 28,211 şarkıyı taşıyalım? Basitlik kazancı minimal, ama kayıp riski yüksek.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karşılaştırma Tablosu -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-white mb-4">📊 Detaylı Karşılaştırma</h3>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Kriter</th>
+                            <th class="text-left py-3 px-4 text-green-400 font-medium">Seçenek 1: Tenant</th>
+                            <th class="text-left py-3 px-4 text-red-400 font-medium">Seçenek 2: Central</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Süre</td>
+                            <td class="py-3 px-4 text-green-300">5-10 dakika ✅</td>
+                            <td class="py-3 px-4 text-red-300">3-5 saat ❌</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Veri Taşıma</td>
+                            <td class="py-3 px-4 text-green-300">Gerek yok ✅</td>
+                            <td class="py-3 px-4 text-red-300">28,211 şarkı taşınacak ❌</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Risk</td>
+                            <td class="py-3 px-4 text-green-300">Çok düşük ✅</td>
+                            <td class="py-3 px-4 text-red-300">Yüksek (veri kaybı) ❌</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Kod Değişikliği</td>
+                            <td class="py-3 px-4 text-green-300">Minimal (config) ✅</td>
+                            <td class="py-3 px-4 text-red-300">Büyük (package kaldır) ❌</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Test Süreci</td>
+                            <td class="py-3 px-4 text-green-300">1 test yeterli ✅</td>
+                            <td class="py-3 px-4 text-red-300">Kapsamlı test gerekir ❌</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Geri Dönüş</td>
+                            <td class="py-3 px-4 text-green-300">Çok kolay ✅</td>
+                            <td class="py-3 px-4 text-red-300">Çok zor (migration reverse) ❌</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Gelecek Esneklik</td>
+                            <td class="py-3 px-4 text-green-300">Yeni site eklemek kolay ✅</td>
+                            <td class="py-3 px-4 text-red-300">Yeni site için yeniden tenant'a geçiş ❌</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Basitlik</td>
+                            <td class="py-3 px-4 text-yellow-300">Biraz karmaşık (tenant aware) ⚠️</td>
+                            <td class="py-3 px-4 text-green-300">Daha basit (sade Laravel) ✅</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Performans</td>
+                            <td class="py-3 px-4 text-green-300">Aynı (minimal fark) ✅</td>
+                            <td class="py-3 px-4 text-green-300">Aynı (minimal fark) ✅</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300 font-medium">Bakım</td>
+                            <td class="py-3 px-4 text-green-300">Kolay (paket güncel) ✅</td>
+                            <td class="py-3 px-4 text-green-300">Kolay (standart Laravel) ✅</td>
+                        </tr>
+                        <tr class="bg-slate-800/50">
+                            <td class="py-3 px-4 text-white font-bold">TOPLAM PUAN</td>
+                            <td class="py-3 px-4 text-green-300 font-bold text-lg">9/10 ⭐⭐⭐⭐⭐</td>
+                            <td class="py-3 px-4 text-red-300 font-bold text-lg">3/10 ⭐⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Uzman Önerisi -->
+        <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border-2 border-green-700 rounded-lg p-8 mb-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-5xl">💡</span>
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Uzman Önerisi</h3>
+                    <p class="text-green-400 text-lg font-medium">Seçenek 1: Tenant Sistemi (KESINLIKLE ÖNERİLEN)</p>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-white">Neden Tenant?</strong>
+                </p>
+                <ul class="space-y-3 text-sm ml-6">
+                    <li class="flex gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span><strong>Sistem zaten hazır:</strong> Kod tenant-aware, veriler tenant database'de, test başarılı.</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span><strong>28,211 şarkıyı taşımaya gerek yok:</strong> Veriler doğru yerde, neden riske atalım?</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span><strong>5 dakikada biter:</strong> Config düzelt, cache temizle, tamam!</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span><strong>Gelecek garantili:</strong> İleride muzibu2.com, muzik-jazz.com gibi siteler eklemek 1 saatte yapılır.</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span><strong>Sıfır risk:</strong> Veri taşıma yok, kod değişikliği minimal, geri dönüş kolay.</span>
+                    </li>
+                </ul>
+
+                <div class="bg-green-950/50 border border-green-700 rounded p-4 mt-6">
+                    <p class="text-white font-medium mb-2">🎯 Karara Git:</p>
+                    <p class="text-sm leading-relaxed">
+                        Müşteriye soracak olsan bile <strong>"Tenant sistemi kullanıyoruz, verileriniz izole ve güvenli,
+                        ileride başka platformlar eklemek çok kolay"</strong> demek <strong>"Basit sistem kullanıyoruz,
+                        ama 28 bin şarkınızı taşıyacağız"</strong> demekten çok daha profesyonel.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-700 rounded p-4 mt-4">
+                    <p class="text-slate-400 text-sm italic">
+                        <strong>Not:</strong> Eğer sistem "sadece muzibu.com.tr olacak, asla başka site eklemeyeceğiz,
+                        kompleks mimari istemiyoruz" diyorsan bile, mevcut durumda tenant'a geçmek daha mantıklı.
+                        Çünkü veriler zaten orada, kod hazır, test başarılı.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karar Adımları -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-blue-400 mb-4">🎯 Karar Verilince Yapılacaklar</h3>
+
+            <div class="space-y-6">
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">Seçenek 1'i Seçersen (Tenant):</h4>
+                    <div class="bg-slate-900/50 rounded p-4 space-y-2 text-sm text-slate-300">
+                        <p>1. <strong>"Tenant yapalım"</strong> diyorsun</p>
+                        <p>2. Ben .env ve config/tenancy.php düzeltiyorum (5 dakika)</p>
+                        <p>3. Cache temizliyoruz</p>
+                        <p>4. Siteyi test ediyoruz → Şarkılar gözüküyor ✅</p>
+                        <p>5. <strong>BİTTİ!</strong></p>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">Seçenek 2'yi Seçersen (Central):</h4>
+                    <div class="bg-slate-900/50 rounded p-4 space-y-2 text-sm text-slate-300">
+                        <p>1. <strong>"Central yapalım, tenant'ı kaldır"</strong> diyorsun</p>
+                        <p>2. Migration script hazırlıyorum (1 saat)</p>
+                        <p>3. Test ortamında veri taşıma testi (1 saat)</p>
+                        <p>4. Production'da veri taşıma (30 dakika)</p>
+                        <p>5. Tenant package'larını kaldırıyoruz (30 dakika)</p>
+                        <p>6. Kod temizliği (30 dakika)</p>
+                        <p>7. Kapsamlı test (1 saat)</p>
+                        <p>8. <strong>3-5 saat sonra BİTER</strong> (eğer sorun çıkmazsa)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-purple-950/30 border border-purple-800 rounded p-4">
+                <p class="text-purple-300 text-sm"><strong>💬 Sormam Gereken:</strong></p>
+                <p class="text-slate-300 text-sm mt-2">
+                    "Hangi seçeneği tercih ediyorsun?"<br>
+                    <strong class="text-white">A)</strong> Tenant sistemi (ÖNERİLEN - 5 dakika)<br>
+                    <strong class="text-white">B)</strong> Central/Basit sistem (3-5 saat + risk)
+                </p>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+            <h3 class="text-xl font-semibold text-white mb-4">📝 Özet</h3>
+
+            <div class="space-y-4 text-slate-300 text-sm">
+                <p>
+                    <strong class="text-white">Mevcut Durum:</strong> Sistem tenant-aware, veriler tenant database'de,
+                    kod hazır, test başarılı. Sadece config hatası var.
+                </p>
+
+                <p>
+                    <strong class="text-white">Seçenek 1 (Tenant):</strong>
+                    <span class="text-green-400">5 dakika, sıfır risk, gelecek garantili ✅</span>
+                </p>
+
+                <p>
+                    <strong class="text-white">Seçenek 2 (Central):</strong>
+                    <span class="text-red-400">3-5 saat, 28,211 şarkı taşıma, veri kaybı riski ❌</span>
+                </p>
+
+                <div class="bg-green-950/30 border border-green-700 rounded p-4 mt-4">
+                    <p class="text-green-300 font-medium">🎯 Öneri:</p>
+                    <p class="text-white mt-2">
+                        <strong>Seçenek 1 (Tenant sistemi)</strong> ile devam et. Sistem zaten hazır, neden risk alalım?
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>🤖 Claude Sonnet 4.5 tarafından oluşturuldu</p>
+            <p class="mt-2">Mimari Karar Analizi - 8 Ocak 2026</p>
+        </footer>
+
+    </div>
+</body>
+</html>

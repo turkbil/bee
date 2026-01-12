@@ -1,1 +1,339 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Products - Database Analizi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #60a5fa;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid;
+        }
+
+        .stat.total { border-color: #60a5fa; }
+        .stat.active { border-color: #10b981; }
+        .stat.empty { border-color: #64748b; }
+
+        .stat-num {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 12px 15px;
+            border-left: 3px solid #3b82f6;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #60a5fa;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title:hover {
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .section-content {
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 0 0 6px 6px;
+            margin-top: -6px;
+        }
+
+        .field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 6px;
+            border-left: 3px solid;
+        }
+
+        .field.active { border-color: #10b981; }
+        .field.missing { border-color: #64748b; }
+
+        .field-name {
+            font-family: 'Courier New', monospace;
+            color: #60a5fa;
+            font-size: 0.95rem;
+        }
+
+        .field-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-active { background: #10b981; color: white; }
+        .badge-empty { background: #64748b; color: white; }
+
+        .chevron {
+            transition: transform 0.3s;
+        }
+
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        .collapsed {
+            display: none;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Shop Products Database</h1>
+        <div class="meta">🗄️ Tablo: shop_products | 📅 2025-12-04</div>
+
+        <div class="stats">
+            <div class="stat total">
+                <div class="stat-num">67</div>
+                <div class="stat-label">Toplam Kolon</div>
+            </div>
+            <div class="stat active">
+                <div class="stat-num">30+</div>
+                <div class="stat-label">Formda Aktif</div>
+            </div>
+            <div class="stat empty">
+                <div class="stat-num">23</div>
+                <div class="stat-label">Boş/Kullanılmayan</div>
+            </div>
+        </div>
+
+        <!-- FORMDA AKTİF ALANLAR -->
+        <div class="section">
+            <div class="section-title" onclick="toggle('active')">
+                <span>✅ Formda Aktif Alanlar (30+)</span>
+                <span class="chevron" id="chevron-active">▼</span>
+            </div>
+            <div class="section-content" id="content-active">
+                <div class="field active">
+                    <span class="field-name">title, slug, short_description, body</span>
+                    <span class="field-badge badge-active">Çoklu Dil (JSON)</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">sku, model_number, barcode</span>
+                    <span class="field-badge badge-active">Ürün Tanımlayıcı</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">category_id, brand_id</span>
+                    <span class="field-badge badge-active">İlişkiler</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">product_type, condition</span>
+                    <span class="field-badge badge-active">Temel Bilgi</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">base_price, tax_rate, compare_at_price, cost_price</span>
+                    <span class="field-badge badge-active">Fiyatlandırma</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">price_display_mode, currency_id</span>
+                    <span class="field-badge badge-active">Fiyat Ayarları</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">stock_tracking, current_stock, low_stock_threshold</span>
+                    <span class="field-badge badge-active">Stok Yönetimi</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">allow_backorder, lead_time_days</span>
+                    <span class="field-badge badge-active">Temin Bilgisi</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">weight, dimensions (JSON)</span>
+                    <span class="field-badge badge-active">Fiziksel</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">technical_specs (JSON)</span>
+                    <span class="field-badge badge-active">Teknik</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">video_url, manual_pdf_url</span>
+                    <span class="field-badge badge-active">Medya</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">warranty_info (JSON), shipping_info (JSON)</span>
+                    <span class="field-badge badge-active">Garanti & Kargo</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">is_active, is_featured, is_bestseller</span>
+                    <span class="field-badge badge-active">Durum</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">show_on_homepage, homepage_sort_order</span>
+                    <span class="field-badge badge-active">Görünürlük</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">published_at, sort_order</span>
+                    <span class="field-badge badge-active">Yayın</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">badges (JSON), tags (JSON)</span>
+                    <span class="field-badge badge-active">Etiketler</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">custom_json_fields (JSON)</span>
+                    <span class="field-badge badge-active">Özel Alanlar</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOŞ/KULLANILMAYAN ALANLAR -->
+        <div class="section">
+            <div class="section-title" onclick="toggle('empty')">
+                <span>❌ Boş/Kullanılmayan Alanlar (23)</span>
+                <span class="chevron" id="chevron-empty">▼</span>
+            </div>
+            <div class="section-content collapsed" id="content-empty">
+
+                <h4 style="color: #94a3b8; margin: 15px 0 10px 0; font-size: 0.95rem;">🏦 B2B Özellikleri (Kullanılmıyor)</h4>
+                <div class="field missing">
+                    <span class="field-name">deposit_required, deposit_amount, deposit_percentage</span>
+                    <span class="field-badge badge-empty">Kapora</span>
+                </div>
+                <div class="field missing">
+                    <span class="field-name">installment_available, max_installments</span>
+                    <span class="field-badge badge-empty">Taksit</span>
+                </div>
+
+                <h4 style="color: #94a3b8; margin: 15px 0 10px 0; font-size: 0.95rem;">📢 Pazarlama & İçerik (HEPSİ BOŞ!)</h4>
+                <div class="field missing">
+                    <span class="field-name">features, highlighted_features, accessories</span>
+                    <span class="field-badge badge-empty">Boş</span>
+                </div>
+                <div class="field missing">
+                    <span class="field-name">certifications, primary_specs</span>
+                    <span class="field-badge badge-empty">Boş</span>
+                </div>
+                <div class="field missing">
+                    <span class="field-name">use_cases, faq_data</span>
+                    <span class="field-badge badge-empty">Boş</span>
+                </div>
+                <div class="field missing">
+                    <span class="field-name">competitive_advantages, target_industries</span>
+                    <span class="field-badge badge-empty">Boş</span>
+                </div>
+
+                <h4 style="color: #94a3b8; margin: 15px 0 10px 0; font-size: 0.95rem;">🔀 Varyant Sistemi (Formda Yok)</h4>
+                <div class="field missing">
+                    <span class="field-name">parent_product_id, is_master_product, variant_type</span>
+                    <span class="field-badge badge-empty">Varyant</span>
+                </div>
+
+                <h4 style="color: #94a3b8; margin: 15px 0 10px 0; font-size: 0.95rem;">📸 Media Gallery (Artık MediaManagement Kullanılıyor)</h4>
+                <div class="field missing">
+                    <span class="field-name">media_gallery (JSON)</span>
+                    <span class="field-badge badge-empty">Legacy</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AKTİF AMA FORMDA YOK -->
+        <div class="section">
+            <div class="section-title" onclick="toggle('ai')">
+                <span>🤖 AI & Sistem Alanları (Otomatik)</span>
+                <span class="chevron" id="chevron-ai">▼</span>
+            </div>
+            <div class="section-content collapsed" id="content-ai">
+                <div class="field active">
+                    <span class="field-name">embedding (JSON)</span>
+                    <span class="field-badge badge-active">✅ Dolu</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">embedding_generated_at</span>
+                    <span class="field-badge badge-active">✅ Dolu</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">embedding_model</span>
+                    <span class="field-badge badge-active">text-embedding-3-small</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">view_count, sales_count</span>
+                    <span class="field-badge badge-active">Sayaçlar</span>
+                </div>
+                <div class="field active">
+                    <span class="field-name">created_at, updated_at, deleted_at</span>
+                    <span class="field-badge badge-active">Timestamps</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI | 2025-12-04
+        </footer>
+    </div>
+
+    <script>
+        function toggle(section) {
+            const content = document.getElementById('content-' + section);
+            const chevron = document.getElementById('chevron-' + section);
+
+            content.classList.toggle('collapsed');
+            chevron.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

@@ -1,1 +1,254 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Modülü - Shop Bağımlılıkları Analizi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #f59e0b;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .issue {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #f59e0b;
+            backdrop-filter: blur(10px);
+        }
+
+        .code {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #a5f3fc;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .file-path {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .solution {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚠️ Page Modülü - Shop Bağımlılıkları</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 23:30 |
+                🎯 Modül: Page |
+                🔍 Analiz: Cross-Module Dependencies
+            </div>
+        </header>
+
+        <div class="warning">
+            <h3>🚨 Kritik Sorun</h3>
+            <p>Page modülü <strong>Shop modülüne bağımlı</strong>. Bu tenant-aware sistem için yanlış mimari!</p>
+            <ul>
+                <li>Tenant 1001 (muzibu.com): Shop modülü yok → Page modülü çökebilir</li>
+                <li>Diğer tenant'lar: Shop pasifse → Homepage bozulabilir</li>
+                <li>Modül bağımlılığı: Page → Shop (olmamalı!)</li>
+            </ul>
+        </div>
+
+        <section>
+            <h2>🔍 Bulunan Bağımlılıklar</h2>
+
+            <div class="issue">
+                <h3>1. Homepage Products Query</h3>
+                <p><span class="file-path">PageController.php</span> → Satır 51-56</p>
+                <div class="code">$homepageProductsQuery = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
+    ->where('is_active', true)
+    ->with(['category', 'brand', 'media', 'currency'])
+    ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
+    ->orderBy('product_id', 'desc')
+    ->get();</div>
+                <p><strong>Sorun:</strong> Page modülü direkt olarak ShopProduct modelini kullanıyor.</p>
+            </div>
+
+            <div class="issue">
+                <h3>2. Product URL Resolution</h3>
+                <p><span class="file-path">PageController.php</span> → Satır 99</p>
+                <div class="code">'url' => \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product),</div>
+                <p><strong>Sorun:</strong> ShopController methodunu direkt çağırıyor.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>💡 Çözüm Önerileri</h2>
+
+            <div class="solution">
+                <h3>✅ Öneri 1: Homepage Widget Sistemi (ÖNERİLEN)</h3>
+                <ul>
+                    <li><strong>Widget Provider Pattern:</strong> Her modül kendi widget'ını sunabilir</li>
+                    <li><strong>Homepage:</strong> Aktif widget'ları dinamik olarak yükler</li>
+                    <li><strong>Shop modülü pasifse:</strong> Shop widget'ı yüklenmez, Page bozulmaz</li>
+                    <li><strong>Yeni modüller:</strong> Kendi homepage widget'larını ekleyebilir</li>
+                </ul>
+                <div class="code">// App\Services\WidgetService
+getActiveWidgets() → [
+    'shop' => ShopHomepageWidget,
+    'blog' => BlogHomepageWidget,
+    // ...
+]</div>
+            </div>
+
+            <div class="solution">
+                <h3>✅ Öneri 2: Event System</h3>
+                <ul>
+                    <li>Page modülü: <code>HomepageRendering</code> event'i yayınlar</li>
+                    <li>Shop modülü: Event'i dinler, products ekler</li>
+                    <li><strong>Avantaj:</strong> Modüller bağımsız, gevşek bağlantı</li>
+                </ul>
+                <div class="code">// PageController
+event(new HomepageRendering());
+
+// ShopServiceProvider (listener)
+HomepageRendering::class => AddShopProducts::class</div>
+            </div>
+
+            <div class="solution">
+                <h3>✅ Öneri 3: Homepage Builder</h3>
+                <ul>
+                    <li>Admin panelde homepage builder</li>
+                    <li>Tenant: Hangi modüllerin homepage'de görüneceğini seçer</li>
+                    <li>Dinamik section yönetimi</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Önerilen Mimari</h2>
+            <div class="code">App/Services/HomepageService.php
+│
+├── getActiveWidgets() // Aktif widget'ları topla
+│   ├── Shop modülü aktifse → ShopWidget
+│   ├── Blog modülü aktifse → BlogWidget
+│   └── Custom widget'lar
+│
+└── render() // Homepage'e inject et
+
+Modules/Shop/Widgets/HomepageWidget.php
+│
+├── isActive() // Modül aktif mi?
+├── getData() // Widget verisi
+└── render() // View path</div>
+        </section>
+
+        <section>
+            <h2>⚡ Acil Çözüm (Geçici)</h2>
+            <div class="issue">
+                <p>Hemen uygulanabilir geçici çözüm:</p>
+                <div class="code">// PageController.php - homepage() method
+if (class_exists('\\Modules\\Shop\\App\\Models\\ShopProduct')) {
+    // Shop modülü varsa products yükle
+    $homepageProducts = ...;
+} else {
+    // Shop yoksa boş array
+    $homepageProducts = [];
+}
+
+// View'de de kontrol ekle
+@if(!empty($homepageProducts))
+    {{-- Products section --}}
+@endif</div>
+                <p><strong>⚠️ Uyarı:</strong> Bu sadece geçici çözüm! Asıl mimari düzeltilmeli.</p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>

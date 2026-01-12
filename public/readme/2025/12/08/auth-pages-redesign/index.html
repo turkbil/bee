@@ -1,1 +1,465 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Pages Redesign - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff7f50',
+                        'muzibu-coral-light': '#ff9770',
+                        'muzibu-coral-dark': '#ff6a3d',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #ff7f50 0%, #ff6a3d 50%, #e55a2b 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+        }
+        .dark .glass-effect {
+            background: rgba(24, 24, 27, 0.95);
+            backdrop-filter: blur(20px);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Tab Navigation -->
+    <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+        <div class="flex gap-2 bg-white/20 backdrop-blur-lg rounded-full p-1 border border-white/30">
+            <button onclick="showTab('login')" id="tab-login" class="px-6 py-2 rounded-full font-semibold transition-all bg-white text-muzibu-coral shadow-lg">
+                Giriş Yap
+            </button>
+            <button onclick="showTab('register')" id="tab-register" class="px-6 py-2 rounded-full font-semibold transition-all text-white hover:bg-white/10">
+                Kaydol
+            </button>
+        </div>
+    </div>
+
+    <div class="min-h-screen flex items-center justify-center p-4 pt-24">
+        <div class="w-full max-w-6xl">
+            <!-- LOGIN PAGE -->
+            <div id="page-login" class="grid lg:grid-cols-2 gap-8 items-center">
+                <!-- Left Side - Illustration/Info -->
+                <div class="hidden lg:block text-white space-y-8">
+                    <div class="float-animation">
+                        <div class="w-24 h-24 bg-white/10 backdrop-blur-lg rounded-3xl flex items-center justify-center mb-6 border border-white/20">
+                            <i class="fas fa-music text-5xl"></i>
+                        </div>
+                    </div>
+                    
+                    <h1 class="text-5xl font-bold leading-tight">
+                        İşletmenize<br/>
+                        Yasal ve Telifsiz<br/>
+                        <span class="text-white/90">Müzik</span>
+                    </h1>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shield-alt text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">%100 Yasal & Güvenli</h3>
+                                <p class="text-white/80 text-sm">Tüm içerikler telif hakkı ödenmiş</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-headphones text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">Sınırsız Müzik</h3>
+                                <p class="text-white/80 text-sm">Binlerce şarkı, her türden playlist</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-store text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">İşletmelere Özel</h3>
+                                <p class="text-white/80 text-sm">Cafe, restoran, mağaza için ideal</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Login Form -->
+                <div class="glass-effect rounded-3xl shadow-2xl p-8 lg:p-10 border border-white/20">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Hoş Geldiniz</h2>
+                        <p class="text-gray-600 dark:text-gray-400">Hesabınıza giriş yapın ve müziğin tadını çıkarın</p>
+                    </div>
+
+                    <form class="space-y-6">
+                        <!-- Email Input -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                E-posta Adresi
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="email"
+                                    placeholder="ornek@email.com"
+                                    class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all text-base"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Şifre
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="password"
+                                    id="login-password"
+                                    placeholder="••••••••"
+                                    class="w-full pl-12 pr-14 py-4 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all text-base"
+                                >
+                                <button 
+                                    type="button"
+                                    onclick="togglePassword('login-password', 'login-eye')"
+                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                >
+                                    <i class="fas fa-eye" id="login-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Remember & Forgot -->
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center cursor-pointer group">
+                                <input type="checkbox" class="w-5 h-5 border-2 border-gray-300 rounded text-muzibu-coral focus:ring-muzibu-coral focus:ring-offset-0 cursor-pointer">
+                                <span class="ml-3 text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Beni Hatırla</span>
+                            </label>
+                            <a href="#" class="text-sm font-semibold text-muzibu-coral hover:text-muzibu-coral-dark transition-colors">
+                                Şifremi Unuttum
+                            </a>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit"
+                            class="w-full py-4 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-dark hover:from-muzibu-coral-light hover:to-muzibu-coral text-white font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl text-base"
+                        >
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Giriş Yap
+                        </button>
+
+                        <!-- Divider -->
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-200 dark:border-zinc-700"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-4 bg-white dark:bg-zinc-900 text-gray-500">veya</span>
+                            </div>
+                        </div>
+
+                        <!-- Social Login -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <button type="button" class="flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-zinc-800 border-2 border-gray-200 dark:border-zinc-700 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-700 transition-all font-semibold text-gray-700 dark:text-white">
+                                <i class="fab fa-google text-red-500 text-lg"></i>
+                                Google
+                            </button>
+                            <button type="button" class="flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-zinc-800 border-2 border-gray-200 dark:border-zinc-700 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-700 transition-all font-semibold text-gray-700 dark:text-white">
+                                <i class="fab fa-facebook text-blue-600 text-lg"></i>
+                                Facebook
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Footer Link -->
+                    <div class="mt-8 text-center">
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Hesabınız yok mu? 
+                            <button onclick="showTab('register')" class="font-semibold text-muzibu-coral hover:text-muzibu-coral-dark transition-colors ml-1">
+                                Ücretsiz Kaydolun
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REGISTER PAGE -->
+            <div id="page-register" class="hidden grid lg:grid-cols-2 gap-8 items-center">
+                <!-- Left Side - Illustration/Info -->
+                <div class="hidden lg:block text-white space-y-8">
+                    <div class="float-animation">
+                        <div class="w-24 h-24 bg-white/10 backdrop-blur-lg rounded-3xl flex items-center justify-center mb-6 border border-white/20">
+                            <i class="fas fa-rocket text-5xl"></i>
+                        </div>
+                    </div>
+                    
+                    <h1 class="text-5xl font-bold leading-tight">
+                        Hemen Başlayın<br/>
+                        <span class="text-white/90">14 Gün Ücretsiz</span><br/>
+                        Deneme
+                    </h1>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-2xl"></i>
+                            <span class="text-lg">Kredi kartı gerektirmez</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-2xl"></i>
+                            <span class="text-lg">İstediğin zaman iptal et</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-2xl"></i>
+                            <span class="text-lg">Tüm özelliklere tam erişim</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                        <div class="flex items-center gap-4 mb-4">
+                            <img src="https://ui-avatars.com/api/?name=Ahmet+Yilmaz&background=ff7f50&color=fff&size=48" class="w-12 h-12 rounded-full" alt="Avatar">
+                            <div>
+                                <div class="font-bold">Ahmet Yılmaz</div>
+                                <div class="text-sm text-white/70">Cafe Sahibi</div>
+                            </div>
+                        </div>
+                        <p class="text-white/90 italic">
+                            "Muzibu sayesinde müşterilerimiz daha uzun süre kalıyor. Müzik atmosferi harika!"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Side - Register Form -->
+                <div class="glass-effect rounded-3xl shadow-2xl p-8 lg:p-10 border border-white/20">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Hesap Oluştur</h2>
+                        <p class="text-gray-600 dark:text-gray-400">14 gün ücretsiz deneyin, kredi kartı gerektirmez</p>
+                    </div>
+
+                    <form class="space-y-5">
+                        <!-- Name Input -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Ad Soyad
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="text"
+                                    placeholder="Ahmet Yılmaz"
+                                    class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all text-base"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Email Input -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                E-posta Adresi
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="email"
+                                    placeholder="ornek@email.com"
+                                    class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all text-base"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Phone Input -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Telefon <span class="text-gray-400 font-normal">(Opsiyonel)</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-phone text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="tel"
+                                    placeholder="0532 123 45 67"
+                                    class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all text-base"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Şifre
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="password"
+                                    id="register-password"
+                                    placeholder="En az 8 karakter"
+                                    class="w-full pl-12 pr-14 py-4 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all text-base"
+                                >
+                                <button 
+                                    type="button"
+                                    onclick="togglePassword('register-password', 'register-eye')"
+                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                >
+                                    <i class="fas fa-eye" id="register-eye"></i>
+                                </button>
+                            </div>
+                            <!-- Password Strength -->
+                            <div class="mt-2 flex gap-1">
+                                <div class="h-1 flex-1 bg-gray-200 dark:bg-zinc-700 rounded-full"></div>
+                                <div class="h-1 flex-1 bg-gray-200 dark:bg-zinc-700 rounded-full"></div>
+                                <div class="h-1 flex-1 bg-gray-200 dark:bg-zinc-700 rounded-full"></div>
+                                <div class="h-1 flex-1 bg-gray-200 dark:bg-zinc-700 rounded-full"></div>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">En az 8 karakter, 1 büyük harf, 1 rakam</p>
+                        </div>
+
+                        <!-- Terms Checkbox -->
+                        <div class="flex items-start">
+                            <input type="checkbox" class="w-5 h-5 border-2 border-gray-300 rounded text-muzibu-coral focus:ring-muzibu-coral focus:ring-offset-0 cursor-pointer mt-0.5">
+                            <label class="ml-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                <a href="#" class="text-muzibu-coral hover:underline">Kullanım Şartları</a> ve 
+                                <a href="#" class="text-muzibu-coral hover:underline">Gizlilik Politikası</a>'nı okudum, kabul ediyorum.
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit"
+                            class="w-full py-4 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-dark hover:from-muzibu-coral-light hover:to-muzibu-coral text-white font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl text-base"
+                        >
+                            <i class="fas fa-rocket mr-2"></i>
+                            Ücretsiz Hesap Oluştur
+                        </button>
+
+                        <!-- Divider -->
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-200 dark:border-zinc-700"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-4 bg-white dark:bg-zinc-900 text-gray-500">veya</span>
+                            </div>
+                        </div>
+
+                        <!-- Social Register -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <button type="button" class="flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-zinc-800 border-2 border-gray-200 dark:border-zinc-700 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-700 transition-all font-semibold text-gray-700 dark:text-white">
+                                <i class="fab fa-google text-red-500 text-lg"></i>
+                                Google
+                            </button>
+                            <button type="button" class="flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-zinc-800 border-2 border-gray-200 dark:border-zinc-700 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-700 transition-all font-semibold text-gray-700 dark:text-white">
+                                <i class="fab fa-facebook text-blue-600 text-lg"></i>
+                                Facebook
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Footer Link -->
+                    <div class="mt-8 text-center">
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Zaten hesabınız var mı? 
+                            <button onclick="showTab('login')" class="font-semibold text-muzibu-coral hover:text-muzibu-coral-dark transition-colors ml-1">
+                                Giriş Yapın
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Home -->
+    <a href="/" class="fixed bottom-6 left-6 flex items-center gap-2 px-5 py-3 bg-white/20 backdrop-blur-lg text-white rounded-full hover:bg-white/30 transition-all border border-white/30 font-semibold">
+        <i class="fas fa-arrow-left"></i>
+        Ana Sayfa
+    </a>
+
+    <!-- Dark Mode Toggle -->
+    <button onclick="toggleDarkMode()" class="fixed bottom-6 right-6 w-14 h-14 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all border border-white/30">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:inline"></i>
+    </button>
+
+    <script>
+        // Tab switching
+        function showTab(tab) {
+            const loginPage = document.getElementById('page-login');
+            const registerPage = document.getElementById('page-register');
+            const loginTab = document.getElementById('tab-login');
+            const registerTab = document.getElementById('tab-register');
+
+            if (tab === 'login') {
+                loginPage.classList.remove('hidden');
+                registerPage.classList.add('hidden');
+                loginTab.classList.add('bg-white', 'text-muzibu-coral', 'shadow-lg');
+                loginTab.classList.remove('text-white');
+                registerTab.classList.remove('bg-white', 'text-muzibu-coral', 'shadow-lg');
+                registerTab.classList.add('text-white');
+            } else {
+                loginPage.classList.add('hidden');
+                registerPage.classList.remove('hidden');
+                registerTab.classList.add('bg-white', 'text-muzibu-coral', 'shadow-lg');
+                registerTab.classList.remove('text-white');
+                loginTab.classList.remove('bg-white', 'text-muzibu-coral', 'shadow-lg');
+                loginTab.classList.add('text-white');
+            }
+        }
+
+        // Password toggle
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
+</body>
+</html>

@@ -1,1 +1,468 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Card - Merkezi Play Button</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .success-glow {
+            box-shadow: 0 0 40px rgba(244, 63, 94, 0.3);
+        }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-block mb-6 success-glow rounded-full p-8 bg-gradient-to-br from-rose-900/50 to-pink-900/50">
+                <span class="text-8xl">📻</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4">
+                <span class="gradient-text">Radio Card</span>
+                <br>
+                <span class="text-white">Merkezi Play Button</span>
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Radyolar detay sayfası olmadığı için farklı UI pattern kullanır
+            </p>
+            <div class="flex gap-4 justify-center mt-6">
+                <div class="bg-rose-900/30 border border-rose-700 px-6 py-3 rounded-lg">
+                    <div class="text-sm text-rose-400">Tarih</div>
+                    <div class="text-xl font-bold text-white">21 Aralık 2025</div>
+                </div>
+                <div class="bg-rose-900/30 border border-rose-700 px-6 py-3 rounded-lg">
+                    <div class="text-sm text-rose-400">Component</div>
+                    <div class="text-xl font-bold text-white">Radio Card</div>
+                </div>
+                <div class="bg-rose-900/30 border border-rose-700 px-6 py-3 rounded-lg">
+                    <div class="text-sm text-rose-400">Play Button</div>
+                    <div class="text-xl font-bold text-white">Center Overlay</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Neden Farklı? -->
+        <div class="bg-gradient-to-r from-blue-900/30 to-indigo-900/30 border-2 border-blue-600 rounded-xl p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🤔</span>
+                <h2 class="text-3xl font-bold text-blue-400">Neden Radio Card Farklı?</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Album/Playlist Davranışı -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-blue-700">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span>💿</span>
+                        Album / Playlist
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-sm font-bold text-blue-400 mb-2">✅ Detay Sayfası Var</div>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>• <code class="text-blue-300">/albums/slug</code></li>
+                                <li>• <code class="text-blue-300">/playlists/slug</code></li>
+                                <li>• Şarkı listesi gösterir</li>
+                                <li>• Sanatçı bilgisi gösterir</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-sm font-bold text-green-400 mb-2">📍 Click Davranışı</div>
+                            <div class="text-xs text-slate-300">
+                                Karta tıklayınca → <strong class="text-white">Detay sayfasına gider</strong><br>
+                                Play button → <strong class="text-white">Hover'da bottom-right'ta görünür</strong>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-sm font-bold text-purple-400 mb-2">🎯 UI Pattern</div>
+                            <div class="text-xs text-slate-300">
+                                <code class="text-purple-300">&lt;a href="/albums/..."&gt;</code><br>
+                                → Link olarak davranır<br>
+                                → Play button ek aksiyondur
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radio Davranışı -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-rose-700">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span>📻</span>
+                        Radio
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-sm font-bold text-red-400 mb-2">❌ Detay Sayfası Yok</div>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>• Sadece <code class="text-rose-300">/radios</code> index var</li>
+                                <li>• <code class="text-rose-300 line-through">/radios/slug</code> yok</li>
+                                <li>• Şarkı listesi gösterilmez</li>
+                                <li>• Canlı stream, playlist yok</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-sm font-bold text-green-400 mb-2">📍 Click Davranışı</div>
+                            <div class="text-xs text-slate-300">
+                                Karta tıklayınca → <strong class="text-white">Direkt radio çalmaya başlar</strong><br>
+                                Play button → <strong class="text-white">Hover'da merkezi overlay, belirgin</strong>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded p-4">
+                            <div class="text-sm font-bold text-purple-400 mb-2">🎯 UI Pattern</div>
+                            <div class="text-xs text-slate-300">
+                                <code class="text-purple-300">&lt;div @click="playRadio()"&gt;</code><br>
+                                → Button olarak davranır<br>
+                                → Play button ana aksiyondur
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-900/20 border border-yellow-700 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">💡</span>
+                    <div>
+                        <div class="text-sm font-bold text-yellow-400 mb-2">Sonuç</div>
+                        <div class="text-sm text-slate-300">
+                            Radio card'lar <strong class="text-white">detay sayfası olmadığı için</strong> play button'u
+                            <strong class="text-white">merkezi ve büyük</strong> olmalıdır. Bu, kullanıcıya "bu karta tıklayınca
+                            direkt çalar" mesajını verir. Album/Playlist'lerde ise "detay sayfasına git" ana aksiyon olduğu için
+                            play button ek bir özellik olarak küçük ve köşede durur.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yapılan Değişiklik -->
+        <div class="bg-gradient-to-r from-rose-900/30 to-pink-900/30 border-2 border-rose-600 rounded-xl p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🔧</span>
+                <h2 class="text-3xl font-bold text-rose-400">Yapılan Değişiklik</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <!-- Önceki Durum -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-red-700">
+                    <h3 class="text-xl font-bold text-red-400 mb-4">❌ Önceki (Yanlış)</h3>
+                    <div class="bg-slate-900 rounded p-4 mb-4">
+                        <div class="text-sm font-bold text-slate-300 mb-2">Play Button: Bottom-Right</div>
+                        <div class="code-block text-xs text-slate-300">
+<pre>&lt;button class="absolute
+              bottom-2 right-2
+              opacity-0 group-hover:opacity-100
+              w-12 h-12"&gt;
+    &lt;i class="fas fa-play"&gt;&lt;/i&gt;
+&lt;/button&gt;</pre>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-red-900/20 border border-red-700 rounded">
+                        <div class="text-sm text-red-300">
+                            <strong>Sorun:</strong> Kullanıcı karta tıklayınca ne olacağını anlamıyor.
+                            Detay sayfası yok ama button küçük ve köşede, sanki ek bir özellikmiş gibi görünüyor.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yeni Durum -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-green-700">
+                    <h3 class="text-xl font-bold text-green-400 mb-4">✅ Yeni (Doğru)</h3>
+                    <div class="bg-slate-900 rounded p-4 mb-4">
+                        <div class="text-sm font-bold text-slate-300 mb-2">Play Button: Center Overlay</div>
+                        <div class="code-block text-xs text-slate-300">
+<pre>&lt;div class="absolute inset-0
+           bg-black bg-opacity-0
+           group-hover:bg-opacity-50"&gt;
+    &lt;button class="opacity-0
+                  group-hover:opacity-100
+                  w-16 h-16"&gt;
+        &lt;i class="fas fa-play
+                 text-2xl"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+&lt;/div&gt;</pre>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-green-900/20 border border-green-700 rounded">
+                        <div class="text-sm text-green-300">
+                            <strong>Çözüm:</strong> Büyük merkezi play button, kullanıcıya
+                            "bu karta tıklayınca direkt çalar" mesajını net verir. Hover'da arka plan
+                            kararır ve button belirginleşir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detaylı Kod -->
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-rose-700">
+                <h3 class="text-xl font-bold text-white mb-4">📋 Detaylı Kod Değişikliği</h3>
+                <div class="code-block text-xs text-slate-300">
+<pre>{{-- Large Play Button Overlay (Center) - Radios have no detail page --}}
+&lt;div class="absolute inset-0 bg-black bg-opacity-0
+           group-hover:bg-opacity-50 transition-all duration-300
+           rounded-lg flex items-center justify-center"&gt;
+    &lt;button x-on:click.stop.prevent="$store.player.playRadio({{ $radio->radio_id }})"
+            class="opacity-0 group-hover:opacity-100
+                   transform scale-75 group-hover:scale-100
+                   transition-all duration-300
+                   bg-muzibu-coral hover:bg-opacity-90
+                   text-white rounded-full w-16 h-16
+                   flex items-center justify-center
+                   shadow-2xl hover:scale-110"&gt;
+        &lt;i class="fas fa-play text-2xl ml-1"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+&lt;/div&gt;</pre>
+                </div>
+                <div class="mt-4 grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-900 rounded p-3">
+                        <div class="text-xs font-bold text-blue-400 mb-1">Overlay</div>
+                        <div class="text-xs text-slate-300">
+                            <code class="text-blue-300">absolute inset-0</code><br>
+                            Tüm image alanını kaplar
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 rounded p-3">
+                        <div class="text-xs font-bold text-blue-400 mb-1">Hover Efekti</div>
+                        <div class="text-xs text-slate-300">
+                            <code class="text-blue-300">bg-opacity-0 → 50</code><br>
+                            Arka plan kararır
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 rounded p-3">
+                        <div class="text-xs font-bold text-blue-400 mb-1">Button Animasyon</div>
+                        <div class="text-xs text-slate-300">
+                            <code class="text-blue-300">scale-75 → 100 → 110</code><br>
+                            Büyüme animasyonu
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorite & Menu Z-Index -->
+        <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>🔢</span>
+                Z-Index Düzeltmesi
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <div class="text-sm font-bold text-red-400 mb-2">❌ Önceki:</div>
+                    <div class="bg-slate-900 rounded p-3 text-xs text-slate-300">
+                        <code class="text-red-300">z-10</code> - Favorite & Menu buttons
+                    </div>
+                </div>
+                <div>
+                    <div class="text-sm font-bold text-green-400 mb-2">✅ Yeni:</div>
+                    <div class="bg-slate-900 rounded p-3 text-xs text-slate-300">
+                        <code class="text-green-300">z-20</code> - Favorite & Menu buttons
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 p-3 bg-yellow-900/20 border border-yellow-700 rounded">
+                <div class="text-sm text-yellow-300">
+                    <strong>Neden?</strong> Center overlay <code class="text-yellow-400">inset-0</code> kullandığı için
+                    Favorite/Menu butonlarının üstüne geliyordu. Z-index <code class="text-yellow-400">z-20</code> yaparak
+                    butonların her zaman en üstte olması sağlandı.
+                </div>
+            </div>
+        </div>
+
+        <!-- Karşılaştırma Tablosu -->
+        <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 mb-8">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <span>📊</span>
+                Radio vs Album/Playlist Karşılaştırma
+            </h3>
+
+            <div class="overflow-x-auto">
+                <table class="w-full bg-slate-900 rounded-lg overflow-hidden">
+                    <thead class="bg-slate-950">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-bold text-slate-300">Özellik</th>
+                            <th class="px-4 py-3 text-left text-sm font-bold text-blue-400">Album / Playlist</th>
+                            <th class="px-4 py-3 text-left text-sm font-bold text-rose-400">Radio</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-bold text-white">Detay Sayfası</td>
+                            <td class="px-4 py-3 text-sm text-green-300">✅ Var (/albums/slug)</td>
+                            <td class="px-4 py-3 text-sm text-red-300">❌ Yok (sadece /radios)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-bold text-white">Wrapper Element</td>
+                            <td class="px-4 py-3 text-sm"><code class="text-blue-300">&lt;a href="..."&gt;</code></td>
+                            <td class="px-4 py-3 text-sm"><code class="text-rose-300">&lt;div @click="..."&gt;</code></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-bold text-white">Click Davranışı</td>
+                            <td class="px-4 py-3 text-sm text-blue-300">Detay sayfasına git</td>
+                            <td class="px-4 py-3 text-sm text-rose-300">Direkt çal</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-bold text-white">Play Button Pozisyon</td>
+                            <td class="px-4 py-3 text-sm"><code class="text-blue-300">bottom-2 right-2</code></td>
+                            <td class="px-4 py-3 text-sm"><code class="text-rose-300">center (inset-0)</code></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-bold text-white">Play Button Boyutu</td>
+                            <td class="px-4 py-3 text-sm"><code class="text-blue-300">w-12 h-12</code></td>
+                            <td class="px-4 py-3 text-sm"><code class="text-rose-300">w-16 h-16</code></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-bold text-white">Icon Boyutu</td>
+                            <td class="px-4 py-3 text-sm"><code class="text-blue-300">default</code></td>
+                            <td class="px-4 py-3 text-sm"><code class="text-rose-300">text-2xl</code></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-bold text-white">Overlay Efekti</td>
+                            <td class="px-4 py-3 text-sm text-gray-400">Yok</td>
+                            <td class="px-4 py-3 text-sm text-rose-300">✅ Var (bg-opacity-50)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-bold text-white">Favorite/Menu Z-Index</td>
+                            <td class="px-4 py-3 text-sm"><code class="text-blue-300">z-10</code></td>
+                            <td class="px-4 py-3 text-sm"><code class="text-rose-300">z-20</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Kullanıcı Deneyimi -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-2 border-purple-600 rounded-xl p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">👤</span>
+                <h2 class="text-3xl font-bold text-purple-400">Kullanıcı Deneyimi</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-purple-700">
+                    <div class="text-3xl mb-3">💿</div>
+                    <h3 class="text-lg font-bold text-white mb-3">Album / Playlist</h3>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-400">1.</span>
+                            <div>Kullanıcı kartı görür</div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-400">2.</span>
+                            <div>Karta tıklar → Detay sayfasına gider</div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-400">3.</span>
+                            <div>Şarkı listesini görür</div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-400">4.</span>
+                            <div>İsterse play button'a tıklar (ek aksiyon)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-rose-700">
+                    <div class="text-3xl mb-3">📻</div>
+                    <h3 class="text-lg font-bold text-white mb-3">Radio</h3>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <div class="flex items-start gap-2">
+                            <span class="text-rose-400">1.</span>
+                            <div>Kullanıcı kartı görür</div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-rose-400">2.</span>
+                            <div>Hover'da büyük play button görünür</div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-rose-400">3.</span>
+                            <div>Karta/button'a tıklar → Direkt çalmaya başlar</div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-rose-400">4.</span>
+                            <div>✨ Tek tık, hızlı deneyim!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test -->
+        <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>🧪</span>
+                Test Sonuçları
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900 rounded p-4">
+                    <div class="text-sm font-bold text-green-400 mb-2">✅ Cache</div>
+                    <ul class="text-xs text-slate-300 space-y-1">
+                        <li>• View cache cleared</li>
+                        <li>• Response cache cleared</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-900 rounded p-4">
+                    <div class="text-sm font-bold text-green-400 mb-2">✅ Sayfa</div>
+                    <ul class="text-xs text-slate-300 space-y-1">
+                        <li>• /radios → HTTP 200</li>
+                        <li>• Play button center</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dosya -->
+        <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>📁</span>
+                Değiştirilen Dosya
+            </h3>
+            <div class="bg-slate-900 rounded p-4">
+                <code class="text-blue-300">resources/views/components/muzibu/radio-card.blade.php</code>
+                <div class="text-xs text-slate-500 mt-2">
+                    Satır 64-73: Play button bottom-right → center overlay<br>
+                    Satır 73: Favorite/Menu z-index 10 → 20
+                </div>
+            </div>
+        </div>
+
+        <!-- Sonuç -->
+        <div class="bg-gradient-to-r from-rose-900/50 to-pink-900/50 border-2 border-rose-500 rounded-xl p-8 text-center success-glow">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-3xl font-bold text-rose-400 mb-4">Radio Card Güncellendi!</h2>
+            <p class="text-slate-300 text-lg mb-6">
+                Radyolar artık <strong class="text-white">merkezi büyük play button</strong> kullanıyor.
+                <br>
+                Detay sayfası olmadığı için direkt çalma deneyimi net bir şekilde iletiliyor.
+            </p>
+            <a href="https://muzibu.com.tr/radios"
+               class="inline-block bg-rose-600 hover:bg-rose-500 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all">
+                📻 Radyo Sayfasını Test Et
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-slate-500 mt-12 pt-8 border-t border-slate-700">
+            <p class="mb-2">📻 Radio Card - Center Play Button</p>
+            <p class="text-sm">🤖 Claude AI ile oluşturuldu • 21 Aralık 2025</p>
+        </div>
+    </div>
+</body>
+</html>

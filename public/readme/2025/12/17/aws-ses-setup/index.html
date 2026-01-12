@@ -1,1 +1,303 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS SES Mail Kurulum Kılavuzu - Muzibu/Tuufi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+                📧 AWS SES Mail Kurulum Kılavuzu
+            </h1>
+            <p class="text-slate-400 text-lg">Muzibu & Tuufi Multi-Tenant Sistemi için Amazon SES Entegrasyonu</p>
+            <div class="mt-4 inline-block px-4 py-2 bg-blue-500/20 border border-blue-500 rounded-lg">
+                <span class="text-blue-400">✅ AWS SDK Kuruldu • Hazır: Laravel Konfigürasyonu</span>
+            </div>
+        </div>
+
+        <!-- AWS Console Setup -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-orange-500/20 p-3 rounded-xl">☁️</span>
+                1. AWS Console Setup
+            </h2>
+
+            <!-- Step 1.1 -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4 text-orange-400">1.1 AWS Hesabı & SES Aktif</h3>
+                <ol class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">1</span>
+                        <div>
+                            <p>AWS Console → <strong>Amazon SES</strong></p>
+                            <p class="text-sm text-slate-400">Region: <code class="bg-slate-700 px-2 py-0.5 rounded">eu-central-1</code> (Frankfurt - Türkiye'ye yakın)</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Step 1.2 -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4 text-orange-400">1.2 Domain Verify (muzibu.com.tr)</h3>
+                <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
+                    <p class="text-yellow-400 font-semibold mb-2">⚠️ ÖNEMLİ: Domain verify edilmeden mail gönderilemez!</p>
+                </div>
+                <ol class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">1</span>
+                        <p>SES Dashboard → <strong>Verified identities</strong> → <strong>Create identity</strong></p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">2</span>
+                        <p>Identity type: <strong>Domain</strong> → Domain: <code class="bg-slate-700 px-2 py-0.5 rounded">muzibu.com.tr</code></p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">3</span>
+                        <div class="flex-1">
+                            <p class="mb-2">AWS size 3 DNS kaydı verecek:</p>
+                            <div class="bg-slate-900 p-4 rounded-lg font-mono text-sm space-y-2">
+                                <p class="text-green-400">• CNAME (Domain Verification)</p>
+                                <p class="text-blue-400">• CNAME (DKIM 1)</p>
+                                <p class="text-blue-400">• CNAME (DKIM 2)</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">4</span>
+                        <p>Bu kayıtları Plesk Panel'den muzib.com.tr domain'ine ekle (DNS Ayarları)</p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">5</span>
+                        <p>Verify tamamlanana kadar bekle (5-10 dakika) • Status: <span class="text-green-400">✓ Verified</span></p>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Step 1.3 -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4 text-orange-400">1.3 Sandbox Modundan Çık</h3>
+                <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-4">
+                    <p class="text-red-400 font-semibold mb-2">🚨 KRİTİK: Sandbox modunda sadece verify edilmiş email'lere mail gönderebilirsiniz!</p>
+                    <p class="text-red-300 text-sm">Production'a geçmek için AWS Support'tan "Production Access" talep etmelisiniz.</p>
+                </div>
+                <ol class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">1</span>
+                        <p>SES Dashboard → Account details → <strong>Request production access</strong></p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">2</span>
+                        <div class="flex-1">
+                            <p class="mb-2">Form doldur:</p>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-slate-400 ml-4">
+                                <li>Mail Type: <strong>Transactional</strong></li>
+                                <li>Website URL: <strong>https://muzibu.com.tr</strong></li>
+                                <li>Use case: <em>"Sending transactional emails (order confirmations, password resets) for music streaming platform"</em></li>
+                                <li>How recipients opt-in: <em>"Users register and provide consent"</em></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">3</span>
+                        <p>Onay bekleniyor (genellikle 24 saat içinde) • Email bildirim gelecek</p>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Step 1.4 -->
+            <div>
+                <h3 class="text-xl font-bold mb-4 text-orange-400">1.4 IAM Credentials Oluştur</h3>
+                <ol class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">1</span>
+                        <p>AWS Console → <strong>IAM</strong> → <strong>Users</strong> → <strong>Create user</strong></p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">2</span>
+                        <p>User name: <code class="bg-slate-700 px-2 py-0.5 rounded">muzibu-ses-sender</code></p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">3</span>
+                        <p>Attach policy: <strong>AmazonSESFullAccess</strong> (veya custom policy ile sadece SendEmail)</p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">4</span>
+                        <p>Create access key → <strong>Application running outside AWS</strong></p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">5</span>
+                        <div class="flex-1">
+                            <p class="mb-2">Credentials'ları kaydet:</p>
+                            <div class="bg-slate-900 p-4 rounded-lg font-mono text-sm space-y-1">
+                                <p class="text-yellow-400">Access key ID: AKIA...</p>
+                                <p class="text-yellow-400">Secret access key: wJalr...</p>
+                            </div>
+                            <p class="text-red-400 text-sm mt-2">⚠️ Secret'i bir daha göremezsin, güvenli yere kaydet!</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Laravel Configuration -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-red-500/20 p-3 rounded-xl">⚙️</span>
+                2. Laravel .env Konfigürasyonu
+            </h2>
+
+            <div class="mb-6">
+                <p class="text-slate-300 mb-4">AWS credentials'ları aldıktan sonra <code class="bg-slate-700 px-2 py-0.5 rounded">.env</code> dosyasını güncelle:</p>
+                <div class="bg-slate-900 p-6 rounded-lg border border-slate-700">
+                    <pre class="text-sm font-mono text-green-400">
+# Mail Configuration
+MAIL_MAILER=ses
+MAIL_FROM_ADDRESS=bilgi@muzibu.com.tr
+MAIL_FROM_NAME="Muzibu"
+
+# AWS SES Configuration
+AWS_ACCESS_KEY_ID=AKIA...
+AWS_SECRET_ACCESS_KEY=wJalr...
+AWS_DEFAULT_REGION=eu-central-1
+AWS_SES_CONFIGURATION_SET=muzibu-config-set  # (Opsiyonel)</pre>
+                </div>
+            </div>
+
+            <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                <p class="text-blue-400 font-semibold mb-2">💡 İPUCU: config/mail.php'yi kontrol et</p>
+                <p class="text-blue-300 text-sm">Laravel otomatik olarak .env'deki <code class="bg-slate-700 px-2 py-0.5 rounded">MAIL_MAILER=ses</code> değerini okuyup AWS SDK'yı kullanacak.</p>
+            </div>
+        </div>
+
+        <!-- Testing -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-green-500/20 p-3 rounded-xl">🧪</span>
+                3. Test Etme
+            </h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-bold mb-4 text-green-400">3.1 Basit Test (Tinker)</h3>
+                <div class="bg-slate-900 p-6 rounded-lg border border-slate-700">
+                    <pre class="text-sm font-mono text-yellow-400">
+php artisan tinker
+
+Mail::raw('Bu bir test mailidir!', function($msg) {
+    $msg->to('test@example.com')
+        ->subject('SES Test Mail');
+});</pre>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-bold mb-4 text-green-400">3.2 Mevcut Mail Sınıflarını Test Et</h3>
+                <div class="bg-slate-900 p-6 rounded-lg border border-slate-700 mb-4">
+                    <pre class="text-sm font-mono text-yellow-400">
+use Modules\Mail\App\Mail\PaymentSuccessMail;
+
+Mail::to('test@example.com')->send(
+    new PaymentSuccessMail($order, $payment)
+);</pre>
+                </div>
+                <p class="text-slate-400 text-sm">Mevcut Mail sınıfları:</p>
+                <ul class="list-disc list-inside text-sm text-slate-400 ml-4 mt-2 space-y-1">
+                    <li>PaymentSuccessMail</li>
+                    <li>PaymentFailedMail</li>
+                    <li>WelcomeMail</li>
+                    <li>SubscriptionRenewalMail</li>
+                    <li>TrialEndingMail</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Multi-Tenant Setup -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-purple-500/20 p-3 rounded-xl">🏢</span>
+                4. Multi-Tenant Setup
+            </h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-bold mb-4 text-purple-400">Tenant-Specific Mail Adresleri</h3>
+                <p class="text-slate-300 mb-4">Her tenant kendi domain'inden mail gönderebilir:</p>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500/20 px-3 py-1 rounded-lg text-sm">Tenant 1001</span>
+                        <div>
+                            <p class="font-semibold">muzibu.com.tr</p>
+                            <p class="text-sm text-slate-400">MAIL_FROM_ADDRESS=bilgi@muzibu.com.tr</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500/20 px-3 py-1 rounded-lg text-sm">Tenant 2</span>
+                        <div>
+                            <p class="font-semibold">ixtif.com</p>
+                            <p class="text-sm text-slate-400">MAIL_FROM_ADDRESS=bilgi@ixtif.com</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                <p class="text-yellow-400 font-semibold mb-2">📌 NOT: Her domain için ayrı verify gerekir!</p>
+                <p class="text-yellow-300 text-sm">AWS SES'te her domain'i (muzibu.com.tr, ixtif.com) ayrı ayrı verify etmelisiniz.</p>
+            </div>
+        </div>
+
+        <!-- Checklist -->
+        <div class="bg-gradient-to-r from-green-500/20 to-blue-500/20 border-2 border-green-500/50 rounded-2xl p-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                ✅ Setup Checklist
+            </h2>
+            <div class="space-y-3">
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>AWS hesabı oluşturuldu</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>Amazon SES aktif edildi (eu-central-1 region)</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>Domain verify edildi (muzibu.com.tr)</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>DNS kayıtları eklendi (3 CNAME)</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>Sandbox modundan çıkıldı (production access)</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>IAM user oluşturuldu (muzibu-ses-sender)</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>Access Key & Secret Key alındı</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>.env dosyası güncellendi (credentials eklendi)</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
+                    <span>Test mail gönderildi ve başarılı oldu</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 pt-8 border-t border-slate-700 text-center text-slate-500">
+            <p>🤖 Claude AI tarafından oluşturuldu • Muzibu/Tuufi Multi-Tenant Sistemi</p>
+            <p class="text-sm mt-2">📅 17 Aralık 2025</p>
+        </div>
+    </div>
+</body>
+</html>

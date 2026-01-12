@@ -1,1 +1,652 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Platform Analizi v2 - Detayli Test Sonuclari</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .device-badge { @apply px-2 py-0.5 rounded text-xs font-bold; }
+        .mobile { @apply bg-red-500/20 text-red-400; }
+        .tablet { @apply bg-orange-500/20 text-orange-400; }
+        .desktop { @apply bg-green-500/20 text-green-400; }
+        .both { @apply bg-purple-500/20 text-purple-400; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-12 pb-8 border-b border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-bold">v2 - Guncellendi</span>
+                <span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-bold">31 Sorun Tespit Edildi</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                <i class="fas fa-music mr-3"></i>Muzibu Platform Analizi
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Detayli Mobil & Desktop Test Sonuclari - Tum Hatalar Netlestirildi
+            </div>
+            <div class="mt-4 flex flex-wrap gap-4 text-sm">
+                <span class="flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded"><i class="fas fa-mobile-alt text-red-400"></i> Mobil: 16 Sorun</span>
+                <span class="flex items-center gap-2 px-3 py-1 bg-orange-500/10 rounded"><i class="fas fa-tablet-alt text-orange-400"></i> Tablet: 8 Sorun</span>
+                <span class="flex items-center gap-2 px-3 py-1 bg-blue-500/10 rounded"><i class="fas fa-desktop text-blue-400"></i> Desktop: 4 Sorun</span>
+                <span class="flex items-center gap-2 px-3 py-1 bg-purple-500/10 rounded"><i class="fas fa-code text-purple-400"></i> Olu Kod: 8 Dosya</span>
+            </div>
+        </header>
+
+        <!-- Quick Navigation -->
+        <nav class="mb-12 grid grid-cols-2 md:grid-cols-5 gap-3">
+            <a href="#kritik" class="px-4 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition text-center font-bold">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Kritik (6)
+            </a>
+            <a href="#mobil" class="px-4 py-3 bg-orange-500/20 text-orange-400 rounded-lg hover:bg-orange-500/30 transition text-center font-bold">
+                <i class="fas fa-mobile-alt mr-2"></i>Mobil (16)
+            </a>
+            <a href="#player" class="px-4 py-3 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition text-center font-bold">
+                <i class="fas fa-play mr-2"></i>Player (7)
+            </a>
+            <a href="#css" class="px-4 py-3 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 transition text-center font-bold">
+                <i class="fas fa-paint-brush mr-2"></i>CSS (6)
+            </a>
+            <a href="#deadcode" class="px-4 py-3 bg-slate-500/20 text-slate-400 rounded-lg hover:bg-slate-500/30 transition text-center font-bold">
+                <i class="fas fa-trash mr-2"></i>Olu Kod (8)
+            </a>
+        </nav>
+
+        <!-- ========== KRITIK SORUNLAR ========== -->
+        <section id="kritik" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400 flex items-center gap-3">
+                <i class="fas fa-exclamation-triangle"></i> Kritik Sorunlar - ACIL DUZELTILMELI
+                <span class="text-sm px-3 py-1 bg-red-500/20 rounded-full">6 Sorun</span>
+            </h2>
+
+            <div class="grid gap-4">
+                <!-- K1: Mobile Overlay Yok -->
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">K1</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-xl font-bold text-red-300">Mobile Menu Overlay Elementi YOK!</h3>
+                                <span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs font-bold">MOBIL</span>
+                            </div>
+                            <p class="text-slate-300 mb-3">
+                                <code class="bg-slate-700 px-2 py-1 rounded text-orange-300">.muzibu-mobile-overlay</code> class'i JavaScript'te referans ediliyor ama HTML'de bu element HIC OLUSTURULMAMIS!
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg space-y-2">
+                                <p class="text-sm text-slate-400"><strong class="text-white">JS Referans:</strong> <code>app.blade.php:288</code> - <code>document.querySelector('.muzibu-mobile-overlay')</code></p>
+                                <p class="text-sm text-slate-400"><strong class="text-white">Sorun:</strong> Overlay elementi yok, null donuyor, sidebar acilsa bile arka plan kararmasi yok, kapatamiyor</p>
+                                <p class="text-sm text-green-400"><strong class="text-white">Cozum:</strong> sidebar-left.blade.php veya app.blade.php'ye overlay div ekle:</p>
+                                <pre class="text-xs text-green-300 bg-black/50 p-2 rounded mt-2">&lt;div class="muzibu-mobile-overlay" @click="mobileMenuOpen = false"&gt;&lt;/div&gt;</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- K2: Sidebar Active Class Calismasi -->
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">K2</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-xl font-bold text-red-300">Sidebar "active" Class CSS Cakismasi</h3>
+                                <span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs font-bold">MOBIL</span>
+                            </div>
+                            <p class="text-slate-300 mb-3">
+                                CSS'de <code class="bg-slate-700 px-2 py-1 rounded">.muzibu-left-sidebar.active { left: 0 }</code> var (line 816) ama Blade'de Tailwind <code class="bg-slate-700 px-2 py-1 rounded">hidden lg:flex</code> kullaniliyor.
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg space-y-2">
+                                <p class="text-sm text-slate-400"><strong class="text-white">CSS:</strong> <code>muzibu-layout.css:803-817</code> - left:-280px → left:0 animasyonu bekliyor</p>
+                                <p class="text-sm text-slate-400"><strong class="text-white">Blade:</strong> <code>sidebar-left.blade.php:3</code> - <code>hidden lg:flex</code> + Alpine :class binding</p>
+                                <p class="text-sm text-slate-400"><strong class="text-white">Sorun:</strong> Tailwind'in <code>hidden</code> class'i <code>display:none</code> veriyor, CSS'in <code>left</code> animasyonu calismaz</p>
+                                <p class="text-sm text-green-400"><strong class="text-white">Cozum:</strong> Ya tamamen CSS yaklasimiyla (left:-280px) ya da tamamen Tailwind yaklasimiyla (-translate-x-full) yap, ikisini karistirma</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- K3: Bottom Nav Bos Linkler -->
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">K3</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-xl font-bold text-red-300">Bottom Navigation Linkleri Bos</h3>
+                                <span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs font-bold">MOBIL</span>
+                            </div>
+                            <p class="text-slate-300 mb-3">
+                                "Ara" ve "Kitaplik" butonlari <code class="bg-slate-700 px-2 py-1 rounded">href="#"</code> - Hic bir sey yapmiyor!
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-sm text-slate-400"><strong class="text-white">Dosya:</strong> <code>bottom-nav.blade.php:7-13</code></p>
+                                <pre class="text-xs text-red-300 bg-black/50 p-2 rounded mt-2 overflow-x-auto">&lt;a href="#" class="muzibu-bottom-nav-item"&gt;  &lt;!-- YANLIS --&gt;
+    &lt;i class="fas fa-search"&gt;&lt;/i&gt;
+    &lt;span&gt;Ara&lt;/span&gt;
+&lt;/a&gt;</pre>
+                                <p class="text-sm text-green-400 mt-3"><strong class="text-white">Cozum:</strong></p>
+                                <pre class="text-xs text-green-300 bg-black/50 p-2 rounded mt-1 overflow-x-auto">&lt;a href="/search" class="muzibu-bottom-nav-item"&gt;  &lt;!-- veya @click ile modal ac --&gt;
+&lt;a href="/my-playlists" class="muzibu-bottom-nav-item"&gt;</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- K4: Play Button Tiklanmiyor -->
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">K4</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-xl font-bold text-red-300">Play Butonu Kartlarda Tiklanmiyor</h3>
+                                <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded text-xs font-bold">TUMU</span>
+                            </div>
+                            <p class="text-slate-300 mb-3">
+                                Playlist/Album kartlarinda hover'da cikan play butonuna tiklaninca kart sayfasi aciliyor, muzik baslamiyor.
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg space-y-2">
+                                <p class="text-sm text-slate-400"><strong class="text-white">Dosya:</strong> <code>home.blade.php:82</code> - Parent karta <code>x-on:click="window.location.href"</code></p>
+                                <p class="text-sm text-slate-400"><strong class="text-white">Dosya:</strong> <code>home.blade.php:93-101</code> - Play butonunda <code>@click.stop</code> var AMA...</p>
+                                <p class="text-sm text-slate-400"><strong class="text-white">Sorun:</strong> Parent'taki <code>x-on:click</code> ile child'daki <code>@click.stop</code> cakisiyor (Alpine alias farki)</p>
+                                <p class="text-sm text-green-400"><strong class="text-white">Cozum:</strong> Tum event'leri ayni sekilde yaz: <code>x-on:click.stop</code> veya <code>@click.stop</code></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- K5: Player Grid Mobilde Bozuk -->
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">K5</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-xl font-bold text-red-300">Player Bar Grid Mobilde Bozuk</h3>
+                                <span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs font-bold">MOBIL</span>
+                            </div>
+                            <p class="text-slate-300 mb-3">
+                                Player <code class="bg-slate-700 px-2 py-1 rounded">grid-cols-[1fr_2fr_1fr]</code> kullanilmis - Bu tum ekranlarda sabit, mobilde responsive degil!
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg space-y-2">
+                                <p class="text-sm text-slate-400"><strong class="text-white">Dosya:</strong> <code>player.blade.php:2</code></p>
+                                <p class="text-sm text-slate-400"><strong class="text-white">Sorun:</strong> Mobilde 3 sutun cok sikisik, sarki ismi gorunmuyor</p>
+                                <p class="text-sm text-green-400"><strong class="text-white">Cozum:</strong> Mobil icin farkli layout: <code>grid-cols-1 md:grid-cols-[1fr_2fr_1fr]</code> veya flex kullan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- K6: Queue Overlay Genisligi -->
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">K6</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-xl font-bold text-red-300">Queue Overlay Mobilde Ekrani Kapiyor</h3>
+                                <span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs font-bold">MOBIL</span>
+                            </div>
+                            <p class="text-slate-300 mb-3">
+                                Queue sidebar <code class="bg-slate-700 px-2 py-1 rounded">w-96</code> (384px) - Mobilde ekran genisligini asiyor!
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-sm text-slate-400"><strong class="text-white">Dosya:</strong> <code>queue-overlay.blade.php:27</code></p>
+                                <p class="text-sm text-green-400"><strong class="text-white">Cozum:</strong> <code>w-full sm:w-96</code> veya <code>max-w-[90vw]</code> ekle</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== MOBIL SORUNLAR ========== -->
+        <section id="mobil" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400 flex items-center gap-3">
+                <i class="fas fa-mobile-alt"></i> Mobil Sorunlar (< 768px)
+                <span class="text-sm px-3 py-1 bg-orange-500/20 rounded-full">16 Sorun</span>
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-800/50">
+                            <th class="px-4 py-3 text-left">#</th>
+                            <th class="px-4 py-3 text-left">Sorun</th>
+                            <th class="px-4 py-3 text-left">Dosya</th>
+                            <th class="px-4 py-3 text-left">Oncelik</th>
+                            <th class="px-4 py-3 text-left">Cozum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-red-400 font-bold">M1</td>
+                            <td class="px-4 py-3">Sidebar overlay yok (K1'de detay)</td>
+                            <td class="px-4 py-3"><code class="text-xs">app.blade.php</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs">KRITIK</span></td>
+                            <td class="px-4 py-3 text-green-400">Overlay div ekle</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-red-400 font-bold">M2</td>
+                            <td class="px-4 py-3">Sidebar acilmiyor (K2'de detay)</td>
+                            <td class="px-4 py-3"><code class="text-xs">sidebar-left.blade.php:3</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs">KRITIK</span></td>
+                            <td class="px-4 py-3 text-green-400">CSS/Tailwind birini sec</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-red-400 font-bold">M3</td>
+                            <td class="px-4 py-3">Bottom nav bos (K3'de detay)</td>
+                            <td class="px-4 py-3"><code class="text-xs">bottom-nav.blade.php</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs">KRITIK</span></td>
+                            <td class="px-4 py-3 text-green-400">Route ekle</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-orange-400 font-bold">M4</td>
+                            <td class="px-4 py-3">Search box tamamen gizli</td>
+                            <td class="px-4 py-3"><code class="text-xs">header.blade.php:84</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs">YUKSEK</span></td>
+                            <td class="px-4 py-3 text-green-400">Mobil search icon/modal</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-orange-400 font-bold">M5</td>
+                            <td class="px-4 py-3">Song info player'da gizli</td>
+                            <td class="px-4 py-3"><code class="text-xs">player.blade.php:13</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs">YUKSEK</span></td>
+                            <td class="px-4 py-3 text-green-400">Truncate ile goster</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-orange-400 font-bold">M6</td>
+                            <td class="px-4 py-3">Volume kontrolu yok</td>
+                            <td class="px-4 py-3"><code class="text-xs">player.blade.php:76</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs">YUKSEK</span></td>
+                            <td class="px-4 py-3 text-green-400">Volume popup ekle</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-orange-400 font-bold">M7</td>
+                            <td class="px-4 py-3">Queue overlay %100 genislik asior</td>
+                            <td class="px-4 py-3"><code class="text-xs">queue-overlay.blade.php:27</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs">YUKSEK</span></td>
+                            <td class="px-4 py-3 text-green-400">max-w-[90vw] ekle</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-orange-400 font-bold">M8</td>
+                            <td class="px-4 py-3">Lyrics overlay fullscreen olmali</td>
+                            <td class="px-4 py-3"><code class="text-xs">lyrics-overlay.blade.php</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs">YUKSEK</span></td>
+                            <td class="px-4 py-3 text-green-400">inset-0 ekle</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-yellow-400 font-bold">M9</td>
+                            <td class="px-4 py-3">Context menu ekran disina tasiyor</td>
+                            <td class="px-4 py-3"><code class="text-xs">context-menu.blade.php:12</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">ORTA</span></td>
+                            <td class="px-4 py-3 text-green-400">Viewport siniri kontrolu</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-yellow-400 font-bold">M10</td>
+                            <td class="px-4 py-3">Progress bar cok ince (1.5px)</td>
+                            <td class="px-4 py-3"><code class="text-xs">player.blade.php:43</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">ORTA</span></td>
+                            <td class="px-4 py-3 text-green-400">h-2 veya h-3 yap</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-yellow-400 font-bold">M11</td>
+                            <td class="px-4 py-3">Auth modal cok buyuk</td>
+                            <td class="px-4 py-3"><code class="text-xs">auth-modal.blade.php:32</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">ORTA</span></td>
+                            <td class="px-4 py-3 text-green-400">max-w-md sm:max-w-4xl</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-yellow-400 font-bold">M12</td>
+                            <td class="px-4 py-3">Login butonlari cok kucuk</td>
+                            <td class="px-4 py-3"><code class="text-xs">header.blade.php:452</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">ORTA</span></td>
+                            <td class="px-4 py-3 text-green-400">Touch alanini genislet</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-yellow-400 font-bold">M13</td>
+                            <td class="px-4 py-3">Scroll ok butonlari gizli</td>
+                            <td class="px-4 py-3"><code class="text-xs">home.blade.php:56-73</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">ORTA</span></td>
+                            <td class="px-4 py-3 text-green-400">Mobilde touch scroll yeterli</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-slate-400 font-bold">M14</td>
+                            <td class="px-4 py-3">Card grid 2 sutun cok sikisik</td>
+                            <td class="px-4 py-3"><code class="text-xs">playlists-grid.blade.php:10</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-slate-500/20 text-slate-400 rounded text-xs">DUSUK</span></td>
+                            <td class="px-4 py-3 text-green-400">1 sutun veya daha az gap</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-slate-400 font-bold">M15</td>
+                            <td class="px-4 py-3">Sarki suresi gizli</td>
+                            <td class="px-4 py-3"><code class="text-xs">playlists/show.blade.php:64</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-slate-500/20 text-slate-400 rounded text-xs">DUSUK</span></td>
+                            <td class="px-4 py-3 text-green-400">Goster veya info icon</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-3 text-slate-400 font-bold">M16</td>
+                            <td class="px-4 py-3">Player bar 140px cok uzun</td>
+                            <td class="px-4 py-3"><code class="text-xs">muzibu-layout.css:775</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-slate-500/20 text-slate-400 rounded text-xs">DUSUK</span></td>
+                            <td class="px-4 py-3 text-green-400">90-100px yap</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========== PLAYER SORUNLARI ========== -->
+        <section id="player" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400 flex items-center gap-3">
+                <i class="fas fa-play"></i> Player Sorunlari
+                <span class="text-sm px-3 py-1 bg-purple-500/20 rounded-full">7 Sorun</span>
+            </h2>
+
+            <div class="grid gap-4">
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-300 mb-4">Player JS Analizi</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-white mb-3">Tespit Edilen Sorunlar</h4>
+                            <ul class="space-y-2 text-sm text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-exclamation-circle text-red-400 mt-1"></i>
+                                    <span><strong>Play buton event cakismasi</strong> - @click.stop vs x-on:click farkli isliyor</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-exclamation-circle text-orange-400 mt-1"></i>
+                                    <span><strong>preloadLastPlayedSong</strong> - API 404 donerse sessizce skip ediyor, log bile yok</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-exclamation-circle text-orange-400 mt-1"></i>
+                                    <span><strong>playRandomSongs</strong> - Alpine.store('muzibu') undefined olabilir SPA sonrasi</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-exclamation-circle text-yellow-400 mt-1"></i>
+                                    <span><strong>saveQueueState</strong> - localStorage dolu olursa hata vermez, veri kaybeder</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-exclamation-circle text-yellow-400 mt-1"></i>
+                                    <span><strong>setInterval checkIsHomepage</strong> - 100ms'de bir cagiriliyor, performans</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-exclamation-circle text-yellow-400 mt-1"></i>
+                                    <span><strong>crossfadeDuration</strong> - 1.5s default, kullanici ayarlayamiyor</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-exclamation-circle text-slate-400 mt-1"></i>
+                                    <span><strong>isPreviewBlocked</strong> - Guest preview bittikten sonra disable kaliyor</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-3">Dosya Konumlari</h4>
+                            <ul class="space-y-1 text-xs text-slate-400">
+                                <li><code>player-core.js:322-389</code> - togglePlayPause</li>
+                                <li><code>player-core.js:270-318</code> - preloadLastPlayedSong</li>
+                                <li><code>player-core.js:391-446</code> - playRandomSongs</li>
+                                <li><code>player-core.js:476-500</code> - saveQueueState</li>
+                                <li><code>app.blade.php:167-170</code> - setInterval</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== CSS SORUNLARI ========== -->
+        <section id="css" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400 flex items-center gap-3">
+                <i class="fas fa-paint-brush"></i> CSS & Tasarim Sorunlari
+                <span class="text-sm px-3 py-1 bg-yellow-500/20 rounded-full">6 Sorun</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-300">Renk Tutarsizliklari</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded" style="background: #1DB954"></div>
+                            <span class="text-slate-300"><code>#1DB954</code> - Spotify yesili (eskiden)</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded" style="background: #ff7f50"></div>
+                            <span class="text-slate-300"><code>#ff7f50</code> - Muzibu coral (yeni)</span>
+                        </li>
+                    </ul>
+                    <p class="mt-4 text-xs text-slate-400">
+                        <strong>Sorun:</strong> <code>muzibu-layout.css</code> icinde hala <code>#1DB954</code> referanslari var (line 549, 579, 623, 680)
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-300">CSS Cakismalari</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li><i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i> Tailwind CDN + Custom CSS ayni anda</li>
+                        <li><i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i> <code>.muzibu-*</code> class'lari Blade'de kullanilmiyor</li>
+                        <li><i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i> Global <code>* { transition }</code> performans etkisi</li>
+                        <li><i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i> z-index degerleri: 40, 50, 99, 999, 9999, 99999 - Kaos!</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 md:col-span-2">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-300">z-index Katmani Analizi</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-slate-900/50">
+                                    <th class="px-3 py-2 text-left">Deger</th>
+                                    <th class="px-3 py-2 text-left">Element</th>
+                                    <th class="px-3 py-2 text-left">Dosya</th>
+                                    <th class="px-3 py-2 text-left">Sorun</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700">
+                                <tr><td class="px-3 py-2 text-purple-400">40</td><td class="px-3 py-2">Queue overlay backdrop</td><td class="px-3 py-2 text-xs"><code>queue-overlay:14</code></td><td class="px-3 py-2 text-green-400">OK</td></tr>
+                                <tr><td class="px-3 py-2 text-purple-400">50</td><td class="px-3 py-2">Header, Queue panel, Sidebar</td><td class="px-3 py-2 text-xs">cesitli</td><td class="px-3 py-2 text-yellow-400">Catisabilir</td></tr>
+                                <tr><td class="px-3 py-2 text-purple-400">999</td><td class="px-3 py-2">Mobile sidebar (CSS)</td><td class="px-3 py-2 text-xs"><code>layout.css:811</code></td><td class="px-3 py-2 text-green-400">OK</td></tr>
+                                <tr><td class="px-3 py-2 text-purple-400">9999</td><td class="px-3 py-2">Context menu, Auth modal</td><td class="px-3 py-2 text-xs">cesitli</td><td class="px-3 py-2 text-yellow-400">Cok yuksek</td></tr>
+                                <tr><td class="px-3 py-2 text-red-400">999999</td><td class="px-3 py-2">Notification overlay</td><td class="px-3 py-2 text-xs"><code>notification:29</code></td><td class="px-3 py-2 text-red-400">Gereksiz yuksek!</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== OLU KOD ========== -->
+        <section id="deadcode" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-slate-400 flex items-center gap-3">
+                <i class="fas fa-trash"></i> Olu Kod & Silinecek Dosyalar
+                <span class="text-sm px-3 py-1 bg-slate-500/20 rounded-full">8 Dosya</span>
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Kesinlikle Silinecek -->
+                <div class="bg-red-900/20 rounded-lg p-6 border border-red-500/30">
+                    <h3 class="text-lg font-bold mb-4 text-red-400 flex items-center gap-2">
+                        <i class="fas fa-trash"></i> Kesinlikle Silinecek
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-red-400 mt-1"></i>
+                            <div>
+                                <code class="text-red-300 text-xs break-all">muzibu-player.BACKUP-DEPRECATED-artik-kullanilmiyor-yedek-olarak-duruyor.js</code>
+                                <p class="text-slate-500 text-xs mt-1">81 KB - Eski player, artik kullanilmiyor</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-red-400 mt-1"></i>
+                            <div>
+                                <code class="text-red-300 text-xs">player-core.js.backup-*</code>
+                                <p class="text-slate-500 text-xs mt-1">Backup dosyasi</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-red-400 mt-1"></i>
+                            <div>
+                                <code class="text-red-300 text-xs">device-limit-modal.js</code>
+                                <p class="text-slate-500 text-xs mt-1">+ device-limit-modal.css - Devre disi</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Gozden Gecirilecek -->
+                <div class="bg-orange-900/20 rounded-lg p-6 border border-orange-500/30">
+                    <h3 class="text-lg font-bold mb-4 text-orange-400 flex items-center gap-2">
+                        <i class="fas fa-eye"></i> Gozden Gecirilecek
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-alt text-orange-400 mt-1"></i>
+                            <div>
+                                <code class="text-orange-300 text-xs">play-limits-modals.blade.php</code>
+                                <p class="text-slate-500 text-xs mt-1">Include edilmiyor, 3 sarki limiti kaldirildi</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-alt text-orange-400 mt-1"></i>
+                            <div>
+                                <code class="text-orange-300 text-xs">play-limits-widget.blade.php</code>
+                                <p class="text-slate-500 text-xs mt-1">sidebar.blade.php'de yoruma alinmis</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-alt text-orange-400 mt-1"></i>
+                            <div>
+                                <code class="text-orange-300 text-xs">session-check.blade.php</code>
+                                <p class="text-slate-500 text-xs mt-1">"GECICI DEVRE DISI" - icerigi kontrol et</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- CSS Temizlik -->
+                <div class="bg-yellow-900/20 rounded-lg p-6 border border-yellow-500/30">
+                    <h3 class="text-lg font-bold mb-4 text-yellow-400 flex items-center gap-2">
+                        <i class="fas fa-broom"></i> CSS Temizlik
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-css3-alt text-yellow-400 mt-1"></i>
+                            <div>
+                                <code class="text-yellow-300 text-xs">.layout-test-*</code>
+                                <p class="text-slate-500 text-xs mt-1">line 1076-1134 - Test class'lari</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-css3-alt text-yellow-400 mt-1"></i>
+                            <div>
+                                <code class="text-yellow-300 text-xs">.muzibu-app, .muzibu-header-*</code>
+                                <p class="text-slate-500 text-xs mt-1">Blade'de kullanilmiyor, Tailwind'e gecilmis</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== COZUM PLANI ========== -->
+        <section id="plan" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400 flex items-center gap-3">
+                <i class="fas fa-tasks"></i> Onerilen Is Sirasi
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Faz 1 -->
+                <div class="bg-gradient-to-r from-red-900/30 to-slate-800/50 rounded-lg p-6 border-l-4 border-red-500">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="bg-red-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center">1</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300">Mobil Kritik Duzeltmeler</h3>
+                            <p class="text-slate-400 text-sm">Site mobilde kullanilabilir olmali</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">1.1 Overlay Ekle</p>
+                            <p class="text-xs text-slate-400">.muzibu-mobile-overlay div olustur</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">1.2 Sidebar Fix</p>
+                            <p class="text-xs text-slate-400">CSS/Tailwind birini sec</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">1.3 Bottom Nav</p>
+                            <p class="text-xs text-slate-400">href="#" → gercek linkler</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">1.4 Play Button</p>
+                            <p class="text-xs text-slate-400">Event propagation duzelt</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 2 -->
+                <div class="bg-gradient-to-r from-orange-900/30 to-slate-800/50 rounded-lg p-6 border-l-4 border-orange-500">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="bg-orange-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center">2</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-300">Mobil UX Iyilestirmeleri</h3>
+                            <p class="text-slate-400 text-sm">Kullanici deneyimini artir</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">2.1 Player Mobile</p>
+                            <p class="text-xs text-slate-400">Grid responsive, song info</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">2.2 Search Mobile</p>
+                            <p class="text-xs text-slate-400">Arama ikonu/modal</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">2.3 Queue/Lyrics</p>
+                            <p class="text-xs text-slate-400">Mobil genislik ayarla</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">2.4 Context Menu</p>
+                            <p class="text-xs text-slate-400">Viewport siniri</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 3 -->
+                <div class="bg-gradient-to-r from-yellow-900/30 to-slate-800/50 rounded-lg p-6 border-l-4 border-yellow-500">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="bg-yellow-500 text-black font-bold rounded-full w-12 h-12 flex items-center justify-center">3</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-300">CSS & Kod Temizligi</h3>
+                            <p class="text-slate-400 text-sm">Teknik borc azalt</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">3.1 Renk Tutarliligi</p>
+                            <p class="text-xs text-slate-400">#1DB954 → #ff7f50</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">3.2 z-index Duzenle</p>
+                            <p class="text-xs text-slate-400">Standart katmanlar</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">3.3 Olu Kod Sil</p>
+                            <p class="text-xs text-slate-400">Backup/deprecated dosyalar</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <p class="font-bold text-white text-sm mb-1">3.4 CSS Birlestir</p>
+                            <p class="text-xs text-slate-400">Kullanilmayan class'lar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p><i class="fas fa-robot mr-2"></i> Claude AI tarafindan olusturuldu</p>
+            <p class="mt-2">muzibu.com.tr | v2 Guncellemesi | 6 Aralik 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -28,6 +28,13 @@ class MuzibuCacheProfile implements ModuleCacheProfileInterface
 
             // Abonelik ve ödeme geçmişi
             'my-subscriptions',
+            'my-subscriptions/*',
+
+            // Abonelik planları (kullanıcıya özel gün sayısı gösterir)
+            'plans',
+            'plans/*',
+            'pricing',
+            'pricing/*',
 
             // Playlist detay düzenleme
             'playlists/*/edit',

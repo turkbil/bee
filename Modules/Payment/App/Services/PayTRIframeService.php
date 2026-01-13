@@ -50,6 +50,7 @@ class PayTRIframeService
             // Token oluşturma için hash string
             // PayTR merchant_oid sadece alfanumerik olmalı - özel karakter içeremez!
             // Tenant ID prefix ekle: T{tenant_id}{payment_number_stripped}
+            // NOT: Unique suffix KALDIRILDI - PayTR uzun merchant_oid'de hata veriyor
             $tenantId = tenant()->id ?? 1;
             $strippedPaymentNumber = str_replace(['-', '_', ' '], '', $payment->payment_number);
             $merchantOid = 'T' . $tenantId . $strippedPaymentNumber;
@@ -100,27 +101,31 @@ class PayTRIframeService
                 'lang' => app()->getLocale() === 'tr' ? 'tr' : 'en',
             ];
 
-            // Debug mode aktifse loglama yap
-            // 🔍 TEMPORARY: Force debug logging to investigate PayTR error
-            if (true || setting('paytr_debug', false)) {
-                Log::info('📦 PayTR iframe token request', [
-                    'payment_id' => $payment->payment_id,
-                    'merchant_oid' => $merchantOid,
-                    'amount' => $payment->amount,
-                    'test_mode' => $testMode,
-                    'currency' => $currency,
-                    'full_post_data' => $postData, // TÜM POST VERİLERİ
-                ]);
-                // 🔥 EXTRA DEBUG: Write FULL POST DATA to file
-                file_put_contents(storage_path('logs/paytr-full-request.log'),
-                    "[" . date('Y-m-d H:i:s') . "] 📦 FULL REQUEST:\n" .
-                    json_encode($postData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n\n",
-                    FILE_APPEND
-                );
-            }
+            // 🔥 DEBUG LOGLAMA - PayTR sorun tespiti için
+            $debugData = [
+                'timestamp' => date('Y-m-d H:i:s'),
+                'user_id' => auth()->id(),
+                'user_email' => auth()->user()?->email,
+                'payment_id' => $payment->payment_id,
+                'payment_number' => $payment->payment_number,
+                'merchant_oid' => $merchantOid,
+                'amount' => $payment->amount,
+                'payment_amount_kurus' => $paymentAmount,
+                'user_info' => $userInfo,
+                'order_info' => $orderInfo,
+                'post_data' => $postData,
+            ];
 
-            // 🔥 DEBUG: POST verilerini /tmp'ye yaz (her zaman çalışır)
-            file_put_contents('/tmp/paytr-post-data.json', json_encode($postData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            // Laravel log'a yaz
+            Log::channel('daily')->info('🔍 PayTR REQUEST DEBUG', $debugData);
+
+            // Ayrı dosyaya da yaz (kesin çalışır)
+            $logFile = storage_path('logs/paytr-requests.log');
+            $logContent = "\n" . str_repeat('=', 80) . "\n";
+            $logContent .= "[" . date('Y-m-d H:i:s') . "] USER: " . (auth()->user()?->email ?? 'guest') . "\n";
+            $logContent .= str_repeat('-', 80) . "\n";
+            $logContent .= json_encode($debugData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
+            @file_put_contents($logFile, $logContent, FILE_APPEND);
 
             // PayTR API'sine token için istek gönder
             $ch = curl_init();
@@ -146,17 +151,18 @@ class PayTRIframeService
 
             $response = json_decode($result, true);
 
-            // 🔍 TEMPORARY: Force debug logging to investigate PayTR error
-            if (true || setting('paytr_debug', false)) {
-                Log::info('📥 PayTR iframe token response', ['response' => $response]);
-                // 🔥 EXTRA DEBUG: Write to file directly
-                file_put_contents(storage_path('logs/paytr-full-request.log'),
-                    "[" . date('Y-m-d H:i:s') . "] 📥 RESPONSE:\n" .
-                    json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n" .
-                    "==========================================\n\n",
-                    FILE_APPEND
-                );
-            }
+            // 🔥 RESPONSE LOGLAMA
+            $responseLog = "\n--- RESPONSE ---\n";
+            $responseLog .= "Status: " . ($response['status'] ?? 'NULL') . "\n";
+            $responseLog .= "Token: " . (isset($response['token']) ? substr($response['token'], 0, 20) . '...' : 'NULL') . "\n";
+            $responseLog .= "Reason: " . ($response['reason'] ?? 'N/A') . "\n";
+            $responseLog .= str_repeat('=', 80) . "\n";
+            @file_put_contents(storage_path('logs/paytr-requests.log'), $responseLog, FILE_APPEND);
+
+            Log::channel('daily')->info('🔍 PayTR RESPONSE DEBUG', [
+                'user_email' => auth()->user()?->email,
+                'response' => $response,
+            ]);
 
             if (!$response || $response['status'] !== 'success') {
                 $errorMessage = $response['reason'] ?? 'Bilinmeyen hata';

@@ -40,7 +40,7 @@ class WarmBlogCacheCommand extends Command
         {--blogs=10 : Number of blogs to warm per tenant}
         {--force : Force cache refresh even if already cached}
         {--urls : Also warm frontend URL caches}
-        {--quiet : Suppress output}';
+        {--silent : Suppress output}';
 
     /**
      * The console command description.
@@ -72,7 +72,7 @@ class WarmBlogCacheCommand extends Command
     {
         $startTime = microtime(true);
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info('🔥 Starting Blog Cache Warming...');
             $this->newLine();
         }
@@ -132,7 +132,7 @@ class WarmBlogCacheCommand extends Command
      */
     private function processTenant(int $tenantId, BlogService $blogService, TenantCacheService $cacheService): void
     {
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info("📦 Processing Tenant #{$tenantId}");
         }
 
@@ -146,14 +146,14 @@ class WarmBlogCacheCommand extends Command
         $blogs = $this->getPagesToWarm($limit);
 
         if ($blogs->isEmpty()) {
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->warn("  No blogs found for tenant #{$tenantId}");
             }
             return;
         }
 
         // Create progress bar
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar = $this->output->createProgressBar($blogs->count());
             $this->progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
         }
@@ -162,12 +162,12 @@ class WarmBlogCacheCommand extends Command
         foreach ($blogs as $blog) {
             $this->warmPageCache($blog, $blogService, $cacheService);
 
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->progressBar->advance();
             }
         }
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar->finish();
             $this->newLine(2);
         }
@@ -205,7 +205,7 @@ class WarmBlogCacheCommand extends Command
             $force = $this->option('force');
 
             // Set progress message
-            if (!$this->option('quiet') && $this->progressBar) {
+            if (!$this->option('silent') && $this->progressBar) {
                 $title = is_array($blog->title) ? ($blog->title['tr'] ?? 'Untitled') : 'Untitled';
                 $this->progressBar->setMessage("Caching: {$title}");
             }
@@ -301,7 +301,7 @@ class WarmBlogCacheCommand extends Command
      */
     private function displaySummary(): void
     {
-        if ($this->option('quiet')) {
+        if ($this->option('silent')) {
             return;
         }
 

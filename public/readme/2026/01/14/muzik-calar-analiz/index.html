@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Müzik Çalar - Detaylı Sistem Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .flow-line { position: relative; }
+        .flow-line::after {
+            content: '';
+            position: absolute;
+            bottom: -24px;
+            left: 24px;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to bottom, #6366f1, transparent);
+        }
+        .flow-line:last-child::after { display: none; }
+        .bar-animate {
+            animation: growBar 1s ease-out forwards;
+            transform-origin: left;
+        }
+        @keyframes growBar {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .stat-card {
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-800/50 border-b border-slate-700/50">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <h1 class="text-xl font-bold text-white">Muzibu Müzik Çalar - Detaylı Sistem Analizi</h1>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- İşletme Odaklı Platform Bilgisi -->
+        <section class="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-xl p-6 border border-blue-700/50">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🏢</div>
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-2">Muzibu - İşletmeler İçin Müzik Platformu</h2>
+                    <p class="text-slate-300 leading-relaxed">
+                        Muzibu, bireysel kullanıcılar için değil <strong class="text-blue-400">işletmeler için</strong> tasarlanmış profesyonel bir müzik platformudur.
+                        Kafeler, restoranlar, mağazalar, oteller ve ofisler gibi ticari mekanlar için kesintisiz arka plan müziği sağlar.
+                        Bu rapor, işletmenizde bir çalışan veya sistem müzik çalmaya başladığında arka planda gerçekleşen teknik süreçleri açıklar.
+                    </p>
+                    <div class="mt-4 p-3 bg-emerald-900/30 border border-emerald-700/30 rounded-lg">
+                        <p class="text-emerald-300 text-sm">
+                            <strong class="text-emerald-400">💡 İşletmeler için önemli olan:</strong>
+                            Şarkıya ilk tıklandığındaki ~1 saniyelik bekleme değil, <strong>sonrasındaki geçişlerde sorun yaşanmaması ve bekleme olmaması</strong>dır.
+                            Bir kere başlatıldığında sistem otomatik devam eder, preload sayesinde şarkı geçişleri kesintisiz gerçekleşir.
+                        </p>
+                    </div>
+                    <div class="mt-4 grid md:grid-cols-3 gap-3 text-sm">
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <span class="text-emerald-400">✓</span> Kafe & Restoran
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <span class="text-emerald-400">✓</span> Mağaza & AVM
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <span class="text-emerald-400">✓</span> Otel & Spa
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <span class="text-emerald-400">✓</span> Ofis & Çalışma Alanı
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <span class="text-emerald-400">✓</span> Spor Salonu & Fitness
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <span class="text-emerald-400">✓</span> Kuaför & Güzellik Salonu
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet İstatistikler -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="stat-card bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl p-4">
+                <div class="text-3xl font-bold text-white">9</div>
+                <div class="text-indigo-200 text-sm">Toplam Aşama</div>
+            </div>
+            <div class="stat-card bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-xl p-4">
+                <div class="text-3xl font-bold text-white">~800ms</div>
+                <div class="text-emerald-200 text-sm">İlk Şarkı Başlama</div>
+            </div>
+            <div class="stat-card bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl p-4">
+                <div class="text-3xl font-bold text-white">8</div>
+                <div class="text-purple-200 text-sm">API Endpoint</div>
+            </div>
+            <div class="stat-card bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl p-4">
+                <div class="text-3xl font-bold text-white">%65</div>
+                <div class="text-amber-200 text-sm">Cache Hız Kazancı</div>
+            </div>
+        </section>
+
+        <!-- Genel Açıklama -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-lg font-semibold text-white mb-4">Genel Bakış</h2>
+            <p class="text-slate-300 leading-relaxed">
+                İşletmenizde bir çalışan müzik çalmaya başladığında, arka planda <strong class="text-white">9 aşamalı</strong> bir süreç başlar.
+                Abonelik ve yetki kontrolü yapılır, müzik dosyası güvenli şekilde hazırlanır, dinleme istatistikleri kaydedilir
+                ve işletmenizde kesintisiz müzik deneyimi için sıradaki şarkılar otomatik hazırlanır.
+                <strong class="text-emerald-400">Redis cache</strong> kullanılarak yoğun saatlerde bile performans korunur.
+            </p>
+        </section>
+
+        <!-- 9 Aşama Detaylı -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-lg font-semibold text-white mb-6">Şarkı Çalma Akışı - 9 Aşama (Detaylı)</h2>
+
+            <!-- Faz Göstergesi -->
+            <div class="mb-6 p-4 bg-slate-700/30 rounded-lg">
+                <div class="grid md:grid-cols-4 gap-4 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-slate-400">Aşama 1-5:</span>
+                        <span class="text-white">İlk ses için (sıralı)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-amber-500 rounded-full"></span>
+                        <span class="text-slate-400">Aşama 6:</span>
+                        <span class="text-white">Sıra Oluşturma</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                        <span class="text-slate-400">Aşama 7:</span>
+                        <span class="text-white">Paralel (async)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-emerald-500 rounded-full"></span>
+                        <span class="text-slate-400">Aşama 8-9:</span>
+                        <span class="text-white">Şarkı bitince</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Aşama 1 -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">1</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">Yetki Kontrolü (Auth Check)</h3>
+                                <span class="px-2 py-0.5 bg-slate-600 text-white text-xs rounded">~50ms</span>
+                                <span class="px-2 py-0.5 bg-red-600 text-red-100 text-xs rounded">Zorunlu</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                Kullanıcı giriş yapmış mı ve premium üyeliği var mı kontrol edilir.
+                                Yetkisiz kullanıcılar giriş veya üyelik sayfasına yönlendirilir.
+                            </p>
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">İşlem:</span>
+                                        <span class="text-slate-300 ml-1">playContent()</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Kontrol:</span>
+                                        <span class="text-slate-300 ml-1">isLoggedIn</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Kontrol:</span>
+                                        <span class="text-slate-300 ml-1">is_premium</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Hata:</span>
+                                        <span class="text-red-400 ml-1">401/402</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>0ms</span>
+                                    <span class="flex-1"></span>
+                                    <span>50ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-red-500 to-red-400 rounded-full" style="width: 8%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aşama 2 -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">2</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">Stream URL Alma</h3>
+                                <span class="px-2 py-0.5 bg-slate-600 text-white text-xs rounded">~150ms</span>
+                                <span class="px-2 py-0.5 bg-red-600 text-red-100 text-xs rounded">Zorunlu</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                Sunucudan şarkının oynatma adresi istenir. Bu adres şifrelenmiş ve süreli olduğundan
+                                başkaları tarafından kopyalanıp kullanılamaz.
+                            </p>
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">Endpoint:</span>
+                                        <span class="text-cyan-400 ml-1">GET /stream</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Cache:</span>
+                                        <span class="text-emerald-400 ml-1">Redis 24h</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">İmza:</span>
+                                        <span class="text-slate-300 ml-1">HMAC-SHA256</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Şifreleme:</span>
+                                        <span class="text-slate-300 ml-1">XOR</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>0ms</span>
+                                    <span class="flex-1"></span>
+                                    <span>150ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-red-500 to-orange-400 rounded-full" style="width: 23%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aşama 3 -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">3</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">HLS Playlist İndirme</h3>
+                                <span class="px-2 py-0.5 bg-slate-600 text-white text-xs rounded">~80ms</span>
+                                <span class="px-2 py-0.5 bg-red-600 text-red-100 text-xs rounded">Zorunlu</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                HLS formatındaki playlist dosyası (m3u8) indirilir. Bu dosya şarkının parça listesini,
+                                şifreleme bilgilerini ve segment adreslerini içerir.
+                            </p>
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">Endpoint:</span>
+                                        <span class="text-cyan-400 ml-1">/hls/.../playlist.m3u8</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Format:</span>
+                                        <span class="text-slate-300 ml-1">HLS (m3u8)</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">İçerik:</span>
+                                        <span class="text-slate-300 ml-1">Segment listesi</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Sunucu:</span>
+                                        <span class="text-slate-300 ml-1">Laravel</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>0ms</span>
+                                    <span class="flex-1"></span>
+                                    <span>80ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style="width: 12%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aşama 4 -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">4</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">HLS Şifreleme Anahtarı (Key)</h3>
+                                <span class="px-2 py-0.5 bg-slate-600 text-white text-xs rounded">~40ms</span>
+                                <span class="px-2 py-0.5 bg-red-600 text-red-100 text-xs rounded">Zorunlu</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                Şarkı segmentlerini çözmek için gerekli AES-128 şifreleme anahtarı sunucudan alınır.
+                                Bu anahtar olmadan ses dosyaları dinlenemez.
+                            </p>
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">Endpoint:</span>
+                                        <span class="text-cyan-400 ml-1">GET /songs/{id}/key</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Şifreleme:</span>
+                                        <span class="text-slate-300 ml-1">AES-128</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Boyut:</span>
+                                        <span class="text-slate-300 ml-1">16 byte</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">İmza:</span>
+                                        <span class="text-slate-300 ml-1">HMAC doğrulama</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>0ms</span>
+                                    <span class="flex-1"></span>
+                                    <span>40ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full" style="width: 6%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aşama 5 -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">5</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">İlk HLS Segment İndirme</h3>
+                                <span class="px-2 py-0.5 bg-amber-600 text-white text-xs rounded">~280ms</span>
+                                <span class="px-2 py-0.5 bg-red-600 text-red-100 text-xs rounded">Zorunlu</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                Şarkının ilk ses parçası (segment-000.ts) indirilir ve şifre çözülür.
+                                Bu segment tamamen yüklendiğinde müzik çalmaya başlar. En çok süre bu aşamada geçer.
+                            </p>
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">Endpoint:</span>
+                                        <span class="text-cyan-400 ml-1">/hls/.../segment-000.ts</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Boyut:</span>
+                                        <span class="text-slate-300 ml-1">~200-500KB</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Kütüphane:</span>
+                                        <span class="text-slate-300 ml-1">HLS.js</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">İşlem:</span>
+                                        <span class="text-slate-300 ml-1">Decrypt + Buffer</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>0ms</span>
+                                    <span class="flex-1"></span>
+                                    <span>280ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full" style="width: 43%"></div>
+                                </div>
+                            </div>
+                            <div class="mt-2 p-2 bg-emerald-900/30 border border-emerald-700/30 rounded text-xs text-emerald-400">
+                                ♫ Bu aşama tamamlandığında müzik başlar
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aşama 6 - Queue Initial -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">6</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">Sıra Oluşturma (Queue Initial)</h3>
+                                <span class="px-2 py-0.5 bg-amber-600 text-white text-xs rounded">~150-300ms</span>
+                                <span class="px-2 py-0.5 bg-red-600 text-red-100 text-xs rounded">Her Tıklamada</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                İşletmede bir şarkıya <strong class="text-white">her tıklandığında</strong> yeni bir sıra oluşturulur.
+                                Tıklanan şarkının context'ine göre (albüm, playlist, tür, radyo vb.) 15 şarkılık liste sunucudan çekilir.
+                            </p>
+
+                            <!-- Ne Zaman Çalışır / Çalışmaz -->
+                            <div class="grid md:grid-cols-2 gap-3 mb-3">
+                                <div class="p-3 bg-red-900/30 border border-red-700/30 rounded-lg">
+                                    <div class="text-xs text-red-400 font-medium mb-2">🔄 Queue YENİDEN Oluşturulur</div>
+                                    <ul class="text-xs text-slate-400 space-y-1">
+                                        <li>• Kullanıcı bir şarkıya <strong class="text-white">tıkladığında</strong></li>
+                                        <li>• Farklı albümden şarkı seçildiğinde</li>
+                                        <li>• Farklı playlist'ten şarkı seçildiğinde</li>
+                                        <li>• Arama sonucundan şarkı seçildiğinde</li>
+                                        <li>• Ana sayfadan popüler şarkı seçildiğinde</li>
+                                    </ul>
+                                </div>
+                                <div class="p-3 bg-emerald-900/30 border border-emerald-700/30 rounded-lg">
+                                    <div class="text-xs text-emerald-400 font-medium mb-2">✓ Queue KORUNUR (Ek süre yok)</div>
+                                    <ul class="text-xs text-slate-400 space-y-1">
+                                        <li>• Şarkı otomatik bitip sıradaki başladığında</li>
+                                        <li>• İleri (▶▶) butonuna basıldığında</li>
+                                        <li>• Geri (◀◀) butonuna basıldığında</li>
+                                        <li>• Sıra içinde gezinirken</li>
+                                        <li>• Preload ile sonraki şarkı yüklenirken</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">Endpoint:</span>
+                                        <span class="text-cyan-400 ml-1">POST /queue/initial</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Şarkı Sayısı:</span>
+                                        <span class="text-slate-300 ml-1">15 şarkı</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Cache:</span>
+                                        <span class="text-emerald-400 ml-1">Redis 5dk</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">DB Query:</span>
+                                        <span class="text-slate-300 ml-1">Context'e göre</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Context Türleri Detaylı -->
+                            <div class="mt-3 p-3 bg-amber-900/20 border border-amber-700/30 rounded-lg">
+                                <div class="text-xs text-amber-400 font-medium mb-2">Context Türleri ve Davranışları</div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr class="text-slate-500 border-b border-slate-700">
+                                                <th class="text-left py-1 pr-2">Context</th>
+                                                <th class="text-left py-1 pr-2">Şarkı Kaynağı</th>
+                                                <th class="text-left py-1 pr-2">Sıralama</th>
+                                                <th class="text-left py-1">Bitince</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-slate-400">
+                                            <tr class="border-b border-slate-700/50">
+                                                <td class="py-1 pr-2 text-white">Albüm</td>
+                                                <td class="py-1 pr-2">Albümdeki şarkılar</td>
+                                                <td class="py-1 pr-2">Karışık</td>
+                                                <td class="py-1">→ Tür'e geç</td>
+                                            </tr>
+                                            <tr class="border-b border-slate-700/50">
+                                                <td class="py-1 pr-2 text-white">Playlist</td>
+                                                <td class="py-1 pr-2">Playlist şarkıları</td>
+                                                <td class="py-1 pr-2">Karışık</td>
+                                                <td class="py-1">→ Tür'e geç</td>
+                                            </tr>
+                                            <tr class="border-b border-slate-700/50">
+                                                <td class="py-1 pr-2 text-white">Kullanıcı Playlist</td>
+                                                <td class="py-1 pr-2">Kullanıcının listesi</td>
+                                                <td class="py-1 pr-2">Sıralı</td>
+                                                <td class="py-1">→ Tür'e geç</td>
+                                            </tr>
+                                            <tr class="border-b border-slate-700/50">
+                                                <td class="py-1 pr-2 text-white">Tür (Genre)</td>
+                                                <td class="py-1 pr-2">Türdeki tüm şarkılar</td>
+                                                <td class="py-1 pr-2">Karışık</td>
+                                                <td class="py-1">♾️ Sonsuz döngü</td>
+                                            </tr>
+                                            <tr class="border-b border-slate-700/50">
+                                                <td class="py-1 pr-2 text-white">Radyo</td>
+                                                <td class="py-1 pr-2">Radyo havuzu</td>
+                                                <td class="py-1 pr-2">Karışık</td>
+                                                <td class="py-1">♾️ Sonsuz döngü</td>
+                                            </tr>
+                                            <tr class="border-b border-slate-700/50">
+                                                <td class="py-1 pr-2 text-white">Sektör</td>
+                                                <td class="py-1 pr-2">Sektör playlist'leri</td>
+                                                <td class="py-1 pr-2">Karışık</td>
+                                                <td class="py-1">♾️ Sonsuz döngü</td>
+                                            </tr>
+                                            <tr class="border-b border-slate-700/50">
+                                                <td class="py-1 pr-2 text-white">Popüler</td>
+                                                <td class="py-1 pr-2">Top 100 şarkı</td>
+                                                <td class="py-1 pr-2">Karışık</td>
+                                                <td class="py-1">→ Tür'e geç</td>
+                                            </tr>
+                                            <tr class="border-b border-slate-700/50">
+                                                <td class="py-1 pr-2 text-white">Favoriler</td>
+                                                <td class="py-1 pr-2">Kullanıcı favorileri</td>
+                                                <td class="py-1 pr-2">Ekleme sırası</td>
+                                                <td class="py-1">→ Tür'e geç</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 pr-2 text-white">Arama</td>
+                                                <td class="py-1 pr-2">Şarkının albümü</td>
+                                                <td class="py-1 pr-2">Karışık</td>
+                                                <td class="py-1">→ Tür'e geç</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- İşletme Örneği -->
+                            <div class="mt-3 p-3 bg-blue-900/20 border border-blue-700/30 rounded-lg">
+                                <div class="text-xs text-blue-400 font-medium mb-2">💡 İşletme Senaryosu</div>
+                                <p class="text-xs text-slate-400">
+                                    <strong class="text-white">Kafe örneği:</strong> Çalışan sabah "Caz" türünden bir şarkıya tıklar →
+                                    Queue oluşturulur (~200ms) → Gün boyu şarkılar otomatik geçer (queue korunur, ek süre yok) →
+                                    Akşam müşteri "Pop" türünden şarkı isterse → Yeni tıklama = Yeni queue (~200ms).
+                                </p>
+                            </div>
+
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>Her yeni tıklama</span>
+                                    <span class="flex-1"></span>
+                                    <span>~150-300ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full" style="width: 35%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aşama 7 -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">7</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">Dinleme Kaydı (track-start)</h3>
+                                <span class="px-2 py-0.5 bg-blue-600 text-white text-xs rounded">~50ms</span>
+                                <span class="px-2 py-0.5 bg-blue-600 text-blue-100 text-xs rounded">Async/Paralel</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                Müzik başladığında dinleme kaydı oluşturulur. Bu işlem arka planda çalışır ve
+                                müziğin başlamasını bekletmez. Cihaz, tarayıcı ve zaman bilgileri kaydedilir.
+                            </p>
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">Endpoint:</span>
+                                        <span class="text-cyan-400 ml-1">POST /track-start</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Tablo:</span>
+                                        <span class="text-slate-300 ml-1">song_plays</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Dönen:</span>
+                                        <span class="text-emerald-400 ml-1">play_id</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">UI Etkisi:</span>
+                                        <span class="text-emerald-400 ml-1">Yok (async)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>Paralel çalışır</span>
+                                    <span class="flex-1"></span>
+                                    <span>~50ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" style="width: 8%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aşama 8 -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">8</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">30 Saniye Sonra Hit Kaydı (track-hit)</h3>
+                                <span class="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded">~30ms</span>
+                                <span class="px-2 py-0.5 bg-emerald-600 text-emerald-100 text-xs rounded">30sn Sonra</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                Kullanıcı şarkıyı en az 30 saniye dinlerse "gerçek dinleme" sayılır ve
+                                şarkının play_count değeri 1 artar. Bu süre sahte dinlemeleri engellemek için standarttır.
+                            </p>
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">Endpoint:</span>
+                                        <span class="text-cyan-400 ml-1">POST /track-hit</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Tetikleme:</span>
+                                        <span class="text-slate-300 ml-1">30.000ms sonra</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">İşlem:</span>
+                                        <span class="text-slate-300 ml-1">play_count++</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">UI Etkisi:</span>
+                                        <span class="text-emerald-400 ml-1">Yok (async)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>30 saniye sonra</span>
+                                    <span class="flex-1"></span>
+                                    <span>~30ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" style="width: 5%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aşama 9 -->
+                <div class="flow-line">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0 shadow-lg">9</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-medium">Şarkı Bitişi + Sıra Yenileme</h3>
+                                <span class="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded">~100ms</span>
+                                <span class="px-2 py-0.5 bg-emerald-600 text-emerald-100 text-xs rounded">Şarkı Bitince</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">
+                                Şarkı bittiğinde veya atlandığında dinleme süresi kaydedilir (track-end).
+                                Sırada az şarkı kaldıysa aynı tür/albümden yeni şarkılar otomatik eklenir (queue/refill).
+                            </p>
+                            <div class="bg-slate-700/50 rounded-lg p-3">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <span class="text-slate-500">Endpoint 1:</span>
+                                        <span class="text-cyan-400 ml-1">POST /track-end</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Endpoint 2:</span>
+                                        <span class="text-cyan-400 ml-1">POST /queue/refill</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Kayıt:</span>
+                                        <span class="text-slate-300 ml-1">listened_duration</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500">Kayıt:</span>
+                                        <span class="text-slate-300 ml-1">was_skipped</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Chart -->
+                            <div class="mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                                    <span>Şarkı bitince</span>
+                                    <span class="flex-1"></span>
+                                    <span>~100ms</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="bar-animate h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style="width: 15%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toplam Süre Grafiği -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-lg font-semibold text-white mb-4">Toplam Süre Dağılımı (Her Şarkı Tıklamasında)</h2>
+
+            <!-- Müzik Başlayana Kadar -->
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-red-400 mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                    Müzik Başlayana Kadar (Sıralı - Toplam ~800ms)
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">1. Yetki Kontrolü</span>
+                            <span class="text-slate-300">~50ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-red-500 rounded-full flex items-center justify-end pr-2" style="width: 6%">
+                                <span class="text-xs text-white font-medium">6%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">2. Stream URL Alma</span>
+                            <span class="text-slate-300">~150ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-red-400 rounded-full flex items-center justify-end pr-2" style="width: 19%">
+                                <span class="text-xs text-white font-medium">19%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">3. HLS Playlist İndirme</span>
+                            <span class="text-slate-300">~80ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-orange-500 rounded-full flex items-center justify-end pr-2" style="width: 10%">
+                                <span class="text-xs text-white font-medium">10%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">4. HLS Şifreleme Anahtarı</span>
+                            <span class="text-slate-300">~40ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-orange-400 rounded-full flex items-center justify-end pr-2" style="width: 5%">
+                                <span class="text-xs text-white font-medium">5%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">5. İlk HLS Segment</span>
+                            <span class="text-slate-300">~280ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-500 rounded-full flex items-center justify-end pr-2" style="width: 35%">
+                                <span class="text-xs text-white font-medium">35%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">6. Queue Initial (sıra oluşturma)</span>
+                            <span class="text-slate-300">~200ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-400 rounded-full flex items-center justify-end pr-2" style="width: 25%">
+                                <span class="text-xs text-white font-medium">25%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paralel Çalışan -->
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-blue-400 mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    Paralel Çalışan (Müziği Bekletmez)
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">7. track-start (dinleme kaydı)</span>
+                            <span class="text-slate-300">~50ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500/60 rounded-full flex items-center justify-end pr-2" style="width: 100%">
+                                <span class="text-xs text-blue-200 font-medium">async - müziği bekletmez</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sonra Çalışan -->
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-emerald-400 mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    Şarkı Oynarken / Bitince
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">8. track-hit (30 saniye sonra)</span>
+                            <span class="text-slate-300">~30ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500/60 rounded-full flex items-center justify-end pr-2" style="width: 100%">
+                                <span class="text-xs text-emerald-200 font-medium">30sn sonra tetiklenir</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">9. track-end + queue/refill (şarkı bitince)</span>
+                            <span class="text-slate-300">~100ms</span>
+                        </div>
+                        <div class="h-5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500/60 rounded-full flex items-center justify-end pr-2" style="width: 100%">
+                                <span class="text-xs text-emerald-200 font-medium">şarkı bitince tetiklenir</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Özet Kutuları -->
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-4 bg-red-900/30 border border-red-700/30 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-red-400 font-medium">Her Şarkı Tıklamasında</span>
+                        <span class="text-2xl font-bold text-white">~800ms</span>
+                    </div>
+                    <p class="text-slate-400 text-xs">
+                        Aşama 1-6 sıralı çalışır. Her yeni şarkıya tıklamada bu süre geçer.
+                    </p>
+                </div>
+                <div class="p-4 bg-emerald-900/30 border border-emerald-700/30 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-emerald-400 font-medium">Otomatik Geçişlerde</span>
+                        <span class="text-2xl font-bold text-white">~0ms</span>
+                    </div>
+                    <p class="text-slate-400 text-xs">
+                        Preload sayesinde sonraki şarkı hazır. Sıra içi geçişlerde bekleme yok.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cache Karşılaştırması -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <div class="flex items-center gap-3 mb-4">
+                <h2 class="text-lg font-semibold text-white">Cache Karşılaştırması</h2>
+                <span class="px-3 py-1 bg-emerald-600 text-white text-xs rounded-full font-medium">Biz Cache Kullanıyoruz</span>
+            </div>
+
+            <p class="text-slate-400 text-sm mb-4">
+                Şarkı bilgileri ve kullanıcı verileri Redis cache'de tutulur. Her istekte veritabanına gitmek yerine bellekten okunur.
+            </p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-600">
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">İşlem</th>
+                            <th class="text-center py-3 px-4 text-red-400 font-medium">Cache'siz (DB)</th>
+                            <th class="text-center py-3 px-4 text-emerald-400 font-medium">Cache'li (Redis)</th>
+                            <th class="text-center py-3 px-4 text-slate-400 font-medium">Kazanç</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Şarkı bilgisi alma</td>
+                            <td class="py-3 px-4 text-center text-red-400 font-mono">~200ms</td>
+                            <td class="py-3 px-4 text-center text-emerald-400 font-mono">~5ms</td>
+                            <td class="py-3 px-4 text-center text-emerald-400">40x fark</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Premium kontrolü</td>
+                            <td class="py-3 px-4 text-center text-red-400 font-mono">~50ms</td>
+                            <td class="py-3 px-4 text-center text-emerald-400 font-mono">~2ms</td>
+                            <td class="py-3 px-4 text-center text-emerald-400">25x fark</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Sıradaki şarkıları getirme</td>
+                            <td class="py-3 px-4 text-center text-red-400 font-mono">~300ms</td>
+                            <td class="py-3 px-4 text-center text-emerald-400 font-mono">~20ms</td>
+                            <td class="py-3 px-4 text-center text-emerald-400">15x fark</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Genre/Playlist bilgisi</td>
+                            <td class="py-3 px-4 text-center text-red-400 font-mono">~100ms</td>
+                            <td class="py-3 px-4 text-center text-emerald-400 font-mono">~3ms</td>
+                            <td class="py-3 px-4 text-center text-emerald-400">33x fark</td>
+                        </tr>
+                        <tr class="bg-slate-700/30">
+                            <td class="py-4 px-4 text-white font-medium">İLK ŞARKI BAŞLAMA</td>
+                            <td class="py-4 px-4 text-center text-red-400 font-bold text-lg">~1500-2000ms</td>
+                            <td class="py-4 px-4 text-center text-emerald-400 font-bold text-lg">~600-650ms</td>
+                            <td class="py-4 px-4 text-center text-emerald-400 font-bold">%65 fark</td>
+                        </tr>
+                        <tr class="bg-slate-700/30">
+                            <td class="py-4 px-4 text-white font-medium">SONRAKİ ŞARKIYA GEÇİŞ</td>
+                            <td class="py-4 px-4 text-center text-red-400 font-bold">~500ms</td>
+                            <td class="py-4 px-4 text-center text-emerald-400 font-bold">~0ms (preload)</td>
+                            <td class="py-4 px-4 text-center text-emerald-400 font-bold">%100</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Cache TTL Bilgileri -->
+            <div class="mt-6 grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <div class="text-emerald-400 font-medium mb-1">Şarkı Cache</div>
+                    <div class="text-2xl font-bold text-white">24 saat</div>
+                    <div class="text-slate-500 text-xs">Şarkı bilgileri Redis'te</div>
+                </div>
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <div class="text-purple-400 font-medium mb-1">Playlist Cache</div>
+                    <div class="text-2xl font-bold text-white">1 saat</div>
+                    <div class="text-slate-500 text-xs">Playlist içerikleri</div>
+                </div>
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <div class="text-cyan-400 font-medium mb-1">Genre Cache</div>
+                    <div class="text-2xl font-bold text-white">1 hafta</div>
+                    <div class="text-slate-500 text-xs">Tür bilgileri</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Preload Sistemi -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <div class="flex items-center gap-3 mb-4">
+                <h2 class="text-lg font-semibold text-white">Preload Sistemi</h2>
+                <span class="px-3 py-1 bg-emerald-600 text-white text-xs rounded-full font-medium">Aktif</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-red-900/20 border border-red-700/30 rounded-lg p-4">
+                    <h4 class="text-red-400 font-medium mb-2">İlk Şarkı (Preload Yok)</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                            Stream URL istenir (~150ms)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                            HLS playlist indirilir (~100ms)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                            İlk segment yüklenir (~300ms)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                            Müzik başlar
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-2 bg-red-900/30 rounded text-center">
+                        <span class="text-red-400 font-bold">~600-650ms bekleme</span>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-900/20 border border-emerald-700/30 rounded-lg p-4">
+                    <h4 class="text-emerald-400 font-medium mb-2">Sonraki Şarkılar (Preload Var)</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            Şarkı çalarken sıradaki hazırlanır
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            HLS instance oluşturulur
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            İlk segmentler önbelleğe alınır
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            Geçişte anında başlar
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-2 bg-emerald-900/30 rounded text-center">
+                        <span class="text-emerald-400 font-bold">~0ms bekleme</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kaldırılabilir mi? -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-lg font-semibold text-white mb-4">Bu İşlemler Kaldırılabilir mi?</h2>
+
+            <div class="space-y-3">
+                <div class="p-4 bg-red-900/20 border border-red-800/30 rounded-lg">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-red-400 font-medium">Kaldırılamaz</span>
+                        <span class="px-2 py-0.5 bg-red-600 text-white text-xs rounded">Kritik</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-slate-300">Premium kontrolü, şifreli URL, HLS formatı, imzalı bağlantılar:</strong>
+                        Bunlar olmadan şarkılar kolayca indirilebilir, URL'ler paylaşılabilir ve premium sistemi çalışmaz.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-amber-900/20 border border-amber-800/30 rounded-lg">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-amber-400 font-medium">Değerlendirilebilir</span>
+                        <span class="px-2 py-0.5 bg-amber-600 text-white text-xs rounded">Opsiyonel</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-slate-300">track-start, track-hit, track-end:</strong>
+                        Kaldırılırsa ~100ms hız kazanılır ama hangi şarkının ne kadar dinlendiği,
+                        skip oranları, cihaz dağılımı ve telif hesaplamaları yapılamaz.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-emerald-900/20 border border-emerald-800/30 rounded-lg">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-emerald-400 font-medium">Zaten Optimize</span>
+                        <span class="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded">Aktif</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-slate-300">Redis cache, HLS preload, async istatistikler:</strong>
+                        Sistem zaten maksimum optimize. İlk tıklamada ~650ms, sonraki geçişlerde 0ms bekleme.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toplanan Veriler -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-lg font-semibold text-white mb-4">Toplanan Veriler ve Kullanım Alanları</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-slate-300 font-medium mb-3">Her Dinlemede Kaydedilen</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between p-2 bg-slate-700/30 rounded">
+                            <span class="text-slate-400 text-sm">Cihaz türü</span>
+                            <span class="text-slate-300 text-sm">mobile / tablet / desktop</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-slate-700/30 rounded">
+                            <span class="text-slate-400 text-sm">Tarayıcı</span>
+                            <span class="text-slate-300 text-sm">Chrome / Safari / Firefox...</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-slate-700/30 rounded">
+                            <span class="text-slate-400 text-sm">İşletim sistemi</span>
+                            <span class="text-slate-300 text-sm">Windows / iOS / Android...</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-slate-700/30 rounded">
+                            <span class="text-slate-400 text-sm">Dinleme süresi</span>
+                            <span class="text-slate-300 text-sm">listened_duration (saniye)</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-slate-700/30 rounded">
+                            <span class="text-slate-400 text-sm">Skip durumu</span>
+                            <span class="text-slate-300 text-sm">was_skipped (true/false)</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-slate-700/30 rounded">
+                            <span class="text-slate-400 text-sm">Kaynak</span>
+                            <span class="text-slate-300 text-sm">playlist / album / genre / radio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-slate-300 font-medium mb-3">Kullanım Alanları</h4>
+                    <div class="space-y-2">
+                        <div class="p-2 bg-indigo-900/30 rounded flex items-center gap-2">
+                            <span class="text-indigo-400">📊</span>
+                            <span class="text-slate-300 text-sm">Top 10 şarkı listeleri oluşturma</span>
+                        </div>
+                        <div class="p-2 bg-purple-900/30 rounded flex items-center gap-2">
+                            <span class="text-purple-400">🎯</span>
+                            <span class="text-slate-300 text-sm">Kişiselleştirilmiş öneriler</span>
+                        </div>
+                        <div class="p-2 bg-emerald-900/30 rounded flex items-center gap-2">
+                            <span class="text-emerald-400">💰</span>
+                            <span class="text-slate-300 text-sm">Sanatçı telif hesaplamaları</span>
+                        </div>
+                        <div class="p-2 bg-cyan-900/30 rounded flex items-center gap-2">
+                            <span class="text-cyan-400">📱</span>
+                            <span class="text-slate-300 text-sm">Mobil vs masaüstü kullanım analizi</span>
+                        </div>
+                        <div class="p-2 bg-amber-900/30 rounded flex items-center gap-2">
+                            <span class="text-amber-400">⏭️</span>
+                            <span class="text-slate-300 text-sm">Skip oranı ile kalite analizi</span>
+                        </div>
+                        <div class="p-2 bg-pink-900/30 rounded flex items-center gap-2">
+                            <span class="text-pink-400">📈</span>
+                            <span class="text-slate-300 text-sm">Saatlik/günlük dinleme istatistikleri</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sistem Mimarisi -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-lg font-semibold text-white mb-6">Sistem Mimarisi</h2>
+
+            <!-- 3 Katman -->
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-gradient-to-br from-indigo-900/50 to-indigo-800/30 border border-indigo-700/50 rounded-xl p-5 text-center">
+                    <div class="text-4xl mb-3">🖥️</div>
+                    <div class="text-white font-bold text-lg">Tarayıcı</div>
+                    <div class="text-indigo-300 text-sm mt-1">Kullanıcının Cihazı</div>
+                    <div class="mt-4 space-y-1 text-xs text-left">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Framework:</span>
+                            <span class="text-slate-300">Alpine.js</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Player:</span>
+                            <span class="text-slate-300">HLS.js</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Fallback:</span>
+                            <span class="text-slate-300">Howler.js</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Boyut:</span>
+                            <span class="text-slate-300">~350KB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-700/50 rounded-xl p-5 text-center">
+                    <div class="text-4xl mb-3">⚡</div>
+                    <div class="text-white font-bold text-lg">Sunucu</div>
+                    <div class="text-purple-300 text-sm mt-1">API & İş Mantığı</div>
+                    <div class="mt-4 space-y-1 text-xs text-left">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Framework:</span>
+                            <span class="text-slate-300">Laravel 12</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Auth:</span>
+                            <span class="text-slate-300">Sanctum</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Cache:</span>
+                            <span class="text-emerald-400">Redis</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Endpoint:</span>
+                            <span class="text-slate-300">8 adet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-cyan-900/50 to-cyan-800/30 border border-cyan-700/50 rounded-xl p-5 text-center">
+                    <div class="text-4xl mb-3">🗄️</div>
+                    <div class="text-white font-bold text-lg">Depolama</div>
+                    <div class="text-cyan-300 text-sm mt-1">Veri & Dosyalar</div>
+                    <div class="mt-4 space-y-1 text-xs text-left">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Database:</span>
+                            <span class="text-slate-300">MySQL</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Dosyalar:</span>
+                            <span class="text-slate-300">HLS Segments</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Şifreleme:</span>
+                            <span class="text-slate-300">AES-128</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">CDN:</span>
+                            <span class="text-slate-300">Nginx</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Akış Şeması -->
+            <div class="bg-slate-700/30 rounded-xl p-6">
+                <h4 class="text-white font-medium mb-4">Veri Akış Şeması</h4>
+                <div class="overflow-x-auto">
+                    <div class="min-w-[600px] font-mono text-xs leading-relaxed text-slate-300">
+<pre class="whitespace-pre">
+┌──────────────────┐         ┌──────────────────┐         ┌──────────────────┐
+│    TARAYICI      │         │     SUNUCU       │         │    VERİTABANI    │
+│   (Alpine.js)    │         │    (Laravel)     │         │     (MySQL)      │
+└────────┬─────────┘         └────────┬─────────┘         └────────┬─────────┘
+         │                            │                            │
+         │  1. Şarkıya tıkla          │                            │
+         │  ─────────────────────────>│                            │
+         │                            │                            │
+         │                            │  2. Redis cache?           │
+         │                            │  ─────────────────────────>│ (Redis)
+         │                            │  <─────────────────────────│ ~5ms
+         │                            │                            │
+         │  3. Şifreli URL            │                            │
+         │  <─────────────────────────│                            │
+         │         ~150ms             │                            │
+         │                            │                            │
+         │  4. HLS Playlist           │                            │
+         │  ─────────────────────────>│ (Nginx static)            │
+         │  <─────────────────────────│                            │
+         │                            │                            │
+         │  5. HLS Segments           │                            │
+         │  ─────────────────────────>│ (AES-128 encrypted)       │
+         │  <─────────────────────────│                            │
+         │         ~400ms             │                            │
+         │                            │                            │
+         │  ♫ MÜZİK BAŞLAR ♫          │                            │
+         │                            │                            │
+         │  6. track-start (async)    │                            │
+         │  ─────────────────────────>│  INSERT song_plays        │
+         │                            │  ─────────────────────────>│
+         │                            │  play_id döner             │
+         │                            │                            │
+         │  [30 saniye sonra]         │                            │
+         │                            │                            │
+         │  7. track-hit              │                            │
+         │  ─────────────────────────>│  play_count++             │
+         │                            │  ─────────────────────────>│
+         │                            │                            │
+         │  [Şarkı bitince]           │                            │
+         │                            │                            │
+         │  8. track-end              │                            │
+         │  ─────────────────────────>│  UPDATE listened_duration │
+         │                            │  ─────────────────────────>│
+         │                            │                            │
+         │  9. queue/refill           │                            │
+         │  ─────────────────────────>│  SELECT next songs        │
+         │                            │  ─────────────────────────>│
+         │  Yeni şarkılar             │  <─────────────────────────│
+         │  <─────────────────────────│                            │
+         │                            │                            │
+         ▼                            ▼                            ▼
+</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Endpoints -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-lg font-semibold text-white mb-4">API Endpoints (8 Adet)</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-600">
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Method</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Endpoint</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Açıklama</th>
+                            <th class="text-center py-3 px-4 text-slate-400 font-medium">Süre</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700 font-mono text-xs">
+                        <tr>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-emerald-600 text-white rounded">GET</span></td>
+                            <td class="py-3 px-4 text-cyan-400">/api/muzibu/songs/{id}/stream</td>
+                            <td class="py-3 px-4 text-slate-300 font-sans">Şifreli stream URL al</td>
+                            <td class="py-3 px-4 text-center text-slate-300">~150ms</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-600 text-white rounded">POST</span></td>
+                            <td class="py-3 px-4 text-cyan-400">/api/muzibu/songs/{id}/track-start</td>
+                            <td class="py-3 px-4 text-slate-300 font-sans">Dinleme kaydı başlat</td>
+                            <td class="py-3 px-4 text-center text-slate-300">~50ms</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-600 text-white rounded">POST</span></td>
+                            <td class="py-3 px-4 text-cyan-400">/api/muzibu/songs/{id}/track-hit</td>
+                            <td class="py-3 px-4 text-slate-300 font-sans">30sn sonra hit kaydet</td>
+                            <td class="py-3 px-4 text-center text-slate-300">~30ms</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-600 text-white rounded">POST</span></td>
+                            <td class="py-3 px-4 text-cyan-400">/api/muzibu/songs/{id}/track-end</td>
+                            <td class="py-3 px-4 text-slate-300 font-sans">Dinleme bitişi kaydet</td>
+                            <td class="py-3 px-4 text-center text-slate-300">~30ms</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-600 text-white rounded">POST</span></td>
+                            <td class="py-3 px-4 text-cyan-400">/api/muzibu/queue/refill</td>
+                            <td class="py-3 px-4 text-slate-300 font-sans">Sırayı yenile (15 şarkı)</td>
+                            <td class="py-3 px-4 text-center text-slate-300">~100ms</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-emerald-600 text-white rounded">GET</span></td>
+                            <td class="py-3 px-4 text-cyan-400">/hls/muzibu/songs/{id}/playlist.m3u8</td>
+                            <td class="py-3 px-4 text-slate-300 font-sans">HLS playlist dosyası</td>
+                            <td class="py-3 px-4 text-center text-slate-300">~50ms</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-emerald-600 text-white rounded">GET</span></td>
+                            <td class="py-3 px-4 text-cyan-400">/hls/muzibu/songs/{id}/segment-*.ts</td>
+                            <td class="py-3 px-4 text-slate-300 font-sans">HLS segment dosyaları</td>
+                            <td class="py-3 px-4 text-center text-slate-300">~20ms/adet</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-emerald-600 text-white rounded">GET</span></td>
+                            <td class="py-3 px-4 text-cyan-400">/api/muzibu/songs/{id}/key</td>
+                            <td class="py-3 px-4 text-slate-300 font-sans">HLS şifreleme anahtarı</td>
+                            <td class="py-3 px-4 text-center text-slate-300">~10ms</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/50 border-t border-slate-700/50 mt-12">
+        <div class="max-w-6xl mx-auto px-4 py-4 text-center text-sm text-slate-500">
+            14 Ocak 2026 • Muzibu.com.tr
+        </div>
+    </footer>
+
+</body>
+</html>

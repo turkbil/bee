@@ -58,9 +58,10 @@ class UserManageComponent extends Component
        $this->inputs = [
            'name' => '',
            'email' => '',
+           'phone' => '',
            'password' => '',
            'is_active' => true,
-           'role_id' => null,
+           'role_id' => 'user',  // Varsayılan rol: Üye (DB'de kayıt tutmaz ama UI'da gösterilir)
            'permissions' => []
        ];
     
@@ -84,12 +85,14 @@ class UserManageComponent extends Component
 
            $this->inputs['name'] = $user->name;
            $this->inputs['email'] = $user->email;
+           $this->inputs['phone'] = $user->phone;
            $this->inputs['is_active'] = $user->is_active;
            $this->inputs['email_verified_at'] = $user->email_verified_at ? true : false;
+           $this->inputs['subscription_expires_at'] = $user->subscription_expires_at;
 
-           // Rol bilgisini yükle
+           // Rol bilgisini yükle (rol yoksa 'user' - Üye rolü DB'de kayıt tutmaz ama UI'da gösterilmeli)
            $roleFromDb = $user->roles->first();
-           $this->inputs['role_id'] = $roleFromDb ? $roleFromDb->name : null;
+           $this->inputs['role_id'] = $roleFromDb ? $roleFromDb->name : 'user';
            $this->previousRole = $this->inputs['role_id'];
 
            // Debug log
@@ -230,12 +233,12 @@ class UserManageComponent extends Component
         $this->clearAllModulePermissions();
         $this->inputs['permissions'] = [];
 
-        // Normal kullanıcı (Üye) rolü seçildiğinde role_id'yi null olarak ayarla
-        if ($value === 'user') {
-            $this->inputs['role_id'] = null;
-        }
+        // 🔴 NOT: 'user' rolünde role_id'yi null yapma - Blade'deki radio button value='user' olduğundan
+        // inputs.role_id değerini 'user' olarak tutmalıyız ki seçim görsel olarak kaybolmasın.
+        // Database'e kayıt sırasında handleRoleAndPermissions() içinde 'user' kontrolü yapılıyor.
+
         // Eğer rol editör ise modül izinleri bölümünü göster ve izinleri hazırla
-        else if ($value === 'editor') {
+        if ($value === 'editor') {
             // Editör rolü seçildiğinde ilgili izinleri hazırla
             $this->prepareEditorPermissions();
             $this->calculateModulePermissionCounts();
@@ -591,11 +594,11 @@ class UserManageComponent extends Component
     
             // Avatar yükleme işlemi
             $this->handleImageUpload($user);
-    
-            if (isset($this->inputs['role_id']) && $this->inputs['role_id'] === 'user') {
-                $this->inputs['role_id'] = null;
-            }
-            
+
+            // 🔴 NOT: 'user' rolünde inputs.role_id değerini 'user' olarak tutuyoruz (null yapmıyoruz)
+            // Blade'deki radio button seçiminin görsel olarak kaybolmaması için.
+            // handleRoleAndPermissions() içinde 'user' kontrolü yapılıp veritabanına rol atanmıyor.
+
             // Rol ve izin işlemleri
             $this->handleRoleAndPermissions($user);
     
@@ -642,9 +645,10 @@ class UserManageComponent extends Component
                 $this->inputs = [
                     'name' => '',
                     'email' => '',
+                    'phone' => '',
                     'password' => '',
                     'is_active' => true,
-                    'role_id' => null,
+                    'role_id' => 'user',  // Varsayılan rol: Üye
                     'permissions' => []
                 ];
                 $this->loadAvailableModules();
@@ -656,7 +660,8 @@ class UserManageComponent extends Component
                 $updatedUser->unsetRelation('permissions');
                 $updatedUser->load('roles');
 
-                $this->inputs['role_id'] = $updatedUser->roles->first() ? $updatedUser->roles->first()->name : null;
+                // 🔴 Rol yoksa 'user' döndür (Üye rolü DB'de kayıt tutmaz ama UI'da gösterilmeli)
+                $this->inputs['role_id'] = $updatedUser->roles->first() ? $updatedUser->roles->first()->name : 'user';
                 $this->previousRole = $this->inputs['role_id'];
 
                 // Eğer editor rolü varsa modül izinlerini tekrar yükle

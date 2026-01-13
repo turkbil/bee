@@ -285,21 +285,6 @@
                         <ul class="list-inline list-inline-dots mb-0">
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
-                                    Dokümantasyon
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#" class="link-secondary" rel="noopener">
-                                    Lisans
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#" class="link-secondary" rel="noopener">
-                                    Kaynak Kodu
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#" class="link-secondary" rel="noopener">
                                     <i class="fa-thin fa-heart text-pink"></i>
                                     Sevgiyle kodlandı.
                                 </a>
@@ -536,6 +521,11 @@ document.addEventListener('DOMContentLoaded', function() {
 {{-- 🎨 Alpine.js Global Store Configuration - After Livewire (uses bundled Alpine) --}}
 <script>
 document.addEventListener('livewire:init', () => {
+    // 🔄 Livewire güncellemelerinden sonra Bootstrap tooltip'leri yeniden initialize et
+    Livewire.hook('morph.updated', ({ el, component }) => {
+        reinitTooltips();
+    });
+
     // Livewire'ın bundled Alpine.js'ini kullan
     if (typeof Alpine !== 'undefined') {
         // 🌐 Global state management
@@ -587,6 +577,28 @@ document.addEventListener('livewire:init', () => {
 
     }
 });
+
+// 🔄 Global tooltip reinitialize fonksiyonu
+function reinitTooltips() {
+    if (typeof bootstrap === 'undefined' || !bootstrap.Tooltip) return;
+
+    // Mevcut tooltip'leri temizle
+    document.querySelectorAll('.tooltip.show, .tooltip.fade').forEach(function(el) {
+        el.remove();
+    });
+
+    // Yeni tooltip'leri initialize et
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+        var existingTooltip = bootstrap.Tooltip.getInstance(el);
+        if (existingTooltip) {
+            existingTooltip.dispose();
+        }
+        new bootstrap.Tooltip(el);
+    });
+}
+
+// Sayfa yüklendiğinde de çalıştır
+document.addEventListener('DOMContentLoaded', reinitTooltips);
 </script>
 
 <!-- Navigation Loading States -->

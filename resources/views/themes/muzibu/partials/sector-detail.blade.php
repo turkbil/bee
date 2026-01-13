@@ -2,14 +2,23 @@
 <div class="relative overflow-hidden">
     @php
         $heroMedia = $sector->getFirstMedia('hero');
-        $heroUrl = $heroMedia ? thumb($heroMedia, 1200, 800, ['scale' => 1]) : null;
+        // WebP + JPG fallback için her iki format
+        $heroUrlWebp = $heroMedia ? thumb($heroMedia, 1200, 800, ['scale' => 1, 'format' => 'webp']) : null;
+        $heroUrlJpg = $heroMedia ? thumb($heroMedia, 1200, 800, ['scale' => 1, 'format' => 'jpg']) : null;
     @endphp
     {{-- Full Width Background Image --}}
-    @if($heroUrl)
+    @if($heroUrlWebp || $heroUrlJpg)
         <div class="relative w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9]">
-            <img src="{{ $heroUrl }}"
-                 alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
-                 class="w-full h-full object-cover">
+            {{-- Picture tag with WebP + JPG fallback for old devices --}}
+            <picture>
+                @if($heroUrlWebp)
+                    <source srcset="{{ $heroUrlWebp }}" type="image/webp">
+                @endif
+                <img src="{{ $heroUrlJpg ?: $heroUrlWebp }}"
+                     alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
+                     class="w-full h-full object-cover"
+                     loading="eager">
+            </picture>
             {{-- Gradient Overlay --}}
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
 

@@ -247,8 +247,14 @@ function serverLog(action, data = {}) {
             ...(currentSong && {
                 song: {
                     id: currentSong.song_id,
-                    title: currentSong.song_title?.tr || currentSong.song_title?.en || 'Unknown',
-                    artist: currentSong.artist_title?.tr || currentSong.artist_title?.en || null,
+                    // song_title: string veya {tr, en} objesi olabilir
+                    title: (typeof currentSong.song_title === 'string')
+                        ? currentSong.song_title
+                        : (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.title || 'Unknown'),
+                    // artist_title: string veya {tr, en} objesi olabilir
+                    artist: (typeof currentSong.artist_title === 'string')
+                        ? currentSong.artist_title
+                        : (currentSong.artist_title?.tr || currentSong.artist_title?.en || null),
                     album_id: currentSong.album_id || null,
                     genre_id: currentSong.genre_id || null,
                 }

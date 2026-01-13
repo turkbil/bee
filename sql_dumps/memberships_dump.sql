@@ -1,0 +1,4 @@
+/*M!999999\- enable the sandbox mode */ 
+INSERT INTO `memberships` (`id`, `title_tr`, `description_tr`, `price`, `days`, `period`, `trial`, `recurring`, `private`, `active`) VALUES (1,'Aylık Paket','Dilediğiniz zaman iptal edilebilen esnek bir üyelik. Her ay otomatik yenileme yoktur, üyelik için her ay manuel ödeme yapılır.',600,1,'M',1,0,0,1);
+INSERT INTO `memberships` (`id`, `title_tr`, `description_tr`, `price`, `days`, `period`, `trial`, `recurring`, `private`, `active`) VALUES (2,'Yıllık Paket','Aylık yalnızca 400 TL&#039;ye denk gelir. 12 ay boyunca sabit fiyatla avantajlı üyelik.',4000,1,'Y',1,1,0,1);
+INSERT INTO `memberships` (`id`, `title_tr`, `description_tr`, `price`, `days`, `period`, `trial`, `recurring`, `private`, `active`) VALUES (3,'Deneme Üyeliği','7 gün boyunca hiçbir ücret ödemeden tüm müzik yayınlarını deneyimleyin. Deneme süresi sonunda üyeliğiniz otomatik olarak ücretli pakete geçmez; tercihinize göre yükseltebilirsiniz.',0,7,'D',1,0,0,1);

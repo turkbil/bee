@@ -1,0 +1,79 @@
+{
+  "report_date": "2026-01-14",
+  "report_title": "Muzibu Üye Durum Raporu",
+  "total_users": 1569,
+  "total_active": 403,
+  "total_expired": 1166,
+  "categories": [
+    {
+      "id": "yillik-aktif",
+      "title": "Premium Yıllık - Aktif",
+      "description": "4,000 TL/yıl • Aktif üyelikler",
+      "file": "yillik-aktif.json",
+      "count": 234,
+      "status": "active",
+      "plan_id": 3,
+      "color": "green"
+    },
+    {
+      "id": "aylik-aktif",
+      "title": "Premium Aylık - Aktif",
+      "description": "600 TL/ay • Aktif üyelikler",
+      "file": "aylik-aktif.json",
+      "count": 89,
+      "status": "active",
+      "plan_id": 2,
+      "color": "green"
+    },
+    {
+      "id": "deneme-aktif",
+      "title": "Ücretsiz Deneme - Aktif",
+      "description": "0 TL • Aktif deneme üyelikleri",
+      "file": "deneme-aktif.json",
+      "count": 80,
+      "status": "active",
+      "plan_id": 1,
+      "color": "blue"
+    },
+    {
+      "id": "uyelik-biten",
+      "title": "Premium Üyeliği Biten",
+      "description": "Aylık + Yıllık • Süresi dolmuş üyelikler",
+      "file": "uyelik-biten.json",
+      "count": 51,
+      "status": "expired",
+      "plan_id": [2, 3],
+      "color": "orange"
+    },
+    {
+      "id": "deneme-biten",
+      "title": "Deneme Süresi Biten",
+      "description": "Deneme süresi dolmuş kullanıcılar",
+      "file": "deneme-biten.json",
+      "count": 1115,
+      "status": "expired",
+      "plan_id": 1,
+      "color": "red"
+    },
+    {
+      "id": "paket-uymayan",
+      "title": "Paketlere Uymayan",
+      "description": "Özel durumlar • VIP veya subscription olmayan",
+      "file": "paket-uymayan.json",
+      "count": 0,
+      "status": "special",
+      "plan_id": null,
+      "color": "purple"
+    }
+  ],
+  "file_sizes": {
+    "yillik-aktif.json": "63 KB",
+    "aylik-aktif.json": "24 KB",
+    "deneme-aktif.json": "21 KB",
+    "uyelik-biten.json": "14 KB",
+    "deneme-biten.json": "300 KB",
+    "paket-uymayan.json": "5 B"
+  },
+  "generated_at": "2026-01-14T20:30:00Z",
+  "version": "1.0"
+}

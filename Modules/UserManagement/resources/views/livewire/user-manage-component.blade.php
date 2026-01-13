@@ -73,6 +73,15 @@
                             @enderror
                         </div>
 
+                        <!-- Telefon -->
+                        <div class="form-floating mb-3">
+                            <input type="tel" wire:model.defer="inputs.phone" class="form-control @error('inputs.phone') is-invalid @enderror" placeholder="+90 5XX XXX XX XX">
+                            <label><i class="fas fa-phone me-1"></i> Telefon</label>
+                            @error('inputs.phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- Email Doğrulama -->
                         @if($userId)
                         <div class="mb-3">
@@ -95,6 +104,62 @@
                                             </div>
                                             <div class="state p-danger p-off">
                                                 <label></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Üyelik Bilgileri (Sadece Muzibu için) -->
+                        @if(tenant() && tenant()->id == 1001 && $userId && isset($inputs['subscription_expires_at']) && $inputs['subscription_expires_at'])
+                        @php
+                            $subscriptionExpiry = \Carbon\Carbon::parse($inputs['subscription_expires_at']);
+                            $isExpired = $subscriptionExpiry->isPast();
+                            $daysLeft = $isExpired ? 0 : (int) now()->diffInDays($subscriptionExpiry);
+                            $hoursLeft = $isExpired ? 0 : (int) now()->diffInHours($subscriptionExpiry) % 24;
+                        @endphp
+                        <div class="mb-3">
+                            <div class="card {{ $isExpired ? 'border-danger' : ($daysLeft <= 7 ? 'border-warning' : 'border-success') }}"
+                                 style="background-color: {{ $isExpired ? 'rgba(214, 57, 57, 0.05)' : ($daysLeft <= 7 ? 'rgba(247, 191, 11, 0.05)' : 'rgba(47, 179, 68, 0.05)') }};">
+                                <div class="card-body p-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-crown {{ $isExpired ? 'text-danger' : ($daysLeft <= 7 ? 'text-warning' : 'text-success') }} me-3" style="font-size: 24px;"></i>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-medium d-flex align-items-center">
+                                                <span>Üyelik Durumu</span>
+                                                @if($isExpired)
+                                                    <span class="badge bg-danger ms-2">Süresi Doldu</span>
+                                                @elseif($daysLeft <= 7)
+                                                    <span class="badge bg-warning ms-2">Kritik</span>
+                                                @else
+                                                    <span class="badge bg-success ms-2">Aktif</span>
+                                                @endif
+                                            </div>
+                                            <div class="small {{ $isExpired ? 'text-danger' : ($daysLeft <= 7 ? 'text-warning' : 'text-success') }}">
+                                                @if($isExpired)
+                                                    <i class="fas fa-times-circle me-1"></i>{{ $subscriptionExpiry->format('d.m.Y H:i') }} tarihinde sona erdi
+                                                @else
+                                                    <i class="fas fa-clock me-1"></i>Kalan: <strong>{{ $daysLeft }} gün {{ $hoursLeft }} saat</strong>
+                                                    <span class="text-muted ms-1">({{ $subscriptionExpiry->format('d.m.Y H:i') }})</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @elseif(tenant() && tenant()->id == 1001 && $userId)
+                        <div class="mb-3">
+                            <div class="card border-secondary" style="background-color: rgba(108, 117, 125, 0.05);">
+                                <div class="card-body p-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user text-muted me-3" style="font-size: 24px;"></i>
+                                        <div>
+                                            <div class="fw-medium">Üyelik Durumu</div>
+                                            <div class="small text-muted">
+                                                <i class="fas fa-info-circle me-1"></i>Ücretsiz kullanıcı - Premium üyelik yok
                                             </div>
                                         </div>
                                     </div>
@@ -144,12 +209,13 @@
                         <div class="row mb-4">
                             <!-- Normal Üye -->
                             <div class="col-md-6 mb-3">
-                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ !in_array($inputs['role_id'], ['editor', 'admin', 'root']) ? 'active border border-3 border-primary' : '' }}">
+                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'user' || $inputs['role_id'] === null ? 'active border border-3 border-primary' : '' }}">
                                     <input type="radio"
                                         name="role"
                                         value="user"
                                         id="role-user"
-                                        wire:model.live="inputs.role_id"
+                                        wire:model="inputs.role_id"
+                                        @checked($inputs['role_id'] === 'user' || $inputs['role_id'] === null)
                                         class="form-selectgroup-input role-radio">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
@@ -172,7 +238,8 @@
                                         name="role"
                                         value="editor"
                                         id="role-editor"
-                                        wire:model.live="inputs.role_id"
+                                        wire:model="inputs.role_id"
+                                        @checked($inputs['role_id'] === 'editor')
                                         class="form-selectgroup-input role-radio">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
@@ -195,7 +262,8 @@
                                         name="role"
                                         value="admin"
                                         id="role-admin"
-                                        wire:model.live="inputs.role_id"
+                                        wire:model="inputs.role_id"
+                                        @checked($inputs['role_id'] === 'admin')
                                         class="form-selectgroup-input role-radio">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
@@ -219,7 +287,8 @@
                                         name="role"
                                         value="root"
                                         id="role-root"
-                                        wire:model.live="inputs.role_id"
+                                        wire:model="inputs.role_id"
+                                        @checked($inputs['role_id'] === 'root')
                                         class="form-selectgroup-input role-radio">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
@@ -240,7 +309,7 @@
                         <!-- Rol Açıklamaları -->
                         <div class="mb-4">
                             <!-- Üye Açıklaması -->
-                            <div id="userInfoSection" class="role-info" style="display: {{ !in_array($inputs['role_id'], ['editor', 'admin', 'root']) ? 'block' : 'none' }}">
+                            <div id="userInfoSection" class="role-info" style="display: {{ $inputs['role_id'] === 'user' || $inputs['role_id'] === null ? 'block' : 'none' }}">
                                 <div class="alert alert-info bg-azure-lt">
                                     <div class="d-flex">
                                         <div>

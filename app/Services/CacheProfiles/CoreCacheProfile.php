@@ -108,6 +108,11 @@ class CoreCacheProfile implements ModuleCacheProfileInterface
             'webhooks/*',
             'ipn/*',
 
+            // Subscription sayfaları (kullanıcı abonelik durumuna göre dinamik)
+            'subscription/plans',
+            'my-subscriptions',
+            'my-subscriptions/*',
+
             // Download linkleri (kullanıcıya özel)
             'download/*',
             'downloads/*',

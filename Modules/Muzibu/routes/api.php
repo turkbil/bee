@@ -103,13 +103,24 @@ Route::prefix('muzibu')->group(function () {
             'unauthorized', 'forbidden', 'unavailable', 'crash'
         ];
 
+        // ✅ WHITELIST: Bu action'lar hata DEĞİL, savunma mekanizması
+        // Bunlar normal çalışmanın parçası, ERROR olarak loglanmamalı
+        $safeBlockedActions = [
+            'onTrackEndedBlocked',  // Kullanıcı pause yaptı, otomatik devam engellendi
+            'onendedBlocked',       // Duplicate event engellendi (Safari/iOS fix)
+            'onTrackEndedDebounced', // Debounce çalıştı
+        ];
+
         $isError = false;
 
-        // 1. Action adında hata keyword'ü var mı?
-        foreach ($errorKeywords as $keyword) {
-            if (stripos($action, $keyword) !== false) {
-                $isError = true;
-                break;
+        // 0. Whitelist kontrolü - bunlar hata değil, skip et
+        if (!in_array($action, $safeBlockedActions)) {
+            // 1. Action adında hata keyword'ü var mı?
+            foreach ($errorKeywords as $keyword) {
+                if (stripos($action, $keyword) !== false) {
+                    $isError = true;
+                    break;
+                }
             }
         }
 

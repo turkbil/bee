@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leo AI & OpenAI Geçici Devre Dışı - Analiz Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-700 pb-6">
+            <h1 class="text-3xl font-bold text-white mb-2">
+                <i class="fas fa-sliders text-amber-500 mr-2"></i>
+                Leo AI & OpenAI Geçici Devre Dışı Planı
+            </h1>
+            <p class="text-slate-400">Müzik yükleme sürecinde AI maliyetlerini geçici olarak düşürme analizi</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-emerald-400 mb-4">
+                <i class="fas fa-book-open mr-2"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong class="text-white">Ne yapılıyor?</strong><br>
+                    Şarkı yüklendiğinde sistem otomatik olarak iki AI servisi kullanıyor:
+                </p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li><strong>Leonardo AI:</strong> Şarkı için otomatik kapak görseli üretiyor (görsel oluşturma = kredi harcanıyor)</li>
+                    <li><strong>OpenAI:</strong> Görsel için yaratıcı prompt (açıklama metni) üretiyor (metin üretme = kredi harcanıyor)</li>
+                </ul>
+
+                <p>
+                    <strong class="text-white">Geçici değişiklik ne yapacak?</strong>
+                </p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li><span class="text-amber-400">Leonardo görsel boyutu küçülecek</span> → Daha az kredi harcanacak (%60-70 tasarruf)</li>
+                    <li><span class="text-red-400">OpenAI prompt üretimi kapanacak</span> → Şarkı başlığı doğrudan kullanılacak (tam tasarruf)</li>
+                </ul>
+
+                <p>
+                    <strong class="text-white">Neden "geçici"?</strong><br>
+                    Bu değişiklikler config ayarı ile yapılacak, kod silinmeyecek. İstediğinizde tek satır değişiklikle eski haline dönebilirsiniz.
+                </p>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-blue-400 mb-4">
+                <i class="fas fa-code mr-2"></i>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <!-- Mevcut Durum -->
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-white mb-3">
+                    <i class="fas fa-diagram-project mr-2 text-slate-400"></i>
+                    Mevcut AI Akışı
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-700">
+                            <tr>
+                                <th class="px-4 py-2 text-left">Kaynak</th>
+                                <th class="px-4 py-2 text-left">Dosya</th>
+                                <th class="px-4 py-2 text-left">Leonardo</th>
+                                <th class="px-4 py-2 text-left">OpenAI</th>
+                                <th class="px-4 py-2 text-left">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700">
+                            <tr>
+                                <td class="px-4 py-3">Tek Şarkı Yükleme</td>
+                                <td class="px-4 py-3 font-mono text-xs text-slate-400">SongManageComponent.php:724-732</td>
+                                <td class="px-4 py-3"><span class="text-slate-500">GenerateSongCover</span></td>
+                                <td class="px-4 py-3"><span class="text-slate-500">enhanceWithGPT4Music</span></td>
+                                <td class="px-4 py-3"><span class="bg-slate-600 text-slate-300 px-2 py-1 rounded text-xs">DISABLED</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Toplu Albüm Yükleme</td>
+                                <td class="px-4 py-3 font-mono text-xs text-slate-400">AlbumBulkUploadComponent.php:308</td>
+                                <td class="px-4 py-3"><span class="text-emerald-400">GenerateAICover</span></td>
+                                <td class="px-4 py-3"><span class="text-emerald-400">AIPromptEnhancer</span></td>
+                                <td class="px-4 py-3"><span class="bg-emerald-600 text-white px-2 py-1 rounded text-xs">AKTİF</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">SEO Üretimi</td>
+                                <td class="px-4 py-3 font-mono text-xs text-slate-400">GenerateSongSEO.php</td>
+                                <td class="px-4 py-3"><span class="text-slate-500">-</span></td>
+                                <td class="px-4 py-3"><span class="text-emerald-400">GPT-4o</span></td>
+                                <td class="px-4 py-3"><span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">AYRI</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Boyut Durumu -->
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-white mb-3">
+                    <i class="fas fa-image mr-2 text-slate-400"></i>
+                    Leonardo Görsel Boyutları
+                </h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <div class="text-amber-400 font-semibold mb-1">GenerateSongCover.php</div>
+                        <div class="font-mono text-2xl text-white">1280x800</div>
+                        <div class="text-xs text-slate-400 mt-1">Satır 99-100 (hardcoded)</div>
+                        <div class="text-xs text-slate-500 mt-1">~8 token/görsel</div>
+                    </div>
+                    <div class="bg-slate-700/50 rounded p-4 border border-emerald-500/30">
+                        <div class="text-emerald-400 font-semibold mb-1">MuzibuLeonardoAIService</div>
+                        <div class="font-mono text-2xl text-white">512x512</div>
+                        <div class="text-xs text-slate-400 mt-1">Satır 206-207 (TEST MODE)</div>
+                        <div class="text-xs text-emerald-400 mt-1">~2 token/görsel (zaten küçük!)</div>
+                    </div>
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <div class="text-blue-400 font-semibold mb-1">GenerateAICover.php</div>
+                        <div class="font-mono text-2xl text-white">1472x832</div>
+                        <div class="text-xs text-slate-400 mt-1">Satır 117-119 (hardcoded)</div>
+                        <div class="text-xs text-slate-500 mt-1">~10 token/görsel</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Önerilen Değişiklikler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-amber-400 mb-4">
+                <i class="fas fa-wrench mr-2"></i>
+                Önerilen Değişiklikler
+            </h2>
+
+            <!-- Yöntem 1 -->
+            <div class="mb-6 border-l-4 border-emerald-500 pl-4">
+                <h3 class="text-lg font-medium text-emerald-400 mb-2">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Yöntem 1: Config Tabanlı Toggle (ÖNERİLEN)
+                </h3>
+                <p class="text-slate-300 mb-3">En temiz ve geri alınabilir yöntem. Tek bir config değişikliği ile on/off.</p>
+
+                <div class="bg-slate-900 rounded p-4 font-mono text-sm overflow-x-auto">
+                    <div class="text-slate-400 mb-2">// config/ai.php (yeni eklenecek)</div>
+                    <pre class="text-emerald-300">'muzibu' => [
+    'leo_image_enabled' => env('MUZIBU_LEO_IMAGE_ENABLED', true),
+    'leo_image_size' => env('MUZIBU_LEO_IMAGE_SIZE', '512x512'), // küçük boyut
+    'openai_prompt_enabled' => env('MUZIBU_OPENAI_PROMPT_ENABLED', false), // geçici kapalı
+],</pre>
+                </div>
+
+                <div class="mt-4 bg-slate-900 rounded p-4 font-mono text-sm overflow-x-auto">
+                    <div class="text-slate-400 mb-2">// .env dosyasına eklenecek</div>
+                    <pre class="text-amber-300">MUZIBU_LEO_IMAGE_ENABLED=true
+MUZIBU_LEO_IMAGE_SIZE=512x512
+MUZIBU_OPENAI_PROMPT_ENABLED=false</pre>
+                </div>
+            </div>
+
+            <!-- Değiştirilecek Dosyalar -->
+            <div class="mt-6">
+                <h3 class="text-lg font-medium text-white mb-3">
+                    <i class="fas fa-file-code mr-2 text-slate-400"></i>
+                    Değiştirilecek Dosyalar
+                </h3>
+
+                <div class="space-y-3">
+                    <!-- Dosya 1 -->
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <div class="font-mono text-sm text-amber-400">MuzibuLeonardoAIService.php</div>
+                                <div class="text-xs text-slate-400 mt-1">Modules/Muzibu/App/Services/</div>
+                            </div>
+                            <span class="bg-amber-600/20 text-amber-400 px-2 py-1 rounded text-xs">BOYUT + PROMPT</span>
+                        </div>
+                        <div class="mt-3 text-sm text-slate-300">
+                            <strong>Değişiklik:</strong>
+                            <ul class="list-disc pl-5 mt-1 space-y-1">
+                                <li>enhanceWithGPT4Music() → config kontrolü ekle</li>
+                                <li>generateFreeImagination() → boyut config'den oku</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Dosya 2 -->
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <div class="font-mono text-sm text-blue-400">GenerateAICover.php</div>
+                                <div class="text-xs text-slate-400 mt-1">Modules/MediaManagement/App/Jobs/</div>
+                            </div>
+                            <span class="bg-blue-600/20 text-blue-400 px-2 py-1 rounded text-xs">BOYUT + PROMPT</span>
+                        </div>
+                        <div class="mt-3 text-sm text-slate-300">
+                            <strong>Değişiklik:</strong>
+                            <ul class="list-disc pl-5 mt-1 space-y-1">
+                                <li>AIPromptEnhancer çağrısı → config kontrolü</li>
+                                <li>width/height → config'den oku</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Dosya 3 -->
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <div class="font-mono text-sm text-purple-400">GenerateSongCover.php</div>
+                                <div class="text-xs text-slate-400 mt-1">Modules/Muzibu/App/Jobs/</div>
+                            </div>
+                            <span class="bg-purple-600/20 text-purple-400 px-2 py-1 rounded text-xs">BOYUT</span>
+                        </div>
+                        <div class="mt-3 text-sm text-slate-300">
+                            <strong>Değişiklik:</strong>
+                            <ul class="list-disc pl-5 mt-1 space-y-1">
+                                <li>width/height → config'den oku (satır 99-100)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Boyut Karşılaştırma -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-purple-400 mb-4">
+                <i class="fas fa-chart-bar mr-2"></i>
+                Leonardo Boyut & Kredi Karşılaştırması
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Boyut</th>
+                            <th class="px-4 py-2 text-left">Token/Görsel</th>
+                            <th class="px-4 py-2 text-left">Tasarruf</th>
+                            <th class="px-4 py-2 text-left">Kalite</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="px-4 py-3 font-mono">1472x832</td>
+                            <td class="px-4 py-3 text-red-400">~10 token</td>
+                            <td class="px-4 py-3">-</td>
+                            <td class="px-4 py-3"><span class="text-emerald-400">En yüksek</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono">1280x800</td>
+                            <td class="px-4 py-3 text-amber-400">~8 token</td>
+                            <td class="px-4 py-3">%20</td>
+                            <td class="px-4 py-3"><span class="text-emerald-400">Yüksek</span></td>
+                        </tr>
+                        <tr class="bg-emerald-900/20">
+                            <td class="px-4 py-3 font-mono font-bold">512x512</td>
+                            <td class="px-4 py-3 text-emerald-400 font-bold">~2 token</td>
+                            <td class="px-4 py-3 text-emerald-400 font-bold">%80</td>
+                            <td class="px-4 py-3"><span class="text-amber-400">Orta (ÖNERİLEN)</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono">384x384</td>
+                            <td class="px-4 py-3 text-emerald-400">~1 token</td>
+                            <td class="px-4 py-3">%90</td>
+                            <td class="px-4 py-3"><span class="text-red-400">Düşük</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 bg-emerald-900/20 border border-emerald-500/30 rounded">
+                <i class="fas fa-lightbulb text-emerald-400 mr-2"></i>
+                <span class="text-emerald-300">512x512 boyut thumbnail için yeterli, kapak görseli olarak kabul edilebilir kalitede.</span>
+            </div>
+        </section>
+
+        <!-- Geri Alma -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-cyan-400 mb-4">
+                <i class="fas fa-undo mr-2"></i>
+                Orijinal Haline Geri Alma
+            </h2>
+
+            <p class="text-slate-300 mb-4">Geçici süre bittiğinde .env dosyasını değiştirmek yeterli:</p>
+
+            <div class="bg-slate-900 rounded p-4 font-mono text-sm">
+                <div class="text-slate-400 mb-2">// .env (orijinal değerler)</div>
+                <pre class="text-cyan-300">MUZIBU_LEO_IMAGE_ENABLED=true
+MUZIBU_LEO_IMAGE_SIZE=1280x800
+MUZIBU_OPENAI_PROMPT_ENABLED=true</pre>
+            </div>
+
+            <div class="mt-4 bg-slate-900 rounded p-4 font-mono text-sm">
+                <pre class="text-slate-400">php artisan config:clear</pre>
+            </div>
+        </section>
+
+        <!-- Özet Tablo -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4">
+                <i class="fas fa-list-check mr-2"></i>
+                Özet: Yapılacaklar
+            </h2>
+
+            <div class="space-y-3">
+                <div class="flex items-center gap-3 p-3 bg-slate-700/50 rounded">
+                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                    <div>
+                        <div class="font-medium text-white">config/ai.php'ye muzibu section ekle</div>
+                        <div class="text-sm text-slate-400">leo_image_size, openai_prompt_enabled ayarları</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-slate-700/50 rounded">
+                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                    <div>
+                        <div class="font-medium text-white">MuzibuLeonardoAIService.php güncelle</div>
+                        <div class="text-sm text-slate-400">OpenAI prompt'u config ile kontrol et</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-slate-700/50 rounded">
+                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                    <div>
+                        <div class="font-medium text-white">GenerateAICover.php güncelle</div>
+                        <div class="text-sm text-slate-400">Boyut ve prompt'u config'den oku</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-slate-700/50 rounded">
+                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                    <div>
+                        <div class="font-medium text-white">.env dosyasına geçici değerler ekle</div>
+                        <div class="text-sm text-slate-400">512x512 boyut, OpenAI prompt kapalı</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-6 border-t border-slate-700">
+            14 Ocak 2026 &bull; Muzibu.com.tr
+        </footer>
+    </div>
+</body>
+</html>

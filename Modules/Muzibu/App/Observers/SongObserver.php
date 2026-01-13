@@ -82,6 +82,29 @@ class SongObserver
             }
         }
 
+        // 🎨 Title değiştiyse otomatik yeni görsel üret
+        $oldTitle = $song->getOriginal('title');
+        $newTitle = $song->title;
+
+        if ($oldTitle !== $newTitle && !empty($newTitle)) {
+            // color_hash'i yeni title'a göre güncelle
+            $newColorHash = Song::generateColorHash($newTitle);
+            if ($song->color_hash !== $newColorHash) {
+                $song->withoutEvents(function () use ($song, $newColorHash) {
+                    $song->update(['color_hash' => $newColorHash]);
+                });
+            }
+
+            // 🎨 Yeni AI görsel üret (queue'ya ekle)
+            \muzibu_generate_ai_cover($song, $newTitle, 'song');
+
+            \Illuminate\Support\Facades\Log::info('🎨 Şarkı başlığı değişti, yeni görsel üretiliyor', [
+                'song_id' => $song->song_id,
+                'old_title' => $oldTitle,
+                'new_title' => $newTitle,
+            ]);
+        }
+
         // Activity log - değişiklikleri kaydet
         if (function_exists('log_activity')) {
             $changes = $song->getChanges();

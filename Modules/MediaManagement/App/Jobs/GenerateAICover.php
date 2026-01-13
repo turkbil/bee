@@ -4,6 +4,7 @@ namespace Modules\MediaManagement\App\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Services\Media\LeonardoAIService;
@@ -20,13 +21,25 @@ use Illuminate\Support\Facades\Log;
  * Kullanım:
  * generate_ai_cover($model, 'Başlık', 'type'); // Helper function
  */
-class GenerateAICover implements ShouldQueue
+class GenerateAICover implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public $timeout = 180; // 3 dakika timeout
-    public $tries = 1; // Sadece 1 kere dene
+    public $tries = 2; // 2 deneme (API geçici hata için)
+    public $backoff = [30, 60]; // 30s, 60s bekle
+    public $maxExceptions = 2; // Max 2 exception
+    public $deleteWhenMissingModels = true; // Model silinmişse job'ı sil
+    public $uniqueFor = 300; // 5 dakika boyunca aynı model için tekrar job oluşturma
     public ?int $tenantId = null;
+
+    /**
+     * Unique ID: Aynı model için duplicate job önle
+     */
+    public function uniqueId(): string
+    {
+        return $this->modelClass . '_' . $this->modelId . '_' . ($this->tenantId ?? 0);
+    }
 
     /**
      * Create a new job instance.
@@ -91,32 +104,47 @@ class GenerateAICover implements ShouldQueue
             // Basit prompt oluştur
             $simplePrompt = $this->buildPrompt($this->title, $this->type);
 
-            // AI Prompt Enhancer ile genişlet (11 Altın Kural)
-            $enhancer = app(AIPromptEnhancer::class);
-            $tenantContext = [
-                'sector' => 'general', // ✅ Müzik teması ZORLAMA! Site zaten Muzibu ama prompt başlığa odaklanmalı
-                'site_name' => setting('site_name') ?: 'Platform',
-                'locale' => app()->getLocale() ?: 'tr',
-            ];
+            // 🔴 GEÇİCİ (2026-01-14) - SADECE SONG için OpenAI devre dışı + küçük boyut
+            $isSongType = ($this->type === 'song');
 
-            $enhancedPrompt = $enhancer->enhancePrompt(
-                $simplePrompt,
-                'cinematic',
-                '1472x832',
-                $tenantContext
-            );
-
-            Log::info('🎨 AI Prompt Enhanced (Universal)', [
-                'type' => $this->type,
-                'original' => $simplePrompt,
-                'enhanced_length' => strlen($enhancedPrompt),
-            ]);
+            if ($isSongType) {
+                // 🔴 SONG: OpenAI kullanma, direkt başlık
+                $enhancedPrompt = $simplePrompt;
+                Log::info('🔴 AI Prompt Enhancement DEVRE DIŞI (SONG) - sadece başlık kullanılıyor', [
+                    'type' => $this->type,
+                    'prompt' => $simplePrompt,
+                ]);
+                $imageWidth = 512;   // 🔴 GEÇİCİ - Orijinal: 1472
+                $imageHeight = 768;  // 🔴 GEÇİCİ - Orijinal: 832
+            } else {
+                // ✅ DİĞER TÜRLER: Normal çalışsın (OpenAI + büyük boyut)
+                $enhancer = app(AIPromptEnhancer::class);
+                $tenantContext = [
+                    'sector' => 'general',
+                    'site_name' => setting('site_name') ?: 'Platform',
+                    'locale' => app()->getLocale() ?: 'tr',
+                ];
+                $enhancedPrompt = $enhancer->enhancePrompt(
+                    $simplePrompt,
+                    'cinematic',
+                    '1472x832',
+                    $tenantContext
+                );
+                Log::info('🎨 AI Prompt Enhanced (Universal)', [
+                    'type' => $this->type,
+                    'original' => $simplePrompt,
+                    'enhanced_length' => strlen($enhancedPrompt),
+                ]);
+                $imageWidth = 1472;
+                $imageHeight = 832;
+            }
+            // 🔴 GEÇİCİ SONG KONTROLÜ SONU
 
             // Leonardo AI ile görsel üret
             $leonardo = app(LeonardoAIService::class);
             $imageData = $leonardo->generateFromPrompt($enhancedPrompt, [
-                'width' => 1472,
-                'height' => 832,
+                'width' => $imageWidth,
+                'height' => $imageHeight,
                 'style' => 'cinematic',
             ]);
 

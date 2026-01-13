@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leo AI & OpenAI Geçici Devre Dışı - Song İçin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-700 pb-6">
+            <h1 class="text-3xl font-bold text-white mb-2">
+                <i class="fas fa-pause-circle text-red-500 mr-2"></i>
+                Leo AI & OpenAI Geçici Devre Dışı
+            </h1>
+            <p class="text-slate-400">Sadece SONG yüklemelerinde - Kredi tasarrufu için geçici değişiklikler</p>
+            <div class="mt-2 text-xs text-slate-500">14 Ocak 2026 tarihinde uygulandı</div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-emerald-400 mb-4">
+                <i class="fas fa-book-open mr-2"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong class="text-white">Ne değişti?</strong><br>
+                    Şarkı yüklendiğinde normalde iki AI servisi çalışıyordu:
+                </p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li><strong>OpenAI:</strong> Şarkı başlığını yaratıcı bir görsel açıklamasına dönüştürüyordu → <span class="text-red-400">Şimdi kapalı</span></li>
+                    <li><strong>Leonardo AI:</strong> Büyük boyutta görsel üretiyordu (1280x800) → <span class="text-amber-400">Şimdi küçük (512x512)</span></li>
+                </ul>
+
+                <div class="mt-4 p-3 bg-emerald-900/20 border border-emerald-500/30 rounded">
+                    <i class="fas fa-check-circle text-emerald-400 mr-2"></i>
+                    <span class="text-emerald-300">Playlist, Album ve diğer türler etkilenmedi - normal çalışıyor.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-blue-400 mb-4">
+                <i class="fas fa-code mr-2"></i>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Dosya</th>
+                            <th class="px-4 py-2 text-left">Satır</th>
+                            <th class="px-4 py-2 text-left">Değişiklik</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs text-amber-400">MuzibuLeonardoAIService.php</td>
+                            <td class="px-4 py-3">33-47</td>
+                            <td class="px-4 py-3">OpenAI prompt devre dışı, direkt başlık döndürüyor</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-400">GenerateAICover.php</td>
+                            <td class="px-4 py-3">94-128</td>
+                            <td class="px-4 py-3">Song için: OpenAI kapalı + 512x512 boyut</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs text-purple-400">GenerateSongCover.php</td>
+                            <td class="px-4 py-3">96-102</td>
+                            <td class="px-4 py-3">Boyut: 1280x800 → 512x512</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 bg-slate-700/50 rounded">
+                <div class="text-sm text-slate-400">
+                    <i class="fas fa-search mr-1"></i>
+                    Tüm değişiklikler <code class="bg-slate-600 px-1 rounded">🔴 GEÇİCİ</code> etiketi ile işaretli
+                </div>
+            </div>
+
+            <div class="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded">
+                <div class="text-sm text-blue-300">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    <strong>Not:</strong> MuzibuLeonardoAIService zaten sadece Muzibu tenant'ında çalışıyor. Env veya config kullanılmadı, sadece yorum satırı ile değişiklik yapıldı.
+                </div>
+            </div>
+        </section>
+
+        <!-- Kredi Durumu -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-400 mb-4">
+                <i class="fas fa-coins mr-2"></i>
+                Leonardo AI Kredi Durumu (14 Ocak 2026)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-700/50 rounded p-4">
+                    <div class="text-slate-400 text-sm mb-1">API Paid Tokens</div>
+                    <div class="text-3xl font-bold text-emerald-400">4150</div>
+                </div>
+                <div class="bg-slate-700/50 rounded p-4">
+                    <div class="text-slate-400 text-sm mb-1">Subscription Tokens</div>
+                    <div class="text-3xl font-bold text-blue-400">150</div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-sm text-slate-400">
+                <i class="fas fa-calendar mr-1"></i>
+                Yenilenme: 12 Şubat 2026
+            </div>
+        </section>
+
+        <!-- Tasarruf -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-amber-400 mb-4">
+                <i class="fas fa-piggy-bank mr-2"></i>
+                Şarkı Başına Tasarruf
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-red-900/20 border border-red-500/30 rounded p-4">
+                    <div class="text-red-400 font-semibold mb-2">Önceki Durum</div>
+                    <ul class="text-sm space-y-1">
+                        <li>OpenAI prompt: ~0.01$ / şarkı</li>
+                        <li>Leonardo 1280x800: ~8 token / şarkı</li>
+                    </ul>
+                </div>
+                <div class="bg-green-900/20 border border-green-500/30 rounded p-4">
+                    <div class="text-green-400 font-semibold mb-2">Şimdiki Durum</div>
+                    <ul class="text-sm space-y-1">
+                        <li>OpenAI prompt: 0$ (kapalı)</li>
+                        <li>Leonardo 512x512: ~2 token / şarkı</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-4 p-3 bg-emerald-900/20 border border-emerald-500/30 rounded text-center">
+                <span class="text-emerald-400 font-semibold">~%75 token tasarrufu + OpenAI maliyeti sıfır</span>
+            </div>
+        </section>
+
+        <!-- GERİ ALMA PROMPTU -->
+        <section class="bg-amber-900/30 border-2 border-amber-500 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-amber-400 mb-4">
+                <i class="fas fa-undo mr-2"></i>
+                Orijinal Haline Döndürmek İçin
+            </h2>
+
+            <p class="text-slate-300 mb-4">Bu değişiklikleri geri almak istediğinizde, Claude'a şu prompt'u ver:</p>
+
+            <div class="bg-slate-900 rounded p-4 font-mono text-sm overflow-x-auto border border-amber-500/50">
+                <pre class="text-amber-200 whitespace-pre-wrap">Leo AI ve OpenAI geçici devre dışı bırakılmıştı (14 Ocak 2026). Şimdi orijinal haline döndür.
+
+3 dosyada "🔴 GEÇİCİ" ile işaretli değişiklikler var:
+
+1. Modules/Muzibu/App/Services/MuzibuLeonardoAIService.php (satır 33-47)
+   - Geçici return bloğunu sil
+   - OpenAI çağrısını aktif et
+
+2. Modules/MediaManagement/App/Jobs/GenerateAICover.php (satır 94-128)
+   - $isSongType kontrolünü kaldır
+   - Tüm türler için OpenAI + 1472x832 boyut yap
+
+3. Modules/Muzibu/App/Jobs/GenerateSongCover.php (satır 96-102)
+   - Boyutu 512x512 → 1280x800 yap
+
+Yorum satırlarını temizle ve orijinal değerleri aktif et.</pre>
+            </div>
+
+            <div class="mt-4 flex items-center gap-2">
+                <button onclick="copyPrompt()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded text-sm transition">
+                    <i class="fas fa-copy mr-1"></i> Prompt'u Kopyala
+                </button>
+                <span id="copyStatus" class="text-emerald-400 text-sm hidden">
+                    <i class="fas fa-check mr-1"></i> Kopyalandı!
+                </span>
+            </div>
+        </section>
+
+        <!-- Dosya Yolları -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-lg font-semibold text-slate-300 mb-3">
+                <i class="fas fa-folder-tree mr-2"></i>
+                Tam Dosya Yolları
+            </h2>
+
+            <div class="space-y-2 font-mono text-xs text-slate-400">
+                <div class="bg-slate-700/50 p-2 rounded">Modules/Muzibu/App/Services/MuzibuLeonardoAIService.php</div>
+                <div class="bg-slate-700/50 p-2 rounded">Modules/MediaManagement/App/Jobs/GenerateAICover.php</div>
+                <div class="bg-slate-700/50 p-2 rounded">Modules/Muzibu/App/Jobs/GenerateSongCover.php</div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-6 border-t border-slate-700">
+            14 Ocak 2026 &bull; Muzibu.com.tr
+        </footer>
+    </div>
+
+    <script>
+    function copyPrompt() {
+        const prompt = `Leo AI ve OpenAI geçici devre dışı bırakılmıştı (14 Ocak 2026). Şimdi orijinal haline döndür.
+
+3 dosyada "🔴 GEÇİCİ" ile işaretli değişiklikler var:
+
+1. Modules/Muzibu/App/Services/MuzibuLeonardoAIService.php (satır 33-47)
+   - Geçici return bloğunu sil
+   - OpenAI çağrısını aktif et
+
+2. Modules/MediaManagement/App/Jobs/GenerateAICover.php (satır 94-128)
+   - $isSongType kontrolünü kaldır
+   - Tüm türler için OpenAI + 1472x832 boyut yap
+
+3. Modules/Muzibu/App/Jobs/GenerateSongCover.php (satır 96-102)
+   - Boyutu 512x512 → 1280x800 yap
+
+Yorum satırlarını temizle ve orijinal değerleri aktif et.`;
+
+        navigator.clipboard.writeText(prompt).then(() => {
+            document.getElementById('copyStatus').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('copyStatus').classList.add('hidden');
+            }, 2000);
+        });
+    }
+    </script>
+</body>
+</html>

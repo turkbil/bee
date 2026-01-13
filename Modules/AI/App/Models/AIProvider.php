@@ -116,8 +116,14 @@ class AIProvider extends Model
      */
     public function getServiceInstance()
     {
-        $serviceClass = "Modules\\AI\\App\\Services\\{$this->service_class}";
-        
+        // service_class zaten tam namespace içeriyorsa olduğu gibi kullan
+        // Değilse prefix ekle (backward compatibility)
+        $serviceClass = $this->service_class;
+
+        if (!str_starts_with($serviceClass, 'Modules\\')) {
+            $serviceClass = "Modules\\AI\\App\\Services\\{$serviceClass}";
+        }
+
         if (!class_exists($serviceClass)) {
             throw new \Exception("Service class not found: {$serviceClass}");
         }

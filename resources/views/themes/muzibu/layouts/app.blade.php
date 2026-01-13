@@ -114,12 +114,13 @@
     <script src="{{ versioned_asset('themes/muzibu/js/alpine-apps.js') }}"></script>
 
     {{-- 🤖 Universal Schema Auto-Render (Dynamic for ALL modules) --}}
-    {{-- SKIP if Controller already shared metaTags with schemas (prevents duplicates) --}}
+    {{-- SKIP: 1) Controller shared metaTags 2) Homepage (seo-meta handles it) --}}
     @php
         $sharedMetaTags = view()->getShared()['metaTags'] ?? null;
         $hasControllerSchemas = $sharedMetaTags && isset($sharedMetaTags['schemas']) && !empty($sharedMetaTags['schemas']);
+        $isHomepage = request()->path() === '/' || request()->path() === '';
     @endphp
-    @if(!$hasControllerSchemas && isset($item) && is_object($item) && method_exists($item, 'getAllSchemas'))
+    @if(!$hasControllerSchemas && !$isHomepage && isset($item) && is_object($item) && method_exists($item, 'getAllSchemas'))
         {!! \App\Services\SEOService::getAllSchemas($item) !!}
     @endif
 

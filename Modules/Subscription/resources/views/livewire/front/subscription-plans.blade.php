@@ -1,14 +1,12 @@
 {{-- Subscription Plans - Premium Design --}}
 <div x-data="{
-    selectedCycle: {},
-    hoveredPlan: null,
-    init() {
-        // Her plan için ilk cycle'ı seç
+    selectedCycle: {
         @foreach($plans as $plan)
             @php $cycles = $plan->getSortedCycles(); $firstKey = array_key_first($cycles); @endphp
-            this.selectedCycle[{{ $plan->subscription_plan_id }}] = '{{ $firstKey }}';
+            {{ $plan->subscription_plan_id }}: '{{ $firstKey }}',
         @endforeach
-    }
+    },
+    hoveredPlan: null
 }">
 <style>
     /* Animated Background Orbs - Subtle */
@@ -225,21 +223,21 @@
 
                 {{-- Title --}}
                 <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
-                    Premium Uyeliginiz Aktif
+                    Premium Üyeliğiniz Aktif
                 </h2>
 
                 {{-- Description --}}
                 <p class="text-gray-400 text-lg mb-6 leading-relaxed">
-                    Zaten <span class="text-white font-semibold">{{ $remainingDays ?? 0 }} gun</span> sureli aktif aboneliginiz bulunuyor.
+                    Zaten <span class="text-white font-semibold">{{ $remainingDays ?? 0 }} gün</span> süreli aktif aboneliğiniz bulunuyor.
                     <br class="hidden sm:inline">
-                    Yeni paket satin almak icin mevcut surenizin bitmesine yakin tekrar ziyaret edin.
+                    Yeni paket satın almak için mevcut sürenizin bitmesine yakın tekrar ziyaret edin.
                 </p>
 
                 {{-- Expiry Date --}}
                 <div class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl mb-8">
                     <i class="fas fa-calendar-check text-yellow-400"></i>
                     <span class="text-white">
-                        Bitis Tarihi: <span class="font-semibold text-yellow-400">{{ $expiresAt ?? '-' }}</span>
+                        Bitiş Tarihi: <span class="font-semibold text-yellow-400">{{ $expiresAt ?? '-' }}</span>
                     </span>
                 </div>
 
@@ -363,7 +361,7 @@
                                         $discount = $comparePrice ? round((($comparePrice - $price) / $comparePrice) * 100) : 0;
                                     @endphp
 
-                                    <div x-show="selectedCycle[{{ $plan->subscription_plan_id }}] === '{{ $cycleKey }}'"
+                                    <div x-show="selectedCycle[{{ $plan->subscription_plan_id }}] === '{{ $cycleKey }}' || (!selectedCycle[{{ $plan->subscription_plan_id }}] && {{ $loop->first ? 'true' : 'false' }})"
                                          x-transition:enter="transition ease-out duration-300"
                                          x-transition:enter-start="opacity-0 transform scale-95"
                                          x-transition:enter-end="opacity-100 transform scale-100">
@@ -382,7 +380,7 @@
                                             {{-- Ana Fiyat + KDV + Periyot (Tek Satırda) --}}
                                             <div class="flex items-baseline gap-1 flex-wrap">
                                                 <span class="text-4xl sm:text-5xl font-black price-gradient">
-                                                    {{ number_format($price, 2, ',', '.') }}
+                                                    {{ number_format($price, 0, ',', '.') }}
                                                 </span>
                                                 <span class="text-lg text-gray-400 ml-1">TL</span>
                                                 <span class="text-sm text-gray-400 ml-1">
@@ -468,9 +466,8 @@
                             {{-- CTA Button - Her Zaman En Altta --}}
                             <div class="mt-auto pt-4">
                                 @foreach($cycles as $cycleKey => $cycle)
-                                    {{-- 7 günden fazla kalan premium üyelere buton gösterme --}}
-                                    @if(!(!$isTrial && $isPremium && $daysLeft >= 7))
-                                    <div x-show="selectedCycle[{{ $plan->subscription_plan_id }}] === '{{ $cycleKey }}'">
+                                    <div x-show="selectedCycle[{{ $plan->subscription_plan_id }}] === '{{ $cycleKey }}' || (!selectedCycle[{{ $plan->subscription_plan_id }}] && {{ $loop->first ? 'true' : 'false' }})"
+                                         x-transition>
                                         <button
                                             @if($isTrial)
                                                 wire:click="startTrial({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}')"
@@ -491,11 +488,7 @@
                                                     <i class="fas fa-gift mr-2"></i>Ücretsiz Başla
                                                 @else
                                                     @if($isGuest)
-                                                        @if($trialDays > 0)
-                                                            <i class="fas fa-user-plus mr-2"></i>Üye Ol, {{ $trialDays }} Gün Ücretsiz Dinle
-                                                        @else
-                                                            <i class="fas fa-user-plus mr-2"></i>Üye Ol
-                                                        @endif
+                                                        <i class="fas fa-user-plus mr-2"></i>Üye Ol
                                                     @elseif(!$isPremium)
                                                         <i class="fas fa-crown mr-2"></i>Premium Ol
                                                     @else
@@ -508,7 +501,6 @@
                                             </span>
                                         </button>
                                     </div>
-                                    @endif
                                 @endforeach
                             </div>
                         </div>
@@ -522,10 +514,6 @@
             <div class="flex items-center gap-2">
                 <i class="fas fa-shield-alt text-emerald-500"></i>
                 <span class="text-sm">Güvenli Ödeme</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <i class="fas fa-undo text-blue-500"></i>
-                <span class="text-sm">İstediğiniz Zaman İptal</span>
             </div>
             <div class="flex items-center gap-2">
                 <i class="fas fa-headset text-purple-500"></i>

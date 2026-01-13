@@ -180,10 +180,22 @@ return [
     */
 
     'defaults' => [
-        // 🎨 PHOTO MODE: SADECE FOTOĞRAF QUEUE'LARI ÇALIŞIYOR!
-        // AI, Tenant, Background supervisor'lar KALDIRILDI
+        // 📧 Email/Notification Queue - TEK WORKER (duplicate önleme)
+        'mail-supervisor' => [
+            'connection' => 'redis',
+            'queue' => ['default'],
+            'balance' => 'false',           // ❌ Auto-scale KAPALI - sabit 1 worker
+            'minProcesses' => 1,
+            'maxProcesses' => 1,            // 🔒 TEK WORKER - duplicate mail önleme
+            'maxTime' => 0,
+            'maxJobs' => 500,
+            'memory' => 256,
+            'tries' => 1,                   // ❌ Retry YOK - mail duplicate önleme
+            'timeout' => 120,
+            'nice' => 0,
+        ],
 
-        // Muzibu Module Queue (FOTOĞRAF + LEONARDO AI)
+        // 🎨 Muzibu Module Queue (FOTOĞRAF + LEONARDO AI)
         'muzibu-supervisor' => [
             'connection' => 'redis',
             'queue' => [

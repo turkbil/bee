@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
 class SendEmailVerificationNotificationWithSettingCheck
@@ -12,39 +13,46 @@ class SendEmailVerificationNotificationWithSettingCheck
      * Handle the event.
      *
      * @param  \Illuminate\Auth\Events\Registered  $event
-     * @return void
+     * @return bool|void Returns false to stop event propagation
      */
-    public function handle(Registered $event): void
+    public function handle(Registered $event)
     {
-        \Log::info('📧 LISTENER START', ['user_id' => $event->user->id ?? 'N/A']);
-
         // Kullanıcı email doğrulama interface'ini implement etmiş mi kontrol et
         if (! $event->user instanceof MustVerifyEmail) {
-            \Log::info('📧 LISTENER: Not MustVerifyEmail, skipping');
             return;
         }
 
         // Email zaten doğrulanmışsa gönderme
         if ($event->user->hasVerifiedEmail()) {
-            \Log::info('📧 LISTENER: Already verified, skipping');
             return;
+        }
+
+        // 🔒 DUPLICATE PREVENTION: Bu kullanıcı için 60 saniye içinde sadece 1 email gönder
+        $lockKey = 'verify_email_lock_' . (tenant()?->id ?? 0) . '_' . $event->user->id;
+
+        // Atomic lock - eğer zaten gönderilmişse false döner ve early return yapar
+        $acquired = Cache::lock($lockKey, 60)->get();
+
+        if (!$acquired) {
+            \Log::info('📧 LISTENER: Duplicate prevented by lock', [
+                'user_id' => $event->user->id,
+                'lock_key' => $lockKey,
+            ]);
+            return false; // Stop event propagation
         }
 
         // Settings'den auth_registration_email_verify ayarını kontrol et
-        // Ayar yoksa veya 0 ise email gönderme
         $emailVerificationEnabled = setting('auth_registration_email_verify', 0);
-        \Log::info('📧 LISTENER: Setting check', ['enabled' => $emailVerificationEnabled]);
 
         if ($emailVerificationEnabled != 1) {
-            \Log::info('📧 LISTENER: Email verify disabled, skipping');
-            return;
+            return false; // Stop event propagation - setting disabled
         }
 
-        // Mail config'i tenant settings'den yükle (tenant context artık mevcut)
+        // Mail config'i tenant settings'den yükle
         $this->configureMailFromSettings();
 
-        // Tüm kontroller geçti, email doğrulama notification'ını gönder
-        \Log::info('📧 VERIFY EMAIL: Sending notification to queue', [
+        // Email doğrulama notification'ını gönder
+        \Log::info('📧 VERIFY EMAIL: Sending notification', [
             'user_id' => $event->user->id,
             'email' => $event->user->email,
         ]);
@@ -52,6 +60,8 @@ class SendEmailVerificationNotificationWithSettingCheck
         $event->user->sendEmailVerificationNotification();
 
         \Log::info('📧 VERIFY EMAIL: Notification dispatched');
+
+        return false; // 🔒 Stop event propagation - prevent other listeners from sending duplicate emails
     }
 
     /**

@@ -435,7 +435,9 @@
                             @foreach($billingProfiles as $profile)
                                 <div wire:key="billing-profile-{{ $profile->billing_profile_id }}"
                                      class="relative"
-                                     x-data="{ isEditing: false }">
+                                     x-data="{ isEditing: false }"
+                                     @billing-profile-saved.window="isEditing = false"
+                                     @close-billing-form.window="isEditing = false">
                                     <div @click="billingProfileId = {{ $profile->billing_profile_id }}; showList = false"
                                          class="p-3 rounded-xl border-2 transition-[border-color,background-color] duration-200 group cursor-pointer"
                                          :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'">
@@ -727,7 +729,8 @@
                             @foreach($userAddresses as $addr)
                                 <div wire:key="shipping-address-{{ $addr->address_id }}"
                                      class="relative"
-                                     x-data="{ isEditing: false }">
+                                     x-data="{ isEditing: false }"
+                                     @address-saved.window="isEditing = false">
                                     <div @click="shippingAddressId = {{ $addr->address_id }}; showShippingList = false"
                                          class="p-3 rounded-xl border-2 transition-[border-color,background-color] duration-200 group cursor-pointer"
                                          :class="shippingAddressId == {{ $addr->address_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'">
@@ -746,18 +749,10 @@
                                             <div class="flex items-center gap-2 flex-shrink-0 ml-2">
                                                 {{-- Edit Button --}}
                                                 <button @click.stop="
-                                                    if (isEditing) {
-                                                        isEditing = false;
+                                                    if ($wire.edit_address_id == {{ $addr->address_id }}) {
                                                         $wire.set('edit_address_id', null);
                                                     } else {
-                                                        isEditing = true;
-                                                        $wire.set('edit_address_id', {{ $addr->address_id }});
-                                                        $wire.set('new_address_title', '{{ addslashes($addr->title) }}');
-                                                        $wire.set('new_address_phone', '{{ $addr->phone ?? '' }}');
-                                                        $wire.set('new_address_line', '{{ addslashes($addr->address_line_1) }}');
-                                                        $wire.set('new_address_city', '{{ $addr->city }}');
-                                                        $wire.set('new_address_district', '{{ $addr->district }}');
-                                                        $wire.set('new_address_postal', '{{ $addr->postal_code ?? '' }}');
+                                                        $wire.call('editAddress', {{ $addr->address_id }}, 'shipping');
                                                     }
                                                 "
                                                         class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
@@ -795,10 +790,10 @@
                                     </div>
 
                                     {{-- İnline Edit Form - Kartın Altında --}}
-                                    <div x-show="isEditing" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
+                                    <div x-show="$wire.edit_address_id == {{ $addr->address_id }}" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
                                         <div class="flex items-center justify-between mb-3">
                                             <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Adresi Düzenle</span>
-                                            <button @click="isEditing = false; $wire.set('edit_address_id', null)"
+                                            <button @click="$wire.set('edit_address_id', null)"
                                                     class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                                                 <i class="fa-solid fa-times"></i>
                                             </button>
@@ -1010,7 +1005,8 @@
                                     @foreach($userAddresses as $addr)
                                         <div wire:key="billing-address-{{ $addr->address_id }}"
                                              class="relative"
-                                             x-data="{ isEditing: false }">
+                                             x-data="{ isEditing: false }"
+                                             @address-saved.window="isEditing = false">
                                             <div @click="billingAddressId = {{ $addr->address_id }}; showBillingList = false"
                                                  class="p-3 rounded-xl border-2 transition-[border-color,background-color] duration-200 group cursor-pointer"
                                                  :class="billingAddressId == {{ $addr->address_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'">
@@ -1029,18 +1025,10 @@
                                                     <div class="flex items-center gap-2 flex-shrink-0 ml-2">
                                                         {{-- Edit Button --}}
                                                         <button @click.stop="
-                                                            if (isEditing) {
-                                                                isEditing = false;
+                                                            if ($wire.edit_billing_address_id == {{ $addr->address_id }}) {
                                                                 $wire.set('edit_billing_address_id', null);
                                                             } else {
-                                                                isEditing = true;
-                                                                $wire.set('edit_billing_address_id', {{ $addr->address_id }});
-                                                                $wire.set('new_billing_address_title', '{{ addslashes($addr->title) }}');
-                                                                $wire.set('new_billing_address_phone', '{{ $addr->phone ?? '' }}');
-                                                                $wire.set('new_billing_address_line', '{{ addslashes($addr->address_line_1) }}');
-                                                                $wire.set('new_billing_address_city', '{{ $addr->city }}');
-                                                                $wire.set('new_billing_address_district', '{{ $addr->district }}');
-                                                                $wire.set('new_billing_address_postal', '{{ $addr->postal_code ?? '' }}');
+                                                                $wire.call('editAddress', {{ $addr->address_id }}, 'billing');
                                                             }
                                                         "
                                                                 class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
@@ -1077,10 +1065,10 @@
                                                 </div>
 
                                                 {{-- İnline Edit Form - Kartın Altında --}}
-                                                <div x-show="isEditing" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
+                                                <div x-show="$wire.edit_billing_address_id == {{ $addr->address_id }}" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
                                                     <div class="flex items-center justify-between mb-3">
                                                         <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Adresi Düzenle</span>
-                                                        <button @click="isEditing = false; $wire.set('edit_billing_address_id', null)"
+                                                        <button @click="$wire.set('edit_billing_address_id', null)"
                                                                 class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                                                             <i class="fa-solid fa-times"></i>
                                                         </button>
@@ -1298,18 +1286,10 @@
                                             <div class="flex items-center gap-2 flex-shrink-0">
                                                 {{-- Edit Button --}}
                                                 <button @click.stop="
-                                                    if (isEditing) {
-                                                        isEditing = false;
+                                                    if ($wire.edit_billing_address_id == {{ $addr->address_id }}) {
                                                         $wire.set('edit_billing_address_id', null);
                                                     } else {
-                                                        isEditing = true;
-                                                        $wire.set('edit_billing_address_id', {{ $addr->address_id }});
-                                                        $wire.set('new_billing_address_title', '{{ addslashes($addr->title) }}');
-                                                        $wire.set('new_billing_address_phone', '{{ $addr->phone ?? '' }}');
-                                                        $wire.set('new_billing_address_line', '{{ addslashes($addr->address_line_1) }}');
-                                                        $wire.set('new_billing_address_city', '{{ $addr->city }}');
-                                                        $wire.set('new_billing_address_district', '{{ $addr->district }}');
-                                                        $wire.set('new_billing_address_postal', '{{ $addr->postal_code ?? '' }}');
+                                                        $wire.call('editAddress', {{ $addr->address_id }}, 'billing');
                                                     }
                                                 "
                                                         class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
@@ -1347,10 +1327,10 @@
                                     </div>
 
                                     {{-- İnline Edit Form - Kartın Altında --}}
-                                    <div x-show="isEditing" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
+                                    <div x-show="$wire.edit_billing_address_id == {{ $addr->address_id }}" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
                                         <div class="flex items-center justify-between mb-3">
                                             <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Adresi Düzenle</span>
-                                            <button @click="isEditing = false; $wire.set('edit_billing_address_id', null)"
+                                            <button @click="$wire.set('edit_billing_address_id', null)"
                                                     class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                                                 <i class="fa-solid fa-times"></i>
                                             </button>

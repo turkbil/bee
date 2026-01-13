@@ -1,14 +1,12 @@
 {{-- Subscription Plans - Premium Design --}}
 <div x-data="{
-    selectedCycle: {},
-    hoveredPlan: null,
-    init() {
-        // Her plan için ilk cycle'ı seç
+    selectedCycle: {
         @foreach($plans as $plan)
             @php $cycles = $plan->getSortedCycles(); $firstKey = array_key_first($cycles); @endphp
-            this.selectedCycle[{{ $plan->subscription_plan_id }}] = '{{ $firstKey }}';
+            {{ $plan->subscription_plan_id }}: '{{ $firstKey }}',
         @endforeach
-    }
+    },
+    hoveredPlan: null
 }">
 <style>
     /* Animated Background Orbs */
@@ -437,10 +435,6 @@
             <div class="flex items-center gap-2">
                 <i class="fas fa-shield-alt text-emerald-500"></i>
                 <span class="text-sm">{{ __('front.secure_payment') ?? 'Güvenli Ödeme' }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <i class="fas fa-undo text-blue-500"></i>
-                <span class="text-sm">{{ __('front.cancel_anytime') ?? 'İstediğiniz Zaman İptal' }}</span>
             </div>
             <div class="flex items-center gap-2">
                 <i class="fas fa-headset text-purple-500"></i>

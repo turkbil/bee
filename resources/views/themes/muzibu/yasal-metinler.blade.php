@@ -25,7 +25,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
 
             <!-- 1. Çerez Bilgilendirme Metni ve Gizlilik -->
-            <a href="#" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+            <a href="/page/cerez-bilgilendirme-metni-ve-gizlilik" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
                         <i class="fas fa-cookie-bite text-3xl text-mz-400"></i>
@@ -37,7 +37,7 @@
             </a>
 
             <!-- 2. İletişim Formu Aydınlatma Metni -->
-            <a href="#" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+            <a href="/page/iletisim-formu-kapsaminda-islenen-kisisel-verilere-iliskin-aydinlatma-metni" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
                         <i class="fas fa-envelope text-3xl text-mz-400"></i>
@@ -49,7 +49,7 @@
             </a>
 
             <!-- 3. Kullanım Koşulları ve Üyelik Sözleşmesi -->
-            <a href="#" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+            <a href="/page/kullanim-kosullari-ve-uyelik-sozlesmesi" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
                         <i class="fas fa-file-alt text-3xl text-mz-400"></i>
@@ -61,7 +61,7 @@
             </a>
 
             <!-- 4. Mesafeli Satış Sözleşmesi -->
-            <a href="#" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+            <a href="/page/mesafeli-satis-sozlesmesi" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
                         <i class="fas fa-file-contract text-3xl text-mz-400"></i>
@@ -73,7 +73,7 @@
             </a>
 
             <!-- 5. KVKK İlgili Kişi Başvuru Formu -->
-            <a href="#" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+            <a href="/page/kvkk-ilgili-kisi-basvuru-formu" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
                         <i class="fas fa-download text-3xl text-mz-400"></i>
@@ -85,7 +85,7 @@
             </a>
 
             <!-- 6. Ticari Elektronik İleti Hakkında Aydınlatma Metni -->
-            <a href="#" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+            <a href="/page/ticari-elektronik-ileti-gonderimi-sureclerine-iliskin-kisisel-verilerin-islenmesi-ve-korunmasi-hakkinda-aydinlatma-metni" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
                         <i class="fas fa-user-shield text-3xl text-mz-400"></i>
@@ -102,7 +102,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <!-- 7. Üyelik ve Satın Alım Faaliyetleri -->
-            <a href="#" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+            <a href="/page/uyelik-ve-satin-alim-faaliyetleri-kapsaminda-kisisel-verilerin-islenmesi-ve-korunmasina-iliskin-aydinlatma-metni" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
                         <i class="fas fa-credit-card text-3xl text-mz-400"></i>
@@ -114,7 +114,7 @@
             </a>
 
             <!-- 8. WhatsApp Destek Hattı -->
-            <a href="#" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+            <a href="/page/whatsapp-destek-hatti-hakkinda-kvkk-aydinlatma-metni" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
                         <i class="fab fa-whatsapp text-3xl text-mz-400"></i>

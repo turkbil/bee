@@ -550,9 +550,9 @@ class CheckoutPage extends Component
             $this->billing_tax_number = $profile->tax_number;
             $this->billing_tax_office = $profile->tax_office;
         } else {
-            // Bireysel - legacy alanları temizle
+            // Bireysel - TC Kimlik No'yu aktar
             $this->billing_company_name = '';
-            $this->billing_tax_number = '';
+            $this->billing_tax_number = $profile->identity_number ?? '';
             $this->billing_tax_office = '';
         }
     }

@@ -6,6 +6,11 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 class EventServiceProvider extends ServiceProvider
 {
     /**
+     * Indicates if events should be discovered.
+     */
+    protected static $shouldDiscoverEvents = false;
+
+    /**
      * The event listener mappings for the application.
      *
      * @var array
@@ -31,4 +36,12 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
     }
+    /**
+     * Do not configure email verification - handled by app EventServiceProvider
+     */
+    protected function configureEmailVerification(): void
+    {
+        // Override to prevent duplicate email verification listeners
+    }
+
 }

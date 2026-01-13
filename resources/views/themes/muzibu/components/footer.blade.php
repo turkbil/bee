@@ -74,8 +74,8 @@
             </div>
         </div>
 
-        {{-- Linkler 4 Sütun --}}
-        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 max-w-6xl mx-auto">
+        {{-- Linkler 3 Sütun --}}
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12 max-w-4xl mx-auto">
 
             {{-- 1. Keşfet --}}
             <div class="text-center">
@@ -143,24 +143,11 @@
                 </ul>
             </div>
 
-            {{-- 3. Kurumsal --}}
+            {{-- 3. Destek --}}
             <div class="text-center">
                 <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-building text-muzibu-coral"></i>
-                    Kurumsal
-                </h3>
-                <ul class="space-y-2">
-                    <li><a href="/hakkimizda" class="text-gray-400 hover:text-muzibu-coral transition-colors">Hakkımızda</a></li>
-                    <li><a href="/neden-muzibu" class="text-gray-400 hover:text-muzibu-coral transition-colors">Neden Muzibu?</a></li>
-                    <li><a href="/sss" class="text-gray-400 hover:text-muzibu-coral transition-colors">Sıkça Sorulan Sorular</a></li>
-                </ul>
-            </div>
-
-            {{-- 4. Hızlı Erişim --}}
-            <div class="text-center">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-                    <i class="fas fa-bolt text-muzibu-coral"></i>
-                    Hızlı Erişim
+                    <i class="fas fa-headset text-muzibu-coral"></i>
+                    Destek
                 </h3>
                 <ul class="space-y-2">
                     <li><a href="/iletisim" class="text-gray-400 hover:text-muzibu-coral transition-colors">İletişim</a></li>

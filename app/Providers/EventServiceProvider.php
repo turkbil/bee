@@ -163,4 +163,14 @@ class EventServiceProvider extends ServiceProvider
     {
         return false;
     }
+
+    /**
+     * Override to prevent Laravel's default email verification listener.
+     * We use our own SendEmailVerificationNotificationWithSettingCheck.
+     */
+    protected function configureEmailVerification(): void
+    {
+        // Do nothing - we handle email verification in $listen array
+        // with SendEmailVerificationNotificationWithSettingCheck
+    }
 }

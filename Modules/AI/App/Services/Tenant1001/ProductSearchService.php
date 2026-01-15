@@ -15,7 +15,7 @@ use Modules\Muzibu\App\Models\Sector;
 use Modules\Muzibu\App\Models\Radio;
 
 /**
- * Tenant 1001 (muzibu.com.tr) Music Search Service
+ * Tenant 1001 (muzibu.com) Music Search Service
  *
  * Müzik arama servisi - Şarkı, albüm, artist, playlist, radyo, genre, sector arama
  *
@@ -1530,7 +1530,7 @@ class ProductSearchService
 - ❌ YANLIŞ FORMAT:
   ```
   1. **els** - 148 saniye
-     [Çal](https://muzibu.com.tr/play/song/325)    ← BU YASAK!
+     [Çal](https://muzibu.com/play/song/325)    ← BU YASAK!
   ```
 
 - ✅ DOĞRU FORMAT:
@@ -1585,7 +1585,7 @@ Müzik kütüphanemizde bulunan arabesk şarkılarından bir playlist hazırlad�
 1. Bohemian Rhapsody - Queen (❌ Database'de olmayan şarkı!)
 2. Highway to Hell - AC/DC (❌ Database'de olmayan şarkı!)
 3. **Angels** - 148 saniye
-   [Çal](https://muzibu.com.tr/play/song/325)  (❌ Markdown link YASAK!)
+   [Çal](https://muzibu.com/play/song/325)  (❌ Markdown link YASAK!)
 
 **❤️ FAVORİLERE EKLEME KURALLARI:**
 

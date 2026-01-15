@@ -293,8 +293,8 @@ class ThumbmakerController extends Controller
                     'www.ixtif.com.tr',
                     'tuufi.com',
                     'www.tuufi.com',
-                    'muzibu.com.tr',
-                    'www.muzibu.com.tr',
+                    'muzibu.com',
+                    'www.muzibu.com',
                 ]);
             }
 

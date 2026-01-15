@@ -324,8 +324,17 @@ class Setting extends Model implements HasMedia
             }
 
             // Fallback: Manuel tenant DB query
+            // ⚠️ FIX: Tenant DB set edilmemiş ise skip et
             try {
-                $media = \DB::connection('tenant')
+                $tenantConnection = \DB::connection('tenant');
+                $tenantDb = $tenantConnection->getDatabaseName();
+
+                // Tenant DB yoksa fallback'i atla
+                if (empty($tenantDb)) {
+                    return null;
+                }
+
+                $media = $tenantConnection
                     ->table('media')
                     ->where('model_type', self::class)
                     ->where('model_id', $this->id)
@@ -341,7 +350,8 @@ class Setting extends Model implements HasMedia
                     }
                 }
             } catch (\Exception $e) {
-                \Log::debug('getMediaUrl fallback failed', ['error' => $e->getMessage()]);
+                // Tenant connection hatası - sessizce devam et
+                // Bu genellikle central request'lerde olur
             }
 
             return null;

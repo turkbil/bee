@@ -23,6 +23,17 @@
         border: 1px solid rgba(255, 107, 107, 0.4) !important;
     }
 
+    /* Drag sırasında Alpine hata vermemesi için orijinal içeriği gizle, klonu göster */
+    .sortable-drag .queue-item-original {
+        display: none !important;
+    }
+    .sortable-drag .queue-item-clone {
+        display: flex !important;
+    }
+    .queue-item-clone {
+        display: none;
+    }
+
     /* Ghost - bırakılacak yeri gösteren placeholder */
     .sortable-ghost {
         opacity: 0.4 !important;
@@ -205,6 +216,57 @@
                             dragClass: 'sortable-drag',
                             forceFallback: true,
                             fallbackClass: 'sortable-drag',
+                            onClone: (evt) => {
+                                // Klon oluşturulduğunda Alpine attribute'larını kaldır ve static içerik doldur
+                                const clone = evt.clone;
+                                const songTitle = clone.dataset.songTitle || 'Song';
+                                const artistTitle = clone.dataset.artistTitle || 'Muzibu';
+                                const coverUrl = clone.dataset.cover || '';
+
+                                // TÜM Alpine attribute'larını kaldır (hata vermemesi için)
+                                const removeAlpineAttrs = (el) => {
+                                    const attrsToRemove = [];
+                                    for (const attr of el.attributes) {
+                                        if (attr.name.startsWith('x-') || attr.name.startsWith(':') || attr.name.startsWith('@')) {
+                                            attrsToRemove.push(attr.name);
+                                        }
+                                    }
+                                    attrsToRemove.forEach(attr => el.removeAttribute(attr));
+                                    el.querySelectorAll('*').forEach(child => {
+                                        const childAttrs = [];
+                                        for (const attr of child.attributes) {
+                                            if (attr.name.startsWith('x-') || attr.name.startsWith(':') || attr.name.startsWith('@')) {
+                                                childAttrs.push(attr.name);
+                                            }
+                                        }
+                                        childAttrs.forEach(attr => child.removeAttribute(attr));
+                                    });
+                                    // Template elemanlarını da kaldır
+                                    el.querySelectorAll('template').forEach(t => t.remove());
+                                };
+                                removeAlpineAttrs(clone);
+
+                                // Klon içeriğini doldur
+                                const cloneTitle = clone.querySelector('.queue-clone-title');
+                                const cloneArtist = clone.querySelector('.queue-clone-artist');
+                                const cloneCover = clone.querySelector('.queue-clone-cover');
+                                const cloneIcon = clone.querySelector('.queue-clone-icon');
+
+                                if (cloneTitle) cloneTitle.textContent = songTitle;
+                                if (cloneArtist) cloneArtist.textContent = artistTitle;
+
+                                if (coverUrl && cloneCover) {
+                                    cloneCover.src = coverUrl;
+                                    cloneCover.style.display = 'block';
+                                    if (cloneIcon) cloneIcon.style.display = 'none';
+                                } else {
+                                    if (cloneCover) cloneCover.style.display = 'none';
+                                    if (cloneIcon) {
+                                        cloneIcon.style.display = 'flex';
+                                        cloneIcon.classList.remove('hidden');
+                                    }
+                                }
+                            },
                             onStart: (evt) => {
                                 $refs.queueList.classList.add('queue-dragging');
                                 evt.item.style.transition = 'none';
@@ -242,6 +304,9 @@
                 <div
                     data-queue-item
                     :data-queue-index="index"
+                    :data-song-title="song.song_title?.tr || song.song_title?.en || song.song_title || 'Song'"
+                    :data-artist-title="song.artist_title?.tr || song.artist_title?.en || song.artist_title || 'Muzibu'"
+                    :data-cover="song.album_cover ? getCoverUrl(song.album_cover, 100, 100) : ''"
                     @click="playFromQueue(index)"
                     class="queue-item flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group"
                     :class="{
@@ -249,60 +314,83 @@
                         'hover:bg-white/5': queueIndex !== index
                     }"
                 >
-                    {{-- Cover with Play Overlay --}}
-                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
+                    {{-- ORIJINAL İÇERİK (Normal görünüm) --}}
+                    <div class="queue-item-original flex items-center gap-2.5 w-full">
+                        {{-- Cover with Play Overlay --}}
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                            <template x-if="song.album_cover">
+                                <img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover">
+                            </template>
+                            <template x-if="!song.album_cover">
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <i class="fas fa-music text-white/30 text-xs"></i>
+                                </div>
+                            </template>
+                            {{-- Play overlay on hover --}}
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <i class="fas fa-play text-white text-xs"></i>
+                            </div>
+                            {{-- Playing indicator --}}
+                            <template x-if="queueIndex === index">
+                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                    <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                                </div>
+                            </template>
+                        </div>
+
+                        {{-- Info --}}
+                        <div class="flex-1 min-w-0">
+                            <h4
+                                class="text-sm font-medium truncate transition-colors"
+                                :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'"
+                                x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"
+                            ></h4>
+                            <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || 'Muzibu'"></p>
+                        </div>
+
+                        {{-- Duration / Remove Button (Same Position - Toggle on Hover) --}}
+                        <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
+                            {{-- Duration (Default State - hide on hover) --}}
+                            <span class="queue-duration text-xs text-gray-600" x-show="song.duration" x-text="formatTime(song.duration)"></span>
+                            {{-- Remove Button (Hover State) --}}
+                            <button
+                                x-show="queue.length > 1"
+                                @click.stop="removeFromQueue(index)"
+                                class="queue-remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                                style="display: none;"
+                                title="{{ trans('muzibu::front.player.remove_from_queue') }}"
+                            >
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </div>
+
+                        {{-- Drag handle (always visible) --}}
+                        <div
+                            class="queue-drag-handle w-7 h-7 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0"
+                            title="{{ trans('muzibu::front.player.drag') }}"
+                        >
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+
+                    {{-- DRAG KLON İÇERİĞİ (Sadece sürüklerken görünür - Alpine bağımlılığı yok) --}}
+                    <div class="queue-item-clone flex items-center gap-2.5 w-full">
+                        {{-- Cover --}}
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden">
+                            <img class="queue-clone-cover w-full h-full object-cover" src="" alt="">
+                            <div class="queue-clone-icon w-full h-full hidden items-center justify-center">
                                 <i class="fas fa-music text-white/30 text-xs"></i>
                             </div>
-                        </template>
-                        {{-- Play overlay on hover --}}
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
                         </div>
-                        {{-- Playing indicator --}}
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    {{-- Info --}}
-                    <div class="flex-1 min-w-0">
-                        <h4
-                            class="text-sm font-medium truncate transition-colors"
-                            :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'"
-                            x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"
-                        ></h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || 'Muzibu'"></p>
-                    </div>
-
-                    {{-- Duration / Remove Button (Same Position - Toggle on Hover) --}}
-                    <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
-                        {{-- Duration (Default State - hide on hover) --}}
-                        <span class="queue-duration text-xs text-gray-600" x-show="song.duration" x-text="formatTime(song.duration)"></span>
-                        {{-- Remove Button (Hover State) --}}
-                        <button
-                            x-show="queue.length > 1"
-                            @click.stop="removeFromQueue(index)"
-                            class="queue-remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                            style="display: none;"
-                            title="{{ trans('muzibu::front.player.remove_from_queue') }}"
-                        >
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                    </div>
-
-                    {{-- Drag handle (always visible) --}}
-                    <div
-                        class="queue-drag-handle w-7 h-7 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0"
-                        title="{{ trans('muzibu::front.player.drag') }}"
-                    >
-                        <i class="fas fa-grip-vertical text-xs"></i>
+                        {{-- Info --}}
+                        <div class="flex-1 min-w-0">
+                            <h4 class="queue-clone-title text-sm font-medium truncate text-white"></h4>
+                            <p class="queue-clone-artist text-xs text-gray-500 truncate"></p>
+                        </div>
+                        {{-- Drag icon --}}
+                        <div class="w-7 h-7 flex items-center justify-center rounded-full text-gray-500 flex-shrink-0">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
                     </div>
                 </div>
             </template>

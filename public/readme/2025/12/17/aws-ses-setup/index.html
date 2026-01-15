@@ -42,7 +42,7 @@
 
             <!-- Step 1.2 -->
             <div class="mb-8">
-                <h3 class="text-xl font-bold mb-4 text-orange-400">1.2 Domain Verify (muzibu.com.tr)</h3>
+                <h3 class="text-xl font-bold mb-4 text-orange-400">1.2 Domain Verify (muzibu.com)</h3>
                 <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
                     <p class="text-yellow-400 font-semibold mb-2">⚠️ ÖNEMLİ: Domain verify edilmeden mail gönderilemez!</p>
                 </div>
@@ -53,7 +53,7 @@
                     </li>
                     <li class="flex items-start gap-3">
                         <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">2</span>
-                        <p>Identity type: <strong>Domain</strong> → Domain: <code class="bg-slate-700 px-2 py-0.5 rounded">muzibu.com.tr</code></p>
+                        <p>Identity type: <strong>Domain</strong> → Domain: <code class="bg-slate-700 px-2 py-0.5 rounded">muzibu.com</code></p>
                     </li>
                     <li class="flex items-start gap-3">
                         <span class="bg-slate-700 px-3 py-1 rounded-lg text-sm font-mono">3</span>
@@ -95,7 +95,7 @@
                             <p class="mb-2">Form doldur:</p>
                             <ul class="list-disc list-inside space-y-1 text-sm text-slate-400 ml-4">
                                 <li>Mail Type: <strong>Transactional</strong></li>
-                                <li>Website URL: <strong>https://muzibu.com.tr</strong></li>
+                                <li>Website URL: <strong>https://muzibu.com</strong></li>
                                 <li>Use case: <em>"Sending transactional emails (order confirmations, password resets) for music streaming platform"</em></li>
                                 <li>How recipients opt-in: <em>"Users register and provide consent"</em></li>
                             </ul>
@@ -156,7 +156,7 @@
                     <pre class="text-sm font-mono text-green-400">
 # Mail Configuration
 MAIL_MAILER=ses
-MAIL_FROM_ADDRESS=bilgi@muzibu.com.tr
+MAIL_FROM_ADDRESS=bilgi@muzibu.com
 MAIL_FROM_NAME="Muzibu"
 
 # AWS SES Configuration
@@ -228,8 +228,8 @@ Mail::to('test@example.com')->send(
                     <li class="flex items-start gap-3">
                         <span class="bg-purple-500/20 px-3 py-1 rounded-lg text-sm">Tenant 1001</span>
                         <div>
-                            <p class="font-semibold">muzibu.com.tr</p>
-                            <p class="text-sm text-slate-400">MAIL_FROM_ADDRESS=bilgi@muzibu.com.tr</p>
+                            <p class="font-semibold">muzibu.com</p>
+                            <p class="text-sm text-slate-400">MAIL_FROM_ADDRESS=bilgi@muzibu.com</p>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
@@ -244,7 +244,7 @@ Mail::to('test@example.com')->send(
 
             <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
                 <p class="text-yellow-400 font-semibold mb-2">📌 NOT: Her domain için ayrı verify gerekir!</p>
-                <p class="text-yellow-300 text-sm">AWS SES'te her domain'i (muzibu.com.tr, ixtif.com) ayrı ayrı verify etmelisiniz.</p>
+                <p class="text-yellow-300 text-sm">AWS SES'te her domain'i (muzibu.com, ixtif.com) ayrı ayrı verify etmelisiniz.</p>
             </div>
         </div>
 
@@ -264,7 +264,7 @@ Mail::to('test@example.com')->send(
                 </label>
                 <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
                     <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">
-                    <span>Domain verify edildi (muzibu.com.tr)</span>
+                    <span>Domain verify edildi (muzibu.com)</span>
                 </label>
                 <label class="flex items-center gap-3 text-slate-300 cursor-pointer">
                     <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-800">

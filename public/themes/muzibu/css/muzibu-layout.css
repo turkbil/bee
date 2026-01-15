@@ -9,19 +9,47 @@ html, body {
     -webkit-tap-highlight-color: transparent;
 }
 
+/*
+ * 🔧 ESKI CİHAZ UYUMLULUĞU (Safari <14, iOS <14, Android <5)
+ *
+ * Sorun: position:fixed + overflow:hidden kombinasyonu
+ * eski iOS Safari'de beyaz ekran gösteriyor.
+ *
+ * Çözüm: Varsayılan olarak relative/static kullan,
+ * sadece modern cihazlarda (backdrop-filter destekleyenler) fixed kullan.
+ */
+
+/* VARSAYILAN: Eski cihazlar için güvenli değerler */
 html {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
     height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #121212; /* Beyaz ekran önleme - varsayılan koyu arka plan */
 }
 
 body {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    height: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
     overscroll-behavior: none;
+    background: #121212; /* Beyaz ekran önleme */
+}
+
+/* MODERN CİHAZLAR: backdrop-filter destekleyenler için fixed layout */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    html {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 /* GRID LAYOUT - Default (XL/XXL - > 1280px) */

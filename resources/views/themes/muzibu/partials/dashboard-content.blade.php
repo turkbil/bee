@@ -231,7 +231,8 @@
             </div>
         </div>
 
-        {{-- Playlists --}}
+        {{-- Playlists - DISABLED (2026-01-15) --}}
+        {{--
         <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden mb-8">
             <div class="flex items-center justify-between p-5 border-b border-white/10">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2">
@@ -273,6 +274,7 @@
                 </div>
             @endif
         </div>
+        --}}
 
         {{-- Corporate Section --}}
         @if($corporate)

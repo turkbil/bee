@@ -11,7 +11,7 @@ echo "🎵 Muzibu Data Import (Direct SQL Parse)\n";
 echo "Source: muzibu_mayis25 (1).sql\n";
 echo "Target: tuufi_4ekim database\n\n";
 
-$sqlFile = '/var/www/vhosts/muzibu.com.tr/httpdocs/muzibu_mayis25 (1).sql';
+$sqlFile = '/var/www/vhosts/muzibu.com/httpdocs/muzibu_mayis25 (1).sql';
 
 if (!file_exists($sqlFile)) {
     die("❌ SQL file not found: {$sqlFile}\n");

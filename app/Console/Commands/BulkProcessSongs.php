@@ -15,7 +15,7 @@ class BulkProcessSongs extends Command
 
     public function handle()
     {
-        // Initialize tenant context (muzibu.com.tr = tenant 1001)
+        // Initialize tenant context (muzibu.com = tenant 1001)
         tenancy()->initialize(1001);
 
         $limit = (int) $this->argument('limit');
@@ -119,7 +119,7 @@ class BulkProcessSongs extends Command
 
         $this->newLine();
         $this->info("✅ İşlem tamamlandı! Horizon'u kontrol edin.");
-        $this->info("🔗 Horizon: https://muzibu.com.tr/horizon");
+        $this->info("🔗 Horizon: https://muzibu.com/horizon");
 
         return Command::SUCCESS;
     }

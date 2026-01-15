@@ -2,10 +2,10 @@
 /**
  * 🎵 Muzibu Data Migration Script
  *
- * Eski muzibu.com sistemindeki verileri yeni muzibu.com.tr sistemine import eder.
+ * Eski muzibu.com sistemindeki verileri yeni muzibu.com sistemine import eder.
  *
  * KULLANIM:
- * curl -s https://muzibu.com.tr/import-muzibu-data.php
+ * curl -s https://muzibu.com/import-muzibu-data.php
  *
  * IMPORT SIRALAMA:
  * 1. Artists (43 kayıt)
@@ -36,8 +36,8 @@ $kernel->bootstrap();
 use Illuminate\Support\Facades\DB;
 
 // Configuration
-$sqlFile = '/var/www/vhosts/muzibu.com.tr/httpdocs/muzibu_mayis25 (1).sql';
-$mappingFile = '/var/www/vhosts/muzibu.com.tr/httpdocs/muzibu-id-mappings.json';
+$sqlFile = '/var/www/vhosts/muzibu.com/httpdocs/muzibu_mayis25 (1).sql';
+$mappingFile = '/var/www/vhosts/muzibu.com/httpdocs/muzibu-id-mappings.json';
 $batchSize = 50; // Her batch'te kaç kayıt işlenecek
 
 // ID Mapping Storage (eski ID → yeni ID)

@@ -3,7 +3,23 @@
 @section('title', 'Şifremi Unuttum')
 
 @section('content')
-    <div x-data="{ email: '', isSubmitting: false, emailError: '' }">
+    <div x-data="{
+        email: '',
+        isSubmitting: false,
+        emailError: '',
+        resending: false,
+        cooldown: 0,
+        showResend: {{ session('status') ? 'true' : 'false' }},
+        init() {
+            this.email = localStorage.getItem('reset_password_email') || '{{ old('email') }}';
+            this.$watch('email', (value) => {
+                if (value) localStorage.setItem('reset_password_email', value);
+            });
+            setInterval(() => {
+                if (this.cooldown > 0) this.cooldown--;
+            }, 1000);
+        }
+    }">
         {{-- Header --}}
         <div class="text-center mb-8">
             <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -22,6 +38,28 @@
                 </p>
             </div>
         @endif
+
+        {{-- Resend Button --}}
+        <div class="mb-6" x-show="showResend" x-cloak>
+            <form method="POST" action="{{ route('password.email') }}" @submit="resending = true; cooldown = 60;">
+                @csrf
+                <input type="hidden" name="email" :value="email">
+                <button
+                    type="submit"
+                    :disabled="resending || cooldown > 0"
+                    class="w-full py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                    <span x-show="cooldown > 0" class="flex items-center gap-2">
+                        <i class="fa-solid fa-clock"></i>
+                        <span x-text="cooldown + ' saniye sonra tekrar deneyin'"></span>
+                    </span>
+                    <span x-show="cooldown === 0" class="flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        Tekrar Gönder
+                    </span>
+                </button>
+            </form>
+        </div>
 
         {{-- Error Messages --}}
         @if ($errors->any())

@@ -689,7 +689,7 @@ if (!function_exists('versioned_asset')) {
      * @example
      * // Blade'de kullanım:
      * <script src="{{ versioned_asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
-     * // Output: https://muzibu.com.tr/themes/muzibu/js/player/core/player-core.js?v=1765511474
+     * // Output: https://muzibu.com/themes/muzibu/js/player/core/player-core.js?v=1765511474
      */
     function versioned_asset($path, $secure = null)
     {

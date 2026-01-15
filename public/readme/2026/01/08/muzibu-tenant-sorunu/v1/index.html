@@ -57,11 +57,11 @@
                     Sistem yapılandırma dosyasında (<code class="bg-slate-800 px-2 py-1 rounded text-sm">.env</code>) yanlış ayarlar var:
                 </p>
                 <ul class="list-disc list-inside space-y-2 ml-4">
-                    <li><strong>APP_DOMAIN=localhost</strong> → Olması gereken: <strong>muzibu.com.tr</strong></li>
-                    <li><strong>TENANT_PARENT_DOMAIN=muzibu.com.tr</strong> → Olması gereken: <strong>tuufi.com</strong></li>
+                    <li><strong>APP_DOMAIN=localhost</strong> → Olması gereken: <strong>muzibu.com</strong></li>
+                    <li><strong>TENANT_PARENT_DOMAIN=muzibu.com</strong> → Olması gereken: <strong>tuufi.com</strong></li>
                 </ul>
                 <p>
-                    Bu ayarlar yüzünden sistem "muzibu.com.tr merkezi site" sanıyor, tenant sistemine geçmiyor.
+                    Bu ayarlar yüzünden sistem "muzibu.com merkezi site" sanıyor, tenant sistemine geçmiyor.
                 </p>
 
                 <p><strong class="text-white">Sonuç?</strong></p>
@@ -101,12 +101,12 @@
                         <div class="flex gap-2">
                             <span class="text-green-400">✅</span>
                             <span class="text-slate-400">Tenant Record:</span>
-                            <span class="text-green-300">ID: 1001, Domains: muzibu.com.tr, www.muzibu.com.tr</span>
+                            <span class="text-green-300">ID: 1001, Domains: muzibu.com, www.muzibu.com</span>
                         </div>
                         <div class="flex gap-2">
                             <span class="text-green-400">✅</span>
                             <span class="text-slate-400">Domain Mapping:</span>
-                            <span class="text-green-300">muzibu.com.tr → tenant_id: 1001</span>
+                            <span class="text-green-300">muzibu.com → tenant_id: 1001</span>
                         </div>
                     </div>
                 </div>
@@ -119,10 +119,10 @@
                             <p class="text-slate-400 mb-2"><strong>1. .env Dosyası:</strong></p>
                             <div class="bg-red-950/30 border border-red-800 rounded p-3 space-y-1 text-sm">
                                 <div class="text-red-300">❌ APP_DOMAIN=localhost</div>
-                                <div class="text-green-300">✅ Olmalı: APP_DOMAIN=muzibu.com.tr</div>
+                                <div class="text-green-300">✅ Olmalı: APP_DOMAIN=muzibu.com</div>
                             </div>
                             <div class="bg-red-950/30 border border-red-800 rounded p-3 space-y-1 text-sm mt-2">
-                                <div class="text-red-300">❌ TENANT_PARENT_DOMAIN=muzibu.com.tr</div>
+                                <div class="text-red-300">❌ TENANT_PARENT_DOMAIN=muzibu.com</div>
                                 <div class="text-green-300">✅ Olmalı: TENANT_PARENT_DOMAIN=tuufi.com</div>
                             </div>
                         </div>
@@ -131,9 +131,9 @@
                             <p class="text-slate-400 mb-2"><strong>2. Config Sonucu:</strong></p>
                             <div class="bg-yellow-950/30 border border-yellow-800 rounded p-3 text-sm">
                                 <div class="text-yellow-300">config('tenancy.central_domains') = ['localhost', 'www.localhost']</div>
-                                <div class="text-yellow-300">config('tenancy.parent_domain') = 'muzibu.com.tr'</div>
+                                <div class="text-yellow-300">config('tenancy.parent_domain') = 'muzibu.com'</div>
                                 <div class="text-slate-400 mt-2 text-xs">
-                                    ⚠️ Bu ayarlar "muzibu.com.tr = central" algısı yaratıyor
+                                    ⚠️ Bu ayarlar "muzibu.com = central" algısı yaratıyor
                                 </div>
                             </div>
                         </div>
@@ -144,7 +144,7 @@
                 <div>
                     <h4 class="text-lg font-medium text-white mb-3">📁 İlgili Dosyalar</h4>
                     <div class="bg-slate-900/50 rounded p-4 space-y-2 font-mono text-xs">
-                        <div><span class="text-blue-400">/var/www/vhosts/muzibu.com.tr/httpdocs/.env</span> → Yapılandırma dosyası (düzeltilecek)</div>
+                        <div><span class="text-blue-400">/var/www/vhosts/muzibu.com/httpdocs/.env</span> → Yapılandırma dosyası (düzeltilecek)</div>
                         <div><span class="text-blue-400">config/tenancy.php</span> → Tenant sistemi config (central_domains, parent_domain)</div>
                         <div><span class="text-blue-400">app/Http/Kernel.php</span> → Middleware config (InitializeTenancyByDomain)</div>
                         <div><span class="text-blue-400">app/Providers/TenancyServiceProvider.php</span> → Tenant başlatma mantığı</div>
@@ -157,7 +157,7 @@
                     <div class="bg-slate-900/50 rounded p-4 space-y-3 text-sm">
                         <p class="text-slate-300"><strong>Normal Akış (Beklenen):</strong></p>
                         <ol class="list-decimal list-inside space-y-2 text-slate-400 ml-4">
-                            <li>Kullanıcı <code>muzibu.com.tr</code> adresine girer</li>
+                            <li>Kullanıcı <code>muzibu.com</code> adresine girer</li>
                             <li>Middleware: <code>InitializeTenancyByDomain</code> devreye girer</li>
                             <li>Domain <code>central_domains</code> içinde mi kontrol eder → Hayır</li>
                             <li>Database'de domain'i arar: <code>domains</code> tablosu</li>
@@ -168,7 +168,7 @@
 
                         <p class="text-slate-300 mt-4"><strong>Mevcut Durum (Hatalı):</strong></p>
                         <ol class="list-decimal list-inside space-y-2 text-red-400 ml-4">
-                            <li>Kullanıcı <code>muzibu.com.tr</code> adresine girer</li>
+                            <li>Kullanıcı <code>muzibu.com</code> adresine girer</li>
                             <li>Middleware: <code>InitializeTenancyByDomain</code> devreye girer</li>
                             <li>Domain <code>central_domains</code> içinde mi kontrol eder → <strong>Evet sanıyor!</strong> (APP_DOMAIN etkisi)</li>
                             <li>Tenant initialize edilmez ❌</li>
@@ -201,7 +201,7 @@
                         <div>
                             <p class="text-white mb-2"><strong>📝 Basit Açıklama:</strong></p>
                             <p class="text-slate-300 text-sm">
-                                Sistem yapılandırma dosyasında iki satırı değiştireceğiz. Bu değişiklikle sistem "muzibu.com.tr tenant sitesi" olarak algılayacak ve doğru depoya (tenant database) bağlanacak.
+                                Sistem yapılandırma dosyasında iki satırı değiştireceğiz. Bu değişiklikle sistem "muzibu.com tenant sitesi" olarak algılayacak ve doğru depoya (tenant database) bağlanacak.
                             </p>
                         </div>
 
@@ -212,11 +212,11 @@
                                     <div class="text-red-400"># Eski (Yanlış)</div>
                                     <div class="text-red-300">APP_DOMAIN=localhost</div>
                                     <div class="text-green-400 mt-1"># Yeni (Doğru)</div>
-                                    <div class="text-green-300">APP_DOMAIN=muzibu.com.tr</div>
+                                    <div class="text-green-300">APP_DOMAIN=muzibu.com</div>
                                 </div>
                                 <div class="border-t border-slate-700 pt-3">
                                     <div class="text-red-400"># Eski (Yanlış)</div>
-                                    <div class="text-red-300">TENANT_PARENT_DOMAIN=muzibu.com.tr</div>
+                                    <div class="text-red-300">TENANT_PARENT_DOMAIN=muzibu.com</div>
                                     <div class="text-green-400 mt-1"># Yeni (Doğru)</div>
                                     <div class="text-green-300">TENANT_PARENT_DOMAIN=tuufi.com</div>
                                 </div>
@@ -260,7 +260,7 @@
                         <div>
                             <p class="text-white mb-2"><strong>📝 Basit Açıklama:</strong></p>
                             <p class="text-slate-300 text-sm">
-                                Merkezi site (tuufi.com) için de ayrı bir "tenant" oluşturacağız. Böylece hem tuufi.com hem muzibu.com.tr tenant olarak çalışır. Ama bu daha karmaşık bir işlem.
+                                Merkezi site (tuufi.com) için de ayrı bir "tenant" oluşturacağız. Böylece hem tuufi.com hem muzibu.com tenant olarak çalışır. Ama bu daha karmaşık bir işlem.
                             </p>
                         </div>
 
@@ -337,7 +337,7 @@
                         </div>
 
                         <div class="text-slate-400 text-sm italic">
-                            Not: Bu yaklaşım mevcut mimariyi destekliyor, ama muzibu.com.tr'nin şu anki sorununu çözmüyor. Önce Öneri 1 veya 2 uygulanmalı.
+                            Not: Bu yaklaşım mevcut mimariyi destekliyor, ama muzibu.com'nin şu anki sorununu çözmüyor. Önce Öneri 1 veya 2 uygulanmalı.
                         </div>
                     </div>
                 </div>
@@ -413,7 +413,7 @@
             <div class="space-y-4 text-slate-300">
                 <p><strong class="text-white">Sorunun Özeti:</strong></p>
                 <p class="text-sm">
-                    Muzibu.com.tr tenant database'ine erişemiyor çünkü sistem yapılandırması "muzibu.com.tr = merkezi site" algısı yaratıyor.
+                    Muzibu.com.tr tenant database'ine erişemiyor çünkü sistem yapılandırması "muzibu.com = merkezi site" algısı yaratıyor.
                     <code class="bg-slate-900 px-2 py-1 rounded text-xs">APP_DOMAIN</code> ve
                     <code class="bg-slate-900 px-2 py-1 rounded text-xs">TENANT_PARENT_DOMAIN</code> değişkenleri yanlış ayarlanmış.
                 </p>

@@ -40,7 +40,7 @@ class WarmPortfolioCacheCommand extends Command
         {--portfolios=10 : Number of portfolios to warm per tenant}
         {--force : Force cache refresh even if already cached}
         {--urls : Also warm frontend URL caches}
-        {--quiet : Suppress output}';
+        {--silent : Suppress output}';
 
     /**
      * The console command description.
@@ -72,7 +72,7 @@ class WarmPortfolioCacheCommand extends Command
     {
         $startTime = microtime(true);
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info('🔥 Starting Portfolio Cache Warming...');
             $this->newLine();
         }
@@ -132,7 +132,7 @@ class WarmPortfolioCacheCommand extends Command
      */
     private function processTenant(int $tenantId, PortfolioService $portfolioService, TenantCacheService $cacheService): void
     {
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info("📦 Processing Tenant #{$tenantId}");
         }
 
@@ -146,14 +146,14 @@ class WarmPortfolioCacheCommand extends Command
         $portfolios = $this->getPagesToWarm($limit);
 
         if ($portfolios->isEmpty()) {
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->warn("  No portfolios found for tenant #{$tenantId}");
             }
             return;
         }
 
         // Create progress bar
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar = $this->output->createProgressBar($portfolios->count());
             $this->progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
         }
@@ -162,12 +162,12 @@ class WarmPortfolioCacheCommand extends Command
         foreach ($portfolios as $portfolio) {
             $this->warmPageCache($portfolio, $portfolioService, $cacheService);
 
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->progressBar->advance();
             }
         }
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar->finish();
             $this->newLine(2);
         }
@@ -205,7 +205,7 @@ class WarmPortfolioCacheCommand extends Command
             $force = $this->option('force');
 
             // Set progress message
-            if (!$this->option('quiet') && $this->progressBar) {
+            if (!$this->option('silent') && $this->progressBar) {
                 $title = is_array($portfolio->title) ? ($portfolio->title['tr'] ?? 'Untitled') : 'Untitled';
                 $this->progressBar->setMessage("Caching: {$title}");
             }
@@ -301,7 +301,7 @@ class WarmPortfolioCacheCommand extends Command
      */
     private function displaySummary(): void
     {
-        if ($this->option('quiet')) {
+        if ($this->option('silent')) {
             return;
         }
 

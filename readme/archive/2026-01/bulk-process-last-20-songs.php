@@ -109,4 +109,4 @@ echo "Visual job dispatched: {$stats['visual_dispatched']}\n";
 echo "Toplam job: " . ($stats['hls_dispatched'] + $stats['visual_dispatched']) . "\n";
 echo "\n";
 echo "✅ İşlem tamamlandı! Horizon'u kontrol edin.\n";
-echo "🔗 Horizon: https://muzibu.com.tr/horizon\n";
+echo "🔗 Horizon: https://muzibu.com/horizon\n";

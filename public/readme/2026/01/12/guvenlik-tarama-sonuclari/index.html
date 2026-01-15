@@ -149,7 +149,7 @@
                     <div>
                         <strong class="text-white">📁 Dosya:</strong>
                         <code class="ml-2 px-2 py-1 bg-slate-900 rounded text-yellow-400 font-mono text-sm">
-                            /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php
+                            /var/www/vhosts/muzibu.com/httpdocs/public/assets/453bbb9eb16f.php
                         </code>
                     </div>
 
@@ -201,14 +201,14 @@ if(md5($_COOKIE['d'])=="\61\x37\60\62\x38\146\x34\70\67\143\142\x32\141\70\x34\x
                         <strong class="text-red-400">⚠️ ACİL EYLEM:</strong>
                         <pre class="mt-2 text-sm bg-slate-900 p-3 rounded text-green-400">
 # 1. YEDEK AL
-sudo cp /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php \
+sudo cp /var/www/vhosts/muzibu.com/httpdocs/public/assets/453bbb9eb16f.php \
        /tmp/malware-backup-$(date +%s).php
 
 # 2. SİL
-sudo rm -f /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php
+sudo rm -f /var/www/vhosts/muzibu.com/httpdocs/public/assets/453bbb9eb16f.php
 
 # 3. TEST ET
-curl -I https://muzibu.com.tr/assets/453bbb9eb16f.php
+curl -I https://muzibu.com/assets/453bbb9eb16f.php
 # Beklenen: 404 Not Found
 
 # 4. GIT KAYDET
@@ -232,7 +232,7 @@ git add -A && git commit -m "Security: Removed backdoor 453bbb9eb16f.php" && git
                     <div>
                         <strong class="text-white">📁 Dosya:</strong>
                         <code class="ml-2 px-2 py-1 bg-slate-900 rounded text-yellow-400 font-mono text-sm">
-                            /var/www/vhosts/muzibu.com.tr/httpdocs/.env
+                            /var/www/vhosts/muzibu.com/httpdocs/.env
                         </code>
                     </div>
 
@@ -257,7 +257,7 @@ APP_DEBUG=true  # ❌ YANLIŞ! Production'da false olmalı!</pre>
                         <strong class="text-red-400">⚠️ ÇÖZÜM:</strong>
                         <pre class="mt-2 text-sm bg-slate-900 p-3 rounded text-green-400">
 # .env dosyasını düzenle
-nano /var/www/vhosts/muzibu.com.tr/httpdocs/.env
+nano /var/www/vhosts/muzibu.com/httpdocs/.env
 
 # Bu satırı bul ve değiştir:
 APP_DEBUG=false  # true → false yap
@@ -295,7 +295,7 @@ php artisan config:show app.debug
                     <div>
                         <strong class="text-white">📁 Dosya:</strong>
                         <code class="ml-2 px-2 py-1 bg-slate-900 rounded text-yellow-400 font-mono text-sm">
-                            /var/www/vhosts/muzibu.com.tr/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
+                            /var/www/vhosts/muzibu.com/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
                         </code>
                     </div>
 
@@ -323,10 +323,10 @@ d352f85e4598990f4c677cf5d1747f05</pre>
                         <strong class="text-yellow-400">⚠️ ÖNERİ:</strong>
                         <pre class="mt-2 text-sm bg-slate-900 p-3 rounded text-green-400">
 # Dosyayı sil
-sudo rm -f /var/www/vhosts/muzibu.com.tr/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
+sudo rm -f /var/www/vhosts/muzibu.com/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
 
 # Kontrol et
-ls -la /var/www/vhosts/muzibu.com.tr/httpdocs/public/*.txt</pre>
+ls -la /var/www/vhosts/muzibu.com/httpdocs/public/*.txt</pre>
                     </div>
                 </div>
             </div>
@@ -346,7 +346,7 @@ ls -la /var/www/vhosts/muzibu.com.tr/httpdocs/public/*.txt</pre>
                     <div>
                         <strong class="text-white">📁 Dosya:</strong>
                         <code class="ml-2 px-2 py-1 bg-slate-900 rounded text-green-400 font-mono text-sm">
-                            /var/www/vhosts/muzibu.com.tr/httpdocs/.user.ini
+                            /var/www/vhosts/muzibu.com/httpdocs/.user.ini
                         </code>
                     </div>
 
@@ -407,7 +407,7 @@ memory_limit = 256M</pre>
                         <strong class="text-yellow-400">💡 ÖNERİ:</strong>
                         <pre class="mt-2 text-sm bg-slate-900 p-3 rounded text-green-400">
 # Son 1 saatte oluşturulan dosyaları listele (vendor hariç)
-find /var/www/vhosts/muzibu.com.tr/httpdocs -name "*.php" -type f -cmin -60 \
+find /var/www/vhosts/muzibu.com/httpdocs -name "*.php" -type f -cmin -60 \
   ! -path "*/vendor/*" ! -path "*/storage/framework/*" | head -20
 
 # Şüpheli dosyaları kontrol et
@@ -472,22 +472,22 @@ git push origin main
                     </p>
                     <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
 # 1. Yedek al (analiz için)
-sudo cp /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php \
+sudo cp /var/www/vhosts/muzibu.com/httpdocs/public/assets/453bbb9eb16f.php \
         /tmp/backdoor-backup-$(date +%s).php
 
 # 2. İçeriğini kaydet
-cat /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php \
+cat /var/www/vhosts/muzibu.com/httpdocs/public/assets/453bbb9eb16f.php \
     > /tmp/backdoor-analysis.txt
 
 # 3. DOSYAYI SİL
-sudo rm -f /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php
+sudo rm -f /var/www/vhosts/muzibu.com/httpdocs/public/assets/453bbb9eb16f.php
 
 # 4. Silindiğini kontrol et
-ls -la /var/www/vhosts/muzibu.com.tr/httpdocs/public/assets/453bbb9eb16f.php
+ls -la /var/www/vhosts/muzibu.com/httpdocs/public/assets/453bbb9eb16f.php
 # Beklenen: No such file or directory
 
 # 5. Web'den test et
-curl -I https://muzibu.com.tr/assets/453bbb9eb16f.php
+curl -I https://muzibu.com/assets/453bbb9eb16f.php
 # Beklenen: HTTP/2 404</pre>
                 </div>
 
@@ -501,14 +501,14 @@ curl -I https://muzibu.com.tr/assets/453bbb9eb16f.php
                     </p>
                     <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
 # 1. İçeriğini kaydet
-cat /var/www/vhosts/muzibu.com.tr/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt \
+cat /var/www/vhosts/muzibu.com/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt \
     > /tmp/marker-analysis.txt
 
 # 2. DOSYAYI SİL
-sudo rm -f /var/www/vhosts/muzibu.com.tr/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
+sudo rm -f /var/www/vhosts/muzibu.com/httpdocs/public/d352f85e4598990f4c677cf5d1747f05.txt
 
 # 3. Diğer şüpheli TXT dosyaları var mı?
-find /var/www/vhosts/muzibu.com.tr/httpdocs/public -maxdepth 1 -name "*.txt" \
+find /var/www/vhosts/muzibu.com/httpdocs/public -maxdepth 1 -name "*.txt" \
   ! -name "robots.txt" 2>/dev/null</pre>
                 </div>
 
@@ -522,7 +522,7 @@ find /var/www/vhosts/muzibu.com.tr/httpdocs/public -maxdepth 1 -name "*.txt" \
                     </p>
                     <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
 # 1. .env dosyasını düzenle
-nano /var/www/vhosts/muzibu.com.tr/httpdocs/.env
+nano /var/www/vhosts/muzibu.com/httpdocs/.env
 
 # 2. Bu satırı bul:
 APP_DEBUG=true
@@ -552,15 +552,15 @@ php artisan tinker
                     </p>
                     <pre class="bg-slate-900 p-4 rounded-lg text-green-400 text-sm overflow-x-auto">
 # 1. Ana sayfa test
-curl -I https://muzibu.com.tr/
+curl -I https://muzibu.com/
 # Beklenen: HTTP/2 200
 
 # 2. Admin panel test
-curl -I https://muzibu.com.tr/admin/login
+curl -I https://muzibu.com/admin/login
 # Beklenen: HTTP/2 200
 
 # 3. Zararlı dosya test
-curl -I https://muzibu.com.tr/assets/453bbb9eb16f.php
+curl -I https://muzibu.com/assets/453bbb9eb16f.php
 # Beklenen: HTTP/2 404 (silindiği için)
 
 # 4. Tarayıcıda aç ve kontrol et
@@ -608,7 +608,7 @@ git reset --hard abc123f
 git push origin main --force
 
 # 4. Test et
-curl -I https://muzibu.com.tr/
+curl -I https://muzibu.com/
 
 # ⚠️ DİKKAT: Bu komut checkpoint'ten sonraki TÜM değişiklikleri siler!</pre>
                 </div>
@@ -824,8 +824,8 @@ curl -I https://muzibu.com.tr/
                     <h3 class="text-xl font-semibold text-white mb-3">📊 Tarama Parametreleri</h3>
                     <ul class="space-y-2">
                         <li><strong>Tarih:</strong> 12 Ocak 2026</li>
-                        <li><strong>Sistem:</strong> muzibu.com.tr (Tenant 1001)</li>
-                        <li><strong>Dizin:</strong> /var/www/vhosts/muzibu.com.tr/httpdocs</li>
+                        <li><strong>Sistem:</strong> muzibu.com (Tenant 1001)</li>
+                        <li><strong>Dizin:</strong> /var/www/vhosts/muzibu.com/httpdocs</li>
                         <li><strong>Toplam Kontrol:</strong> 90 (50 temel + 20 Imunify360 + 20 v5)</li>
                         <li><strong>Hariç Tutulan:</strong> vendor/, storage/framework/</li>
                         <li><strong>Süre:</strong> ~15 dakika</li>

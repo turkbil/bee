@@ -21,11 +21,13 @@ class TenantStorageController extends Controller
         $tenantId = tenant('id');
 
         // Build full path to file in tenant storage
-        $storagePath = storage_path("tenant{$tenantId}/app/public/{$path}");
+        // NOTE: storage_path() in tenant context already returns /storage/tenant{id}/
+        // So we just need app/public/{path} without tenant prefix
+        $storagePath = storage_path("app/public/{$path}");
 
         // Security: Prevent directory traversal
         $realPath = realpath($storagePath);
-        $basePath = realpath(storage_path("tenant{$tenantId}/app/public"));
+        $basePath = realpath(storage_path("app/public"));
 
         if (!$realPath || !$basePath || !str_starts_with($realPath, $basePath)) {
             abort(404, 'File not found');

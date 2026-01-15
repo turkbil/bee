@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLAUDE.md Kategorizasyon Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .category-card { transition: all 0.3s ease; }
+        .category-card:hover { transform: translateY(-2px); }
+        .rule-item { border-left: 3px solid transparent; transition: all 0.2s; }
+        .rule-item:hover { border-left-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+        .priority-high { background: linear-gradient(90deg, rgba(239,68,68,0.1) 0%, transparent 100%); }
+        .priority-medium { background: linear-gradient(90deg, rgba(234,179,8,0.1) 0%, transparent 100%); }
+        .priority-low { background: linear-gradient(90deg, rgba(34,197,94,0.1) 0%, transparent 100%); }
+        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .collapsible-content.open { max-height: 5000px; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-900 to-purple-900 py-8 px-6 border-b border-slate-700">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-medium">Analiz</span>
+                <span class="text-slate-400 text-sm">14 Ocak 2026</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">CLAUDE.md Kategorizasyon Analizi</h1>
+            <p class="text-slate-300">Mevcut kuralların detaylı incelemesi ve yeniden yapılandırma önerisi</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto py-8 px-6">
+
+        <!-- Özet -->
+        <section class="mb-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-400">7</div>
+                    <div class="text-sm text-slate-400">Ana Kategori</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400">32</div>
+                    <div class="text-sm text-slate-400">Toplam Kural</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-yellow-400">1323</div>
+                    <div class="text-sm text-slate-400">Satır Sayısı</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-red-400">12</div>
+                    <div class="text-sm text-slate-400">Kritik Kural</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori A: CLAUDE ÇALIŞMA KURALLARI -->
+        <section class="mb-8 category-card">
+            <div class="bg-gradient-to-r from-red-900/30 to-slate-800 rounded-xl border border-red-800/50 overflow-hidden">
+                <div class="p-6 border-b border-red-800/30 cursor-pointer" onclick="toggleSection('cat-a')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-4xl">🔴</span>
+                            <div>
+                                <h2 class="text-xl font-bold text-red-400">KATEGORİ A: CLAUDE ÇALIŞMA KURALLARI</h2>
+                                <p class="text-slate-400 text-sm">Claude'un nasıl çalışacağına dair temel kurallar - EN ÖNCELİKLİ</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl text-slate-500" id="cat-a-icon">▼</span>
+                    </div>
+                </div>
+
+                <div id="cat-a" class="collapsible-content open">
+                    <div class="p-6 space-y-4">
+
+                        <!-- Kural A1 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">A1. Dosya İzinleri (Permission)</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 967-1019</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Claude her dosya oluşturduğunda veya düzenlediğinde, dosya sahipliği "root" olarak ayarlanır.
+                                    Bu durumda web sunucusu (Nginx) dosyayı okuyamaz ve 403 hatası verir.
+                                    Her dosya işleminden sonra sahipliği "tuufi.com_:psaserv" olarak değiştirmek ZORUNLU.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• <code class="bg-slate-700 px-1 rounded">sudo chown tuufi.com_:psaserv /path/to/file</code></li>
+                                    <li>• <code class="bg-slate-700 px-1 rounded">sudo chmod 644 dosya</code> / <code class="bg-slate-700 px-1 rounded">chmod 755 klasör</code></li>
+                                    <li>• Link vermeden önce <code class="bg-slate-700 px-1 rounded">curl -I</code> ile 200 OK testi zorunlu</li>
+                                    <li>• Symlink: <code class="bg-slate-700 px-1 rounded">sudo -u tuufi.com_ ln -sf</code></li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                                <span class="text-slate-500 text-xs">Her dosya işleminde uygulanmalı</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural A2 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">A2. Git Checkpoint Kuralları</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 929-964</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Büyük değişiklikler yapmadan önce "kayıt noktası" oluşturulmalı. Bir şey bozulursa geri dönülebilir.
+                                    Küçük değişikliklerde (typo, CSS) checkpoint gerekmez.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Büyük refactor, çok dosya değişikliği → Checkpoint YAP</li>
+                                    <li>• <code class="bg-slate-700 px-1 rounded">git commit -m "🔧 CHECKPOINT: Before [özet]"</code></li>
+                                    <li>• <code class="bg-slate-700 px-1 rounded">git reset --hard</code> için KULLANICI İZNİ gerekli</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                                <span class="text-slate-500 text-xs">Sadeleştirilebilir</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural A3 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">A3. Ana Dizin Temizliği</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 1022-1056</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Proje ana dizini temiz kalmalı. Test dosyaları, debug scriptleri, geçici görseller ana dizinde bırakılmamalı.
+                                    İş bitince otomatik temizlik yapılmalı.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• ❌ test-*.php, debug-*.txt, fix-*.php → Ana dizine ASLA</li>
+                                    <li>• ✅ readme/, /tmp/, tests/ → Doğru konumlar</li>
+                                    <li>• Kullanıcı görsel attıysa → İş bitince sil</li>
+                                    <li>• İstisnalar: CLAUDE.md, README.md, .env, composer.json</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                                <span class="text-slate-500 text-xs">Kısa tutulabilir</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural A4 -->
+                        <div class="rule-item priority-low rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">DÜŞÜK</span>
+                                    <h3 class="font-semibold">A4. Buffer Dosyaları (a-console.txt, a-html.txt)</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 1059-1075</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Debug için kullanılan özel dosyalar. Kullanıcı "console" veya "debug" derse aktif ol,
+                                    yoksa dokunma. Bu dosyaları ASLA silme.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Pasif mod: Kullanıcı bahsetmezse hiç dokunma</li>
+                                    <li>• Aktif mod: "a-console.txt", "console", "debug" tetikler</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">SADELEŞTİR</span>
+                                <span class="text-slate-500 text-xs">2-3 satıra indirilebilir</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural A5 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">A5. Çalışma Yöntemi & Cache Temizleme</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 1079-1139</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Tailwind/View değişikliğinden sonra cache temizleme ve build otomatik yapılmalı.
+                                    "Değişiklik yansımadı" denirse Nuclear Cache Clear uygulanmalı.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Otomatik: <code class="bg-slate-700 px-1 rounded">php artisan view:clear && npm run prod</code></li>
+                                    <li>• Nuclear: config:clear, route:clear, responsecache:clear + opcache reset</li>
+                                    <li>• ❌ <code class="bg-slate-700 px-1 rounded">redis-cli FLUSHALL</code> → Kullanıcıları logout yapar!</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori B: HTML RAPOR SİSTEMİ -->
+        <section class="mb-8 category-card">
+            <div class="bg-gradient-to-r from-green-900/30 to-slate-800 rounded-xl border border-green-800/50 overflow-hidden">
+                <div class="p-6 border-b border-green-800/30 cursor-pointer" onclick="toggleSection('cat-b')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-4xl">🟢</span>
+                            <div>
+                                <h2 class="text-xl font-bold text-green-400">KATEGORİ B: HTML RAPOR SİSTEMİ</h2>
+                                <p class="text-slate-400 text-sm">README oluşturma kuralları - KORUNACAK, ÖNEMLİ!</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl text-slate-500" id="cat-b-icon">▼</span>
+                    </div>
+                </div>
+
+                <div id="cat-b" class="collapsible-content open">
+                    <div class="p-6 space-y-4">
+
+                        <!-- Kural B1 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">B1. Tetikleyici Kelimeler - Ne Zaman HTML Oluştur</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 313-348</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Kullanıcı bazı kelimeler kullandığında otomatik HTML rapor oluşturulmalı.
+                                    "Analiz", "rapor", "incele", "plan" gibi kelimeler HTML tetikler.
+                                    "Düzelt", "ekle", "sil" gibi kelimeler direkt kod yazmayı tetikler.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <p class="text-green-400 mb-1">✅ HTML Oluştur:</p>
+                                        <ul class="text-slate-400 space-y-1 ml-4">
+                                            <li>• analiz, incele, araştır</li>
+                                            <li>• rapor, dokümante et</li>
+                                            <li>• plan, tasarım, strateji</li>
+                                            <li>• sunum, göster, özetle</li>
+                                            <li>• detaylı, kapsamlı, gözat</li>
+                                            <li>• karşılaştır, listele</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="text-red-400 mb-1">❌ Direkt Kod Yaz:</p>
+                                        <ul class="text-slate-400 space-y-1 ml-4">
+                                            <li>• düzelt, fix et</li>
+                                            <li>• ekle, sil</li>
+                                            <li>• değiştir, güncelle</li>
+                                            <li>• migration yap</li>
+                                            <li>• oluştur (kod için)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU - ÖNEMLİ</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural B2 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">B2. Dosya Konumu & Versiyon Sistemi</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 349-416</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    HTML raporlar tarih bazlı klasörlerde saklanır. Her güncelleme yeni versiyon olarak eklenir (v1, v2, v3...).
+                                    Ana klasörde sembolik link en güncel versiyona işaret eder.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Konum: <code class="bg-slate-700 px-1 rounded">public/readme/YYYY/MM/DD/konu/v1/index.html</code></li>
+                                    <li>• İlk rapor: v1 → Güncelleme: v2, v3...</li>
+                                    <li>• Sembolik link: <code class="bg-slate-700 px-1 rounded">ln -sf v3/index.html index.html</code></li>
+                                    <li>• URL: <code class="bg-slate-700 px-1 rounded">https://domain.com/readme/2026/01/14/konu/</code></li>
+                                </ul>
+                                <div class="mt-3 p-3 bg-slate-800 rounded text-sm">
+                                    <p class="text-slate-300 mb-1">Örnek Yapı:</p>
+                                    <pre class="text-slate-400">public/readme/2026/01/14/blog-analiz/
+├── v1/index.html   ← İlk analiz
+├── v2/index.html   ← Güncelleme
+└── index.html      ← Symlink → v2</pre>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU - ÖNEMLİ</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural B3 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">B3. İki Seviyeli İçerik (Basit + Teknik)</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 426-504</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Her HTML raporda iki farklı anlatım olmalı:
+                                    1) Herkesin anlayacağı basit Türkçe
+                                    2) Geliştiriciler için teknik detaylar.
+                                    Böylece hem proje sahibi hem de developer raporu anlayabilir.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <div class="grid grid-cols-2 gap-4 text-sm mt-3">
+                                    <div class="bg-green-900/20 border border-green-800/50 rounded p-3">
+                                        <p class="text-green-400 mb-2">📝 Basit Anlatım Bölümü:</p>
+                                        <ul class="text-slate-400 space-y-1">
+                                            <li>• Günlük dil, sade Türkçe</li>
+                                            <li>• Teknik terim varsa parantez içinde açıkla</li>
+                                            <li>• "Neden önemli?" sorusunun cevabı</li>
+                                            <li>• Benzetmeler, örnekler</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-blue-900/20 border border-blue-800/50 rounded p-3">
+                                        <p class="text-blue-400 mb-2">🔧 Teknik Detaylar Bölümü:</p>
+                                        <ul class="text-slate-400 space-y-1">
+                                            <li>• Dosya path'leri</li>
+                                            <li>• Fonksiyon/class isimleri</li>
+                                            <li>• Veritabanı tablo/field</li>
+                                            <li>• Kullanılan teknolojiler</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU - ÖNEMLİ</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural B4 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">B4. Birikimli Versiyon İçeriği</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 562-632</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Her yeni versiyon, önceki versiyonların TÜM bilgilerini içermeli + yeni eklenenler.
+                                    v3'ü okuyan biri v1 ve v2'yi okumak zorunda kalmamalı.
+                                    Bilgi kaybı YASAK!
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <div class="grid grid-cols-2 gap-4 text-sm mt-3">
+                                    <div class="bg-red-900/20 border border-red-800/50 rounded p-3">
+                                        <p class="text-red-400 mb-2">❌ YANLIŞ:</p>
+                                        <pre class="text-slate-400 text-xs">v1: A, B, C anlatıldı
+v2: Sadece D yazıldı (A,B,C kayboldu!)
+v3: Sadece E yazıldı (hepsi kayboldu!)</pre>
+                                    </div>
+                                    <div class="bg-green-900/20 border border-green-800/50 rounded p-3">
+                                        <p class="text-green-400 mb-2">✅ DOĞRU:</p>
+                                        <pre class="text-slate-400 text-xs">v1: A, B, C
+v2: A, B, C + D
+v3: A, B, C, D + E (hepsi var!)</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU - ÖNEMLİ</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural B5 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">B5. Görev Tamamlandı Raporu</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 636-647</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Görev bittiğinde "Yapılanlar" HTML raporu oluşturulmalı.
+                                    Tetikleyiciler: "bitti", "tamam", "teşekkürler", "güzel" vb.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Dosya: <code class="bg-slate-700 px-1 rounded">task-completed-[konu]/index.html</code></li>
+                                    <li>• Tasarım: Yeşil tema, success badge</li>
+                                    <li>• İçerik: "Ne yapıldı?" (kod bloğu YOK)</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural B6 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">B6. Konuşma Başlangıç & Konu Değişikliği Raporları</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 650-802</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Yeni konuşmanın ilk mesajında veya tamamen farklı konuya geçildiğinde planlama raporu oluşturulmalı.
+                                    Aynı konunun devamıysa rapor oluşturma.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• İlk mesaj: <code class="bg-slate-700 px-1 rounded">session-start-[konu]/</code></li>
+                                    <li>• Konu değişikliği: <code class="bg-slate-700 px-1 rounded">topic-change-[yeni-konu]/</code></li>
+                                    <li>• Aynı konunun devamı → Rapor oluşturma!</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">GÖZDEN GEÇİR</span>
+                                <span class="text-slate-500 text-xs">Çok uzun, sadeleştirilebilir</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural B7 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">B7. README Index Sayfası</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 805-854</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    domain.com/readme/ adresinde tüm raporların otomatik listesi görünür.
+                                    Yeni rapor eklenince otomatik taranır ve listeye eklenir.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Dosya: <code class="bg-slate-700 px-1 rounded">public/readme/index.php</code></li>
+                                    <li>• PHP glob() ile klasörleri tarar</li>
+                                    <li>• Masonry layout, versiyon badge'leri</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori C: PROJE/SİTE KURALLARI -->
+        <section class="mb-8 category-card">
+            <div class="bg-gradient-to-r from-blue-900/30 to-slate-800 rounded-xl border border-blue-800/50 overflow-hidden">
+                <div class="p-6 border-b border-blue-800/30 cursor-pointer" onclick="toggleSection('cat-c')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-4xl">🔵</span>
+                            <div>
+                                <h2 class="text-xl font-bold text-blue-400">KATEGORİ C: PROJE/SİTE KURALLARI (TENANT-AWARE)</h2>
+                                <p class="text-slate-400 text-sm">Multi-tenant mimari ve proje özel kurallar</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl text-slate-500" id="cat-c-icon">▼</span>
+                    </div>
+                </div>
+
+                <div id="cat-c" class="collapsible-content open">
+                    <div class="p-6 space-y-4">
+
+                        <!-- Kural C1 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">C1. Multi-Tenant Mimari</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 93-189</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Sistem birden fazla siteyi (tenant) barındırır. Her tenant kendi veritabanında çalışır.
+                                    ixtif.com endüstriyel ekipman satıyor, muzibu.com müzik platformu.
+                                    Birinin koduna diğerinin özel içeriğini ekleme!
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <div class="overflow-x-auto">
+                                    <table class="text-sm w-full mt-2">
+                                        <thead>
+                                            <tr class="text-left border-b border-slate-700">
+                                                <th class="pb-2 text-slate-400">ID</th>
+                                                <th class="pb-2 text-slate-400">Domain</th>
+                                                <th class="pb-2 text-slate-400">Database</th>
+                                                <th class="pb-2 text-slate-400">Sektör</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-slate-300">
+                                            <tr class="border-b border-slate-800">
+                                                <td class="py-2">1</td>
+                                                <td>tuufi.com</td>
+                                                <td><code class="bg-slate-700 px-1 rounded text-xs">tuufi_4ekim</code></td>
+                                                <td>Central (Ana sistem)</td>
+                                            </tr>
+                                            <tr class="border-b border-slate-800">
+                                                <td class="py-2">2</td>
+                                                <td>ixtif.com</td>
+                                                <td><code class="bg-slate-700 px-1 rounded text-xs">tenant_ixtif</code></td>
+                                                <td>Endüstriyel Ekipman</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2">1001</td>
+                                                <td>muzibu.com</td>
+                                                <td><code class="bg-slate-700 px-1 rounded text-xs">tenant_muzibu_1528d0</code></td>
+                                                <td>Müzik Platformu</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-3 p-3 bg-red-900/20 border border-red-800/50 rounded">
+                                    <p class="text-red-400 text-sm">❌ ASLA YAPMA:</p>
+                                    <ul class="text-slate-400 text-sm mt-1 ml-4">
+                                        <li>• Forklift/Transpalet kodunu Muzibu'ya ekleme</li>
+                                        <li>• Müzik/Album/Artist kodunu İxtif'e ekleme</li>
+                                        <li>• Central DB'ye tenant verisi yazma</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                                <span class="text-slate-500 text-xs">Ayrı dosyaya taşınabilir (TENANT_LIST.md)</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural C2 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">C2. Migration Kuralları</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 1249-1291</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Veritabanı değişikliği (migration) yapılırken HER ZAMAN iki yere yazılmalı:
+                                    Hem central için hem tenant için. Birini unutursan sistem bozulur!
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Central: <code class="bg-slate-700 px-1 rounded">Modules/[Modül]/database/migrations/xxx.php</code></li>
+                                    <li>• Tenant: <code class="bg-slate-700 px-1 rounded">Modules/[Modül]/database/migrations/tenant/xxx.php</code></li>
+                                    <li>• ❌ <code class="bg-slate-700 px-1 rounded">database/migrations/</code> ana klasör KULLANMA!</li>
+                                    <li>• Çalıştır: <code class="bg-slate-700 px-1 rounded">php artisan migrate</code> + <code class="bg-slate-700 px-1 rounded">php artisan tenants:migrate</code></li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural C3 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">C3. Tenant CSS (Tailwind)</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 218-250</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Her tenant kendi CSS dosyasını kullanır (tenant-2.css, tenant-1001.css).
+                                    Tailwind class eklediğinde safelist'e ekle ve npm run prod çalıştır.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Config: <code class="bg-slate-700 px-1 rounded">tailwind/tenants/tenant-X.config.js</code></li>
+                                    <li>• Output: <code class="bg-slate-700 px-1 rounded">public/css/tenant-X.css</code></li>
+                                    <li>• Build: <code class="bg-slate-700 px-1 rounded">npm run prod</code></li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural C4 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">C4. Pattern Uyumu (Referans Dosyalar)</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 271-306</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Yeni sayfa/component oluştururken mevcut dosyalardan örnek al.
+                                    Aynı tablo yapısını, buton stillerini, spacing'leri kullan.
+                                    Tutarlılığı bozma!
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Tablo: <code class="bg-slate-700 px-1 rounded text-xs">Modules/Page/.../page-component.blade.php</code></li>
+                                    <li>• Form: <code class="bg-slate-700 px-1 rounded text-xs">page-manage-component.blade.php</code></li>
+                                    <li>• Sıralama: <code class="bg-slate-700 px-1 rounded text-xs">category-component.blade.php</code></li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori D: GÜVENLİK & KORUMA -->
+        <section class="mb-8 category-card">
+            <div class="bg-gradient-to-r from-yellow-900/30 to-slate-800 rounded-xl border border-yellow-800/50 overflow-hidden">
+                <div class="p-6 border-b border-yellow-800/30 cursor-pointer" onclick="toggleSection('cat-d')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-4xl">🟡</span>
+                            <div>
+                                <h2 class="text-xl font-bold text-yellow-400">KATEGORİ D: GÜVENLİK & KORUMA</h2>
+                                <p class="text-slate-400 text-sm">Tehlikeli komutlar ve veri koruma</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl text-slate-500" id="cat-d-icon">▼</span>
+                    </div>
+                </div>
+
+                <div id="cat-d" class="collapsible-content open">
+                    <div class="p-6 space-y-4">
+
+                        <!-- Kural D1 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">D1. Storage/Medya Koruma - MUTLAK YASAK!</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 10-54</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Storage klasörünü ve medya dosyalarını ASLA silme!
+                                    Geçmişte bu komutlar 268 medya dosyasını sildi ve geri gelmedi.
+                                    Müşteri fotoğrafları, ürün görselleri kalıcı kaybolur!
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <div class="grid grid-cols-2 gap-4 text-sm mt-3">
+                                    <div class="bg-red-900/20 border border-red-800/50 rounded p-3">
+                                        <p class="text-red-400 mb-2">❌ YASAK KOMUTLAR:</p>
+                                        <ul class="text-slate-400 space-y-1 text-xs">
+                                            <li>• <code>php artisan media-library:clear</code></li>
+                                            <li>• <code>php artisan db:wipe</code></li>
+                                            <li>• <code>php artisan migrate:fresh</code></li>
+                                            <li>• <code>rm -rf storage/</code></li>
+                                            <li>• <code>rm -rf storage/app/public/</code></li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-green-900/20 border border-green-800/50 rounded p-3">
+                                        <p class="text-green-400 mb-2">✅ GÜVENLİ KOMUTLAR:</p>
+                                        <ul class="text-slate-400 space-y-1 text-xs">
+                                            <li>• <code>php artisan cache:clear</code></li>
+                                            <li>• <code>php artisan config:clear</code></li>
+                                            <li>• <code>php artisan route:clear</code></li>
+                                            <li>• <code>php artisan view:clear</code></li>
+                                            <li>• <code>php artisan responsecache:clear</code></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU - ÇOK ÖNEMLİ</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural D2 -->
+                        <div class="rule-item priority-high rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded">KRİTİK</span>
+                                    <h3 class="font-semibold">D2. Veritabanı Koruma</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 253-268</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Bu gerçek canlı sistem! Veritabanını silme, truncate yapma, DROP çalıştırma.
+                                    INSERT/UPDATE için kullanıcı izni gerekli.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• ❌ <code class="bg-slate-700 px-1 rounded">migrate:fresh</code>, <code class="bg-slate-700 px-1 rounded">db:wipe</code>, truncate, DELETE, DROP</li>
+                                    <li>• ❌ Sunucu ayarlarını rastgele değiştirme</li>
+                                    <li>• ⚠️ INSERT/UPDATE, migration oluşturma → Kullanıcı izni gerekli</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                                <span class="text-slate-500 text-xs">D1 ile birleştirilebilir</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori E: PERFORMANS -->
+        <section class="mb-8 category-card">
+            <div class="bg-gradient-to-r from-purple-900/30 to-slate-800 rounded-xl border border-purple-800/50 overflow-hidden">
+                <div class="p-6 border-b border-purple-800/30 cursor-pointer" onclick="toggleSection('cat-e')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-4xl">🟣</span>
+                            <div>
+                                <h2 class="text-xl font-bold text-purple-400">KATEGORİ E: PERFORMANS & OPTİMİZASYON</h2>
+                                <p class="text-slate-400 text-sm">Horizon, CPU ve sorgu optimizasyonları</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl text-slate-500" id="cat-e-icon">▼</span>
+                    </div>
+                </div>
+
+                <div id="cat-e" class="collapsible-content open">
+                    <div class="p-6 space-y-4">
+
+                        <!-- Kural E1 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">E1. Performans Notları (2025-11-30)</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 57-90</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Geçmişte CPU %100'e çıktı ve site 45 saniyede açılıyordu.
+                                    Horizon ayarları düzeltildi, N+1 query'ler çözüldü, şimdi 2-3 saniyede açılıyor.
+                                    Bu ayarları bozma!
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• ❌ Horizon auto-restart cron ile YAPMA (orphan process)</li>
+                                    <li>• ❌ <code class="bg-slate-700 px-1 rounded">exec(...&)</code> ile process başlatma</li>
+                                    <li>• ❌ maxProcesses agresif ayarlama (8 değil 2)</li>
+                                    <li>• ✅ Currency N+1 fixed, Settings global cache</li>
+                                </ul>
+                                <div class="mt-3 p-3 bg-green-900/20 border border-green-800/50 rounded">
+                                    <p class="text-green-400 text-sm">📊 Sonuçlar:</p>
+                                    <ul class="text-slate-400 text-sm mt-1 ml-4">
+                                        <li>• CPU: 18.44 → 7.09 (%61 azalma)</li>
+                                        <li>• Horizon: 112 → 38 process (%66 azalma)</li>
+                                        <li>• Site: 45s → 2-3s (15-22x hızlanma)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                                <span class="text-slate-500 text-xs">Referans link yeterli olabilir</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori F: TASARIM -->
+        <section class="mb-8 category-card">
+            <div class="bg-gradient-to-r from-slate-700/30 to-slate-800 rounded-xl border border-slate-600/50 overflow-hidden">
+                <div class="p-6 border-b border-slate-600/30 cursor-pointer" onclick="toggleSection('cat-f')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-4xl">⚪</span>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-300">KATEGORİ F: TASARIM STANDARTLARI</h2>
+                                <p class="text-slate-400 text-sm">UI/UX, renk, admin panel kuralları</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl text-slate-500" id="cat-f-icon">▼</span>
+                    </div>
+                </div>
+
+                <div id="cat-f" class="collapsible-content open">
+                    <div class="p-6 space-y-4">
+
+                        <!-- Kural F1 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">F1. Genel Standartlar</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 1142-1149</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Admin panelde Tabler.io + Bootstrap + Livewire kullan.
+                                    Frontend'de Alpine.js + Tailwind CSS kullan.
+                                    İkonlar SADECE FontAwesome olmalı.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Admin: Tabler.io + Bootstrap + Livewire</li>
+                                    <li>• Frontend: Alpine.js + Tailwind CSS</li>
+                                    <li>• Icon: FontAwesome (<code class="bg-slate-700 px-1 rounded">fas</code>, <code class="bg-slate-700 px-1 rounded">far</code>, <code class="bg-slate-700 px-1 rounded">fab</code>)</li>
+                                    <li>• Renkler: Framework renkleri (custom yok)</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                                <span class="text-slate-500 text-xs">Kısa, öz</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural F2 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">F2. Tasarımsal Değişikliklerde HTML Taslak</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 1150-1177</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm mb-3">
+                                    Yeni UI component veya sayfa tasarımı yapmadan önce HTML taslak göster.
+                                    Kullanıcı "UYGUNDUR" derse kodu yaz, değişiklik isterse yeni versiyon oluştur.
+                                </p>
+                                <p class="text-blue-400 mb-2">🔧 Teknik Detaylar:</p>
+                                <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                    <li>• Yeni UI, form, liste, panel ekleme → Taslak zorunlu</li>
+                                    <li>• Taslak: <code class="bg-slate-700 px-1 rounded">public/readme/[tarih]/[konu]/v1/index.html</code></li>
+                                    <li>• "UYGUNDUR" → Kodu yaz</li>
+                                </ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural F3 -->
+                        <div class="rule-item priority-low rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">DÜŞÜK</span>
+                                    <h3 class="font-semibold">F3. Renk Kontrast (WCAG AA)</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 1178-1192</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm">
+                                    Metin okunabilir olmalı. Minimum kontrast 4.5:1.
+                                    Koyu üstüne koyu, açık üstüne açık renk KULLANMA.
+                                </p>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">SADELEŞTİR</span>
+                                <span class="text-slate-500 text-xs">1-2 satıra indirilebilir</span>
+                            </div>
+                        </div>
+
+                        <!-- Kural F4 -->
+                        <div class="rule-item priority-medium rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">ORTA</span>
+                                    <h3 class="font-semibold">F4. Admin Panel Pattern</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 1194-1203</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <p class="text-green-400 mb-2">📝 Basit Anlatım:</p>
+                                <p class="text-slate-300 text-sm">
+                                    Admin panelde iki dosya pattern'i kullan: index.blade.php (liste) ve manage.blade.php (form).
+                                    Eski create.blade.php / edit.blade.php pattern'ini kullanma.
+                                </p>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">KORU</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori G: SİSTEM BİLGİLERİ -->
+        <section class="mb-8 category-card">
+            <div class="bg-gradient-to-r from-slate-800/30 to-slate-800 rounded-xl border border-slate-700/50 overflow-hidden">
+                <div class="p-6 border-b border-slate-700/30 cursor-pointer" onclick="toggleSection('cat-g')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-4xl">⚫</span>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-400">KATEGORİ G: SİSTEM BİLGİLERİ</h2>
+                                <p class="text-slate-500 text-sm">Dil, settings, thumbmaker, MD kullanımı</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl text-slate-500" id="cat-g-icon">▼</span>
+                    </div>
+                </div>
+
+                <div id="cat-g" class="collapsible-content open">
+                    <div class="p-6 space-y-4">
+
+                        <!-- Kural G1-G4 kısa -->
+                        <div class="rule-item priority-low rounded-lg p-4 bg-slate-800/50">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">DÜŞÜK</span>
+                                    <h3 class="font-semibold">G1-G4. Dil, Settings, Thumbmaker, MD Kullanımı</h3>
+                                </div>
+                                <span class="text-slate-500 text-sm">Satır: 857-925, 1210-1241</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 mb-3">
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <p class="text-blue-400 mb-2">G1. Dil Sistemi:</p>
+                                        <ul class="text-slate-400 space-y-1 ml-4">
+                                            <li>• Admin: system_languages + admin_locale</li>
+                                            <li>• Site: site_languages + site_locale</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="text-blue-400 mb-2">G2. Settings:</p>
+                                        <ul class="text-slate-400 space-y-1 ml-4">
+                                            <li>• <code class="bg-slate-700 px-1 rounded text-xs">setting('site_name')</code></li>
+                                            <li>• Yeni group → Kullanıcı onayı</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="text-blue-400 mb-2">G3. Thumbmaker:</p>
+                                        <ul class="text-slate-400 space-y-1 ml-4">
+                                            <li>• <code class="bg-slate-700 px-1 rounded text-xs">thumb($media, 400, 300)</code></li>
+                                            <li>• WebP, loading="lazy"</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="text-blue-400 mb-2">G4. MD Kullanımı:</p>
+                                        <ul class="text-slate-400 space-y-1 ml-4">
+                                            <li>• MD = Sadece TODO!</li>
+                                            <li>• Tetikleyici: "todo", "checklist"</li>
+                                            <li>• Konum: readme/claude-docs/todo/</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded">SADELEŞTİR</span>
+                                <span class="text-slate-500 text-xs">Çok kısa tutulabilir</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet & Öneriler -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-indigo-900/30 to-slate-800 rounded-xl border border-indigo-800/50 p-6">
+                <h2 class="text-xl font-bold text-indigo-400 mb-4">📊 Özet & Öneriler</h2>
+
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                        <h3 class="text-green-400 font-semibold mb-2">✅ KORU (12 kural)</h3>
+                        <ul class="text-slate-300 text-sm space-y-1">
+                            <li>• HTML Rapor Sistemi (B1-B5, B7)</li>
+                            <li>• Dosya İzinleri (A1)</li>
+                            <li>• Storage/DB Koruma (D1, D2)</li>
+                            <li>• Multi-Tenant & Migration (C1, C2)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-yellow-900/20 border border-yellow-800/50 rounded-lg p-4">
+                        <h3 class="text-yellow-400 font-semibold mb-2">⚠️ SADELEŞTİR (8 kural)</h3>
+                        <ul class="text-slate-300 text-sm space-y-1">
+                            <li>• Git Checkpoint (A2)</li>
+                            <li>• Konuşma Raporları (B6) - çok uzun</li>
+                            <li>• Buffer Dosyaları (A4)</li>
+                            <li>• Renk Kontrast (F3)</li>
+                            <li>• Sistem Bilgileri (G1-G4)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                        <h3 class="text-blue-400 font-semibold mb-2">🔄 YENİDEN YAPILANDIR</h3>
+                        <ul class="text-slate-300 text-sm space-y-1">
+                            <li>• Tenant bilgileri → TENANT_LIST.md</li>
+                            <li>• Performans detayları → Sadece link</li>
+                            <li>• Tekrar eden bilgileri sil</li>
+                            <li>• Claude kuralları EN ÜSTE</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="text-slate-300 font-semibold mb-3">📐 ÖNERİLEN YENİ YAPI:</h3>
+                    <pre class="text-slate-400 text-sm overflow-x-auto">
+CLAUDE.md (Yeni - ~400 satır hedef)
+├── BÖLÜM 1: CLAUDE ÇALIŞMA KURALLARI (Öncelikli)
+│   ├── 1.1 Dosya İzinleri (Permission)
+│   ├── 1.2 Git Checkpoint
+│   ├── 1.3 Ana Dizin Temizliği
+│   └── 1.4 Cache & Build
+│
+├── BÖLÜM 2: HTML RAPOR SİSTEMİ (Korunacak!)
+│   ├── 2.1 Tetikleyiciler
+│   ├── 2.2 Dosya Konumu & Versiyon
+│   ├── 2.3 İki Seviyeli İçerik
+│   ├── 2.4 Birikimli Versiyon
+│   └── 2.5 README Index
+│
+├── BÖLÜM 3: GÜVENLİK & KORUMA
+│   ├── 3.1 Yasak Komutlar
+│   └── 3.2 DB Koruma
+│
+├── BÖLÜM 4: PROJE KURALLARI
+│   ├── 4.1 Multi-Tenant (özet + TENANT_LIST.md link)
+│   ├── 4.2 Migration
+│   ├── 4.3 CSS Build
+│   └── 4.4 Pattern Uyumu
+│
+└── BÖLÜM 5: TASARIM & REFERANSLAR
+    ├── 5.1 Standartlar (kısa)
+    └── 5.2 Referans linkler
+                    </pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-6 px-6">
+        <div class="max-w-6xl mx-auto text-center text-slate-400 text-sm">
+            <p>Claude AI tarafından oluşturuldu • 14 Ocak 2026</p>
+            <p class="mt-1">Muzibu.com.tr Projesi</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleSection(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.textContent = '▶';
+            } else {
+                content.classList.add('open');
+                icon.textContent = '▼';
+            }
+        }
+    </script>
+</body>
+</html>

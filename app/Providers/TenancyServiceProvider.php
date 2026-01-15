@@ -117,13 +117,6 @@ class TenancyServiceProvider extends ServiceProvider
                     $sessionLifetime = (int) setting('auth_session_lifetime', 525600);
                     if ($sessionLifetime > 0) {
                         config(['session.lifetime' => $sessionLifetime]);
-
-                        // 🔍 DEBUG: Session lifetime set edildi mi?
-                        \Log::info('🔐 Session lifetime set', [
-                            'tenant_id' => tenant('id'),
-                            'setting_value' => $sessionLifetime,
-                            'config_before' => config('session.lifetime'),
-                        ]);
                     }
 
                     // 🔐 Session prefix: Tenant-aware Redis prefix
@@ -149,12 +142,6 @@ class TenancyServiceProvider extends ServiceProvider
                             'session.domain' => $cookieDomain,
                         ]);
                     }
-
-                    \Log::info('🔐 Session config updated', [
-                        'tenant_id' => $tenantId,
-                        'session_prefix' => $sessionPrefix,
-                        'cookie_domain' => config('session.domain'),
-                    ]);
                 },
             ],
 

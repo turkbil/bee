@@ -40,7 +40,7 @@ class WarmMuzibuCacheCommand extends Command
         {--muzibus=10 : Number of muzibus to warm per tenant}
         {--force : Force cache refresh even if already cached}
         {--urls : Also warm frontend URL caches}
-        {--quiet : Suppress output}';
+        {--silent : Suppress output}';
 
     /**
      * The console command description.
@@ -72,7 +72,7 @@ class WarmMuzibuCacheCommand extends Command
     {
         $startTime = microtime(true);
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info('🔥 Starting Muzibu Cache Warming...');
             $this->newLine();
         }
@@ -132,7 +132,7 @@ class WarmMuzibuCacheCommand extends Command
      */
     private function processTenant(int $tenantId, MuzibuService $muzibuService, TenantCacheService $cacheService): void
     {
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info("📦 Processing Tenant #{$tenantId}");
         }
 
@@ -146,14 +146,14 @@ class WarmMuzibuCacheCommand extends Command
         $muzibus = $this->getPagesToWarm($limit);
 
         if ($muzibus->isEmpty()) {
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->warn("  No muzibus found for tenant #{$tenantId}");
             }
             return;
         }
 
         // Create progress bar
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar = $this->output->createProgressBar($muzibus->count());
             $this->progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
         }
@@ -162,12 +162,12 @@ class WarmMuzibuCacheCommand extends Command
         foreach ($muzibus as $muzibu) {
             $this->warmPageCache($muzibu, $muzibuService, $cacheService);
 
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->progressBar->advance();
             }
         }
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar->finish();
             $this->newLine(2);
         }
@@ -205,7 +205,7 @@ class WarmMuzibuCacheCommand extends Command
             $force = $this->option('force');
 
             // Set progress message
-            if (!$this->option('quiet') && $this->progressBar) {
+            if (!$this->option('silent') && $this->progressBar) {
                 $title = is_array($muzibu->title) ? ($muzibu->title['tr'] ?? 'Untitled') : 'Untitled';
                 $this->progressBar->setMessage("Caching: {$title}");
             }
@@ -301,7 +301,7 @@ class WarmMuzibuCacheCommand extends Command
      */
     private function displaySummary(): void
     {
-        if ($this->option('quiet')) {
+        if ($this->option('silent')) {
             return;
         }
 

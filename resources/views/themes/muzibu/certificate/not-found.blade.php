@@ -71,7 +71,7 @@
             <div class="text-xs text-slate-500 uppercase tracking-wider mb-3">İletişim</div>
             <p class="text-sm text-slate-400">
                 Belge doğrulama ile ilgili sorularınız için
-                <a href="mailto:destek@muzibu.com.tr" class="text-amber-400 hover:underline font-medium">destek@muzibu.com.tr</a>
+                <a href="mailto:destek@muzibu.com" class="text-amber-400 hover:underline font-medium">destek@muzibu.com</a>
                 adresinden bizimle iletişime geçebilirsiniz.
             </p>
         </div>

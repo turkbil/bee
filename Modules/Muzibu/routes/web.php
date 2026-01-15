@@ -18,7 +18,7 @@ use Modules\Muzibu\App\Http\Controllers\Front\CertificateController;
 
 // 🎵 FRONTEND ROUTES (Blade Views with SPA)
 // Loaded via ServiceProvider with:
-// - Domain filter (muzibu.com.tr, www.muzibu.com.tr)
+// - Domain filter (muzibu.com, www.muzibu.com)
 // - Middleware: ['web', InitializeTenancyByDomain]
 // - API routes in separate file: routes/api.php
 
@@ -107,6 +107,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Certificate Routes (Premium Sertifikası)
     Route::get('/my-certificate', [CertificateController::class, 'index'])->name('muzibu.certificate.index');
+    Route::get('/my-certificate/preview', fn() => redirect()->route('muzibu.certificate.index')); // GET isteğini yönlendir
     Route::post('/my-certificate/preview', [CertificateController::class, 'preview'])->name('muzibu.certificate.preview');
     Route::post('/my-certificate', [CertificateController::class, 'store'])->name('muzibu.certificate.store');
     Route::get('/my-certificate/download', [CertificateController::class, 'download'])->name('muzibu.certificate.download');

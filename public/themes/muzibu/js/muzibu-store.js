@@ -25,8 +25,12 @@ document.addEventListener('alpine:init', () => {
     Alpine.store('toast', {
         toasts: [], // Active toasts array
         toastHeight: 68, // Toast height + gap (60px toast + 8px gap)
+        enabled: false, // 🔴 Tooltip/toast disabled (set true to re-enable)
 
         show(message, type = 'info') {
+            // 🔴 Skip if toasts are disabled
+            if (!this.enabled) return;
+
             const toast = document.createElement('div');
             const toastId = Date.now() + Math.random(); // Unique ID
 

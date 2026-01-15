@@ -40,7 +40,7 @@ declare(strict_types=1);
  * ├── Tenant2/                    (ixtif.com)
  * │   ├── PromptService.php
  * │   └── ProductSearchService.php
- * ├── Tenant1001/                 (muzibu.com.tr)
+ * ├── Tenant1001/                 (muzibu.com)
  * │   ├── PromptService.php
  * │   ├── ProductSearchService.php
  * │   ├── ResponseProcessor.php
@@ -2871,13 +2871,6 @@ class PublicAIController extends Controller
             }
         }
 
-        \Log::info('🤖 assistantChat STARTED (MODULAR SYSTEM)', [
-            'message' => $request->input('message'),
-            'session_id' => $request->input('session_id'),
-            'tenant_id' => tenant('id'),
-            'timestamp' => now()->toDateTimeString()
-        ]);
-
         try {
             // Check if only requesting quick actions
             $getQuickActions = $request->input('get_quick_actions', false);
@@ -2925,11 +2918,6 @@ class PublicAIController extends Controller
             // 🎯 MODULAR SYSTEM: Resolve services for this tenant
             $resolved = $this->assistantResolver->resolve();
             $resolvedModules = $resolved['services'] ?? [];
-
-            \Log::info('🎯 Resolved modules', [
-                'tenant_id' => $tenantId,
-                'modules' => array_keys($resolvedModules)
-            ]);
 
             // Build context from all resolved modules
             $moduleContexts = [];

@@ -93,11 +93,12 @@ class GenerateSongCover implements ShouldQueue
             ]);
 
             // Muzibu Leonardo AI ile görsel üret (müzik platformu optimized!)
-            // 🚀 PRODUCTION: 1280x800 (8 token/görsel - OPTIMAL!)
+            // 🔴 GEÇİCİ (2026-01-14): 512x512 (~2 token) - kredi tasarrufu
+            // Orijinal: 'width' => 1280, 'height' => 800 (8 token/görsel)
             $leonardo = app(MuzibuLeonardoAIService::class);
             $imageData = $leonardo->generateFreeImagination($prompt, [
-                'width' => 1280,
-                'height' => 800,
+                'width' => 512,   // 🔴 GEÇİCİ - Orijinal: 1280
+                'height' => 768,  // 🔴 GEÇİCİ - Orijinal: 800
             ]);
 
             if (!$imageData) {

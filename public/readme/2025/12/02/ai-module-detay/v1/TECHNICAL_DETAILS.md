@@ -360,7 +360,7 @@ AICreditUsage record structure:
 Tenant2ProductSearchService - Custom product search
 Tenant2PromptService - Custom prompts
 
-// Tenant 1001 (muzibu.com.tr) - Music
+// Tenant 1001 (muzibu.com) - Music
 MusicSearchService - Song/album/artist search
 ```
 

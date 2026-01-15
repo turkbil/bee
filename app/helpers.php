@@ -31,6 +31,107 @@ if (!function_exists('array_last')) {
  * ======================================================================
  */
 
+if (!function_exists('browser_supports_webp')) {
+    /**
+     * Browser WebP Format Desteği Kontrolü
+     *
+     * HTTP Accept header'ını kontrol ederek tarayıcının
+     * WebP formatını destekleyip desteklemediğini belirler.
+     *
+     * Eski cihazlar (Safari 12 ve altı, IE11, eski Android)
+     * WebP desteklemediği için JPG fallback gerekir.
+     *
+     * @return bool WebP destekleniyor mu?
+     *
+     * Örnek Kullanım:
+     * $format = browser_supports_webp() ? 'webp' : 'jpg';
+     */
+    function browser_supports_webp(): bool
+    {
+        // CLI'da çalışıyorsa (cron, queue vb.) WebP varsay
+        if (app()->runningInConsole()) {
+            return true;
+        }
+
+        // Accept header kontrolü
+        $accept = request()->header('Accept', '');
+
+        // image/webp Accept header'da varsa destekliyor
+        if (str_contains($accept, 'image/webp')) {
+            return true;
+        }
+
+        // User-Agent bazlı kontrol (Accept header yoksa)
+        $userAgent = request()->userAgent() ?? '';
+
+        // Chrome 32+, Firefox 65+, Edge 18+, Opera 19+ WebP destekler
+        // Safari 14+ (macOS Big Sur) WebP destekler
+        // iOS 14+ WebP destekler
+
+        // Eski Safari kontrolü (WebP desteklemiyor)
+        if (preg_match('/Safari\/[\d.]+/i', $userAgent) && !preg_match('/Chrome|Chromium|CriOS/i', $userAgent)) {
+            // Safari versiyonu kontrolü
+            if (preg_match('/Version\/([\d.]+)/i', $userAgent, $matches)) {
+                $version = (float) $matches[1];
+                // Safari 14 ve üzeri WebP destekler
+                if ($version < 14) {
+                    return false;
+                }
+            }
+            // iOS Safari kontrolü
+            if (preg_match('/OS ([\d_]+)/i', $userAgent, $matches)) {
+                $version = (float) str_replace('_', '.', $matches[1]);
+                // iOS 14 ve üzeri WebP destekler
+                if ($version < 14) {
+                    return false;
+                }
+            }
+        }
+
+        // IE hiç WebP desteklemez
+        if (preg_match('/MSIE|Trident/i', $userAgent)) {
+            return false;
+        }
+
+        // Eski Android kontrolü (4.x ve altı)
+        if (preg_match('/Android ([\d.]+)/i', $userAgent, $matches)) {
+            $version = (float) $matches[1];
+            if ($version < 5) {
+                return false;
+            }
+        }
+
+        // Varsayılan olarak WebP destekle (modern tarayıcılar)
+        return true;
+    }
+}
+
+if (!function_exists('get_optimal_image_format')) {
+    /**
+     * Optimal Görsel Formatını Belirle
+     *
+     * Browser desteğine göre en uygun formatı döndürür.
+     * WebP desteklenmiyorsa JPG kullanır.
+     *
+     * @param string|null $preferred Tercih edilen format (null = auto)
+     * @return string Format (webp, jpg)
+     *
+     * Örnek Kullanım:
+     * $format = get_optimal_image_format(); // 'webp' veya 'jpg'
+     * $format = get_optimal_image_format('webp'); // zorla webp
+     */
+    function get_optimal_image_format(?string $preferred = null): string
+    {
+        // Explicit format belirtildiyse onu kullan
+        if ($preferred !== null && $preferred !== 'auto') {
+            return $preferred;
+        }
+
+        // Browser desteğine göre seç
+        return browser_supports_webp() ? 'webp' : 'jpg';
+    }
+}
+
 if (!function_exists('thumb')) {
     /**
      * Universal Thumbmaker Helper
@@ -60,6 +161,10 @@ if (!function_exists('thumb')) {
             return $src;
         }
 
+        // Format belirleme: auto = browser desteğine göre
+        $requestedFormat = $options['format'] ?? 'auto';
+        $finalFormat = get_optimal_image_format($requestedFormat);
+
         // Parametreleri hazırla
         $params = array_filter([
             'src' => $src,
@@ -68,7 +173,7 @@ if (!function_exists('thumb')) {
             'q' => $options['quality'] ?? null,
             'a' => $options['alignment'] ?? null,
             's' => $options['scale'] ?? null,
-            'f' => $options['format'] ?? 'webp',
+            'f' => $finalFormat,
             'c' => $options['cache'] ?? 1,
         ]);
 

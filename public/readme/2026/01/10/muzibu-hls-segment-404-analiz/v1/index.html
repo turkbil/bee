@@ -110,7 +110,7 @@ GET /api/muzibu/songs/28741/segment-000.ts HTTP/2" 404</pre>
 $basePath = "/hls/muzibu/songs/{$songId}/playlist.m3u8";
 
 // Oluşturulan URL:
-https://muzibu.com.tr/hls/muzibu/songs/123/playlist.m3u8?expires=...&token=...&sig=...</pre>
+https://muzibu.com/hls/muzibu/songs/123/playlist.m3u8?expires=...&token=...&sig=...</pre>
                     </div>
                     <p class="text-slate-300 mt-2">✅ Backend doğru <code>/hls/</code> prefix'i ile URL üretiyor.</p>
                 </div>
@@ -170,8 +170,8 @@ async function createHlsBlobUrl(originalUrl) {
                         <p class="font-bold text-red-200 mb-2">Senaryo 1: Doğru URL gelirse ✅</p>
                         <div class="bg-slate-950 rounded p-3 font-mono text-xs">
 <pre class="text-green-300">originalUrl = "/hls/muzibu/songs/123/playlist.m3u8?token=..."
-baseUrl = "https://muzibu.com.tr/hls/muzibu/songs/123/"
-Segment URL = "https://muzibu.com.tr/hls/muzibu/songs/123/segment-000.ts?..." ✅ 200 OK</pre>
+baseUrl = "https://muzibu.com/hls/muzibu/songs/123/"
+Segment URL = "https://muzibu.com/hls/muzibu/songs/123/segment-000.ts?..." ✅ 200 OK</pre>
                         </div>
                     </div>
 
@@ -179,8 +179,8 @@ Segment URL = "https://muzibu.com.tr/hls/muzibu/songs/123/segment-000.ts?..." �
                         <p class="font-bold text-red-200 mb-2">Senaryo 2: Yanlış URL gelirse ❌</p>
                         <div class="bg-slate-950 rounded p-3 font-mono text-xs">
 <pre class="text-red-300">originalUrl = "/api/muzibu/songs/123/playlist.m3u8?..." (YANLIŞ!)
-baseUrl = "https://muzibu.com.tr/api/muzibu/songs/123/"
-Segment URL = "https://muzibu.com.tr/api/muzibu/songs/123/segment-000.ts?..." ❌ 404 NOT FOUND</pre>
+baseUrl = "https://muzibu.com/api/muzibu/songs/123/"
+Segment URL = "https://muzibu.com/api/muzibu/songs/123/segment-000.ts?..." ❌ 404 NOT FOUND</pre>
                         </div>
                     </div>
                 </div>

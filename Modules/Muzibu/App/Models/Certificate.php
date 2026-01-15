@@ -89,7 +89,7 @@ class Certificate extends Model
     public function getVerificationUrl(): string
     {
         // Tenant'ın birincil domain'ini kullan
-        $domain = tenant()->domains->first()?->domain ?? 'muzibu.com.tr';
+        $domain = tenant()->domains->first()?->domain ?? 'muzibu.com';
         return 'https://' . $domain . '/muzibu/certificate/' . $this->qr_hash;
     }
 

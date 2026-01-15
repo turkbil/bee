@@ -6,7 +6,7 @@ return [
     | Muzibu Music Platform Configuration
     |--------------------------------------------------------------------------
     |
-    | Tenant 1001 (muzibu.com.tr) için özel ayarlar
+    | Tenant 1001 (muzibu.com) için özel ayarlar
     |
     */
 

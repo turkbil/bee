@@ -47,6 +47,12 @@
 
     RewriteEngine On
 
+    # =============================================================================
+    # NON-WWW TO WWW REDIRECT
+    # =============================================================================
+    RewriteCond %{HTTP_HOST} ^muzibu\.com$ [NC]
+    RewriteRule ^(.*)$ https://www.muzibu.com/$1 [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

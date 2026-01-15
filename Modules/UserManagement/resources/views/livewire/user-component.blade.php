@@ -19,7 +19,7 @@
             <!-- Ortadaki Loading -->
             <div class="col position-relative">
                 <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, toggleActive, toggleEmailVerification"
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, subscriptionFilter, viewType, toggleActive, toggleEmailVerification"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px; z-index: 10;">
                     <div class="small text-muted mb-2">{{ __('usermanagement::admin.updating') }}</div>
@@ -33,8 +33,8 @@
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <!-- Rol Filtresi -->
                     <div style="width: 140px; min-width: 140px">
-                        <select wire:model.live="roleFilter" class="form-control listing-filter-select" 
-                                data-choices 
+                        <select wire:model.live="roleFilter" class="form-control listing-filter-select"
+                                data-choices
                                 data-choices-search="false"
                                 data-choices-filter="true">
                             <option value=""><nobr>{{ __('usermanagement::admin.all_roles') }}</nobr></option>
@@ -43,6 +43,20 @@
                             @endforeach
                         </select>
                     </div>
+                    @if(tenant() && tenant()->id == 1001)
+                    <!-- Üyelik Durumu Filtresi -->
+                    <div style="width: 160px; min-width: 160px">
+                        <select wire:model.live="subscriptionFilter" class="form-control listing-filter-select"
+                                data-choices
+                                data-choices-search="false"
+                                data-choices-filter="true">
+                            <option value=""><nobr><i class="fas fa-crown"></i> Tüm Üyelikler</nobr></option>
+                            <option value="active"><nobr>✅ Aktif Üyelik</nobr></option>
+                            <option value="expired"><nobr>❌ Süresi Dolmuş</nobr></option>
+                            <option value="free"><nobr>👤 Ücretsiz</nobr></option>
+                        </select>
+                    </div>
+                    @endif
                     <!-- Görünüm Değiştirme -->
                     <div class="btn-group">
                         <button type="button"
@@ -111,6 +125,13 @@
                         <!-- Kullanıcı Bilgileri -->
                         <h3 class="card-title m-0 mb-1">{{ $user->name }}</h3>
                         <div class="text-muted">{{ $user->email }}</div>
+                        @if($user->phone)
+                            <div class="small mt-1">
+                                <a href="tel:{{ $user->phone }}" class="text-reset text-decoration-none">
+                                    <i class="fas fa-phone text-primary me-1" style="font-size: 11px;"></i>{{ $user->phone }}
+                                </a>
+                            </div>
+                        @endif
                         <!-- Roller ve Durum -->
                         <div class="mt-3">
                             @if($user->roles && count($user->roles) > 0)
@@ -202,6 +223,13 @@
                                 {{ __('usermanagement::admin.email_address') }}
                             </button>
                         </th>
+                        <th>
+                            <button
+                                class="table-sort {{ $sortField === 'phone' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('phone')">
+                                <i class="fas fa-phone me-1"></i>Telefon
+                            </button>
+                        </th>
                         <th class="text-center" style="width: 80px">
                             <button
                                 class="table-sort {{ $sortField === 'role' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
@@ -209,11 +237,11 @@
                                 {{ __('usermanagement::admin.role') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 140px">
+                        <th class="text-center" style="width: 50px" data-bs-toggle="tooltip" title="Email Doğrulama">
                             <button
                                 class="table-sort {{ $sortField === 'email_verified_at' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('email_verified_at')">
-                                <i class="fas fa-envelope-circle-check me-1"></i>Email
+                                <i class="fas fa-envelope-circle-check"></i>
                             </button>
                         </th>
                         <th class="text-center" style="width: 80px">
@@ -242,6 +270,15 @@
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
+                            @if($user->phone)
+                                <a href="tel:{{ $user->phone }}" class="text-reset text-decoration-none">
+                                    <i class="fas fa-phone text-primary me-1" style="font-size: 11px;"></i>{{ $user->phone }}
+                                </a>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                        <td>
                             @if($user->roles && count($user->roles) > 0)
                                 @foreach($user->roles as $role)
                                 <span class="badge bg-blue-lt">{{ $role->name }}</span>
@@ -250,17 +287,23 @@
                         </td>
                         <td class="text-center">
                             @if($user->email_verified_at)
-                                <span class="badge bg-success-lt text-success">
-                                    <i class="fas fa-check-circle me-1"></i>Doğrulanmış
+                                <span class="text-success"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      title="Email doğrulanmış ✓">
+                                    <i class="fas fa-check-circle fa-lg"></i>
                                 </span>
                             @else
                                 <button wire:click="toggleEmailVerification({{ $user->id }})"
-                                        class="badge bg-danger-lt text-danger border-0"
+                                        class="border-0 bg-transparent p-0 text-danger"
                                         style="cursor: pointer;"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Email doğrulanmamış - Tıklayarak doğrulayın"
                                         wire:loading.attr="disabled"
                                         wire:target="toggleEmailVerification({{ $user->id }})">
                                     <div wire:loading.remove wire:target="toggleEmailVerification({{ $user->id }})">
-                                        <i class="fas fa-exclamation-circle me-1"></i>Doğrulanmamış
+                                        <i class="fas fa-times-circle fa-lg"></i>
                                     </div>
                                     <div wire:loading wire:target="toggleEmailVerification({{ $user->id }})" class="spinner-border spinner-border-sm"></div>
                                 </button>
@@ -268,15 +311,19 @@
                         </td>
                         <td class="text-center">
                             <button wire:click="toggleActive({{ $user->id }})"
-                                class="btn btn-icon btn-sm {{ $user->is_active ? 'text-success' : 'text-danger' }}">
-                                <div wire:loading wire:target="toggleActive({{ $user->id }})"
-                                    class="spinner-border spinner-border-sm">
-                                </div>
+                                class="border-0 bg-transparent p-0 {{ $user->is_active ? 'text-success' : 'text-danger' }}"
+                                style="cursor: pointer;"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="{{ $user->is_active ? 'Aktif - Tıklayarak pasif yapın' : 'Pasif - Tıklayarak aktif yapın' }}"
+                                wire:loading.attr="disabled"
+                                wire:target="toggleActive({{ $user->id }})">
+                                <div wire:loading wire:target="toggleActive({{ $user->id }})" class="spinner-border spinner-border-sm"></div>
                                 <div wire:loading.remove wire:target="toggleActive({{ $user->id }})">
                                     @if($user->is_active)
-                                    <i class="fas fa-check"></i>
+                                    <i class="fas fa-check-circle fa-lg"></i>
                                     @else
-                                    <i class="fas fa-times"></i>
+                                    <i class="fas fa-times-circle fa-lg"></i>
                                     @endif
                                 </div>
                             </button>
@@ -351,7 +398,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ (tenant() && tenant()->id == 1001) ? 8 : 7 }}">
+                        <td colspan="{{ (tenant() && tenant()->id == 1001) ? 9 : 8 }}">
                             <div class="empty">
                                 <p class="empty-title">{{ __('usermanagement::admin.no_records') }}</p>
                                 <p class="empty-subtitle text-muted">
@@ -372,3 +419,4 @@
 
     <livewire:modals.user-delete-modal />
 </div>
+

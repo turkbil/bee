@@ -1,7 +1,7 @@
 # Muzibu Platform - UI Components & SPA Implementation
 
 **Date:** 2025-11-24 21:23
-**Tenant:** 1001 (muzibu.com.tr)
+**Tenant:** 1001 (muzibu.com)
 **Priority:** CRITICAL
 **Status:** In Progress
 

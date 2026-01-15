@@ -38,7 +38,7 @@
                 <span>Problem Özeti</span>
             </h2>
             <div class="space-y-2 text-slate-300">
-                <p><strong>Belirti:</strong> Muzibu anasayfası (https://muzibu.com.tr/) açılıyor ama ana içerik (genre kartları, playlists, new releases vb.) render edilmiyor.</p>
+                <p><strong>Belirti:</strong> Muzibu anasayfası (https://muzibu.com/) açılıyor ama ana içerik (genre kartları, playlists, new releases vb.) render edilmiyor.</p>
                 <p><strong>Görünen:</strong> Header, sidebar, player görünüyor - Sadece main content alanı boş.</p>
                 <p><strong>Kullanıcı Etkisi:</strong> Site kullanılamaz durumda.</p>
             </div>
@@ -331,7 +331,7 @@ public function homepage() {
             <ol class="list-decimal list-inside space-y-3 text-slate-300">
                 <li><strong>Route değiştir:</strong> web.php:418 - HomeController'a yönlendir</li>
                 <li><strong>Cache temizle:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-sm">php artisan view:clear && php artisan route:clear && php artisan responsecache:clear</code></li>
-                <li><strong>Test et:</strong> https://muzibu.com.tr/ - Hard refresh (Cmd+Shift+R)</li>
+                <li><strong>Test et:</strong> https://muzibu.com/ - Hard refresh (Cmd+Shift+R)</li>
                 <li><strong>Kontrol et:</strong> Genre kartları, playlists, new releases görünmeli</li>
                 <li><strong>Console kontrol:</strong> JavaScript hatası olmamalı</li>
             </ol>

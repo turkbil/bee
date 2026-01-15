@@ -103,13 +103,24 @@ Route::prefix('muzibu')->group(function () {
             'unauthorized', 'forbidden', 'unavailable', 'crash'
         ];
 
+        // ✅ WHITELIST: Bu action'lar hata DEĞİL, savunma mekanizması
+        // Bunlar normal çalışmanın parçası, ERROR olarak loglanmamalı
+        $safeBlockedActions = [
+            'onTrackEndedBlocked',  // Kullanıcı pause yaptı, otomatik devam engellendi
+            'onendedBlocked',       // Duplicate event engellendi (Safari/iOS fix)
+            'onTrackEndedDebounced', // Debounce çalıştı
+        ];
+
         $isError = false;
 
-        // 1. Action adında hata keyword'ü var mı?
-        foreach ($errorKeywords as $keyword) {
-            if (stripos($action, $keyword) !== false) {
-                $isError = true;
-                break;
+        // 0. Whitelist kontrolü - bunlar hata değil, skip et
+        if (!in_array($action, $safeBlockedActions)) {
+            // 1. Action adında hata keyword'ü var mı?
+            foreach ($errorKeywords as $keyword) {
+                if (stripos($action, $keyword) !== false) {
+                    $isError = true;
+                    break;
+                }
             }
         }
 
@@ -118,23 +129,12 @@ Route::prefix('muzibu')->group(function () {
             $isError = true;
         }
 
-        // 🎯 LOG ROUTING
+        // 🎯 LOG ROUTING - Sadece hatalar loglanır
         if ($isError) {
             // ❌ HATA → player-errors.log (ERROR level)
             \Illuminate\Support\Facades\Log::channel('player-errors')->error('🎵 PLAYER ERROR', $logData);
-        } else {
-            // ✅ Normal → laravel.log (INFO level, minimal)
-            // Sadece önemli action'ları logluyoruz (spam önleme)
-            $importantActions = [
-                'scriptLoaded', 'playSongStart', 'refillAttempt',
-                'contextCreated', 'nextTrack', 'onTrackEnded'
-            ];
-
-            if (in_array($action, $importantActions)) {
-                \Illuminate\Support\Facades\Log::channel('single')->info('🎵 PLAYER DEBUG', $logData);
-            }
-            // Diğer normal action'lar hiç loglanmaz (trackHit, mediaSessionUpdate vb.)
         }
+        // Normal action'lar loglanmaz (gereksiz INFO spam önleme)
 
         return response()->json(['logged' => true]);
     })->name('api.muzibu.debug-log')

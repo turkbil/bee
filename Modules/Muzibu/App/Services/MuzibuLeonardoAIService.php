@@ -30,7 +30,23 @@ class MuzibuLeonardoAIService extends LeonardoAIService
      */
     protected function enhanceWithGPT4Music(string $title): array
     {
+        // 🔴 GEÇİCİ DEVRE DIŞI (2026-01-14) - OpenAI kredi tasarrufu
+        // Düzeltmek için bu bloğu yorum satırından çıkar ve alttaki return'ü sil
         // ✅ GPT-4 AKTİF - Gelişmiş prompt enhancement çalışıyor
+        // $openaiKey = config('ai.openai_api_key');
+
+        // 🔴 GEÇİCİ: Sadece başlık + vibrant stil döndür (OpenAI kullanma)
+        Log::info('🔴 Muzibu Leonardo AI: OpenAI DEVRE DIŞI - sadece başlık kullanılıyor', [
+            'title' => $title,
+        ]);
+        return [
+            'prompt' => $title,
+            'style' => 'vibrant',
+            'detected_language' => 'unknown',
+            'translated_title' => $title,
+        ];
+        // 🔴 GEÇİCİ DEVRE DIŞI SONU - Aşağıdaki kod orijinal
+
         $openaiKey = config('ai.openai_api_key');
 
         if (empty($openaiKey)) {

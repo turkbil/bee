@@ -12,6 +12,10 @@ class FavoritesController extends Controller
     public function index(Request $request)
     {
         if (!auth()->check()) {
+            // 🔥 FIX: AJAX isteklerinde redirect yerine 401 döndür (CORS sorunu!)
+            if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response('Unauthorized', 401);
+            }
             return redirect()->route('login');
         }
 
@@ -40,6 +44,11 @@ class FavoritesController extends Controller
         if (!$type) {
             foreach ($counts as $key => $count) {
                 if ($count > 0) {
+                    // 🔥 FIX: AJAX isteklerinde redirect yerine type'ı set et (CORS sorunu!)
+                    if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                        $type = $key;
+                        break;
+                    }
                     return redirect()->route('muzibu.favorites', ['type' => $key]);
                 }
             }

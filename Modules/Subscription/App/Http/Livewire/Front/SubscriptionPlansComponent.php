@@ -129,6 +129,14 @@ class SubscriptionPlansComponent extends Component
     public function addToCart($planId, $cycleKey, $autoRenew = true)
     {
         try {
+            // 🔐 Guest kullanıcıyı login'e yönlendir (sepete ekleme yok)
+            if (!auth()->check()) {
+                // Login sonrası geri dönmesi için URL'yi kaydet
+                session()->put('url.intended', route('subscription.plans'));
+
+                return $this->redirect(route('login'), navigate: false);
+            }
+
             $plan = SubscriptionPlan::findOrFail($planId);
 
             // Bridge service kullan (Shop ile aynı pattern)

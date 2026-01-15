@@ -60,6 +60,12 @@ if (!function_exists('generate_ai_cover')) {
             return;
         }
 
+        // ⚠️ FIX: Hero görseli zaten varsa job dispatch etme!
+        // Bu kontrol gereksiz job oluşturmayı önler
+        if (method_exists($model, 'hasMedia') && $model->hasMedia('hero')) {
+            return; // Sessizce çık, log spam yapma
+        }
+
         // Job dispatch et
         \Modules\MediaManagement\App\Jobs\GenerateAICover::dispatch(
             get_class($model),
@@ -70,11 +76,5 @@ if (!function_exists('generate_ai_cover')) {
             tenant('id')
         );
 
-        \Log::info('🎨 AI Cover job dispatched (MediaManagement)', [
-            'model_class' => get_class($model),
-            'model_id' => $modelId,
-            'title' => $title,
-            'type' => $type,
-        ]);
     }
 }

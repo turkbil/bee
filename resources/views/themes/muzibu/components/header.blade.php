@@ -707,6 +707,329 @@
         </button>
         --}}
 
+        {{-- Mobile Search Button - Only for logged-in users, only on mobile/tablet --}}
+        <div
+            x-show="isLoggedIn"
+            x-cloak
+            class="lg:hidden relative"
+            x-data="{ mobileSearchOpen: false }"
+            @click.away="mobileSearchOpen = false"
+            @keydown.escape.window="mobileSearchOpen = false"
+        >
+            <button
+                @click="mobileSearchOpen = !mobileSearchOpen; if(mobileSearchOpen) $nextTick(() => $refs.mobileSearchInput?.focus())"
+                class="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-all duration-300"
+                :class="{ 'bg-muzibu-coral/20 text-muzibu-coral': mobileSearchOpen }"
+                title="{{ trans('muzibu::front.search.placeholder') }}"
+            >
+                <i class="fas transition-all duration-300"
+                   :class="mobileSearchOpen ? 'fa-times rotate-90' : 'fa-search'"></i>
+            </button>
+
+            {{-- Mobile Search Dropdown (Header altında - Full Width) --}}
+            <div
+                x-show="mobileSearchOpen"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 -translate-y-4"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-4"
+                class="fixed left-0 right-0 shadow-2xl border-b border-white/10 z-[60]"
+                style="background-color: #18181b; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); top: 52px;"
+                x-data="{
+                    query: '',
+                    results: { songs: [], albums: [], artists: [], playlists: [], genres: [], sectors: [], radios: [] },
+                    total: 0,
+                    loading: false,
+                    error: null,
+                    get allResults() {
+                        const all = [];
+                        if (this.results.songs?.length) all.push(...this.results.songs.map(s => ({...s, _type: 'song'})));
+                        if (this.results.albums?.length) all.push(...this.results.albums.map(a => ({...a, _type: 'album'})));
+                        if (this.results.artists?.length) all.push(...this.results.artists.map(a => ({...a, _type: 'artist'})));
+                        if (this.results.playlists?.length) all.push(...this.results.playlists.map(p => ({...p, _type: 'playlist'})));
+                        return all.slice(0, 12);
+                    },
+                    get hasResults() {
+                        return this.allResults.length > 0;
+                    },
+                    resetSuggestions() {
+                        this.results = { songs: [], albums: [], artists: [], playlists: [], genres: [], sectors: [], radios: [] };
+                        this.total = 0;
+                    },
+                    showEmptyState() {
+                        return this.query.trim().length >= 2 && !this.loading && !this.hasResults && !this.error;
+                    },
+                    async search() {
+                        const trimmed = this.query.trim();
+                        if (trimmed.length < 2) {
+                            this.resetSuggestions();
+                            this.error = null;
+                            return;
+                        }
+                        this.loading = true;
+                        this.error = null;
+                        try {
+                            const response = await fetch(`/api/muzibu/search?q=${encodeURIComponent(trimmed)}&type=all`, {
+                                headers: { 'Accept': 'application/json' }
+                            });
+                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                            const data = await response.json();
+                            this.results = {
+                                songs: (data.songs || []).slice(0, 4),
+                                albums: (data.albums || []).slice(0, 2),
+                                artists: (data.artists || []).slice(0, 2),
+                                playlists: (data.playlists || []).slice(0, 2)
+                            };
+                            this.total = (data.songs?.length || 0) + (data.albums?.length || 0) + (data.artists?.length || 0) + (data.playlists?.length || 0);
+                        } catch (e) {
+                            console.error('Mobile search error:', e);
+                            this.resetSuggestions();
+                            this.error = window.muzibuPlayerConfig?.frontLang?.search?.search_failed || 'Search failed.';
+                        }
+                        this.loading = false;
+                    },
+                    goToSearch() {
+                        const trimmed = this.query.trim();
+                        if (trimmed.length >= 1) {
+                            window.location.href = `/search?q=${encodeURIComponent(trimmed)}`;
+                        }
+                    },
+                    getSlug(item) {
+                        const locale = '{{ app()->getLocale() }}';
+                        return typeof item.slug === 'object' ? item.slug[locale] || item.slug.tr || item.slug.en : item.slug;
+                    },
+                    getTitle(item) {
+                        const locale = '{{ app()->getLocale() }}';
+                        return typeof item.title === 'object' ? item.title[locale] || item.title.tr || item.title.en : item.title;
+                    },
+                    selectItem(item) {
+                        const slug = this.getSlug(item);
+                        if (!slug) return;
+                        const routes = {
+                            song: `/songs/${slug}`,
+                            album: `/albums/${slug}`,
+                            artist: `/artists/${slug}`,
+                            playlist: `/playlists/${slug}`
+                        };
+                        const targetUrl = routes[item._type];
+                        if (targetUrl && window.muzibuApp) {
+                            window.muzibuApp().navigateTo(targetUrl);
+                        } else {
+                            window.location.href = targetUrl || '/';
+                        }
+                        mobileSearchOpen = false;
+                    },
+                    playSong(song, event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        if (window.Alpine?.store('player')?.playSong && song.song_id) {
+                            window.Alpine.store('player').playSong(song.song_id);
+                        }
+                    },
+                    playAlbum(album, event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        if (window.Alpine?.store('player')?.playAlbum && album.album_id) {
+                            window.Alpine.store('player').playAlbum(album.album_id);
+                        }
+                    }
+                }"
+                style="display: none;"
+            >
+                {{-- Search Input - Temiz Tasarım --}}
+                <div class="p-4">
+                    <div class="flex items-center gap-3 p-2 rounded-2xl" style="background-color: #27272a;">
+                        {{-- Search Icon --}}
+                        <div class="pl-2 flex-shrink-0">
+                            <i class="fas fa-search text-zinc-400"></i>
+                        </div>
+
+                        {{-- Input --}}
+                        <input
+                            x-ref="mobileSearchInput"
+                            type="search"
+                            x-model="query"
+                            @input.debounce.300ms="search()"
+                            @keydown.enter.prevent="goToSearch()"
+                            placeholder="{{ trans('muzibu::front.search.placeholder') }}"
+                            class="flex-1 py-2 bg-transparent border-0 text-white placeholder-zinc-500 focus:outline-none text-base"
+                            style="outline: none; box-shadow: none;"
+                            autocomplete="off"
+                        >
+
+                        {{-- Loading Spinner --}}
+                        <div x-show="loading" x-cloak class="flex-shrink-0 pr-2">
+                            <div class="w-5 h-5 border-2 border-muzibu-coral/30 border-t-muzibu-coral rounded-full animate-spin"></div>
+                        </div>
+
+                        {{-- Search Button --}}
+                        <button
+                            x-show="!loading"
+                            @click="goToSearch()"
+                            class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200"
+                            :style="query.length > 0 ? 'background: linear-gradient(to right, #ff6b6b, #ec4899)' : 'background-color: #3f3f46'"
+                        >
+                            <i class="fas fa-arrow-right text-white text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Results --}}
+                <div class="max-h-[60vh] overflow-y-auto">
+                    {{-- Error --}}
+                    <div x-show="error" class="px-4 py-6 text-center text-red-400 text-sm">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span x-text="error"></span>
+                    </div>
+
+                    {{-- Empty State --}}
+                    <div x-show="showEmptyState()" class="px-4 py-8 text-center text-zinc-400">
+                        <i class="far fa-face-smile text-xl mb-2 block text-muzibu-coral"></i>
+                        <span class="text-sm">{{ trans('muzibu::front.search.try_different') }}</span>
+                    </div>
+
+                    {{-- Results List --}}
+                    <div x-show="hasResults" class="p-3 space-y-3">
+                        {{-- Songs --}}
+                        <div x-show="results.songs?.length > 0">
+                            <div class="flex items-center gap-2 mb-2 pb-1 border-b border-white/5">
+                                <i class="fas fa-music text-pink-400 text-xs"></i>
+                                <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.songs') }}</span>
+                            </div>
+                            <div class="space-y-1">
+                                <template x-for="song in results.songs" :key="'ms-song-'+song.song_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...song, _type: 'song'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
+                                        <div class="w-9 h-9 rounded bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                                            <template x-if="song.cover_url">
+                                                <img :src="song.cover_url" :alt="getTitle(song)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!song.cover_url">
+                                                <i class="fas fa-music text-pink-400/60 text-xs"></i>
+                                            </template>
+                                            <button
+                                                @click="playSong(song, $event)"
+                                                class="absolute inset-0 bg-muzibu-coral flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                            >
+                                                <i class="fas fa-play text-white text-[10px] ml-0.5"></i>
+                                            </button>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-xs font-medium text-white truncate" x-text="getTitle(song)"></div>
+                                            <div class="text-[10px] text-zinc-500 truncate" x-text="song.artist?.title ? (typeof song.artist.title === 'object' ? song.artist.title.tr || song.artist.title.en : song.artist.title) : ''"></div>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+
+                        {{-- Albums --}}
+                        <div x-show="results.albums?.length > 0">
+                            <div class="flex items-center gap-2 mb-2 pb-1 border-b border-white/5">
+                                <i class="fas fa-record-vinyl text-purple-400 text-xs"></i>
+                                <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.albums') }}</span>
+                            </div>
+                            <div class="space-y-1">
+                                <template x-for="album in results.albums" :key="'ms-album-'+album.album_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...album, _type: 'album'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                                            <template x-if="album.cover_url">
+                                                <img :src="album.cover_url" :alt="getTitle(album)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!album.cover_url">
+                                                <i class="fas fa-record-vinyl text-purple-400/60 text-[10px]"></i>
+                                            </template>
+                                            <button
+                                                @click="playAlbum(album, $event)"
+                                                class="absolute inset-0 bg-purple-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                            >
+                                                <i class="fas fa-play text-white text-[8px] ml-0.5"></i>
+                                            </button>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-xs text-white truncate" x-text="getTitle(album)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[8px] font-semibold rounded bg-purple-500/20 text-purple-400">{{ trans('muzibu::front.general.album') }}</span>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+
+                        {{-- Artists --}}
+                        <div x-show="results.artists?.length > 0">
+                            <div class="flex items-center gap-2 mb-2 pb-1 border-b border-white/5">
+                                <i class="fas fa-user text-blue-400 text-xs"></i>
+                                <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.artists') }}</span>
+                            </div>
+                            <div class="space-y-1">
+                                <template x-for="artist in results.artists" :key="'ms-artist-'+artist.artist_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...artist, _type: 'artist'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                            <template x-if="artist.cover_url">
+                                                <img :src="artist.cover_url" :alt="getTitle(artist)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!artist.cover_url">
+                                                <i class="fas fa-user text-blue-400/60 text-[10px]"></i>
+                                            </template>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-xs text-white truncate" x-text="getTitle(artist)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[8px] font-semibold rounded bg-blue-500/20 text-blue-400">{{ trans('muzibu::front.general.artist') }}</span>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+
+                        {{-- Playlists --}}
+                        <div x-show="results.playlists?.length > 0">
+                            <div class="flex items-center gap-2 mb-2 pb-1 border-b border-white/5">
+                                <i class="fas fa-list-music text-green-400 text-xs"></i>
+                                <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.playlists') }}</span>
+                            </div>
+                            <div class="space-y-1">
+                                <template x-for="playlist in results.playlists" :key="'ms-playlist-'+playlist.playlist_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...playlist, _type: 'playlist'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                            <template x-if="playlist.cover_url">
+                                                <img :src="playlist.cover_url" :alt="getTitle(playlist)" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!playlist.cover_url">
+                                                <i class="fas fa-list-music text-green-400/60 text-[10px]"></i>
+                                            </template>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-xs text-white truncate" x-text="getTitle(playlist)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[8px] font-semibold rounded bg-green-500/20 text-green-400">{{ trans('muzibu::front.general.playlist') }}</span>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- View All Results --}}
+                    <a
+                        x-show="total > 0"
+                        :href="`/search?q=${encodeURIComponent(query || '')}`"
+                        class="block p-3 text-center text-muzibu-coral hover:bg-muzibu-coral/10 font-medium transition border-t border-white/10 text-xs"
+                    >
+                        <i class="fas fa-arrow-right mr-2"></i>
+                        <span x-text="(window.muzibuPlayerConfig?.frontLang?.search?.view_all_results || 'View all :count results').replace(':count', total)"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         {{-- User Dropdown - SPA Reactive --}}
         <div x-show="isLoggedIn" x-cloak class="relative" x-data="{
             userMenuOpen: false,

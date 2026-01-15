@@ -7,7 +7,7 @@ namespace Modules\AI\App\Services\Tenant1001;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Tenant 1001 (muzibu.com.tr) AI Response Processor
+ * Tenant 1001 (muzibu.com) AI Response Processor
  *
  * AI yanıtlarını post-processing ile düzeltir:
  * - Fiyat hataları (4000 → 400 gibi)

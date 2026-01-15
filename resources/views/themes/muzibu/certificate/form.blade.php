@@ -72,9 +72,10 @@
         </div>
 
         {{-- Form --}}
-        <form action="{{ route('muzibu.certificate.preview') }}" method="POST"
+        <form action="/my-certificate/preview" method="POST"
             x-data="certificateForm()"
-            x-init="init()">
+            x-init="init()"
+            @submit="$el.querySelector('input[name=_token]').value = document.querySelector('meta[name=csrf-token]')?.content || $el.querySelector('input[name=_token]').value">
             @csrf
 
             <div class="bg-slate-900/70 border border-white/10 rounded-2xl overflow-hidden">

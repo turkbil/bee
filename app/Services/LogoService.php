@@ -89,15 +89,9 @@ class LogoService
                 return null;
             }
 
-            // Spatie Media'dan logo al
-            $media = $setting->getFirstMedia($settingKey);
-
-            if (!$media) {
-                return null;
-            }
-
-            // URL döndür
-            return $media->getUrl();
+            // ✅ FIX: Setting'in tenant-aware getMediaUrl() metodunu kullan
+            // Bu metod tenant DB'den doğru şekilde media çeker
+            return $setting->getMediaUrl();
 
         } catch (\Illuminate\Database\QueryException $e) {
             // Database seçili değilse (tenant context yok) sessizce null dön

@@ -354,7 +354,7 @@
                 </thead>
                 <tbody>
                     @php
-                        $maxPlays = $this->dailyStats->isNotEmpty() ? $this->dailyStats->max('plays') : 1;
+                        $maxPlays = ($this->dailyStats->isNotEmpty() && $this->dailyStats->max('plays') > 0) ? $this->dailyStats->max('plays') : 1;
                     @endphp
                     @forelse($this->dailyStats as $stat)
                         <tr>

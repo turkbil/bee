@@ -44,13 +44,15 @@ Route::middleware([InitializeTenancy::class, RedirectIfAuthenticatedExceptDevice
         ->name('password.store');
 });
 
+// 📧 Email Verification Route (No auth required - signed URL is enough)
+Route::middleware([InitializeTenancy::class])
+    ->get('verify-email/{id}/{hash}', VerifyEmailController::class)
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+
 Route::middleware([InitializeTenancy::class, 'auth'])->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
-
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')

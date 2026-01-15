@@ -6,5 +6,17 @@
     "Logging in...": "Giriş yapılıyor...",
     "Don't have an account?": "Hesabınız yok mu?",
     "Register": "Kayıt ol",
-    "Quick Test Login:": "Hızlı Test Girişi:"
+    "Quick Test Login:": "Hızlı Test Girişi:",
+
+    "Reset Password Notification": "Şifre Sıfırlama Bildirimi",
+    "Reset Password": "Şifreyi Sıfırla",
+    "You are receiving this email because we received a password reset request for your account.": "Bu e-postayı hesabınız için bir şifre sıfırlama talebi aldığımız için alıyorsunuz.",
+    "This password reset link will expire in :count minutes.": "Bu şifre sıfırlama bağlantısı :count dakika içinde geçerliliğini yitirecektir.",
+    "If you did not request a password reset, no further action is required.": "Şifre sıfırlama talebinde bulunmadıysanız herhangi bir işlem yapmanıza gerek yoktur.",
+
+    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "\":actionText\" butonuna tıklamakta sorun yaşıyorsanız, aşağıdaki bağlantıyı kopyalayıp tarayıcınızın adres çubuğuna yapıştırın:",
+    "Regards": "Saygılarımızla",
+    "Hello!": "Merhaba!",
+    "Whoops!": "Hay aksi!",
+    "All rights reserved.": "Tüm hakları saklıdır."
 }

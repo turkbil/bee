@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Tenant 1001 (muzibu.com.tr) Subscription Helper
+ * Tenant 1001 (muzibu.com) Subscription Helper
  *
  * Kullanıcının abonelik durumunu kontrol eder ve AI'ya context bilgisi sağlar.
  *

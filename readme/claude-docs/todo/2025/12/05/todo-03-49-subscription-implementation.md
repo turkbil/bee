@@ -403,7 +403,7 @@
 - `resources/views/themes/muzibu/components/subscription/cta-banner.blade.php` ✅ (YENİ)
 - `resources/views/themes/muzibu/home.blade.php` ✅
 - `public/themes/muzibu/js/player/core/player-core.js` ✅ (Zaten var)
-- Tenant: 1001 (muzibu.com.tr)
+- Tenant: 1001 (muzibu.com)
 
 ---
 

@@ -40,7 +40,7 @@ class WarmShopCacheCommand extends Command
         {--products=10 : Number of products to warm per tenant}
         {--force : Force cache refresh even if already cached}
         {--urls : Also warm frontend URL caches}
-        {--quiet : Suppress output}';
+        {--silent : Suppress output}';
 
     /**
      * The console command description.
@@ -72,7 +72,7 @@ class WarmShopCacheCommand extends Command
     {
         $startTime = microtime(true);
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info('🔥 Starting Shop Cache Warming...');
             $this->newLine();
         }
@@ -132,7 +132,7 @@ class WarmShopCacheCommand extends Command
      */
     private function processTenant(int $tenantId, ShopProductService $shopService, TenantCacheService $cacheService): void
     {
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info("📦 Processing Tenant #{$tenantId}");
         }
 
@@ -146,14 +146,14 @@ class WarmShopCacheCommand extends Command
         $products = $this->getPagesToWarm($limit);
 
         if ($products->isEmpty()) {
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->warn("  No products found for tenant #{$tenantId}");
             }
             return;
         }
 
         // Create progress bar
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar = $this->output->createProgressBar($products->count());
             $this->progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
         }
@@ -162,12 +162,12 @@ class WarmShopCacheCommand extends Command
         foreach ($products as $shop) {
             $this->warmPageCache($shop, $shopService, $cacheService);
 
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->progressBar->advance();
             }
         }
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar->finish();
             $this->newLine(2);
         }
@@ -205,7 +205,7 @@ class WarmShopCacheCommand extends Command
             $force = $this->option('force');
 
             // Set progress message
-            if (!$this->option('quiet') && $this->progressBar) {
+            if (!$this->option('silent') && $this->progressBar) {
                 $title = is_array($shop->title) ? ($shop->title['tr'] ?? 'Untitled') : 'Untitled';
                 $this->progressBar->setMessage("Caching: {$title}");
             }
@@ -301,7 +301,7 @@ class WarmShopCacheCommand extends Command
      */
     private function displaySummary(): void
     {
-        if ($this->option('quiet')) {
+        if ($this->option('silent')) {
             return;
         }
 

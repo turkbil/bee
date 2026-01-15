@@ -908,8 +908,9 @@
                                      x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', { id: {{ $playlist->playlist_id }}, title: '{{ addslashes($playlist->getTranslated('title', app()->getLocale())) }}', is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}, is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }} })">
                                     {{-- Thumbnail with Play Overlay --}}
                                     <div class="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-muzibu-coral to-orange-600">
-                                        @if($playlist->hasMedia('hero'))
-                                            <img src="{{ $playlist->getFirstMediaUrl('hero', 'thumb') }}" alt="{{ $playlist->getTranslated('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                        @php $playlistCover = $playlist->getCoverUrl(100, 100); @endphp
+                                        @if($playlistCover)
+                                            <img src="{{ $playlistCover }}" alt="{{ $playlist->getTranslated('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center">
                                                 <i class="fas fa-list-music text-white/50 text-xs"></i>
@@ -967,8 +968,9 @@
                                      x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'radio', { id: {{ $radio->radio_id }}, title: '{{ addslashes($radio->getTranslated('title', app()->getLocale())) }}', is_favorite: {{ is_favorited('radio', $radio->radio_id) ? 'true' : 'false' }} })">
                                     {{-- Thumbnail with Play Overlay --}}
                                     <div class="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-muzibu-coral to-orange-600">
-                                        @if($radio->hasMedia('hero'))
-                                            <img src="{{ $radio->getFirstMediaUrl('hero', 'thumb') }}" alt="{{ $radio->getTranslated('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                        @php $radioCover = $radio->getCoverUrl(100, 100); @endphp
+                                        @if($radioCover)
+                                            <img src="{{ $radioCover }}" alt="{{ $radio->getTranslated('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center">
                                                 <i class="fas fa-broadcast-tower text-white/50 text-xs"></i>

@@ -40,7 +40,7 @@ class WarmPaymentCacheCommand extends Command
         {--payments=10 : Number of payments to warm per tenant}
         {--force : Force cache refresh even if already cached}
         {--urls : Also warm frontend URL caches}
-        {--quiet : Suppress output}';
+        {--silent : Suppress output}';
 
     /**
      * The console command description.
@@ -72,7 +72,7 @@ class WarmPaymentCacheCommand extends Command
     {
         $startTime = microtime(true);
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info('🔥 Starting Payment Cache Warming...');
             $this->newLine();
         }
@@ -132,7 +132,7 @@ class WarmPaymentCacheCommand extends Command
      */
     private function processTenant(int $tenantId, PaymentService $paymentService, TenantCacheService $cacheService): void
     {
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->info("📦 Processing Tenant #{$tenantId}");
         }
 
@@ -146,14 +146,14 @@ class WarmPaymentCacheCommand extends Command
         $payments = $this->getPagesToWarm($limit);
 
         if ($payments->isEmpty()) {
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->warn("  No payments found for tenant #{$tenantId}");
             }
             return;
         }
 
         // Create progress bar
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar = $this->output->createProgressBar($payments->count());
             $this->progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
         }
@@ -162,12 +162,12 @@ class WarmPaymentCacheCommand extends Command
         foreach ($payments as $payment) {
             $this->warmPageCache($payment, $paymentService, $cacheService);
 
-            if (!$this->option('quiet')) {
+            if (!$this->option('silent')) {
                 $this->progressBar->advance();
             }
         }
 
-        if (!$this->option('quiet')) {
+        if (!$this->option('silent')) {
             $this->progressBar->finish();
             $this->newLine(2);
         }
@@ -205,7 +205,7 @@ class WarmPaymentCacheCommand extends Command
             $force = $this->option('force');
 
             // Set progress message
-            if (!$this->option('quiet') && $this->progressBar) {
+            if (!$this->option('silent') && $this->progressBar) {
                 $title = is_array($payment->title) ? ($payment->title['tr'] ?? 'Untitled') : 'Untitled';
                 $this->progressBar->setMessage("Caching: {$title}");
             }
@@ -301,7 +301,7 @@ class WarmPaymentCacheCommand extends Command
      */
     private function displaySummary(): void
     {
-        if ($this->option('quiet')) {
+        if ($this->option('silent')) {
             return;
         }
 

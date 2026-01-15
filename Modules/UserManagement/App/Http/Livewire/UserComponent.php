@@ -34,6 +34,9 @@ class UserComponent extends Component
     public $statusFilter = '';
 
     #[Url]
+    public $subscriptionFilter = '';
+
+    #[Url]
     public $viewType = 'grid';
 
     protected $queryString = [
@@ -43,6 +46,7 @@ class UserComponent extends Component
         'perPage' => ['except' => 10],
         'roleFilter' => ['except' => ''],
         'statusFilter' => ['except' => ''],
+        'subscriptionFilter' => ['except' => ''],
         'viewType' => ['except' => 'list'],
     ];
 
@@ -79,6 +83,11 @@ class UserComponent extends Component
     }
 
     public function updatedStatusFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSubscriptionFilter()
     {
         $this->resetPage();
     }
@@ -199,6 +208,20 @@ class UserComponent extends Component
                 })
                 ->when($this->statusFilter !== '', function ($query) {
                     $query->where('is_active', $this->statusFilter);
+                })
+                ->when($this->subscriptionFilter !== '', function ($query) {
+                    if ($this->subscriptionFilter === 'active') {
+                        // Aktif üyelik: süresi henüz dolmamış
+                        $query->whereNotNull('subscription_expires_at')
+                              ->where('subscription_expires_at', '>', now());
+                    } elseif ($this->subscriptionFilter === 'expired') {
+                        // Süresi dolmuş üyelik
+                        $query->whereNotNull('subscription_expires_at')
+                              ->where('subscription_expires_at', '<=', now());
+                    } elseif ($this->subscriptionFilter === 'free') {
+                        // Ücretsiz (hiç üyelik almamış)
+                        $query->whereNull('subscription_expires_at');
+                    }
                 });
 
         $users = $query->orderBy($this->sortField, $this->sortDirection)

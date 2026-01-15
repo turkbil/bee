@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WidgetManagement Modülü - Kapsamlı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-block { background-color: #1f2937; color: #f3f4f6; padding: 1rem; border-radius: 0.5rem; font-family: 'Courier New'; font-size: 0.875rem; overflow-x: auto; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left; }
+        th { background-color: #f3f4f6; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9fafb; }
+        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; }
+        .badge-central { background-color: #fef3c7; color: #92400e; }
+        .badge-tenant { background-color: #d1fae5; color: #065f46; }
+        .badge-file { background-color: #dbeafe; color: #0c2d6b; }
+        .section-title { font-size: 1.5rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 3px solid #3b82f6; padding-bottom: 0.5rem; }
+        .subsection { margin-left: 1.5rem; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h1 class="text-4xl font-bold">WidgetManagement Modülü</h1>
+                    <p class="text-blue-100 text-lg mt-2">Kapsamlı Sistem Mimarisi & Veri Akışı Analizi</p>
+                </div>
+                <span class="badge bg-blue-500 text-white px-4 py-2 text-lg">📊 DETAYLI RAPOR</span>
+            </div>
+            <div class="flex items-center gap-4 text-sm text-blue-100">
+                <span>📅 13 Ocak 2026</span>
+                <span>🔍 151 PHP Dosya + 42 Blade View</span>
+                <span>📁 Multi-Tenant Mimarisi</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto py-8 px-4">
+        <!-- BASIT ANLATIM -->
+        <section class="bg-green-900/20 border-2 border-green-800 rounded-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-green-900 mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+            <div class="text-slate-900 space-y-4">
+                <p>
+                    <strong>WidgetManagement modülü</strong>, web sitelerinde "bloklardan" oluşan sayfalar tasarlamayı sağlar. 
+                    Tıpkı Lego gibi, önceden tasarlanmış bileşenleri (hero başlık, card listesi, form vb.) sürükle-bırak yöntemiyle 
+                    sayfaya ekleyebilir, özelleştirebilirsiniz.
+                </p>
+                <p>
+                    <strong>Widget nedir?</strong> Hazır bir bileşen şablonudur. Örneğin "Hero" widget'ı büyük başlıklı bir banner, 
+                    "Card Grid" widget'ı ise çok sayıda kartı yan yana gösteren bir bloktur.
+                </p>
+                <p>
+                    <strong>Nasıl çalışır?</strong>
+                    <ol class="list-decimal list-inside space-y-2 mt-2">
+                        <li>Admin panelinde widget galerisi açılır (hazır şablonlar görülür)</li>
+                        <li>"Hero" widget'ı seçilir ve sayfaya eklenir (TenantWidget oluşur)</li>
+                        <li>Widget kopyalanabilir, ayarları değiştirilebilir (başlık, renkler vb.)</li>
+                        <li>Widget'ın "item'leri" vardır (örneğin "3 item'li card widget" → 3 kart)</li>
+                        <li>Sayfaya açılır, ziyaretçiler göz atabilir, form doldurabilir vb.</li>
+                    </ol>
+                </p>
+                <p class="bg-green-100 border-l-4 border-green-700 p-4">
+                    <strong>💡 Neden önemli?</strong> Bu sistem sayesinde kodlamacı olmayan insanlar da sayfa tasarlayabilir, 
+                    ürün kataloğu oluşturabilir, haber sayfaları düzenleyebilir.
+                </p>
+            </div>
+        </section>
+
+        <!-- TEKNİK DETAYLAR -->
+        <section class="bg-blue-900/20 border-2 border-blue-800 rounded-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-900 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+            
+            <div class="space-y-6">
+                <!-- ANA YAPISI -->
+                <div class="bg-white rounded p-6 border border-blue-300">
+                    <h3 class="text-xl font-bold text-blue-900 mb-3">Modül Dosya Yapısı</h3>
+                    <div class="code-block">
+<pre>Modules/WidgetManagement/
+├── App/
+│   ├── Http/
+│   │   ├── Controllers/      # Preview, FormBuilder controller'ları
+│   │   └── Livewire/         # Widget yönetim UI bileşenleri (9 component)
+│   ├── Models/               # Widget, TenantWidget, WidgetItem, WidgetCategory
+│   ├── Services/             # WidgetService, WidgetItemService, Render services
+│   ├── Support/              # ShortcodeParser, HandlebarsRenderer
+│   ├── Jobs/                 # BulkDeleteWidgets, BulkUpdateWidgets
+│   └── Helpers/              # WidgetHelper.php (15+ helper function)
+├── database/
+│   ├── migrations/           # Central DB migrations (Widget, Category, Module)
+│   ├── migrations/tenant/    # Tenant DB migrations (TenantWidget, WidgetItem)
+│   └── seeders/              # Demo widget seeder'ları
+├── config/
+│   └── config.php
+├── routes/
+│   ├── admin.php             # Admin panel yönlendirmeler
+│   └── web.php               # (boş - frontend route yok)
+├── resources/views/
+│   ├── blocks/               # Widget şablon dosyaları (40+ folder)
+│   │   ├── hero/             # Hero banner widget'ları
+│   │   ├── layout/           # Layout widget'ları (grid, columns)
+│   │   ├── cards/            # Card widget'ları
+│   │   ├── form/             # Form widget'ları
+│   │   ├── modules/          # Module veri kaynağı (Portfolio, Blog vb.)
+│   │   └── ...
+│   ├── livewire/             # Admin UI view'ları
+│   └── widget/               # Widget render helper view'ları
+└── lang/                     # Türkçe ve İngilizce dil dosyaları</pre>
+                    </div>
+                </div>
+
+                <!-- DATABASE YAPISI -->
+                <div class="bg-white rounded p-6 border border-blue-300">
+                    <h3 class="text-xl font-bold text-blue-900 mb-3">📊 Veritabanı Mimarisi</h3>
+                    
+                    <h4 class="font-bold text-lg mt-4 mb-2">Central Database (tuufi_4ekim)</h4>
+                    <div class="table-container mb-6">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tablo</th>
+                                    <th>Amaç</th>
+                                    <th>Kritik Alanlar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>widget_categories</strong></td>
+                                    <td>Widget kategorilerine ayırma</td>
+                                    <td>title, slug, is_active, parent_id (hierarchical)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>widgets</strong></td>
+                                    <td>Widget şablonları (master)</td>
+                                    <td>name, slug, type, content_html, settings_schema, has_items</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>widget_modules</strong></td>
+                                    <td>Hangi modülde hangi widget var</td>
+                                    <td>widget_id (FK), module_id (FK)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>tenant_widgets</strong> ⚠️</td>
+                                    <td>Kiraları tarafından oluşturulan widget instance'ları</td>
+                                    <td>widget_id (FK to central), order, settings (JSON), position</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>widget_items</strong> ⚠️</td>
+                                    <td>Widget item'leri (dinamik widget'lar)</td>
+                                    <td>tenant_widget_id (FK), content (JSON), order</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="font-bold text-lg mt-4 mb-2">Tenant Database (her kiracı)</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tablo</th>
+                                    <th>Amaç</th>
+                                    <th>Yapı</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>tenant_widgets</strong></td>
+                                    <td>Kiracı tarafından oluşturulan widget instance'ları</td>
+                                    <td>widget_id (cross-DB FK), settings (JSON), custom_html, custom_js, position</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>widget_items</strong></td>
+                                    <td>Widget'ın dinamik item'leri</td>
+                                    <td>tenant_widget_id (FK), content (JSON), order</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-yellow-100 border-l-4 border-yellow-700 p-4 mt-4">
+                        <strong>⚠️ Önemli Not:</strong> tenant_widgets ve widget_items BOTH merkezi ve tenant DB'de var! 
+                        Merkezi DB'deki neden? Cross-database foreign key desteği için. Tenant DB'si gerçek veri.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODEL İLİŞKİLERİ -->
+        <div class="section-title">🗄️ Model İlişkileri & Veri Akışı</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <div class="space-y-6">
+                <div>
+                    <h3 class="font-bold text-lg mb-3 text-blue-900">1. Widget (Central Model)</h3>
+                    <div class="code-block">
+<pre>class Widget extends Model {
+    use CentralConnection, HasMediaManagement;
+    
+    // Temel özellikler
+    - id: PK
+    - name, slug, type (file|module|standard)
+    - content_html, content_css, content_js
+    - item_schema (JSON - dinamik item'ler için)
+    - settings_schema (JSON - widget ayarları)
+    - has_items: boolean
+    - is_active, is_core
+    
+    // İlişkiler
+    - hasMany('TenantWidget')        ← Bunu kaç kere kullandı
+    - belongsTo('WidgetCategory')
+    - belongsToMany('Module')        ← Hangi modüllerde aktif
+}</pre>
+                    </div>
+                    <p class="mt-3 text-slate-700">
+                        ✅ <strong>İndeksler:</strong> type, is_active, has_items, composite (is_active + type)
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-lg mb-3 text-blue-900">2. TenantWidget (Tenant Model)</h3>
+                    <div class="code-block">
+<pre>class TenantWidget extends Model {
+    // Kiracı tarafından oluşturulan widget örneği
+    - id: PK
+    - widget_id: FK → Widget (merkezi DB'de)
+    - order: sıralama
+    - position: sayfa bölümü (header, footer, sidebar vb.)
+    - settings: JSON (başlık, renkler, kontrol ayarları)
+    - display_title: widget başlığı
+    
+    // Custom HTML/CSS/JS için
+    - is_custom: bool
+    - custom_html, custom_css, custom_js
+    - is_active: bool
+    
+    // İlişkiler
+    - belongsTo('Widget')            ← Merkezi şablona bağlantı
+    - hasMany('WidgetItem')          ← Dinamik item'ler
+}</pre>
+                    </div>
+                    <p class="mt-3 text-slate-700">
+                        ✅ <strong>İndeksler:</strong> widget_id, is_active, position, composite (widget_id + is_active)
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-lg mb-3 text-blue-900">3. WidgetItem (Tenant Model)</h3>
+                    <div class="code-block">
+<pre>class WidgetItem extends Model {
+    // Widget'ın dinamik item'leri (örn: Card Grid widget'ında her kart)
+    - id: PK
+    - tenant_widget_id: FK → TenantWidget
+    - content: JSON (title, description, image, URL vb.)
+    - order: sıralama
+    
+    // İlişkiler
+    - belongsTo('TenantWidget')
+}</pre>
+                    </div>
+                    <p class="mt-3 text-slate-700">
+                        ✅ <strong>İndeksler:</strong> tenant_widget_id, order
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-lg mb-3 text-blue-900">4. WidgetCategory (Central Model)</h3>
+                    <div class="code-block">
+<pre>class WidgetCategory extends Model {
+    use Sluggable, CentralConnection;
+    
+    // Widget'ları kategorilendirme
+    - widget_category_id: PK
+    - title, slug, icon
+    - parent_id: Alt kategori için
+    - is_active: bool
+    
+    // İlişkiler
+    - hasMany('Widget')
+    - hasMany('WidgetCategory', 'parent_id')  ← Hierarchical
+    - belongsTo('WidgetCategory', 'parent_id') ← Parent kategori
+}</pre>
+                    </div>
+                    <p class="mt-3 text-slate-700">
+                        ✅ <strong>İlişki Türü:</strong> Hierarchical (alt kategoriler)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WIDGET RENDER SÜRECİ -->
+        <div class="section-title">⚙️ Widget Render Süreci (Ayrıntılı Akış)</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <div class="space-y-4">
+                <h3 class="font-bold text-lg text-blue-900">Frontend Render Akışı: @widget(tenantWidgetId)</h3>
+                
+                <div class="bg-blue-50 p-4 rounded border-l-4 border-blue-600">
+                    <p class="font-mono text-sm">
+                        1. Blade'de: <code>@widget(5)</code><br>
+                        2. Helper: <code>widget_by_id(5)</code> → WidgetService.renderSingleWidget()<br>
+                        3. Cache kontrol: Redis'te var mı? EVET → Return<br>
+                        4. Cache miss: TenantWidget::with('widget', 'items').find(5)<br>
+                        5. Render:
+                        <ul class="list-disc list-inside ml-4 mt-2">
+                            <li>İf custom (is_custom=true): custom_html render et</li>
+                            <li>Else: Widget.content_html render et</li>
+                            <li>Items varsa: {{#each items}} template işle</li>
+                            <li>Settings varsa: {{variable}} değişkenlerini değiştir</li>
+                            <li>Module widget: ilişkili tablo verilerini çek (Handlebars)</li>
+                        </ul>
+                        6. CSS/JS toplama: Global static array'e ekle<br>
+                        7. HTML output → Sayfa'ya embed<br>
+                        8. Cache'e kaydet (1440 dakika)
+                    </p>
+                </div>
+
+                <h3 class="font-bold text-lg text-blue-900 mt-6">Admin Panel Yönetim Akışı</h3>
+                
+                <div class="bg-purple-50 p-4 rounded border-l-4 border-purple-600">
+                    <p class="font-mono text-sm">
+                        Admin: /admin/widgetmanagement<br>
+                        ↓<br>
+                        WidgetComponent (Livewire) → Widget listesi + Filtreler<br>
+                        ↓<br>
+                        createInstance(widgetId):<br>
+                        <ul class="list-disc list-inside ml-4 mt-2">
+                            <li>Widget::find(widgetId) → Şablonu getir</li>
+                            <li>TenantWidget::create([widget_id, order, settings])</li>
+                            <li>Cache temizle: clearWidgetCache()</li>
+                        </ul>
+                        ↓<br>
+                        Widget ayarları: /admin/widgetmanagement/settings/{tenantWidgetId}<br>
+                        ↓<br>
+                        WidgetSettingsComponent (Livewire) → Form başlığı, renkler vb. güncelle<br>
+                        ↓<br>
+                        Widget item'leri: /admin/widgetmanagement/items/{tenantWidgetId}<br>
+                        ↓<br>
+                        WidgetItemComponent (Livewire) → Her item düzenle/ekle/sil<br>
+                        ↓<br>
+                        Sil/Güncelle → Cache temizle → Frontend yenile
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HELPER FUNCTION'LAR -->
+        <div class="section-title">🛠️ Helper Functions & Blade Directives</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-blue-900">Frontend (View'larda Kullanım)</h3>
+            <div class="space-y-3">
+                <div class="bg-slate-100 p-3 rounded">
+                    <code class="font-mono">@widget(tenantWidgetId)</code>
+                    <p class="text-sm mt-1">ID'ye göre widget render et</p>
+                </div>
+                <div class="bg-slate-100 p-3 rounded">
+                    <code class="font-mono">@widgetblock('slug')</code>
+                    <p class="text-sm mt-1">Slug'a göre widget render et</p>
+                </div>
+                <div class="bg-slate-100 p-3 rounded">
+                    <code class="font-mono">@widgets('position')</code>
+                    <p class="text-sm mt-1">Belirli pozisyondaki tüm widget'ları render et</p>
+                </div>
+                <div class="bg-slate-100 p-3 rounded">
+                    <code class="font-mono">@parsewidgets($content)</code>
+                    <p class="text-sm mt-1">İçerikteki widget shortcode'ları işle (örn: [[widget:hero param1=val1]])</p>
+                </div>
+                <div class="bg-slate-100 p-3 rounded">
+                    <code class="font-mono">@modulewidget(moduleWidgetId)</code>
+                    <p class="text-sm mt-1">Module widget'ını render et</p>
+                </div>
+            </div>
+
+            <h3 class="font-bold text-lg mb-4 text-blue-900 mt-6">PHP Helper Functions</h3>
+            <div class="code-block">
+<pre>widget_by_id(id)              // ID'ye göre render
+widget_by_slug(slug, params)   // Slug'a göre, params ile
+widgets_by_position(position)  // Pozisyon'a göre render
+parse_widget_shortcodes(html)  // Shortcode'ları işle
+widget_cached(id, ttl, params) // Cache ile render
+module_widget_by_id(id)        // Module widget render
+module_widgets_by_module(modId)// Module'daki tüm module widget'ları
+widget_file_by_id(id)          // File widget render</pre>
+            </div>
+        </section>
+
+        <!-- SERVICE KATMANI -->
+        <div class="section-title">🔌 Service Layer & Business Logic</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-blue-900">WidgetService (Ana Service)</h3>
+            <div class="code-block">
+<pre>Singletonized: app('widget.service')
+
+Temel metodlar:
+- getAllWidgets()              → Tüm widget'lar
+- getActiveWidgets()           → Aktif widget'lar
+- getWidgetsByType(type)       → Türe göre
+- getWidgetsForModule(modId)   → Modüle göre
+- getTenantWidgets(position)   → Kiracı widget'ları
+- renderWidgetsInPosition()    → Pozisyon'daki widget'ları render
+- renderSingleWidget()         → Tekil widget render (cache ile)
+- processWidget()              → Widget HTML işleme
+- renderWidgetHtml()           → Handlebars şablon işleme
+- clearWidgetCache()           → Cache temizle
+
+Cache stratejisi:
+- Key format: widget_{tenantId}_widget_{widgetId}
+- TTL: 1440 dakika (24 saat)
+- Kullanım: settings, CSS/JS, item'ler değişirse otomatik sıfırlanır</pre>
+            </div>
+
+            <h3 class="font-bold text-lg mb-4 text-blue-900 mt-6">WidgetRenderService (Şablon İşleme)</h3>
+            <div class="code-block">
+<pre>Sorumlulukları:
+- processVariables()           → {{title}} gibi değişkenleri değiştir
+- processItems()               → {{#each items}} döngüleri işle
+- processModuleData()          → Module verilerini Handlebars'la işle
+- processConditionalBlocks()   → {{#if condition}} blokları işle
+
+Template Syntax:
+- Değişkenler: {{variable}}, {{widget.title}}, {{items.0.name}}
+- Koşullar: {{#if condition}}...{{/if}}
+- Döngüler: {{#each items}}...{{/each}}
+- Handlebars desteği: LitHTML/Handlebars.js</pre>
+            </div>
+
+            <h3 class="font-bold text-lg mb-4 text-blue-900 mt-6">WidgetItemService (Item Yönetimi)</h3>
+            <div class="code-block">
+<pre>- getItemsForWidget()  → Widget'ın item'lerini al
+- addItem()            → Item ekle (auto UUID, is_active=true)
+- updateItem()         → Item güncelle
+- deleteItem()         → Item sil
+- reorderItems()       → Item'leri sırala</pre>
+            </div>
+
+            <h3 class="font-bold text-lg mb-4 text-blue-900 mt-6">ShortcodeParser (İçerik Parse)</h3>
+            <div class="code-block">
+<pre>Desteklenen syntaxlar:
+[[widget:slug param1=val1 param2=val2]]
+[[widget:slug]]İçerik[[/widget:slug]]
+[[module:moduleId]]
+[[file:fileId]]
+
+Örnek:
+[[widget:hero title="Başlık" subtitle="Alt başlık"]]
+[[widget:cards]]
+  [[widget:card title="Card 1"]]
+[[/widget:cards]]</pre>
+            </div>
+        </section>
+
+        <!-- MULTI-TENANT YAPISI -->
+        <div class="section-title">👥 Multi-Tenant Mimarisi</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-blue-900">Database Dağılımı</h3>
+            
+            <div class="space-y-4">
+                <div class="bg-yellow-50 border-l-4 border-yellow-600 p-4">
+                    <strong class="badge badge-central">Central Database (tuufi_4ekim)</strong>
+                    <ul class="list-disc list-inside mt-2 text-sm">
+                        <li><strong>Widget</strong> (CentralConnection trait) - Widget şablonları</li>
+                        <li><strong>WidgetCategory</strong> (CentralConnection trait) - Kategoriler</li>
+                        <li><strong>widget_modules</strong> - Widget-Module ilişkisi</li>
+                        <li><strong>tenant_widgets</strong> ⚠️ - Tüm kiracılar için (cross-DB FK destekleme)</li>
+                        <li><strong>widget_items</strong> ⚠️ - Tüm kiracılar için (cross-DB FK destekleme)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-50 border-l-4 border-green-600 p-4">
+                    <strong class="badge badge-tenant">Tenant Database (her kiracı, örn: tenant_muzibu_1528d0)</strong>
+                    <ul class="list-disc list-inside mt-2 text-sm">
+                        <li><strong>tenant_widgets</strong> - Kiracının oluşturduğu widget instance'ları</li>
+                        <li><strong>widget_items</strong> - Kiracının widget item'leri</li>
+                        <li>⚠️ widget, widget_categories, widget_modules YOK! (merkezi DB'den okunur)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-600 p-4 mt-4">
+                    <strong>Veri Akışı:</strong>
+                    <p class="text-sm mt-2">
+                        1. Kiracı, admin panelinde /admin/widgetmanagement'e gider<br>
+                        2. TenantAware middleware kiracıyı set eder<br>
+                        3. Widget::all() → Merkezi DB'den (şablonlar)<br>
+                        4. TenantWidget::all() → Tenant DB'den (kiracının widget instance'ları)<br>
+                        5. Widget şablonu render: Merkezi DB'deki content_html + Tenant DB'deki settings<br>
+                        6. Cross-DB relationship: TenantWidget.widget_id → Widget.id (merkezi DB)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIVEWIRE COMPONENTS -->
+        <div class="section-title">🧩 Livewire Components (Admin Panel)</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>URL/Rota</th>
+                            <th>Fonksiyonu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>WidgetComponent</strong></td>
+                            <td>/admin/widgetmanagement</td>
+                            <td>Widget listesi, ara, filtrele, instance oluştur</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetManageComponent</strong></td>
+                            <td>/admin/widgetmanagement/manage/{id}</td>
+                            <td>Widget şablonunu edit (HTML/CSS/JS), schema oluştur</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetGalleryComponent</strong></td>
+                            <td>/admin/widgetmanagement/gallery</td>
+                            <td>Widget galerisi, görsel önizleme</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetSettingsComponent</strong></td>
+                            <td>/admin/widgetmanagement/settings/{tenantWidgetId}</td>
+                            <td>Widget ayarları düzenle (title, colors, custom values)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetItemComponent</strong></td>
+                            <td>/admin/widgetmanagement/items/{tenantWidgetId}</td>
+                            <td>Widget item'lerini listele, drag-drop sırala</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetItemManageComponent</strong></td>
+                            <td>/admin/widgetmanagement/manage/item/{tenantWidgetId}/{itemId}</td>
+                            <td>Tekil item düzenle (title, description, image vb.)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetCodeEditorComponent</strong></td>
+                            <td>/admin/widgetmanagement/code-editor/{id}</td>
+                            <td>Widget'ın HTML/CSS/JS kodunu editör'de düzenle</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetCategoryComponent</strong></td>
+                            <td>/admin/widgetmanagement/category</td>
+                            <td>Widget kategorilerini listele ve yönet</td>
+                        </tr>
+                        <tr>
+                            <td><strong>FileWidgetListComponent</strong></td>
+                            <td>/admin/widgetmanagement/file-widgets</td>
+                            <td>File widget'ları listele (view dosyası yükleme)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ModuleWidgetListComponent</strong></td>
+                            <td>/admin/widgetmanagement/modules</td>
+                            <td>Module widget'ları listele (Blog, Portfolio vb.)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetFormBuilderComponent</strong></td>
+                            <td>/admin/widgetmanagement/form-builder/{widgetId}/items</td>
+                            <td>Item ve Settings schema oluştur (drag-drop form designer)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ROUTES VE PERMISSION'LAR -->
+        <div class="section-title">🚦 Routes & Permission Kontrolü</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-blue-900">Admin Rota Yapısı</h3>
+            <div class="code-block">
+<pre>Prefix: /admin/widgetmanagement
+Middleware: ['admin', 'tenant']
+
+Public (view):
+- GET / → Widget listesi
+- GET /gallery → Galeri
+- GET /items/{tenantWidgetId} → Item listesi
+- GET /preview/template/{widgetId} → Widget önizlemesi
+- GET /preview/instance/{tenantWidgetId} → Instance önizlemesi
+
+Protected (root role):
+- GET /manage/{id?} → Widget editör
+- GET /code-editor/{id} → Kod editör
+- GET /file-widgets → File widget'ları
+- GET /modules → Module widget'ları
+
+Protected (update permission):
+- GET /settings/{tenantWidgetId} → Widget ayarları
+- GET /manage/item/{tenantWidgetId}/{itemId} → Item editör
+- POST /form-builder/{widgetId}/save/{schemaType} → Schema kaydet
+
+Preview endpoints:
+- GET /preview/embed/{tenantWidgetId}
+- GET /preview/embed/json/{tenantWidgetId}
+- GET /api/module/{moduleId}</pre>
+            </div>
+        </section>
+
+        <!-- WIDGET TYPES -->
+        <div class="section-title">📦 Widget Türleri</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-blue-900">Widget Type'ları</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded border-l-4 border-blue-600">
+                    <strong>File Widget</strong> (type: 'file')
+                    <ul class="list-disc list-inside mt-2 text-sm">
+                        <li>Blade view dosyasından render edilir</li>
+                        <li>file_path: 'blocks/hero/simple/view'</li>
+                        <li>View: widgetmanagement::blocks.hero.simple.view</li>
+                        <li>Statik widget'lar (değişebilir ama item yok)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-50 p-4 rounded border-l-4 border-green-600">
+                    <strong>Module Widget</strong> (type: 'module')
+                    <ul class="list-disc list-inside mt-2 text-sm">
+                        <li>Diğer modüllerden veri çeker (Blog, Portfolio vb.)</li>
+                        <li>data_source: 'ModuleName/ClassName'</li>
+                        <li>Handlebars şablon ile render</li>
+                        <li>Dinamik veri işleme (loop, condition)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded border-l-4 border-purple-600">
+                    <strong>Standard Widget</strong>
+                    <ul class="list-disc list-inside mt-2 text-sm">
+                        <li>HTML/CSS/JS içeriği içeren widget'lar</li>
+                        <li>content_html, content_css, content_js</li>
+                        <li>Item'ler olabilir (dinamik item'ler)</li>
+                        <li>Settings ile özelleştirilebilir</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-50 p-4 rounded border-l-4 border-red-600">
+                    <strong>Custom Widget</strong> (is_custom: true)
+                    <ul class="list-disc list-inside mt-2 text-sm">
+                        <li>TenantWidget'ın kendi HTML/CSS/JS'i</li>
+                        <li>custom_html, custom_css, custom_js</li>
+                        <li>Widget şablonunu override eder</li>
+                        <li>Her kiracı kendi custom widget'ını oluşturabilir</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="font-bold text-lg mb-4 text-blue-900 mt-6">Mevcut Widget Şablonları (40+)</h3>
+            <div class="code-block">
+<pre>Hero widget'ları:
+- blocks/hero/simple → Basit başlık
+- blocks/hero/hero-1 → İmaj ile
+- blocks/hero/ixtif-hero → İxtif özel
+
+Layout widget'ları:
+- blocks/layout/one-column → 1 kolon
+- blocks/layout/two-columns → 2 eşit
+- blocks/layout/three-columns → 3 eşit
+- blocks/layout/four-columns → 4 eşit
+- blocks/layout/masonry-grid → Masonry
+- blocks/layout/asymmetric-grid → Asimetrik
+- blocks/layout/sidebar-main-sidebar → Kenar çubuğu
+
+Card widget'ları:
+- blocks/cards/basic → Basit kartlar
+- blocks/cards/grid → Grid düzeni
+
+Form widget'ları:
+- blocks/form/contact-form → İletişim formu
+- blocks/form/contact-assistant → AI asistan formu
+- blocks/form/muzibu-contact → Muzibu özel
+
+Module widget'ları:
+- blocks/modules/portfolio/list → Portfolio listesi
+- blocks/modules/portfolio/detail → Portfolio detay
+- blocks/modules/page/home → Ana sayfa
+- blocks/modules/page/recent → Yeni sayfalar
+- blocks/modules/announcement/list → Duyuru listesi
+
+Diğer:
+- blocks/testimonials/basic → Testimoniallar
+- blocks/features/basic → Özellikler
+- blocks/media/image → Resim
+- blocks/content/hero → İçerik
+- blocks/content/text → Metin</pre>
+            </div>
+        </section>
+
+        <!-- CACHE STRATEJISI -->
+        <div class="section-title">⚡ Cache Stratejisi & Performans</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-blue-900">Cache Sistemi</h3>
+            
+            <div class="bg-green-50 border-l-4 border-green-600 p-4 mb-4">
+                <strong>✅ Cache AÇIK (Varsayılan)</strong>
+                <p class="text-sm mt-2">
+                    WidgetService::$useCache = true<br>
+                    TTL: 1440 dakika (24 saat)<br>
+                    Key: widget_{tenantId}_widget_{tenantWidgetId}
+                </p>
+            </div>
+
+            <h3 class="font-bold mb-3">Cache İnvalidasyon (Otomatik)</h3>
+            <div class="code-block">
+<pre>TenantWidget değişirse:
+- update() → clearWidgetCache() çağrılır
+- delete() → clearWidgetCache() çağrılır
+- Livewire save → clearWidgetCache()
+
+WidgetItem değişirse:
+- create/update/delete → clearWidgetCache()
+
+Position değişirse:
+- TenantWidget::where('position', $pos) → Cache temizle
+
+Settings değişirse:
+- TenantWidget.update(['settings' => ...]) → Cache temizle</pre>
+            </div>
+
+            <h3 class="font-bold mb-3 mt-6">Static Assets Cache (CSS/JS)</h3>
+            <div class="code-block">
+<pre>Widget render sırasında:
+- WidgetService::$loadedCssFiles[] → Benzersiz dosyaları topla
+- WidgetService::$loadedJsFiles[] → Benzersiz dosyaları topla
+- Sayfanın footer'ında:
+  {{ WidgetService::getStylesOutput() }}
+  {{ WidgetService::getScriptsOutput() }}
+
+Avantaj:
+- Tekrarlanan CSS/JS yüklenmez
+- Performance optimize edilir
+- Sayfa yükleme süresi azalır</pre>
+            </div>
+        </section>
+
+        <!-- MEDYA & STORAGE -->
+        <div class="section-title">📁 Media Management & Storage</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-blue-900">Media Yönetimi (Spatie MediaLibrary)</h3>
+            
+            <div class="bg-yellow-50 border-l-4 border-yellow-600 p-4 mb-4">
+                <strong>Widget Model Media Collections</strong>
+                <p class="text-sm mt-2">
+                    Widget, Spatie MediaLibrary trait'ini kullanır<br>
+                    Collections: Dinamik (field name bazında)<br>
+                    Disk: Tenant-aware (merkezi vs tenant storage)<br>
+                    Example: Widget.registerMediaCollections() → boş (runtime'da field name'e göre belirlenir)
+                </p>
+            </div>
+
+            <h3 class="font-bold mb-3">Storage Disk Yapısı</h3>
+            <div class="code-block">
+<pre>Widget Model getMediaDisk() metodu:
+- Tenant context varsa → tenant disk kullanılır
+- Central context varsa → public disk kullanılır
+- Disk path: storage/app/public/
+- URL: /storage/tenant{tenantId}/ (tenant context)
+
+Örnek:
+- Merkezi: /storage/widgets/hero-bg.jpg
+- Tenant 2 (ixtif): /storage/tenant2/widgets/hero-bg.jpg
+- Tenant 1001 (muzibu): /storage/tenant1001/widgets/hero-bg.jpg</pre>
+            </div>
+        </section>
+
+        <!-- ÖNEMLİ NOTLAR -->
+        <div class="section-title">⚠️ Önemli Teknik Notlar</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <div class="space-y-4">
+                <div class="bg-red-50 border-l-4 border-red-600 p-4">
+                    <strong>❌ Cross-Database Foreign Key</strong>
+                    <p class="text-sm mt-2">
+                        TenantWidget.widget_id → Widget (merkezi DB)<br>
+                        MySQL'de kısıtlama yoktur, Laravel açıkça FK belirtmemişti<br>
+                        İndeksler eklenmiş (lookup hızlandırma) ✅
+                    </p>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-600 p-4">
+                    <strong>⚠️ Widget Şablon Düzenleme</strong>
+                    <p class="text-sm mt-2">
+                        Widget.content_html düzenlenmesi → Tüm TenantWidget'ları etkiler!<br>
+                        Yeni TenantWidget'lar yeni HTML alır<br>
+                        Eski TenantWidget'lar eski HTML'i kullanmaya devam eder (is_custom=false ise)<br>
+                        Çözüm: Widget versiyonlama sistemi (ileride eklenebilir)
+                    </p>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-600 p-4">
+                    <strong>ℹ️ Handlebars vs Regular Template</strong>
+                    <p class="text-sm mt-2">
+                        Regular: {{variable}} → Server-side PHP tarafından değiştir<br>
+                        Handlebars: {{#if}}, {{#each}} → Browser'da Handlebars.js çalıştır<br>
+                        WidgetService::setHandlebarsUsage(false) → Regular mode<br>
+                        Module widget'ları Handlebars tercih eder (dinamik veri işleme)
+                    </p>
+                </div>
+
+                <div class="bg-purple-50 border-l-4 border-purple-600 p-4">
+                    <strong>🔒 Security (XSS Koruması)</strong>
+                    <p class="text-sm mt-2">
+                        WidgetRenderService::escapeHtml() → String değerleri escape et<br>
+                        HTML content'e DOMPurify.js eklenebilir (ileride)<br>
+                        Admin editör'de malicious code girilebilir ⚠️ → Güvenilir editor tarafından kontrol
+                    </p>
+                </div>
+
+                <div class="bg-green-50 border-l-4 border-green-600 p-4">
+                    <strong>✅ Performance Optimizasyonları</strong>
+                    <ul class="list-disc list-inside text-sm mt-2">
+                        <li>Widget query: with('widget', 'items') eager loading</li>
+                        <li>Cache: 24 saat TTL, Redis tabanlı</li>
+                        <li>İndeksler: widget_id, is_active, position, composite indices</li>
+                        <li>Static CSS/JS: Benzerlik tespiti, duplikasyon önleme</li>
+                        <li>Module data: Lazy loading, query optimization</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- VERI AKIŞ ŞEMASI -->
+        <div class="section-title">🔄 Veri Akış Şeması (Detaylı)</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-blue-900">Widget Instance Oluşturma Akışı</h3>
+            <div class="code-block">
+<pre>Admin Paneli
+    ↓
+WidgetComponent.createInstance(widgetId)
+    ↓
+Widget::find(widgetId) ← Merkezi DB'den şablonu getir
+    ↓
+TenantWidget::create([
+    'widget_id' => $widgetId,
+    'order' => $maxOrder + 1,
+    'settings' => ['title' => $widget->name, 'unique_id' => UUID]
+])
+    ↓
+Database: tenant_{kiracı}.tenant_widgets INSERT
+    ↓
+clearWidgetCache(tenant()->id, null) ← Kiracının tüm position cache'ini temizle
+    ↓
+Frontend'de @widgets('position') çağrılırsa:
+    ↓
+Yeni TenantWidget render edilir ✅</pre>
+            </div>
+
+            <h3 class="font-bold text-lg mb-4 text-blue-900 mt-6">Widget Item Ekleme Akışı</h3>
+            <div class="code-block">
+<pre>Admin: /admin/widgetmanagement/manage/item/{tenantWidgetId}
+    ↓
+WidgetItemManageComponent.save()
+    ↓
+WidgetItemService.addItem(tenantWidgetId, {
+    'title' => 'Yeni Card',
+    'description' => '...',
+    'image' => 'file.jpg'
+})
+    ↓
+1. unique_id OTOMATIK oluştur (UUID)
+2. is_active = true (VARSAYILAN)
+3. order = max(order) + 1
+4. Database: tenant_{kiracı}.widget_items INSERT
+    ↓
+5. clearWidgetCache(tenant()->id, tenantWidgetId)
+    ↓
+Frontend'de @widget(tenantWidgetId) çağrılırsa:
+    ↓
+    1. Cache miss (temizlendi)
+    2. TenantWidget::with('widget', 'items').find(tenantWidgetId)
+    3. Widget.content_html (şablon)
+    4. WidgetItems processItems() ile {{#each items}}...{{/each}} işle
+    5. New item görünür ✅</pre>
+            </div>
+
+            <h3 class="font-bold text-lg mb-4 text-blue-900 mt-6">Widget Render (Frontend) Akışı</h3>
+            <div class="code-block">
+<pre>Blade: @widget(5)
+    ↓
+Helper: widget_by_id(5)
+    ↓
+Cache key: widget_{tenantId}_widget_5
+    ↓
+Cache varsa? EVET → Return (24 saat eski veri)
+Cache miss? → Devam et
+    ↓
+TenantWidget::with('widget', 'items').find(5)
+    ↓
+TenantWidget.is_custom == true?
+    ↓
+    EVET: custom_html render et
+    HAYIR:
+        1. Widget.content_html al
+        2. WidgetItems varsa: renderService.processItems()
+        3. Settings varsa: renderService.processVariables()
+        4. Module widget ise: getData() → renderService.processModuleData()
+        5. CSS/JS dosyaları ekle
+    ↓
+Cache'e kaydet (TTL: 1440 dakika)
+    ↓
+HTML çıktı + CSS/JS global array'e ekle
+    ↓
+Page footer'da:
+    WidgetService::getStylesOutput() → <style> ve <link>
+    WidgetService::getScriptsOutput() → <script> ve <script src></pre>
+            </div>
+        </section>
+
+        <!-- ÖZET TABLOSU -->
+        <div class="section-title">📋 Hızlı Referans Tablosu</div>
+        
+        <section class="bg-white rounded-lg p-6 border border-slate-300 mb-8">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bileşen</th>
+                            <th>Tür</th>
+                            <th>Konumu</th>
+                            <th>Amaç</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Widget</strong></td>
+                            <td>Model</td>
+                            <td>Central DB</td>
+                            <td>Widget şablonları (master)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TenantWidget</strong></td>
+                            <td>Model</td>
+                            <td>Tenant DB</td>
+                            <td>Widget instance'ları</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetItem</strong></td>
+                            <td>Model</td>
+                            <td>Tenant DB</td>
+                            <td>Dinamik widget item'leri</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetService</strong></td>
+                            <td>Service</td>
+                            <td>App/Services</td>
+                            <td>Widget render ve yönetimi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetRenderService</strong></td>
+                            <td>Service</td>
+                            <td>App/Services/Widget</td>
+                            <td>Template işleme (Handlebars)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ShortcodeParser</strong></td>
+                            <td>Support</td>
+                            <td>App/Support</td>
+                            <td>[[widget:slug]] parsing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetHelper</strong></td>
+                            <td>Helper</td>
+                            <td>App/Helpers</td>
+                            <td>15+ helper function</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WidgetComponent</strong></td>
+                            <td>Livewire</td>
+                            <td>App/Http/Livewire</td>
+                            <td>Admin widget listesi UI</td>
+                        </tr>
+                        <tr>
+                            <td><strong>blocks/</strong></td>
+                            <td>Views</td>
+                            <td>resources/views</td>
+                            <td>Widget şablon Blade dosyaları</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-4">🎯 Sistem Özeti</h2>
+            <div class="space-y-3">
+                <p>✅ <strong>151 PHP dosya</strong> - Organize, modüler yapı</p>
+                <p>✅ <strong>Multi-tenant mimarisi</strong> - Her kiracı izole, shared şablonlar</p>
+                <p>✅ <strong>Esnek widget sistemi</strong> - File, Module, Standard, Custom türleri</p>
+                <p>✅ <strong>Handlebars template</strong> - Dinamik veri işleme, {{if}}, {{each}}</p>
+                <p>✅ <strong>Redis cache</strong> - 24 saat TTL, otomatik invalidation</p>
+                <p>✅ <strong>Admin UI</strong> - 9+ Livewire component, drag-drop, form builder</p>
+                <p>✅ <strong>Performance</strong> - İndeksler, eager loading, asset deduplication</p>
+                <p>✅ <strong>Security</strong> - XSS koruması (escapeHtml), permission kontrolü</p>
+            </div>
+        </section>
+
+        <div style="text-align: center; padding: 2rem; color: #64748b; font-size: 0.875rem;">
+            <p>Bu analiz Claude AI tarafından otomatik olarak oluşturulmuştur</p>
+            <p>📊 Rapor Tarihi: 13 Ocak 2026</p>
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 text-white py-4 mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>🤖 Generated with Claude AI - WidgetManagement Module Analysis</p>
+        </div>
+    </footer>
+</body>
+</html>

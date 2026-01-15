@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yıldırım Panjur - Tasarım Dökümanı | v1</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome Pro 7 -->
+    <link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #f97316, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-slate-800/50 backdrop-blur-md border-b border-slate-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                        <i class="fat fa-blinds text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Yıldırım Panjur</h1>
+                        <p class="text-sm text-slate-400">Tasarım Dökümanı</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-sm font-medium rounded-full">v1</span>
+                    <a href="index.html" target="_blank" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+                        <i class="fat fa-external-link"></i>
+                        Siteyi Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Overview -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-blue-500 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-info text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Proje Bilgileri</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-slate-700/50 rounded-xl p-5">
+                        <span class="text-slate-400 text-sm block mb-1">Firma</span>
+                        <span class="text-lg font-semibold">Yıldırım Panjur</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-xl p-5">
+                        <span class="text-slate-400 text-sm block mb-1">Sektör</span>
+                        <span class="text-lg font-semibold">Panjur Tamiri & Montaj</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-xl p-5">
+                        <span class="text-slate-400 text-sm block mb-1">Hizmet Bölgesi</span>
+                        <span class="text-lg font-semibold">İstanbul</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-xl p-5">
+                        <span class="text-slate-400 text-sm block mb-1">Tecrübe</span>
+                        <span class="text-lg font-semibold">30 Yıl</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Tokens -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-palette text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Design Token Sistemi</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Colors -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <i class="fat fa-swatchbook text-orange-400"></i>
+                            Renk Paleti
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <span class="text-sm text-slate-400 mb-2 block">Primary (Turuncu)</span>
+                                <div class="flex gap-2">
+                                    <div class="w-12 h-12 rounded-lg bg-orange-50" title="orange-50"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-orange-100" title="orange-100"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-orange-300" title="orange-300"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-orange-500" title="orange-500"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-orange-600 ring-2 ring-white" title="orange-600 (Ana)"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-orange-700" title="orange-700"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="text-sm text-slate-400 mb-2 block">Secondary (Mavi)</span>
+                                <div class="flex gap-2">
+                                    <div class="w-12 h-12 rounded-lg bg-blue-100" title="blue-100"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-blue-300" title="blue-300"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-blue-500" title="blue-500"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-blue-600 ring-2 ring-white" title="blue-600 (Ana)"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-blue-700" title="blue-700"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="text-sm text-slate-400 mb-2 block">Accent (Yeşil - WhatsApp)</span>
+                                <div class="flex gap-2">
+                                    <div class="w-12 h-12 rounded-lg bg-green-500" title="green-500"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-green-600 ring-2 ring-white" title="green-600 (Ana)"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-green-700" title="green-700"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="text-sm text-slate-400 mb-2 block">Hizmet Renkleri</span>
+                                <div class="flex gap-2 flex-wrap">
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600" title="Panjur Tamiri"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600" title="Motorlu Panjur"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-green-600" title="Sineklik"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600" title="Garaj Kapısı"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-red-500 to-red-600" title="Güvenli Panjur"></div>
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600" title="Manuel Panjur"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Typography -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <i class="fat fa-font text-blue-400"></i>
+                            Tipografi
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-700/50 rounded-xl p-5">
+                                <span class="text-sm text-slate-400 block mb-2">Heading Font</span>
+                                <span class="text-2xl font-bold" style="font-family: Inter, sans-serif;">Inter</span>
+                                <p class="text-sm text-slate-400 mt-1">Modern sans-serif, UI/UX için ideal</p>
+                            </div>
+
+                            <div class="bg-slate-700/50 rounded-xl p-5">
+                                <span class="text-sm text-slate-400 block mb-2">Body Font</span>
+                                <span class="text-2xl font-normal" style="font-family: Roboto, sans-serif;">Roboto</span>
+                                <p class="text-sm text-slate-400 mt-1">Google'ın tasarladığı genel amaçlı sans-serif</p>
+                            </div>
+
+                            <div class="bg-slate-700/50 rounded-xl p-5">
+                                <span class="text-sm text-slate-400 block mb-3">Hierarchy</span>
+                                <div class="space-y-2">
+                                    <p class="text-4xl font-bold">H1 - text-5xl font-bold</p>
+                                    <p class="text-2xl font-bold">H2 - text-4xl font-bold</p>
+                                    <p class="text-xl font-bold">H3 - text-xl font-bold</p>
+                                    <p class="text-base">Body - text-base</p>
+                                    <p class="text-sm text-slate-400">Small - text-sm</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Layout Selections -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-table-layout text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Layout Seçimleri</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Hero -->
+                    <div class="bg-slate-700/50 rounded-xl p-6 border border-slate-600">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-medium rounded">Hero</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">#7 - Full-screen Gradient + Glassmorphism</h4>
+                        <p class="text-sm text-slate-400">Animated gradient arka plan, cam efektli kartlar, floating elementler, bold tipografi</p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="bg-slate-700/50 rounded-xl p-6 border border-slate-600">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded">Stats</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">#21 - Giant Counters Bar</h4>
+                        <p class="text-sm text-slate-400">Turuncu gradient arka plan, 4 kolonlu istatistik, simetrik düzen</p>
+                    </div>
+
+                    <!-- Services -->
+                    <div class="bg-slate-700/50 rounded-xl p-6 border border-slate-600">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-medium rounded">Services</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">#3 - Icon Grid + Gradient Cards</h4>
+                        <p class="text-sm text-slate-400">6 hizmet kartı, gradient border, icon hover efekti, border-draw animasyon</p>
+                    </div>
+
+                    <!-- Why Us -->
+                    <div class="bg-slate-700/50 rounded-xl p-6 border border-slate-600">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs font-medium rounded">Why Us</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">#61 - Card-based Features</h4>
+                        <p class="text-sm text-slate-400">6 özellik kartı, merkezi ikonlar, hover border efekti</p>
+                    </div>
+
+                    <!-- Process -->
+                    <div class="bg-slate-700/50 rounded-xl p-6 border border-slate-600">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs font-medium rounded">Process</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">#26 - Numbered Horizontal Steps</h4>
+                        <p class="text-sm text-slate-400">4 adım, gradient badge'ler, connecting lines</p>
+                    </div>
+
+                    <!-- Contact CTA -->
+                    <div class="bg-slate-700/50 rounded-xl p-6 border border-slate-600">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-medium rounded">Contact</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">#46 - Full-width Gradient CTA</h4>
+                        <p class="text-sm text-slate-400">Turuncu gradient, 3 büyük iletişim butonu, floating icon</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hover Effects -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-hand-pointer text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Hover Efektleri</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-700/50 rounded-xl p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-medium rounded">#1</span>
+                            <span class="font-medium">Icon Weight Değişimi</span>
+                        </div>
+                        <p class="text-sm text-slate-400">FontAwesome fat → fas (thin → solid) hover'da</p>
+                        <div class="mt-4 flex items-center gap-4">
+                            <div class="flex flex-col items-center">
+                                <i class="fat fa-heart text-2xl text-orange-400"></i>
+                                <span class="text-xs text-slate-500 mt-1">Normal</span>
+                            </div>
+                            <i class="fat fa-arrow-right text-slate-500"></i>
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-heart text-2xl text-orange-400"></i>
+                                <span class="text-xs text-slate-500 mt-1">Hover</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-xl p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded">#6</span>
+                            <span class="font-medium">Text Kayma</span>
+                        </div>
+                        <p class="text-sm text-slate-400">Başlık hover'da sağa kayar (translateX 8px)</p>
+                        <div class="mt-4">
+                            <code class="text-xs text-green-400 bg-slate-800 px-2 py-1 rounded">transform: translateX(8px)</code>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-xl p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs font-medium rounded">#11</span>
+                            <span class="font-medium">Border Çizim</span>
+                        </div>
+                        <p class="text-sm text-slate-400">Sol border yukarıdan aşağı çizilir</p>
+                        <div class="mt-4">
+                            <code class="text-xs text-green-400 bg-slate-800 px-2 py-1 rounded">::before height: 0 → 100%</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animated Background -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-sparkles text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Animated Background</h2>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-xl p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-indigo-500/20 text-indigo-400 text-xs font-medium rounded">#1</span>
+                        <span class="font-medium">Smooth Gradient Shift</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-4">Hero section'da kullanılan animated gradient arka plan</p>
+
+                    <pre class="text-xs bg-slate-800 rounded-lg p-4 overflow-x-auto"><code class="text-green-400">.animated-gradient-bg {
+    background: linear-gradient(
+        135deg,
+        #1f2937 0%,
+        #111827 25%,
+        #0f172a 50%,
+        #111827 75%,
+        #1f2937 100%
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fingerprint -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-fingerprint text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Fingerprint</h2>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-xl p-6">
+                    <pre class="text-sm overflow-x-auto"><code class="text-emerald-400">{
+  "version": "v1",
+  "hash": "yp-v1-or-bl-in-ro",
+  "layouts": {
+    "hero": 7,
+    "stats": 21,
+    "services": 3,
+    "whyUs": 61,
+    "process": 26,
+    "contactCta": 46,
+    "footer": 1
+  },
+  "colors": {
+    "primary": "Orange (from-orange-500 to-orange-600)",
+    "secondary": "Blue (from-blue-500 to-blue-600)",
+    "accent": "Green (green-600)"
+  },
+  "fonts": {
+    "heading": "Inter",
+    "body": "Roboto"
+  },
+  "hoverEffects": [1, 6, 11],
+  "animatedBackground": "Gradient Shift #1",
+  "features": [
+    "Glassmorphism",
+    "Gradient Borders",
+    "Animated Gradient Text",
+    "Floating Elements",
+    "Pattern Overlay"
+  ]
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leonardo.ai Image Prompts -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-image text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Leonardo.ai Görsel Promptları</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Image 1: Hero Background -->
+                    <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-white">hero-bg.jpg</span>
+                            <span class="text-xs text-slate-400">1472x832</span>
+                        </div>
+                        <p class="text-slate-300 text-sm mb-3">
+                            Editorial photograph of a modern Istanbul apartment window with elegant aluminum shutters (panjur), warm morning sunlight streaming through partially open blinds, soft shadows on white walls, professional interior photography, Canon R5 35mm f/1.4, shallow depth of field, natural lighting, clean minimalist aesthetic, 8k quality, subtle film grain
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Photography</span>
+                        </div>
+                    </div>
+
+                    <!-- Image 2: Service - Repair -->
+                    <div class="border-l-4 border-orange-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-white">service-repair.jpg</span>
+                            <span class="text-xs text-slate-400">800x600</span>
+                        </div>
+                        <p class="text-slate-300 text-sm mb-3">
+                            Documentary photograph of a professional technician repairing window blinds, wearing orange branded uniform, holding specialized tools, working on modern aluminum shutter mechanism, clean workshop background, natural daylight, Nikon D850 50mm, professional craftsmanship, authentic work scene, 8k quality
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Documentary</span>
+                        </div>
+                    </div>
+
+                    <!-- Image 3: Motorized Shutter -->
+                    <div class="border-l-4 border-blue-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-white">motorized-shutter.jpg</span>
+                            <span class="text-xs text-slate-400">800x600</span>
+                        </div>
+                        <p class="text-slate-300 text-sm mb-3">
+                            Product photography of modern motorized roller shutter with remote control, sleek aluminum finish, smart home integration, elegant window frame, contemporary interior setting, soft studio lighting, Sony A7R IV 90mm macro, high-end product shot, luxury home automation, 8k quality, clean background
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Product</span>
+                        </div>
+                    </div>
+
+                    <!-- Image 4: Screen Door -->
+                    <div class="border-l-4 border-green-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-white">screen-door.jpg</span>
+                            <span class="text-xs text-slate-400">800x600</span>
+                        </div>
+                        <p class="text-slate-300 text-sm mb-3">
+                            Architectural photograph of elegant pleated fly screen door on modern balcony, summer day, greenery visible outside, fresh air feeling, white aluminum frame, plisse fabric detail, natural lighting, Canon EOS R6 24mm, real estate photography style, bright and airy, 8k quality
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Architecture</span>
+                        </div>
+                    </div>
+
+                    <!-- Image 5: Garage Door -->
+                    <div class="border-l-4 border-purple-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-white">garage-door.jpg</span>
+                            <span class="text-xs text-slate-400">800x600</span>
+                        </div>
+                        <p class="text-slate-300 text-sm mb-3">
+                            Exterior photograph of modern automatic sectional garage door, contemporary villa entrance, evening golden hour lighting, warm ambient glow, high-quality steel finish, remote controlled opening mechanism, architectural photography, Fuji GFX 100mm, luxury residential, 8k quality
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Architecture</span>
+                        </div>
+                    </div>
+
+                    <!-- Image 6: Security Shutter -->
+                    <div class="border-l-4 border-red-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-white">security-shutter.jpg</span>
+                            <span class="text-xs text-slate-400">800x600</span>
+                        </div>
+                        <p class="text-slate-300 text-sm mb-3">
+                            Product photograph of reinforced security roller shutter, heavy-duty aluminum slats, anti-lift mechanism detail, commercial storefront application, professional security solution, studio lighting with dramatic shadows, Sony A7 III 35mm, industrial strength, 8k quality, clean isolated background
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Product</span>
+                        </div>
+                    </div>
+
+                    <!-- Image 7: Team -->
+                    <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-white">team.jpg</span>
+                            <span class="text-xs text-slate-400">1200x800</span>
+                        </div>
+                        <p class="text-slate-300 text-sm mb-3">
+                            Group portrait of professional shutter installation team, 4 Turkish technicians in orange branded uniforms, standing in front of service van, confident smiles, morning light, Istanbul cityscape background, authentic working class heroes, Nikon D850 85mm, corporate team photography, 8k quality, warm and trustworthy mood
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Portrait</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Notes -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-code text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Teknik Notlar</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-700/50 rounded-xl p-6">
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fat fa-layer-group text-cyan-400"></i>
+                            Kullanılan Teknolojiler
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                Tailwind CSS v3.4+ (CDN)
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                Alpine.js 3.x (interaktivite)
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                FontAwesome Pro 7 (LOCAL)
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                AOS (Animate on Scroll)
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                Google Fonts (Inter, Roboto)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-xl p-6">
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fat fa-sparkles text-purple-400"></i>
+                            Özel Özellikler
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                Dark/Light mode toggle
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                Glassmorphism efektleri
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                Animated gradient arka plan
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                Gradient border kartlar
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fat fa-check text-green-400"></i>
+                                Floating WhatsApp butonu
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-xl p-6">
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fat fa-mobile text-orange-400"></i>
+                            Responsive Breakpoints
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><code class="bg-slate-800 px-2 py-0.5 rounded">sm: 640px</code> - Küçük tablet</li>
+                            <li><code class="bg-slate-800 px-2 py-0.5 rounded">md: 768px</code> - Tablet</li>
+                            <li><code class="bg-slate-800 px-2 py-0.5 rounded">lg: 1024px</code> - Desktop</li>
+                            <li><code class="bg-slate-800 px-2 py-0.5 rounded">xl: 1280px</code> - Büyük ekran</li>
+                            <li><code class="bg-slate-800 px-2 py-0.5 rounded">2xl: 1536px</code> - Çok büyük</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-xl p-6">
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fat fa-ruler-combined text-blue-400"></i>
+                            Container Padding
+                        </h4>
+                        <pre class="text-xs bg-slate-800 rounded-lg p-3 overflow-x-auto"><code class="text-cyan-400">container mx-auto
+px-3      /* Mobile: 12px */
+sm:px-6   /* 640px: 24px */
+md:px-8   /* 768px: 32px */
+lg:px-12  /* 1024px: 48px */
+xl:px-16  /* 1280px: 64px */
+2xl:px-20 /* 1536px: 80px */</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Order -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-500 rounded-xl flex items-center justify-center">
+                        <i class="fat fa-list-ol text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Section Sıralaması</h2>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <div class="flex items-center gap-2 px-4 py-2 bg-orange-500/20 text-orange-300 rounded-lg">
+                        <span class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-xs text-white font-bold">1</span>
+                        <span>Hero</span>
+                    </div>
+                    <i class="fat fa-arrow-right text-slate-500 self-center"></i>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg">
+                        <span class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs text-white font-bold">2</span>
+                        <span>Stats</span>
+                    </div>
+                    <i class="fat fa-arrow-right text-slate-500 self-center"></i>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-300 rounded-lg">
+                        <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs text-white font-bold">3</span>
+                        <span>Services</span>
+                    </div>
+                    <i class="fat fa-arrow-right text-slate-500 self-center"></i>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-purple-500/20 text-purple-300 rounded-lg">
+                        <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-xs text-white font-bold">4</span>
+                        <span>Why Us</span>
+                    </div>
+                    <i class="fat fa-arrow-right text-slate-500 self-center"></i>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-amber-500/20 text-amber-300 rounded-lg">
+                        <span class="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-xs text-white font-bold">5</span>
+                        <span>Process</span>
+                    </div>
+                    <i class="fat fa-arrow-right text-slate-500 self-center"></i>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-300 rounded-lg">
+                        <span class="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-xs text-white font-bold">6</span>
+                        <span>Contact CTA</span>
+                    </div>
+                    <i class="fat fa-arrow-right text-slate-500 self-center"></i>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-slate-500/20 text-slate-300 rounded-lg">
+                        <span class="w-6 h-6 bg-slate-500 rounded-full flex items-center justify-center text-xs text-white font-bold">7</span>
+                        <span>Footer</span>
+                    </div>
+                </div>
+
+                <p class="text-sm text-slate-400 mt-4">
+                    <i class="fat fa-info-circle text-blue-400 mr-1"></i>
+                    Alternatif sıralama: #1 (Servis odaklı) - Hero > Stats > Services > Why Us > Process > Contact > Footer
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/50 border-t border-slate-700 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-400 text-sm">
+                <i class="fat fa-robot text-orange-400 mr-1"></i>
+                Tasarım Dökümanı - Claude AI tarafından oluşturuldu
+            </p>
+            <p class="text-slate-500 text-xs mt-2">
+                Yıldırım Panjur v1 | 13 Ocak 2026
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

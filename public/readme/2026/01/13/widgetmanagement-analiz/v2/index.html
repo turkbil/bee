@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WidgetManagement Modülü - Kapsamlı Analiz Raporu v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .code-block { background: #1e293b; border-radius: 8px; padding: 1rem; overflow-x: auto; }
+        .code-block code { color: #e2e8f0; font-size: 0.875rem; }
+        .flow-item { background: #1e40af; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.875rem; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-gray-100">
+    <header class="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="px-3 py-1 bg-blue-600 text-xs font-bold rounded-full uppercase tracking-wider">Teknik Analiz v2</span>
+                    <h1 class="text-3xl font-bold mt-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        WidgetManagement Modülü
+                    </h1>
+                    <p class="text-slate-400 mt-1">Kapsamlı Mimari ve Kullanım Analizi</p>
+                </div>
+                <div class="text-right text-sm text-slate-400">
+                    <div>13 Ocak 2026</div>
+                    <div class="text-xs">Versiyon 2.0</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-700/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 flex items-center gap-2 mb-4">
+                <span class="text-2xl">📝</span> Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong class="text-green-300">WidgetManagement</strong>, web sitelerinde yeniden kullanılabilir içerik blokları oluşturmanızı sağlayan bir sistemdir.
+                    Düşünün ki Lego parçaları gibi hazır bloklar var - hero bölümü, iletişim formu, kart grid'i, galeri vb.
+                    Bunları bir araya getirerek sayfalar oluşturabilirsiniz.
+                </p>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Ne İşe Yarar?</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Merkezi şablonlar:</strong> Bir kez tasarla, tüm sitelerde kullan</li>
+                        <li><strong>Özelleştirilebilir:</strong> Her site kendi renklerini, yazılarını belirleyebilir</li>
+                        <li><strong>Dinamik içerik:</strong> Kart grid'ine yeni kartlar, slider'a yeni resimler ekle</li>
+                        <li><strong>Kod yazmadan tasarım:</strong> HTML/CSS bilmeden widget ayarlarını değiştir</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Örnek Senaryo</h3>
+                    <p>
+                        "Hero Section" adında bir widget şablonu var. Merkezi sistemde başlık, alt başlık, buton ve arka plan resmi alanları tanımlı.
+                        <br><br>
+                        <strong>ixtif.com</strong> bu widget'ı alıp "Forklift Çözümleri" yazıyor, mavi tema seçiyor.
+                        <br>
+                        <strong>muzibu.com</strong> aynı widget'ı "Müzik Dünyası" yazarak, mor tema ile kullanıyor.
+                        <br><br>
+                        Her ikisi de aynı kod tabanını kullanıyor ama farklı görünüyor!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modül İstatistikleri -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">📊</span> Modül İstatistikleri
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-400">151</div>
+                    <div class="text-sm text-slate-400">PHP Dosyası</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-purple-400">42</div>
+                    <div class="text-sm text-slate-400">Blade View</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400">40+</div>
+                    <div class="text-sm text-slate-400">Widget Şablonu</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-yellow-400">12</div>
+                    <div class="text-sm text-slate-400">Livewire Component</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Veritabanı Yapısı -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">🗄️</span> Veritabanı Yapısı (Multi-Tenant)
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-3">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    <strong>Merkezi Veritabanı:</strong> Widget şablonları ve kategorileri burada saklanır. Tüm siteler bu şablonları görür.
+                    <br><br>
+                    <strong>Tenant Veritabanı:</strong> Her sitenin kendi widget örnekleri ve içerikleri burada.
+                    ixtif.com'un hero widget'ı muzibu.com'dan tamamen bağımsız.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Central DB -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-400 mb-3 flex items-center gap-2">
+                        <span>🏛️</span> Central Database (tuufi_4ekim)
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="font-mono text-yellow-400">widget_categories</div>
+                            <p class="text-slate-400 mt-1">Widget kategorileri (hierarchical)</p>
+                            <div class="text-xs text-slate-500 mt-1">widget_category_id, title, slug, icon, parent_id, order</div>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="font-mono text-yellow-400">widgets</div>
+                            <p class="text-slate-400 mt-1">Widget şablonları (master templates)</p>
+                            <div class="text-xs text-slate-500 mt-1">id, name, slug, type, content_html/css/js, item_schema, settings_schema, has_items</div>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="font-mono text-yellow-400">widget_modules</div>
+                            <p class="text-slate-400 mt-1">Widget-Module pivot tablosu</p>
+                            <div class="text-xs text-slate-500 mt-1">widget_id, module_id</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tenant DB -->
+                <div class="bg-purple-900/20 border border-purple-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-400 mb-3 flex items-center gap-2">
+                        <span>🏢</span> Tenant Database (tenant_X)
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="font-mono text-green-400">tenant_widgets</div>
+                            <p class="text-slate-400 mt-1">Kiracının widget örnekleri</p>
+                            <div class="text-xs text-slate-500 mt-1">id, widget_id (FK→central), settings (JSON), display_title, is_custom, custom_html/css/js, order</div>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="font-mono text-green-400">widget_items</div>
+                            <p class="text-slate-400 mt-1">Widget'ların dinamik öğeleri</p>
+                            <div class="text-xs text-slate-500 mt-1">id, tenant_widget_id (FK), content (JSON), order</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-yellow-900/30 border border-yellow-700/50 rounded text-sm">
+                        <div class="font-semibold text-yellow-400">⚠️ Cross-Database Relationship</div>
+                        <p class="text-slate-300 mt-1">
+                            tenant_widgets.widget_id → widgets tablosuna (central DB) işaret eder.
+                            MySQL FK kısıtlaması yok, Laravel ilişkisi ile yönetilir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tablo Şeması -->
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h3 class="font-semibold text-slate-300 mb-3">📊 Tablo İlişki Şeması</h3>
+                <div class="code-block overflow-x-auto">
+                    <pre class="text-xs"><code class="text-green-400">
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                           CENTRAL DATABASE (tuufi_4ekim)                            │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌──────────────────────┐         ┌──────────────────────┐                          │
+│  │   widget_categories  │◄────────┤       widgets        │                          │
+│  ├──────────────────────┤  1:N    ├──────────────────────┤                          │
+│  │ widget_category_id   │         │ id                   │                          │
+│  │ title, slug          │         │ widget_category_id   │─────┐                    │
+│  │ parent_id (self FK)  │         │ name, slug, type     │     │                    │
+│  │ icon, order          │         │ content_html/css/js  │     │ 1:N               │
+│  │ is_active            │         │ item_schema (JSON)   │     │                    │
+│  └──────────────────────┘         │ settings_schema      │     ▼                    │
+│                                   │ has_items, file_path │  ┌──────────────────┐    │
+│                                   └──────────────────────┘  │  widget_modules  │    │
+│                                                             │  widget_id       │    │
+│                                                             │  module_id       │    │
+│                                                             └──────────────────┘    │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        │ Cross-DB Reference (widget_id)
+                                        ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                    TENANT DATABASE (tenant_muzibu_1528d0 vb.)                       │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌──────────────────────┐         ┌──────────────────────┐                          │
+│  │    tenant_widgets    │────────►│    widget_items      │                          │
+│  ├──────────────────────┤   1:N   ├──────────────────────┤                          │
+│  │ id                   │         │ id                   │                          │
+│  │ widget_id ───────────┼─►Central│ tenant_widget_id     │                          │
+│  │ settings (JSON)      │         │ content (JSON)       │                          │
+│  │ display_title        │         │ order                │                          │
+│  │ is_custom            │         └──────────────────────┘                          │
+│  │ custom_html/css/js   │                                                           │
+│  │ order, is_active     │                                                           │
+│  └──────────────────────┘                                                           │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                    </code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Widget Türleri -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-yellow-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">🎨</span> Widget Türleri
+            </h2>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- File Widget -->
+                <div class="bg-slate-700/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <span class="text-xl">📄</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-400">File Widget</h3>
+                            <span class="text-xs text-slate-400">type: 'file'</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-3">
+                        Blade view dosyasından render edilir. Statik yapı, dinamik veri ile birleştirilebilir.
+                    </p>
+                    <div class="code-block text-xs">
+                        <code>
+file_path: 'blocks/hero/simple/view'<br>
+↓<br>
+widgetmanagement::blocks.hero.simple.view
+                        </code>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-400">
+                        <strong>Kullanım:</strong> Hero banners, static sections
+                    </div>
+                </div>
+
+                <!-- Module Widget -->
+                <div class="bg-slate-700/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                            <span class="text-xl">🔌</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-purple-400">Module Widget</h3>
+                            <span class="text-xs text-slate-400">type: 'module'</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-3">
+                        Diğer modüllerden (Blog, Portfolio vb.) veri çeker. Handlebars template ile render.
+                    </p>
+                    <div class="code-block text-xs">
+                        <code>
+data_source: 'Portfolio/list'<br>
+↓<br>
+getData($settings) → items<br>
+↓<br>
+{{#each items}} template
+                        </code>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-400">
+                        <strong>Kullanım:</strong> Blog listesi, portfolio grid
+                    </div>
+                </div>
+
+                <!-- Standard Widget -->
+                <div class="bg-slate-700/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                            <span class="text-xl">🧩</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-green-400">Standard Widget</h3>
+                            <span class="text-xs text-slate-400">type: 'standard'</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-3">
+                        HTML/CSS/JS içeriği DB'de saklanır. Dinamik items ve settings desteği.
+                    </p>
+                    <div class="code-block text-xs">
+                        <code>
+content_html + content_css + content_js<br>
+↓<br>
+item_schema (JSON) → WidgetItems<br>
+settings_schema (JSON) → Settings
+                        </code>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-400">
+                        <strong>Kullanım:</strong> Card grids, testimonials
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Override -->
+            <div class="mt-6 bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
+                <h3 class="font-semibold text-yellow-400 mb-2 flex items-center gap-2">
+                    <span>⚙️</span> Custom Override (is_custom: true)
+                </h3>
+                <p class="text-sm text-slate-300">
+                    TenantWidget'ın <code class="bg-slate-800 px-1 rounded">is_custom = true</code> olduğunda,
+                    merkezi widget şablonu yerine <code class="bg-slate-800 px-1 rounded">custom_html/css/js</code>
+                    alanları kullanılır. Bu sayede tenant tamamen farklı bir tasarım uygulayabilir.
+                </p>
+            </div>
+        </section>
+
+        <!-- Render Süreci -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">⚡</span> Render Süreci (Frontend)
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-3">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Blade dosyasında <code class="bg-slate-800 px-1 rounded">@widget(5)</code> yazdığınızda:
+                </p>
+                <ol class="mt-2 space-y-1 text-sm text-slate-300 list-decimal list-inside">
+                    <li>Sistem önce cache'e bakar (24 saat boyunca saklanır)</li>
+                    <li>Cache'te yoksa veritabanından widget bilgilerini çeker</li>
+                    <li>Şablon içindeki {{değişkenler}} ayarlarla değiştirilir</li>
+                    <li>Dinamik items varsa döngüyle işlenir</li>
+                    <li>Sonuç HTML olarak döner, CSS/JS ayrı dosyalara eklenir</li>
+                </ol>
+            </div>
+
+            <div class="bg-slate-900 rounded-lg p-6">
+                <h3 class="font-semibold text-slate-300 mb-4">📊 Render Akış Şeması</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">1</div>
+                        <div class="flex-1 bg-slate-800 rounded-lg p-3">
+                            <code class="text-yellow-400">@widget(tenantWidgetId)</code>
+                            <span class="text-slate-400 ml-2">→ Blade Directive tetiklenir</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">2</div>
+                        <div class="flex-1 bg-slate-800 rounded-lg p-3">
+                            <code class="text-green-400">widget_by_id(id)</code>
+                            <span class="text-slate-400 ml-2">→ Helper function çağrılır</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">3</div>
+                        <div class="flex-1 bg-slate-800 rounded-lg p-3">
+                            <div class="text-purple-400 font-semibold">Cache Check</div>
+                            <div class="mt-1 text-slate-400">Key: <code class="text-yellow-400">widget_{tenantId}_widget_{widgetId}</code> TTL: 24 saat</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">4</div>
+                        <div class="flex-1 bg-slate-800 rounded-lg p-3">
+                            <code class="text-green-400">TenantWidget::with('widget', 'items')->find(id)</code>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center flex-shrink-0">5</div>
+                        <div class="flex-1 bg-slate-800 rounded-lg p-3">
+                            <div class="text-orange-400 font-semibold">Template Processing</div>
+                            <div class="mt-2 space-y-1 text-xs text-slate-400">
+                                <div>• <code class="text-yellow-400">processItems(html, items)</code> → {{#each items}} döngüleri</div>
+                                <div>• <code class="text-yellow-400">processVariables(html, settings)</code> → {{variable}} değişkenler</div>
+                                <div>• <code class="text-yellow-400">processConditionalBlocks(html, settings)</code> → {{#if}} koşulları</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">6</div>
+                        <div class="flex-1 bg-slate-800 rounded-lg p-3">
+                            <div class="text-green-400 font-semibold">CSS/JS Collection → Footer'da Output</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Frontend Entegrasyonu -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-cyan-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">🌐</span> Frontend Entegrasyonu
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Blade Directives -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-400 mb-3">📌 Blade Directives</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-yellow-400">@widget(tenantWidgetId)</code>
+                            <p class="text-slate-400 mt-1 text-xs">ID'ye göre tekil widget render</p>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-yellow-400">@widgetblock('slug')</code>
+                            <p class="text-slate-400 mt-1 text-xs">Slug'a göre widget render</p>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-yellow-400">@widgets('position')</code>
+                            <p class="text-slate-400 mt-1 text-xs">Pozisyondaki tüm widget'ları render</p>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-yellow-400">@parsewidgets($content)</code>
+                            <p class="text-slate-400 mt-1 text-xs">İçerikteki shortcode'ları işle</p>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-yellow-400">@modulewidget(widgetId)</code>
+                            <p class="text-slate-400 mt-1 text-xs">Module widget render</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PHP Helpers -->
+                <div class="bg-purple-900/20 border border-purple-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-400 mb-3">🔧 PHP Helper Functions</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-green-400">widget_by_id($id, $params, $cacheTtl)</code>
+                            <p class="text-slate-400 mt-1 text-xs">TenantWidget ID ile render</p>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-green-400">widget_by_slug($slug, $params)</code>
+                            <p class="text-slate-400 mt-1 text-xs">Widget slug ile render</p>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-green-400">widgets_by_position($position)</code>
+                            <p class="text-slate-400 mt-1 text-xs">Pozisyondaki widget'lar</p>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-green-400">parse_widget_shortcodes($content)</code>
+                            <p class="text-slate-400 mt-1 text-xs">[[widget:slug]] shortcode'ları işle</p>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <code class="text-green-400">module_widget_by_id($id, $params)</code>
+                            <p class="text-slate-400 mt-1 text-xs">Module widget render</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template Syntax -->
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h3 class="font-semibold text-slate-300 mb-3">🔤 Template Syntax</h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-slate-800 rounded p-3">
+                        <div class="text-green-400 font-mono">{{variable}}</div>
+                        <p class="text-slate-400 mt-1 text-xs">Değişken yerleştirme</p>
+                    </div>
+                    <div class="bg-slate-800 rounded p-3">
+                        <div class="text-green-400 font-mono">{{widget.title}}</div>
+                        <p class="text-slate-400 mt-1 text-xs">Widget ayarlarından değer</p>
+                    </div>
+                    <div class="bg-slate-800 rounded p-3">
+                        <div class="text-green-400 font-mono">{{#if show_button}}...{{/if}}</div>
+                        <p class="text-slate-400 mt-1 text-xs">Koşullu render</p>
+                    </div>
+                    <div class="bg-slate-800 rounded p-3">
+                        <div class="text-green-400 font-mono">{{#each items}}...{{/each}}</div>
+                        <p class="text-slate-400 mt-1 text-xs">Items döngüsü</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Panel -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-pink-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">🎛️</span> Admin Panel (Livewire Components)
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">Component</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Route</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Fonksiyon</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">WidgetComponent</td>
+                            <td class="py-3 px-4 text-slate-300">/admin/widgetmanagement</td>
+                            <td class="py-3 px-4 text-slate-400">Widget listesi, instance oluştur</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">WidgetManageComponent</td>
+                            <td class="py-3 px-4 text-slate-300">/admin/widgetmanagement/manage/{id}</td>
+                            <td class="py-3 px-4 text-slate-400">Widget şablonunu düzenle</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">WidgetGalleryComponent</td>
+                            <td class="py-3 px-4 text-slate-300">/admin/widgetmanagement/gallery</td>
+                            <td class="py-3 px-4 text-slate-400">Widget galerisi</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">WidgetSettingsComponent</td>
+                            <td class="py-3 px-4 text-slate-300">/admin/widgetmanagement/settings/{id}</td>
+                            <td class="py-3 px-4 text-slate-400">TenantWidget ayarları</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">WidgetItemComponent</td>
+                            <td class="py-3 px-4 text-slate-300">/admin/widgetmanagement/items/{id}</td>
+                            <td class="py-3 px-4 text-slate-400">Widget items yönetimi</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">WidgetCodeEditorComponent</td>
+                            <td class="py-3 px-4 text-slate-300">/admin/widgetmanagement/code-editor/{id}</td>
+                            <td class="py-3 px-4 text-slate-400">HTML/CSS/JS editör</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">WidgetFormBuilderComponent</td>
+                            <td class="py-3 px-4 text-slate-300">/admin/widgetmanagement/form-builder/{id}</td>
+                            <td class="py-3 px-4 text-slate-400">Schema builder</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tenant Kullanım Senaryoları -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-teal-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">🏢</span> Tenant Kullanım Senaryoları
+            </h2>
+
+            <div class="space-y-6">
+                <div class="bg-slate-700/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-teal-400 mb-3">📌 Senaryo 1: Widget Instance Oluşturma</h3>
+                    <div class="grid lg:grid-cols-2 gap-4">
+                        <div class="bg-slate-800 rounded p-4 text-sm">
+                            <div class="text-yellow-400 font-semibold mb-2">Admin Panel:</div>
+                            <ol class="space-y-1 text-slate-300 list-decimal list-inside">
+                                <li>Widget Galerisi'ne git</li>
+                                <li>"Hero Section" widget'ını seç</li>
+                                <li>"Instance Oluştur" tıkla</li>
+                                <li>Ayarları doldur</li>
+                                <li>Kaydet</li>
+                            </ol>
+                        </div>
+                        <div class="bg-slate-800 rounded p-4 text-sm">
+                            <div class="text-green-400 font-semibold mb-2">Arka Planda:</div>
+                            <ol class="space-y-1 text-slate-300 list-decimal list-inside">
+                                <li>Widget (central) okunur</li>
+                                <li>TenantWidget (tenant DB) oluşturulur</li>
+                                <li>settings JSON olarak kaydedilir</li>
+                                <li>Cache temizlenir</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-teal-400 mb-3">📌 Senaryo 2: Widget Items Yönetimi</h3>
+                    <p class="text-slate-300 text-sm mb-3">"Card Grid" widget'ına dinamik kartlar eklemek için:</p>
+                    <ol class="space-y-1 text-sm text-slate-300 list-decimal list-inside">
+                        <li>Widget Items sayfasına git → "Yeni Item Ekle"</li>
+                        <li>Form'u doldur (item_schema'dan dinamik oluşturulur)</li>
+                        <li>Kaydet → WidgetItem oluşur (tenant DB)</li>
+                        <li>Render'da {{#each items}} döngüsü çalışır</li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-teal-400 mb-3">📌 Senaryo 3: Custom Override</h3>
+                    <p class="text-slate-300 text-sm mb-3">Merkezi şablon yetersizse:</p>
+                    <ol class="space-y-1 text-sm text-slate-300 list-decimal list-inside">
+                        <li>"Özel HTML Kullan" aktifle (is_custom=true)</li>
+                        <li>Kod editöründe custom_html/css/js yaz</li>
+                        <li>Merkezi şablon bypass edilir</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cache Stratejisi -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-red-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">🚀</span> Cache Stratejisi
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-700/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-red-400 mb-3">📊 Konfigürasyon</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Driver:</span>
+                            <span class="text-slate-200">Redis (Laravel Cache)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">TTL:</span>
+                            <span class="text-slate-200">1440 dk (24 saat)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Key Format:</span>
+                            <span class="font-mono text-yellow-400 text-xs">widget_{tenantId}_widget_{id}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-red-400 mb-3">🔄 Invalidation</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✓ TenantWidget güncellendi → Cache temizle</li>
+                        <li>✓ WidgetItem eklendi/silindi → Cache temizle</li>
+                        <li>✓ Widget şablonu değişti → Tüm cache temizle</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mevcut Şablonlar -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-indigo-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">📦</span> Mevcut Widget Şablonları
+            </h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-indigo-400 mb-2">🎯 Hero</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• blocks/hero/simple</li>
+                        <li>• blocks/hero/hero-1</li>
+                        <li>• blocks/hero/ixtif-hero</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-indigo-400 mb-2">📐 Layout</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• one-column, two-columns</li>
+                        <li>• three-columns, four-columns</li>
+                        <li>• masonry-grid, asymmetric-grid</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-indigo-400 mb-2">📝 Form</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• contact-form</li>
+                        <li>• contact-assistant</li>
+                        <li>• muzibu-contact</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-indigo-400 mb-2">🔌 Module</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• portfolio/list, portfolio/detail</li>
+                        <li>• page/home, page/recent</li>
+                        <li>• announcement/list</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-indigo-400 mb-2">🃏 Cards</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• cards/basic</li>
+                        <li>• cards/grid</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-indigo-400 mb-2">🎨 Diğer</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• testimonials/basic</li>
+                        <li>• features/basic</li>
+                        <li>• media/image, content/*</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">📋 Özet</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-blue-400 font-semibold mb-2">Central DB</div>
+                    <ul class="text-slate-300 space-y-1">
+                        <li>• widgets</li>
+                        <li>• widget_categories</li>
+                        <li>• widget_modules</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-purple-400 font-semibold mb-2">Tenant DB</div>
+                    <ul class="text-slate-300 space-y-1">
+                        <li>• tenant_widgets</li>
+                        <li>• widget_items</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-green-400 font-semibold mb-2">Widget Types</div>
+                    <ul class="text-slate-300 space-y-1">
+                        <li>• file (Blade view)</li>
+                        <li>• module (Data source)</li>
+                        <li>• standard (DB content)</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-yellow-400 font-semibold mb-2">Services</div>
+                    <ul class="text-slate-300 space-y-1">
+                        <li>• widget.service</li>
+                        <li>• widget.item.service</li>
+                        <li>• shortcode.parser</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ÖRNEKLER: Yeni Widget Oluşturma Senaryoları -->
+        <!-- ========================================== -->
+
+        <section class="bg-gradient-to-r from-orange-900/20 to-red-900/20 border-2 border-orange-600/50 rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🛠️</span> Pratik Örnekler: Yeni Widget Oluşturma
+            </h2>
+            <p class="text-slate-300 mb-6">
+                Aşağıda 3 farklı widget türü için adım adım oluşturma süreci ve veritabanı kayıtları gösterilmektedir.
+            </p>
+        </section>
+
+        <!-- ======================= -->
+        <!-- ÖRNEK 1: Basit Hero (Slayt Yok) -->
+        <!-- ======================= -->
+        <section class="bg-slate-800/50 border border-blue-600/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">1️⃣</span> Basit Hero Widget (Slayt Yok)
+            </h2>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-3">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Tek bir arka plan görseli, başlık, alt başlık ve buton içeren statik hero bölümü.
+                    Slayt/carousel yok, sadece sabit bir görsel ve metin. En basit hero türü.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Central DB -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-400 mb-3">🏛️ Central DB: widgets tablosu</h3>
+                    <div class="code-block text-xs overflow-x-auto">
+                        <pre><code class="text-green-400">{
+  "id": 15,
+  "widget_category_id": 1,  // Hero kategorisi
+  "name": "Basit Hero",
+  "slug": "simple-hero",
+  "type": "standard",       // DB'de HTML saklanır
+  "has_items": false,       // ❌ Item YOK (slayt yok)
+  "item_schema": null,      // Item olmadığı için boş
+
+  "settings_schema": [
+    {
+      "name": "title",
+      "label": "Başlık",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "subtitle",
+      "label": "Alt Başlık",
+      "type": "textarea",
+      "required": false
+    },
+    {
+      "name": "background_image",
+      "label": "Arka Plan Görseli",
+      "type": "image",
+      "required": true
+    },
+    {
+      "name": "button_text",
+      "label": "Buton Metni",
+      "type": "text",
+      "required": false
+    },
+    {
+      "name": "button_url",
+      "label": "Buton Linki",
+      "type": "url",
+      "required": false
+    },
+    {
+      "name": "overlay_opacity",
+      "label": "Overlay Opaklığı",
+      "type": "range",
+      "properties": {
+        "min": 0,
+        "max": 100,
+        "default": 50
+      }
+    }
+  ],
+
+  "content_html": "&lt;section class=\"hero-simple\"
+    style=\"background-image: url({{background_image}})\"&gt;
+    &lt;div class=\"overlay\" style=\"opacity: {{overlay_opacity}}%\"&gt;&lt;/div&gt;
+    &lt;div class=\"content\"&gt;
+      &lt;h1&gt;{{title}}&lt;/h1&gt;
+      {{#if subtitle}}&lt;p&gt;{{subtitle}}&lt;/p&gt;{{/if}}
+      {{#if button_text}}
+        &lt;a href=\"{{button_url}}\" class=\"btn\"&gt;{{button_text}}&lt;/a&gt;
+      {{/if}}
+    &lt;/div&gt;
+  &lt;/section&gt;",
+
+  "content_css": ".hero-simple {
+    height: 80vh;
+    background-size: cover;
+    position: relative;
+  }",
+
+  "is_active": true
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Tenant DB -->
+                <div class="bg-purple-900/20 border border-purple-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-400 mb-3">🏢 Tenant DB: tenant_widgets</h3>
+                    <div class="code-block text-xs overflow-x-auto">
+                        <pre><code class="text-green-400">{
+  "id": 1,
+  "widget_id": 15,          // Central'daki widget ID
+  "display_title": "Ana Sayfa Hero",
+  "order": 1,
+  "is_active": true,
+  "is_custom": false,       // Merkezi şablonu kullan
+
+  "settings": {
+    "title": "Forklift Çözümlerinde Lider",
+    "subtitle": "25 yıllık tecrübe ile yanınızdayız",
+    "background_image": "/storage/hero-bg.jpg",
+    "button_text": "Hemen İletişime Geç",
+    "button_url": "/iletisim",
+    "overlay_opacity": 60
+  }
+}
+
+// ⚠️ widget_items tablosuna kayıt YOK!
+// Çünkü has_items = false</code></pre>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-slate-800 rounded text-sm">
+                        <div class="text-yellow-400 font-semibold mb-2">🌐 Frontend Kullanımı:</div>
+                        <code class="text-green-400">@widget(1)</code>
+                        <p class="text-slate-400 mt-1 text-xs">
+                            settings'teki değerler {{variable}} yerine yerleştirilir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Özet Tablo -->
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h3 class="font-semibold text-slate-300 mb-3">📊 Özet: Basit Hero</h3>
+                <table class="w-full text-sm">
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">has_items</td>
+                        <td class="py-2 text-red-400 font-semibold">false</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">item_schema</td>
+                        <td class="py-2 text-slate-500">null (gerekmez)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">settings_schema</td>
+                        <td class="py-2 text-green-400">✓ Tanımlı (title, image, button...)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">widget_items kaydı</td>
+                        <td class="py-2 text-red-400">YOK</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 text-slate-400">Veri kaynağı</td>
+                        <td class="py-2 text-blue-400">tenant_widgets.settings JSON</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- ======================= -->
+        <!-- ÖRNEK 2: Slider Hero (Slayt Var) -->
+        <!-- ======================= -->
+        <section class="bg-slate-800/50 border border-purple-600/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">2️⃣</span> Slider Hero Widget (Slayt Var)
+            </h2>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-3">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Birden fazla slayt içeren carousel hero. Her slaytın kendi görseli, başlığı ve butonu var.
+                    Slayt sayısı dinamik - admin panelden yeni slayt ekleyip çıkarabilirsiniz.
+                    <strong>Fark:</strong> has_items = true ve widget_items tablosuna kayıtlar eklenir.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Central DB -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-400 mb-3">🏛️ Central DB: widgets tablosu</h3>
+                    <div class="code-block text-xs overflow-x-auto">
+                        <pre><code class="text-green-400">{
+  "id": 16,
+  "widget_category_id": 1,
+  "name": "Slider Hero",
+  "slug": "slider-hero",
+  "type": "standard",
+  "has_items": true,        // ✅ Item VAR (slaytlar)
+
+  "item_schema": [
+    {
+      "name": "title",
+      "label": "Slayt Başlığı",
+      "type": "text",
+      "required": true,
+      "system": true,
+      "protected": true
+    },
+    {
+      "name": "subtitle",
+      "label": "Slayt Alt Başlığı",
+      "type": "textarea",
+      "required": false
+    },
+    {
+      "name": "image",
+      "label": "Slayt Görseli",
+      "type": "image",
+      "required": true
+    },
+    {
+      "name": "button_text",
+      "label": "Buton Metni",
+      "type": "text"
+    },
+    {
+      "name": "button_url",
+      "label": "Buton Linki",
+      "type": "url"
+    },
+    {
+      "name": "is_active",
+      "label": "Durum",
+      "type": "switch",
+      "system": true,
+      "protected": true,
+      "properties": {
+        "active_label": "Aktif",
+        "inactive_label": "Pasif",
+        "default_value": true
+      }
+    }
+  ],
+
+  "settings_schema": [
+    {
+      "name": "autoplay",
+      "label": "Otomatik Oynat",
+      "type": "switch",
+      "properties": { "default_value": true }
+    },
+    {
+      "name": "interval",
+      "label": "Geçiş Süresi (ms)",
+      "type": "number",
+      "properties": { "default": 5000 }
+    },
+    {
+      "name": "show_dots",
+      "label": "Noktaları Göster",
+      "type": "switch"
+    },
+    {
+      "name": "show_arrows",
+      "label": "Okları Göster",
+      "type": "switch"
+    }
+  ],
+
+  "content_html": "&lt;div class=\"hero-slider\"
+    data-autoplay=\"{{autoplay}}\"
+    data-interval=\"{{interval}}\"&gt;
+    {{#each items}}
+      &lt;div class=\"slide\"&gt;
+        &lt;img src=\"{{image}}\" alt=\"{{title}}\"&gt;
+        &lt;div class=\"slide-content\"&gt;
+          &lt;h2&gt;{{title}}&lt;/h2&gt;
+          {{#if subtitle}}&lt;p&gt;{{subtitle}}&lt;/p&gt;{{/if}}
+          {{#if button_text}}
+            &lt;a href=\"{{button_url}}\"&gt;{{button_text}}&lt;/a&gt;
+          {{/if}}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    {{/each}}
+  &lt;/div&gt;",
+
+  "js_files": ["/js/swiper.min.js"],
+  "css_files": ["/css/swiper.min.css"],
+  "is_active": true
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Tenant DB -->
+                <div class="bg-purple-900/20 border border-purple-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-400 mb-3">🏢 Tenant DB</h3>
+
+                    <div class="mb-4">
+                        <div class="text-yellow-400 font-semibold mb-2 text-sm">tenant_widgets:</div>
+                        <div class="code-block text-xs overflow-x-auto">
+                            <pre><code class="text-green-400">{
+  "id": 2,
+  "widget_id": 16,
+  "display_title": "Ana Sayfa Slider",
+  "order": 1,
+  "is_active": true,
+  "is_custom": false,
+
+  "settings": {
+    "autoplay": true,
+    "interval": 5000,
+    "show_dots": true,
+    "show_arrows": true
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-green-400 font-semibold mb-2 text-sm">widget_items (3 slayt):</div>
+                        <div class="code-block text-xs overflow-x-auto">
+                            <pre><code class="text-green-400">// Slayt 1
+{
+  "id": 1,
+  "tenant_widget_id": 2,
+  "order": 1,
+  "content": {
+    "title": "Forklift Kiralama",
+    "subtitle": "Günlük, haftalık, aylık",
+    "image": "/storage/slide1.jpg",
+    "button_text": "Fiyat Al",
+    "button_url": "/kiralama",
+    "is_active": true
+  }
+}
+
+// Slayt 2
+{
+  "id": 2,
+  "tenant_widget_id": 2,
+  "order": 2,
+  "content": {
+    "title": "Transpalet Satış",
+    "subtitle": "En uygun fiyatlar",
+    "image": "/storage/slide2.jpg",
+    "button_text": "Ürünleri Gör",
+    "button_url": "/urunler",
+    "is_active": true
+  }
+}
+
+// Slayt 3
+{
+  "id": 3,
+  "tenant_widget_id": 2,
+  "order": 3,
+  "content": {
+    "title": "Teknik Servis",
+    "subtitle": "7/24 destek",
+    "image": "/storage/slide3.jpg",
+    "button_text": "Servis Çağır",
+    "button_url": "/servis",
+    "is_active": true
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Render Süreci -->
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h3 class="font-semibold text-slate-300 mb-3">⚙️ Render Süreci</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs">1</span>
+                        <span class="text-slate-300">tenant_widgets.settings'ten autoplay, interval değerlerini al</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs">2</span>
+                        <span class="text-slate-300">widget_items'tan is_active=true olanları çek (order'a göre sıralı)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs">3</span>
+                        <span class="text-slate-300">{{#each items}} döngüsünde her slaytı render et</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs">4</span>
+                        <span class="text-slate-300">swiper.min.js ve swiper.min.css footer'a eklenir</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Özet Tablo -->
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h3 class="font-semibold text-slate-300 mb-3">📊 Özet: Slider Hero</h3>
+                <table class="w-full text-sm">
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">has_items</td>
+                        <td class="py-2 text-green-400 font-semibold">true</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">item_schema</td>
+                        <td class="py-2 text-green-400">✓ Tanımlı (title, image, button...)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">settings_schema</td>
+                        <td class="py-2 text-green-400">✓ Tanımlı (autoplay, interval...)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">widget_items kaydı</td>
+                        <td class="py-2 text-green-400">✓ Her slayt için 1 kayıt</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 text-slate-400">Veri kaynağı</td>
+                        <td class="py-2 text-purple-400">settings + widget_items.content</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- ======================= -->
+        <!-- ÖRNEK 3: Hizmetler Widget -->
+        <!-- ======================= -->
+        <section class="bg-slate-800/50 border border-green-600/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">3️⃣</span> Hizmetler Widget (Kart Grid)
+            </h2>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-3">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Şirketin sunduğu hizmetleri gösteren kart yapısı. Her kartın ikonu, başlığı, açıklaması ve linki var.
+                    Yeni hizmet eklemek için widget_items'a yeni kayıt eklenir.
+                    Grid layout ile responsive görüntülenir (mobilde 1, tablette 2, masaüstünde 3-4 sütun).
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Central DB -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-400 mb-3">🏛️ Central DB: widgets tablosu</h3>
+                    <div class="code-block text-xs overflow-x-auto">
+                        <pre><code class="text-green-400">{
+  "id": 17,
+  "widget_category_id": 3,  // İçerik kategorisi
+  "name": "Hizmetler Grid",
+  "slug": "services-grid",
+  "type": "standard",
+  "has_items": true,        // ✅ Her hizmet bir item
+
+  "item_schema": [
+    {
+      "name": "title",
+      "label": "Hizmet Başlığı",
+      "type": "text",
+      "required": true,
+      "system": true
+    },
+    {
+      "name": "description",
+      "label": "Açıklama",
+      "type": "textarea",
+      "required": false
+    },
+    {
+      "name": "icon",
+      "label": "İkon (FontAwesome)",
+      "type": "icon",
+      "required": false,
+      "properties": {
+        "default": "fa-cog"
+      }
+    },
+    {
+      "name": "image",
+      "label": "Hizmet Görseli",
+      "type": "image",
+      "required": false
+    },
+    {
+      "name": "link_url",
+      "label": "Detay Linki",
+      "type": "url"
+    },
+    {
+      "name": "link_text",
+      "label": "Link Metni",
+      "type": "text",
+      "properties": {
+        "default": "Detaylı Bilgi"
+      }
+    },
+    {
+      "name": "is_active",
+      "label": "Durum",
+      "type": "switch",
+      "system": true,
+      "protected": true
+    }
+  ],
+
+  "settings_schema": [
+    {
+      "name": "section_title",
+      "label": "Bölüm Başlığı",
+      "type": "text"
+    },
+    {
+      "name": "section_subtitle",
+      "label": "Bölüm Alt Başlığı",
+      "type": "textarea"
+    },
+    {
+      "name": "columns",
+      "label": "Sütun Sayısı",
+      "type": "select",
+      "properties": {
+        "options": [
+          {"value": "2", "label": "2 Sütun"},
+          {"value": "3", "label": "3 Sütun"},
+          {"value": "4", "label": "4 Sütun"}
+        ],
+        "default": "3"
+      }
+    },
+    {
+      "name": "card_style",
+      "label": "Kart Stili",
+      "type": "select",
+      "properties": {
+        "options": [
+          {"value": "simple", "label": "Basit"},
+          {"value": "bordered", "label": "Kenarlıklı"},
+          {"value": "shadow", "label": "Gölgeli"}
+        ]
+      }
+    },
+    {
+      "name": "show_icon",
+      "label": "İkon Göster",
+      "type": "switch"
+    },
+    {
+      "name": "show_image",
+      "label": "Görsel Göster",
+      "type": "switch"
+    }
+  ],
+
+  "content_html": "&lt;section class=\"services-section\"&gt;
+    {{#if section_title}}
+      &lt;div class=\"section-header\"&gt;
+        &lt;h2&gt;{{section_title}}&lt;/h2&gt;
+        {{#if section_subtitle}}&lt;p&gt;{{section_subtitle}}&lt;/p&gt;{{/if}}
+      &lt;/div&gt;
+    {{/if}}
+
+    &lt;div class=\"grid grid-cols-{{columns}}\"&gt;
+      {{#each items}}
+        &lt;div class=\"service-card card-{{../card_style}}\"&gt;
+          {{#if ../show_image}}
+            {{#if image}}&lt;img src=\"{{image}}\"&gt;{{/if}}
+          {{/if}}
+          {{#if ../show_icon}}
+            &lt;i class=\"fas {{icon}}\"&gt;&lt;/i&gt;
+          {{/if}}
+          &lt;h3&gt;{{title}}&lt;/h3&gt;
+          {{#if description}}&lt;p&gt;{{description}}&lt;/p&gt;{{/if}}
+          {{#if link_url}}
+            &lt;a href=\"{{link_url}}\"&gt;{{link_text}}&lt;/a&gt;
+          {{/if}}
+        &lt;/div&gt;
+      {{/each}}
+    &lt;/div&gt;
+  &lt;/section&gt;",
+
+  "content_css": ".services-section { padding: 60px 0; }
+  .service-card { padding: 30px; text-align: center; }
+  .card-bordered { border: 1px solid #e5e7eb; }
+  .card-shadow { box-shadow: 0 4px 6px rgba(0,0,0,0.1); }",
+
+  "is_active": true
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Tenant DB -->
+                <div class="bg-purple-900/20 border border-purple-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-400 mb-3">🏢 Tenant DB</h3>
+
+                    <div class="mb-4">
+                        <div class="text-yellow-400 font-semibold mb-2 text-sm">tenant_widgets:</div>
+                        <div class="code-block text-xs overflow-x-auto">
+                            <pre><code class="text-green-400">{
+  "id": 3,
+  "widget_id": 17,
+  "display_title": "Hizmetlerimiz Bölümü",
+  "order": 2,
+  "is_active": true,
+  "is_custom": false,
+
+  "settings": {
+    "section_title": "Hizmetlerimiz",
+    "section_subtitle": "Size en iyi hizmeti sunuyoruz",
+    "columns": "3",
+    "card_style": "shadow",
+    "show_icon": true,
+    "show_image": false
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-green-400 font-semibold mb-2 text-sm">widget_items (4 hizmet):</div>
+                        <div class="code-block text-xs overflow-x-auto">
+                            <pre><code class="text-green-400">// Hizmet 1
+{
+  "id": 4,
+  "tenant_widget_id": 3,
+  "order": 1,
+  "content": {
+    "title": "Forklift Kiralama",
+    "description": "Kısa ve uzun vadeli kiralama",
+    "icon": "fa-truck",
+    "link_url": "/hizmetler/kiralama",
+    "link_text": "Detaylı Bilgi",
+    "is_active": true
+  }
+}
+
+// Hizmet 2
+{
+  "id": 5,
+  "tenant_widget_id": 3,
+  "order": 2,
+  "content": {
+    "title": "Teknik Servis",
+    "description": "7/24 arıza destek hizmeti",
+    "icon": "fa-wrench",
+    "link_url": "/hizmetler/servis",
+    "link_text": "Servis Çağır",
+    "is_active": true
+  }
+}
+
+// Hizmet 3
+{
+  "id": 6,
+  "tenant_widget_id": 3,
+  "order": 3,
+  "content": {
+    "title": "Yedek Parça",
+    "description": "Orijinal ve muadil parçalar",
+    "icon": "fa-cogs",
+    "link_url": "/hizmetler/yedek-parca",
+    "link_text": "Parça Bul",
+    "is_active": true
+  }
+}
+
+// Hizmet 4
+{
+  "id": 7,
+  "tenant_widget_id": 3,
+  "order": 4,
+  "content": {
+    "title": "Eğitim",
+    "description": "Operatör sertifika eğitimi",
+    "icon": "fa-graduation-cap",
+    "link_url": "/hizmetler/egitim",
+    "link_text": "Eğitime Katıl",
+    "is_active": true
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel İşlem Adımları -->
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h3 class="font-semibold text-slate-300 mb-3">📋 Admin Panel'den Oluşturma Adımları</h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <div class="text-yellow-400 font-semibold mb-2">1. Widget Instance Oluştur:</div>
+                        <ol class="space-y-1 text-slate-300 list-decimal list-inside">
+                            <li>Widget Galerisi → "Hizmetler Grid" seç</li>
+                            <li>"Instance Oluştur" tıkla</li>
+                            <li>Bölüm başlığını yaz</li>
+                            <li>Sütun sayısı, kart stili seç</li>
+                            <li>Kaydet → tenant_widgets'a kayıt oluşur</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <div class="text-green-400 font-semibold mb-2">2. Hizmetleri Ekle:</div>
+                        <ol class="space-y-1 text-slate-300 list-decimal list-inside">
+                            <li>"Items" sekmesine git</li>
+                            <li>"Yeni Item Ekle" tıkla</li>
+                            <li>Hizmet başlığı, açıklama, ikon gir</li>
+                            <li>Kaydet → widget_items'a kayıt</li>
+                            <li>Diğer hizmetler için tekrarla</li>
+                            <li>Sürükle-bırak ile sırala</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Özet Tablo -->
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h3 class="font-semibold text-slate-300 mb-3">📊 Özet: Hizmetler Grid</h3>
+                <table class="w-full text-sm">
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">has_items</td>
+                        <td class="py-2 text-green-400 font-semibold">true</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">item_schema</td>
+                        <td class="py-2 text-green-400">✓ Tanımlı (title, icon, desc, link...)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">settings_schema</td>
+                        <td class="py-2 text-green-400">✓ Tanımlı (columns, style, show_icon...)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">widget_items kaydı</td>
+                        <td class="py-2 text-green-400">✓ Her hizmet için 1 kayıt</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 text-slate-400">Render</td>
+                        <td class="py-2 text-purple-400">settings + {{#each items}}</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- Karşılaştırma Tablosu -->
+        <section class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-600 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2 mb-6">
+                <span class="text-2xl">📊</span> Karşılaştırma: 3 Örnek Widget
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-600">
+                            <th class="text-left py-3 px-4 text-slate-400">Özellik</th>
+                            <th class="text-left py-3 px-4 text-blue-400">Basit Hero</th>
+                            <th class="text-left py-3 px-4 text-purple-400">Slider Hero</th>
+                            <th class="text-left py-3 px-4 text-green-400">Hizmetler Grid</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 px-4 text-slate-400">has_items</td>
+                            <td class="py-3 px-4 text-red-400">false</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-400">item_schema</td>
+                            <td class="py-3 px-4 text-slate-500">null</td>
+                            <td class="py-3 px-4 text-green-400">slayt alanları</td>
+                            <td class="py-3 px-4 text-green-400">hizmet alanları</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-400">settings_schema</td>
+                            <td class="py-3 px-4 text-green-400">title, image, button</td>
+                            <td class="py-3 px-4 text-green-400">autoplay, interval</td>
+                            <td class="py-3 px-4 text-green-400">columns, style</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-400">Central DB kaydı</td>
+                            <td class="py-3 px-4 text-blue-400">widgets: 1</td>
+                            <td class="py-3 px-4 text-blue-400">widgets: 1</td>
+                            <td class="py-3 px-4 text-blue-400">widgets: 1</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-400">Tenant DB kaydı</td>
+                            <td class="py-3 px-4 text-purple-400">tenant_widgets: 1</td>
+                            <td class="py-3 px-4 text-purple-400">tenant_widgets: 1<br>widget_items: N</td>
+                            <td class="py-3 px-4 text-purple-400">tenant_widgets: 1<br>widget_items: N</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-400">Dinamik içerik</td>
+                            <td class="py-3 px-4 text-red-400">❌ Yok</td>
+                            <td class="py-3 px-4 text-green-400">✓ Slaytlar</td>
+                            <td class="py-3 px-4 text-green-400">✓ Hizmet kartları</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-400">Template döngüsü</td>
+                            <td class="py-3 px-4 text-red-400">❌</td>
+                            <td class="py-3 px-4 text-green-400">{{#each items}}</td>
+                            <td class="py-3 px-4 text-green-400">{{#each items}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-900/20 border border-yellow-700/50 rounded-lg">
+                <h3 class="font-semibold text-yellow-400 mb-2">💡 Karar Rehberi</h3>
+                <ul class="space-y-2 text-sm text-slate-300">
+                    <li><strong class="text-blue-400">has_items = false:</strong> Sabit içerik, tek seferlik ayar (hero, banner, CTA)</li>
+                    <li><strong class="text-green-400">has_items = true:</strong> Dinamik içerik, ekle/çıkar/sırala (slider, grid, liste)</li>
+                    <li><strong class="text-purple-400">settings_schema:</strong> Widget geneli için ayarlar (renkler, layout, animasyon)</li>
+                    <li><strong class="text-orange-400">item_schema:</strong> Her item için tekrarlanan alanlar (başlık, görsel, link)</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-700/50 mt-12 py-6 text-center text-sm text-slate-500">
+        <p>Claude AI tarafından oluşturuldu | WidgetManagement Modülü Analiz Raporu v2</p>
+        <p class="mt-1">13 Ocak 2026 - Örnekler Eklendi</p>
+    </footer>
+</body>
+</html>

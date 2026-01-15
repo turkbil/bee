@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema ile Site Oluşturma Rehberi v2 - Tenant Sistemi + TodoWrite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .code-block { background: #1e293b; border-radius: 8px; padding: 1rem; overflow-x: auto; font-family: monospace; font-size: 0.75rem; }
+        .section-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(71, 85, 105, 0.5); }
+        .todo-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: rgba(30, 41, 59, 0.7); border-radius: 0.5rem; margin-bottom: 0.5rem; }
+        .todo-checkbox { width: 1.25rem; height: 1.25rem; border: 2px solid #64748b; border-radius: 0.25rem; flex-shrink: 0; margin-top: 0.125rem; }
+        .todo-checkbox.completed { background: #10b981; border-color: #10b981; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-gray-100">
+    <header class="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="px-3 py-1 bg-emerald-600 text-xs font-bold rounded-full uppercase tracking-wider">Kapsamlı Rehber v2</span>
+                    <h1 class="text-3xl font-bold mt-2 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                        Tema ile Site Oluşturma
+                    </h1>
+                    <p class="text-slate-400 mt-1">Tenant Sistemi + Claude TodoWrite Yaklaşımı</p>
+                </div>
+                <div class="text-right text-sm text-slate-400">
+                    <div>14 Ocak 2026</div>
+                    <div class="text-xs">v2.0</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- ==================== YENİ YAKLAŞIM ==================== -->
+        <section class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-700/50 rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-purple-400 flex items-center gap-2 mb-4">
+                <span class="text-3xl">🚀</span> Yeni Yaklaşım: Claude TodoWrite Sistemi
+            </h2>
+            <div class="text-slate-300 space-y-4">
+                <p>
+                    <strong class="text-purple-300">Eski:</strong> JSON Manifest dosyası oluştur → Panel'e import et
+                </p>
+                <p>
+                    <strong class="text-emerald-300">Yeni:</strong> Claude <code class="bg-slate-800 px-2 py-0.5 rounded">TodoWrite</code> tool'u ile adım adım ilerler,
+                    her adımı işaretler. Daha interaktif, kontrollü ve hata durumunda geri dönülebilir.
+                </p>
+                <div class="bg-slate-800/50 rounded-lg p-4 mt-4">
+                    <h3 class="font-semibold text-purple-300 mb-2">Nasıl Çalışır?</h3>
+                    <div class="flex flex-wrap items-center gap-2 text-sm">
+                        <div class="bg-purple-600 px-3 py-2 rounded-lg">1. Tema HTML Analizi</div>
+                        <span class="text-slate-500">→</span>
+                        <div class="bg-pink-600 px-3 py-2 rounded-lg">2. TodoWrite ile Plan</div>
+                        <span class="text-slate-500">→</span>
+                        <div class="bg-orange-600 px-3 py-2 rounded-lg">3. Adım Adım Uygula</div>
+                        <span class="text-slate-500">→</span>
+                        <div class="bg-emerald-600 px-3 py-2 rounded-lg">4. Tamamlananları İşaretle</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İçindekiler -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">📚 İçindekiler</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <a href="#tenant-sistem" class="text-cyan-400 hover:text-cyan-300">0. Tenant Sistemi (Yeni!)</a>
+                <a href="#tenant-olusturma" class="text-cyan-400 hover:text-cyan-300">0.1 Tenant Oluşturma</a>
+                <a href="#domain-alias" class="text-cyan-400 hover:text-cyan-300">0.2 Domain & Alias</a>
+                <a href="#database-bulma" class="text-cyan-400 hover:text-cyan-300">0.3 Database Bulma</a>
+                <a href="#plesk-config" class="text-cyan-400 hover:text-cyan-300">0.4 Plesk Konfigürasyonu</a>
+                <a href="#todowrite-system" class="text-cyan-400 hover:text-cyan-300">1. TodoWrite Sistemi (Yeni!)</a>
+                <a href="#tema" class="text-cyan-400 hover:text-cyan-300">2. Tema Dosyaları</a>
+                <a href="#widgets" class="text-cyan-400 hover:text-cyan-300">3. Widget Sistemi</a>
+                <a href="#settings" class="text-cyan-400 hover:text-cyan-300">4. Settings & SEO</a>
+                <a href="#full-checklist" class="text-cyan-400 hover:text-cyan-300">5. Tam Checklist</a>
+            </div>
+        </section>
+
+        <!-- ==================== TENANT SİSTEMİ ==================== -->
+        <section id="tenant-sistem" class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🏢</span> 0. Tenant Sistemi - Tam Çalışma Tarzı
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-300 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300">
+                    Her müşteri sitesi bir <strong>"Tenant"</strong> olarak adlandırılır. Her tenant'ın kendi database'i,
+                    ayarları, kullanıcıları ve içeriği vardır. Tenant'lar birbirinden tamamen izole çalışır.
+                </p>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-blue-300 mb-2">🔧 Teknik Özet</h3>
+                <ul class="text-slate-300 text-sm space-y-1">
+                    <li>• <strong>Central DB:</strong> <code class="bg-slate-800 px-1 rounded">tuufi_4ekim</code> - Tenant yönetimi, AI modülü</li>
+                    <li>• <strong>Tenant DB:</strong> <code class="bg-slate-800 px-1 rounded">tenant_[isim]_[hash]</code> - Her tenant için ayrı</li>
+                    <li>• <strong>Package:</strong> <code class="bg-slate-800 px-1 rounded">stancl/tenancy</code> Laravel multi-tenancy paketi</li>
+                    <li>• <strong>Plesk:</strong> Otomatik domain alias ve database kaydı</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 0.1 Tenant Oluşturma -->
+        <section id="tenant-olusturma" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">0.1</span> Tenant Oluşturma (Tinker ile)
+            </h2>
+
+            <div class="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-yellow-300 mb-2">⚠️ Önemli</h3>
+                <p class="text-slate-300 text-sm">
+                    Tenant oluşturma işlemi <strong>otomatik olarak</strong> şunları yapar:
+                    Database oluşturur → Migration çalıştırır → Seed yapar → Plesk'e kaydeder
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Adım 1: Tinker -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-orange-300 mb-3">1️⃣ Tinker'a Gir</h3>
+                    <div class="code-block">
+<pre><code class="text-green-400">cd /var/www/vhosts/tuufi.com/httpdocs
+php artisan tinker</code></pre>
+                    </div>
+                </div>
+
+                <!-- Adım 2: Tenant Oluştur -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-orange-300 mb-3">2️⃣ Yeni Tenant Oluştur</h3>
+                    <div class="code-block">
+<pre><code class="text-green-400">// Tenant bilgileri
+$tenantData = [
+    'id' => 'varplas',           // Benzersiz ID (slug formatında)
+    'name' => 'VARPLAS Plastik', // Görünen isim
+    'email' => 'info@varplas.com',
+    'plan' => 'premium',         // free, basic, premium
+    'central' => false,          // false = normal tenant
+];
+
+// Tenant oluştur (otomatik: DB + Migration + Seed + Plesk)
+$tenant = \App\Models\Tenant::create($tenantData);
+
+echo "✅ Tenant oluşturuldu: " . $tenant->id . "\n";
+echo "📁 Database: " . $tenant->tenancy_db_name . "\n";</code></pre>
+                    </div>
+                    <div class="mt-3 text-sm text-slate-400">
+                        <strong>Otomatik yapılanlar:</strong>
+                        <ul class="mt-1 space-y-1">
+                            <li>✓ Database oluşturuldu: <code class="text-cyan-400">tenant_varplas_[hash]</code></li>
+                            <li>✓ Migration'lar çalıştırıldı (tüm modüller)</li>
+                            <li>✓ Seed edildi (roles, permissions, admin user)</li>
+                            <li>✓ Plesk'e database kaydedildi</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Adım 3: Domain Ekle -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-orange-300 mb-3">3️⃣ Domain Ekle</h3>
+                    <div class="code-block">
+<pre><code class="text-green-400">// Primary domain ekle
+$tenant->domains()->create([
+    'domain' => 'varplas.com',
+    'is_primary' => true,
+]);
+
+// www.varplas.com OTOMATİK eklenir (CreateTenantDomains listener)
+// Plesk alias da OTOMATİK eklenir (RegisterDomainAliasInPlesk listener)
+
+echo "✅ Domain eklendi: varplas.com\n";
+echo "✅ www.varplas.com otomatik eklendi\n";
+echo "✅ Plesk alias otomatik eklendi\n";</code></pre>
+                    </div>
+                </div>
+
+                <!-- Adım 4: Test -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-orange-300 mb-3">4️⃣ Tenant Bilgilerini Kontrol Et</h3>
+                    <div class="code-block">
+<pre><code class="text-green-400">// Tenant bilgisi
+$tenant = \App\Models\Tenant::find('varplas');
+echo "ID: " . $tenant->id . "\n";
+echo "Name: " . $tenant->name . "\n";
+echo "DB: " . $tenant->tenancy_db_name . "\n";
+
+// Domain'ler
+$tenant->domains->each(fn($d) => echo "Domain: " . $d->domain . "\n");
+
+// Tenant context'e geç
+tenancy()->initialize($tenant);
+echo "✅ Tenant context aktif\n";
+
+// Tenant içinde kullanıcıları kontrol et
+\App\Models\User::all()->pluck('email');</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 0.2 Domain & Alias -->
+        <section id="domain-alias" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">0.2</span> Domain & Alias Ekleme
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-cyan-300 mb-3">Tinker ile Domain Ekleme</h3>
+                    <div class="code-block">
+<pre><code class="text-green-400">// Tenant'ı bul
+$tenant = \App\Models\Tenant::find('varplas');
+
+// Yeni domain ekle
+$tenant->domains()->create([
+    'domain' => 'varplas.com.tr',
+    'is_primary' => false,
+]);
+
+// Otomatik:
+// - www.varplas.com.tr eklenir
+// - Plesk'e alias olarak kaydedilir
+
+// Tüm domain'leri listele
+$tenant->domains->pluck('domain');</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-cyan-300 mb-3">Plesk Panel'den Manuel Alias</h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p>Otomatik ekleme başarısız olursa manuel ekle:</p>
+                        <ol class="space-y-2">
+                            <li>1. Plesk → <strong>tuufi.com</strong> → Hosting Settings</li>
+                            <li>2. <strong>Domain Aliases</strong> bölümü</li>
+                            <li>3. <strong>Add Domain Alias</strong></li>
+                            <li>4. Domain adını gir: <code class="text-cyan-400">varplas.com</code></li>
+                            <li>5. <span class="text-red-400">❌ SEO redirect KAPALI!</span>
+                                <div class="text-xs text-slate-500 ml-4">
+                                    (Açık olursa domain çözümlenmez)
+                                </div>
+                            </li>
+                            <li>6. <strong>OK</strong> tıkla</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-red-900/20 border border-red-700/50 rounded-lg p-4">
+                <h3 class="font-semibold text-red-300 mb-2">🚨 Kritik: SEO Redirect KAPALI Olmalı!</h3>
+                <p class="text-slate-300 text-sm">
+                    Plesk'te domain alias eklerken <strong>"Redirect to primary domain for SEO"</strong> seçeneği
+                    <strong class="text-red-400">KAPALI</strong> olmalı! Aksi halde tenant domain'i çalışmaz,
+                    tuufi.com'a yönlendirir.
+                </p>
+            </div>
+        </section>
+
+        <!-- 0.3 Database Bulma -->
+        <section id="database-bulma" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">0.3</span> Database Bulma & Erişim
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-cyan-300 mb-3">Tinker ile Database Bilgisi</h3>
+                    <div class="code-block">
+<pre><code class="text-green-400">// Tüm tenant'ları listele
+\App\Models\Tenant::all()->map(fn($t) => [
+    'id' => $t->id,
+    'name' => $t->name,
+    'db' => $t->tenancy_db_name,
+]);
+
+// Belirli tenant'ın DB'si
+$tenant = \App\Models\Tenant::find('varplas');
+echo $tenant->tenancy_db_name;
+// Output: tenant_varplas_a1b2c3</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-cyan-300 mb-3">SQL ile Direkt Erişim</h3>
+                    <div class="code-block">
+<pre><code class="text-green-400">-- Central DB'den tenant listesi
+SELECT id, name,
+       JSON_UNQUOTE(JSON_EXTRACT(data, '$.tenancy_db_name')) as db_name
+FROM tuufi_4ekim.tenants;
+
+-- Sonuç:
+-- | id      | name            | db_name                |
+-- |---------|-----------------|------------------------|
+-- | 2       | İxtif           | tenant_ixtif           |
+-- | 1001    | Muzibu          | tenant_muzibu_1528d0   |
+-- | varplas | VARPLAS Plastik | tenant_varplas_a1b2c3  |</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-slate-800/50 rounded-lg p-5">
+                <h3 class="font-bold text-cyan-300 mb-3">Plesk'te Database Görüntüleme</h3>
+                <div class="space-y-2 text-sm text-slate-300">
+                    <p>Plesk → <strong>Databases</strong> → Liste:</p>
+                    <div class="code-block">
+<pre><code>tuufi_4ekim           ← Central DB
+tenant_ixtif          ← Tenant 2 (İxtif)
+tenant_muzibu_1528d0  ← Tenant 1001 (Muzibu)
+tenant_varplas_a1b2c3 ← Yeni tenant</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 grid lg:grid-cols-2 gap-6">
+                <div class="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-300 mb-2">📊 Central DB Tabloları</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• <code class="text-cyan-400">tenants</code> - Tenant kayıtları</li>
+                        <li>• <code class="text-cyan-400">domains</code> - Domain eşleştirmeleri</li>
+                        <li>• <code class="text-cyan-400">widgets</code> - Widget şablonları</li>
+                        <li>• <code class="text-cyan-400">ai_*</code> - AI modülü tabloları</li>
+                        <li>• <code class="text-cyan-400">settings</code> - Setting tanımları</li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-900/20 border border-purple-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-300 mb-2">📊 Tenant DB Tabloları</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• <code class="text-pink-400">users</code>, <code class="text-pink-400">roles</code> - Kullanıcılar</li>
+                        <li>• <code class="text-pink-400">pages</code>, <code class="text-pink-400">blogs</code> - İçerik</li>
+                        <li>• <code class="text-pink-400">tenant_widgets</code> - Widget instance'ları</li>
+                        <li>• <code class="text-pink-400">settings_values</code> - Ayar değerleri</li>
+                        <li>• <code class="text-pink-400">menus</code>, <code class="text-pink-400">menu_items</code> - Menüler</li>
+                        <li>• <code class="text-pink-400">media</code> - Medya dosyaları</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 0.4 Plesk Konfigürasyonu -->
+        <section id="plesk-config" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">0.4</span> Plesk Konfigürasyonu
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-300 mb-2">📝 Otomatik Entegrasyonlar</h3>
+                <p class="text-slate-300 text-sm">
+                    Sistem otomatik olarak Plesk ile entegre çalışır. Manuel işlem nadiren gerekir.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">Event</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Listener</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Yapılan İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700 text-slate-300">
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">TenantCreated</td>
+                            <td class="py-3 px-4 font-mono text-xs">CreateDatabase</td>
+                            <td class="py-3 px-4">tenant_[id]_[hash] database oluşturur</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">DatabaseMigrated</td>
+                            <td class="py-3 px-4 font-mono text-xs">RegisterTenantDatabaseToPlesk</td>
+                            <td class="py-3 px-4">Database'i Plesk'e kaydeder</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">DomainCreated</td>
+                            <td class="py-3 px-4 font-mono text-xs">CreateTenantDomains</td>
+                            <td class="py-3 px-4">www. prefix'li domain ekler</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">DomainCreated</td>
+                            <td class="py-3 px-4 font-mono text-xs">RegisterDomainAliasInPlesk</td>
+                            <td class="py-3 px-4">Plesk'e domain alias ekler</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-red-400">TenantDeleted</td>
+                            <td class="py-3 px-4 font-mono text-xs">SafeDeleteDatabase</td>
+                            <td class="py-3 px-4">Database'i güvenli siler</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-red-400">DeletingDomain</td>
+                            <td class="py-3 px-4 font-mono text-xs">UnregisterDomainAliasFromPlesk</td>
+                            <td class="py-3 px-4">Plesk alias'ı siler</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 bg-slate-800/50 rounded-lg p-5">
+                <h3 class="font-bold text-cyan-300 mb-3">Manuel Plesk Onarımı (Sorun Varsa)</h3>
+                <div class="code-block">
+<pre><code class="text-green-400"># Plesk web config onarımı (Livewire 403 sorunu için)
+plesk repair web tuufi.com -y
+
+# Domain test
+curl -I https://varplas.com/
+
+# Beklenen output:
+# HTTP/2 200
+# server: nginx</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TODOWRITE SİSTEMİ ==================== -->
+        <section id="todowrite-system" class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-purple-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">📋</span> 1. Claude TodoWrite Sistemi
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-300 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300">
+                    JSON manifest dosyası yerine, Claude doğrudan <code class="bg-slate-800 px-2 py-0.5 rounded">TodoWrite</code>
+                    tool'unu kullanarak adımları listeler ve her adımı tamamladıkça işaretler.
+                    Bu yöntem daha interaktif ve kontrollü.
+                </p>
+            </div>
+
+            <div class="bg-purple-900/20 border border-purple-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-purple-300 mb-2">🎯 Örnek TodoWrite Kullanımı</h3>
+                <p class="text-slate-300 text-sm mb-4">
+                    Kullanıcı "VARPLAS temasını kur" dediğinde Claude şu todo listesini oluşturur:
+                </p>
+
+                <div class="space-y-2">
+                    <div class="todo-item">
+                        <div class="todo-checkbox completed"></div>
+                        <div>
+                            <div class="text-white font-medium">Tenant oluştur (varplas)</div>
+                            <div class="text-slate-400 text-xs">Database + Migration + Seed</div>
+                        </div>
+                        <span class="ml-auto text-emerald-400 text-xs">✓ completed</span>
+                    </div>
+                    <div class="todo-item">
+                        <div class="todo-checkbox completed"></div>
+                        <div>
+                            <div class="text-white font-medium">Domain ekle (varplas.com)</div>
+                            <div class="text-slate-400 text-xs">Plesk alias otomatik</div>
+                        </div>
+                        <span class="ml-auto text-emerald-400 text-xs">✓ completed</span>
+                    </div>
+                    <div class="todo-item border-l-2 border-yellow-500">
+                        <div class="todo-checkbox" style="border-color: #eab308;"></div>
+                        <div>
+                            <div class="text-white font-medium">Tema dosyalarını oluştur</div>
+                            <div class="text-slate-400 text-xs">layouts, partials, pages, components</div>
+                        </div>
+                        <span class="ml-auto text-yellow-400 text-xs">→ in_progress</span>
+                    </div>
+                    <div class="todo-item">
+                        <div class="todo-checkbox"></div>
+                        <div>
+                            <div class="text-white font-medium">Widget şablonları oluştur (Central)</div>
+                            <div class="text-slate-400 text-xs">8 widget template</div>
+                        </div>
+                        <span class="ml-auto text-slate-500 text-xs">pending</span>
+                    </div>
+                    <div class="todo-item">
+                        <div class="todo-checkbox"></div>
+                        <div>
+                            <div class="text-white font-medium">TenantWidget instance'ları oluştur</div>
+                            <div class="text-slate-400 text-xs">7 widget + items</div>
+                        </div>
+                        <span class="ml-auto text-slate-500 text-xs">pending</span>
+                    </div>
+                    <div class="todo-item">
+                        <div class="todo-checkbox"></div>
+                        <div>
+                            <div class="text-white font-medium">Settings değerlerini gir</div>
+                            <div class="text-slate-400 text-xs">~25 ayar</div>
+                        </div>
+                        <span class="ml-auto text-slate-500 text-xs">pending</span>
+                    </div>
+                    <div class="todo-item">
+                        <div class="todo-checkbox"></div>
+                        <div>
+                            <div class="text-white font-medium">Menüleri oluştur</div>
+                            <div class="text-slate-400 text-xs">Header, Footer menüleri</div>
+                        </div>
+                        <span class="ml-auto text-slate-500 text-xs">pending</span>
+                    </div>
+                    <div class="todo-item">
+                        <div class="todo-checkbox"></div>
+                        <div>
+                            <div class="text-white font-medium">Sayfaları oluştur</div>
+                            <div class="text-slate-400 text-xs">6-7 sayfa</div>
+                        </div>
+                        <span class="ml-auto text-slate-500 text-xs">pending</span>
+                    </div>
+                    <div class="todo-item">
+                        <div class="todo-checkbox"></div>
+                        <div>
+                            <div class="text-white font-medium">Test & cache temizle</div>
+                            <div class="text-slate-400 text-xs">npm run prod, cache:clear</div>
+                        </div>
+                        <span class="ml-auto text-slate-500 text-xs">pending</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-purple-300 mb-3">✅ Avantajları</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>İlerleme görünür - Her adım işaretlenir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>Hata durumunda geri dönülebilir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>Kullanıcı onayı alınabilir (kritik adımlarda)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>Yarıda kalan işe devam edilebilir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>Daha az hata - Her adım tek tek yapılır</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-purple-300 mb-3">📋 Todo Status'ları</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-1 bg-slate-700 rounded text-slate-400">pending</span>
+                            <span class="text-slate-300">Henüz başlanmadı</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-1 bg-yellow-900/50 rounded text-yellow-400">in_progress</span>
+                            <span class="text-slate-300">Şu an üzerinde çalışılıyor</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-1 bg-emerald-900/50 rounded text-emerald-400">completed</span>
+                            <span class="text-slate-300">Tamamlandı</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-blue-900/30 rounded text-xs text-slate-400">
+                        <strong class="text-blue-300">Kural:</strong> Aynı anda sadece 1 todo <code>in_progress</code> olabilir.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TEMA DOSYALARI ==================== -->
+        <section id="tema" class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-emerald-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">📁</span> 2. Tema Dosyaları
+            </h2>
+
+            <div class="code-block mb-6">
+<pre><code class="text-green-400">resources/views/themes/varplas/
+├── layouts/
+│   └── app.blade.php              # Ana layout
+├── partials/
+│   ├── header.blade.php           # Üst menü, logo
+│   ├── footer.blade.php           # Alt bilgi
+│   ├── mega-menu.blade.php        # Ürün kategorileri
+│   └── mobile-menu.blade.php      # Mobil menü
+├── pages/
+│   ├── home.blade.php             # Ana sayfa (@widget çağrıları)
+│   ├── about.blade.php            # Hakkımızda
+│   ├── contact.blade.php          # İletişim
+│   └── products/
+│       ├── index.blade.php        # Ürün listesi
+│       └── show.blade.php         # Ürün detay
+└── components/
+    ├── product-card.blade.php
+    └── feature-card.blade.php</code></pre>
+            </div>
+
+            <div class="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
+                <h3 class="font-semibold text-yellow-300 mb-2">⚠️ Tema Seçimi</h3>
+                <p class="text-slate-300 text-sm">
+                    Tenant'ın hangi temayı kullanacağı <code class="bg-slate-800 px-1 rounded">settings_values</code> tablosunda
+                    <code class="bg-slate-800 px-1 rounded">active_theme = 'varplas'</code> olarak belirlenir.
+                </p>
+            </div>
+        </section>
+
+        <!-- ==================== WIDGET SİSTEMİ ==================== -->
+        <section id="widgets" class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-cyan-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🧩</span> 3. Widget Sistemi
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                <div class="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-300 mb-2">Central DB: widgets tablosu</h3>
+                    <p class="text-slate-300 text-sm">
+                        Widget <strong>şablonları</strong> (template). Tüm tenant'lar bu şablonları kullanabilir.
+                        <code class="bg-slate-800 px-1 rounded">content_html</code>, <code class="bg-slate-800 px-1 rounded">settings_schema</code>,
+                        <code class="bg-slate-800 px-1 rounded">item_schema</code> içerir.
+                    </p>
+                </div>
+
+                <div class="bg-purple-900/20 border border-purple-700/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-300 mb-2">Tenant DB: tenant_widgets + widget_items</h3>
+                    <p class="text-slate-300 text-sm">
+                        Her tenant kendi widget <strong>instance</strong>'larını oluşturur.
+                        <code class="bg-slate-800 px-1 rounded">settings</code> (JSON) ve
+                        <code class="bg-slate-800 px-1 rounded">widget_items</code> (tekrarlı içerik) içerir.
+                    </p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">Widget</th>
+                            <th class="text-left py-3 px-4 text-slate-400">has_items</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700 text-slate-300">
+                        <tr>
+                            <td class="py-3 px-4 text-white">Hero Slider</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4">Slaytlar, CTA butonları</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white">Ürün Kataloğu</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4">Ürün kartları</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white">Neden Biz</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4">Özellik kartları</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white">Timeline</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4">Şirket geçmişi</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white">İletişim Formu</td>
+                            <td class="py-3 px-4 text-red-400">false</td>
+                            <td class="py-3 px-4">Tek form bloğu</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white">İletişim Bilgileri</td>
+                            <td class="py-3 px-4 text-red-400">false</td>
+                            <td class="py-3 px-4">Telefon, email, adres</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== SETTINGS & SEO ==================== -->
+        <section id="settings" class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-yellow-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">⚙️</span> 4. Settings & SEO
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-300 mb-3">Site Ayarları (~25 değer)</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div><code class="text-green-400">site_name</code>: "VARPLAS"</div>
+                        <div><code class="text-green-400">site_slogan</code>: "Endüstriyel Depolama"</div>
+                        <div><code class="text-green-400">site_logo</code>: "/storage/logo.png"</div>
+                        <div><code class="text-green-400">site_phone</code>: "+90 262 658 28 18"</div>
+                        <div><code class="text-green-400">site_email</code>: "info@varplas.com"</div>
+                        <div><code class="text-green-400">active_theme</code>: "varplas"</div>
+                        <div><code class="text-green-400">primary_color</code>: "#10b981"</div>
+                        <div class="text-slate-500">... ve daha fazlası</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-3">SEO Ayarları</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <div><code class="text-green-400">default_title</code>: "VARPLAS - Endüstriyel Depolama"</div>
+                        <div><code class="text-green-400">meta_description</code>: "IBC Tank, Varil..."</div>
+                        <div><code class="text-green-400">og_image</code>: "/storage/og-image.jpg"</div>
+                        <div><code class="text-green-400">google_analytics</code>: "G-XXXXXXXX"</div>
+                        <div><code class="text-green-400">robots</code>: "index, follow"</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAM CHECKLIST ==================== -->
+        <section id="full-checklist" class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-emerald-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">✅</span> 5. Tam Checklist (Claude Todo Formatında)
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-300 mb-2">📝 Kullanım</h3>
+                <p class="text-slate-300 text-sm">
+                    Kullanıcı "VARPLAS temasını kur" dediğinde Claude bu checklist'i TodoWrite ile oluşturur ve adım adım ilerler.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Grup 1: Tenant -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-orange-400 mb-3">🏢 1. Tenant Kurulumu</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Tenant oluştur (Tinker: Tenant::create)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Domain ekle (varplas.com)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Plesk alias kontrolü</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">curl -I https://varplas.com/ (200 OK)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 2: Tema -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-emerald-400 mb-3">📁 2. Tema Dosyaları</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">themes/varplas/ klasör yapısı oluştur</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">layouts/app.blade.php</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">partials/ (header, footer, mobile-menu)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">pages/ (home, about, contact, products)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">components/ (kartlar)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 3: Widget -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-cyan-400 mb-3">🧩 3. Widget Sistemi</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Central: Hero Slider widget şablonu</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Central: Ürün Kataloğu widget şablonu</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Central: Neden Biz widget şablonu</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Central: Timeline widget şablonu</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Central: İletişim Form widget şablonu</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Tenant: tenant_widgets kayıtları (7 adet)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Tenant: widget_items kayıtları (~17 adet)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 4: Settings -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-yellow-400 mb-3">⚙️ 4. Settings & Menü</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Site bilgileri (name, slogan, logo, favicon)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">İletişim bilgileri (phone, email, address)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Sosyal medya linkleri</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Tema ayarları (active_theme, colors, fonts)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Header menü oluştur</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Footer menüleri oluştur</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 5: Sayfalar -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-pink-400 mb-3">📄 5. Sayfalar & SEO</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Ana sayfa oluştur (widget_ids ile)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Hakkımızda sayfası</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">İletişim sayfası</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Ürünler sayfası</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Her sayfa için SEO meta bilgileri</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 6: Test -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-purple-400 mb-3">🧪 6. Test & Deploy</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">npm run prod (CSS build)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">php artisan cache:clear</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">php artisan view:clear</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Site testi (tüm sayfalar)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 border-2 border-slate-600 rounded"></span>
+                            <span class="text-slate-300">Responsive test (mobile, tablet)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 border border-emerald-700/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">📋 Toplam İş Özeti</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-orange-400">1</div>
+                    <div class="text-slate-400">Tenant + Domain</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-emerald-400">15+</div>
+                    <div class="text-slate-400">Tema Dosyası</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-cyan-400">8</div>
+                    <div class="text-slate-400">Widget (Central)</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-purple-400">7</div>
+                    <div class="text-slate-400">TenantWidget</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-pink-400">~17</div>
+                    <div class="text-slate-400">Widget Items</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-yellow-400">~25</div>
+                    <div class="text-slate-400">Settings</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-red-400">3</div>
+                    <div class="text-slate-400">Menü</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-400">6-7</div>
+                    <div class="text-slate-400">Sayfa</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-700/50 mt-12 py-6 text-center text-sm text-slate-500">
+        <p>Tema ile Site Oluşturma Rehberi v2 - Tenant Sistemi + TodoWrite</p>
+        <p class="mt-1">14 Ocak 2026 | Claude AI</p>
+    </footer>
+</body>
+</html>

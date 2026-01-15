@@ -103,11 +103,6 @@ class SongStreamController extends Controller
 
             // Check if song needs HLS conversion
             if ($song->needsHlsConversion()) {
-                Log::info('Muzibu Stream: HLS conversion needed', [
-                    'song_id' => $songId,
-                    'title' => $song->getTranslated('title', 'en')
-                ]);
-
                 // Dispatch conversion job
                 ConvertToHLSJob::dispatch($song);
 
@@ -382,12 +377,6 @@ class SongStreamController extends Controller
             // 🎯 play_count artır (hits için)
             $song->increment('play_count');
 
-            Log::info('Muzibu: Hit tracked', [
-                'song_id' => $songId,
-                'user_id' => $user->id,
-                'play_count' => $song->play_count
-            ]);
-
             return response()->json([
                 'success' => true,
                 'play_count' => $song->play_count
@@ -457,16 +446,6 @@ class SongStreamController extends Controller
                     'was_skipped' => $wasSkipped,
                     'updated_at' => now()
                 ]);
-
-            if ($updated) {
-                Log::info('Muzibu: Play ended', [
-                    'play_id' => $playId,
-                    'song_id' => $songId,
-                    'user_id' => $user->id,
-                    'listened_duration' => $listenedDuration,
-                    'was_skipped' => $wasSkipped
-                ]);
-            }
 
             return response()->json([
                 'success' => true,
@@ -545,7 +524,7 @@ class SongStreamController extends Controller
     {
         // ✅ Handle OPTIONS preflight request
         if (request()->method() === 'OPTIONS') {
-            $origin = request()->header('Origin', 'https://muzibu.com.tr');
+            $origin = request()->header('Origin', 'https://muzibu.com');
             return response('', 200, [
                 'Access-Control-Allow-Origin' => $origin,
                 'Access-Control-Allow-Methods' => 'GET, OPTIONS',
@@ -602,7 +581,7 @@ class SongStreamController extends Controller
             }
 
             // ✅ Return binary key with proper headers (array syntax for reliability)
-            $origin = request()->header('Origin', 'https://muzibu.com.tr');
+            $origin = request()->header('Origin', 'https://muzibu.com');
             return response($keyContent, 200, [
                 'Content-Type' => 'application/octet-stream',
                 'Content-Length' => strlen($keyContent),
@@ -713,14 +692,6 @@ class SongStreamController extends Controller
                 $content = str_replace("/api/muzibu/songs/{$songId}/key", "/api/muzibu/songs/{$songId}/key?{$query}", $content);
                 // Key URL is already correct (/api/muzibu/songs/{id}/key)
 
-                Log::info('HLS playlist served', [
-                    'song_id' => $songId,
-                    'file' => $filename,
-                    'user_id' => $token, // token = user_id
-                    'ip' => request()->ip(),
-                    'expires_in' => $expires - Carbon::now()->timestamp
-                ]);
-
                 return response($content, 200, [
                     'Content-Type' => $contentType,
                     'Access-Control-Allow-Origin' => '*',
@@ -737,13 +708,6 @@ class SongStreamController extends Controller
                 'Access-Control-Allow-Methods' => 'GET, OPTIONS',
                 'Access-Control-Allow-Headers' => 'Content-Type, Range',
                 'Cache-Control' => 'public, max-age=31536000, immutable',
-            ]);
-
-            Log::info('HLS segment served', [
-                'song_id' => $songId,
-                'file' => $filename,
-                'user_id' => $token, // token = user_id
-                'ip' => request()->ip(),
             ]);
 
             return $response;

@@ -177,7 +177,7 @@
             <h1>✅ Muzibu Player - Güncel Durum (v3)</h1>
             <div class="meta">
                 📅 Güncelleme: 2025-11-29 04:30 |
-                🎯 Tenant: muzibu.com.tr (ID: 1001) |
+                🎯 Tenant: muzibu.com (ID: 1001) |
                 🔥 SON EKLENEN: Signed URLs + HLS AES-128 Encryption
             </div>
         </header>
@@ -226,7 +226,7 @@
                         </div>
                         <div class="code-block">
                             # Örnek Signed URL:<br>
-                            https://muzibu.com.tr/api/muzibu/songs/3/serve?<br>
+                            https://muzibu.com/api/muzibu/songs/3/serve?<br>
                             expires=1764383048&<br>
                             signature=01e5e5d15799b5f702a8aabf109eef4354b491c4fdff49c7ab7b4e65499e40dc
                         </div>
@@ -307,7 +307,7 @@
                         <div class="code-block">
                             # HLS Playlist Metadata:<br>
                             #EXT-X-KEY:METHOD=AES-128,<br>
-                            URI="https://muzibu.com.tr/api/muzibu/songs/3/key",<br>
+                            URI="https://muzibu.com/api/muzibu/songs/3/key",<br>
                             IV=0xa8b7da4441d9a6741097f60ec38907b5
                         </div>
                     </div>
@@ -318,13 +318,13 @@
                     <div class="task-content">
                         <div class="task-title">Tenant-Specific Domain Fix</div>
                         <div class="task-description">
-                            Encryption key URL artık tenant-aware (muzibu.com.tr), önceki hata (tuufi.com) düzeltildi.
+                            Encryption key URL artık tenant-aware (muzibu.com), önceki hata (tuufi.com) düzeltildi.
                         </div>
                         <div class="example-box danger">
                             <strong>❌ Önce:</strong> Key URL → https://tuufi.com/api/... (wrong domain!)<br>
                         </div>
                         <div class="example-box" style="margin-top: 10px;">
-                            <strong>✅ Sonra:</strong> Key URL → https://muzibu.com.tr/api/... (correct!)
+                            <strong>✅ Sonra:</strong> Key URL → https://muzibu.com/api/... (correct!)
                         </div>
                     </div>
                 </div>

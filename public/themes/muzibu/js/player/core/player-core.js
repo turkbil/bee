@@ -4465,7 +4465,7 @@ onplay: function() {
                 this._currentHlsInstanceId = hlsInstanceId;
 
                 // 🔧 FIX: Match playlist URL origin with current page origin (www vs non-www)
-                // Problem: User visits www.muzibu.com.tr but playlist URL is muzibu.com.tr
+                // Problem: User visits www.muzibu.com but playlist URL is muzibu.com
                 // HLS.js resolves relative key URLs from playlist base → cross-origin!
                 // Solution: Force playlist URL to use same origin as current page
                 let normalizedUrl = url;

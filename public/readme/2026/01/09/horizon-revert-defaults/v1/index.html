@@ -137,7 +137,7 @@
                 </div>
                 <div class="ml-11 space-y-3">
                     <p class="text-slate-300">Dosyayı aç:</p>
-                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">nano /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php</pre>
+                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">nano /var/www/vhosts/muzibu.com/httpdocs/config/horizon.php</pre>
 
                     <p class="text-slate-300 mt-3">Satır 230-233'ü bul ve değiştir:</p>
                     <div class="grid md:grid-cols-2 gap-3 mt-2">
@@ -165,8 +165,8 @@ maxJobs => 200</pre>
                 </div>
                 <div class="ml-11 space-y-3">
                     <p class="text-slate-300">Dosya kaydedildikten sonra izinleri düzelt:</p>
-                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">sudo chown tuufi.com_:psaserv /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php
-sudo chmod 644 /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php</pre>
+                    <pre class="bg-slate-950 text-blue-300 p-3 rounded text-sm overflow-x-auto">sudo chown tuufi.com_:psaserv /var/www/vhosts/muzibu.com/httpdocs/config/horizon.php
+sudo chmod 644 /var/www/vhosts/muzibu.com/httpdocs/config/horizon.php</pre>
                 </div>
             </div>
 
@@ -223,10 +223,10 @@ sudo chmod 644 /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php</pre>
             <h3 class="text-xl font-semibold mb-4 text-purple-400">⚡ Tek Komutla Geri Alma (İleri Seviye)</h3>
             <div class="space-y-3 text-slate-300">
                 <p>Tüm adımları tek komutla yapabilirsiniz:</p>
-                <pre class="bg-slate-950 text-purple-300 p-4 rounded text-sm overflow-x-auto whitespace-pre-wrap">sed -i "s/'minProcesses' => 6/'minProcesses' => 2/g" /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php && \
-sed -i "s/'maxProcesses' => 20/'maxProcesses' => 6/g" /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php && \
-sed -i "s/'maxJobs' => 2000/'maxJobs' => 200/g" /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php && \
-sudo chown tuufi.com_:psaserv /var/www/vhosts/muzibu.com.tr/httpdocs/config/horizon.php && \
+                <pre class="bg-slate-950 text-purple-300 p-4 rounded text-sm overflow-x-auto whitespace-pre-wrap">sed -i "s/'minProcesses' => 6/'minProcesses' => 2/g" /var/www/vhosts/muzibu.com/httpdocs/config/horizon.php && \
+sed -i "s/'maxProcesses' => 20/'maxProcesses' => 6/g" /var/www/vhosts/muzibu.com/httpdocs/config/horizon.php && \
+sed -i "s/'maxJobs' => 2000/'maxJobs' => 200/g" /var/www/vhosts/muzibu.com/httpdocs/config/horizon.php && \
+sudo chown tuufi.com_:psaserv /var/www/vhosts/muzibu.com/httpdocs/config/horizon.php && \
 /opt/plesk/php/8.5/bin/php artisan config:clear && \
 /opt/plesk/php/8.5/bin/php artisan horizon:terminate && \
 echo "✅ Horizon varsayılan ayarlara döndürüldü! 30 saniye içinde yeniden başlayacak."</pre>

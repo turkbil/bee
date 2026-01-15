@@ -46,12 +46,12 @@ Bu sistem **multi-tenant** mimarisine sahiptir. Her tenant **tamamen bağımsız
 
 ---
 
-### **Tenant 1001 - muzibu.com.tr**
+### **Tenant 1001 - muzibu.com**
 - **ID:** `1001`
 - **Başlık:** Muzibu
 - **Domain(ler):**
-  - `muzibu.com.tr`
-  - `www.muzibu.com.tr`
+  - `muzibu.com`
+  - `www.muzibu.com`
 - **Database:** `tenant_muzibu_1528d0`
 - **Durum:** Aktif
 - **Premium:** ❌ Hayır
@@ -105,7 +105,7 @@ Sistem gelen HTTP isteğindeki domain'e göre tenant'ı belirler:
 
 ```
 https://ixtif.com → Tenant 2 → tenant_ixtif database
-https://muzibu.com.tr → Tenant 1001 → tenant_muzibu_1528d0 database
+https://muzibu.com → Tenant 1001 → tenant_muzibu_1528d0 database
 https://tuufi.com → Tenant 1 (Central) → tuufi_4ekim database
 ```
 
@@ -218,7 +218,7 @@ Her tenant'ın kendi Tailwind CSS config'i var:
 # Tailwind config konumları
 tailwind/tenants/tenant-1.config.js    # tuufi.com
 tailwind/tenants/tenant-2.config.js    # ixtif.com
-tailwind/tenants/tenant-1001.config.js # muzibu.com.tr
+tailwind/tenants/tenant-1001.config.js # muzibu.com
 
 # Build komutları
 npm run css:all      # Tüm tenant'lar
@@ -244,7 +244,7 @@ public/css/tenant-1001.css
 |--------|-----------|-----------------|---------|--------|
 | Tenant 1 (tuufi.com) | - | - | ✅ | Central |
 | Tenant 2 (ixtif.com) | - | - | ✅ | Endüstriyel |
-| Tenant 1001 (muzibu.com.tr) | - | - | ❌ | Müzik |
+| Tenant 1001 (muzibu.com) | - | - | ❌ | Müzik |
 
 ---
 

@@ -1,287 +1,163 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muzib Sunucu Taşıma - DRY RUN Test Raporu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-8">
-    <div class="max-w-7xl mx-auto">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg p-6 mb-8 shadow-xl">
-            <h1 class="text-3xl font-bold mb-2">🧪 Muzibu Sunucu Taşıma - DRY RUN Test Raporu</h1>
-            <p class="text-green-100">Gerçek verilere dokunmadan test edildi • 14 Ocak 2026</p>
-        </div>
+<div class="spa-content-wrapper" id="spaContent">
+                        <div class="min-h-screen">
+    <div class="px-4 py-6 sm:px-6 sm:py-8 max-w-3xl mx-auto">
 
-        <!-- Özet Durum -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-slate-800 rounded-lg p-6 border border-green-500">
-                <div class="text-4xl mb-2">✅</div>
-                <div class="text-2xl font-bold text-green-400">100% Başarılı</div>
-                <div class="text-slate-400 text-sm">Tüm testler geçti</div>
-            </div>
-            <div class="bg-slate-800 rounded-lg p-6 border border-blue-500">
-                <div class="text-4xl mb-2">👥</div>
-                <div class="text-2xl font-bold text-blue-400">1,569 Kullanıcı</div>
-                <div class="text-slate-400 text-sm">ID 3+ aktarıldı</div>
-            </div>
-            <div class="bg-slate-800 rounded-lg p-6 border border-purple-500">
-                <div class="text-4xl mb-2">💳</div>
-                <div class="text-2xl font-bold text-purple-400">349 Ödeme</div>
-                <div class="text-slate-400 text-sm">600,422 TL</div>
-            </div>
-        </div>
-
-        <!-- Kayıt Sayıları Karşılaştırma -->
-        <div class="bg-slate-800 rounded-lg p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 text-blue-400">📊 Kayıt Sayıları Karşılaştırma</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="border-b border-slate-700">
-                            <th class="py-3 px-4 font-semibold">Tablo</th>
-                            <th class="py-3 px-4 font-semibold text-orange-400">Eski Sunucu</th>
-                            <th class="py-3 px-4 font-semibold text-green-400">Yeni Sunucu (TEST)</th>
-                            <th class="py-3 px-4 font-semibold text-center">Durum</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4 font-medium">Users</td>
-                            <td class="py-3 px-4 text-orange-400">1,569</td>
-                            <td class="py-3 px-4 text-green-400">1,569</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅ Eşit</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4 font-medium">Subscriptions</td>
-                            <td class="py-3 px-4 text-orange-400">-</td>
-                            <td class="py-3 px-4 text-green-400">1,569</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅ Oluşturuldu</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4 font-medium">Payments (completed)</td>
-                            <td class="py-3 px-4 text-orange-400">349</td>
-                            <td class="py-3 px-4 text-green-400">349</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅ Eşit</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Aktif Üyelikler -->
-        <div class="bg-slate-800 rounded-lg p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 text-purple-400">👤 Aktif Üyelikler</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="border-b border-slate-700">
-                            <th class="py-3 px-4 font-semibold">Kaynak</th>
-                            <th class="py-3 px-4 font-semibold text-right">Aktif Üye Sayısı</th>
-                            <th class="py-3 px-4 font-semibold text-center">Durum</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4">Eski Sunucu</td>
-                            <td class="py-3 px-4 text-right text-orange-400">403</td>
-                            <td class="py-3 px-4 text-center">-</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4">Yeni Sunucu (TEST)</td>
-                            <td class="py-3 px-4 text-right text-green-400">403</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅ Eşit</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Subscription Plan Dağılımı -->
-        <div class="bg-slate-800 rounded-lg p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 text-emerald-400">📦 Subscription Plan Dağılımı</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="border-b border-slate-700">
-                            <th class="py-3 px-4 font-semibold">Plan Adı</th>
-                            <th class="py-3 px-4 font-semibold text-right">Toplam</th>
-                            <th class="py-3 px-4 font-semibold text-right">Aktif</th>
-                            <th class="py-3 px-4 font-semibold text-right">Expired</th>
-                            <th class="py-3 px-4 font-semibold text-right">Aktif Oran</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4 font-medium">Ücretsiz Deneme</td>
-                            <td class="py-3 px-4 text-right">1,195</td>
-                            <td class="py-3 px-4 text-right text-green-400">80</td>
-                            <td class="py-3 px-4 text-right text-slate-500">1,115</td>
-                            <td class="py-3 px-4 text-right text-slate-400">6.7%</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4 font-medium">Premium Aylık (600 TL)</td>
-                            <td class="py-3 px-4 text-right">140</td>
-                            <td class="py-3 px-4 text-right text-green-400">89</td>
-                            <td class="py-3 px-4 text-right text-slate-500">51</td>
-                            <td class="py-3 px-4 text-right text-slate-400">63.6%</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4 font-medium">Premium Yıllık (4,000 TL)</td>
-                            <td class="py-3 px-4 text-right">234</td>
-                            <td class="py-3 px-4 text-right text-green-400">234</td>
-                            <td class="py-3 px-4 text-right text-slate-500">0</td>
-                            <td class="py-3 px-4 text-right text-green-400">100%</td>
-                        </tr>
-                        <tr class="bg-slate-700/30 font-bold">
-                            <td class="py-3 px-4">TOPLAM</td>
-                            <td class="py-3 px-4 text-right">1,569</td>
-                            <td class="py-3 px-4 text-right text-green-400">403</td>
-                            <td class="py-3 px-4 text-right text-slate-500">1,166</td>
-                            <td class="py-3 px-4 text-right text-slate-400">25.7%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Toplam Tutar -->
-        <div class="bg-slate-800 rounded-lg p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 text-yellow-400">💰 Ödeme Tutarları</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="border-b border-slate-700">
-                            <th class="py-3 px-4 font-semibold">Kaynak</th>
-                            <th class="py-3 px-4 font-semibold text-right">Toplam Tutar (TL)</th>
-                            <th class="py-3 px-4 font-semibold text-center">Durum</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4">Eski Sunucu (completed)</td>
-                            <td class="py-3 px-4 text-right text-orange-400">600,422.60 TL</td>
-                            <td class="py-3 px-4 text-center">-</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4">Yeni Sunucu (TEST)</td>
-                            <td class="py-3 px-4 text-right text-green-400">600,422.60 TL</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅ Eşit</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4 text-sm text-slate-400">
-                <p>📝 Not: Sadece "completed" statüsündeki ödemeler aktarıldı (349 ödeme)</p>
-                <p>❌ Canceled (475) ve Pending (277) ödemeler aktarılmadı</p>
-            </div>
-        </div>
-
-        <!-- Sorunlu Kayıtlar -->
-        <div class="bg-slate-800 rounded-lg p-6 mb-8 border-2 border-green-500">
-            <h2 class="text-2xl font-bold mb-4 text-green-400">🔍 Veri Kalitesi Kontrolü</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="border-b border-slate-700">
-                            <th class="py-3 px-4 font-semibold">Kontrol</th>
-                            <th class="py-3 px-4 font-semibold text-right">Sorunlu Kayıt Sayısı</th>
-                            <th class="py-3 px-4 font-semibold text-center">Durum</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4">Email eksik olanlar</td>
-                            <td class="py-3 px-4 text-right text-green-400">0</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4">Şifre eksik olanlar</td>
-                            <td class="py-3 px-4 text-right text-green-400">0</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4">Subscription olmayan users</td>
-                            <td class="py-3 px-4 text-right text-green-400">0</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅</td>
-                        </tr>
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 px-4">Subscription olmayan payments</td>
-                            <td class="py-3 px-4 text-right text-green-400">0</td>
-                            <td class="py-3 px-4 text-center text-green-400">✅</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4 p-4 bg-green-900/30 rounded border border-green-500">
-                <p class="text-green-400 font-bold">✨ Tüm veri kalitesi kontrolleri başarılı!</p>
-            </div>
-        </div>
-
-        <!-- Teknik Detaylar -->
-        <div class="bg-slate-800 rounded-lg p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 text-cyan-400">⚙️ Teknik Detaylar</h2>
-            <div class="space-y-3 text-sm">
-                <div class="flex justify-between border-b border-slate-700 pb-2">
-                    <span class="text-slate-400">Şifre Formatı:</span>
-                    <span class="text-slate-200">SHA1 (eski sistem) - Olduğu gibi korundu</span>
+        
+        <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-amber-500/30 to-amber-600/20 rounded-xl flex items-center justify-center flex-shrink-0 ring-1 ring-amber-500/30">
+                    <i class="fas fa-certificate text-2xl sm:text-3xl text-amber-400"></i>
                 </div>
-                <div class="flex justify-between border-b border-slate-700 pb-2">
-                    <span class="text-slate-400">Trial Durumu:</span>
-                    <span class="text-slate-200">Tüm kullanıcılar has_used_trial = 1</span>
-                </div>
-                <div class="flex justify-between border-b border-slate-700 pb-2">
-                    <span class="text-slate-400">Subscription Status:</span>
-                    <span class="text-slate-200">mem_expire > NOW() → active, diğerleri → expired</span>
-                </div>
-                <div class="flex justify-between border-b border-slate-700 pb-2">
-                    <span class="text-slate-400">Payment Gateway:</span>
-                    <span class="text-slate-200">Tümü 'paytr' olarak işaretlendi</span>
-                </div>
-                <div class="flex justify-between border-b border-slate-700 pb-2">
-                    <span class="text-slate-400">ID Stratejisi:</span>
-                    <span class="text-slate-200">ID 1,2 korundu, diğerleri ID 3+ olarak eklendi</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Test Tabloları:</span>
-                    <span class="text-slate-200">test_migrated_users, test_migrated_subscriptions, test_migrated_payments</span>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-0.5">
+                        Ticari Müzik Kullanım Belgesi
+                    </h1>
+                    <p class="text-gray-400 text-sm sm:text-base">Üyelik bilgilerinizi içeren resmi belgenizi oluşturun</p>
                 </div>
             </div>
+            <a href="/dashboard" class="inline-flex items-center justify-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition" data-spa="">
+                <i class="fas fa-arrow-left mr-2"></i>Geri Dön
+            </a>
         </div>
 
-        <!-- Sonraki Adımlar -->
-        <div class="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4">🚀 Sonraki Adımlar</h2>
-            <div class="space-y-2">
-                <div class="flex items-start gap-3">
-                    <div class="text-green-400 mt-1">✅</div>
-                    <div>
-                        <strong class="text-slate-200">1. Test Onaylandı</strong>
-                        <p class="text-sm text-slate-400">Tüm validation testleri başarılı</p>
+        
+        <div class="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl p-5 sm:p-6 mb-6 backdrop-blur-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-crown text-2xl text-amber-400"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-amber-400 font-semibold">Premium Üye</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400 ring-1 ring-green-500/30">
+                            <i class="fas fa-check-circle mr-1"></i>Aktif
+                        </span>
                     </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <div class="text-yellow-400 mt-1">⏳</div>
-                    <div>
-                        <strong class="text-slate-200">2. Kullanıcı Onayı Bekleniyor</strong>
-                        <p class="text-sm text-slate-400">Gerçek import için onay gerekiyor</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <div class="text-slate-500 mt-1">⏹️</div>
-                    <div>
-                        <strong class="text-slate-400">3. Gerçek Import</strong>
-                        <p class="text-sm text-slate-400">Onay sonrası canlı users/subscriptions/payments tablolarına aktarım</p>
-                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Üyelik Başlangıcı:
+                        <span class="text-white font-medium">12.01.2026</span>
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="text-center text-slate-500 text-sm mt-8 pb-4">
-            14 Ocak 2026 • Muzibu.com.tr
+        
+        <div class="bg-slate-800/50 border border-amber-500/30 rounded-xl p-4 mb-6">
+            <div class="flex gap-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-amber-400"></i>
+                </div>
+                <div class="text-sm">
+                    <p class="font-medium text-amber-400 mb-1">Önemli Bilgi</p>
+                    <ul class="space-y-1 text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-lock text-xs mt-1 text-amber-500/70"></i>
+                            <span>Sertifika bilgileri oluşturulduktan sonra değiştirilemez</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-qrcode text-xs mt-1 text-amber-500/70"></i>
+                            <span>QR kod ile güncel üyelik durumunuz doğrulanabilir</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
+
+        
+        <form action="https://muzibu.com/my-certificate/preview" method="POST" x-data="certificateForm()" x-init="init()" @submit="$el.querySelector('input[name=_token]').value = document.querySelector('meta[name=csrf-token]')?.content || $el.querySelector('input[name=_token]').value" data-alpine-initialized="true">
+            <input type="hidden" name="_token" value="38RdoCNgPCENTcqshnd3zZDdKFtMkbd8yEZBJKxr" autocomplete="off">
+            <div class="bg-slate-900/70 border border-white/10 rounded-2xl overflow-hidden">
+                
+                <div class="bg-white/5 border-b border-white/10 px-5 py-4">
+                    <h2 class="font-semibold text-white flex items-center gap-2">
+                        <i class="fas fa-edit text-amber-400"></i>
+                        Sertifika Bilgileri
+                    </h2>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Firma / Kişi Adı <span class="text-red-400">*</span>
+                        </label>
+                        <input type="text" name="member_name" x-model="memberName" @blur="formatMemberName()" class="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition" placeholder="Örn: Abc Teknoloji Ltd. Şti." required="">
+
+                        
+                        <div class="mt-2 flex items-center gap-2">
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" name="skip_correction" x-model="skipCorrection" value="1" class="w-4 h-4 rounded border-white/20 bg-slate-800 text-amber-500 focus:ring-amber-500 focus:ring-offset-0 focus:ring-offset-slate-900">
+                                <span class="text-xs text-gray-500 group-hover:text-gray-400 transition">
+                                    İstisna durumlar için tıklayın (yazım düzeltmesi yapılmasın)
+                                </span>
+                            </label>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-2" x-show="!skipCorrection">
+                            <i class="fas fa-info-circle mr-1"></i>İlk harf büyük, devamı küçük olacak şekilde otomatik düzeltilir
+                        </p>
+                        <p class="text-xs text-amber-500/70 mt-2" x-show="skipCorrection" style="display: none;">
+                            <i class="fas fa-keyboard mr-1"></i>Yazım düzeltmesi kapalı - girdiğiniz şekilde kaydedilecek
+                        </p>
+
+                                            </div>
+
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                Vergi Dairesi
+                            </label>
+                            <input type="text" name="tax_office" x-model="taxOffice" @blur="formatTaxOffice()" class="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition" placeholder="Örn: Kadıköy Vergi Dairesi">
+                                                    </div>
+
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                Vergi Numarası
+                            </label>
+                            <input type="text" name="tax_number" x-model="taxNumber" class="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition" placeholder="Örn: 1234567890">
+                                                    </div>
+                    </div>
+
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Adres
+                        </label>
+                        <textarea name="address" rows="3" x-model="address" @blur="formatAddress()" class="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition resize-none" placeholder="Örn: Atatürk Caddesi No:15 Kadıköy/İstanbul"></textarea>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fas fa-info-circle mr-1"></i>Her kelimenin ilk harfi otomatik büyütülür
+                        </p>
+                                            </div>
+                </div>
+
+                
+                <div class="bg-slate-800/30 border-t border-white/10 p-5 sm:p-6">
+                    
+                    <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-5">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" name="confirmed" value="1" required="" class="mt-0.5 w-5 h-5 rounded border-amber-500/50 bg-slate-800 text-amber-500 focus:ring-amber-500 focus:ring-offset-0">
+                            <span class="text-sm text-gray-300 leading-relaxed">
+                                Yukarıdaki bilgilerin doğru olduğunu ve oluşturulduktan sonra
+                                <strong class="text-amber-400">değiştirilemeyeceğini</strong>
+                                onaylıyorum.
+                            </span>
+                        </label>
+                                            </div>
+
+                    
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black font-bold py-4 rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 flex items-center justify-center gap-2 text-base">
+                        <i class="fas fa-eye"></i>
+                        Ön İzleme
+                    </button>
+                </div>
+            </div>
+        </form>
+
     </div>
-</body>
-</html>
+</div>
+
+                        
+                    </div>

@@ -48,7 +48,7 @@ Telegram Ayarları:
 **Tinker ile test:**
 ```bash
 # Tenant context'e gir
-php artisan tenants:run --tenant=muzibu.com.tr "
+php artisan tenants:run --tenant=muzibu.com "
     \$service = new \Modules\AI\App\Services\TelegramNotificationService();
     print_r(\$service->testConnection());
 "
@@ -67,7 +67,7 @@ php artisan tenants:run --tenant=muzibu.com.tr "
 # 1. Tenant context'e gir
 php artisan tinker
 
-# 2. Tenant seç (örn: Tenant 1001 - muzibu.com.tr)
+# 2. Tenant seç (örn: Tenant 1001 - muzibu.com)
 tenancy()->initialize(1001);
 
 # 3. Ayarları oluştur

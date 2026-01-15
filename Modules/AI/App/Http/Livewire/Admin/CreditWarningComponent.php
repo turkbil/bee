@@ -86,13 +86,6 @@ class CreditWarningComponent extends Component
             $this->evaluateCreditStatus($tenant, $cacheKey);
             $this->prepareCreditDetails($tenant);
 
-            Log::debug('🔄 Credit balance refreshed', [
-                'tenant_id' => $tenant->id,
-                'balance' => $this->currentBalance,
-                'warning_type' => $this->warningType,
-                'show_warning' => $this->showWarning
-            ]);
-
         } catch (\Exception $e) {
             Log::error('❌ Credit balance refresh failed', [
                 'error' => $e->getMessage(),

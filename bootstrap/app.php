@@ -52,8 +52,10 @@ $app = Application::configure(basePath: dirname(__DIR__))
                      \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO
         );
 
-        // 0.5. WWW REDIRECT - www → non-www (Laravel middleware - Nginx .htaccess okumadığı için)
-        $middleware->prependToGroup('web', \App\Http\Middleware\RemoveWwwPrefix::class);
+        // 0.5. WWW REDIRECT - DEVRE DIŞI!
+        // 🚨 .htaccess'te non-www → www yönlendirmesi var
+        // RemoveWwwPrefix (www → non-www) + .htaccess (non-www → www) = SONSUZ DÖNGÜ!
+        // $middleware->prependToGroup('web', \App\Http\Middleware\RemoveWwwPrefix::class);
 
         // 🔐 CRITICAL FIX: Ensure web middleware defaults are NOT removed
         // Laravel 11 automatically includes: StartSession, VerifyCsrfToken, SubstituteBindings
@@ -91,7 +93,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
         // 9. LIVEWIRE JSON SANITIZER - Livewire JSON responses için UTF-8 sanitization
         $middleware->appendToGroup('web', \App\Http\Middleware\LivewireJsonSanitizer::class);
 
-        // 10. UNDER CONSTRUCTION PROTECTION - Tenant 1001 (muzibu.com.tr) için şifre koruması
+        // 10. UNDER CONSTRUCTION PROTECTION - Tenant 1001 (muzibu.com) için şifre koruması
         $middleware->appendToGroup('web', \App\Http\Middleware\UnderConstructionProtection::class);
 
         // Middleware alias tanımları

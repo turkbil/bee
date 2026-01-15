@@ -7,9 +7,9 @@ namespace Modules\AI\App\Services\Tenant1001;
 use Modules\AI\App\Contracts\TenantPromptServiceInterface;
 
 /**
- * Tenant 1001 (muzibu.com.tr) Prompt Service
+ * Tenant 1001 (muzibu.com) Prompt Service
  *
- * Bu servis SADECE tenant 1001 (muzibu.com.tr) için kullanılır.
+ * Bu servis SADECE tenant 1001 (muzibu.com) için kullanılır.
  *
  * Tenant-specific özellikler:
  * - Samimi "sen" hitabı (müzik platformu için uygun)

@@ -50,7 +50,7 @@ php artisan route:cache
 
 # OPcache reset (web üzerinden)
 echo "🔄 OPcache reset..."
-curl -s -k https://muzibu.com.tr/opcache-reset.php > /dev/null
+curl -s -k https://muzibu.com/opcache-reset.php > /dev/null
 curl -s -k https://ixtif.com/opcache-reset.php > /dev/null
 
 echo ""

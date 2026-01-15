@@ -43,13 +43,6 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        // 🔍 LOGIN DEBUG: Login denemesini logla
-        \Log::info('🔐 LOGIN ATTEMPT', [
-            'email' => $this->email,
-            'tenant_id' => tenant()->id ?? null,
-            'ip' => $this->ip(),
-        ]);
-
         // 🔐 MD5 LEGACY SUPPORT: SADECE Tenant 1001 (Muzibu) için - Eski siteden gelen kullanıcılar
         $user = User::where('email', $this->email)->first();
 

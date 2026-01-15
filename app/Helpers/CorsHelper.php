@@ -46,7 +46,7 @@ class CorsHelper
                 return [
                     'https://tuufi.com',
                     'https://ixtif.com',
-                    'https://muzibu.com.tr',
+                    'https://muzibu.com',
                     'http://localhost',
                 ];
             }

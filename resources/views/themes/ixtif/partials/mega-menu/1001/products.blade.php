@@ -1,5 +1,5 @@
 {{-- Tenant 1001 (Muzibu.com.tr) - Müzik Platformu Mega Menu --}}
-{{-- ⚠️ DO NOT REMOVE - Tenant-specific mega menu for muzibu.com.tr --}}
+{{-- ⚠️ DO NOT REMOVE - Tenant-specific mega menu for muzibu.com --}}
 
 @php
 // 🛡️ Admin sayfalarında mega-menu render etme
@@ -12,7 +12,7 @@ if (!function_exists('tenant') || !tenant()) {
     return;
 }
 
-// 🛡️ Sadece Tenant 1001 için (muzibu.com.tr)
+// 🛡️ Sadece Tenant 1001 için (muzibu.com)
 if (tenant()->id !== 1001) {
     return;
 }

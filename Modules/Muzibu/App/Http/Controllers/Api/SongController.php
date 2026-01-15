@@ -287,11 +287,6 @@ class SongController extends Controller
                 $hlsPath = storage_path('app/public/' . $song->hls_path);
 
                 if (file_exists($hlsPath)) {
-                    \Log::info('Serving HLS playlist', [
-                        'song_id' => $song->song_id,
-                        'hls_path' => $song->hls_path
-                    ]);
-
                     return response()->file($hlsPath, [
                         'Content-Type' => 'application/vnd.apple.mpegurl',
                         'Cache-Control' => 'public, max-age=3600',
@@ -329,7 +324,6 @@ class SongController extends Controller
             if (empty($song->hls_path)) {
                 try {
                     \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
-                    \Log::info('HLS conversion queued', ['song_id' => $song->song_id]);
                 } catch (\Exception $e) {
                     \Log::error('HLS queue error:', ['song_id' => $song->song_id, 'error' => $e->getMessage()]);
                 }

@@ -129,23 +129,12 @@ Route::prefix('muzibu')->group(function () {
             $isError = true;
         }
 
-        // 🎯 LOG ROUTING
+        // 🎯 LOG ROUTING - Sadece hatalar loglanır
         if ($isError) {
             // ❌ HATA → player-errors.log (ERROR level)
             \Illuminate\Support\Facades\Log::channel('player-errors')->error('🎵 PLAYER ERROR', $logData);
-        } else {
-            // ✅ Normal → laravel.log (INFO level, minimal)
-            // Sadece önemli action'ları logluyoruz (spam önleme)
-            $importantActions = [
-                'scriptLoaded', 'playSongStart', 'refillAttempt',
-                'contextCreated', 'nextTrack', 'onTrackEnded'
-            ];
-
-            if (in_array($action, $importantActions)) {
-                \Illuminate\Support\Facades\Log::channel('single')->info('🎵 PLAYER DEBUG', $logData);
-            }
-            // Diğer normal action'lar hiç loglanmaz (trackHit, mediaSessionUpdate vb.)
         }
+        // Normal action'lar loglanmaz (gereksiz INFO spam önleme)
 
         return response()->json(['logged' => true]);
     })->name('api.muzibu.debug-log')

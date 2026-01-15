@@ -36,10 +36,6 @@ class MergeGuestCartOnLogin
         $guestCart = $this->cartService->getCart(null, $sessionId);
 
         if (!$guestCart || $guestCart->items()->count() === 0) {
-            Log::info('No guest cart to merge', [
-                'user_id' => $user->id,
-                'session_id' => $sessionId,
-            ]);
             return; // Misafir sepeti yok, merge gerekmez
         }
 

@@ -1,7 +1,7 @@
 # 🎵 Muzibu Context Menu Sistemi - Detaylı Master Plan
 
 **Tarih:** 05 Aralık 2025
-**Tenant:** 1001 (muzibu.com.tr)
+**Tenant:** 1001 (muzibu.com)
 **Teknoloji:** Alpine.js + Tailwind CSS + Laravel
 
 ---

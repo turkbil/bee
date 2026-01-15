@@ -59,7 +59,7 @@
         @if($certificate->tax_number)<td><div class="lbl">VERGİ NO</div><div class="val">{{ $certificate->tax_number }}</div></td>@endif
     </tr></table>
     @if($certificate->address)<div class="addr"><div class="addr-lbl">KAYITLI ADRES</div><div class="addr-txt">{{ $certificate->address }}</div></div>@endif
-    <div class="footer">Bu belge Muzibu A.Ş. tarafından elektronik ortamda düzenlenmiştir. · <b>muzibu.com.tr</b></div>
+    <div class="footer">Bu belge Muzibu A.Ş. tarafından elektronik ortamda düzenlenmiştir. · <b>muzibu.com</b></div>
 </td>
 </tr></table>
 </div></div>

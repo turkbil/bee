@@ -538,7 +538,6 @@ class Order extends BaseModel
                 "Tarih: " . now()->format('d.m.Y H:i') . "\n" .
                 "Toplam: " . number_format((float) $payment->amount, 2, ',', '.') . " ₺\n\n" .
                 "ÜRÜNLER:\n{$items}\n\n" .
-                "Siparişiniz en kısa sürede hazırlanacaktır.\n\n" .
                 "Teşekkürler,\n{$siteName}",
                 function ($message) use ($siteName) {
                     $message->to($this->customer_email)

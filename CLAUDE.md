@@ -72,7 +72,7 @@ npm run prod
 ```bash
 php artisan cache:clear && php artisan config:clear && php artisan route:clear && \
 php artisan view:clear && php artisan responsecache:clear && \
-curl -s -k https://muzibu.com.tr/opcache-reset.php && \
+curl -s -k https://muzibu.com/opcache-reset.php && \
 php artisan config:cache && php artisan route:cache
 ```
 
@@ -122,7 +122,7 @@ public/readme/2026/01/14/blog-analiz/
 └── index.html      ← v2'nin kopyası
 ```
 
-**Link verirken:** `https://muzibu.com.tr/readme/2026/01/14/blog-analiz/`
+**Link verirken:** `https://muzibu.com/readme/2026/01/14/blog-analiz/`
 
 ---
 
@@ -281,7 +281,7 @@ Konum: `readme/claude-docs/todo/YYYY/MM/DD/todo-HH-MM-konu.md`
 |----|--------|----------|--------|
 | 1 | tuufi.com | tuufi_4ekim | Central |
 | 2 | ixtif.com | tenant_ixtif | Endüstriyel |
-| 1001 | muzibu.com.tr | tenant_muzibu_1528d0 | Müzik |
+| 1001 | muzibu.com | tenant_muzibu_1528d0 | Müzik |
 
 **Detaylı bilgi:** `TENANT_LIST.md`
 

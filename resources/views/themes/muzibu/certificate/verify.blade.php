@@ -193,6 +193,16 @@
             @endif
         @endif
 
+        {{-- Ticari Müzik Yayın Lisansı --}}
+        <div class="mt-4 bg-slate-900/50 rounded-lg p-6">
+            <div class="text-xs text-slate-500 tracking-widest mb-4">MUZİBU TİCARİ MÜZİK YAYIN LİSANSI</div>
+            <div class="space-y-3 text-sm text-slate-400 leading-relaxed">
+                <p>Muzibu, yalnızca kendisinin ürettiği ve tüm yayın hakları tamamen kendisine ait olan içerikleri kullanarak ticari işletmelere müzik yayın hizmeti sunar. Bu lisans, Muzibu altyapısı üzerinden sağlanan müzik yayınlarının herhangi bir üçüncü taraf telif kuruluşundan ek bir lisans gerektirmediğini beyan eder.</p>
+                <p>Bu lisans kapsamında sunulan tüm müzik içeriklerinin telif hakları %100 Muzibu'ya aittir. Yayında kullanılan müzikler, ticari işletmelerde ve kamusal alanlarda çalınmaya uygundur. Ancak Muzibu hizmeti alınan süre boyunca, işletmede Muzibu dışındaki başka kaynaklardan yapılan müzik yayınları bu lisans kapsamı dışındadır.</p>
+                <p class="text-slate-300 font-medium">MUZİBU MEDYA YAPIM A.Ş.</p>
+            </div>
+        </div>
+
         {{-- Yasal Bilgilendirme --}}
         <div class="mt-4 bg-slate-900/50 rounded-lg p-6">
             <div class="text-xs text-slate-500 tracking-widest mb-4">YASAL BİLGİLENDİRME</div>

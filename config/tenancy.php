@@ -15,8 +15,6 @@ return [
         env('APP_DOMAIN', 'laravel.test'),
         'tuufi.com',
         'www.tuufi.com',
-        'muzibu.com',
-        'www.muzibu.com.tr',
     ],
 
     /**

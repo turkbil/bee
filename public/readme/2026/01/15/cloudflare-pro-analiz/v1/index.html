@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare Pro Analiz - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-header { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .feature-card { transition: all 0.3s ease; }
+        .feature-card:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .priority-high { border-left: 4px solid #22c55e; }
+        .priority-medium { border-left: 4px solid #eab308; }
+        .priority-low { border-left: 4px solid #64748b; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="gradient-header py-8 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i class="fab fa-cloudflare text-3xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Cloudflare Pro Analiz</h1>
+                    <p class="text-orange-100">Muzibu.com - Ücretli Plan Özellik Rehberi</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-3 mt-4">
+                <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Pro Plan: $20/ay</span>
+                <span class="px-3 py-1 bg-white/20 rounded-full text-sm">25 Cache Rules</span>
+                <span class="px-3 py-1 bg-white/20 rounded-full text-sm">20 WAF Rules</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Basit Anlatım -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-500/30 rounded-xl p-6 mb-8">
+                <h2 class="text-xl font-bold text-orange-400 mb-4">
+                    <i class="fas fa-lightbulb mr-2"></i>Basit Anlatım (Herkes İçin)
+                </h2>
+                <div class="space-y-4 text-slate-300">
+                    <p><strong>Cloudflare Pro nedir?</strong> Sitenizi hızlandıran, güvenliğini sağlayan ve dünya çapında dağıtan bir hizmet. Ücretsiz versiyona göre çok daha fazla kontrol ve koruma sağlar.</p>
+                    <p><strong>Ne işe yarar?</strong></p>
+                    <ul class="list-disc list-inside ml-4 space-y-2">
+                        <li><strong>Hız:</strong> Müzik dosyaları, görseller ve sayfalar kullanıcılara çok daha hızlı ulaşır</li>
+                        <li><strong>Güvenlik:</strong> Hackerlar, botlar ve kötü niyetli saldırılar otomatik engellenir</li>
+                        <li><strong>Maliyet:</strong> Sunucu trafiğiniz azalır, sunucu yükü düşer</li>
+                        <li><strong>Süreklilik:</strong> DDoS saldırılarına karşı koruma, site hep açık kalır</li>
+                    </ul>
+                    <p><strong>Neden önemli?</strong> Muzibu gibi müzik streaming platformu için hız kritik. Şarkılar hızlı yüklenmeli, görseller optimize olmalı, saldırılara karşı koruma şart.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öncelik Göstergesi -->
+        <section class="mb-8">
+            <div class="flex flex-wrap gap-4 justify-center">
+                <div class="flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-lg">
+                    <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                    <span class="text-sm">Yüksek Öncelik - Hemen Aktifleştir</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-lg">
+                    <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                    <span class="text-sm">Orta Öncelik - Test Et</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-lg">
+                    <span class="w-3 h-3 bg-slate-500 rounded-full"></span>
+                    <span class="text-sm">Düşük Öncelik / Opsiyonel</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 1: CDN & CACHE -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-server text-blue-400"></i>
+                1. CDN & Cache Özellikleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <!-- Cache Rules -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-cogs mr-2"></i>Cache Rules (25 Adet)
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">HEMEN AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Hangi içeriklerin ne kadar süre cache'leneceğini detaylı kontrol edin.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Önerilen Kurallar:</h4>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><code>/storage/*</code> → 30 gün cache (görseller)</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><code>/css/*</code> <code>/js/*</code> → 7 gün cache</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><code>/thumbmaker/*</code> → 30 gün cache</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><code>/fonts/*</code> → 1 yıl cache</li>
+                            <li><i class="fas fa-times text-red-400 mr-2"></i><code>/admin/*</code> → Cache BYPASS</li>
+                            <li><i class="fas fa-times text-red-400 mr-2"></i><code>/api/*</code> → Cache BYPASS</li>
+                            <li><i class="fas fa-times text-red-400 mr-2"></i><code>/livewire/*</code> → Cache BYPASS</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Cloudflare → Caching → Cache Rules
+                    </div>
+                </div>
+
+                <!-- Tiered Cache -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-layer-group mr-2"></i>Tiered Cache (Smart Topology)
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">HEMEN AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Origin sunucuya gelen istekleri %90'a kadar azaltır. Cloudflare kendi içinde cache paylaşır.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Nasıl Çalışır:</h4>
+                        <div class="text-sm text-slate-300">
+                            <p>Kullanıcı → En Yakın Edge → Bölgesel Cache → Origin</p>
+                            <p class="mt-2 text-green-400">✓ Origin sunucu yükü dramatik şekilde düşer</p>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Cloudflare → Caching → Tiered Cache → Enable Smart Tiered Cache
+                    </div>
+                </div>
+
+                <!-- Browser Cache TTL -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-clock mr-2"></i>Browser Cache TTL
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">HEMEN AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Pro ile minimum 2 dakikaya inebilirsiniz. Varsayılan 4 saat yeterli, ancak static dosyalar için artırın.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Önerilen Değerler:</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>Genel: <strong>4 saat</strong> (varsayılan)</li>
+                            <li>Static dosyalar: Page Rule ile <strong>1 ay</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Cloudflare → Caching → Configuration → Browser Cache TTL
+                    </div>
+                </div>
+
+                <!-- Always Online -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-life-ring mr-2"></i>Always Online
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Sunucu çökerse, Cloudflare cache'den eski sayfaları gösterir. Pro'da 15 günde bir crawl yapar.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-slate-300">Sunucu bakımı veya arıza durumunda kullanıcılar tamamen boş sayfa yerine cache'lenmiş içerik görür.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Cloudflare → Caching → Configuration → Always Online: ON
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: GÜVENLİK -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-shield-alt text-red-400"></i>
+                2. Güvenlik Özellikleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <!-- WAF Managed Rules -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-fire-alt mr-2"></i>WAF Managed Rulesets
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">KRİTİK</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Cloudflare'ın hazır güvenlik kuralları. SQL injection, XSS gibi saldırıları otomatik engeller.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Aktifleştirilecek Rulesets:</h4>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Cloudflare Managed Ruleset</strong> - Yeni tehditlere karşı</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><strong>OWASP Core Ruleset</strong> - SQL/XSS koruması</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Exposed Credentials Check</strong> - Çalıntı şifre kontrolü</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-sm text-yellow-400">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        İlk önce "Log" modunda çalıştır, 1 hafta izle, sonra "Block" yap.
+                    </div>
+
+                    <div class="text-xs text-slate-500 mt-3">
+                        <strong>Konum:</strong> Security → WAF → Managed Rules → Deploy
+                    </div>
+                </div>
+
+                <!-- WAF Custom Rules -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-gavel mr-2"></i>WAF Custom Rules (20 Adet)
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">ÖNEMLİ</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Kendi özel güvenlik kurallarınızı yazın.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Önerilen Kurallar:</h4>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><strong>1. Admin Koruması:</strong> <code>/admin/*</code> sadece TR IP'lerden</li>
+                            <li><strong>2. API Rate Limit:</strong> <code>/api/*</code> dakikada max 100 istek</li>
+                            <li><strong>3. Bad Bot Block:</strong> Bilinen kötü user-agent'ları engelle</li>
+                            <li><strong>4. Country Block:</strong> Spam ülkelerini engelle (RU, CN, vb.)</li>
+                            <li><strong>5. Path Traversal:</strong> <code>../</code> içeren URL'leri engelle</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Security → WAF → Custom Rules → Create Rule
+                    </div>
+                </div>
+
+                <!-- Super Bot Fight Mode -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-robot mr-2"></i>Super Bot Fight Mode
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Kötü niyetli botları (scraper, spam) otomatik algılar ve engeller.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Ayarlar:</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>✓ Definitely Automated: <strong>Block</strong></li>
+                            <li>✓ Likely Automated: <strong>Managed Challenge</strong></li>
+                            <li>✓ Verified Bots (Google, Bing): <strong>Allow</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Security → Bots → Configure Super Bot Fight Mode
+                    </div>
+                </div>
+
+                <!-- DDoS Protection -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-bolt mr-2"></i>DDoS Protection
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">VARSAYILAN AÇIK</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Otomatik DDoS koruması zaten aktif. Sensitivity ayarlarını kontrol edin.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>✓ HTTP DDoS Attack Protection: <strong>High</strong></li>
+                            <li>✓ Network Layer DDoS: <strong>Enabled</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Security → DDoS → HTTP DDoS attack protection
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: PERFORMANS -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-tachometer-alt text-purple-400"></i>
+                3. Performans Optimizasyonları
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <!-- Polish (Image Optimization) -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-image mr-2"></i>Polish (Görsel Optimizasyonu)
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">HEMEN AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Görselleri otomatik sıkıştırır, WebP formatına çevirir. Bant genişliği %30-50 azalır.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Önerilen Ayar:</h4>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Lossy</strong> seç (daha küçük boyut, görsel kalite yeterli)</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><strong>WebP</strong> dönüşümü aktif</li>
+                        </ul>
+                        <p class="text-xs text-slate-400 mt-2">Müzik kapakları, avatarlar, playlist görselleri otomatik optimize olur.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Speed → Optimization → Image Optimization → Polish: Lossy + WebP
+                    </div>
+                </div>
+
+                <!-- Rocket Loader -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-rocket mr-2"></i>Rocket Loader
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">DİKKATLİ TEST ET</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">JavaScript yüklemeyi optimize eder. Ancak player gibi JS-yoğun sayfalarda sorun çıkarabilir.</p>
+
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-sm text-red-400 mb-4">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <strong>Dikkat:</strong> Muzibu player Alpine.js kullanıyor. Rocket Loader sorun çıkarabilir. Önce test et!
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Test Planı:</h4>
+                        <ol class="text-sm text-slate-300 space-y-1 list-decimal list-inside">
+                            <li>Aktifleştir</li>
+                            <li>Anasayfa ve player'ı test et</li>
+                            <li>Console hatası varsa KAPAT</li>
+                        </ol>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Speed → Optimization → Content Optimization → Rocket Loader
+                    </div>
+                </div>
+
+                <!-- Auto Minify -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-compress-alt mr-2"></i>Auto Minify
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">HTML, CSS, JavaScript dosyalarındaki gereksiz boşlukları kaldırır.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>JavaScript: <strong>ON</strong></li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>CSS: <strong>ON</strong></li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>HTML: <strong>ON</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Speed → Optimization → Content Optimization → Auto Minify
+                    </div>
+                </div>
+
+                <!-- Brotli Compression -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-file-archive mr-2"></i>Brotli Compression
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Gzip'ten %15-20 daha iyi sıkıştırma. Modern tarayıcılar destekler.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-slate-300">Tüm text tabanlı dosyalar (HTML, CSS, JS, JSON) otomatik Brotli ile sıkıştırılır.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Speed → Optimization → Content Optimization → Brotli: ON
+                    </div>
+                </div>
+
+                <!-- Early Hints -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-forward mr-2"></i>Early Hints (103)
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Sunucu yanıt vermeden önce tarayıcıya "bu CSS/JS dosyalarını önceden yükle" der.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-slate-300">LCP (Largest Contentful Paint) skorunu iyileştirir. SEO için önemli.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Speed → Optimization → Protocol Optimization → Early Hints
+                    </div>
+                </div>
+
+                <!-- HTTP/2 & HTTP/3 -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-network-wired mr-2"></i>HTTP/2 & HTTP/3 (QUIC)
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">KONTROL ET</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Modern protokoller. HTTP/3 mobilde özellikle hızlı.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>HTTP/2: <strong>ON</strong> (varsayılan)</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>HTTP/3 (QUIC): <strong>ON</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Network → HTTP/2 ve HTTP/3 (with QUIC)
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: SSL/TLS -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-lock text-cyan-400"></i>
+                4. SSL/TLS Güvenliği
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <!-- SSL Mode -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-certificate mr-2"></i>SSL/TLS Mode
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">KONTROL ET</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Cloudflare ile sunucu arasındaki bağlantı şifreleme seviyesi.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Önerilen:</h4>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Full (Strict)</strong> - En güvenli</li>
+                            <li class="text-xs text-slate-400">Sunucuda geçerli SSL sertifikası olmalı</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> SSL/TLS → Overview → Full (strict)
+                    </div>
+                </div>
+
+                <!-- Always Use HTTPS -->
+                <div class="feature-card priority-high bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-green-400">
+                            <i class="fas fa-shield-alt mr-2"></i>Always Use HTTPS
+                        </h3>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Tüm HTTP trafiğini otomatik HTTPS'e yönlendirir.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-slate-300">301 redirect ile SEO dostu yönlendirme.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> SSL/TLS → Edge Certificates → Always Use HTTPS: ON
+                    </div>
+                </div>
+
+                <!-- Minimum TLS Version -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-key mr-2"></i>Minimum TLS Version
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">GÜNCELLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Eski TLS versiyonlarını engelle.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-slate-300">TLS 1.2 minimum ayarla. TLS 1.0/1.1 güvensiz.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> SSL/TLS → Edge Certificates → Minimum TLS Version: 1.2
+                    </div>
+                </div>
+
+                <!-- HSTS -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-user-shield mr-2"></i>HSTS
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Tarayıcıya "bu site her zaman HTTPS" der. Man-in-the-middle saldırılarını önler.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>Max Age: <strong>6 ay (15552000)</strong></li>
+                            <li>Include Subdomains: <strong>ON</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> SSL/TLS → Edge Certificates → HTTP Strict Transport Security (HSTS)
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BÖLÜM 5: EK ARAÇLAR -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-tools text-amber-400"></i>
+                5. Ek Araçlar & Özellikler
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <!-- Page Rules -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-file-alt mr-2"></i>Page Rules (Pro: Unlimited Satın Alınabilir)
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">YAPILANDIR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Belirli URL'ler için özel davranışlar tanımla.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-bold text-white mb-2">Önerilen Rules:</h4>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><strong>1.</strong> <code>*muzibu.com/admin/*</code> → Cache Level: Bypass, Security: High</li>
+                            <li><strong>2.</strong> <code>*muzibu.com/storage/*</code> → Cache Level: Cache Everything, Edge TTL: 1 month</li>
+                            <li><strong>3.</strong> <code>*muzibu.com/api/*</code> → Cache Level: Bypass</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Rules → Page Rules
+                    </div>
+                </div>
+
+                <!-- Argo Smart Routing (Ek Ücretli) -->
+                <div class="feature-card priority-low bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-slate-400">
+                            <i class="fas fa-route mr-2"></i>Argo Smart Routing
+                        </h3>
+                        <span class="px-2 py-1 bg-slate-500/20 text-slate-400 text-xs rounded">EK ÜCRET: $5/ay+</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Cloudflare ağında en hızlı rotayı bulur. %30 hız artışı sağlayabilir.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-slate-300">İsteğe bağlı ek özellik. Yoğun trafik varsa değerlendirilebilir.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Traffic → Argo Smart Routing
+                    </div>
+                </div>
+
+                <!-- Crawler Hints -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-spider mr-2"></i>Crawler Hints
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">SEO İÇİN</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Arama motoru botlarına içerik değişikliklerini bildirir. SEO için faydalı.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-slate-300">Google, Bing gibi botlar değişen sayfaları daha hızlı indexler.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Caching → Configuration → Crawler Hints: ON
+                    </div>
+                </div>
+
+                <!-- Analytics -->
+                <div class="feature-card priority-medium bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-yellow-400">
+                            <i class="fas fa-chart-bar mr-2"></i>Web Analytics
+                        </h3>
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">AKTİFLEŞTİR</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Privacy-first analytics. Cookie gerektirmez, GDPR uyumlu.</p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-slate-300">Google Analytics'e ek olarak veya alternatif olarak kullanılabilir.</p>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        <strong>Konum:</strong> Analytics → Web Analytics
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- EYLEM PLANI -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-tasks text-emerald-400"></i>
+                Eylem Planı (Adım Adım)
+            </h2>
+
+            <div class="bg-slate-800 rounded-xl p-6">
+                <div class="space-y-4">
+
+                    <div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
+                        <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold">1</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">SSL/TLS Ayarları</h4>
+                            <p class="text-slate-400 text-sm">Full (Strict) mod, Always HTTPS, TLS 1.2 minimum, HSTS aktif</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
+                        <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold">2</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">WAF Managed Rulesets Aktifleştir</h4>
+                            <p class="text-slate-400 text-sm">Cloudflare Managed + OWASP → İlk hafta LOG modunda</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
+                        <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold">3</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Super Bot Fight Mode Aç</h4>
+                            <p class="text-slate-400 text-sm">Definitely Automated: Block, Verified Bots: Allow</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
+                        <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold">4</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Cache Ayarları</h4>
+                            <p class="text-slate-400 text-sm">Tiered Cache ON, Cache Rules oluştur (static: 30 gün, admin/api: bypass)</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
+                        <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold">5</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Performans Optimizasyonları</h4>
+                            <p class="text-slate-400 text-sm">Polish (Lossy+WebP), Auto Minify (HTML/CSS/JS), Brotli, Early Hints, HTTP/3</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
+                        <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold">6</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Custom WAF Rules</h4>
+                            <p class="text-slate-400 text-sm">Admin TR-only, API rate limit, bad bot block, path traversal block</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
+                        <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold">7</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Test: Rocket Loader</h4>
+                            <p class="text-slate-400 text-sm">Aktifleştir → Player'ı test et → Sorun varsa kapat</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
+                        <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold">8</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">1 Hafta Sonra: WAF'ı Block Moduna Al</h4>
+                            <p class="text-slate-400 text-sm">Security Events'ı kontrol et, false positive varsa exception ekle</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Özet -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-700 border border-slate-600 rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-4">
+                    <i class="fas fa-code mr-2 text-purple-400"></i>Teknik Özet (Geliştiriciler İçin)
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <h3 class="font-bold text-slate-300 mb-2">Cache Rules Limitleri:</h3>
+                        <ul class="text-slate-400 space-y-1">
+                            <li>• Pro: 25 cache rules</li>
+                            <li>• Edge Cache TTL min: 1 saat</li>
+                            <li>• Browser TTL min: 2 dakika</li>
+                            <li>• Purge rate: 5 req/sec</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-300 mb-2">WAF Limitleri:</h3>
+                        <ul class="text-slate-400 space-y-1">
+                            <li>• Pro: 20 custom WAF rules</li>
+                            <li>• Managed rulesets: Sınırsız</li>
+                            <li>• Rate limiting: Dahil</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-300 mb-2">Bypass Edilecek Pathler:</h3>
+                        <ul class="text-slate-400 space-y-1">
+                            <li>• <code>/admin/*</code></li>
+                            <li>• <code>/api/*</code></li>
+                            <li>• <code>/livewire/*</code></li>
+                            <li>• <code>/horizon/*</code></li>
+                            <li>• <code>/sanctum/*</code></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-300 mb-2">Cache Edilecek Pathler:</h3>
+                        <ul class="text-slate-400 space-y-1">
+                            <li>• <code>/storage/*</code> (30 gün)</li>
+                            <li>• <code>/css/*</code> <code>/js/*</code> (7 gün)</li>
+                            <li>• <code>/thumbmaker/*</code> (30 gün)</li>
+                            <li>• <code>/fonts/*</code> (1 yıl)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kaynaklar -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-external-link-alt mr-2 text-blue-400"></i>Kaynaklar
+            </h2>
+            <div class="flex flex-wrap gap-3">
+                <a href="https://www.cloudflare.com/plans/pro/" target="_blank" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-blue-400">
+                    <i class="fas fa-link mr-2"></i>Pro Plan Overview
+                </a>
+                <a href="https://developers.cloudflare.com/cache/plans/" target="_blank" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-blue-400">
+                    <i class="fas fa-link mr-2"></i>Cache Features by Plan
+                </a>
+                <a href="https://developers.cloudflare.com/waf/" target="_blank" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-blue-400">
+                    <i class="fas fa-link mr-2"></i>WAF Documentation
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700 py-6 text-center text-slate-500 text-sm">
+        15 Ocak 2026 • Muzibu.com
+    </footer>
+
+</body>
+</html>

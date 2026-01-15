@@ -197,7 +197,8 @@
             </div>
         </div>
 
-        {{-- Playlists - Horizontal Scroll (Spotify Style) --}}
+        {{-- Playlists - DISABLED (2026-01-15) --}}
+        {{--
         @if($playlists->count() > 0)
         <div class="mb-6 sm:mb-8 relative group/scroll" x-data="{
             scrollContainer: null,
@@ -224,7 +225,6 @@
                 </a>
             </div>
 
-            {{-- Left Arrow --}}
             <button
                 @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
                 @mouseenter="startAutoScroll('left')"
@@ -234,7 +234,6 @@
                 <i class="fas fa-chevron-left"></i>
             </button>
 
-            {{-- Right Arrow --}}
             <button
                 @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
                 @mouseenter="startAutoScroll('right')"
@@ -270,6 +269,7 @@
             </div>
         </div>
         @endif
+        --}}
 
         {{-- Corporate Section (Alt Üye veya Kurumsal Değil) --}}
         @if($corporate && !$corporate['is_owner'])

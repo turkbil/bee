@@ -91,7 +91,10 @@ const MuzibuSpaRouter = {
             if (href.startsWith('http') || href.startsWith('//')) {
                 try {
                     const linkUrl = new URL(href, window.location.origin);
-                    if (linkUrl.origin !== window.location.origin) {
+                    // 🔥 FIX: www-tolerant origin check (www.domain.com == domain.com)
+                    // Laravel route() helper bazen www'suz URL üretiyor
+                    const normalizeOrigin = (origin) => origin.replace('://www.', '://');
+                    if (normalizeOrigin(linkUrl.origin) !== normalizeOrigin(window.location.origin)) {
                         return; // External link, let it navigate normally
                     }
                 } catch (e) {
@@ -327,9 +330,23 @@ const MuzibuSpaRouter = {
      * Navigate to URL using SPA
      */
     async navigateTo(url) {
-        history.pushState({ url: url }, '', url);
+        // 🔥 FIX: URL'yi mevcut origin'e normalize et (CORS sorunu önleme)
+        // Laravel route() www'suz URL üretebilir, biz www'lu origin'deyiz
+        let normalizedUrl = url;
+        if (url.startsWith('http')) {
+            try {
+                const urlObj = new URL(url);
+                const currentOrigin = window.location.origin;
+                // Sadece path + query + hash'i al, origin'i mevcut ile değiştir
+                normalizedUrl = currentOrigin + urlObj.pathname + urlObj.search + urlObj.hash;
+            } catch (e) {
+                // URL parse hatası, orijinali kullan
+            }
+        }
+
+        history.pushState({ url: normalizedUrl }, '', normalizedUrl);
         // 🔧 FIX: Use MuzibuSpaRouter.loadPage with correct context
-        await MuzibuSpaRouter.loadPage.call(this, url, true);
+        await MuzibuSpaRouter.loadPage.call(this, normalizedUrl, true);
     },
 
     /**

@@ -54,7 +54,7 @@
 
     {{-- CTA Buttons --}}
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="mailto:info@muzibu.com.tr?subject=Kurumsal%20Playlist%20Talebi%20-%20{{ urlencode($corporate->company_name) }}"
+        <a href="mailto:info@muzibu.com?subject=Kurumsal%20Playlist%20Talebi%20-%20{{ urlencode($corporate->company_name) }}"
            class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-full transition-all transform hover:scale-105 shadow-lg hover:shadow-amber-500/30">
             <i class="fas fa-envelope text-xl"></i>
             <span>{{ __('muzibu::front.corporate.contact_for_playlists') }}</span>

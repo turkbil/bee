@@ -132,7 +132,7 @@
             @if($viewMode === 'hourly')
                 @php
                     $stats = $this->hourlyStats;
-                    $maxValue = !empty($stats) ? max($stats) : 1;
+                    $maxValue = (!empty($stats) && max($stats) > 0) ? max($stats) : 1;
                 @endphp
                 <div class="d-flex">
                     <!-- Y Axis -->
@@ -166,7 +166,7 @@
             @if($viewMode === 'daily')
                 @php
                     $stats = $this->dailyStats;
-                    $maxValue = !empty($stats) ? max($stats) : 1;
+                    $maxValue = (!empty($stats) && max($stats) > 0) ? max($stats) : 1;
                 @endphp
                 <div class="d-flex">
                     <!-- Y Axis -->
@@ -197,7 +197,7 @@
             @if($viewMode === 'weekly')
                 @php
                     $stats = $this->weeklyStats;
-                    $maxValue = !empty($stats) ? max($stats) : 1;
+                    $maxValue = (!empty($stats) && max($stats) > 0) ? max($stats) : 1;
                 @endphp
                 <div class="d-flex">
                     <!-- Y Axis -->
@@ -223,7 +223,7 @@
             @if($viewMode === 'monthly')
                 @php
                     $stats = $this->monthlyStats;
-                    $maxValue = !empty($stats) ? max($stats) : 1;
+                    $maxValue = (!empty($stats) && max($stats) > 0) ? max($stats) : 1;
                 @endphp
                 <div class="d-flex">
                     <!-- Y Axis -->

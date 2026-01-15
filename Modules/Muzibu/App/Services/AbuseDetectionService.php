@@ -25,7 +25,7 @@ use Modules\Muzibu\App\Models\AbuseReport;
  * - Gece dinleme = NORMAL (24 saat açık mekan)
  *
  * @version 2.0 - Ping-Pong Detection System
- * @see https://muzibu.com.tr/readme/2026/01/01/suistimal-tespit-gelistirme/
+ * @see https://muzibu.com/readme/2026/01/01/suistimal-tespit-gelistirme/
  */
 class AbuseDetectionService
 {

@@ -204,7 +204,9 @@ class AuthenticatedSessionController extends Controller
             ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
 
         // Cookie ile CSRF token gönder (JavaScript erişimi için)
-        return $response->cookie('XSRF-TOKEN', csrf_token(), 60, '/', null, true, false, false, 'lax');
+        // Domain: .muzibu.com (subdomain'lerde de geçerli)
+        $cookieDomain = config('session.domain');
+        return $response->cookie('XSRF-TOKEN', csrf_token(), 60, '/', $cookieDomain, true, false, false, 'lax');
     }
 
     /**
@@ -269,14 +271,15 @@ class AuthenticatedSessionController extends Controller
 
         // Cookie'leri expire et (HttpOnly için server-side ZORUNLU)
         $sessionCookie = config('session.cookie', 'laravel_session');
+        $cookieDomain = config('session.domain');
 
         return redirect($redirectUrl)
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT')
             ->header('Clear-Site-Data', '"cache", "cookies"') // Cache VE cookies temizle
-            ->withCookie(cookie()->forget($sessionCookie))
-            ->withCookie(cookie()->forget('XSRF-TOKEN'));
+            ->withCookie(cookie()->forget($sessionCookie, '/', $cookieDomain))
+            ->withCookie(cookie()->forget('XSRF-TOKEN', '/', $cookieDomain));
     }
     
     /**

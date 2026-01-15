@@ -49,7 +49,7 @@
             <div class="space-y-4 text-slate-200">
                 <p class="text-lg leading-relaxed">
                     <strong class="text-white">Sorun Nedir?</strong><br>
-                    Sitelerinizde (ixtif.com, muzibu.com.tr) kullanıcılar sayfayı açtıktan 2 saat sonra işlem yapmak istediğinde
+                    Sitelerinizde (ixtif.com, muzibu.com) kullanıcılar sayfayı açtıktan 2 saat sonra işlem yapmak istediğinde
                     "419 Page Expired" hatası alıyorlar. Özellikle Livewire ile çalışan dinamik sayfalar etkileniyor.
                 </p>
 
@@ -63,7 +63,7 @@
                 <p class="text-lg leading-relaxed">
                     <strong class="text-white">Neden Önemli?</strong><br>
                     • Kullanıcı deneyimi bozuluyor (sayfayı yenilemek zorunda kalıyor)<br>
-                    • Müzik platformunda (muzibu.com.tr) şarkı dinlerken oturum kapanıyor<br>
+                    • Müzik platformunda (muzibu.com) şarkı dinlerken oturum kapanıyor<br>
                     • E-ticaret sitelerinde (ixtif.com) sepet işlemleri yarıda kalabiliyor<br>
                     • Profesyonel olmayan bir izlenim veriyor
                 </p>
@@ -99,7 +99,7 @@
                             <p><strong>Mevcut Durum:</strong></p>
                             <ul class="list-disc list-inside space-y-1 ml-4 text-slate-300">
                                 <li>ixtif.com → <code class="bg-slate-900 px-2 py-1 rounded">auth_session_lifetime = 120 dakika</code> (2 saat)</li>
-                                <li>muzibu.com.tr → <code class="bg-slate-900 px-2 py-1 rounded">auth_session_lifetime = 120 dakika</code> (2 saat)</li>
+                                <li>muzibu.com → <code class="bg-slate-900 px-2 py-1 rounded">auth_session_lifetime = 120 dakika</code> (2 saat)</li>
                                 <li>tuufi.com (central) → <code class="bg-slate-900 px-2 py-1 rounded">SESSION_LIFETIME = 10080 dakika</code> (7 gün) ✅</li>
                             </ul>
                             <p class="text-yellow-300 mt-2"><strong>Sorun:</strong> Tenant'lar 2 saat, central 7 gün kullanıyor. Tutarsızlık var!</p>
@@ -186,7 +186,7 @@ tenant(2);
 setting(['auth_session_lifetime' => 10080]);
 echo "İxtif setting güncellendi: " . setting('auth_session_lifetime');
 
-// Tenant 1001 (muzibu.com.tr)
+// Tenant 1001 (muzibu.com)
 tenant(1001);
 setting(['auth_session_lifetime' => 10080]);
 echo "Muzibu setting güncellendi: " . setting('auth_session_lifetime');
@@ -306,7 +306,7 @@ php artisan tinker --execute="tenant(1001); echo setting('auth_session_lifetime'
 
 # Cookie test
 curl -I -k https://ixtif.com/ | grep -i "set-cookie"
-curl -I -k https://muzibu.com.tr/ | grep -i "set-cookie"</pre>
+curl -I -k https://muzibu.com/ | grep -i "set-cookie"</pre>
                 </div>
 
                 <div class="bg-slate-800/50 rounded-lg p-4">
@@ -328,7 +328,7 @@ curl -I -k https://ixtif.com/ | grep -i "max-age"</pre>
                     <h3 class="font-semibold text-white mb-3">3. Production Test</h3>
                     <ul class="list-disc list-inside text-sm text-slate-300 space-y-2">
                         <li>Livewire formlarında butona tıklama (admin panel)</li>
-                        <li>Müzik player'da şarkı değiştirme (muzibu.com.tr)</li>
+                        <li>Müzik player'da şarkı değiştirme (muzibu.com)</li>
                         <li>Sepet işlemleri (ixtif.com)</li>
                         <li>2 saat bekle → Tekrar işlem yap (419 almamalı)</li>
                         <li>a-console.txt'yi kontrol et (yeni 419 hatası olmamalı)</li>

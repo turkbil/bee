@@ -28,8 +28,8 @@ $kernel->bootstrap();
 use Illuminate\Support\Facades\DB;
 
 // Configuration
-$sqlFile = '/var/www/vhosts/muzibu.com.tr/httpdocs/muzibu_songs.sql'; // Yeni SQL dosyası
-$mappingFile = '/var/www/vhosts/muzibu.com.tr/httpdocs/muzibu-id-mappings.json';
+$sqlFile = '/var/www/vhosts/muzibu.com/httpdocs/muzibu_songs.sql'; // Yeni SQL dosyası
+$mappingFile = '/var/www/vhosts/muzibu.com/httpdocs/muzibu-id-mappings.json';
 $batchSize = 500; // Her batch'te kaç kayıt
 
 echo "🎵 Muzibu Songs Migration - Başlatıldı\n";

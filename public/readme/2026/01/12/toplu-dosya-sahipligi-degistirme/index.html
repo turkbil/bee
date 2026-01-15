@@ -82,14 +82,14 @@
                 <div>
                     <h3 class="text-xl font-semibold text-white mb-3">📁 Dosya Konumu</h3>
                     <div class="code-block">
-/var/www/vhosts/muzibu.com.tr/httpdocs/
+/var/www/vhosts/muzibu.com/httpdocs/
                     </div>
                 </div>
 
                 <div>
                     <h3 class="text-xl font-semibold text-white mb-3">⚙️ Kullanılan Komut</h3>
                     <div class="code-block">
-sudo chown -R tuufi.com_:psaserv /var/www/vhosts/muzibu.com.tr/httpdocs/
+sudo chown -R tuufi.com_:psaserv /var/www/vhosts/muzibu.com/httpdocs/
                     </div>
                 </div>
 
@@ -149,13 +149,13 @@ ls -la /path/to/file
                         <div>
                             <p class="text-sm text-slate-400 mb-2">Root sahipliğindeki dosyaları bul:</p>
                             <div class="code-block">
-find /var/www/vhosts/muzibu.com.tr/httpdocs/ -user root 2>/dev/null
+find /var/www/vhosts/muzibu.com/httpdocs/ -user root 2>/dev/null
                             </div>
                         </div>
                         <div>
                             <p class="text-sm text-slate-400 mb-2">Root sahipliğindeki dosya sayısı:</p>
                             <div class="code-block">
-find /var/www/vhosts/muzibu.com.tr/httpdocs/ -user root 2>/dev/null | wc -l
+find /var/www/vhosts/muzibu.com/httpdocs/ -user root 2>/dev/null | wc -l
                             </div>
                         </div>
                     </div>
@@ -244,7 +244,7 @@ sudo find /path/to/dir/ -type d -exec chmod 755 {} \;
                 <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
                     <h3 class="font-semibold text-white mb-2">3️⃣ Tek Komutta Tüm İşlemler</h3>
                     <div class="code-block mt-2">
-TARGET="/var/www/vhosts/muzibu.com.tr/httpdocs/public/readme"
+TARGET="/var/www/vhosts/muzibu.com/httpdocs/public/readme"
 
 sudo chown -R tuufi.com_:psaserv "$TARGET" && \
 sudo find "$TARGET" -type f -exec chmod 644 {} \; && \
@@ -360,7 +360,7 @@ echo "✅ Tamamlandı!"
         <!-- Footer -->
         <footer class="mt-12 pt-6 border-t border-slate-800 text-center text-slate-500 text-sm">
             <p>🤖 <strong>Claude Code</strong> tarafından oluşturuldu</p>
-            <p class="mt-2">12 Ocak 2026 - muzibu.com.tr</p>
+            <p class="mt-2">12 Ocak 2026 - muzibu.com</p>
         </footer>
     </div>
 </body>

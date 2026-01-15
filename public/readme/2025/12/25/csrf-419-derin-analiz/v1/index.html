@@ -56,7 +56,7 @@
                     <h3 class="font-semibold text-yellow-400 mb-2">⚠️ Etkilenen Kullanıcılar</h3>
                     <p class="text-slate-300 text-sm">
                         • ixtif.com kullanıcıları<br>
-                        • muzibu.com.tr kullanıcıları<br>
+                        • muzibu.com kullanıcıları<br>
                         • Özellikle Livewire kullanan sayfalar<br>
                         • Admin panel form işlemleri
                     </p>
@@ -115,7 +115,7 @@
                         <strong>5 farklı sebep tespit edildi:</strong>
                     </p>
                     <ol class="list-decimal list-inside space-y-2 ml-4">
-                        <li><strong>Tenant Karışıklığı:</strong> ixtif.com ve muzibu.com.tr biletleri aynı yerde
+                        <li><strong>Tenant Karışıklığı:</strong> ixtif.com ve muzibu.com biletleri aynı yerde
                             (tek bir Redis database'de). Prefix olmadığı için biletler çakışabilir.</li>
                         <li><strong>Session Yenileme:</strong> Login/logout yaparken sistem eski bileti iptal edip
                             yeni bilet veriyor. Eğer birden fazla sekme açıksa, bir sekmedeki bilet geçersiz kalıyor.</li>
@@ -132,7 +132,7 @@
                     <h3 class="font-semibold text-blue-400 mb-2">🎯 Hedef Çözüm:</h3>
                     <p class="text-slate-300">
                         Her tenant için ayrı "bilet deposu" oluşturacağız. ixtif.com'un biletleri
-                        "ixtif_session_ABC123" olacak, muzibu.com.tr'nin biletleri "muzibu_session_XYZ789" olacak.
+                        "ixtif_session_ABC123" olacak, muzibu.com'nin biletleri "muzibu_session_XYZ789" olacak.
                         Böylece biletler birbirine karışmayacak ve kaybolma riski azalacak.
                     </p>
                 </div>
@@ -157,7 +157,7 @@ config('session.store') = null
 
 # Redis'teki session key'ler:
 fBt6WvBGBSQWXM2DJU0Ge7ny94k4RGOXv6jGyFSL  ← ixtif.com session
-N5nNqyhWoU9INK4eVy4A6H4vcPkvEhkoyarsGW9S  ← muzibu.com.tr session
+N5nNqyhWoU9INK4eVy4A6H4vcPkvEhkoyarsGW9S  ← muzibu.com session
 ZmyddagAv1lJ2Vmet8bPcW0ulsULAKOY9LlmvWrz  ← ixtif.com session
 
 ⚠️ SORUN: Prefix yok, sadece plain session ID!</pre>
@@ -286,7 +286,7 @@ protected function addCookieToResponse($request, $response)
             $request->session()->token(),
             $this->availableAt(60 * $config['lifetime']),
             $config['path'],
-            $config['domain'],  ← .ixtif.com veya .muzibu.com.tr
+            $config['domain'],  ← .ixtif.com veya .muzibu.com
             ...
         )
     );
@@ -308,8 +308,8 @@ secure=true
 httponly=true
 samesite=lax
 
-# muzibu.com.tr
-domain=.muzibu.com.tr
+# muzibu.com
+domain=.muzibu.com
 Max-Age=31536000 (1 yıl) ✅
 secure=true
 httponly=true

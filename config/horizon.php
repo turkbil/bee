@@ -219,6 +219,14 @@ return [
 
     'environments' => [
         'production' => [
+            // 📧 Email/Notification Queue
+            'mail-supervisor' => [
+                'maxProcesses' => 1,
+                'minProcesses' => 1,
+                'memory' => 256,
+                'timeout' => 120,
+            ],
+
             // ⚡ SAFE MODE: Rate limit friendly
             'muzibu-supervisor' => [
                 'maxProcesses' => 10,   // SAFE MODE
@@ -229,6 +237,9 @@ return [
         ],
 
         'local' => [
+            'mail-supervisor' => [
+                'maxProcesses' => 1,
+            ],
             'muzibu-supervisor' => [
                 'maxProcesses' => 2,
             ],

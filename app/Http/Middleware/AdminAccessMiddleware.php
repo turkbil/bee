@@ -33,6 +33,16 @@ class AdminAccessMiddleware
         preg_match('/^admin\/([^\/]+)/', $path, $matches);
         $moduleName = $matches[1] ?? null;
 
+        // Path-to-module mapping (bazı path'ler farklı modüllere ait)
+        $pathModuleMap = [
+            'orders' => 'cart',     // /admin/orders → Cart modülü
+            'checkout' => 'cart',   // /admin/checkout → Cart modülü
+        ];
+
+        if ($moduleName && isset($pathModuleMap[$moduleName])) {
+            $moduleName = $pathModuleMap[$moduleName];
+        }
+
         // Root her yere erişebilir
         if ($user->isRoot()) {
             return $next($request);

@@ -30,12 +30,6 @@ class QueueRefillController extends Controller
     public function refill(Request $request): JsonResponse
     {
         try {
-            // 🎯 DEBUG: Log incoming request
-            \Log::info('🎯 QUEUE REFILL REQUEST', [
-                'input' => $request->all(),
-                'user_agent' => $request->userAgent(),
-            ]);
-
             $context = $request->validate([
                 'type' => 'required|string|in:genre,album,playlist,user_playlist,sector,radio,popular,recent,favorites,artist,search,song',
                 'id' => 'nullable|integer',
@@ -109,16 +103,8 @@ class QueueRefillController extends Controller
                 }
             }
 
-            // 🧪 DEBUG: Şarkı seçim açıklaması
+            // Şarkı seçim açıklaması
             $explanation = $this->getSelectionExplanation($type, $id, $offset, count($songs));
-
-            // 🎯 DEBUG: Log result
-            \Log::info('🎯 QUEUE REFILL RESULT', [
-                'type' => $type,
-                'id' => $id,
-                'songs_count' => count($songs),
-                'transition' => $transitionSuggestion,
-            ]);
 
             return response()->json([
                 'success' => true,

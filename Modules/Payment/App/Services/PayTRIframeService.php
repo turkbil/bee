@@ -49,11 +49,12 @@ class PayTRIframeService
 
             // Token oluşturma için hash string
             // PayTR merchant_oid sadece alfanumerik olmalı - özel karakter içeremez!
-            // Tenant ID prefix ekle: T{tenant_id}{payment_number_stripped}
-            // NOT: Unique suffix KALDIRILDI - PayTR uzun merchant_oid'de hata veriyor
+            // Tenant ID prefix ekle: T{tenant_id}{payment_number_stripped}{retry_suffix}
             $tenantId = tenant()->id ?? 1;
             $strippedPaymentNumber = str_replace(['-', '_', ' '], '', $payment->payment_number);
-            $merchantOid = 'T' . $tenantId . $strippedPaymentNumber;
+            // Benzersizlik için timestamp'in son 4 hanesi (her denemede farklı)
+            $retrySuffix = substr(time(), -4);
+            $merchantOid = 'T' . $tenantId . $strippedPaymentNumber . $retrySuffix;
 
             // 🔥 FIX: PayTR IPv6 desteklemiyor! IPv4'e çevir veya fallback kullan
             $userIp = request()->ip();
@@ -66,10 +67,10 @@ class PayTRIframeService
             $paymentAmount = (int) ($payment->amount * 100); // Kuruş cinsinden (9.99 TL = 999)
             $currency = setting('paytr_currency', 'TL');
 
-            // Callback URL (success ve fail) - order_number ekle (session kaybolabilir!)
-            $orderNumber = $orderInfo['order_number'] ?? $payment->payment_number;
-            $merchantOkUrl = route('payment.success') . '?order=' . urlencode($orderNumber);
-            $merchantFailUrl = route('cart.checkout') . '?payment=failed&order=' . urlencode($orderNumber);
+            // Callback URL (success ve fail)
+            // NOT: Query string PayTR panelindeki URL ile uyumsuzluk yaratabilir
+            $merchantOkUrl = route('payment.success');
+            $merchantFailUrl = route('cart.checkout');
 
             // Hash string oluştur (DOĞRU SIRA!)
             // merchant_id + user_ip + merchant_oid + email + payment_amount + user_basket + no_installment + max_installment + currency + test_mode
@@ -78,7 +79,7 @@ class PayTRIframeService
 
             $paytrToken = base64_encode(hash_hmac('sha256', $hashStr . $merchantSalt, $merchantKey, true));
 
-            // POST verileri (iframe token için)
+            // POST verileri (iframe token için) - Eski sistemle uyumlu
             $postData = [
                 'merchant_id' => $merchantId,
                 'user_ip' => $userIp,
@@ -87,7 +88,7 @@ class PayTRIframeService
                 'payment_amount' => $paymentAmount,
                 'paytr_token' => $paytrToken,
                 'user_basket' => $basket,
-                'debug_on' => '1', // Entegrasyon sürecinde 1
+                'debug_on' => 1, // Eski sistemde hep 1
                 'no_installment' => $noInstallment,
                 'max_installment' => $maxInstallment,
                 'user_name' => $userInfo['name'],
@@ -98,7 +99,6 @@ class PayTRIframeService
                 'timeout_limit' => setting('paytr_timeout_limit', '30'),
                 'currency' => $currency,
                 'test_mode' => $testMode,
-                'lang' => app()->getLocale() === 'tr' ? 'tr' : 'en',
             ];
 
             // 🔥 DEBUG LOGLAMA - PayTR sorun tespiti için

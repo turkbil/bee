@@ -180,11 +180,14 @@ class AppServiceProvider extends ServiceProvider
         // Register Blade Components
         $this->registerBladeComponents();
 
-        // Dinamik APP_URL - Request'e göre otomatik ayarla
-        if (!app()->runningInConsole() && request()->getHost()) {
-            $currentUrl = request()->getScheme() . '://' . request()->getHost();
-            config(['app.url' => $currentUrl]);
-            URL::forceRootUrl($currentUrl);
+        // URL Generation - APP_URL'den al, request'e güvenme
+        // Cloudflare proxy X-Forwarded-Host header'ı yanlış gönderebiliyor
+        // Bu yüzden .env'deki APP_URL değerini kullan
+        if (!app()->runningInConsole()) {
+            $appUrl = config('app.url');
+            if ($appUrl) {
+                URL::forceRootUrl($appUrl);
+            }
         }
 
         // HTTPS zorlaması

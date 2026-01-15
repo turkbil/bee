@@ -3,49 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="frame-src https://www.paytr.com; script-src 'self' 'unsafe-inline' https://www.paytr.com;">
     <title>{{ setting('site_title', setting('site_name', config('app.name'))) }} - Ödeme</title>
-
-    <style>
-    body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-    #paytriframe {
-        width: 100vw;
-        height: 100vh;
-        min-height: 100vh;
-        border: 0;
-        display: block;
-    }
-</style>
 </head>
 <body>
-<iframe
-    src="{{ $paymentIframeUrl }}"
-    id="paytriframe"
-    frameborder="0"
-    scrolling="auto"
-    allow="payment; storage-access; clipboard-write"
-    allowfullscreen>
-</iframe>
-
-<script>
-    // PayTR iframe auto height & status
-    window.addEventListener('message', function(event) {
-        if (event.data && event.data.height) {
-            document.getElementById('paytriframe').style.height = event.data.height + 'px';
-        }
-        if (event.data && event.data.paytr_status) {
-            if (event.data.paytr_status === 'success') {
-                window.location.href = '{{ route("payment.success") }}';
-            } else if (event.data.paytr_status === 'failed') {
-                window.location.href = '{{ route("cart.checkout") }}?payment=failed';
-            }
-        }
-    }, false);
-</script>
+<div style="width: 100%; margin: 0 auto; display: table;">
+    <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
+    <iframe src="{{ $paymentIframeUrl }}" id="paytriframe" frameborder="0" scrolling="no" style="width: 100%;"></iframe>
+    <script>iFrameResize({}, '#paytriframe');</script>
+</div>
 </body>
 </html>

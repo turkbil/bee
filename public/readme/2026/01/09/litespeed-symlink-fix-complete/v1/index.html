@@ -17,7 +17,7 @@
             <h1 class="text-4xl font-bold text-white mb-2">LiteSpeed 403 Sorunu Çözüldü + 176 Job Başlatıldı</h1>
             <p class="text-slate-400">Symlink bypass + HLS/Görsel toplu üretimi</p>
             <div class="mt-4 text-sm text-slate-500">
-                📅 9 Ocak 2026 | 🖥️ muzibu.com.tr | 🎵 100 Şarkı İşleniyor
+                📅 9 Ocak 2026 | 🖥️ muzibu.com | 🎵 100 Şarkı İşleniyor
             </div>
         </header>
 
@@ -60,7 +60,7 @@
                             <strong>Horizon Queue Çalışıyor</strong>
                             <p class="text-sm text-slate-400 mt-1">
                                 176 job Horizon üzerinden işleniyor.
-                                Real-time ilerlemeyi https://muzibu.com.tr/horizon adresinden takip edebilirsin.
+                                Real-time ilerlemeyi https://muzibu.com/horizon adresinden takip edebilirsin.
                             </p>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                         <p class="text-sm mb-2"><strong>Hata:</strong></p>
                         <div class="font-mono text-xs text-red-300">
                             [INFO] Found symbolic link, or owner of symbolic link and link target does not match<br>
-                            for path [/var/www/vhosts/muzibu.com.tr/httpdocs/public/storage/tenant1001/...], access denied.<br>
+                            for path [/var/www/vhosts/muzibu.com/httpdocs/public/storage/tenant1001/...], access denied.<br>
                             ret=-1, errno=13
                         </div>
                     </div>
@@ -164,7 +164,7 @@
                     <div class="bg-green-900/20 border border-green-700 rounded p-4 mt-4">
                         <p class="text-sm font-bold text-green-400 mb-2">✅ Test Sonucu</p>
                         <div class="font-mono text-xs space-y-1">
-                            <div>$ curl -I https://muzibu.com.tr/storage/tenant1001/21/Lucid_Origin_*.jpg</div>
+                            <div>$ curl -I https://muzibu.com/storage/tenant1001/21/Lucid_Origin_*.jpg</div>
                             <div class="text-green-400">HTTP/2 200 OK ✅</div>
                             <div class="text-slate-400">content-type: image/jpeg</div>
                             <div class="text-slate-400">content-length: 673352</div>
@@ -308,7 +308,7 @@
                         <div class="text-blue-400">~ public/.htaccess <span class="text-slate-500">(force rewrite eklendi)</span></div>
                         <div class="text-blue-400">~ app/Console/Commands/BulkProcessSongs.php <span class="text-slate-500">(HLS dispatch + tenant context)</span></div>
                         <div class="text-blue-400">~ /usr/local/lsws/conf/httpd_config.xml <span class="text-slate-500">(phpSuExec 2→1)</span></div>
-                        <div class="text-blue-400">~ /var/www/vhosts/system/muzibu.com.tr/conf/vhost.conf <span class="text-slate-500">(Alias denendi, sonra kaldırıldı)</span></div>
+                        <div class="text-blue-400">~ /var/www/vhosts/system/muzibu.com/conf/vhost.conf <span class="text-slate-500">(Alias denendi, sonra kaldırıldı)</span></div>
                     </div>
                 </div>
 
@@ -334,7 +334,7 @@
             <div class="space-y-4">
                 <div>
                     <p class="text-sm text-slate-300 mb-2">Horizon Dashboard'dan real-time takip:</p>
-                    <a href="https://muzibu.com.tr/horizon" target="_blank" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold text-sm transition">
+                    <a href="https://muzibu.com/horizon" target="_blank" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold text-sm transition">
                         🔗 Horizon Dashboard'u Aç
                     </a>
                 </div>
@@ -433,7 +433,7 @@
         <!-- Footer -->
         <footer class="mt-8 pt-6 border-t border-slate-700 text-center text-slate-500 text-sm">
             <p>🤖 Claude AI tarafından oluşturuldu</p>
-            <p class="mt-1">9 Ocak 2026 - muzibu.com.tr - LiteSpeed Symlink Fix + Bulk Process</p>
+            <p class="mt-1">9 Ocak 2026 - muzibu.com - LiteSpeed Symlink Fix + Bulk Process</p>
         </footer>
     </div>
 </body>

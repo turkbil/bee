@@ -1,7 +1,7 @@
 # Muzibu Tema - Kalan İşler TODO
 
 **Tarih:** 2025-11-24 22:59
-**Tenant:** muzibu.com.tr (ID: 1001)
+**Tenant:** muzibu.com (ID: 1001)
 **Tema:** Spotify-Style Müzik Platformu
 
 ---
@@ -61,7 +61,7 @@
 - [x] Central migrations çalıştır: `php artisan migrate` ✅ YAPILDI
 - [x] Seed data oluştur (demo müzikler) ✅ YAPILDI
 
-**Demo Veri Özeti (Tenant 1001 - muzibu.com.tr):**
+**Demo Veri Özeti (Tenant 1001 - muzibu.com):**
 - 6 Tür (Pop, Rock, Elektronik, Caz, Klasik, Türk Halk Müziği)
 - 5 Sektör (Kafe & Restoran, Otel, AVM, Spor Salonu, Ofis)
 - 10 Sanatçı
@@ -277,7 +277,7 @@ php artisan db:seed --class=Modules\\Muzibu\\database\\seeders\\MuzibuSeeder
 - **ÖNEMLİ:** Her adımda kullanıcı onayı bekle, otomatik devam etme!
 - **Çalışma Mantığı:** Kullanıcı "X'i yap" dediğinde o maddeyi gerçekleştir
 - **Permission:** Her dosya oluşturmadan sonra `sudo chown tuufi.com_:psaserv` + `sudo chmod 644`
-- **Test:** Her değişiklikten sonra `curl -I https://muzibu.com.tr/` ile test
+- **Test:** Her değişiklikten sonra `curl -I https://muzibu.com/` ile test
 - **Cache:** View değişikliğinden sonra `php artisan view:clear`
 
 ---

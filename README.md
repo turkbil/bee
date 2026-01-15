@@ -274,9 +274,9 @@ f21c9084f 🎯 Muzibu AI: ACTION Button Post-Processing System
 
 ### Raporlar
 
-- [Session/Device Limit Analizi](https://muzibu.com.tr/readme/2025/12/21/session-device-limit-analysis/)
+- [Session/Device Limit Analizi](https://muzibu.com/readme/2025/12/21/session-device-limit-analysis/)
 - [Tüm Raporlar - İxtif](https://ixtif.com/readme/)
-- [Tüm Raporlar - Muzibu](https://muzibu.com.tr/readme/)
+- [Tüm Raporlar - Muzibu](https://muzibu.com/readme/)
 
 ### Geliştirici Rehberleri
 

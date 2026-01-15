@@ -30,6 +30,12 @@ class SubscriptionManageComponent extends Component
     public $available_cycles = [];
     public $selected_cycle_metadata = [];
 
+    // User Search (Autocomplete)
+    public $userSearch = '';
+    public $userSearchResults = [];
+    public $selectedUser = null;
+    public $showUserDropdown = false;
+
     public function boot()
     {
         view()->share('pretitle', $this->subscriptionId ? 'Abonelik Düzenle' : 'Yeni Abonelik');
@@ -62,6 +68,14 @@ class SubscriptionManageComponent extends Component
         $this->price_per_cycle = (float) $subscription->price_per_cycle;
         $this->started_at = $subscription->started_at?->format('Y-m-d\TH:i');
         $this->current_period_end = $subscription->current_period_end?->format('Y-m-d\TH:i');
+
+        // Load selected user info for display
+        if ($this->user_id) {
+            $this->selectedUser = User::find($this->user_id);
+            if ($this->selectedUser) {
+                $this->userSearch = "#{$this->selectedUser->id} - {$this->selectedUser->name} ({$this->selectedUser->email})";
+            }
+        }
 
         // Load plan cycles
         if ($this->subscription_plan_id) {
@@ -252,13 +266,101 @@ class SubscriptionManageComponent extends Component
         }
     }
 
+    /**
+     * Kullanıcı arama - isim, email veya ID ile
+     */
+    public function updatedUserSearch()
+    {
+        $search = trim($this->userSearch);
+
+        // Minimum 2 karakter gerekli
+        if (strlen($search) < 2) {
+            $this->userSearchResults = [];
+            $this->showUserDropdown = false;
+            return;
+        }
+
+        // ID ile arama (#123 veya 123)
+        $searchId = null;
+        if (preg_match('/^#?(\d+)$/', $search, $matches)) {
+            $searchId = (int) $matches[1];
+        }
+
+        $query = User::query()
+            ->select(['id', 'name', 'email'])
+            ->where(function ($q) use ($search, $searchId) {
+                // ID ile arama
+                if ($searchId) {
+                    $q->where('id', $searchId);
+                }
+
+                // İsim ile arama
+                $q->orWhere('name', 'LIKE', "%{$search}%");
+
+                // Email ile arama
+                $q->orWhere('email', 'LIKE', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->limit(10);
+
+        $this->userSearchResults = $query->get()->toArray();
+        $this->showUserDropdown = count($this->userSearchResults) > 0;
+    }
+
+    /**
+     * Kullanıcı seç
+     */
+    public function selectUser($userId)
+    {
+        $user = User::find($userId);
+
+        if ($user) {
+            $this->user_id = $user->id;
+            $this->selectedUser = $user;
+            $this->userSearch = "#{$user->id} - {$user->name} ({$user->email})";
+            $this->showUserDropdown = false;
+            $this->userSearchResults = [];
+
+            // Kullanıcının mevcut abonelik bitiş tarihini başlangıç olarak ayarla
+            if ($user->subscription_expires_at && $user->subscription_expires_at > now()) {
+                // Mevcut aboneliği varsa, yeni abonelik onun bitişinden başlasın
+                $this->started_at = \Carbon\Carbon::parse($user->subscription_expires_at)->format('Y-m-d\TH:i');
+            } else {
+                // Aboneliği yoksa veya süresi dolmuşsa şu anki zaman
+                $this->started_at = now()->format('Y-m-d\TH:i');
+            }
+
+            // Bitiş tarihini güncelle (cycle seçiliyse)
+            $this->updatePeriodEnd();
+        }
+    }
+
+    /**
+     * Kullanıcı seçimini temizle
+     */
+    public function clearUserSelection()
+    {
+        $this->user_id = null;
+        $this->selectedUser = null;
+        $this->userSearch = '';
+        $this->userSearchResults = [];
+        $this->showUserDropdown = false;
+    }
+
+    /**
+     * Dropdown'u kapat (blur olduğunda)
+     */
+    public function hideUserDropdown()
+    {
+        // Küçük gecikme ile kapat (tıklama için zaman tanı)
+        $this->showUserDropdown = false;
+    }
+
     public function render()
     {
-        $users = User::orderBy('name')->get(['id', 'name', 'email']);
         $plans = SubscriptionPlan::active()->ordered()->get();
 
         return view('subscription::admin.livewire.subscription-manage-component', [
-            'users' => $users,
             'plans' => $plans,
         ]);
     }

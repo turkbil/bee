@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare Pro Aktivasyon Rehberi - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-header { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .step-card { transition: all 0.3s ease; }
+        .step-card:hover { transform: translateY(-2px); }
+        .path-highlight { background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%); }
+        .click-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #3b82f6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            color: white;
+        }
+        .menu-path {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: #1e293b;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+        }
+        .menu-path .arrow { color: #f97316; }
+        .toggle-on {
+            display: inline-block;
+            background: #22c55e;
+            color: white;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .select-option {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="gradient-header py-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i class="fab fa-cloudflare text-3xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Cloudflare Pro Aktivasyon Rehberi</h1>
+                    <p class="text-orange-100">Adım Adım Görsel Anlatım</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+
+        <!-- Giriş -->
+        <section class="mb-8">
+            <div class="bg-blue-500/20 border border-blue-500/50 rounded-xl p-6">
+                <h2 class="text-xl font-bold text-blue-400 mb-4">
+                    <i class="fas fa-door-open mr-2"></i>Önce Cloudflare'a Giriş Yap
+                </h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <span class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold">1</span>
+                        <div>
+                            <p class="text-white">Tarayıcıda şu adrese git:</p>
+                            <a href="https://dash.cloudflare.com" target="_blank" class="text-blue-400 text-lg font-mono hover:underline">
+                                https://dash.cloudflare.com
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold">2</span>
+                        <p class="text-white">Email ve şifrenle giriş yap</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold">3</span>
+                        <div>
+                            <p class="text-white">Domain listesinden <strong class="text-orange-400">muzibu.com</strong> seç</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADIM 1: SSL/TLS -->
+        <section class="mb-8">
+            <div class="bg-slate-800 rounded-xl overflow-hidden">
+                <div class="bg-emerald-600 px-6 py-4">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                        <span class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">1</span>
+                        SSL/TLS Ayarları
+                    </h2>
+                </div>
+                <div class="p-6 space-y-6">
+
+                    <!-- 1.1 SSL Mode -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-emerald-400 mb-4 text-lg">1.1 SSL Modunu Değiştir</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-lock text-emerald-400"></i>
+                                <span>SSL/TLS</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Overview</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-emerald-500">
+                            <p class="text-slate-300 mb-3">Sayfada 4 seçenek göreceksin. <strong class="text-white">Full (strict)</strong> olanı seç:</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                <div class="bg-slate-700 p-3 rounded text-center text-slate-400 text-sm">Off</div>
+                                <div class="bg-slate-700 p-3 rounded text-center text-slate-400 text-sm">Flexible</div>
+                                <div class="bg-slate-700 p-3 rounded text-center text-slate-400 text-sm">Full</div>
+                                <div class="bg-emerald-600 p-3 rounded text-center text-white text-sm font-bold">
+                                    <i class="fas fa-check mr-1"></i>Full (strict)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1.2 Always HTTPS -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-emerald-400 mb-4 text-lg">1.2 Always HTTPS Aç</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-lock text-emerald-400"></i>
+                                <span>SSL/TLS</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Edge Certificates</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-emerald-500">
+                            <p class="text-slate-300 mb-3">Aşağı kaydır, <strong class="text-white">"Always Use HTTPS"</strong> bul:</p>
+                            <div class="flex items-center gap-4">
+                                <span class="text-white">Always Use HTTPS</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-500">OFF</span>
+                                    <div class="w-12 h-6 bg-emerald-500 rounded-full relative">
+                                        <div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                                    </div>
+                                    <span class="text-emerald-400 font-bold">ON</span>
+                                </div>
+                            </div>
+                            <p class="text-emerald-400 text-sm mt-2"><i class="fas fa-mouse-pointer mr-1"></i> Toggle'a tıkla, yeşil yapsın</p>
+                        </div>
+                    </div>
+
+                    <!-- 1.3 Minimum TLS -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-emerald-400 mb-4 text-lg">1.3 Minimum TLS Version</h3>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-emerald-500">
+                            <p class="text-slate-300 mb-3">Aynı sayfada biraz daha aşağıda <strong class="text-white">"Minimum TLS Version"</strong> var:</p>
+                            <div class="flex items-center gap-3">
+                                <span class="text-white">Minimum TLS Version:</span>
+                                <select class="bg-slate-700 text-white px-3 py-1 rounded border border-slate-600">
+                                    <option>TLS 1.2</option>
+                                </select>
+                                <span class="select-option">← Bunu seç</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1.4 HSTS -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-emerald-400 mb-4 text-lg">1.4 HSTS Aktifleştir</h3>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-emerald-500">
+                            <p class="text-slate-300 mb-3">Aynı sayfada <strong class="text-white">"HTTP Strict Transport Security (HSTS)"</strong> bul:</p>
+                            <ol class="space-y-2 text-slate-300">
+                                <li class="flex items-center gap-2">
+                                    <span class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                                    <span><strong class="text-white">Enable HSTS</strong> butonuna tıkla</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                                    <span>Max Age: <strong class="text-white">6 months</strong> seç</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                                    <span>Include subdomains: <span class="toggle-on">ON</span></span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                                    <span><strong class="text-white">Save</strong> butonuna tıkla</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-500/20 border border-emerald-500/50 rounded-lg p-4 text-center">
+                        <i class="fas fa-check-circle text-emerald-400 text-2xl mb-2"></i>
+                        <p class="text-emerald-400 font-bold">SSL/TLS Ayarları Tamam!</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ADIM 2: Cache Ayarları -->
+        <section class="mb-8">
+            <div class="bg-slate-800 rounded-xl overflow-hidden">
+                <div class="bg-blue-600 px-6 py-4">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                        <span class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">2</span>
+                        Cache Ayarları
+                    </h2>
+                </div>
+                <div class="p-6 space-y-6">
+
+                    <!-- 2.1 Tiered Cache -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-blue-400 mb-4 text-lg">2.1 Tiered Cache Aç (Çok Önemli!)</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-database text-blue-400"></i>
+                                <span>Caching</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Tiered Cache</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-blue-500">
+                            <p class="text-slate-300 mb-3"><strong class="text-white">"Enable Smart Tiered Cache Topology"</strong> bul:</p>
+                            <div class="flex items-center gap-4">
+                                <span class="text-white">Smart Tiered Cache</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-12 h-6 bg-blue-500 rounded-full relative">
+                                        <div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                                    </div>
+                                    <span class="text-blue-400 font-bold">ON yap</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 bg-blue-500/10 border border-blue-500/30 rounded p-3 text-sm text-blue-300">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Bu özellik sunucu yükünü %90'a kadar azaltır. Kesinlikle aç!
+                        </div>
+                    </div>
+
+                    <!-- 2.2 Always Online -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-blue-400 mb-4 text-lg">2.2 Always Online Aç</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-database text-blue-400"></i>
+                                <span>Caching</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Configuration</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-blue-500">
+                            <div class="flex items-center gap-4">
+                                <span class="text-white">Always Online</span>
+                                <span class="toggle-on">ON yap</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mt-2">Sunucu çökerse eski sayfaları gösterir</p>
+                        </div>
+                    </div>
+
+                    <!-- 2.3 Crawler Hints -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-blue-400 mb-4 text-lg">2.3 Crawler Hints Aç</h3>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-blue-500">
+                            <p class="text-slate-300 mb-2">Aynı sayfada (Configuration) aşağıda:</p>
+                            <div class="flex items-center gap-4">
+                                <span class="text-white">Crawler Hints</span>
+                                <span class="toggle-on">ON yap</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mt-2">Google daha hızlı indexler (SEO için iyi)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-500/20 border border-blue-500/50 rounded-lg p-4 text-center">
+                        <i class="fas fa-check-circle text-blue-400 text-2xl mb-2"></i>
+                        <p class="text-blue-400 font-bold">Cache Ayarları Tamam!</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ADIM 3: Performans -->
+        <section class="mb-8">
+            <div class="bg-slate-800 rounded-xl overflow-hidden">
+                <div class="bg-purple-600 px-6 py-4">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                        <span class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">3</span>
+                        Performans Optimizasyonları
+                    </h2>
+                </div>
+                <div class="p-6 space-y-6">
+
+                    <!-- 3.1 Polish -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-purple-400 mb-4 text-lg">3.1 Polish (Görsel Sıkıştırma) - ÇOK ÖNEMLİ!</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-tachometer-alt text-purple-400"></i>
+                                <span>Speed</span>
+                                <span class="arrow">→</span>
+                                <span>Optimization</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Image Optimization</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-purple-500">
+                            <p class="text-slate-300 mb-3"><strong class="text-white">"Polish"</strong> bölümünü bul:</p>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-white">Polish:</span>
+                                    <div class="flex gap-2">
+                                        <span class="px-3 py-1 bg-slate-700 rounded text-slate-400">Off</span>
+                                        <span class="px-3 py-1 bg-slate-700 rounded text-slate-400">Lossless</span>
+                                        <span class="px-3 py-1 bg-purple-600 rounded text-white font-bold">
+                                            <i class="fas fa-check mr-1"></i>Lossy
+                                        </span>
+                                    </div>
+                                    <span class="text-purple-400 text-sm">← Bunu seç</span>
+                                </div>
+
+                                <div class="flex items-center gap-3 mt-3">
+                                    <span class="text-white">WebP:</span>
+                                    <span class="toggle-on">ON yap</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 bg-purple-500/10 border border-purple-500/30 rounded p-3 text-sm text-purple-300">
+                            <i class="fas fa-image mr-2"></i>
+                            Görseller otomatik %30-50 küçülür, kalite aynı kalır!
+                        </div>
+                    </div>
+
+                    <!-- 3.2 Auto Minify -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-purple-400 mb-4 text-lg">3.2 Auto Minify</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-tachometer-alt text-purple-400"></i>
+                                <span>Speed</span>
+                                <span class="arrow">→</span>
+                                <span>Optimization</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Content Optimization</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-purple-500">
+                            <p class="text-slate-300 mb-3"><strong class="text-white">"Auto Minify"</strong> bölümünde üçünü de aç:</p>
+
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="bg-slate-700 p-3 rounded text-center">
+                                    <p class="text-white font-bold">JavaScript</p>
+                                    <span class="toggle-on">ON</span>
+                                </div>
+                                <div class="bg-slate-700 p-3 rounded text-center">
+                                    <p class="text-white font-bold">CSS</p>
+                                    <span class="toggle-on">ON</span>
+                                </div>
+                                <div class="bg-slate-700 p-3 rounded text-center">
+                                    <p class="text-white font-bold">HTML</p>
+                                    <span class="toggle-on">ON</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3.3 Brotli -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-purple-400 mb-4 text-lg">3.3 Brotli Sıkıştırma</h3>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-purple-500">
+                            <p class="text-slate-300 mb-2">Aynı sayfada (Content Optimization):</p>
+                            <div class="flex items-center gap-4">
+                                <span class="text-white">Brotli</span>
+                                <span class="toggle-on">ON yap</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3.4 Early Hints -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-purple-400 mb-4 text-lg">3.4 Early Hints</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-tachometer-alt text-purple-400"></i>
+                                <span>Speed</span>
+                                <span class="arrow">→</span>
+                                <span>Optimization</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Protocol Optimization</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-purple-500">
+                            <div class="flex items-center gap-4">
+                                <span class="text-white">Early Hints</span>
+                                <span class="toggle-on">ON yap</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3.5 HTTP/3 -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-purple-400 mb-4 text-lg">3.5 HTTP/3 (QUIC)</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-network-wired text-purple-400"></i>
+                                <span class="text-white font-bold">Network</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-purple-500">
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-white">HTTP/2</span>
+                                    <span class="toggle-on">ON</span>
+                                    <span class="text-slate-400 text-sm">(zaten açık olmalı)</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="text-white">HTTP/3 (with QUIC)</span>
+                                    <span class="toggle-on">ON yap</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-500/20 border border-purple-500/50 rounded-lg p-4 text-center">
+                        <i class="fas fa-check-circle text-purple-400 text-2xl mb-2"></i>
+                        <p class="text-purple-400 font-bold">Performans Ayarları Tamam!</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ADIM 4: Güvenlik WAF -->
+        <section class="mb-8">
+            <div class="bg-slate-800 rounded-xl overflow-hidden">
+                <div class="bg-red-600 px-6 py-4">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                        <span class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">4</span>
+                        Güvenlik (WAF)
+                    </h2>
+                </div>
+                <div class="p-6 space-y-6">
+
+                    <!-- 4.1 Managed Rules -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-red-400 mb-4 text-lg">4.1 WAF Managed Rules (Hazır Koruma)</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-shield-alt text-red-400"></i>
+                                <span>Security</span>
+                                <span class="arrow">→</span>
+                                <span>WAF</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Managed rules</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-red-500">
+                            <p class="text-slate-300 mb-4">Şu iki ruleset'i aktifleştir:</p>
+
+                            <div class="space-y-4">
+                                <!-- Cloudflare Managed -->
+                                <div class="bg-slate-700 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-white font-bold">1. Cloudflare Managed Ruleset</span>
+                                        <button class="click-btn">
+                                            <i class="fas fa-play"></i> Deploy
+                                        </button>
+                                    </div>
+                                    <p class="text-slate-400 text-sm">Deploy butonuna tıkla</p>
+                                </div>
+
+                                <!-- OWASP -->
+                                <div class="bg-slate-700 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-white font-bold">2. Cloudflare OWASP Core Ruleset</span>
+                                        <button class="click-btn">
+                                            <i class="fas fa-play"></i> Deploy
+                                        </button>
+                                    </div>
+                                    <p class="text-slate-400 text-sm">Deploy butonuna tıkla</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 bg-yellow-500/20 border border-yellow-500/50 rounded p-3 text-sm text-yellow-300">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>ÖNEMLİ:</strong> İlk hafta sadece izle (Log mode). 1 hafta sonra Block moduna geç.
+                        </div>
+                    </div>
+
+                    <!-- 4.2 Bot Fight Mode -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-red-400 mb-4 text-lg">4.2 Super Bot Fight Mode</h3>
+
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-shield-alt text-red-400"></i>
+                                <span>Security</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Bots</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-red-500">
+                            <p class="text-slate-300 mb-3"><strong class="text-white">"Configure Super Bot Fight Mode"</strong> butonuna tıkla:</p>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between bg-slate-700 p-3 rounded">
+                                    <span class="text-white">Definitely automated</span>
+                                    <span class="px-3 py-1 bg-red-600 rounded text-white text-sm font-bold">Block</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-slate-700 p-3 rounded">
+                                    <span class="text-white">Likely automated</span>
+                                    <span class="px-3 py-1 bg-yellow-600 rounded text-white text-sm font-bold">Managed Challenge</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-slate-700 p-3 rounded">
+                                    <span class="text-white">Verified bots (Google, Bing)</span>
+                                    <span class="px-3 py-1 bg-green-600 rounded text-white text-sm font-bold">Allow</span>
+                                </div>
+                            </div>
+
+                            <button class="click-btn mt-4 w-full justify-center">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-center">
+                        <i class="fas fa-check-circle text-red-400 text-2xl mb-2"></i>
+                        <p class="text-red-400 font-bold">Güvenlik Ayarları Tamam!</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ADIM 5: Cache Rules -->
+        <section class="mb-8">
+            <div class="bg-slate-800 rounded-xl overflow-hidden">
+                <div class="bg-amber-600 px-6 py-4">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                        <span class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">5</span>
+                        Cache Rules Oluştur
+                    </h2>
+                </div>
+                <div class="p-6 space-y-6">
+
+                    <div class="mb-4">
+                        <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                        <div class="menu-path">
+                            <i class="fas fa-database text-amber-400"></i>
+                            <span>Caching</span>
+                            <span class="arrow">→</span>
+                            <span class="text-white font-bold">Cache Rules</span>
+                        </div>
+                    </div>
+
+                    <!-- Rule 1 -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-amber-400 text-lg">Rule 1: Static Files Cache</h3>
+                            <button class="click-btn">
+                                <i class="fas fa-plus"></i> Create rule
+                            </button>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4 space-y-4">
+                            <div>
+                                <label class="text-slate-400 text-sm">Rule name:</label>
+                                <input type="text" value="Static Files 30 Days" class="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1" readonly>
+                            </div>
+
+                            <div class="border-t border-slate-600 pt-4">
+                                <p class="text-white font-bold mb-2">When... (Ne zaman)</p>
+                                <div class="bg-slate-700 p-3 rounded">
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <select class="bg-slate-600 text-white px-2 py-1 rounded text-sm">
+                                            <option>URI Path</option>
+                                        </select>
+                                        <select class="bg-slate-600 text-white px-2 py-1 rounded text-sm">
+                                            <option>contains</option>
+                                        </select>
+                                        <input type="text" value="/storage/" class="bg-slate-600 text-white px-2 py-1 rounded text-sm" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-600 pt-4">
+                                <p class="text-white font-bold mb-2">Then... (Ne yap)</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-slate-400">Cache eligibility:</span>
+                                        <span class="px-2 py-1 bg-green-600 rounded text-white text-sm">Eligible for cache</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-slate-400">Edge TTL:</span>
+                                        <span class="px-2 py-1 bg-amber-600 rounded text-white text-sm">30 days</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="click-btn w-full justify-center">
+                                <i class="fas fa-save"></i> Deploy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Rule 2 -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-amber-400 text-lg mb-4">Rule 2: Admin No Cache</h3>
+
+                        <div class="bg-slate-800 rounded-lg p-4 space-y-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">Rule name:</span>
+                                <span class="text-white">Admin No Cache</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">When URI Path starts with:</span>
+                                <code class="bg-slate-700 px-2 py-1 rounded text-amber-400">/admin</code>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">Then:</span>
+                                <span class="px-2 py-1 bg-red-600 rounded text-white text-sm">Bypass cache</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rule 3 -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-amber-400 text-lg mb-4">Rule 3: API No Cache</h3>
+
+                        <div class="bg-slate-800 rounded-lg p-4 space-y-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">Rule name:</span>
+                                <span class="text-white">API No Cache</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">When URI Path starts with:</span>
+                                <code class="bg-slate-700 px-2 py-1 rounded text-amber-400">/api</code>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">Then:</span>
+                                <span class="px-2 py-1 bg-red-600 rounded text-white text-sm">Bypass cache</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rule 4 -->
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <h3 class="font-bold text-amber-400 text-lg mb-4">Rule 4: Livewire No Cache</h3>
+
+                        <div class="bg-slate-800 rounded-lg p-4 space-y-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">Rule name:</span>
+                                <span class="text-white">Livewire No Cache</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">When URI Path starts with:</span>
+                                <code class="bg-slate-700 px-2 py-1 rounded text-amber-400">/livewire</code>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">Then:</span>
+                                <span class="px-2 py-1 bg-red-600 rounded text-white text-sm">Bypass cache</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-500/20 border border-amber-500/50 rounded-lg p-4 text-center">
+                        <i class="fas fa-check-circle text-amber-400 text-2xl mb-2"></i>
+                        <p class="text-amber-400 font-bold">Cache Rules Tamam!</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ADIM 6: Rocket Loader (Opsiyonel) -->
+        <section class="mb-8">
+            <div class="bg-slate-800 rounded-xl overflow-hidden">
+                <div class="bg-slate-600 px-6 py-4">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                        <span class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">6</span>
+                        Rocket Loader (Opsiyonel - Test Et!)
+                    </h2>
+                </div>
+                <div class="p-6">
+
+                    <div class="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4 mb-6">
+                        <p class="text-yellow-300">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>DİKKAT:</strong> Bu özellik bazen JavaScript sorunlarına yol açar.
+                            Muzibu player Alpine.js kullandığı için sorun çıkarabilir.
+                            <strong>Önce test et, sorun olursa kapat!</strong>
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-lg p-5">
+                        <div class="mb-4">
+                            <p class="text-slate-300 mb-2">Sol menüden şu yolu takip et:</p>
+                            <div class="menu-path">
+                                <i class="fas fa-tachometer-alt text-slate-400"></i>
+                                <span>Speed</span>
+                                <span class="arrow">→</span>
+                                <span>Optimization</span>
+                                <span class="arrow">→</span>
+                                <span class="text-white font-bold">Content Optimization</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-white">Rocket Loader</span>
+                                <span class="toggle-on">ON yap (test için)</span>
+                            </div>
+
+                            <div class="border-t border-slate-600 pt-4">
+                                <p class="text-white font-bold mb-2">Test Adımları:</p>
+                                <ol class="space-y-2 text-slate-300">
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-slate-600 rounded-full flex items-center justify-center text-xs">1</span>
+                                        <span>https://www.muzibu.com aç</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-slate-600 rounded-full flex items-center justify-center text-xs">2</span>
+                                        <span>Bir şarkı çalmayı dene</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-slate-600 rounded-full flex items-center justify-center text-xs">3</span>
+                                        <span>F12 → Console sekmesine bak</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-slate-600 rounded-full flex items-center justify-center text-xs">4</span>
+                                        <span>Kırmızı hata varsa → Rocket Loader'ı <strong class="text-red-400">KAPAT</strong></span>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet Checklist -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                    <i class="fas fa-clipboard-check"></i>
+                    Kontrol Listesi
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <h3 class="font-bold text-white mb-3">SSL/TLS</h3>
+                        <div class="space-y-2 text-white/90">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Full (strict) seçildi</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Always HTTPS açıldı</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>TLS 1.2 minimum</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>HSTS aktif</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <h3 class="font-bold text-white mb-3">Cache</h3>
+                        <div class="space-y-2 text-white/90">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Tiered Cache açıldı</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Always Online açıldı</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Crawler Hints açıldı</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Cache Rules oluşturuldu</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <h3 class="font-bold text-white mb-3">Performans</h3>
+                        <div class="space-y-2 text-white/90">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Polish (Lossy + WebP)</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Auto Minify (3'ü de)</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Brotli açıldı</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Early Hints açıldı</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>HTTP/3 açıldı</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <h3 class="font-bold text-white mb-3">Güvenlik</h3>
+                        <div class="space-y-2 text-white/90">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>WAF Managed Rules aktif</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>OWASP Ruleset aktif</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 rounded">
+                                <span>Super Bot Fight Mode</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700 py-6 text-center text-slate-500 text-sm">
+        15 Ocak 2026 • Muzibu.com
+    </footer>
+
+</body>
+</html>

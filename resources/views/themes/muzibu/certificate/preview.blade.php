@@ -75,13 +75,15 @@
 
         {{-- Actions --}}
         <div class="flex flex-col sm:flex-row gap-4">
-            <a href="{{ route('muzibu.certificate.index') }}"
+            <a href="/my-certificate"
                 class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-4 rounded-xl text-center transition flex items-center justify-center gap-2">
                 <i class="fas fa-arrow-left"></i>
                 {{ __('muzibu::front.certificate.go_back') }}
             </a>
 
-            <form action="{{ route('muzibu.certificate.store') }}" method="POST" class="flex-1">
+            <form action="/my-certificate" method="POST" class="flex-1"
+                x-data
+                @submit="$el.querySelector('input[name=_token]').value = document.querySelector('meta[name=csrf-token]')?.content || $el.querySelector('input[name=_token]').value">
                 @csrf
                 <input type="hidden" name="member_name" value="{{ $formData['member_name'] }}">
                 <input type="hidden" name="tax_office" value="{{ $formData['tax_office'] ?? '' }}">

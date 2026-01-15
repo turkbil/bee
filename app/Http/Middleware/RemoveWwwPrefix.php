@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * WWW Prefix Remover
  * 
- * www.muzibu.com.tr → muzibu.com.tr
+ * www.muzibu.com → muzibu.com
  * www.ixtif.com → ixtif.com (opsiyonel)
  */
 class RemoveWwwPrefix

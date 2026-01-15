@@ -15,7 +15,7 @@ use Modules\AI\App\Services\Tenant\DefaultPromptService;
  * - Tenant2/PromptService.php (ixtif.com)
  * - Tenant2/ProductSearchService.php
  * - Tenant2/DebugHelper.php
- * - Tenant1001/PromptService.php (muzibu.com.tr)
+ * - Tenant1001/PromptService.php (muzibu.com)
  * - Tenant1001/ProductSearchService.php
  * - Tenant1001/ResponseProcessor.php
  * - Tenant1001/SubscriptionHelper.php

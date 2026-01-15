@@ -315,7 +315,7 @@
                     }"
                 >
                     {{-- ORIJINAL İÇERİK (Normal görünüm) --}}
-                    <div class="queue-item-original contents">
+                    <div class="queue-item-original flex items-center gap-2.5 w-full">
                         {{-- Cover with Play Overlay --}}
                         <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
                             <template x-if="song.album_cover">
@@ -374,7 +374,7 @@
                     </div>
 
                     {{-- DRAG KLON İÇERİĞİ (Sadece sürüklerken görünür - Alpine bağımlılığı yok) --}}
-                    <div class="queue-item-clone items-center gap-2.5 w-full">
+                    <div class="queue-item-clone flex items-center gap-2.5 w-full">
                         {{-- Cover --}}
                         <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden">
                             <img class="queue-clone-cover w-full h-full object-cover" src="" alt="">

@@ -132,7 +132,7 @@ https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
 |----|--------|----------|--------|---------|
 | 1 | tuufi.com | tuufi_4ekim | Central | ✅ |
 | 2 | ixtif.com | tenant_ixtif | Endüstriyel Ekipman | ✅ |
-| 1001 | muzibu.com.tr | tenant_muzibu_1528d0 | Müzik Platformu | ❌ |
+| 1001 | muzibu.com | tenant_muzibu_1528d0 | Müzik Platformu | ❌ |
 
 ### 🚨 KRİTİK KURALLAR - ASLA UNUTMA!
 
@@ -211,7 +211,7 @@ https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
 
 **Hızlı hatırlatma:**
 - Tenant 2 (ixtif.com) → Endüstriyel ekipman (forklift, transpalet)
-- Tenant 1001 (muzibu.com.tr) → Müzik platformu (song, album, artist)
+- Tenant 1001 (muzibu.com) → Müzik platformu (song, album, artist)
 - Her tenant farklı sektör → Global koda tenant-özel içerik EKLEME!
 - Detaylı liste: `TENANT_LIST.md`
 
@@ -813,7 +813,7 @@ Yeni konuya geçiyorum...
 
 #### 📋 Amaç:
 
-Kullanıcı `https://ixtif.com/readme/` veya `https://muzibu.com.tr/readme/` adresine gittiğinde:
+Kullanıcı `https://ixtif.com/readme/` veya `https://muzibu.com/readme/` adresine gittiğinde:
 - Tüm HTML raporlarını görsün
 - Tarih sırasıyla (en yeni en üstte)
 - Versiyonları görsün (v1, v2, v3...)
@@ -830,7 +830,7 @@ public/readme/index.php
 **URL:**
 ```
 https://ixtif.com/readme/
-https://muzibu.com.tr/readme/
+https://muzibu.com/readme/
 ```
 
 #### 🎨 README Index Mantığı:

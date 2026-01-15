@@ -74,7 +74,7 @@ class ThemeService
             }
 
             // 🔥 CENTRAL DOMAIN: Tenant yüklenmediyse ama domain database'de varsa
-            // (Merkezi domain için tema yükleme - muzibu.com.tr gibi)
+            // (Merkezi domain için tema yükleme - muzibu.com gibi)
             if (!tenant() && request()) {
                 $host = request()->getHost();
                 // www prefix'i kaldır

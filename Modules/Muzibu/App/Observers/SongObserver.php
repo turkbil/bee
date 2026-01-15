@@ -83,10 +83,21 @@ class SongObserver
         }
 
         // 🎨 Title değiştiyse otomatik yeni görsel üret
-        $oldTitle = $song->getOriginal('title');
-        $newTitle = $song->title;
+        // ⚠️ FIX: Title translatable JSON olduğu için RAW değerleri karşılaştır
+        $oldTitleRaw = $song->getOriginal('title'); // JSON string veya array
+        $newTitleRaw = $song->getAttributes()['title'] ?? null; // Raw attribute
 
-        if ($oldTitle !== $newTitle && !empty($newTitle)) {
+        // JSON string ise decode et, array ise olduğu gibi kullan
+        $oldTitleArray = is_string($oldTitleRaw) ? json_decode($oldTitleRaw, true) : $oldTitleRaw;
+        $newTitleArray = is_string($newTitleRaw) ? json_decode($newTitleRaw, true) : $newTitleRaw;
+
+        // Gerçekten title içeriği değişmiş mi kontrol et
+        $titleActuallyChanged = json_encode($oldTitleArray) !== json_encode($newTitleArray);
+
+        if ($titleActuallyChanged && !empty($newTitleRaw)) {
+            // Parsed title al (locale-aware)
+            $newTitle = $song->getTranslated('title', 'tr') ?: $song->title;
+
             // color_hash'i yeni title'a göre güncelle
             $newColorHash = Song::generateColorHash($newTitle);
             if ($song->color_hash !== $newColorHash) {
@@ -95,14 +106,11 @@ class SongObserver
                 });
             }
 
-            // 🎨 Yeni AI görsel üret (queue'ya ekle)
-            \muzibu_generate_ai_cover($song, $newTitle, 'song');
-
-            \Illuminate\Support\Facades\Log::info('🎨 Şarkı başlığı değişti, yeni görsel üretiliyor', [
-                'song_id' => $song->song_id,
-                'old_title' => $oldTitle,
-                'new_title' => $newTitle,
-            ]);
+            // 🎨 Yeni AI görsel üret - SADECE görsel yoksa
+            // Zaten görseli varsa gereksiz API çağrısı yapma
+            if (!$song->hasMedia('hero')) {
+                \muzibu_generate_ai_cover($song, $newTitle, 'song');
+            }
         }
 
         // Activity log - değişiklikleri kaydet

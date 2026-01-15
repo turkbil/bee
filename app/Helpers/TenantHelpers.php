@@ -252,6 +252,10 @@ class TenantHelpers
      * Tenant context aktifken $tenant->domains() tenant db'ye gider ve hata verir.
      * Bu yüzden doğrudan central db'den sorgu yapıyoruz.
      *
+     * 🔥 2025-01-15 FIX: CORS sorunu için mevcut request host'unu kontrol et!
+     * Kullanıcı www.domain.com üzerindeyse, URL'ler de www'lu olmalı.
+     * Aksi halde cross-origin hatası alınır.
+     *
      * @param int|null $tenantId
      * @return string|null
      */
@@ -265,7 +269,22 @@ class TenantHelpers
             return null;
         }
 
-        // Central database'den doğrudan sorgu (tenant context'ten bağımsız)
+        // 🔥 FIX: Mevcut request host'unu kontrol et (CORS için kritik!)
+        // Kullanıcı www.domain.com üzerindeyse, URL'ler de www'lu olmalı
+        $currentHost = request()->getHost();
+
+        // Tenant'ın tüm domain'lerini al
+        $domains = DB::connection('mysql')->table('domains')
+            ->where('tenant_id', $tenantId)
+            ->pluck('domain')
+            ->toArray();
+
+        // Mevcut host tenant'ın domain'lerinden biriyse, onu kullan
+        if (in_array($currentHost, $domains)) {
+            return $currentHost;
+        }
+
+        // Değilse, primary domain'i kullan (fallback - CLI, queue job vs. için)
         return DB::connection('mysql')->table('domains')
             ->where('tenant_id', $tenantId)
             ->orderByDesc('is_primary')

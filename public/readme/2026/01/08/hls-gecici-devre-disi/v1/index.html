@@ -146,7 +146,7 @@
                         <div class="bg-slate-950 p-4 rounded border border-slate-700">
                             <p class="text-xs text-slate-500 mb-2">Terminal Komutu:</p>
                             <pre class="text-sm text-green-400 overflow-x-auto"><code>/opt/plesk/php/8.3/bin/php artisan tinker --execute="
-\$domain = \App\Models\Domain::where('domain', 'muzibu.com.tr')->first();
+\$domain = \App\Models\Domain::where('domain', 'muzibu.com')->first();
 \$tenant = \$domain->tenant;
 tenancy()->initialize(\$tenant);
 
@@ -213,10 +213,10 @@ echo 'Conversion oranı: ' . round((\$withHls / \$total) * 100, 2) . '%' . PHP_E
                         <div class="bg-slate-950 p-4 rounded border border-slate-700">
                             <p class="text-xs text-slate-500 mb-2">Otomatik Değiştirme Komutu:</p>
                             <pre class="text-sm text-green-400 overflow-x-auto"><code>sed -i 's|// ->whereNotNull('\''hls_path'\'') // GEÇİCİ.*|->whereNotNull('\''hls_path'\'')|g' \
-  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
+  /var/www/vhosts/muzibu.com/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
 
 sed -i 's|// ->whereNotNull('\''muzibu_songs.hls_path'\'') // GEÇİCİ|->whereNotNull('\''muzibu_songs.hls_path'\'')|g' \
-  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
+  /var/www/vhosts/muzibu.com/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
 
 echo "✅ QueueRefillController güncellendi"</code></pre>
                         </div>
@@ -262,7 +262,7 @@ echo "✅ Tüm cache temizlendi"</code></pre>
                         <div class="bg-slate-950 p-4 rounded border border-slate-700">
                             <p class="text-xs text-slate-500 mb-2">Test Adımları:</p>
                             <ul class="list-disc list-inside space-y-2 text-sm text-slate-300">
-                                <li>Ana sayfayı aç: <a href="https://muzibu.com.tr/" target="_blank" class="text-blue-400 hover:underline">https://muzibu.com.tr/</a></li>
+                                <li>Ana sayfayı aç: <a href="https://muzibu.com/" target="_blank" class="text-blue-400 hover:underline">https://muzibu.com/</a></li>
                                 <li>"Yeni Eklenenler" bölümünde albumler görünüyor mu?</li>
                                 <li>"En Çok Dinlenenler" bölümünde şarkılar görünüyor mu?</li>
                                 <li>Bir şarkı çalmayı dene - HLS stream çalışıyor mu?</li>
@@ -287,14 +287,14 @@ echo "✅ Tüm cache temizlendi"</code></pre>
 
 # 1. HomeController düzelt
 sed -i 's|// ->whereNotNull('\''hls_path'\'') // GEÇİCİ.*|->whereNotNull('\''hls_path'\'')|g' \
-  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Front/HomeController.php
+  /var/www/vhosts/muzibu.com/httpdocs/Modules/Muzibu/app/Http/Controllers/Front/HomeController.php
 
 # 2. QueueRefillController düzelt
 sed -i 's|// ->whereNotNull('\''hls_path'\'') // GEÇİCİ.*|->whereNotNull('\''hls_path'\'')|g' \
-  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
+  /var/www/vhosts/muzibu.com/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
 
 sed -i 's|// ->whereNotNull('\''muzibu_songs.hls_path'\'') // GEÇİCİ|->whereNotNull('\''muzibu_songs.hls_path'\'')|g' \
-  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
+  /var/www/vhosts/muzibu.com/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
 
 # 3. Cache temizle
 /opt/plesk/php/8.3/bin/php artisan cache:clear
@@ -307,7 +307,7 @@ echo "✅ HLS kontrolleri geri alındı!"
 echo "✅ Cache temizlendi!"
 echo ""
 echo "📋 Şimdi test et:"
-echo "   https://muzibu.com.tr/"</code></pre>
+echo "   https://muzibu.com/"</code></pre>
             </div>
             <div class="mt-4 bg-red-900/20 border border-red-700 rounded p-4">
                 <p class="text-sm text-red-400">

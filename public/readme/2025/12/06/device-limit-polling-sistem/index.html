@@ -18,7 +18,7 @@
             </div>
             <div class="mt-4 flex gap-4 text-sm text-slate-500">
                 <span>📅 6 Aralık 2025</span>
-                <span>🎯 Tenant: muzibu.com.tr (1001)</span>
+                <span>🎯 Tenant: muzibu.com (1001)</span>
                 <span>👤 Sorun: Premium üye cihaz limiti aşınca tarayıcı anında fark etmeli</span>
             </div>
         </header>
@@ -297,7 +297,7 @@
                             <p><strong class="text-white">Test Senaryosu 1: Manuel DevTools Testi</strong></p>
                             <div class="bg-slate-900/50 rounded p-4">
                                 <ol class="list-decimal list-inside space-y-2 text-sm">
-                                    <li>https://muzibu.com.tr/ adresine git</li>
+                                    <li>https://muzibu.com/ adresine git</li>
                                     <li>Premium/trial bir hesapla giriş yap</li>
                                     <li>Developer Console'u aç (F12)</li>
                                     <li>Console'da şu mesajı görmeli: <code class="text-green-400">🔐 Session polling started (30s interval)</code></li>
@@ -319,9 +319,9 @@
                                     <li><strong>Ön Hazırlık:</strong> Test user'ın device_limit = 1 olduğundan emin ol
                                         <pre class="bg-slate-950 p-2 rounded mt-2 text-xs overflow-x-auto"><code class="text-purple-400">UPDATE users SET device_limit = 1 WHERE email = 'test@muzibu.com';</code></pre>
                                     </li>
-                                    <li><strong>Chrome:</strong> muzibu.com.tr - test@muzibu.com ile giriş yap</li>
+                                    <li><strong>Chrome:</strong> muzibu.com - test@muzibu.com ile giriş yap</li>
                                     <li><strong>Chrome Console:</strong> Polling başladığını kontrol et</li>
-                                    <li><strong>Firefox:</strong> muzibu.com.tr - aynı hesapla (test@muzibu.com) giriş yap</li>
+                                    <li><strong>Firefox:</strong> muzibu.com - aynı hesapla (test@muzibu.com) giriş yap</li>
                                     <li><strong>Backend:</strong> handlePostLoginDeviceLimit() Chrome'daki session'ı siler</li>
                                     <li><strong>Chrome:</strong> 30 saniye içinde modal açılmalı</li>
                                     <li><strong>Chrome:</strong> 3 saniye sonra otomatik logout</li>

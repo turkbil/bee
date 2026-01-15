@@ -4,7 +4,7 @@ namespace App\Services\CacheProfiles;
 
 /**
  * Muzibu modülü cache profile
- * Sadece Tenant 1001 (muzibu.com.tr) için aktif
+ * Sadece Tenant 1001 (muzibu.com) için aktif
  */
 class MuzibuCacheProfile implements ModuleCacheProfileInterface
 {

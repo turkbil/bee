@@ -566,7 +566,7 @@ return [
 
     // Certificate (Sertifika)
     'certificate' => [
-        'title' => 'Üyelik Sertifikası',
+        'title' => 'Ticari Müzik Kullanım Belgesi',
         'subtitle' => 'Üyelik bilgilerinizi içeren resmi belgenizi oluşturun',
         'premium_member' => 'Premium Üye',
         'active' => 'Aktif',

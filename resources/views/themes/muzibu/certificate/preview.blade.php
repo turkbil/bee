@@ -76,7 +76,7 @@
         {{-- Actions --}}
         <div class="flex flex-col sm:flex-row gap-4">
             <a href="/my-certificate"
-                class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-4 rounded-xl text-center transition flex items-center justify-center gap-2">
+                class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-4 rounded-xl text-center transition flex items-center justify-center gap-2" data-spa>
                 <i class="fas fa-arrow-left"></i>
                 {{ __('muzibu::front.certificate.go_back') }}
             </a>

@@ -1,799 +1,766 @@
-{{-- helper.blade.php'den section'lar gelecek --}}
 @include('payment::admin.helper')
 
 <div>
-    {{-- Page Header --}}
-    <div class="page-header d-print-none mb-4">
-        <div class="container-xl">
-            <div class="row g-2 align-items-center">
-                <div class="col-auto">
-                    <span class="avatar avatar-lg bg-primary-lt">
-                        <i class="fas fa-credit-card fa-lg"></i>
-                    </span>
-                </div>
-                <div class="col">
-                    <h2 class="page-title mb-1">Ödeme Yönetimi</h2>
-                    <div class="text-muted">Tüm ödemeleri görüntüleyin ve yönetin</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Filters --}}
-    <div class="card mb-3">
-        <div class="card-body py-3">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label class="form-label small text-muted mb-1">Ara</label>
-                    <div class="input-icon">
-                        <span class="input-icon-addon"><i class="fas fa-search"></i></span>
-                        <input type="text" wire:model.live.debounce.300ms="search" class="form-control" placeholder="Ödeme no, işlem ID...">
+    <!-- Kazanç İstatistik Kartları -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card bg-success-lt h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="bg-success text-white avatar me-3">
+                            <i class="fas fa-calendar-day"></i>
+                        </span>
+                        <div>
+                            <div class="h2 mb-0">{{ number_format($this->earningCards['today']['amount'], 0, ',', '.') }} ₺</div>
+                            <div class="text-muted small">Bugünkü Kazanç</div>
+                            @if($this->earningCards['today']['count'] > 0)
+                                <div class="text-muted small">{{ $this->earningCards['today']['count'] }} ödeme</div>
+                            @endif
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label small text-muted mb-1">Durum</label>
-                    <select wire:model.live="status" class="form-select">
-                        <option value="">Tümü</option>
-                        <option value="pending">Bekliyor</option>
-                        <option value="processing">İşleniyor</option>
-                        <option value="completed">Tamamlandı</option>
-                        <option value="failed">Başarısız</option>
-                        <option value="cancelled">İptal</option>
-                        <option value="refunded">İade</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label small text-muted mb-1">Ödeme Yöntemi</label>
-                    <select wire:model.live="gateway" class="form-select">
-                        <option value="">Tümü</option>
-                        <option value="paytr">Kredi Kartı</option>
-                        <option value="manual">Havale/EFT</option>
-                    </select>
-                </div>
-                <div class="col-md-2 text-end">
-                    @if($search || $status || $gateway)
-                        <button wire:click="$set('search', ''); $set('status', ''); $set('gateway', '')" class="btn btn-ghost-secondary">
-                            <i class="fas fa-times me-1"></i> Temizle
-                        </button>
+                    @if($this->earningCards['today']['trend'] != 0)
+                        <div class="mt-2 small {{ $this->earningCards['today']['trend'] > 0 ? 'text-success' : 'text-danger' }}">
+                            <i class="fas fa-{{ $this->earningCards['today']['trend'] > 0 ? 'arrow-up' : 'arrow-down' }} me-1"></i>
+                            %{{ number_format(abs($this->earningCards['today']['trend']), 1) }} düne göre
+                        </div>
                     @endif
                 </div>
             </div>
         </div>
+        <div class="col-6 col-lg-3">
+            <div class="card bg-primary-lt h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="bg-primary text-white avatar me-3">
+                            <i class="fas fa-calendar-week"></i>
+                        </span>
+                        <div>
+                            <div class="h2 mb-0">{{ number_format($this->earningCards['week']['amount'], 0, ',', '.') }} ₺</div>
+                            <div class="text-muted small">Bu Hafta</div>
+                        </div>
+                    </div>
+                    @if($this->earningCards['week']['trend'] != 0)
+                        <div class="mt-2 small {{ $this->earningCards['week']['trend'] > 0 ? 'text-success' : 'text-danger' }}">
+                            <i class="fas fa-{{ $this->earningCards['week']['trend'] > 0 ? 'arrow-up' : 'arrow-down' }} me-1"></i>
+                            %{{ number_format(abs($this->earningCards['week']['trend']), 1) }} geçen haftaya göre
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card bg-purple-lt h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="bg-purple text-white avatar me-3">
+                            <i class="fas fa-calendar-alt"></i>
+                        </span>
+                        <div>
+                            <div class="h2 mb-0">{{ number_format($this->earningCards['month']['amount'], 0, ',', '.') }} ₺</div>
+                            <div class="text-muted small">Bu Ay</div>
+                        </div>
+                    </div>
+                    @if($this->earningCards['month']['trend'] != 0)
+                        <div class="mt-2 small {{ $this->earningCards['month']['trend'] > 0 ? 'text-success' : 'text-danger' }}">
+                            <i class="fas fa-{{ $this->earningCards['month']['trend'] > 0 ? 'arrow-up' : 'arrow-down' }} me-1"></i>
+                            %{{ number_format(abs($this->earningCards['month']['trend']), 1) }} geçen aya göre
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card bg-azure-lt h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="bg-azure text-white avatar me-3">
+                            <i class="fas fa-chart-line"></i>
+                        </span>
+                        <div>
+                            <div class="h2 mb-0">{{ $stats['completed_count'] }}</div>
+                            <div class="text-muted small">Tamamlanan Ödeme</div>
+                            <div class="text-muted small">{{ number_format($stats['completed_amount'], 0, ',', '.') }} ₺</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    {{-- Payment List --}}
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table table-vcenter card-table table-hover">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;"></th>
-                        <th>Sipariş</th>
-                        <th>Müşteri</th>
-                        <th class="text-end">Tutar</th>
-                        <th class="text-center">Yöntem</th>
-                        <th class="text-center">Durum</th>
-                        <th>Tarih</th>
-                        <th style="width: 120px;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($payments as $payment)
-                    @php
-                        $statusConfig = [
-                            'pending' => ['color' => 'yellow', 'icon' => 'clock', 'label' => 'Bekliyor'],
-                            'processing' => ['color' => 'blue', 'icon' => 'spinner fa-spin', 'label' => 'İşleniyor'],
-                            'completed' => ['color' => 'green', 'icon' => 'check-circle', 'label' => 'Tamamlandı'],
-                            'failed' => ['color' => 'red', 'icon' => 'times-circle', 'label' => 'Başarısız'],
-                            'cancelled' => ['color' => 'secondary', 'icon' => 'ban', 'label' => 'İptal'],
-                            'refunded' => ['color' => 'orange', 'icon' => 'undo', 'label' => 'İade'],
-                        ];
-                        $gatewayConfig = [
-                            'paytr' => ['color' => 'purple', 'icon' => 'credit-card', 'label' => 'Kredi Kartı'],
-                            'manual' => ['color' => 'cyan', 'icon' => 'building-columns', 'label' => 'Havale/EFT'],
-                            'bank_transfer' => ['color' => 'cyan', 'icon' => 'building-columns', 'label' => 'Havale/EFT'],
-                        ];
-                        $sc = $statusConfig[$payment->status] ?? ['color' => 'secondary', 'icon' => 'question', 'label' => $payment->status];
-                        $gc = $gatewayConfig[$payment->gateway] ?? ['color' => 'secondary', 'icon' => 'wallet', 'label' => $payment->gateway];
-                    @endphp
-                    <tr class="cursor-pointer" wire:click="viewPayment({{ $payment->payment_id }})">
-                        <td>
-                            <span class="avatar avatar-sm bg-{{ $sc['color'] }}-lt">
-                                <i class="fas fa-{{ $sc['icon'] }} text-{{ $sc['color'] }}"></i>
-                            </span>
-                        </td>
-                        <td>
-                            <div class="font-weight-medium">{{ $payment->payable?->order_number ?? '#' . $payment->payable_id }}</div>
-                            <div class="text-muted small">{{ $payment->payment_number }}</div>
-                        </td>
-                        <td>
-                            @if($payment->payable?->customer_name)
-                                <div class="d-flex align-items-center">
-                                    <span class="avatar avatar-xs me-2 bg-secondary-lt">
-                                        {{ strtoupper(substr($payment->payable->customer_name, 0, 1)) }}
-                                    </span>
-                                    <span>{{ Str::limit($payment->payable->customer_name, 20) }}</span>
-                                </div>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                        <td class="text-end">
-                            <span class="h4 mb-0">{{ number_format($payment->amount, 0, ',', '.') }}</span>
-                            <span class="text-muted">₺</span>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge bg-{{ $gc['color'] }}">
-                                <i class="fas fa-{{ $gc['icon'] }} me-1"></i>{{ $gc['label'] }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge bg-{{ $sc['color'] }}">{{ $sc['label'] }}</span>
-                        </td>
-                        <td>
-                            <div class="small">{{ $payment->created_at->format('d.m.Y') }}</div>
-                            <div class="text-muted small">{{ $payment->created_at->format('H:i') }}</div>
-                        </td>
-                        <td class="text-end" onclick="event.stopPropagation();">
-                            @if($payment->status === 'pending')
-                                <div class="btn-group">
-                                    <button wire:click="markAsCompleted({{ $payment->payment_id }})"
-                                            wire:confirm="Ödemeyi onaylamak istediğinizden emin misiniz?"
-                                            class="btn btn-sm btn-success" title="Onayla">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button wire:click="markAsFailed({{ $payment->payment_id }})"
-                                            wire:confirm="Ödemeyi reddetmek istediğinizden emin misiniz?"
-                                            class="btn btn-sm btn-outline-danger" title="Reddet">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            @else
-                                <button wire:click="viewPayment({{ $payment->payment_id }})" class="btn btn-sm btn-ghost-primary">
-                                    <i class="fas fa-eye me-1"></i> Detay
+    <!-- Kazanç Grafiği -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="row align-items-center w-100">
+                <div class="col">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-chart-bar text-success me-2"></i>
+                        Kazanç Dağılımı
+                    </h3>
+                </div>
+                <div class="col-auto">
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <!-- View Mode Buttons -->
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" wire:click="setChartViewMode('hourly')"
+                                class="btn btn-sm {{ $chartViewMode === 'hourly' ? 'btn-success' : 'btn-outline-secondary' }}">
+                                Saatlik
+                            </button>
+                            <button type="button" wire:click="setChartViewMode('daily')"
+                                class="btn btn-sm {{ $chartViewMode === 'daily' ? 'btn-success' : 'btn-outline-secondary' }}">
+                                Günlük
+                            </button>
+                            <button type="button" wire:click="setChartViewMode('weekly')"
+                                class="btn btn-sm {{ $chartViewMode === 'weekly' ? 'btn-success' : 'btn-outline-secondary' }}">
+                                Haftalık
+                            </button>
+                            <button type="button" wire:click="setChartViewMode('monthly')"
+                                class="btn btn-sm {{ $chartViewMode === 'monthly' ? 'btn-success' : 'btn-outline-secondary' }}">
+                                Aylık
+                            </button>
+                        </div>
+
+                        <!-- Date Navigation (Sadece hourly/daily mode'da) -->
+                        @if(in_array($chartViewMode, ['hourly', 'daily']))
+                            <div class="d-flex align-items-center gap-2">
+                                <button wire:click="goToPreviousChartDay" class="btn btn-sm btn-icon btn-outline-secondary" title="Önceki Gün">
+                                    <i class="fas fa-chevron-left"></i>
                                 </button>
-                            @endif
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="8" class="text-center py-5">
-                            <div class="empty">
-                                <div class="empty-icon">
-                                    <i class="fas fa-inbox fa-3x text-muted"></i>
-                                </div>
-                                <p class="empty-title">Ödeme kaydı bulunamadı</p>
-                                <p class="empty-subtitle text-muted">Henüz herhangi bir ödeme işlemi yapılmamış.</p>
+                                <input type="date" wire:model.live="chartDate" class="form-control form-control-sm" style="width: 140px;" max="{{ now()->format('Y-m-d') }}">
+                                <button wire:click="goToNextChartDay" class="btn btn-sm btn-icon btn-outline-secondary" title="Sonraki Gün" @if(Carbon\Carbon::parse($chartDate)->isToday()) disabled @endif>
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                                <button wire:click="goToChartToday" class="btn btn-sm btn-outline-success">
+                                    Bugün
+                                </button>
                             </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                        @endif
+
+                        <div wire:loading class="ms-1">
+                            <span class="spinner-border spinner-border-sm text-success"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Hourly Chart -->
+            @if($chartViewMode === 'hourly')
+                @php
+                    $chartStats = $this->hourlyEarnings;
+                    $maxValue = (!empty($chartStats) && max($chartStats) > 0) ? max($chartStats) : 1;
+                @endphp
+                <div class="d-flex">
+                    <!-- Y Axis -->
+                    <div class="d-flex flex-column justify-content-between text-end pe-2 pt-2" style="width: 70px; height: 120px;">
+                        <span class="text-muted small fw-medium">{{ number_format($maxValue, 0, ',', '.') }} ₺</span>
+                        <span class="text-muted small">{{ number_format(intval($maxValue / 2), 0, ',', '.') }}</span>
+                        <span class="text-muted small">0</span>
+                    </div>
+                    <!-- Bars -->
+                    <div class="flex-fill d-flex align-items-end gap-1 pt-3" style="height: 140px;">
+                        @foreach($chartStats as $hour => $amount)
+                            <div class="flex-fill text-center">
+                                @if($amount > 0)
+                                    <div class="text-muted small mb-1" style="font-size: 9px;">{{ $amount > 999 ? number_format($amount/1000, 1).'k' : number_format($amount, 0) }}</div>
+                                @endif
+                                <div class="bg-success rounded-top transition-all" style="height: {{ ($amount / $maxValue) * 100 }}px; min-height: 2px;"></div>
+                                <div class="text-muted small mt-1" style="font-size: 10px;">{{ sprintf('%02d', $hour) }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <!-- Daily Chart (Son 7 Gün) -->
+            @if($chartViewMode === 'daily')
+                @php
+                    $chartStats = $this->dailyEarnings;
+                    $maxValue = (!empty($chartStats) && max($chartStats) > 0) ? max($chartStats) : 1;
+                @endphp
+                <div class="d-flex">
+                    <!-- Y Axis -->
+                    <div class="d-flex flex-column justify-content-between text-end pe-2 pt-2" style="width: 70px; height: 120px;">
+                        <span class="text-muted small fw-medium">{{ number_format($maxValue, 0, ',', '.') }} ₺</span>
+                        <span class="text-muted small">{{ number_format(intval($maxValue / 2), 0, ',', '.') }}</span>
+                        <span class="text-muted small">0</span>
+                    </div>
+                    <!-- Bars -->
+                    <div class="flex-fill d-flex align-items-end justify-content-around gap-2 pt-3" style="height: 140px;">
+                        @foreach($chartStats as $date => $amount)
+                            @php
+                                $carbonDate = Carbon\Carbon::parse($date);
+                                $isToday = $carbonDate->isToday();
+                            @endphp
+                            <div class="flex-fill text-center" style="max-width: 80px;">
+                                <div class="text-muted small mb-1 fw-medium" style="font-size: 10px;">{{ $amount > 999 ? number_format($amount/1000, 1).'k' : number_format($amount, 0) }} ₺</div>
+                                <div class="{{ $isToday ? 'bg-primary' : 'bg-success' }} rounded-top transition-all" style="height: {{ ($amount / $maxValue) * 100 }}px; min-height: 2px;"></div>
+                                <div class="text-muted small mt-1">{{ $carbonDate->translatedFormat('D') }}</div>
+                                <div class="text-muted small" style="font-size: 10px;">{{ $carbonDate->format('d/m') }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <!-- Weekly Chart (Son 4 Hafta) -->
+            @if($chartViewMode === 'weekly')
+                @php
+                    $chartStats = $this->weeklyEarnings;
+                    $maxValue = (!empty($chartStats) && max($chartStats) > 0) ? max($chartStats) : 1;
+                @endphp
+                <div class="d-flex">
+                    <!-- Y Axis -->
+                    <div class="d-flex flex-column justify-content-between text-end pe-2 pt-2" style="width: 70px; height: 120px;">
+                        <span class="text-muted small fw-medium">{{ number_format($maxValue, 0, ',', '.') }} ₺</span>
+                        <span class="text-muted small">{{ number_format(intval($maxValue / 2), 0, ',', '.') }}</span>
+                        <span class="text-muted small">0</span>
+                    </div>
+                    <!-- Bars -->
+                    <div class="flex-fill d-flex align-items-end justify-content-around gap-3 pt-3" style="height: 140px;">
+                        @foreach($chartStats as $label => $amount)
+                            <div class="flex-fill text-center" style="max-width: 150px;">
+                                <div class="text-muted small mb-1 fw-medium" style="font-size: 10px;">{{ $amount > 999 ? number_format($amount/1000, 1).'k' : number_format($amount, 0) }} ₺</div>
+                                <div class="bg-purple rounded-top transition-all" style="height: {{ ($amount / $maxValue) * 100 }}px; min-height: 2px;"></div>
+                                <div class="text-muted small mt-1" style="font-size: 11px;">{{ $label }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <!-- Monthly Chart (Son 6 Ay) -->
+            @if($chartViewMode === 'monthly')
+                @php
+                    $chartStats = $this->monthlyEarnings;
+                    $maxValue = (!empty($chartStats) && max($chartStats) > 0) ? max($chartStats) : 1;
+                @endphp
+                <div class="d-flex">
+                    <!-- Y Axis -->
+                    <div class="d-flex flex-column justify-content-between text-end pe-2 pt-2" style="width: 70px; height: 120px;">
+                        <span class="text-muted small fw-medium">{{ number_format($maxValue, 0, ',', '.') }} ₺</span>
+                        <span class="text-muted small">{{ number_format(intval($maxValue / 2), 0, ',', '.') }}</span>
+                        <span class="text-muted small">0</span>
+                    </div>
+                    <!-- Bars -->
+                    <div class="flex-fill d-flex align-items-end justify-content-around gap-2 pt-3" style="height: 140px;">
+                        @foreach($chartStats as $label => $amount)
+                            <div class="flex-fill text-center" style="max-width: 100px;">
+                                <div class="text-muted small mb-1 fw-medium" style="font-size: 10px;">{{ $amount > 999 ? number_format($amount/1000, 1).'k' : number_format($amount, 0) }} ₺</div>
+                                <div class="bg-azure rounded-top transition-all" style="height: {{ ($amount / $maxValue) * 100 }}px; min-height: 2px;"></div>
+                                <div class="text-muted small mt-1" style="font-size: 11px;">{{ $label }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <!-- Header Bolumu -->
+            <div class="row mb-3">
+                <!-- Arama Kutusu -->
+                <div class="col">
+                    <div class="input-icon">
+                        <span class="input-icon-addon"><i class="fas fa-search"></i></span>
+                        <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
+                            placeholder="Odeme no, islem ID...">
+                    </div>
+                </div>
+
+                <!-- Ortadaki Loading -->
+                <div class="col position-relative">
+                    <div wire:loading class="position-absolute top-50 start-50 translate-middle text-center" style="width: 100%; max-width: 250px;">
+                        <div class="small mb-2" style="color: var(--tblr-body-color); opacity: 0.7;">Guncelleniyor...</div>
+                        <div class="progress mb-1">
+                            <div class="progress-bar progress-bar-indeterminate"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sag Taraf -->
+                <div class="col">
+                    <div class="d-flex align-items-center justify-content-end gap-3">
+                        <!-- Filtre Butonu -->
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse"
+                            data-bs-target="#filterCollapse" aria-expanded="false">
+                            <i class="fas fa-filter me-1"></i>Filtreler
+                            @if($this->hasActiveFilters())
+                            <span class="badge bg-primary ms-1">Aktif</span>
+                            @endif
+                        </button>
+
+                        <!-- Excel Export -->
+                        <button wire:click="exportPayments" class="btn btn-sm btn-success">
+                            <i class="fas fa-download me-1"></i>Excel
+                        </button>
+
+                        <!-- Sayfa Adeti -->
+                        <div style="min-width: 70px">
+                            <select wire:model.live="perPage" class="form-select form-select-sm">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtre Bolumu - Acilir Kapanir -->
+            <div class="collapse mb-3" id="filterCollapse">
+                <div class="card card-body bg-light">
+                    <!-- Row 1: Durum Filtreleri -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label small text-muted">Ödeme Durumu</label>
+                            <select wire:model.live="status" class="form-select form-select-sm">
+                                <option value="">Tümü</option>
+                                <option value="completed">Tamamlandı</option>
+                                <option value="pending">Bekliyor</option>
+                                <option value="failed">Başarısız</option>
+                                <option value="refunded">İade</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small text-muted">Ödeme Yöntemi</label>
+                            <select wire:model.live="gateway" class="form-select form-select-sm">
+                                <option value="">Tümü</option>
+                                <option value="paytr">Kredi Kartı</option>
+                                <option value="manual">Havale/EFT</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small text-muted">Başlangıç Tarihi</label>
+                            <input type="date" wire:model.live="dateFrom" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small text-muted">Bitiş Tarihi</label>
+                            <input type="date" wire:model.live="dateTo" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small text-muted">Min Tutar (TL)</label>
+                            <input type="number" wire:model.live.debounce.500ms="amountMin" class="form-control form-control-sm" placeholder="0">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            @if($this->hasActiveFilters())
+                            <button type="button" class="btn btn-sm btn-outline-danger w-100" wire:click="clearFilters">
+                                <i class="fas fa-times me-1"></i>Temizle
+                            </button>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Tutar ve Switch'ler -->
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-2">
+                            <label class="form-label small text-muted">Max Tutar (TL)</label>
+                            <input type="number" wire:model.live.debounce.500ms="amountMax" class="form-control form-control-sm" placeholder="~">
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <label class="form-check form-switch mb-0">
+                                <input type="checkbox" wire:model.live="showPending" class="form-check-input">
+                                <span class="form-check-label small">Bekleyenleri Dahil Et</span>
+                            </label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-check form-switch mb-0">
+                                <input type="checkbox" wire:model.live="showFailed" class="form-check-input">
+                                <span class="form-check-label small">Başarısızları Dahil Et</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Aktif Filtreler Badge'leri -->
+                    @if($this->hasActiveFilters())
+                    <div class="d-flex flex-wrap gap-2 mt-3 pt-3 border-top">
+                        @if($search)
+                            <span class="badge bg-azure-lt text-azure">Arama: {{ $search }}</span>
+                        @endif
+                        @if($status)
+                            @php
+                                $sLabels = ['completed' => 'Tamamlandı', 'pending' => 'Bekliyor', 'failed' => 'Başarısız', 'refunded' => 'İade'];
+                            @endphp
+                            <span class="badge bg-green-lt text-green">Durum: {{ $sLabels[$status] ?? $status }}</span>
+                        @endif
+                        @if($gateway)
+                            <span class="badge bg-purple-lt text-purple">Yöntem: {{ $gateway === 'paytr' ? 'Kredi Kartı' : 'Havale' }}</span>
+                        @endif
+                        @if($dateFrom)
+                            <span class="badge bg-teal-lt text-teal">Başlangıç: {{ $dateFrom }}</span>
+                        @endif
+                        @if($dateTo)
+                            <span class="badge bg-cyan-lt text-cyan">Bitiş: {{ $dateTo }}</span>
+                        @endif
+                        @if($amountMin)
+                            <span class="badge bg-orange-lt text-orange">Min: {{ $amountMin }} TL</span>
+                        @endif
+                        @if($amountMax)
+                            <span class="badge bg-red-lt text-red">Max: {{ $amountMax }} TL</span>
+                        @endif
+                        @if($showPending)
+                            <span class="badge bg-yellow-lt text-yellow">Bekleyenler Dahil</span>
+                        @endif
+                        @if($showFailed)
+                            <span class="badge bg-red-lt text-red">Başarısızlar Dahil</span>
+                        @endif
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Ozet Istatistikler (Compact) -->
+            <div class="d-flex gap-4 mb-3 small">
+                <span><i class="fas fa-credit-card me-1"></i>Toplam: <strong>{{ $stats['total_count'] }}</strong> ({{ number_format($stats['total_amount'], 0, ',', '.') }} TL)</span>
+                <span class="text-success"><i class="fas fa-check-circle me-1"></i>Tamamlanan: <strong>{{ $stats['completed_count'] }}</strong></span>
+                <span class="text-warning"><i class="fas fa-clock me-1"></i>Bekleyen: <strong>{{ $stats['pending_count'] }}</strong></span>
+                <span class="text-danger"><i class="fas fa-times-circle me-1"></i>Basarisiz: <strong>{{ $stats['failed_count'] }}</strong></span>
+            </div>
+
+            <!-- Tablo -->
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Siparis</th>
+                            <th>Musteri</th>
+                            <th class="text-end">Tutar</th>
+                            <th class="text-center">Yontem</th>
+                            <th class="text-center">Durum</th>
+                            <th class="text-center" title="Fatura">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </th>
+                            <th>Tarih</th>
+                            <th class="text-center">Islem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($payments as $payment)
+                        @php
+                            $statusConfig = [
+                                'pending' => ['color' => 'yellow', 'icon' => 'clock', 'label' => 'Bekliyor'],
+                                'processing' => ['color' => 'blue', 'icon' => 'spinner fa-spin', 'label' => 'Isleniyor'],
+                                'completed' => ['color' => 'green', 'icon' => 'check-circle', 'label' => 'Tamamlandi'],
+                                'failed' => ['color' => 'red', 'icon' => 'times-circle', 'label' => 'Basarisiz'],
+                                'cancelled' => ['color' => 'dark', 'icon' => 'ban', 'label' => 'Iptal'],
+                                'refunded' => ['color' => 'orange', 'icon' => 'undo', 'label' => 'Iade'],
+                            ];
+                            $gatewayConfig = [
+                                'paytr' => ['color' => 'purple', 'icon' => 'credit-card', 'label' => 'Kart'],
+                                'manual' => ['color' => 'cyan', 'icon' => 'building-columns', 'label' => 'Havale'],
+                                'bank_transfer' => ['color' => 'cyan', 'icon' => 'building-columns', 'label' => 'Havale'],
+                            ];
+                            $sc = $statusConfig[$payment->status] ?? ['color' => 'dark', 'icon' => 'question', 'label' => $payment->status];
+                            $gc = $gatewayConfig[$payment->gateway] ?? ['color' => 'azure', 'icon' => 'wallet', 'label' => '-'];
+                        @endphp
+                        <tr wire:key="payment-{{ $payment->payment_id }}">
+                            <td>
+                                <div class="fw-medium">{{ $payment->payable?->order_number ?? '#' . $payment->payable_id }}</div>
+                                <div class="small" style="color: var(--tblr-body-color); opacity: 0.7;">{{ $payment->payment_number }}</div>
+                            </td>
+                            <td>
+                                @if($payment->payable?->customer_name)
+                                    <div>{{ Str::limit($payment->payable->customer_name, 20) }}</div>
+                                    @if($payment->payable->customer_email)
+                                        <div class="small" style="color: var(--tblr-body-color); opacity: 0.7;">{{ Str::limit($payment->payable->customer_email, 25) }}</div>
+                                    @endif
+                                @else
+                                    <span>-</span>
+                                @endif
+                            </td>
+                            <td class="text-end">
+                                <strong>{{ number_format($payment->amount, 0, ',', '.') }} TL</strong>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-{{ $gc['color'] }}">
+                                    <i class="fas fa-{{ $gc['icon'] }} me-1"></i>{{ $gc['label'] }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-{{ $sc['color'] }}">{{ $sc['label'] }}</span>
+                            </td>
+                            <td class="text-center">
+                                @if($payment->invoice_path)
+                                    <span class="text-success" title="Fatura Yüklendi" data-bs-toggle="tooltip">
+                                        <i class="fas fa-check-circle"></i>
+                                    </span>
+                                @else
+                                    <span class="text-muted" title="Fatura Bekleniyor" data-bs-toggle="tooltip">
+                                        <i class="fas fa-minus-circle"></i>
+                                    </span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($payment->paid_at)
+                                    <div class="small text-success">{{ $payment->paid_at->format('d.m.Y H:i') }}</div>
+                                @else
+                                    <div class="small">{{ $payment->created_at->format('d.m.Y H:i') }}</div>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if($payment->status === 'pending')
+                                    <div class="btn-group">
+                                        <button wire:click="markAsCompleted({{ $payment->payment_id }})"
+                                                wire:confirm="Odemeyi onaylamak istediginizden emin misiniz?"
+                                                class="btn btn-sm btn-success" title="Onayla">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button wire:click="markAsFailed({{ $payment->payment_id }})"
+                                                wire:confirm="Odemeyi reddetmek istediginizden emin misiniz?"
+                                                class="btn btn-sm btn-outline-danger" title="Reddet">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                @else
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            data-bs-toggle="modal" data-bs-target="#paymentDetailModal"
+                                            onclick="loadPaymentDetail({{ $payment->payment_id }})">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="9" class="text-center py-4">
+                                <div class="empty">
+                                    <div class="empty-icon"><i class="fas fa-credit-card fa-3x" style="color: var(--tblr-body-color); opacity: 0.5;"></i></div>
+                                    <p class="empty-title">Odeme bulunamadi</p>
+                                    <p class="empty-subtitle" style="color: var(--tblr-body-color); opacity: 0.7;">Filtrelere uygun odeme yok.</p>
+                                    @if($this->hasActiveFilters())
+                                    <div class="empty-action">
+                                        <button wire:click="clearFilters" class="btn btn-primary">
+                                            <i class="fas fa-times me-1"></i>Filtreleri Temizle
+                                        </button>
+                                    </div>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
+        <!-- Pagination -->
         @if($payments->hasPages())
-        <div class="card-footer d-flex align-items-center">
-            <p class="m-0 text-muted">Toplam <strong>{{ $payments->total() }}</strong> ödeme</p>
-            <div class="ms-auto">
-                {{ $payments->links() }}
-            </div>
+        <div class="card-footer d-flex justify-content-end">
+            {{ $payments->links() }}
         </div>
         @endif
     </div>
 
-    {{-- ==================== PAYMENT DETAIL MODAL ==================== --}}
-    @if($showModal && $selectedPayment)
-    @php
-        $order = $selectedPayment->payable;
-        $user = $order?->user;
-        $orderMetadata = $order?->metadata ?? [];
-        $transferNote = $orderMetadata['transfer_note'] ?? null;
-        $bankTransferConfirmedAt = $orderMetadata['bank_transfer_confirmed_at'] ?? null;
-
-        $statusConfig = [
-            'pending' => ['color' => 'yellow', 'icon' => 'clock', 'label' => 'Bekliyor', 'bg' => 'bg-yellow-lt'],
-            'processing' => ['color' => 'blue', 'icon' => 'spinner', 'label' => 'İşleniyor', 'bg' => 'bg-blue-lt'],
-            'completed' => ['color' => 'green', 'icon' => 'check-circle', 'label' => 'Tamamlandı', 'bg' => 'bg-green-lt'],
-            'failed' => ['color' => 'red', 'icon' => 'times-circle', 'label' => 'Başarısız', 'bg' => 'bg-red-lt'],
-            'cancelled' => ['color' => 'secondary', 'icon' => 'ban', 'label' => 'İptal', 'bg' => 'bg-secondary-lt'],
-            'refunded' => ['color' => 'orange', 'icon' => 'undo', 'label' => 'İade', 'bg' => 'bg-orange-lt'],
-        ];
-        $sc = $statusConfig[$selectedPayment->status] ?? ['color' => 'secondary', 'icon' => 'question', 'label' => $selectedPayment->status, 'bg' => 'bg-secondary-lt'];
-    @endphp
-    <div class="modal modal-blur fade show" style="display: block; z-index: 10000;" tabindex="-1">
+    <!-- Payment Detail Modal (Bootstrap) -->
+    <div class="modal modal-blur fade" id="paymentDetailModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content shadow-lg">
-                {{-- Modal Header --}}
-                <div class="modal-header {{ $sc['bg'] }} border-0">
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="avatar avatar-lg bg-white shadow-sm">
-                            <i class="fas fa-{{ $sc['icon'] }} text-{{ $sc['color'] }} fa-lg"></i>
-                        </span>
-                        <div>
-                            <h4 class="modal-title mb-0">{{ $selectedPayment->payment_number }}</h4>
-                            <div class="d-flex align-items-center gap-2 mt-1">
-                                <span class="badge bg-{{ $sc['color'] }}">{{ $sc['label'] }}</span>
-                                <span class="text-muted">{{ $selectedPayment->created_at->format('d.m.Y H:i') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" wire:click="closeModal"></button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-credit-card me-2"></i>
+                        <span id="modalPaymentTitle">Ödeme Detayı</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
-                <div class="modal-body p-0">
-                    <div class="row g-0">
-                        {{-- Sol Kolon: Ana Bilgiler --}}
-                        <div class="col-lg-8 border-end">
-                            {{-- Tutar Banner --}}
-                            <div class="p-4 payment-amount-banner">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <div class="payment-amount-label small mb-1">Ödeme Tutarı</div>
-                                        <div class="d-flex align-items-baseline gap-1">
-                                            <span class="display-5 fw-bold payment-amount-value">{{ number_format($selectedPayment->amount, 2, ',', '.') }}</span>
-                                            <span class="fs-4 payment-amount-currency">₺</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        @php
-                                            $gw = $selectedPayment->gateway;
-                                            $gwIcon = match($gw) {
-                                                'paytr' => 'credit-card',
-                                                'manual', 'bank_transfer' => 'building-columns',
-                                                default => 'wallet'
-                                            };
-                                            $gwLabel = match($gw) {
-                                                'paytr' => 'Kredi Kartı',
-                                                'manual', 'bank_transfer' => 'Havale/EFT',
-                                                default => ucfirst($gw)
-                                            };
-                                        @endphp
-                                        <div class="text-center">
-                                            <div class="avatar avatar-xl payment-gateway-avatar mb-2">
-                                                <i class="fas fa-{{ $gwIcon }} fa-lg payment-gateway-icon"></i>
-                                            </div>
-                                            <div class="small payment-gateway-label">{{ $gwLabel }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Müşteri & Sipariş --}}
-                            @if($order)
-                            <div class="p-4">
-                                {{-- Müşteri Kartı --}}
-                                <div class="d-flex align-items-start gap-3 mb-4 pb-4 border-bottom">
-                                    <span class="avatar avatar-lg bg-blue-lt">
-                                        {{ strtoupper(substr($order->customer_name ?? 'M', 0, 1)) }}
-                                    </span>
-                                    <div class="flex-fill">
-                                        <div class="d-flex align-items-center gap-2 mb-1">
-                                            <h4 class="mb-0">{{ $order->customer_name }}</h4>
-                                            @if($user)
-                                                <span class="badge bg-green">Kayıtlı Üye</span>
-                                            @else
-                                                <span class="badge bg-secondary">Misafir</span>
-                                            @endif
-                                        </div>
-                                        <div class="d-flex flex-wrap gap-3 text-secondary">
-                                            @if($order->customer_email)
-                                                <a href="mailto:{{ $order->customer_email }}" class="text-reset text-decoration-none">
-                                                    <i class="fas fa-envelope me-1"></i>{{ $order->customer_email }}
-                                                </a>
-                                            @endif
-                                            @if($order->customer_phone)
-                                                <a href="tel:{{ $order->customer_phone }}" class="text-reset text-decoration-none">
-                                                    <i class="fas fa-phone me-1"></i>{{ $order->customer_phone }}
-                                                </a>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="text-secondary small">Sipariş No</div>
-                                        <div class="badge bg-primary fs-6">{{ $order->order_number }}</div>
-                                    </div>
-                                </div>
-
-                                {{-- Adresler --}}
-                                @if($order->shipping_address || $order->billing_address)
-                                <div class="row g-3 mb-4">
-                                    @if($order->shipping_address)
-                                    @php $addr = is_array($order->shipping_address) ? $order->shipping_address : json_decode($order->shipping_address, true); @endphp
-                                    <div class="col-md-6">
-                                        <div class="card card-sm h-100">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <i class="fas fa-truck text-blue"></i>
-                                                    <span class="fw-medium">Teslimat Bilgileri</span>
-                                                </div>
-                                                <div class="text-secondary small">
-                                                    @if(!empty($addr['full_name']) || (!empty($addr['first_name']) && !empty($addr['last_name'])))
-                                                        <div class="mb-1 fw-medium text-body">{{ $addr['full_name'] ?? ($addr['first_name'] . ' ' . $addr['last_name']) }}</div>
-                                                    @endif
-                                                    @if(!empty($addr['phone']))
-                                                        <div class="mb-1"><i class="fas fa-phone me-1"></i>{{ $addr['phone'] }}</div>
-                                                    @endif
-                                                    @if(!empty($addr['email']))
-                                                        <div class="mb-1"><i class="fas fa-envelope me-1"></i>{{ $addr['email'] }}</div>
-                                                    @endif
-                                                    @if(!empty($addr['address_line_1']) || !empty($addr['city']) || !empty($addr['district']))
-                                                        <div class="mt-2 pt-2 border-top">
-                                                            @if(!empty($addr['address_line_1']))
-                                                                {{ $addr['address_line_1'] }}<br>
-                                                            @endif
-                                                            @if(!empty($addr['district']) || !empty($addr['city']))
-                                                                {{ $addr['district'] }}{{ !empty($addr['district']) && !empty($addr['city']) ? ', ' : '' }}{{ $addr['city'] }}
-                                                            @endif
-                                                            @if(!empty($addr['postal_code']))
-                                                                <br>{{ $addr['postal_code'] }}
-                                                            @endif
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
-
-                                    @if($order->billing_address)
-                                    @php $baddr = is_array($order->billing_address) ? $order->billing_address : json_decode($order->billing_address, true); @endphp
-                                    <div class="col-md-6">
-                                        <div class="card card-sm h-100">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <i class="fas fa-file-invoice text-orange"></i>
-                                                    <span class="fw-medium">Fatura Bilgileri</span>
-                                                </div>
-                                                <div class="text-secondary small">
-                                                    @if(!empty($baddr['full_name']) || (!empty($baddr['first_name']) && !empty($baddr['last_name'])))
-                                                        <div class="mb-1 fw-medium text-body">{{ $baddr['full_name'] ?? ($baddr['first_name'] . ' ' . $baddr['last_name']) }}</div>
-                                                    @endif
-                                                    @if(!empty($baddr['company_name']))
-                                                        <div class="mb-1">{{ $baddr['company_name'] }}</div>
-                                                    @endif
-                                                    @if(!empty($baddr['phone']))
-                                                        <div class="mb-1"><i class="fas fa-phone me-1"></i>{{ $baddr['phone'] }}</div>
-                                                    @endif
-                                                    @if(!empty($baddr['email']))
-                                                        <div class="mb-1"><i class="fas fa-envelope me-1"></i>{{ $baddr['email'] }}</div>
-                                                    @endif
-                                                    @if(!empty($baddr['tax_office']) || !empty($baddr['tax_number']) || !empty($order->customer_tax_office) || !empty($order->customer_tax_number))
-                                                        <div class="mt-2 pt-2 border-top">
-                                                            @if(!empty($baddr['tax_office']) || !empty($order->customer_tax_office))
-                                                                <strong>V.D:</strong> {{ $baddr['tax_office'] ?? $order->customer_tax_office }}
-                                                            @endif
-                                                            @if(!empty($baddr['tax_number']) || !empty($order->customer_tax_number))
-                                                                @if(!empty($baddr['tax_office']) || !empty($order->customer_tax_office))<br>@endif
-                                                                <strong>V.N:</strong> {{ $baddr['tax_number'] ?? $order->customer_tax_number }}
-                                                            @endif
-                                                        </div>
-                                                    @endif
-                                                    @if(!empty($baddr['address_line_1']) || !empty($baddr['city']) || !empty($baddr['district']))
-                                                        <div class="mt-2 pt-2 border-top">
-                                                            @if(!empty($baddr['address_line_1']))
-                                                                {{ $baddr['address_line_1'] }}<br>
-                                                            @endif
-                                                            @if(!empty($baddr['district']) || !empty($baddr['city']))
-                                                                {{ $baddr['district'] }}{{ !empty($baddr['district']) && !empty($baddr['city']) ? ', ' : '' }}{{ $baddr['city'] }}
-                                                            @endif
-                                                            @if(!empty($baddr['postal_code']))
-                                                                <br>{{ $baddr['postal_code'] }}
-                                                            @endif
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
-                                </div>
-                                @endif
-
-                                {{-- Sipariş Kalemleri --}}
-                                @if($order->items && $order->items->count() > 0)
-                                <div class="mb-3">
-                                    <h5 class="mb-3">
-                                        <i class="fas fa-shopping-bag me-2 text-muted"></i>
-                                        Sipariş Kalemleri
-                                        <span class="badge bg-secondary ms-2">{{ $order->items->count() }}</span>
-                                    </h5>
-                                    <div class="list-group list-group-flush">
-                                        @foreach($order->items as $item)
-                                        @php
-                                            // Ürün linki oluştur
-                                            $productUrl = null;
-                                            if ($item->orderable) {
-                                                $orderable = $item->orderable;
-                                                // ShopProduct için
-                                                if (method_exists($orderable, 'getSlug') || isset($orderable->slug)) {
-                                                    $slug = $orderable->slug ?? ($orderable->getSlug() ?? null);
-                                                    // Slug array ise ilk değeri al
-                                                    if (is_array($slug)) {
-                                                        $slug = $slug[app()->getLocale()] ?? $slug['tr'] ?? reset($slug) ?? null;
-                                                    }
-                                                    if ($slug) {
-                                                        $productUrl = url('/shop/' . $slug);
-                                                    }
-                                                }
-                                                // SubscriptionPlan için admin link
-                                                if (!$productUrl && str_contains(get_class($orderable), 'SubscriptionPlan')) {
-                                                    $productUrl = route('admin.subscription.plans.manage', $orderable->plan_id ?? $orderable->id);
-                                                }
-                                            }
-                                            // Image URL - array ise ilk değeri al
-                                            $imageUrl = $item->item_image;
-                                            if (is_array($imageUrl)) {
-                                                $imageUrl = reset($imageUrl) ?: null;
-                                            }
-                                        @endphp
-                                        <div class="list-group-item px-0">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    @if($imageUrl)
-                                                        <span class="avatar" style="background-image: url({{ $imageUrl }})"></span>
-                                                    @else
-                                                        <span class="avatar bg-secondary-lt">
-                                                            <i class="fas fa-box text-secondary"></i>
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                                <div class="col">
-                                                    @if($productUrl)
-                                                        <a href="{{ $productUrl }}" target="_blank" class="text-reset fw-medium d-flex align-items-center gap-1">
-                                                            {{ $item->product_name }}
-                                                            <i class="fas fa-external-link-alt text-muted small"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="fw-medium">{{ $item->product_name }}</span>
-                                                    @endif
-                                                    <div class="text-muted small">
-                                                        {{ number_format($item->unit_price, 2, ',', '.') }} ₺ x {{ $item->quantity }}
-                                                        @if($item->is_digital)
-                                                            <span class="badge bg-purple ms-1">Dijital</span>
-                                                        @endif
-                                                    </div>
-                                                    {{-- Kurumsal Üye Bilgisi --}}
-                                                    @if(($item->metadata['type'] ?? null) === 'corporate_bulk' && !empty($item->metadata['target_user_ids']))
-                                                        @php
-                                                            $targetUserIds = $item->metadata['target_user_ids'];
-                                                            $memberNames = \App\Models\User::whereIn('id', $targetUserIds)->pluck('name', 'id')->toArray();
-                                                        @endphp
-                                                        <div class="mt-2 p-2 bg-purple-lt border border-purple-lt rounded">
-                                                            <div class="d-flex align-items-center gap-1 mb-1">
-                                                                <i class="fas fa-building text-purple"></i>
-                                                                <span class="text-purple fw-medium small">Kurumsal Üyeler:</span>
-                                                            </div>
-                                                            <div class="d-flex flex-wrap gap-1">
-                                                                @foreach($memberNames as $memberId => $memberName)
-                                                                    <span class="badge bg-purple text-white shadow-sm">
-                                                                        <i class="fas fa-user me-1"></i>{{ $memberName }}
-                                                                    </span>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div class="col-auto">
-                                                    <span class="fw-bold">{{ number_format($item->total, 2, ',', '.') }} ₺</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endforeach
-                                    </div>
-
-                                    {{-- Toplam --}}
-                                    <div class="d-flex justify-content-end pt-3 border-top mt-3">
-                                        <div class="text-end">
-                                            @if($order->discount_amount > 0)
-                                            <div class="text-muted small">
-                                                İndirim: -{{ number_format($order->discount_amount, 2, ',', '.') }} ₺
-                                            </div>
-                                            @endif
-                                            @if($order->tax_amount > 0)
-                                            <div class="text-muted small">
-                                                KDV: {{ number_format($order->tax_amount, 2, ',', '.') }} ₺
-                                            </div>
-                                            @endif
-                                            <div class="h3 mb-0">
-                                                Toplam: {{ number_format($order->total_amount, 2, ',', '.') }} ₺
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-                            </div>
-                            @else
-                                <div class="p-4">
-                                    <div class="alert alert-warning mb-0">
-                                        <i class="fas fa-exclamation-triangle me-2"></i>
-                                        Sipariş bulunamadı (ID: {{ $selectedPayment->payable_id }})
-                                    </div>
-                                </div>
-                            @endif
-
-                            {{-- Gateway Response (Collapsible) --}}
-                            @if($selectedPayment->gateway_response)
-                            <div class="border-top">
-                                <div class="accordion" id="gatewayAccordion">
-                                    <div class="accordion-item border-0">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed py-3" type="button" data-bs-toggle="collapse" data-bs-target="#gatewayCollapse">
-                                                <i class="fas fa-code me-2"></i> Gateway Response (Teknik Detay)
-                                            </button>
-                                        </h2>
-                                        <div id="gatewayCollapse" class="accordion-collapse collapse" data-bs-parent="#gatewayAccordion">
-                                            <div class="accordion-body p-0">
-                                                <pre class="bg-body-secondary text-body p-3 m-0 small" style="max-height: 200px; overflow-y: auto;">{{ json_encode($selectedPayment->gateway_response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-
-                        {{-- Sağ Kolon: Sidebar --}}
-                        <div class="col-lg-4 bg-body-tertiary">
-                            <div class="p-4">
-                                {{-- Havale Bilgileri --}}
-                                @if(in_array($selectedPayment->gateway, ['manual', 'bank_transfer']))
-                                <div class="mb-4">
-                                    <h5 class="d-flex align-items-center gap-2 mb-3">
-                                        <i class="fas fa-building-columns text-cyan"></i>
-                                        Havale/EFT Bilgileri
-                                    </h5>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            @if($bankTransferConfirmedAt)
-                                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                                <span class="text-muted">Bildirim:</span>
-                                                <span class="badge bg-cyan">{{ \Carbon\Carbon::parse($bankTransferConfirmedAt)->format('d.m.Y H:i') }}</span>
-                                            </div>
-                                            @endif
-
-                                            @if($transferNote)
-                                            <div class="mb-3">
-                                                <div class="text-muted small mb-1">Müşteri Notu:</div>
-                                                <div class="p-2 bg-white rounded border-start border-3 border-cyan">
-                                                    <i class="fas fa-quote-left text-muted me-1 small"></i>
-                                                    {{ $transferNote }}
-                                                </div>
-                                            </div>
-                                            @else
-                                            <div class="text-muted small mb-3">
-                                                <i class="fas fa-info-circle me-1"></i> Müşteri not bırakmamış
-                                            </div>
-                                            @endif
-
-                                            <div class="text-muted small mb-2">Banka Hesapları:</div>
-                                            @php
-                                                $banks = [];
-                                                for ($i = 1; $i <= 3; $i++) {
-                                                    if (setting("payment_bank_{$i}_active") && setting("payment_bank_{$i}_iban")) {
-                                                        $banks[] = ['name' => setting("payment_bank_{$i}_name"), 'iban' => setting("payment_bank_{$i}_iban")];
-                                                    }
-                                                }
-                                            @endphp
-                                            @forelse($banks as $bank)
-                                            <div class="d-flex justify-content-between align-items-center py-1 small">
-                                                <span>{{ $bank['name'] }}</span>
-                                                <code class="text-muted">{{ Str::limit($bank['iban'], 12) }}</code>
-                                            </div>
-                                            @empty
-                                            <div class="text-muted small">Kayıtlı banka yok</div>
-                                            @endforelse
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-
-                                {{-- Dekont --}}
-                                <div class="mb-4">
-                                    <h5 class="d-flex align-items-center gap-2 mb-3">
-                                        <i class="fas fa-file-image text-orange"></i>
-                                        Dekont
-                                    </h5>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            @if($selectedPayment->receipt_path)
-                                                @php
-                                                    $ext = strtolower(pathinfo($selectedPayment->receipt_path, PATHINFO_EXTENSION));
-                                                    $isPdf = $ext === 'pdf';
-                                                @endphp
-                                                <div class="text-center mb-3">
-                                                    @if($isPdf)
-                                                        <a href="{{ Storage::url($selectedPayment->receipt_path) }}" target="_blank" class="d-block">
-                                                            <div class="py-4 bg-body rounded border">
-                                                                <i class="fas fa-file-pdf text-danger fa-3x"></i>
-                                                                <div class="small text-secondary mt-2">PDF Dekont</div>
-                                                            </div>
-                                                        </a>
-                                                    @else
-                                                        <a href="{{ Storage::url($selectedPayment->receipt_path) }}" target="_blank">
-                                                            <img src="{{ Storage::url($selectedPayment->receipt_path) }}" alt="Dekont" class="img-fluid rounded border" style="max-height: 180px;">
-                                                        </a>
-                                                    @endif
-                                                </div>
-                                                @if($selectedPayment->receipt_uploaded_at)
-                                                <div class="text-center text-muted small mb-3">
-                                                    <i class="fas fa-clock me-1"></i>{{ $selectedPayment->receipt_uploaded_at->format('d.m.Y H:i') }}
-                                                </div>
-                                                @endif
-                                                <div class="d-grid gap-2">
-                                                    <a href="{{ Storage::url($selectedPayment->receipt_path) }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                                                        <i class="fas fa-external-link me-1"></i> Görüntüle
-                                                    </a>
-                                                    <button wire:click="deleteReceipt" wire:confirm="Dekontu silmek istediğinizden emin misiniz?" class="btn btn-outline-danger btn-sm">
-                                                        <i class="fas fa-trash me-1"></i> Sil
-                                                    </button>
-                                                </div>
-                                            @else
-                                                <div class="text-center py-3 mb-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
-                                                    <div class="small text-muted">Dekont yüklenmemiş</div>
-                                                </div>
-                                                <input type="file" wire:model="receiptFile" class="form-control form-control-sm mb-2" accept=".jpg,.jpeg,.png,.pdf,.webp">
-                                                @error('receiptFile') <div class="text-danger small mb-2">{{ $message }}</div> @enderror
-                                                <div wire:loading wire:target="receiptFile" class="text-center py-2 small">
-                                                    <span class="spinner-border spinner-border-sm me-1"></span> Yükleniyor...
-                                                </div>
-                                                @if($receiptFile)
-                                                <button wire:click="uploadReceipt" wire:loading.attr="disabled" class="btn btn-success btn-sm w-100">
-                                                    <i class="fas fa-upload me-1"></i> Kaydet
-                                                </button>
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Tarihler --}}
-                                <div class="mb-4">
-                                    <h5 class="d-flex align-items-center gap-2 mb-3">
-                                        <i class="fas fa-history text-blue"></i>
-                                        Tarihler
-                                    </h5>
-                                    <div class="card">
-                                        <div class="list-group list-group-flush">
-                                            <div class="list-group-item d-flex justify-content-between small">
-                                                <span class="text-muted">Oluşturuldu</span>
-                                                <span>{{ $selectedPayment->created_at->format('d.m.Y H:i') }}</span>
-                                            </div>
-                                            @if($selectedPayment->paid_at)
-                                            <div class="list-group-item d-flex justify-content-between small">
-                                                <span class="text-success"><i class="fas fa-check-circle me-1"></i>Ödendi</span>
-                                                <span>{{ $selectedPayment->paid_at->format('d.m.Y H:i') }}</span>
-                                            </div>
-                                            @endif
-                                            @if($selectedPayment->failed_at)
-                                            <div class="list-group-item d-flex justify-content-between small">
-                                                <span class="text-danger"><i class="fas fa-times-circle me-1"></i>Başarısız</span>
-                                                <span>{{ $selectedPayment->failed_at->format('d.m.Y H:i') }}</span>
-                                            </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Notlar --}}
-                                <div>
-                                    <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <h5 class="d-flex align-items-center gap-2 mb-0">
-                                            <i class="fas fa-sticky-note text-yellow"></i>
-                                            Notlar
-                                        </h5>
-                                        @if(!$editingNotes)
-                                        <button wire:click="toggleEditNotes" class="btn btn-ghost-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        @endif
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            @if($editingNotes)
-                                                <textarea wire:model="notes" class="form-control form-control-sm mb-2" rows="4" placeholder="Not ekleyin..."></textarea>
-                                                <div class="d-flex gap-2">
-                                                    <button wire:click="saveNotes" class="btn btn-success btn-sm flex-fill">
-                                                        <i class="fas fa-save me-1"></i> Kaydet
-                                                    </button>
-                                                    <button wire:click="cancelEditNotes" class="btn btn-secondary btn-sm">
-                                                        <i class="fas fa-times"></i>
-                                                    </button>
-                                                </div>
-                                            @else
-                                                @if($selectedPayment->notes)
-                                                    <div class="small" style="white-space: pre-line;">{{ $selectedPayment->notes }}</div>
-                                                @else
-                                                    <div class="text-muted small text-center py-2">Not eklenmemiş</div>
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="modal-body" id="paymentModalBody">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary"></div>
+                        <div class="mt-2 text-muted">Yükleniyor...</div>
                     </div>
                 </div>
-
-                {{-- Modal Footer --}}
-                <div class="modal-footer">
-                    <div class="d-flex align-items-center gap-2 me-auto">
-                        <button wire:click="previousPayment" @if(!$this->canGoPrevious()) disabled @endif class="btn btn-ghost-secondary btn-sm">
-                            <i class="fas fa-chevron-left"></i>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-ghost-secondary" onclick="loadPrevPayment()" id="prevPaymentBtn" disabled>
+                            <i class="fas fa-chevron-left me-1"></i>Önceki
                         </button>
-                        <button wire:click="nextPayment" @if(!$this->canGoNext()) disabled @endif class="btn btn-ghost-secondary btn-sm">
-                            <i class="fas fa-chevron-right"></i>
+                        <button type="button" class="btn btn-ghost-secondary" onclick="loadNextPayment()" id="nextPaymentBtn" disabled>
+                            Sonraki<i class="fas fa-chevron-right ms-1"></i>
                         </button>
-                        <span class="text-muted small">← → ile gezin</span>
                     </div>
-
-                    @if($selectedPayment->status === 'pending')
-                        <button wire:click="markAsCompleted({{ $selectedPayment->payment_id }})" wire:confirm="Ödemeyi onaylamak istediğinizden emin misiniz?" class="btn btn-success">
-                            <i class="fas fa-check me-1"></i> Onayla
-                        </button>
-                        <button wire:click="markAsFailed({{ $selectedPayment->payment_id }})" wire:confirm="Ödemeyi reddetmek istediğinizden emin misiniz?" class="btn btn-outline-danger">
-                            <i class="fas fa-times me-1"></i> Reddet
-                        </button>
-                    @endif
-                    <button wire:click="closeModal" class="btn btn-secondary">Kapat</button>
+                    <button type="button" class="btn" data-bs-dismiss="modal">Kapat</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal-backdrop fade show" style="z-index: 9999;"></div>
-    @endif
-
-    <style>
-    .cursor-pointer { cursor: pointer; }
-    .cursor-pointer:hover { background-color: rgba(var(--tblr-primary-rgb), 0.02); }
-
-    /* Payment Amount Banner - Light Mode */
-    .payment-amount-banner {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-    }
-    .payment-amount-label {
-        color: #6c757d;
-    }
-    .payment-amount-value {
-        color: #1e293b;
-    }
-    .payment-amount-currency {
-        color: #6c757d;
-    }
-    .payment-gateway-avatar {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-    .payment-gateway-icon {
-        color: #1e293b;
-    }
-    .payment-gateway-label {
-        color: #1e293b;
-    }
-
-    /* Payment Amount Banner - Dark Mode */
-    [data-bs-theme="dark"] .payment-amount-banner {
-        background-color: #1e293b;
-        border-bottom: 1px solid #334155;
-    }
-    [data-bs-theme="dark"] .payment-amount-label {
-        color: rgba(255, 255, 255, 0.7);
-    }
-    [data-bs-theme="dark"] .payment-amount-value {
-        color: #ffffff;
-    }
-    [data-bs-theme="dark"] .payment-amount-currency {
-        color: rgba(255, 255, 255, 0.7);
-    }
-    [data-bs-theme="dark"] .payment-gateway-avatar {
-        background-color: rgba(255, 255, 255, 0.15);
-    }
-    [data-bs-theme="dark"] .payment-gateway-icon {
-        color: #ffffff;
-    }
-    [data-bs-theme="dark"] .payment-gateway-label {
-        color: #ffffff;
-    }
-    </style>
 </div>
+
+@push('scripts')
+<script>
+// Payment navigation
+let paymentIds = [];
+let currentPaymentIndex = -1;
+
+function updatePaymentIds() {
+    paymentIds = Array.from(document.querySelectorAll('input[wire\\:model\\.live="selectedPayments"]')).map(el => parseInt(el.value));
+}
+
+function loadPaymentDetail(paymentId) {
+    updatePaymentIds();
+    currentPaymentIndex = paymentIds.indexOf(paymentId);
+    updateNavButtons();
+
+    document.getElementById('paymentModalBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div><div class="mt-2 text-muted">Yükleniyor...</div></div>';
+    document.getElementById('modalPaymentTitle').textContent = 'Ödeme Detayı';
+
+    fetch(`/admin/payment/${paymentId}/ajax-detail`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('modalPaymentTitle').textContent = data.payment.payment_number;
+                document.getElementById('paymentModalBody').innerHTML = data.html;
+            } else {
+                document.getElementById('paymentModalBody').innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>Ödeme bulunamadı</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Payment detail error:', error);
+            document.getElementById('paymentModalBody').innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>Bir hata oluştu</div>';
+        });
+}
+
+function updateNavButtons() {
+    document.getElementById('prevPaymentBtn').disabled = currentPaymentIndex <= 0;
+    document.getElementById('nextPaymentBtn').disabled = currentPaymentIndex >= paymentIds.length - 1;
+}
+
+function loadPrevPayment() {
+    if (currentPaymentIndex > 0) {
+        loadPaymentDetail(paymentIds[currentPaymentIndex - 1]);
+    }
+}
+
+function loadNextPayment() {
+    if (currentPaymentIndex < paymentIds.length - 1) {
+        loadPaymentDetail(paymentIds[currentPaymentIndex + 1]);
+    }
+}
+
+// Payment Detail Modal Fonksiyonları
+function copyText(text) {
+    navigator.clipboard.writeText(text).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+    });
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.currentTarget.style.background = 'rgba(64, 192, 87, 0.1)';
+}
+function handleDragLeave(e) {
+    e.preventDefault();
+    e.currentTarget.style.background = '';
+}
+function handleDrop(e, id) {
+    e.preventDefault();
+    e.currentTarget.style.background = '';
+    if (e.dataTransfer.files.length) uploadInvoice(e.dataTransfer.files[0], id);
+}
+function handleSelect(e, id) {
+    if (e.target.files.length) uploadInvoice(e.target.files[0], id);
+}
+
+function uploadInvoice(file, id) {
+    const allowed = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    if (!allowed.includes(file.type)) return showToast('Sadece PDF, JPG, PNG!', 'warning');
+    if (file.size > 10 * 1024 * 1024) return showToast('Max 10MB!', 'warning');
+
+    document.getElementById(`dropzoneContent-${id}`).classList.add('d-none');
+    document.getElementById(`dropzoneLoading-${id}`).classList.remove('d-none');
+
+    const fd = new FormData();
+    fd.append('invoice_file', file);
+    fd.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `/admin/payment/${id}/upload-invoice`);
+    xhr.upload.onprogress = e => {
+        if (e.lengthComputable) document.getElementById(`uploadProgress-${id}`).style.width = (e.loaded / e.total * 100) + '%';
+    };
+    xhr.onload = () => {
+        try {
+            const r = JSON.parse(xhr.responseText);
+            if (xhr.status === 200 && r.success) {
+                showToast('Fatura yüklendi', 'success');
+                loadPaymentDetail(id);
+            } else {
+                showToast(r.message || 'Hata!', 'danger');
+                resetUpload(id);
+            }
+        } catch(e) { showToast('Hata!', 'danger'); resetUpload(id); }
+    };
+    xhr.onerror = () => { showToast('Bağlantı hatası!', 'danger'); resetUpload(id); };
+    xhr.send(fd);
+}
+
+function resetUpload(id) {
+    document.getElementById(`dropzoneContent-${id}`).classList.remove('d-none');
+    document.getElementById(`dropzoneLoading-${id}`).classList.add('d-none');
+    document.getElementById(`uploadProgress-${id}`).style.width = '0%';
+}
+
+function deleteInvoice(id) {
+    const m = document.createElement('div');
+    m.innerHTML = `
+        <div class="modal fade" tabindex="-1">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center py-4">
+                        <i class="fas fa-trash fa-3x text-danger mb-3"></i>
+                        <h5>Faturayı Sil?</h5>
+                    </div>
+                    <div class="modal-footer justify-content-center border-0 pt-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                        <button type="button" class="btn btn-danger" id="confirmDel">Sil</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    document.body.appendChild(m);
+    const modal = new bootstrap.Modal(m.querySelector('.modal'));
+    m.querySelector('#confirmDel').onclick = () => {
+        modal.hide();
+        fetch(`/admin/payment/${id}/delete-invoice`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }
+        }).then(r => r.json()).then(d => {
+            if (d.success) {
+                showToast('Silindi', 'success');
+                loadPaymentDetail(id);
+            }
+            else showToast('Hata!', 'danger');
+        });
+    };
+    m.querySelector('.modal').addEventListener('hidden.bs.modal', () => m.remove());
+    modal.show();
+}
+
+function showUploadArea(id) {
+    document.getElementById(`invoicePreview-${id}`).classList.add('d-none');
+    document.getElementById(`invoiceUploadArea-${id}`).classList.remove('d-none');
+}
+
+function showToast(msg, type = 'info') {
+    let c = document.getElementById('toast-container');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'toast-container';
+        c.className = 'toast-container position-fixed top-0 end-0 p-3';
+        c.style.zIndex = '9999';
+        document.body.appendChild(c);
+    }
+    const t = document.createElement('div');
+    t.className = `toast show align-items-center text-white bg-${type} border-0`;
+    t.innerHTML = `<div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.closest('.toast').remove()"></button></div>`;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+</script>
+@endpush

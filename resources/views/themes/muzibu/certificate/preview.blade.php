@@ -38,7 +38,7 @@
         <div class="bg-gradient-to-br from-slate-900 to-slate-800 border border-amber-500/30 rounded-2xl overflow-hidden shadow-2xl mb-6">
             {{-- Certificate Header --}}
             <div class="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-b border-amber-500/20 p-6 text-center">
-                <p class="text-amber-400/60 text-sm uppercase tracking-widest mb-2">Premium Üyelik Belgesı</p>
+                <p class="text-amber-400/60 text-sm uppercase tracking-widest mb-2">Premium Üyelik Belgesi</p>
                 <h2 class="text-2xl sm:text-3xl font-bold text-white">{{ $previewData['member_name'] }}</h2>
             </div>
 

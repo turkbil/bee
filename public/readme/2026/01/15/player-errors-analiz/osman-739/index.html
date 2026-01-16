@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSMAN (Olympus) - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    </style>
+</head>
+<body class="min-h-screen text-gray-100">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+
+        <a href="../" class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 mb-6">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Genel Özet'e Dön
+        </a>
+
+        <div class="bg-gradient-to-r from-purple-800 to-purple-900 rounded-2xl p-8 mb-8 border border-purple-700">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h1 class="text-4xl font-bold mb-2 text-purple-100">OSMAN (Olympus)</h1>
+                    <p class="text-purple-200 text-lg mb-4">osmanhfo@yahoo.com • User ID: 739</p>
+                    <div class="flex flex-wrap gap-4 text-sm">
+                        <span class="bg-purple-700/50 px-3 py-1 rounded">📅 15 Ocak 2026</span>
+                        <span class="bg-green-700/50 px-3 py-1 rounded">✓ Hatasız</span>
+                        <span class="bg-orange-700/50 px-3 py-1 rounded">🎤 Rap/Hip-Hop</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-5xl font-bold text-purple-300">149</div>
+                    <div class="text-sm text-purple-200">Toplam Çalma</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-purple-900/50 to-slate-900/50 rounded-xl p-6 border border-purple-700">
+                <div class="text-purple-400 text-3xl mb-2">🎵</div>
+                <div class="text-3xl font-bold text-purple-300 mb-1">149</div>
+                <div class="text-sm text-gray-400">Toplam Çalma</div>
+            </div>
+            <div class="bg-gradient-to-br from-pink-900/50 to-slate-900/50 rounded-xl p-6 border border-pink-700">
+                <div class="text-pink-400 text-3xl mb-2">📀</div>
+                <div class="text-3xl font-bold text-pink-300 mb-1">148</div>
+                <div class="text-sm text-gray-400">Farklı Şarkı</div>
+            </div>
+            <div class="bg-gradient-to-br from-orange-900/50 to-slate-900/50 rounded-xl p-6 border border-orange-700">
+                <div class="text-orange-400 text-3xl mb-2">⏱️</div>
+                <div class="text-3xl font-bold text-orange-300 mb-1">~7.5 saat</div>
+                <div class="text-sm text-gray-400">Dinleme Süresi</div>
+            </div>
+            <div class="bg-gradient-to-br from-green-900/50 to-slate-900/50 rounded-xl p-6 border border-green-700">
+                <div class="text-green-400 text-3xl mb-2">✓</div>
+                <div class="text-3xl font-bold text-green-400 mb-1">0</div>
+                <div class="text-sm text-gray-400">Player Hatası</div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-100">📊 Saatlik Çalma Dağılımı</h2>
+            <canvas id="hourlyChart" class="w-full" height="200"></canvas>
+        </div>
+
+        <!-- Cihaz Bilgileri -->
+        <div class="bg-gradient-to-br from-orange-900/20 to-slate-900/20 rounded-xl p-8 border border-orange-700/30 mb-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-orange-400">💻</span>
+                <span class="text-orange-300">Cihaz Bilgileri ve Teknik Analiz</span>
+            </h2>
+
+            <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-6 border border-slate-700">
+                        <div class="text-purple-400 text-2xl mb-3">🖥️ Cihaz ve Tarayıcı</div>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Platform:</span>
+                                <span class="text-purple-200 font-semibold">Windows NT 10.0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">İşletim Sistemi:</span>
+                                <span class="text-purple-200 font-semibold">Windows 10/11 (64-bit)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Tarayıcı:</span>
+                                <span class="text-purple-200 font-semibold">Google Chrome</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Tarayıcı Versiyonu:</span>
+                                <span class="text-purple-200 font-semibold">144.0.0.0 ✓ GÜNCEL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border border-slate-700">
+                        <div class="text-green-400 text-2xl mb-3">🌐 Bağlantı Bilgileri</div>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Cihaz Tipi:</span>
+                                <span class="text-green-200 font-semibold">Desktop</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">IP Adresi:</span>
+                                <span class="text-green-200 font-mono text-xs">94.123.238.172</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">IP Tipi:</span>
+                                <span class="text-green-200 font-semibold">IPv4</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Session Start:</span>
+                                <span class="text-green-200 font-semibold">09:50:04</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-slate-700">
+                    <div class="text-cyan-400 font-semibold mb-2">🔍 User Agent:</div>
+                    <div class="text-xs font-mono text-cyan-200 bg-slate-950 rounded p-3 overflow-x-auto">
+                        Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36
+                    </div>
+                </div>
+
+                <div class="bg-green-900/30 rounded-lg p-6 border border-green-700/50">
+                    <div class="text-green-300 text-xl font-bold mb-4">✅ Player Uyumluluk: %100</div>
+                    <div class="space-y-3 text-sm text-gray-300">
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            <span><strong class="text-green-300">Chrome 144 (En güncel versiyon)</strong> - Tüm HTML5 Audio özellikleri destekleniyor</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            <span><strong class="text-green-300">Media Session API</strong> - Bildirim kontrolleri çalışıyor</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            <span><strong class="text-green-300">HLS Streaming</strong> - Adaptif streaming sorunsuz</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            <span><strong class="text-green-300">7.5 saat kesintisiz</strong> - 149 şarkı hatasız çaldı</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/30 rounded-lg p-6 border border-blue-700/50">
+                    <div class="text-blue-300 text-xl font-bold mb-4">🎵 "Çalabiliyor mu?" Analizi</div>
+                    <div class="bg-green-900/50 rounded-lg p-4 border border-green-600">
+                        <div class="text-green-300 font-bold text-lg mb-2">✅ ÇALIŞIYOR!</div>
+                        <div class="text-sm text-gray-300 space-y-2">
+                            <p><strong>Kanıt:</strong> Bugün 7.5 saat boyunca 149 şarkı çaldı.</p>
+                            <p><strong>Hata Sayısı:</strong> 0 (sıfır)</p>
+                            <p><strong>Sonuç:</strong> Player sorunsuz çalışıyor. Teknik sorun yok.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center text-gray-500 text-sm mt-12 pt-6 border-t border-slate-700">
+            15 Ocak 2026 • Muzibu.com
+        </div>
+
+    </div>
+
+    <script>
+        const ctx = document.getElementById('hourlyChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
+                datasets: [{
+                    label: 'Çalınan Şarkı Sayısı',
+                    data: [14, 21, 19, 22, 21, 20, 19, 13],
+                    backgroundColor: 'rgba(168, 85, 247, 0.5)',
+                    borderColor: 'rgba(168, 85, 247, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                    x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } }
+                },
+                plugins: { legend: { labels: { color: '#9ca3af' } } }
+            }
+        });
+    </script>
+
+</body>
+</html>

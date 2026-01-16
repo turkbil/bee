@@ -4,7 +4,7 @@
     <div x-show="$store.playlistModal.open"
          x-cloak
          @keydown.escape.window="$store.playlistModal.hide()"
-         class="fixed inset-0 z-[9999]">
+         class="fixed inset-0 z-[99999]">
 
         {{-- Backdrop --}}
         <div x-show="$store.playlistModal.open"
@@ -124,6 +124,20 @@
                                     <div class="flex-1 text-left min-w-0">
                                         <p class="font-medium text-white truncate text-sm" x-text="playlist.title"></p>
                                     </div>
+
+                                    {{-- Status Label (3sn sonra kaybolur) --}}
+                                    <span x-show="$store.playlistModal.isStatusLabelVisible(playlist.playlist_id)"
+                                          x-transition:enter="transition ease-out duration-200"
+                                          x-transition:enter-start="opacity-0 scale-95"
+                                          x-transition:enter-end="opacity-100 scale-100"
+                                          x-transition:leave="transition ease-in duration-300"
+                                          x-transition:leave-start="opacity-100 scale-100"
+                                          x-transition:leave-end="opacity-0 scale-95"
+                                          class="text-xs font-medium px-2 py-1 rounded-md transition-all whitespace-nowrap"
+                                          :class="$store.playlistModal.isInPlaylist(playlist.playlist_id)
+                                              ? 'text-green-400 bg-green-500/10'
+                                              : 'text-zinc-500 bg-zinc-800/50'"
+                                          x-text="$store.playlistModal.isInPlaylist(playlist.playlist_id) ? 'Playliste Eklendi' : 'Playlistten Çıkarıldı'"></span>
 
                                     {{-- Checkbox --}}
                                     <div class="w-6 h-6 rounded flex items-center justify-center transition"
@@ -254,6 +268,20 @@
                                     <div class="flex-1 text-left min-w-0">
                                         <p class="font-medium text-white truncate" x-text="playlist.title"></p>
                                     </div>
+
+                                    {{-- Status Label (3sn sonra kaybolur) --}}
+                                    <span x-show="$store.playlistModal.isStatusLabelVisible(playlist.playlist_id)"
+                                          x-transition:enter="transition ease-out duration-200"
+                                          x-transition:enter-start="opacity-0 scale-95"
+                                          x-transition:enter-end="opacity-100 scale-100"
+                                          x-transition:leave="transition ease-in duration-300"
+                                          x-transition:leave-start="opacity-100 scale-100"
+                                          x-transition:leave-end="opacity-0 scale-95"
+                                          class="text-xs font-medium px-2 py-1 rounded-md transition-all whitespace-nowrap"
+                                          :class="$store.playlistModal.isInPlaylist(playlist.playlist_id)
+                                              ? 'text-green-400 bg-green-500/10'
+                                              : 'text-zinc-500 bg-zinc-800/50'"
+                                          x-text="$store.playlistModal.isInPlaylist(playlist.playlist_id) ? 'Playliste Eklendi' : 'Playlistten Çıkarıldı'"></span>
 
                                     {{-- Checkbox --}}
                                     <div class="w-7 h-7 rounded flex items-center justify-center transition"

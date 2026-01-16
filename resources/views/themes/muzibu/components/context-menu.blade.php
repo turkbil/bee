@@ -10,7 +10,7 @@
      x-transition:leave="transition ease-in duration-150"
      x-transition:leave-start="opacity-100 scale-100"
      x-transition:leave-end="opacity-0 scale-95"
-     :style="`position: fixed; left: ${$store.contextMenu.x}px; top: ${$store.contextMenu.y}px; z-index: 9999;`"
+     :style="`position: fixed; left: ${$store.contextMenu.x}px; top: ${$store.contextMenu.y}px; z-index: 99999;`"
      class="hidden sm:block bg-gray-900 rounded-lg shadow-2xl border border-gray-700 py-1.5 w-[200px] max-h-[500px] overflow-y-auto">
 
     {{-- Context Menu Header - Kompakt Tasarım --}}
@@ -43,7 +43,7 @@
 {{-- Mobile: Bottom Sheet with Swipe-to-dismiss --}}
 <div x-show="$store.contextMenu.visible"
      x-cloak
-     class="sm:hidden fixed inset-0 z-[9999]"
+     class="sm:hidden fixed inset-0 z-[99999]"
      x-data="{ startY: 0, currentY: 0, isDragging: false }">
 
     {{-- Backdrop --}}

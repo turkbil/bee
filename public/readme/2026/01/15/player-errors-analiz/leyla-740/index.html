@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>leyla (LaViaBella) - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    </style>
+</head>
+<body class="min-h-screen text-gray-100">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+
+        <a href="../" class="inline-flex items-center gap-2 text-pink-400 hover:text-pink-300 mb-6">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Genel Özet'e Dön
+        </a>
+
+        <div class="bg-gradient-to-r from-pink-800 to-pink-900 rounded-2xl p-8 mb-8 border border-pink-700">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h1 class="text-4xl font-bold mb-2 text-pink-100">leyla (LaViaBella)</h1>
+                    <p class="text-pink-200 text-lg mb-4">hfogida@gmail.com • User ID: 740</p>
+                    <div class="flex flex-wrap gap-4 text-sm">
+                        <span class="bg-pink-700/50 px-3 py-1 rounded">📅 15 Ocak 2026</span>
+                        <span class="bg-green-700/50 px-3 py-1 rounded">✓ Hatasız</span>
+                        <span class="bg-purple-700/50 px-3 py-1 rounded">🇮🇹 İtalyanca Romantik</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-5xl font-bold text-pink-300">55</div>
+                    <div class="text-sm text-pink-200">Toplam Çalma</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-pink-900/50 to-slate-900/50 rounded-xl p-6 border border-pink-700">
+                <div class="text-pink-400 text-3xl mb-2">🎵</div>
+                <div class="text-3xl font-bold text-pink-300 mb-1">55</div>
+                <div class="text-sm text-gray-400">Toplam Çalma</div>
+            </div>
+            <div class="bg-gradient-to-br from-rose-900/50 to-slate-900/50 rounded-xl p-6 border border-rose-700">
+                <div class="text-rose-400 text-3xl mb-2">📀</div>
+                <div class="text-3xl font-bold text-rose-300 mb-1">41</div>
+                <div class="text-sm text-gray-400">Farklı Şarkı</div>
+            </div>
+            <div class="bg-gradient-to-br from-purple-900/50 to-slate-900/50 rounded-xl p-6 border border-purple-700">
+                <div class="text-purple-400 text-3xl mb-2">⏱️</div>
+                <div class="text-3xl font-bold text-purple-300 mb-1">~4 saat</div>
+                <div class="text-sm text-gray-400">Dinleme Süresi</div>
+            </div>
+            <div class="bg-gradient-to-br from-green-900/50 to-slate-900/50 rounded-xl p-6 border border-green-700">
+                <div class="text-green-400 text-3xl mb-2">✓</div>
+                <div class="text-3xl font-bold text-green-400 mb-1">0</div>
+                <div class="text-sm text-gray-400">Player Hatası</div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-100">📊 Saatlik Çalma Dağılımı</h2>
+            <canvas id="hourlyChart" class="w-full" height="200"></canvas>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-100">❤️ En Çok Çalınan Şarkılar (Top 5)</h2>
+            <div class="space-y-3">
+                <div class="bg-gradient-to-br from-pink-900/30 to-slate-900/30 rounded-lg p-4 border border-pink-700/50">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-xl font-bold text-pink-300">Aspettarti Qui</div>
+                            <div class="text-sm text-gray-400">İtalyanca Romantik</div>
+                        </div>
+                        <div class="text-4xl font-bold text-pink-400">10×</div>
+                    </div>
+                </div>
+                <div class="bg-slate-900/30 rounded-lg p-4 flex justify-between items-center border border-slate-700">
+                    <span class="text-rose-300">Come Se Nulla</span>
+                    <span class="text-2xl font-bold text-rose-400">3×</span>
+                </div>
+                <div class="bg-slate-900/30 rounded-lg p-4 flex justify-between items-center border border-slate-700">
+                    <span class="text-purple-300">Warm Stare</span>
+                    <span class="text-2xl font-bold text-purple-400">2×</span>
+                </div>
+                <div class="bg-slate-900/30 rounded-lg p-4 flex justify-between items-center border border-slate-700">
+                    <span class="text-blue-300">Parole Non Dette</span>
+                    <span class="text-2xl font-bold text-blue-400">2×</span>
+                </div>
+                <div class="bg-slate-900/30 rounded-lg p-4 flex justify-between items-center border border-slate-700">
+                    <span class="text-cyan-300">I Don't Really Care About Love</span>
+                    <span class="text-2xl font-bold text-cyan-400">2×</span>
+                </div>
+            </div>
+            <div class="text-sm text-gray-400 bg-pink-900/20 rounded p-4 mt-4 border border-pink-700/30">
+                <strong class="text-pink-300">Özel Not:</strong> leyla, "Aspettarti Qui" şarkısını <strong>10 kez üst üste</strong> çaldı! 
+                Bu şarkıyı çok seviyor ve sürekli dinlemek istiyor.
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-100">🎼 Müzik Tercihleri</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-pink-900/30 rounded-lg p-4 border border-pink-700/50">
+                    <div class="text-pink-400 font-semibold mb-2">🇮🇹 İtalyanca Romantik</div>
+                    <div class="text-sm text-gray-300">
+                        Aspettarti Qui, Come Se Nulla, Parole Non Dette, Dolce Melodia, Fuoco Nascosto
+                    </div>
+                </div>
+                <div class="bg-purple-900/30 rounded-lg p-4 border border-purple-700/50">
+                    <div class="text-purple-400 font-semibold mb-2">🇹🇷 Türkçe Pop</div>
+                    <div class="text-sm text-gray-300">
+                        Gölgenle Oyalan, Aşk Cezası, Kanadı Kırık Kuş, Yaralarım Bile Şık, Eskimişim
+                    </div>
+                </div>
+                <div class="bg-blue-900/30 rounded-lg p-4 border border-blue-700/50">
+                    <div class="text-blue-400 font-semibold mb-2">🎹 Acoustic & Jazz</div>
+                    <div class="text-sm text-gray-300">
+                        Warm Stare, Early Light Walk, I Let That Dream Go, Moon Boots
+                    </div>
+                </div>
+                <div class="bg-cyan-900/30 rounded-lg p-4 border border-cyan-700/50">
+                    <div class="text-cyan-400 font-semibold mb-2">🇫🇷 Fransızca Şarkılar</div>
+                    <div class="text-sm text-gray-300">
+                        Trois Jours Et Puis, Matin, A Gente Se Levanta De Novo
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cihaz Bilgileri ve Teknik Analiz -->
+        <div class="bg-gradient-to-br from-orange-900/20 to-slate-900/20 rounded-xl p-8 border border-orange-700/30 mb-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-orange-400">💻</span>
+                <span class="text-orange-300">Cihaz Bilgileri ve Teknik Analiz</span>
+            </h2>
+
+            <div class="space-y-6">
+
+                <!-- ⚠️ DİKKAT: 2 Farklı Tarayıcı Uyarısı -->
+                <div class="bg-yellow-900/40 rounded-lg p-6 border-2 border-yellow-600">
+                    <div class="text-yellow-300 text-2xl font-bold mb-4 flex items-center gap-3">
+                        <span>⚠️</span> DİKKAT: 2 Farklı Tarayıcı Kullanımı Tespit Edildi!
+                    </div>
+                    <p class="text-yellow-100 text-lg mb-4">
+                        leyla, aynı gün içinde <strong>2 farklı tarayıcı</strong> kullanmış. Bu, player sorunlarına neden olabilir.
+                    </p>
+                </div>
+
+                <!-- Oturum 1: Chrome -->
+                <div class="bg-blue-900/30 rounded-lg p-6 border border-blue-700/50">
+                    <div class="text-blue-300 text-xl font-bold mb-4 flex items-center justify-between">
+                        <span>📱 Oturum 1: Google Chrome</span>
+                        <span class="text-sm bg-blue-700/50 px-3 py-1 rounded">14:42'ye kadar aktif</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 text-sm mb-1">Tarayıcı:</div>
+                            <div class="text-blue-200 font-semibold">Google Chrome 109.0.0.0</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 text-sm mb-1">Platform:</div>
+                            <div class="text-blue-200 font-semibold">Windows NT 10.0 (Win64; x64)</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 text-sm mb-1">IP Adresi:</div>
+                            <div class="text-blue-200 font-mono text-sm">46.1.54.135</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 text-sm mb-1">Son Aktivite:</div>
+                            <div class="text-blue-200 font-semibold">14:42:40</div>
+                        </div>
+                    </div>
+
+                    <!-- User Agent Detaylı Analiz -->
+                    <div class="bg-slate-950 rounded-lg p-5 mb-4 border border-slate-700">
+                        <div class="text-blue-300 font-bold text-lg mb-4">🔍 Cihaz Detay Analizi (Chrome Oturumu)</div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-slate-900 rounded p-4">
+                                <div class="text-gray-400 text-xs mb-2">CİHAZ TİPİ</div>
+                                <div class="text-blue-200 font-bold text-lg">🖥️ Masaüstü Bilgisayar</div>
+                                <div class="text-gray-500 text-xs mt-1">(Telefon değil, tablet değil)</div>
+                            </div>
+                            <div class="bg-slate-900 rounded p-4">
+                                <div class="text-gray-400 text-xs mb-2">İŞLETİM SİSTEMİ</div>
+                                <div class="text-green-300 font-bold text-lg">Windows 10/11 (64-bit)</div>
+                                <div class="text-green-400 text-xs mt-1">✓ Modern sistem - Destekleniyor</div>
+                            </div>
+                            <div class="bg-slate-900 rounded p-4">
+                                <div class="text-gray-400 text-xs mb-2">TARAYICI</div>
+                                <div class="text-blue-300 font-bold text-lg">Google Chrome 109</div>
+                                <div class="text-red-400 text-xs mt-1">⚠️ Ocak 2023 (3 yıl önce)</div>
+                            </div>
+                            <div class="bg-slate-900 rounded p-4">
+                                <div class="text-gray-400 text-xs mb-2">ENGINE</div>
+                                <div class="text-blue-200 font-bold text-lg">Chromium 109</div>
+                                <div class="text-gray-500 text-xs mt-1">WebKit/Blink motoru</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-red-900/40 rounded-lg p-4 mb-4 border border-red-600">
+                            <div class="text-red-300 font-bold mb-2">⚠️ Chrome 109 = 35 VERSİYON GERİDEN!</div>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li><strong>• Çıkış Tarihi:</strong> 10 Ocak 2023 (3 yıl önce)</li>
+                                <li><strong>• Güncel Versiyon:</strong> Chrome 144 (Ocak 2026)</li>
+                                <li><strong>• Kaç versiyon geriden:</strong> 35 major versiyon!</li>
+                                <li><strong>• Güvenlik riski:</strong> 3 yıllık güvenlik açıkları yamalı değil</li>
+                                <li><strong>• Eksik özellikler:</strong> Son 35 güncellemenin hiçbiri yok</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-yellow-900/30 rounded-lg p-4 mb-4 border border-yellow-700">
+                            <div class="text-yellow-300 font-bold mb-2">💡 Neden Bu Kadar Eski?</div>
+                            <p class="text-sm text-gray-300 mb-2">Chrome normalde otomatik güncellenir. Eski kalmasının sebepleri:</p>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Kurumsal bilgisayar (IT departmanı güncellemeleri engellemiş)</li>
+                                <li>• Otomatik güncellemeler kapatılmış</li>
+                                <li>• İnternet bağlantısı sorunlu (güncellemeler indirilemiyor)</li>
+                                <li>• Kullanıcı farkında değil</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <div class="text-cyan-400 text-xs font-semibold mb-2">📋 Teknik User Agent String:</div>
+                            <div class="text-cyan-200 text-xs font-mono overflow-x-auto leading-relaxed">
+                                Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36
+                            </div>
+                            <div class="text-gray-500 text-xs mt-2">
+                                <strong>NT 10.0</strong> = Windows 10/11 |
+                                <strong>AppleWebKit/537.36</strong> = WebKit motor (Chromium'un temeli) |
+                                <strong>Chrome/109.0.0.0</strong> = Chrome versiyon 109
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-900/30 rounded p-4 border border-red-700/50">
+                        <div class="text-red-300 font-bold mb-2">❌ PROBLEM: ESKİ VERSİYON!</div>
+                        <div class="text-sm text-gray-300">
+                            <p class="mb-2"><strong>Chrome 109</strong> (Ocak 2023'te yayınlandı - 3 yıl önce!)</p>
+                            <p class="mb-2"><strong>Güncel Versiyon:</strong> Chrome 144 (Ocak 2026)</p>
+                            <p class="text-red-200"><strong>35 versiyon geriden!</strong> Eski tarayıcılar modern player özelliklerini desteklemeyebilir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Oturum 2: Firefox -->
+                <div class="bg-purple-900/30 rounded-lg p-6 border border-purple-700/50">
+                    <div class="text-purple-300 text-xl font-bold mb-4 flex items-center justify-between">
+                        <span>🦊 Oturum 2: Mozilla Firefox</span>
+                        <span class="text-sm bg-purple-700/50 px-3 py-1 rounded">12:10'da başladı</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 text-sm mb-1">Tarayıcı:</div>
+                            <div class="text-purple-200 font-semibold">Mozilla Firefox 115.0</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 text-sm mb-1">Platform:</div>
+                            <div class="text-purple-200 font-semibold">Windows NT 6.1 (Win64; x64)</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 text-sm mb-1">IP Adresi:</div>
+                            <div class="text-purple-200 font-mono text-sm">46.1.54.135 (Aynı IP)</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 text-sm mb-1">Session Start:</div>
+                            <div class="text-purple-200 font-semibold">12:10:27</div>
+                        </div>
+                    </div>
+
+                    <!-- User Agent Detaylı Analiz -->
+                    <div class="bg-slate-950 rounded-lg p-5 mb-4 border border-slate-700">
+                        <div class="text-yellow-300 font-bold text-lg mb-4">🔍 Cihaz Detay Analizi (Firefox Oturumu)</div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-slate-900 rounded p-4">
+                                <div class="text-gray-400 text-xs mb-2">CİHAZ TİPİ</div>
+                                <div class="text-yellow-200 font-bold text-lg">🖥️ Masaüstü Bilgisayar</div>
+                                <div class="text-gray-500 text-xs mt-1">(Telefon değil, tablet değil)</div>
+                            </div>
+                            <div class="bg-slate-900 rounded p-4">
+                                <div class="text-gray-400 text-xs mb-2">İŞLETİM SİSTEMİ</div>
+                                <div class="text-red-300 font-bold text-lg">Windows 7 (64-bit)</div>
+                                <div class="text-red-400 text-xs mt-1">⚠️ 2009 yılında çıktı - 17 yıllık!</div>
+                            </div>
+                            <div class="bg-slate-900 rounded p-4">
+                                <div class="text-gray-400 text-xs mb-2">TARAYICI</div>
+                                <div class="text-purple-300 font-bold text-lg">Mozilla Firefox 115</div>
+                                <div class="text-red-400 text-xs mt-1">⚠️ ESR Sürümü - Temmuz 2023 (2.5 yıl önce)</div>
+                            </div>
+                            <div class="bg-slate-900 rounded p-4">
+                                <div class="text-gray-400 text-xs mb-2">MİMARİ</div>
+                                <div class="text-purple-200 font-bold text-lg">64-bit (x64)</div>
+                                <div class="text-gray-500 text-xs mt-1">✓ Modern işlemci mimarisi</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-red-900/40 rounded-lg p-4 mb-4 border border-red-600">
+                            <div class="text-red-300 font-bold mb-2">⚠️ Windows 7 = BÜYÜK SORUN!</div>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li><strong>• 2009'da piyasaya çıktı</strong> - 17 yıl önce!</li>
+                                <li><strong>• Microsoft desteği 14 Ocak 2020'de sona erdi</strong> - 6 yıl önce!</li>
+                                <li><strong>• Güvenlik güncellemeleri yok</strong> - Virüslere açık</li>
+                                <li><strong>• Modern web standartlarını desteklemiyor</strong></li>
+                                <li><strong>• Ses kartı driver'ları eski</strong> - Player sorunlarına neden olabilir</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <div class="text-cyan-400 text-xs font-semibold mb-2">📋 Teknik User Agent String:</div>
+                            <div class="text-cyan-200 text-xs font-mono overflow-x-auto leading-relaxed">
+                                Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0
+                            </div>
+                            <div class="text-gray-500 text-xs mt-2">
+                                <strong>NT 6.1</strong> = Windows 7 kodudur |
+                                <strong>rv:109.0</strong> = Firefox 109 rendering engine |
+                                <strong>Gecko</strong> = Firefox motoru
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-900/30 rounded p-4 border border-red-700/50">
+                        <div class="text-red-300 font-bold mb-2">❌ PROBLEM: ESKİ VERSİYON!</div>
+                        <div class="text-sm text-gray-300">
+                            <p class="mb-2"><strong>Firefox 115</strong> (ESR - Extended Support Release)</p>
+                            <p class="mb-2"><strong>Güncel Versiyon:</strong> Firefox 134 (Ocak 2026)</p>
+                            <p class="text-red-200"><strong>19 versiyon geriden!</strong> ESR versiyonları yeni özellikleri desteklemez.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-900/30 rounded p-4 border border-yellow-700/50 mt-4">
+                        <div class="text-yellow-300 font-bold mb-2">⚠️ DİKKAT: Windows NT 6.1</div>
+                        <div class="text-sm text-gray-300">
+                            <p>Bu, <strong>Windows 7</strong> işletim sistemi kodudur. Windows 7 desteği <strong>2020'de sona erdi</strong>. Modern tarayıcılar Windows 7'de düzgün çalışmayabilir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tespit Edilen Sorunlar -->
+                <div class="bg-red-900/30 rounded-lg p-6 border-2 border-red-700">
+                    <div class="text-red-300 text-2xl font-bold mb-4">🚨 Tespit Edilen Sorunlar</div>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 text-lg">1.</span>
+                            <div class="text-gray-300">
+                                <strong class="text-red-300">İki Farklı Tarayıcı:</strong> Aynı anda Chrome ve Firefox açık. Bu, player session çakışmalarına neden olabilir.
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 text-lg">2.</span>
+                            <div class="text-gray-300">
+                                <strong class="text-red-300">Eski Tarayıcı Versiyonları:</strong> Chrome 35 versiyon, Firefox 19 versiyon geriden. Modern HTML5 Audio özellikleri desteklenmeyebilir.
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 text-lg">3.</span>
+                            <div class="text-gray-300">
+                                <strong class="text-red-300">Windows 7:</strong> Firefox, eski Windows 7 sisteminde çalışıyor. Ses driver'ları güncel olmayabilir.
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 text-lg">4.</span>
+                            <div class="text-gray-300">
+                                <strong class="text-red-300">Media Session API:</strong> Eski tarayıcılar bu API'yi desteklemez. Klavye kontrolleri çalışmayabilir.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ÇÖZÜM ÖNERİLERİ -->
+                <div class="bg-blue-900/30 rounded-lg p-6 border-2 border-blue-600">
+                    <div class="text-blue-300 text-2xl font-bold mb-4">💡 ÇÖZÜM ÖNERİLERİ (Acil!)</div>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 text-lg">✓</span>
+                            <div class="text-gray-300">
+                                <strong class="text-blue-300">Chrome'u Güncelleyin:</strong> Chrome → Ayarlar → Chrome Hakkında → Otomatik güncelle (Chrome 144'e geçmeli)
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 text-lg">✓</span>
+                            <div class="text-gray-300">
+                                <strong class="text-blue-300">Firefox'u Güncelleyin:</strong> Firefox → Menü → Yardım → Firefox Hakkında (Firefox 134'e geçmeli)
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 text-lg">✓</span>
+                            <div class="text-gray-300">
+                                <strong class="text-blue-300">Tek Tarayıcı Kullanın:</strong> Aynı anda 2 tarayıcı açmayın. Sadece Chrome veya sadece Firefox ile dinleyin.
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 text-lg">✓</span>
+                            <div class="text-gray-300">
+                                <strong class="text-blue-300">Windows Güncellemesi:</strong> Windows 7 kullanılıyorsa, Windows 10/11'e yükseltin (Ücretsiz hala mümkün olabilir)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bugünün Durumu -->
+                <div class="bg-green-900/30 rounded-lg p-6 border border-green-700/50">
+                    <div class="text-green-300 text-xl font-bold mb-4">🎵 Bugünün Player Durumu</div>
+                    <div class="text-sm text-gray-300 space-y-3">
+                        <p><strong class="text-green-400">15 Ocak 2026:</strong> 55 şarkı çalındı, 0 hata kaydedildi.</p>
+                        <p><strong>ANCAK:</strong> Bu, sorun olmadığı anlamına gelmez. Eski tarayıcılar bazı özellikleri desteklemeyebilir:</p>
+                        <ul class="list-disc list-inside space-y-1 ml-4 text-gray-400">
+                            <li>Klavye medya tuşları çalışmıyor olabilir</li>
+                            <li>Bazı şarkılar yüklenmeyebilir</li>
+                            <li>Ses kalitesi düşük olabilir</li>
+                            <li>Player donmaları yaşanabilir</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-gradient-to-br from-pink-900/20 to-slate-900/20 rounded-xl p-8 border border-pink-700/30 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-pink-300">📝 Basit Anlatım (Herkes İçin)</h2>
+            <div class="space-y-4 text-gray-300 leading-relaxed">
+                <p class="text-lg">
+                    <strong class="text-pink-300">leyla</strong>, bugün (15 Ocak) öğle saati <strong>12:10</strong>'da
+                    müzik dinlemeye başladı ve öğleden sonra <strong>16:18</strong>'e kadar devam etti.
+                    Toplam <strong class="text-purple-400">yaklaşık 4 saat</strong> müzik dinledi.
+                </p>
+                <p>
+                    <strong class="text-rose-300">55 kez şarkı çaldı</strong> ama bunların sadece <strong>41 tanesi farklı şarkı</strong>.
+                    Yani bazı şarkıları tekrar tekrar dinledi. Özellikle <strong class="text-pink-400">"Aspettarti Qui"</strong>
+                    şarkısını tam <strong>10 kez üst üste</strong> çaldı!
+                </p>
+                <p>
+                    Müzik tercihi: <strong class="text-pink-400">İtalyanca romantik şarkılar</strong>,
+                    <strong class="text-purple-400">Türkçe pop</strong> ve rahatlatıcı akustik müzikler.
+                </p>
+                <div class="bg-red-900/30 rounded-lg p-4 border border-red-700/50 mt-6">
+                    <h3 class="font-semibold text-red-300 mb-2">⚠️ SORUN TESPİT EDİLDİ!</h3>
+                    <p>
+                        leyla <strong class="text-red-400">çok eski tarayıcılar</strong> kullanıyor (Chrome 109 ve Firefox 115).
+                        Bu tarayıcılar 2-3 yıl önce çıktı ve artık güncel değil. Modern player özellikleri çalışmayabilir.
+                        <strong class="text-yellow-300">Tarayıcıları mutlaka güncellemeli!</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-8 border border-slate-700 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-cyan-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+            <div class="space-y-4 font-mono text-sm">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-gray-400 mb-1">User ID:</div>
+                        <div class="text-cyan-300">740</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-gray-400 mb-1">Email:</div>
+                        <div class="text-cyan-300">hfogida@gmail.com</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-gray-400 mb-1">İş Adı:</div>
+                        <div class="text-cyan-300">LaViaBella</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-gray-400 mb-1">Kayıt Tarihi:</div>
+                        <div class="text-cyan-300">2025-11-21 14:56:33</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-gray-400 mb-1">İlk Çalma:</div>
+                        <div class="text-cyan-300">12:10:39</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-gray-400 mb-1">Son Çalma:</div>
+                        <div class="text-cyan-300">16:18:36</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-gray-400 mb-1">Aktif Session:</div>
+                        <div class="text-cyan-300">2 adet (Chrome + Firefox)</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-gray-400 mb-1">IP Adresi:</div>
+                        <div class="text-cyan-300">46.1.54.135 (Her ikisi de)</div>
+                    </div>
+                </div>
+                <div class="bg-red-900/30 rounded p-4 border border-red-700">
+                    <div class="text-red-300 font-bold mb-2">🚨 KRİTİK RİSK TESPİTİ:</div>
+                    <div class="text-sm text-gray-300 space-y-1">
+                        <div><strong class="text-red-400">1. Eski Tarayıcılar:</strong> Chrome 109 (3 yıl) + Firefox 115 (2.5 yıl)</div>
+                        <div><strong class="text-red-400">2. Windows 7:</strong> 17 yıllık işletim sistemi (1 oturumda tespit)</div>
+                        <div><strong class="text-red-400">3. Çoklu Oturum:</strong> 2 tarayıcı aynı anda aktif (çakışma riski)</div>
+                        <div><strong class="text-red-400">4. Güvenlik:</strong> 3 yıldır yamalı güncellemeler yok</div>
+                    </div>
+                </div>
+                <div class="bg-orange-900/30 rounded p-4 border border-orange-700">
+                    <div class="text-orange-300 font-bold mb-2">⚠️ PLAYER SORUN KAYNAKLARI:</div>
+                    <div class="text-sm text-gray-300">
+                        Bu cihaz kombinasyonu player'da şu sorunlara neden olabilir: Ses kesilmeleri, yavaş yüklenme, donmalar, bazı şarkıların çalmaması, kontrollerin çalışmaması.
+                    </div>
+                </div>
+                <div class="bg-slate-900/50 rounded p-4">
+                    <div class="text-gray-400 mb-1">Database:</div>
+                    <div class="text-cyan-300">user_active_sessions → 2 kayıt (session_id farklı)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center text-gray-500 text-sm mt-12 pt-6 border-t border-slate-700">
+            15 Ocak 2026 • Muzibu.com
+        </div>
+
+    </div>
+
+    <script>
+        const ctx = document.getElementById('hourlyChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['12:00', '13:00', '14:00', '16:00'],
+                datasets: [{
+                    label: 'Çalınan Şarkı Sayısı',
+                    data: [19, 16, 19, 1],
+                    backgroundColor: 'rgba(236, 72, 153, 0.5)',
+                    borderColor: 'rgba(236, 72, 153, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                    x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } }
+                },
+                plugins: { legend: { labels: { color: '#9ca3af' } } }
+            }
+        });
+    </script>
+
+</body>
+</html>

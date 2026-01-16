@@ -57,9 +57,18 @@
         ::-webkit-scrollbar-thumb:hover { background: #52525b; }
     </style>
 
+    {{-- Global SEO Meta Tags --}}
+    <x-seo-meta />
+
+    {{-- 🎯 Marketing Platforms Auto-Loader (GTM, GA4, Facebook, Yandex, LinkedIn, TikTok, Clarity) --}}
+    <x-marketing.auto-platforms />
+
     @livewireStyles
 </head>
 <body class="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 font-sans antialiased" x-data="authApp()" x-cloak data-active-tab="@yield('active-tab', 'login')">
+
+    {{-- 🎯 GTM Body Snippet (No-Script Fallback) --}}
+    <x-marketing.gtm-body />
 
     <!-- Background Effects -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">

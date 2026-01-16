@@ -909,6 +909,9 @@ document.addEventListener('alpine:init', () => {
         // Selected playlists (checkbox multi-select)
         selectedPlaylists: [],
 
+        // Status labels (durum değişince göster, 3sn sonra gizle)
+        statusLabels: {}, // { playlistId: { visible: false, timer: null } }
+
         /**
          * 🎵 Modal'ı şarkı için aç
          * @param {number} songId - Song ID
@@ -1037,6 +1040,35 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
+         * Durum etiketini göster (3sn sonra gizle)
+         */
+        showStatusLabel(playlistId) {
+            // Mevcut timer varsa iptal et
+            if (this.statusLabels[playlistId]?.timer) {
+                clearTimeout(this.statusLabels[playlistId].timer);
+            }
+
+            // Etiketi göster
+            this.statusLabels[playlistId] = { visible: true, timer: null };
+
+            // 3 saniye sonra gizle
+            const timer = setTimeout(() => {
+                if (this.statusLabels[playlistId]) {
+                    this.statusLabels[playlistId].visible = false;
+                }
+            }, 3000);
+
+            this.statusLabels[playlistId].timer = timer;
+        },
+
+        /**
+         * Durum etiketi görünür mü?
+         */
+        isStatusLabelVisible(playlistId) {
+            return this.statusLabels[playlistId]?.visible || false;
+        },
+
+        /**
          * Playlist seçili mi?
          */
         isSelected(playlistId) {
@@ -1102,6 +1134,7 @@ document.addEventListener('alpine:init', () => {
 
                 if (data.success) {
                     this.existsInPlaylists.push(playlistId);
+                    this.showStatusLabel(playlistId); // Durum etiketini göster
                     const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
                         `✅ "${playlist?.title || 'Playlist'}" listesine eklendi`,
@@ -1135,6 +1168,7 @@ document.addEventListener('alpine:init', () => {
                 if (data.success) {
                     const idx = this.existsInPlaylists.indexOf(playlistId);
                     if (idx > -1) this.existsInPlaylists.splice(idx, 1);
+                    this.showStatusLabel(playlistId); // Durum etiketini göster
                     const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
                         `🗑️ "${playlist?.title || 'Playlist'}" listesinden çıkarıldı`,
@@ -1170,6 +1204,7 @@ document.addEventListener('alpine:init', () => {
 
                 if (data.success) {
                     this.existsInPlaylists.push(playlistId);
+                    this.showStatusLabel(playlistId); // Durum etiketini göster
                     const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
                         `✅ Albüm "${playlist?.title || 'Playlist'}" listesine eklendi (${data.added_count} şarkı)`,

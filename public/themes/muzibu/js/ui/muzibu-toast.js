@@ -3,8 +3,41 @@
  * Lightweight toast notifications using Alpine.js store
  */
 
-// Toast is handled by Alpine.store('toast')
-// Usage: Alpine.store('toast').show('Message', 'success|error|warning|info')
+// Alpine Store for Toast
+document.addEventListener('alpine:init', () => {
+    Alpine.store('toast', {
+        visible: false,
+        type: 'info',
+        message: '',
+        timer: null,
+
+        show(message, type = 'info') {
+            // Önceki toast varsa temizle
+            if (this.timer) {
+                clearTimeout(this.timer);
+            }
+
+            this.message = message;
+            this.type = type;
+            this.visible = true;
+
+            console.log('🔔 Toast shown:', message, type);
+
+            // 3 saniye sonra otomatik kapat
+            this.timer = setTimeout(() => {
+                this.hide();
+            }, 3000);
+        },
+
+        hide() {
+            this.visible = false;
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
+        }
+    });
+});
 
 // Helper function for non-Alpine contexts
 window.showToast = function(message, type = 'info') {

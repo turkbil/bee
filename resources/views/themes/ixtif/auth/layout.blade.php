@@ -41,8 +41,17 @@
         html.dark .dark-mode-icon-moon { display: none !important; }
         html.dark .dark-mode-icon-sun { display: inline-block !important; }
     </style>
+
+    {{-- Global SEO Meta Tags --}}
+    <x-seo-meta />
+
+    {{-- 🎯 Marketing Platforms Auto-Loader (GTM, GA4, Facebook, Yandex, LinkedIn, TikTok, Clarity) --}}
+    <x-marketing.auto-platforms />
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+
+    {{-- 🎯 GTM Body Snippet (No-Script Fallback) --}}
+    <x-marketing.gtm-body />
 
     {{-- Minimal Header --}}
     <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">

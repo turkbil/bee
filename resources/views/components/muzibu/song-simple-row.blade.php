@@ -1,14 +1,16 @@
 @props([
     'song',
     'index' => 0,
-    'contextData' => []
+    'contextData' => [],
+    'hoverBg' => 'white/5'
 ])
 
 {{-- SIMPLE SONG ROW - Thumbnail + Favorite + 3-Dot Menu Design --}}
-{{-- Usage: <x-muzibu.song-simple-row :song="$song" :index="$index" /> --}}
+{{-- Usage: <x-muzibu.song-simple-row :song="$song" :index="$index" :hoverBg="'muzibu-coral/10'" /> --}}
 {{-- Features: Thumbnail, Play overlay, Favorite, 3-Dot menu, Context menu --}}
 
-<div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
+<div class="group flex items-center gap-3 px-2 py-2.5 cursor-pointer transition-all"
+     :class="'hover:bg-muzibu-coral/10'"
      @click="$dispatch('play-song', { songId: {{ $song->song_id }} })"
      x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
          id: {{ $song->song_id }},

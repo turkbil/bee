@@ -49,8 +49,8 @@ module.exports = {
                 'spotify-green': '#1DB954',
                 'spotify-green-light': '#1ed760',
                 'spotify-gray': '#282828',
-                // Muzibu custom colors
-                'muzibu-coral': '#ff7f50',
+                // Muzibu custom colors (with opacity support)
+                'muzibu-coral': 'rgb(255 127 80 / <alpha-value>)',
                 'muzibu-coral-light': '#ff9966',
                 'muzibu-coral-dark': '#ff6347',
                 'muzibu-gray': '#1a1a1a',
@@ -94,6 +94,12 @@ module.exports = {
     // muzibu icin ek safelist
     safelist: [
         ...baseConfig.safelist,
+        {
+            pattern: /^(hover:)?bg-muzibu-coral(\/\d+)?$/,
+        },
+        {
+            pattern: /^(hover:)?bg-(purple|orange)-500(\/\d+)?$/,
+        },
         // Sidebar Featured System - Custom sizes & colors (2026-01-11)
         'text-[9px]', 'text-[11px]',
         'text-red-400', 'text-red-500',
@@ -130,7 +136,7 @@ module.exports = {
         // Muzibu coral variants
         'bg-muzibu-coral', 'text-muzibu-coral', 'border-muzibu-coral',
         'bg-muzibu-coral/10', 'bg-muzibu-coral/20',
-        'hover:bg-muzibu-coral', 'hover:text-muzibu-coral',
+        'hover:bg-muzibu-coral', 'hover:bg-muzibu-coral/10', 'hover:text-muzibu-coral',
         'ring-muzibu-coral', 'ring-2',
         'from-muzibu-coral', 'from-muzibu-coral/40', 'via-muzibu-coral/20', 'to-pink-500', 'to-pink-600', 'to-orange-600', 'to-purple-600',
         'to-[#ff9966]', 'from-[#ff9966]', 'hover:from-[#ff9966]', 'hover:to-muzibu-coral',

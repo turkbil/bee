@@ -182,6 +182,9 @@ module.exports = {
         'top-[56px]', 'md:top-[68px]',
         'bottom-28', 'md:bottom-32',
         'z-[65]', 'z-[60]', 'z-[35]',
+
+        // Sidebar hover backgrounds (color-coded tabs)
+        'hover:bg-purple-500/10', 'hover:bg-orange-500/10', 'hover:bg-muzibu-coral/10', 'hover:bg-white/5',
     ],
 
     theme: {

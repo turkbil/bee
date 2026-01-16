@@ -75,7 +75,7 @@ class CertificateController extends Controller
         $eligibility = $this->certificateService->canCreateCertificate($user);
 
         if (!$eligibility['can_create']) {
-            return back()->withErrors(['error' => 'Sertifika oluşturmaya yetkiniz yok.']);
+            return back()->withErrors(['error' => 'Belge oluşturmaya yetkiniz yok.']);
         }
 
         // Check if skip correction is enabled (for member_name only)
@@ -132,7 +132,7 @@ class CertificateController extends Controller
 
             return redirect()
                 ->route('muzibu.certificate.index')
-                ->with('success', 'Sertifikanız başarıyla oluşturuldu!');
+                ->with('success', 'Belgeniz başarıyla oluşturuldu!');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }
@@ -152,7 +152,7 @@ class CertificateController extends Controller
 
         if (!$certificate) {
             return redirect()->route('muzibu.certificate.index')
-                ->withErrors(['error' => 'Sertifika bulunamadı.']);
+                ->withErrors(['error' => 'Belge bulunamadı.']);
         }
 
         // Generate QR code
@@ -167,7 +167,7 @@ class CertificateController extends Controller
         // A4 Landscape
         $pdf->setPaper('a4', 'landscape');
 
-        $filename = 'muzibu-sertifika-' . $certificate->certificate_code . '.pdf';
+        $filename = 'muzibu-belge-' . $certificate->certificate_code . '.pdf';
 
         return $pdf->download($filename);
     }

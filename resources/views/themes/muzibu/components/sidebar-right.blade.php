@@ -826,10 +826,10 @@
             <div class="relative rounded-t-lg overflow-hidden">
                 {{-- Gradient Background Layer (Fixed Height, Behind Content) --}}
                 <div class="absolute top-0 left-0 right-0 h-[120px] rounded-t-lg pointer-events-none overflow-hidden">
-                    {{-- Color Layer (Dynamic based on active tab) --}}
-                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-purple-500/40 via-purple-500/20 to-transparent"
+                    {{-- Color Layer (Dynamic based on active tab - ALL CORAL) --}}
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-muzibu-coral/40 via-muzibu-coral/20 to-transparent"
                          x-show="featuredTab === 'playlists'"></div>
-                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-orange-500/40 via-orange-500/20 to-transparent"
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-muzibu-coral/40 via-muzibu-coral/20 to-transparent"
                          x-show="featuredTab === 'radios'"></div>
                     <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-muzibu-coral/40 via-muzibu-coral/20 to-transparent"
                          x-show="featuredTab === 'songs'"></div>
@@ -842,13 +842,13 @@
                     <h3 class="text-lg font-bold text-white flex items-center gap-2 px-3">
                         <template x-if="featuredTab === 'playlists'">
                             <span class="flex items-center gap-2">
-                                <i class="fas fa-list-music text-purple-400"></i>
+                                <i class="fas fa-list-music text-muzibu-coral"></i>
                                 Popüler Playlist
                             </span>
                         </template>
                         <template x-if="featuredTab === 'radios'">
                             <span class="flex items-center gap-2">
-                                <i class="fas fa-broadcast-tower text-orange-400"></i>
+                                <i class="fas fa-broadcast-tower text-muzibu-coral"></i>
                                 Popüler Radyo
                             </span>
                         </template>
@@ -875,13 +875,13 @@
                     <div class="flex gap-1.5 pt-3 px-3">
                         <button @click="featuredTab = 'playlists'"
                                 class="flex-1 py-2 px-2 text-[11px] font-medium transition-all rounded-full whitespace-nowrap overflow-hidden text-ellipsis"
-                                :class="featuredTab === 'playlists' ? 'bg-purple-500/20 text-purple-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                                :class="featuredTab === 'playlists' ? 'bg-muzibu-coral/20 text-muzibu-coral font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'"
                                 style="white-space: nowrap !important;">
                             <i class="fas fa-list-music text-[9px] mr-1"></i>Playlist
                         </button>
                         <button @click="featuredTab = 'radios'"
                                 class="flex-1 py-2 px-2 text-[11px] font-medium transition-all rounded-full whitespace-nowrap overflow-hidden text-ellipsis"
-                                :class="featuredTab === 'radios' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                                :class="featuredTab === 'radios' ? 'bg-muzibu-coral/20 text-muzibu-coral font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'"
                                 style="white-space: nowrap !important;">
                             <i class="fas fa-broadcast-tower text-[9px] mr-1"></i>Radyo
                         </button>
@@ -903,7 +903,7 @@
                     <div>
                         @if(isset($featuredPlaylists) && count($featuredPlaylists) > 0)
                             @foreach($featuredPlaylists as $playlist)
-                                <div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
+                                <div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-muzibu-coral/20 cursor-pointer transition-all"
                                      @click="playPlaylist({{ $playlist->playlist_id }}, {{ $playlist->sistem == 1 ? 'true' : 'false' }})"
                                      x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', { id: {{ $playlist->playlist_id }}, title: '{{ addslashes($playlist->getTranslated('title', app()->getLocale())) }}', is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}, is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }} })">
                                     {{-- Thumbnail with Play Overlay --}}
@@ -963,7 +963,7 @@
                     <div>
                         @if(isset($featuredRadios) && count($featuredRadios) > 0)
                             @foreach($featuredRadios as $radio)
-                                <div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
+                                <div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-muzibu-coral/20 cursor-pointer transition-all"
                                      @click="playRadio({{ $radio->radio_id }})"
                                      x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'radio', { id: {{ $radio->radio_id }}, title: '{{ addslashes($radio->getTranslated('title', app()->getLocale())) }}', is_favorite: {{ is_favorited('radio', $radio->radio_id) ? 'true' : 'false' }} })">
                                     {{-- Thumbnail with Play Overlay --}}
@@ -1023,7 +1023,68 @@
                     <div>
                         @if(isset($featuredSongs) && count($featuredSongs) > 0)
                             @foreach($featuredSongs as $index => $song)
-                                <x-muzibu.song-simple-row :song="$song" :index="$index" />
+                                <div class="group flex items-center gap-3 px-2 py-2.5 hover:bg-muzibu-coral/20 cursor-pointer transition-all"
+                                     @click="$dispatch('play-song', { songId: {{ $song->song_id }} })"
+                                     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
+                                         id: {{ $song->song_id }},
+                                         title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+                                         artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
+                                         album_id: {{ $song->album_id ?? 'null' }},
+                                         is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
+                                     })">
+                                    {{-- Thumbnail with Play Overlay --}}
+                                    @php $coverUrl = $song->getCoverUrl(120, 120); @endphp
+                                    <div class="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-muzibu-coral to-orange-600">
+                                        @if($coverUrl)
+                                            <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fas fa-music text-white/50 text-xs"></i>
+                                            </div>
+                                        @endif
+                                        {{-- Play Overlay on Hover --}}
+                                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                            <i class="fas fa-play text-white text-sm"></i>
+                                        </div>
+                                    </div>
+                                    {{-- Song Info --}}
+                                    <div class="flex-1 min-w-0 overflow-hidden cursor-pointer">
+                                        <h4 class="text-white text-sm font-medium truncate whitespace-nowrap group-hover:text-muzibu-coral transition-colors">
+                                            {{ $song->getTranslation('title', app()->getLocale()) }}
+                                        </h4>
+                                        <p class="text-gray-400 text-xs truncate whitespace-nowrap">
+                                            {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
+                                        </p>
+                                    </div>
+                                    {{-- Actions (Favorite + Time/3-Dot) - Fixed Width --}}
+                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                        {{-- Favorite Button (Always Same Position) --}}
+                                        <button @click.stop="$store.favorites.toggle('song', {{ $song->song_id }})"
+                                                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-all"
+                                                x-bind:class="$store.favorites.isFavorite('song', {{ $song->song_id }}) ? 'text-muzibu-coral opacity-100' : 'text-gray-400 opacity-0 group-hover:opacity-100'">
+                                            <i class="text-sm"
+                                               x-bind:class="$store.favorites.isFavorite('song', {{ $song->song_id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                                        </button>
+                                        {{-- Duration / 3-Dot Menu (Same Width, Toggle on Hover) --}}
+                                        <div class="w-8 h-8 flex items-center justify-center">
+                                            {{-- Duration (Default State) --}}
+                                            <div class="text-gray-500 text-xs group-hover:hidden">
+                                                {{ $song->duration ? gmdate('i:s', $song->duration) : '--:--' }}
+                                            </div>
+                                            {{-- 3-Dot Menu Button (Hover State) --}}
+                                            <button @click.stop="$store.contextMenu.openContextMenu($event, 'song', {
+                                                        id: {{ $song->song_id }},
+                                                        title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+                                                        artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
+                                                        album_id: {{ $song->album_id ?? 'null' }},
+                                                        is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
+                                                    })"
+                                                    class="hidden group-hover:flex items-center justify-center w-full h-full rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                                <i class="fas fa-ellipsis-v text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
                         @else
                             <div class="text-center py-8 text-gray-500">

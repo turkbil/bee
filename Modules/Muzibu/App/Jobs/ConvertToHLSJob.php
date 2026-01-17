@@ -29,9 +29,8 @@ class ConvertToHLSJob implements ShouldQueue
         $this->songId = $song->song_id;
         $this->tenantId = tenant() ? tenant()->id : null;
 
-        // Muzibu tenant-aware queue name
-        $queueName = $this->tenantId ? 'muzibu_tenant_' . $this->tenantId . '_hls' : 'muzibu_hls';
-        $this->onQueue($queueName);
+        // HLS conversion uses dedicated queue (monitored by Horizon)
+        $this->onQueue('hls');
     }
 
     /**

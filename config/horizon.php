@@ -183,36 +183,81 @@ return [
         // 📧 Email/Notification Queue - TEK WORKER (duplicate önleme)
         'mail-supervisor' => [
             'connection' => 'redis',
-            'queue' => ['default'],
-            'balance' => 'false',           // ❌ Auto-scale KAPALI - sabit 1 worker
+            'queue' => ['default', 'notifications', 'mail'],
+            'balance' => 'false',           // Auto-scale KAPALI - sabit 1 worker
             'minProcesses' => 1,
-            'maxProcesses' => 1,            // 🔒 TEK WORKER - duplicate mail önleme
+            'maxProcesses' => 1,            // TEK WORKER - duplicate mail önleme
             'maxTime' => 0,
             'maxJobs' => 500,
             'memory' => 256,
-            'tries' => 1,                   // ❌ Retry YOK - mail duplicate önleme
+            'tries' => 1,                   // Retry YOK - mail duplicate önleme
             'timeout' => 120,
             'nice' => 0,
         ],
 
-        // 🎨 Muzibu Module Queue (FOTOĞRAF + LEONARDO AI)
+        // 🎨 Muzibu Module Queue (AI + Media)
         'muzibu-supervisor' => [
             'connection' => 'redis',
             'queue' => [
-                'leonardo',                 // 🚀 MAIN: Song cover generation (Leonardo AI - 1280x800)
-                'muzibu_my_playlist',       // Playlist cover generation (Leonardo AI)
+                'leonardo',                 // Song cover generation (Leonardo AI)
+                'muzibu_my_playlist',       // Playlist cover generation
                 'muzibu_seo',               // SEO generation (OpenAI GPT-4)
                 'muzibu_isolated',          // Bulk operations, translations
+                'media',                    // Media processing
+                'images',                   // Image processing
             ],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'minProcesses' => 3,   // ⚡ SAFE MODE: Rate limit friendly
-            'maxProcesses' => 10,  // ⚡ SAFE MODE: Max 10 worker
+            'minProcesses' => 3,
+            'maxProcesses' => 10,
             'maxTime' => 0,
             'maxJobs' => 1000,
             'memory' => 512,
             'tries' => 2,
             'timeout' => 600,
+            'nice' => 5,
+        ],
+
+        // 🎵 Muzibu HLS Conversion Queue (FFmpeg audio processing)
+        'muzibu-hls-supervisor' => [
+            'connection' => 'redis',
+            'queue' => ['hls'],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'minProcesses' => 1,
+            'maxProcesses' => 2,            // FFmpeg CPU intensive
+            'maxTime' => 0,
+            'maxJobs' => 100,
+            'memory' => 512,
+            'tries' => 3,
+            'timeout' => 600,               // 10 dakika (uzun dosyalar icin)
+            'nice' => 10,
+        ],
+
+        // 🌐 Genel Amacli Queue (Diger tum job'lar)
+        'general-supervisor' => [
+            'connection' => 'redis',
+            'queue' => [
+                'high',                     // Oncelikli isler
+                'low',                      // Dusuk oncelikli isler
+                'sync',                     // Sync job'lari
+                'webhooks',                 // Webhook isleri
+                'exports',                  // Export isleri
+                'imports',                  // Import isleri
+                'translations',             // Ceviri isleri
+                'scout',                    // Scout (search indexing)
+                'tenant',                   // Tenant isleri
+                'broadcasting',             // Broadcasting
+            ],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'minProcesses' => 2,
+            'maxProcesses' => 5,
+            'maxTime' => 0,
+            'maxJobs' => 500,
+            'memory' => 256,
+            'tries' => 3,
+            'timeout' => 300,
             'nice' => 5,
         ],
     ],
@@ -223,16 +268,62 @@ return [
             'mail-supervisor' => [
                 'maxProcesses' => 1,
                 'minProcesses' => 1,
+                'queue' => ['default', 'notifications', 'mail'],
                 'memory' => 256,
                 'timeout' => 120,
             ],
 
-            // ⚡ SAFE MODE: Rate limit friendly
+            // 🎨 Muzibu Module Queue (AI + Media)
             'muzibu-supervisor' => [
-                'maxProcesses' => 10,   // SAFE MODE
-                'minProcesses' => 3,    // SAFE MODE
+                'maxProcesses' => 10,
+                'minProcesses' => 3,
+                'queue' => [
+                    'leonardo',
+                    'muzibu_my_playlist',
+                    'muzibu_seo',
+                    'muzibu_isolated',
+                    'media',
+                    'images',
+                ],
                 'memory' => 512,
                 'timeout' => 600,
+            ],
+
+            // 🎵 Muzibu HLS Conversion Queue
+            'muzibu-hls-supervisor' => [
+                'maxProcesses' => 2,
+                'minProcesses' => 1,
+                'queue' => ['hls'],
+                'memory' => 512,
+                'timeout' => 600,
+            ],
+
+            // 🌐 Genel Amacli Queue
+            'general-supervisor' => [
+                'maxProcesses' => 5,
+                'minProcesses' => 2,
+                'queue' => [
+                    'high',
+                    'low',
+                    'sync',
+                    'webhooks',
+                    'exports',
+                    'imports',
+                    'translations',
+                    'scout',
+                    'tenant',
+                    'broadcasting',
+                    'blog',
+                    'blogs',
+                    'ai',
+                    'openai',
+                    'seo',
+                    'sitemap',
+                    'cache',
+                    'cleanup',
+                ],
+                'memory' => 256,
+                'timeout' => 300,
             ],
         ],
 
@@ -241,6 +332,12 @@ return [
                 'maxProcesses' => 1,
             ],
             'muzibu-supervisor' => [
+                'maxProcesses' => 2,
+            ],
+            'muzibu-hls-supervisor' => [
+                'maxProcesses' => 1,
+            ],
+            'general-supervisor' => [
                 'maxProcesses' => 2,
             ],
         ],

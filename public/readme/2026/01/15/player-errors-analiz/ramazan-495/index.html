@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramazan (ID: 495) - Player Analizi | Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-red-900/50 to-slate-800 rounded-xl p-6 mb-8 border border-red-500/30">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-2xl font-bold">R</div>
+                <div>
+                    <h1 class="text-3xl font-bold">Ramazan</h1>
+                    <p class="text-gray-400">User ID: 495 • muhafazamersin@gmail.com</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-red-400">110</div>
+                    <div class="text-sm text-gray-400">Toplam Oynatma</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-yellow-400">20</div>
+                    <div class="text-sm text-gray-400">0s Dinleme</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-red-500">18.2%</div>
+                    <div class="text-sm text-gray-400">Başarısızlık Oranı</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400">0</div>
+                    <div class="text-sm text-gray-400">Error Log Kaydı</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BÜYÜK UYARI -->
+        <div class="bg-red-900/40 border-2 border-red-500 rounded-xl p-6 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🚨</div>
+                <div>
+                    <h2 class="text-xl font-bold text-red-300 mb-2">KRİTİK BULGU: %80 BAŞARISIZLIK ORANI (17 Ocak)</h2>
+                    <p class="text-gray-300 mb-4">17 Ocak 2026 tarihinde yapılan 10 oynatma denemesinin 8'i başarısız oldu. Şarkılar hiç çalmadı veya 0 saniye dinleme kaydedildi.</p>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-sm text-gray-400 mb-1">17 Ocak 2026</div>
+                                <div class="text-2xl font-bold text-red-400">10 oynatma → 8 başarısız (%80)</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-400 mb-1">15 Ocak 2026</div>
+                                <div class="text-2xl font-bold text-yellow-400">100 oynatma → 12 başarısız (%12)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İki Seviyeli Açıklama -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Basit Anlatım -->
+            <div class="bg-blue-900/30 border border-blue-500/30 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-blue-300 mb-4">📝 Basit Anlatım (Herkes İçin)</h3>
+                <div class="space-y-3 text-gray-300">
+                    <p><strong>Ne olmuş?</strong> Ramazan 17 Ocak'ta müzik dinlemeye çalışmış ama şarkıların çoğu hiç çalmamış veya donmuş.</p>
+                    <p><strong>Rakamlarla:</strong> 10 şarkıdan 8'i çalmamış. Aynı şarkıyı 4 kez denemiş, yine çalmamış.</p>
+                    <p><strong>Neden?</strong> Büyük ihtimalle internet bağlantısı yavaşlamış veya kopmuş. Şarkı dosyaları yüklenememiş.</p>
+                    <p><strong>Bizim hatamız mı?</strong> Hayır. Sunucuda hiçbir hata kaydı yok. Sorun kullanıcının internet bağlantısında.</p>
+                </div>
+            </div>
+
+            <!-- Teknik Detaylar -->
+            <div class="bg-slate-800 border border-slate-600 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-gray-300 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between border-b border-slate-700 pb-2">
+                        <span class="text-gray-400">Tablo</span>
+                        <span class="text-green-400 font-mono">muzibu_song_plays</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-700 pb-2">
+                        <span class="text-gray-400">listened_duration = 0</span>
+                        <span class="text-red-400 font-bold">20 kayıt</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-700 pb-2">
+                        <span class="text-gray-400">Player Error Log</span>
+                        <span class="text-green-400">0 kayıt (hata yok)</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-700 pb-2">
+                        <span class="text-gray-400">IP Adresi</span>
+                        <span class="text-blue-400 font-mono">176.240.70.193</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">ISP</span>
+                        <span class="text-gray-300">Türk Telekom (Mersin)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cihaz Bilgileri -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <span>💻</span> Cihaz Bilgileri
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-900 rounded-lg p-4 text-center">
+                    <div class="text-gray-400 text-xs mb-2">CİHAZ TİPİ</div>
+                    <div class="text-blue-300 font-bold text-lg">Desktop</div>
+                    <div class="text-gray-500 text-xs mt-1">Masaüstü Bilgisayar</div>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4 text-center">
+                    <div class="text-gray-400 text-xs mb-2">İŞLETİM SİSTEMİ</div>
+                    <div class="text-green-300 font-bold text-lg">Windows 10/11</div>
+                    <div class="text-green-500 text-xs mt-1">✓ Güncel</div>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4 text-center">
+                    <div class="text-gray-400 text-xs mb-2">TARAYICI</div>
+                    <div class="text-green-300 font-bold text-lg">Chrome 143</div>
+                    <div class="text-green-500 text-xs mt-1">✓ Güncel sürüm</div>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4 text-center">
+                    <div class="text-gray-400 text-xs mb-2">IP ADRESİ</div>
+                    <div class="text-blue-300 font-bold text-lg">176.240.70.193</div>
+                    <div class="text-gray-500 text-xs mt-1">Türk Telekom</div>
+                </div>
+            </div>
+
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="text-gray-400 text-xs mb-2">TAM USER AGENT</div>
+                <div class="text-gray-300 font-mono text-xs break-all">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36</div>
+                <div class="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                    <div class="bg-slate-800 rounded p-2">
+                        <span class="text-gray-500">NT 10.0 =</span>
+                        <span class="text-green-400">Windows 10/11</span>
+                    </div>
+                    <div class="bg-slate-800 rounded p-2">
+                        <span class="text-gray-500">Win64 =</span>
+                        <span class="text-blue-400">64-bit sistem</span>
+                    </div>
+                    <div class="bg-slate-800 rounded p-2">
+                        <span class="text-gray-500">Chrome 143 =</span>
+                        <span class="text-green-400">2026 versiyonu</span>
+                    </div>
+                    <div class="bg-slate-800 rounded p-2">
+                        <span class="text-gray-500">Platform =</span>
+                        <span class="text-blue-400">Desktop</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 17 Ocak Detaylı Analiz -->
+        <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4 text-red-300">🔴 17 Ocak 2026 - Sorunlu Oturum Detayı</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-400 text-left border-b border-slate-700">
+                            <th class="py-2 px-3">Saat</th>
+                            <th class="py-2 px-3">Şarkı</th>
+                            <th class="py-2 px-3">Süre</th>
+                            <th class="py-2 px-3">Dinleme</th>
+                            <th class="py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300">
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-mono">21:48:05</td>
+                            <td class="py-2 px-3">Smoke Trails To Your Door</td>
+                            <td class="py-2 px-3">168s</td>
+                            <td class="py-2 px-3 text-red-400 font-bold">0s</td>
+                            <td class="py-2 px-3"><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs">BAŞARISIZ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-mono">21:48:56</td>
+                            <td class="py-2 px-3">Smoke Trails To Your Door <span class="text-yellow-400">(2. deneme)</span></td>
+                            <td class="py-2 px-3">168s</td>
+                            <td class="py-2 px-3 text-red-400 font-bold">0s</td>
+                            <td class="py-2 px-3"><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs">BAŞARISIZ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-yellow-900/20">
+                            <td class="py-2 px-3 font-mono">21:52:46</td>
+                            <td class="py-2 px-3">Smoke Trails To Your Door <span class="text-yellow-400">(3. deneme)</span></td>
+                            <td class="py-2 px-3">168s</td>
+                            <td class="py-2 px-3 text-yellow-400">47s</td>
+                            <td class="py-2 px-3"><span class="bg-yellow-600 text-white px-2 py-0.5 rounded text-xs">YARIM KALDI</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-mono">21:54:44</td>
+                            <td class="py-2 px-3">Smoke Trails To Your Door <span class="text-yellow-400">(4. deneme)</span></td>
+                            <td class="py-2 px-3">168s</td>
+                            <td class="py-2 px-3 text-red-400 font-bold">0s</td>
+                            <td class="py-2 px-3"><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs">BAŞARISIZ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-mono">21:56:26</td>
+                            <td class="py-2 px-3">Drifting Skies</td>
+                            <td class="py-2 px-3">180s</td>
+                            <td class="py-2 px-3 text-red-400 font-bold">0s</td>
+                            <td class="py-2 px-3"><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs">BAŞARISIZ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-mono">21:56:29</td>
+                            <td class="py-2 px-3">That Kind Of Light</td>
+                            <td class="py-2 px-3">175s</td>
+                            <td class="py-2 px-3 text-red-400 font-bold">0s</td>
+                            <td class="py-2 px-3"><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs">BAŞARISIZ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-mono">21:56:30</td>
+                            <td class="py-2 px-3">Path Of The Fool</td>
+                            <td class="py-2 px-3">166s</td>
+                            <td class="py-2 px-3 text-red-400 font-bold">0s</td>
+                            <td class="py-2 px-3"><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs">BAŞARISIZ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-mono">21:56:30</td>
+                            <td class="py-2 px-3">Like It Always Was</td>
+                            <td class="py-2 px-3">480s</td>
+                            <td class="py-2 px-3 text-red-400 font-bold">0s</td>
+                            <td class="py-2 px-3"><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs">BAŞARISIZ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-mono">21:56:33</td>
+                            <td class="py-2 px-3">Crying On The Inside</td>
+                            <td class="py-2 px-3">151s</td>
+                            <td class="py-2 px-3 text-red-400 font-bold">0s</td>
+                            <td class="py-2 px-3"><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs">BAŞARISIZ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-yellow-900/20">
+                            <td class="py-2 px-3 font-mono">22:03:00</td>
+                            <td class="py-2 px-3">Rawa Da Gaskiya</td>
+                            <td class="py-2 px-3">199s</td>
+                            <td class="py-2 px-3 text-yellow-400">40s</td>
+                            <td class="py-2 px-3"><span class="bg-yellow-600 text-white px-2 py-0.5 rounded text-xs">YARIM KALDI</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h4 class="font-bold text-red-300 mb-3">🔍 Bu Tabloda Ne Görüyoruz?</h4>
+                <ul class="space-y-2 text-gray-300 text-sm">
+                    <li>• <strong>21:48-21:55 arası:</strong> Kullanıcı "Smoke Trails To Your Door" şarkısını 4 kez art arda denemiş. Şarkı çalmamış.</li>
+                    <li>• <strong>21:56:26-33 arası:</strong> 7 saniyede 5 farklı şarkı denenmiş, hiçbiri çalmamış. Bu hızlı geçiş, şarkıların yüklenmediğini gösteriyor.</li>
+                    <li>• <strong>22:03'te:</strong> Son şarkı 40 saniye çalmış sonra durmuş. İnternet kısmen düzelmiş olabilir.</li>
+                    <li>• <strong>Sonuç:</strong> Tipik bir internet bağlantı kopukluğu/yavaşlama senaryosu.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 15 Ocak vs 17 Ocak Karşılaştırma -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold mb-6">📊 Gün Karşılaştırması</h3>
+            <div class="h-64">
+                <canvas id="dayCompare"></canvas>
+            </div>
+        </div>
+
+        <!-- Sonuç ve Değerlendirme -->
+        <div class="bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4">📋 Sonuç ve Değerlendirme</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
+                    <h4 class="font-bold text-green-300 mb-3">✅ Sunucu Tarafı (Sağlıklı)</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li>• Player error log'da bu kullanıcı için 0 hata</li>
+                        <li>• Şarkı dosyaları sunucuda mevcut ve erişilebilir</li>
+                        <li>• HLS streaming altyapısı çalışıyor</li>
+                        <li>• 15 Ocak'ta aynı kullanıcı 88 şarkı sorunsuz dinlemiş</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-500/30 rounded-lg p-4">
+                    <h4 class="font-bold text-red-300 mb-3">❌ Kullanıcı Tarafı (Sorunlu)</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li>• 17 Ocak akşamı internet bağlantısı sorunlu</li>
+                        <li>• HLS segment'leri yüklenememiş (0s dinleme)</li>
+                        <li>• Aynı şarkıyı 4 kez denemiş = şarkı çalmamış</li>
+                        <li>• 7 saniyede 5 şarkı denemesi = hiçbiri yüklenmemiş</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-blue-900/30 border border-blue-500/30 rounded-lg p-4">
+                <h4 class="font-bold text-blue-300 mb-3">🎯 Yönetim İçin Özet</h4>
+                <p class="text-gray-300">
+                    Ramazan'ın şarkıları donması veya çalmaması sorunu <strong>kullanıcının internet bağlantısından</strong> kaynaklanıyor.
+                    Sunucuda hiçbir hata kaydı yok. Aynı kullanıcı 15 Ocak'ta sorunsuz 88 şarkı dinlemiş.
+                    17 Ocak akşamı (21:48-22:03 arası) yaşanan sorun geçici bir internet kesintisi veya yavaşlaması.
+                    Kullanıcının tarayıcısı (Chrome 143) ve işletim sistemi (Windows 10/11) güncel.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm py-8 border-t border-slate-700">
+            17 Ocak 2026 • Muzibu.com.tr
+        </footer>
+    </div>
+
+    <script>
+        // Gün karşılaştırma grafiği
+        new Chart(document.getElementById('dayCompare'), {
+            type: 'bar',
+            data: {
+                labels: ['15 Ocak 2026', '17 Ocak 2026'],
+                datasets: [{
+                    label: 'Başarılı Oynatma',
+                    data: [88, 2],
+                    backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Başarısız (0s)',
+                    data: [12, 8],
+                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { color: '#9ca3af' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#9ca3af' },
+                        grid: { color: 'rgba(75, 85, 99, 0.3)' }
+                    },
+                    x: {
+                        ticks: { color: '#9ca3af' },
+                        grid: { color: 'rgba(75, 85, 99, 0.3)' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

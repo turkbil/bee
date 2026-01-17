@@ -86,7 +86,18 @@ class PayTRCallbackService
                 return ['success' => false, 'message' => 'Hash doğrulama hatası'];
             }
 
-            // 5. Tutar kontrolü
+            // 5. Başarısız ödeme kontrolü (tutar kontrolünden ÖNCE!)
+            // PayTR failed callback'lerinde total_amount=0 gelir, bu normal
+            if ($status === 'failed') {
+                Log::info('⚠️ PayTR callback: Ödeme başarısız', [
+                    'payment_id' => $payment->payment_id,
+                    'reason' => $callbackData['failed_reason_msg'] ?? 'Bilinmiyor',
+                ]);
+                $this->handleFailedPayment($payment, $callbackData);
+                return ['success' => true, 'message' => 'Failed payment processed'];
+            }
+
+            // 6. Tutar kontrolü (sadece başarılı ödemeler için)
             $expectedAmount = number_format($payment->amount, 2, '.', '');
             $receivedAmount = number_format($totalAmount / 100, 2, '.', ''); // Kuruş -> TL
 
@@ -99,7 +110,7 @@ class PayTRCallbackService
                 return ['success' => false, 'message' => 'Tutar uyumsuzluğu'];
             }
 
-            // 6. Status'e göre işlem yap
+            // 7. Status'e göre işlem yap (artık sadece success gelir)
             // 🔥 FIX v3: Transaction KALDIRILDI - idempotent işlem, duplicate check var
             Log::channel('daily')->info('🔵 PayTR callback: Processing (no transaction)', [
                 'payment_id' => $payment->payment_id,

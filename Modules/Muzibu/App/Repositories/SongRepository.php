@@ -7,6 +7,7 @@ namespace Modules\Muzibu\App\Repositories;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Modules\Muzibu\App\Models\Song;
 
 class SongRepository
@@ -18,6 +19,25 @@ class SongRepository
     {
         $this->cachePrefix = 'muzibu_songs';
         $this->cacheTtl = (int) config('modules.cache.ttl.list', 3600);
+    }
+
+    /**
+     * Get list of locales that have indexed slug columns (slug_tr, slug_en, etc.)
+     */
+    private function getIndexedSlugLocales(): array
+    {
+        return Cache::remember('song_indexed_slug_locales', 3600, function () {
+            $columns = Schema::getColumnListing('muzibu_songs');
+            $indexedLocales = [];
+
+            foreach ($columns as $column) {
+                if (preg_match('/^slug_([a-z]{2})$/', $column, $matches)) {
+                    $indexedLocales[] = $matches[1];
+                }
+            }
+
+            return $indexedLocales;
+        });
     }
 
     public function findById(int $id): ?Song
@@ -32,9 +52,21 @@ class SongRepository
 
     public function findBySlug(string $slug, string $locale = 'tr'): ?Song
     {
-        return $this->model->where(function ($query) use ($slug, $locale) {
-            $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) = ?", [$slug])
-                ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) = ?", [$slug]);
+        $indexedLocales = $this->getIndexedSlugLocales();
+
+        return $this->model->where(function ($query) use ($slug, $locale, $indexedLocales) {
+            // Check if this locale has an indexed column
+            if (in_array($locale, $indexedLocales)) {
+                $query->where("slug_{$locale}", $slug);
+            } else {
+                // JSON fallback for non-indexed locales
+                $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) = ?", [$slug]);
+            }
+
+            // Always add Turkish fallback (if not already the requested locale)
+            if ($locale !== 'tr' && in_array('tr', $indexedLocales)) {
+                $query->orWhere('slug_tr', $slug);
+            }
         })->active()->with(['album.artist', 'genre', 'media'])->first();
     }
 

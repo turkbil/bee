@@ -57,9 +57,13 @@ class ActivityLogComponent extends Component
     protected function applySearchFilters($query)
     {
         return $query->where(function ($q) {
-            $q->where('description', 'like', '%' . $this->search . '%')
-                ->orWhereJsonContains('properties->baslik', $this->search)
-                ->orWhereJsonContains('properties->modul', $this->search);
+            $q->where('description', 'like', '%' . $this->search . '%');
+
+            // JSON search only if 3+ characters (performance optimization)
+            if (mb_strlen($this->search) >= 3) {
+                $q->orWhereJsonContains('properties->baslik', $this->search)
+                  ->orWhereJsonContains('properties->modul', $this->search);
+            }
         })
         ->when($this->userFilter, function ($query) {
             $query->where('causer_id', $this->userFilter)

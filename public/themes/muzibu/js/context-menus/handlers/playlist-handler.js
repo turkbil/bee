@@ -73,13 +73,13 @@ const PlaylistHandler = {
         console.log(`📝 PlaylistHandler.createPlaylist: name=${name}`);
 
         try {
-            const response = await fetch('/api/muzibu/playlists', {
+            const response = await fetch('/api/muzibu/playlists/quick-create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
                 },
-                body: JSON.stringify({ name, is_public: isPublic })
+                body: JSON.stringify({ title: name, is_public: isPublic })
             });
 
             if (response.ok) {

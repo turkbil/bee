@@ -24,12 +24,12 @@
             <div class="mt-4 flex items-center gap-4 text-sm text-gray-400">
                 <span>📅 Tarih: 15 Ocak 2026</span>
                 <span>⏰ Analiz Saati: 18:45</span>
-                <span>👥 Kullanıcı Sayısı: 4</span>
+                <span>👥 Kullanıcı Sayısı: 5</span>
             </div>
         </div>
 
         <!-- Kullanıcı Kartları -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
 
             <!-- Mutlu (biss) -->
             <a href="./mutlu-504/" class="block bg-gradient-to-br from-blue-900/50 to-blue-950/50 rounded-xl p-6 border border-blue-700/50 hover:border-blue-500 transition-all hover:scale-105 hover:shadow-2xl">
@@ -146,6 +146,36 @@
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-400">Hata:</span>
+                        <span class="font-semibold text-green-400">✓ 0</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Ramazan (muhafazamersin) -->
+            <a href="./ramazan-495/" class="block bg-gradient-to-br from-red-900/50 to-red-950/50 rounded-xl p-6 border border-red-700/50 hover:border-red-500 transition-all hover:scale-105 hover:shadow-2xl">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300">Ramazan</h3>
+                        <p class="text-xs text-gray-400 mt-1">ID: 495</p>
+                        <p class="text-xs text-gray-500">muhafazamersin@gmail.com</p>
+                    </div>
+                    <span class="bg-red-500/20 text-red-300 text-xs px-2 py-1 rounded">%80 Hata!</span>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Çalma:</span>
+                        <span class="font-semibold text-red-200">110</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Başarısız:</span>
+                        <span class="font-semibold text-red-400">20 (%18.2)</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">17 Ocak:</span>
+                        <span class="font-semibold text-red-400">%80 hata</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Log Hatası:</span>
                         <span class="font-semibold text-green-400">✓ 0</span>
                     </div>
                 </div>
@@ -294,6 +324,41 @@
                     </div>
                 </div>
 
+                <!-- Ramazan (495) -->
+                <div class="bg-red-900/20 rounded-lg p-6 border border-red-700/50">
+                    <h3 class="text-xl font-bold text-red-300 mb-4 flex items-center justify-between">
+                        <span>Ramazan - ID: 495</span>
+                        <span class="text-sm bg-red-700/50 px-3 py-1 rounded">⚠️ %80 Hata (17 Ocak)</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 mb-1">🖥️ Cihaz Tipi:</div>
+                            <div class="text-red-200 font-semibold">Windows - Chrome</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 mb-1">🌐 Tarayıcı:</div>
+                            <div class="text-red-200 font-semibold">Chrome 143.0</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 mb-1">🖼️ Platform:</div>
+                            <div class="text-red-200 font-semibold">Windows NT 10.0 (Windows 10/11)</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="text-gray-400 mb-1">🌍 IP Adresi:</div>
+                            <div class="text-red-200 font-mono text-xs">176.240.70.193 (Türk Telekom - Mersin)</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-red-900/30 rounded p-4 border border-red-700/30">
+                        <div class="text-red-300 font-semibold mb-2">🚨 KRİTİK BULGU:</div>
+                        <div class="text-sm text-gray-300">
+                            <strong class="text-red-400">17 Ocak 2026:</strong> 10 oynatma denemesinin 8'i başarısız (%80). Aynı şarkıyı 4 kez denemiş, çalmamış.<br>
+                            <strong class="text-yellow-400">15 Ocak 2026:</strong> 100 oynatma, 12 başarısız (%12) - normal.<br>
+                            <strong class="text-green-400">Sunucu Log:</strong> 0 hata kaydı.<br>
+                            <strong class="text-blue-400">Sonuç:</strong> 17 Ocak akşamı internet bağlantısı sorunu yaşamış. Bizim hatamız değil.
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -302,16 +367,37 @@
             <h2 class="text-2xl font-bold mb-4 text-green-300">✅ Sonuç ve Öneriler</h2>
             <div class="space-y-4 text-gray-300">
                 <p class="text-lg">
-                    <strong class="text-green-400">15 Ocak 2026</strong> tarihinde bu 4 kullanıcı toplam
-                    <strong class="text-blue-300">437 şarkı çalmış</strong> ve sistemde
+                    <strong class="text-green-400">15-17 Ocak 2026</strong> tarihlerinde bu 5 kullanıcı toplam
+                    <strong class="text-blue-300">547 şarkı çalmış</strong> ve sistemde
                     <strong class="text-green-400">hiçbir player hatası kaydedilmemiştir</strong>.
                 </p>
+                <div class="bg-red-900/30 rounded-lg p-6 border border-red-700/30 mt-6">
+                    <h3 class="font-semibold text-red-300 mb-3">🚨 Ramazan'ın Durumu (Kritik Bulgu):</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400">⚠️</span>
+                            <span><strong class="text-red-400">17 Ocak:</strong> %80 başarısızlık (10 oynatmadan 8'i 0 saniye) - İnternet sorunu</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-400">⚠️</span>
+                            <span><strong class="text-yellow-400">15 Ocak:</strong> %12 başarısızlık - Normal aralıkta</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <span>Sunucu loglarında 0 hata - <strong class="text-green-400">Bizim sistemimizde sorun yok</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">ℹ️</span>
+                            <span>Sonuç: Kullanıcının internet bağlantısı 17 Ocak akşamı sorunluydu</span>
+                        </li>
+                    </ul>
+                </div>
                 <div class="bg-blue-900/30 rounded-lg p-6 border border-blue-700/30 mt-6">
                     <h3 class="font-semibold text-blue-300 mb-3">💻 Cihaz Analizi Sonucu:</h3>
                     <ul class="space-y-2 text-sm">
                         <li class="flex items-start gap-2">
                             <span class="text-green-400">✓</span>
-                            <span>3 kullanıcı <strong class="text-green-300">güncel/uyumlu tarayıcı</strong> kullanıyor (Edge, Chrome, Opera)</span>
+                            <span>4 kullanıcı <strong class="text-green-300">güncel/uyumlu tarayıcı</strong> kullanıyor (Edge, Chrome, Opera)</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-yellow-400">⚠️</span>
@@ -323,13 +409,14 @@
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-green-400">✓</span>
-                            <span>Bugün <strong class="text-green-300">hiçbir kullanıcıda player hatası kaydedilmedi</strong></span>
+                            <span><strong class="text-green-300">5 kullanıcının hiçbirinde sunucu tarafında player hatası kaydedilmedi</strong></span>
                         </li>
                     </ul>
                 </div>
                 <div class="bg-orange-900/30 rounded-lg p-6 border border-orange-700/30 mt-6">
                     <h3 class="font-semibold text-orange-300 mb-3">📋 Kullanıcılara Öneriler:</h3>
                     <ul class="space-y-2 text-sm">
+                        <li><strong>Ramazan:</strong> İnternet bağlantınızı kontrol edin. 17 Ocak akşamı bağlantı sorunları yaşadınız.</li>
                         <li><strong>leyla:</strong> Tarayıcı güncelleme yapılmalı (Chrome 109 → 144, Firefox 115 → 134)</li>
                         <li><strong>Tümü:</strong> Eğer sorun yaşıyorsanız, internet hızınızı test edin (minimum 1 Mbps gerekli)</li>
                         <li><strong>Tümü:</strong> Tarayıcı cache temizliği yapın (Ctrl+Shift+Del)</li>
@@ -341,7 +428,7 @@
 
         <!-- Footer -->
         <div class="text-center text-gray-500 text-sm mt-12 pt-6 border-t border-slate-700">
-            15 Ocak 2026 • Muzibu.com
+            17 Ocak 2026 • Muzibu.com
         </div>
 
     </div>

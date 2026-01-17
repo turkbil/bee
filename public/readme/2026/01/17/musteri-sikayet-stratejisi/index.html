@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteri Şikayet Yönetimi Stratejisi | Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-900/50 to-slate-800 rounded-xl p-8 mb-8 border border-indigo-500/30">
+            <h1 class="text-3xl font-bold mb-2">"Şarkılar Çalmıyor" Şikayetleri İçin</h1>
+            <h2 class="text-xl text-indigo-300">Müşteri Yönetim Stratejisi ve Teknik Önlemler</h2>
+            <p class="text-gray-400 mt-4">Müşteri kendi internetinden kaynaklanan sorunu size yüklemesin. Kanıtla konuşun.</p>
+        </div>
+
+        <!-- Sorunun Özeti -->
+        <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold text-red-300 mb-4">🎯 Mevcut Durum</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-red-400 font-bold mb-2">Müşteri Diyor ki:</div>
+                    <ul class="text-sm text-gray-300 space-y-1">
+                        <li>• "Şarkılar donuyor"</li>
+                        <li>• "Player çalışmıyor"</li>
+                        <li>• "Sürekli kesiliyor"</li>
+                        <li>• "Sizin sisteminiz bozuk"</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-green-400 font-bold mb-2">Gerçek:</div>
+                    <ul class="text-sm text-gray-300 space-y-1">
+                        <li>• Sunucu loglarında 0 hata</li>
+                        <li>• Diğer kullanıcılar sorunsuz</li>
+                        <li>• Müşterinin interneti yavaş/kopuk</li>
+                        <li>• Eski tarayıcı kullanıyor</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEJİ 1: Anlık Bilgilendirme -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">1️⃣</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Player'da Anlık Bağlantı Durumu Göstergesi</h3>
+                    <p class="text-gray-400 mb-4">Müşteri sorun yaşadığında ANINDA görsün ki sorun nerede.</p>
+
+                    <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Örnek Görünüm:</div>
+                        <div class="flex items-center gap-3 bg-slate-800 rounded p-3">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+                            <span class="text-yellow-300 text-sm">İnternet bağlantınız yavaş (0.5 Mbps) - Şarkılar gecikebilir</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-800 rounded p-3 mt-2">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <span class="text-red-300 text-sm">İnternet bağlantısı koptu - Yeniden bağlanılıyor...</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-800 rounded p-3 mt-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span class="text-green-300 text-sm">Bağlantı iyi (12 Mbps)</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-900/30 rounded-lg p-4 border border-blue-500/30">
+                        <div class="font-bold text-blue-300 mb-2">Teknik Uygulama:</div>
+                        <pre class="text-xs text-gray-300 overflow-x-auto"><code>// Player'a eklenecek kod
+const connection = navigator.connection || navigator.mozConnection;
+const speed = connection?.downlink || 'unknown';
+
+if (speed < 1) {
+    showWarning('İnternet hızınız düşük: ' + speed + ' Mbps');
+}
+
+// Buffering süresi ölçümü
+player.on('waiting', () => {
+    bufferStart = Date.now();
+});
+player.on('playing', () => {
+    const bufferTime = Date.now() - bufferStart;
+    if (bufferTime > 3000) {
+        showWarning('Yükleme ' + (bufferTime/1000) + 's sürdü - İnternet yavaş');
+    }
+});</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEJİ 2: Hız Testi Sayfası -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">2️⃣</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-green-300 mb-2">Müşteriye Gönderilecek Hız Testi Sayfası</h3>
+                    <p class="text-gray-400 mb-4">Müşteri aradığında: "Şu linke girin, sonucu bize gönderin" deyin.</p>
+
+                    <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Sayfa İçeriği:</div>
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li>✅ Otomatik internet hız testi (indirme/yükleme)</li>
+                            <li>✅ Muzibu sunucusuna ping testi</li>
+                            <li>✅ Tarayıcı ve işletim sistemi bilgisi</li>
+                            <li>✅ Son 24 saatteki dinleme istatistikleri</li>
+                            <li>✅ "Raporu Kopyala" butonu</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-green-900/30 rounded-lg p-4 border border-green-500/30">
+                        <div class="font-bold text-green-300 mb-2">Örnek Rapor Çıktısı:</div>
+                        <pre class="text-xs text-gray-300 bg-slate-900 rounded p-3 overflow-x-auto">
+📊 MUZİBU BAĞLANTI RAPORU
+========================
+Tarih: 17 Ocak 2026, 14:32
+Kullanıcı: Ramazan (ID: 495)
+
+🌐 İNTERNET HIZI:
+   İndirme: 2.3 Mbps ⚠️ (Önerilen: 5+ Mbps)
+   Yükleme: 0.8 Mbps
+   Ping: 145ms ⚠️ (Önerilen: <50ms)
+
+💻 CİHAZ BİLGİLERİ:
+   Tarayıcı: Chrome 143 ✅
+   İşletim Sistemi: Windows 10 ✅
+
+📈 SON 24 SAAT:
+   Toplam Oynatma: 10
+   Başarısız: 8 (%80) ❌
+
+⚠️ SORUN TESPİTİ:
+   İnternet hızınız Muzibu için yetersiz.
+   Minimum 3 Mbps önerilir.
+                        </pre>
+                    </div>
+
+                    <div class="mt-4 text-sm text-gray-400">
+                        <strong>URL Önerisi:</strong> <code class="bg-slate-900 px-2 py-1 rounded">muzibu.com/baglanti-testi</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEJİ 3: Otomatik Hata Bildirimi -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">3️⃣</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-2">Player'da "Sorun Bildir" Butonu</h3>
+                    <p class="text-gray-400 mb-4">Müşteri şikayet edeceğine, tek tıkla detaylı log göndersin.</p>
+
+                    <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Nasıl Çalışır:</div>
+                        <ol class="text-sm text-gray-300 space-y-2 list-decimal list-inside">
+                            <li>Müşteri player'da "Sorun mu var?" butonuna tıklar</li>
+                            <li>Sistem otomatik olarak toplar:
+                                <ul class="ml-6 mt-1 space-y-1 text-gray-400">
+                                    <li>• Son 5 dakikanın play logları</li>
+                                    <li>• Buffering süreleri</li>
+                                    <li>• Network durumu</li>
+                                    <li>• Tarayıcı console logları</li>
+                                </ul>
+                            </li>
+                            <li>Tek tıkla sunucuya gönderilir</li>
+                            <li>Admin panelinde görüntülenir</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-yellow-900/30 rounded-lg p-4 border border-yellow-500/30">
+                        <div class="font-bold text-yellow-300 mb-2">Avantajı:</div>
+                        <p class="text-sm text-gray-300">Müşteri "çalışmıyor" dediğinde, elinizde somut veri olur. "Bakın, 14:32'de internet hızınız 0.3 Mbps'e düşmüş, o yüzden şarkı durmuş" diyebilirsiniz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEJİ 4: Detaylı Client-Side Logging -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">4️⃣</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-purple-300 mb-2">Gelişmiş Client-Side Loglama</h3>
+                    <p class="text-gray-400 mb-4">Şu an sadece sunucu logları var. Client tarafında da detaylı log tutun.</p>
+
+                    <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Loglanacak Olaylar:</div>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <div class="text-purple-300 font-bold mb-1">Player Events:</div>
+                                <ul class="text-gray-300 space-y-1">
+                                    <li>• play_start (timestamp)</li>
+                                    <li>• play_pause</li>
+                                    <li>• buffering_start</li>
+                                    <li>• buffering_end + süre</li>
+                                    <li>• error + error_code</li>
+                                    <li>• song_end</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <div class="text-purple-300 font-bold mb-1">Network Events:</div>
+                                <ul class="text-gray-300 space-y-1">
+                                    <li>• connection_speed</li>
+                                    <li>• connection_type (wifi/4g)</li>
+                                    <li>• connection_lost</li>
+                                    <li>• connection_restored</li>
+                                    <li>• hls_segment_failed</li>
+                                    <li>• hls_segment_timeout</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-900/30 rounded-lg p-4 border border-purple-500/30">
+                        <div class="font-bold text-purple-300 mb-2">Mevcut vs Önerilen:</div>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-red-400 mb-1">Şu An:</div>
+                                <code class="text-xs text-gray-400">listened_duration: 0s</code>
+                                <p class="text-gray-500 text-xs mt-1">Sadece "0 saniye dinledi" biliyoruz, neden bilmiyoruz</p>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-green-400 mb-1">Önerilen:</div>
+                                <code class="text-xs text-gray-400">buffering: 15s, network_speed: 0.2Mbps, error: HLS_TIMEOUT</code>
+                                <p class="text-gray-500 text-xs mt-1">Tam olarak ne olduğunu biliyoruz</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEJİ 5: Adaptive Streaming -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">5️⃣</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-cyan-300 mb-2">Adaptive Bitrate Streaming (Kalite Düşürme)</h3>
+                    <p class="text-gray-400 mb-4">İnternet yavaşsa, otomatik olarak düşük kaliteye geç.</p>
+
+                    <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Kalite Seviyeleri:</div>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-slate-700">
+                                    <th class="py-2 text-left">Kalite</th>
+                                    <th class="py-2 text-left">Bitrate</th>
+                                    <th class="py-2 text-left">Gereken Hız</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2">Yüksek (HQ)</td>
+                                    <td class="py-2">320 kbps</td>
+                                    <td class="py-2">1+ Mbps</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2">Normal</td>
+                                    <td class="py-2">128 kbps</td>
+                                    <td class="py-2">0.5+ Mbps</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Düşük</td>
+                                    <td class="py-2">64 kbps</td>
+                                    <td class="py-2">0.2+ Mbps</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-cyan-900/30 rounded-lg p-4 border border-cyan-500/30">
+                        <div class="font-bold text-cyan-300 mb-2">Nasıl Çalışır:</div>
+                        <p class="text-sm text-gray-300">HLS zaten bunu destekliyor. Farklı kalitede .m3u8 dosyaları oluşturup, player'ın otomatik seçim yapmasını sağlayın. Yavaş internette düşük kalite çalar, ama EN AZINDAN ÇALAR.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEJİ 6: Müşteri İletişim Şablonları -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">6️⃣</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-orange-300 mb-2">Hazır Müşteri Yanıt Şablonları</h3>
+                    <p class="text-gray-400 mb-4">Müşteri aradığında kopyala-yapıştır yapılacak profesyonel yanıtlar.</p>
+
+                    <div class="space-y-4">
+                        <!-- Şablon 1 -->
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <div class="text-orange-300 font-bold mb-2">📋 Şablon 1: İlk Şikayet</div>
+                            <div class="bg-slate-800 rounded p-3 text-sm text-gray-300">
+                                "Merhaba, şikayetinizi aldık. Sistemimizi kontrol ettik ve sunucularımızda herhangi bir sorun görünmüyor. Diğer kullanıcılarımız şu anda sorunsuz dinliyor.<br><br>
+                                Sorununuzu daha iyi anlamamız için lütfen şu linke tıklayıp bağlantı testini yapın ve sonucu bize gönderin:<br>
+                                <strong>muzibu.com/baglanti-testi</strong><br><br>
+                                Bu test internet hızınızı ve cihaz bilgilerinizi gösterecek, sorunu birlikte tespit edelim."
+                            </div>
+                        </div>
+
+                        <!-- Şablon 2 -->
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <div class="text-orange-300 font-bold mb-2">📋 Şablon 2: İnternet Sorunu Tespit Edildiğinde</div>
+                            <div class="bg-slate-800 rounded p-3 text-sm text-gray-300">
+                                "Merhaba, bağlantı testinizi inceledik. Test sonuçlarına göre:<br><br>
+                                • İnternet hızınız: <strong>X Mbps</strong> (Önerilen: 3+ Mbps)<br>
+                                • Ping süreniz: <strong>X ms</strong> (Önerilen: 50ms altı)<br><br>
+                                Müzik streaming için minimum 3 Mbps hız gerekiyor. Lütfen internet sağlayıcınızla iletişime geçin veya Wi-Fi yerine kablolu bağlantı deneyin.<br><br>
+                                Ayrıca tarayıcınızın önbelleğini temizlemenizi öneririz (Ctrl+Shift+Del)."
+                            </div>
+                        </div>
+
+                        <!-- Şablon 3 -->
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <div class="text-orange-300 font-bold mb-2">📋 Şablon 3: Eski Tarayıcı</div>
+                            <div class="bg-slate-800 rounded p-3 text-sm text-gray-300">
+                                "Merhaba, sistem kayıtlarımıza göre <strong>Chrome 109</strong> kullanıyorsunuz. Bu tarayıcı sürümü 3 yıl öncesine ait ve bazı modern müzik player özelliklerini desteklemiyor olabilir.<br><br>
+                                Lütfen tarayıcınızı güncelleyin:<br>
+                                • Chrome: <strong>chrome://settings/help</strong> adresine gidin<br>
+                                • Ya da <strong>google.com/chrome</strong> adresinden indirin<br><br>
+                                Güncel sürüm: Chrome 144"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Öncelik Sıralaması -->
+        <div class="bg-gradient-to-r from-green-900/30 to-slate-800 rounded-xl p-6 mb-8 border border-green-500/30">
+            <h3 class="text-xl font-bold text-green-300 mb-4">🎯 Uygulama Önceliği</h3>
+            <div class="space-y-3">
+                <div class="flex items-center gap-4 bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-2xl font-bold text-green-400">1</span>
+                    <div>
+                        <div class="font-bold text-green-300">Hız Testi Sayfası</div>
+                        <div class="text-sm text-gray-400">Hemen yapılabilir, müşteriye somut veri sağlar</div>
+                    </div>
+                    <span class="ml-auto bg-green-600 text-white text-xs px-3 py-1 rounded">KOLAY</span>
+                </div>
+                <div class="flex items-center gap-4 bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-2xl font-bold text-green-400">2</span>
+                    <div>
+                        <div class="font-bold text-green-300">Bağlantı Durumu Göstergesi</div>
+                        <div class="text-sm text-gray-400">Player'a küçük bir ekleme, büyük fayda</div>
+                    </div>
+                    <span class="ml-auto bg-yellow-600 text-white text-xs px-3 py-1 rounded">ORTA</span>
+                </div>
+                <div class="flex items-center gap-4 bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-2xl font-bold text-green-400">3</span>
+                    <div>
+                        <div class="font-bold text-green-300">Detaylı Client-Side Loglama</div>
+                        <div class="text-sm text-gray-400">Mevcut loglama sistemini genişlet</div>
+                    </div>
+                    <span class="ml-auto bg-yellow-600 text-white text-xs px-3 py-1 rounded">ORTA</span>
+                </div>
+                <div class="flex items-center gap-4 bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-2xl font-bold text-green-400">4</span>
+                    <div>
+                        <div class="font-bold text-green-300">"Sorun Bildir" Butonu</div>
+                        <div class="text-sm text-gray-400">Müşteri tek tıkla log göndersin</div>
+                    </div>
+                    <span class="ml-auto bg-yellow-600 text-white text-xs px-3 py-1 rounded">ORTA</span>
+                </div>
+                <div class="flex items-center gap-4 bg-slate-900/50 rounded-lg p-4">
+                    <span class="text-2xl font-bold text-green-400">5</span>
+                    <div>
+                        <div class="font-bold text-green-300">Adaptive Bitrate</div>
+                        <div class="text-sm text-gray-400">Yavaş internette düşük kalite çalsın</div>
+                    </div>
+                    <span class="ml-auto bg-red-600 text-white text-xs px-3 py-1 rounded">KAPSAMLI</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mevcut Sistem İyileştirmeleri -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold text-blue-300 mb-4">🔧 Mevcut Sisteme Hemen Eklenebilecekler</h3>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="font-bold text-blue-300 mb-2">1. listened_duration = 0 olduğunda ek bilgi kaydet</div>
+                    <pre class="text-xs text-gray-300 overflow-x-auto bg-slate-800 rounded p-3"><code>// Mevcut: sadece listened_duration: 0
+// Önerilen: Neden 0 olduğunu da kaydet
+
+if (listenedDuration === 0) {
+    logData.failure_reason = detectFailureReason();
+    // 'buffer_timeout', 'network_error', 'user_skip', 'hls_error'
+}</code></pre>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="font-bold text-blue-300 mb-2">2. Player error log'a network bilgisi ekle</div>
+                    <pre class="text-xs text-gray-300 overflow-x-auto bg-slate-800 rounded p-3"><code>// player-errors log'una ekle:
+{
+    ...existing_data,
+    "network": {
+        "downlink": navigator.connection?.downlink,
+        "effectiveType": navigator.connection?.effectiveType, // '4g', '3g', '2g'
+        "rtt": navigator.connection?.rtt, // round-trip time
+        "online": navigator.onLine
+    }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm py-8 border-t border-slate-700">
+            17 Ocak 2026 • Muzibu.com.tr
+        </footer>
+    </div>
+</body>
+</html>

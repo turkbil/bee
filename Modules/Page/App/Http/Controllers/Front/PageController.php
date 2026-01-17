@@ -142,69 +142,25 @@ class PageController extends Controller
             });
         }
 
-        // 🎵 Muzibu modülü kontrolü - Muzibu içeriklerini ekle
-        $muzibuData = [];
-        if (class_exists('\\Modules\\Muzibu\\App\\Models\\Playlist')) {
-            $muzibuData = [
-                'featuredPlaylists' => Cache::remember('home_featured_playlists_v5', 300, function () {
-                    return \Modules\Muzibu\App\Models\Playlist::where('is_active', 1)
-                        ->where('is_system', 1)
-                        ->where('is_radio', 0)
-                        ->where('songs_count', '>', 0)
-                        ->with(['coverMedia'])
-                        ->limit(10)
-                        ->get();
-                }),
-                'newReleases' => Cache::remember('home_new_releases_v4', 300, function () {
-                    return \Modules\Muzibu\App\Models\Album::where('is_active', 1)
-                        ->where('songs_count', '>', 0)
-                        ->with(['artist', 'coverMedia'])
-                        ->orderBy('created_at', 'desc')
-                        ->limit(10)
-                        ->get();
-                }),
-                'genres' => Cache::remember('home_genres_v4', 300, function () {
-                    return \Modules\Muzibu\App\Models\Genre::where('is_active', 1)
-                        ->where('songs_count', '>', 0)
-                        ->with(['iconMedia'])
-                        ->orderBy('songs_count', 'desc')
-                        ->limit(15)
-                        ->get();
-                }),
-                'radios' => Cache::remember('home_radios_v4', 300, function () {
-                    return \Modules\Muzibu\App\Models\Radio::where('is_active', 1)
-                        ->with(['logoMedia'])
-                        ->limit(10)
-                        ->get();
-                }),
-                'sectors' => Cache::remember('home_sectors_v4', 300, function () {
-                    return \Modules\Muzibu\App\Models\Sector::where('is_active', 1)
-                        ->with(['iconMedia'])
-                        ->limit(10)
-                        ->get();
-                }),
-            ];
-        }
-
         try {
             // ThemeService ile homepage view'ını al
             $viewPath = $this->themeService->getThemeViewPath('homepage', 'page');
 
-            return view($viewPath, array_merge([
+            return view($viewPath, [
                 'item' => $page,
                 'is_homepage' => true,
                 'homepageProducts' => $homepageProducts
-            ], $muzibuData));
+            ]);
         } catch (\Exception $e) {
             // Hatayı logla
             Log::error("Theme Error: " . $e->getMessage());
 
             // Fallback homepage view'a yönlendir
-            return view('page::themes.simple.homepage', array_merge([
+            return view('page::themes.simple.homepage', [
                 'item' => $page,
                 'is_homepage' => true,
                 'homepageProducts' => $homepageProducts
-            ], $muzibuData));
+            ]);
         }
 
     }

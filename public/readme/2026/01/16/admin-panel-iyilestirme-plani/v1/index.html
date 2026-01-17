@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel İyileştirme Planı - Muzibu.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.95); }
+        .phase-badge { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Header -->
+        <div class="card rounded-2xl shadow-2xl p-8 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-tools text-purple-600 mr-3"></i>
+                        Admin Panel İyileştirme Planı
+                    </h1>
+                    <p class="text-gray-600 text-lg">
+                        Ödeme, Sipariş ve Abonelik Yönetimi Optimizasyonu
+                    </p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">Versiyon</div>
+                    <div class="text-2xl font-bold text-purple-600">1.0</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border-l-4 border-green-500">
+                    <div class="text-green-800 font-semibold mb-1">Hedef Kitle</div>
+                    <div class="text-green-600">Muhasebeci & Editör</div>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border-l-4 border-blue-500">
+                    <div class="text-blue-800 font-semibold mb-1">Sayfa Sayısı</div>
+                    <div class="text-blue-600">3 Sayfa</div>
+                </div>
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border-l-4 border-orange-500">
+                    <div class="text-orange-800 font-semibold mb-1">Tahmini Süre</div>
+                    <div class="text-orange-600">26-36 saat</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hedefler -->
+        <div class="card rounded-2xl shadow-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-bullseye text-red-500 mr-3"></i>
+                🎯 Ana Hedefler
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <div class="flex items-start">
+                        <div class="bg-purple-100 p-3 rounded-lg mr-4">
+                            <i class="fas fa-layer-group text-purple-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-2">Tasarım Tutarlılığı</h3>
+                            <p class="text-gray-600 text-sm">
+                                Üç sayfa (Ödeme, Sipariş, Abonelik) arasında tutarlı kolon yapısı,
+                                filtre düzeni ve aksiyonlar sağlanacak.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <div class="flex items-start">
+                        <div class="bg-green-100 p-3 rounded-lg mr-4">
+                            <i class="fas fa-calculator text-green-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-2">Muhasebe Özellikleri</h3>
+                            <p class="text-gray-600 text-sm">
+                                Tarih/tutar aralığı filtreleri, Excel/CSV export,
+                                fatura yönetimi ve detaylı raporlama.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-3 rounded-lg mr-4">
+                            <i class="fas fa-edit text-blue-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-2">Editör Özellikleri</h3>
+                            <p class="text-gray-600 text-sm">
+                                Tüm durumları göster (gizli pending yok!),
+                                hızlı aksiyon butonları ve toplu işlemler.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <div class="flex items-start">
+                        <div class="bg-orange-100 p-3 rounded-lg mr-4">
+                            <i class="fas fa-link text-orange-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-2">Veri Senkronizasyonu</h3>
+                            <p class="text-gray-600 text-sm">
+                                Sayfalar arası bağlantılar ile kolay geçiş
+                                (ödeme→sipariş→abonelik).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kritik Sorun -->
+        <div class="card rounded-2xl shadow-2xl p-8 mb-8 border-4 border-red-500">
+            <div class="flex items-start">
+                <div class="bg-red-100 p-4 rounded-full mr-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-2xl font-bold text-red-600 mb-4">
+                        🔴 KRİTİK SORUN: Abonelik Sayfası Default Filtresi
+                    </h2>
+
+                    <div class="bg-red-50 p-6 rounded-lg mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-sm font-semibold text-red-800 mb-2">Dosya</div>
+                                <code class="text-xs bg-white px-2 py-1 rounded border border-red-200 block">
+                                    SubscriptionComponent.php
+                                </code>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-red-800 mb-2">Satır</div>
+                                <code class="text-xs bg-white px-2 py-1 rounded border border-red-200 inline-block">
+                                    ~22
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-red-100 p-4 rounded-lg">
+                            <div class="text-sm font-semibold text-red-800 mb-2 flex items-center">
+                                <i class="fas fa-times-circle mr-2"></i>MEVCUT (YANLIŞ)
+                            </div>
+                            <code class="text-sm bg-white px-3 py-2 rounded block text-red-600">
+                                public $filterStatus = 'active';
+                            </code>
+                        </div>
+                        <div class="bg-green-100 p-4 rounded-lg">
+                            <div class="text-sm font-semibold text-green-800 mb-2 flex items-center">
+                                <i class="fas fa-check-circle mr-2"></i>DEĞİŞMELİ
+                            </div>
+                            <code class="text-sm bg-white px-3 py-2 rounded block text-green-600">
+                                public $filterStatus = '';
+                            </code>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                        <div class="font-semibold text-yellow-800 mb-2">Sorunun Etkisi:</div>
+                        <ul class="text-sm text-yellow-700 space-y-1">
+                            <li>• Default olarak sadece "active" abonelikleri gösteriyor</li>
+                            <li>• "pending_payment" durumundaki abonelikler gizleniyor</li>
+                            <li>• Editörler ödeme bekleyen abonelikleri göremiyorlar</li>
+                            <li>• Manuel filtre değiştirme gerekiyor (kullanıcı deneyimi kötü)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uygulama Fazları -->
+        <div class="card rounded-2xl shadow-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-tasks text-indigo-500 mr-3"></i>
+                📋 Uygulama Fazları
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Phase 1 -->
+                <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <span class="phase-badge bg-red-500 text-white px-4 py-2 rounded-full text-sm font-bold mr-4">
+                                PHASE 1
+                            </span>
+                            <h3 class="text-xl font-bold text-red-700">Kritik Düzeltmeler</h3>
+                        </div>
+                        <span class="text-sm text-red-600 font-semibold">1-2 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-red-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-red-500"></i>
+                            Abonelik default filter düzeltmesi (filterStatus = '')
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-red-500"></i>
+                            Abonelik uyarı banner'ı ekle
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-red-500"></i>
+                            Sipariş tablosuna ödeme yöntemi kolonu ekle
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="bg-orange-50 border-l-4 border-orange-500 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <span class="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold mr-4">
+                                PHASE 2
+                            </span>
+                            <h3 class="text-xl font-bold text-orange-700">Filtreler</h3>
+                        </div>
+                        <span class="text-sm text-orange-600 font-semibold">4-6 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-orange-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-filter mr-2 text-orange-500"></i>
+                            Tarih aralığı filtreleri (her 3 sayfa)
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-filter mr-2 text-orange-500"></i>
+                            Tutar aralığı filtreleri (her 3 sayfa)
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-filter mr-2 text-orange-500"></i>
+                            Gelişmiş filtre collapsible yapısı
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <span class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold mr-4">
+                                PHASE 3
+                            </span>
+                            <h3 class="text-xl font-bold text-green-700">Export Fonksiyonları</h3>
+                        </div>
+                        <span class="text-sm text-green-600 font-semibold">3-4 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-green-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-download mr-2 text-green-500"></i>
+                            CSV export fonksiyonları (her 3 sayfa)
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-download mr-2 text-green-500"></i>
+                            Export butonları UI'a ekle
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 4 -->
+                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <span class="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-bold mr-4">
+                                PHASE 4
+                            </span>
+                            <h3 class="text-xl font-bold text-blue-700">Sayfalar Arası Bağlantılar</h3>
+                        </div>
+                        <span class="text-sm text-blue-600 font-semibold">2-3 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-blue-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-link mr-2 text-blue-500"></i>
+                            Ödeme → Sipariş bağlantıları
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-link mr-2 text-blue-500"></i>
+                            Sipariş → Ödeme bağlantıları
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-link mr-2 text-blue-500"></i>
+                            Sipariş → Abonelik bağlantıları
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 5 -->
+                <div class="bg-purple-50 border-l-4 border-purple-500 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <span class="bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-bold mr-4">
+                                PHASE 5
+                            </span>
+                            <h3 class="text-xl font-bold text-purple-700">İstatistikler & Dashboard</h3>
+                        </div>
+                        <span class="text-sm text-purple-600 font-semibold">3-4 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-purple-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-chart-bar mr-2 text-purple-500"></i>
+                            Özet istatistik kartları (her 3 sayfa)
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-chart-line mr-2 text-purple-500"></i>
+                            MRR Dashboard (abonelik sayfası)
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 6 -->
+                <div class="bg-indigo-50 border-l-4 border-indigo-500 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <span class="bg-indigo-500 text-white px-4 py-2 rounded-full text-sm font-bold mr-4">
+                                PHASE 6
+                            </span>
+                            <h3 class="text-xl font-bold text-indigo-700">Fatura Yönetimi</h3>
+                        </div>
+                        <span class="text-sm text-indigo-600 font-semibold">6-8 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-indigo-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-file-invoice mr-2 text-indigo-500"></i>
+                            Migration: invoice_number kolonu ekle
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-file-invoice mr-2 text-indigo-500"></i>
+                            Fatura oluşturma fonksiyonu
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-file-invoice mr-2 text-indigo-500"></i>
+                            Fatura yükleme ve görüntüleme (Media Library)
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-file-invoice mr-2 text-indigo-500"></i>
+                            Fatura PDF template
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 7 -->
+                <div class="bg-cyan-50 border-l-4 border-cyan-500 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <span class="bg-cyan-500 text-white px-4 py-2 rounded-full text-sm font-bold mr-4">
+                                PHASE 7
+                            </span>
+                            <h3 class="text-xl font-bold text-cyan-700">Toplu İşlemler</h3>
+                        </div>
+                        <span class="text-sm text-cyan-600 font-semibold">4-5 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-cyan-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-double mr-2 text-cyan-500"></i>
+                            Checkbox selection sistemi
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-double mr-2 text-cyan-500"></i>
+                            Bulk approve/reject (payments)
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-double mr-2 text-cyan-500"></i>
+                            Bulk status change (orders)
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 8 -->
+                <div class="bg-pink-50 border-l-4 border-pink-500 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <span class="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold mr-4">
+                                PHASE 8
+                            </span>
+                            <h3 class="text-xl font-bold text-pink-700">UI İyileştirmeleri</h3>
+                        </div>
+                        <span class="text-sm text-pink-600 font-semibold">3-4 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-pink-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-columns mr-2 text-pink-500"></i>
+                            Yeni kolonlar (ödeme türü, yöntem, chain position, auto-renew, corporate)
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-paint-brush mr-2 text-pink-500"></i>
+                            İyileştirilmiş "Kalan Gün" kolonu
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-palette mr-2 text-pink-500"></i>
+                            Renk ve icon standardizasyonu
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sayfa Detayları -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+            <!-- Payments -->
+            <div class="card rounded-2xl shadow-2xl p-6">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-4 rounded-lg mb-4">
+                    <i class="fas fa-credit-card text-3xl mb-2"></i>
+                    <h3 class="text-xl font-bold">Ödeme Yönetimi</h3>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <div class="text-xs font-semibold text-gray-500 mb-1">Yeni Kolonlar</div>
+                        <div class="bg-blue-50 p-3 rounded text-sm">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-tag text-blue-500 mr-2 text-xs"></i>
+                                <span>Ödeme Türü (Sipariş/Abonelik)</span>
+                            </div>
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-calendar text-blue-500 mr-2 text-xs"></i>
+                                <span>Ödeme Tarihi</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-blue-500 mr-2 text-xs"></i>
+                                <span>Doğrulama Durumu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-xs font-semibold text-gray-500 mb-1">Yeni Özellikler</div>
+                        <div class="bg-green-50 p-3 rounded text-sm space-y-1">
+                            <div>✓ Tarih & tutar aralığı filtreleri</div>
+                            <div>✓ CSV export</div>
+                            <div>✓ Özet istatistikler</div>
+                            <div>✓ Bulk approve/reject</div>
+                            <div>✓ Fatura yükleme</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders -->
+            <div class="card rounded-2xl shadow-2xl p-6">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 text-white p-4 rounded-lg mb-4">
+                    <i class="fas fa-shopping-cart text-3xl mb-2"></i>
+                    <h3 class="text-xl font-bold">Sipariş Yönetimi</h3>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <div class="text-xs font-semibold text-gray-500 mb-1">Yeni Kolonlar</div>
+                        <div class="bg-green-50 p-3 rounded text-sm">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-money-check text-green-500 mr-2 text-xs"></i>
+                                <span>Ödeme Yöntemi</span>
+                            </div>
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-file-invoice text-green-500 mr-2 text-xs"></i>
+                                <span>Fatura No</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-id-card text-green-500 mr-2 text-xs"></i>
+                                <span>Vergi No (Son 4 hane)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-xs font-semibold text-gray-500 mb-1">Yeni Özellikler</div>
+                        <div class="bg-purple-50 p-3 rounded text-sm space-y-1">
+                            <div>✓ Fatura oluşturma & PDF</div>
+                            <div>✓ Fatura email gönderimi</div>
+                            <div>✓ Bulk status change</div>
+                            <div>✓ Tarih & tutar filtreleri</div>
+                            <div>✓ CSV export</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscriptions -->
+            <div class="card rounded-2xl shadow-2xl p-6">
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-4 rounded-lg mb-4">
+                    <i class="fas fa-sync-alt text-3xl mb-2"></i>
+                    <h3 class="text-xl font-bold">Abonelik Yönetimi</h3>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <div class="text-xs font-semibold text-gray-500 mb-1">Yeni Kolonlar</div>
+                        <div class="bg-purple-50 p-3 rounded text-sm">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-list-ol text-purple-500 mr-2 text-xs"></i>
+                                <span>Sıra Pozisyonu</span>
+                            </div>
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-money-bill text-purple-500 mr-2 text-xs"></i>
+                                <span>Ödeme Durumu</span>
+                            </div>
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-redo text-purple-500 mr-2 text-xs"></i>
+                                <span>Otomatik Yenileme</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-building text-purple-500 mr-2 text-xs"></i>
+                                <span>Kurumsal Flag</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-xs font-semibold text-gray-500 mb-1">Yeni Özellikler</div>
+                        <div class="bg-orange-50 p-3 rounded text-sm space-y-1">
+                            <div>✓ MRR Dashboard</div>
+                            <div>✓ Uyarı banner'ı</div>
+                            <div>✓ Gelişmiş filtreler</div>
+                            <div>✓ CSV export</div>
+                            <div>✓ Default filter = '' (TÜM)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Veritabanı Değişiklikleri -->
+        <div class="card rounded-2xl shadow-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-database text-teal-500 mr-3"></i>
+                🗂️ Veritabanı Değişiklikleri
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-teal-50 p-6 rounded-lg border border-teal-200">
+                    <h3 class="font-bold text-teal-800 mb-4 flex items-center">
+                        <i class="fas fa-table mr-2"></i>
+                        payments tablosu
+                    </h3>
+                    <div class="space-y-2 text-sm text-teal-700">
+                        <div class="flex items-center">
+                            <code class="bg-white px-2 py-1 rounded mr-2">invoice_number</code>
+                            <span class="text-xs">nullable, unique</span>
+                        </div>
+                        <div class="flex items-center">
+                            <code class="bg-white px-2 py-1 rounded mr-2">invoice_uploaded_at</code>
+                            <span class="text-xs">timestamp</span>
+                        </div>
+                        <div class="flex items-center">
+                            <code class="bg-white px-2 py-1 rounded mr-2">invoice_uploaded_by</code>
+                            <span class="text-xs">user_id</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                    <h3 class="font-bold text-blue-800 mb-4 flex items-center">
+                        <i class="fas fa-table mr-2"></i>
+                        cart_orders tablosu
+                    </h3>
+                    <div class="space-y-2 text-sm text-blue-700">
+                        <div class="flex items-center">
+                            <code class="bg-white px-2 py-1 rounded mr-2">invoice_number</code>
+                            <span class="text-xs">nullable, unique</span>
+                        </div>
+                        <div class="flex items-center">
+                            <code class="bg-white px-2 py-1 rounded mr-2">invoice_generated_at</code>
+                            <span class="text-xs">timestamp</span>
+                        </div>
+                        <div class="flex items-center">
+                            <code class="bg-white px-2 py-1 rounded mr-2">invoice_generated_by</code>
+                            <span class="text-xs">user_id</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded mt-4">
+                <div class="flex items-center text-yellow-800">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <strong>Önemli:</strong>
+                    <span class="ml-2">Migration'lar hem central hem tenant klasörlerinde oluşturulacak</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test & Doğrulama -->
+        <div class="card rounded-2xl shadow-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-vial text-emerald-500 mr-3"></i>
+                🧪 Test ve Doğrulama
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
+                    <h3 class="font-bold text-emerald-800 mb-3">Abonelik Sayfası</h3>
+                    <ul class="space-y-2 text-sm text-emerald-700">
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            /admin/subscriptions açıldığında TÜM abonelikler görünüyor mu?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            "pending_payment" abonelikleri listede var mı?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            Filtre değiştirildiğinde uyarı banner'ı gösteriliyor mu?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            MRR hesaplaması doğru mu?
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <h3 class="font-bold text-blue-800 mb-3">Ödeme Sayfası</h3>
+                    <ul class="space-y-2 text-sm text-blue-700">
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            Tarih aralığı filtresi çalışıyor mu?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            Export CSV doğru formatda indiriliyor mu?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            Sipariş linkine tıklayınca doğru sipariş açılıyor mu?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            Özet istatistikler doğru hesaplanıyor mu?
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                    <h3 class="font-bold text-purple-800 mb-3">Sipariş Sayfası</h3>
+                    <ul class="space-y-2 text-sm text-purple-700">
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            Ödeme yöntemi kolonu görünüyor mu?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            Fatura oluşturma çalışıyor mu?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            PDF indirme fonksiyonu çalışıyor mu?
+                        </li>
+                        <li class="flex items-center">
+                            <i class="far fa-square mr-2"></i>
+                            Ödeme linkine tıklayınca doğru ödeme açılıyor mu?
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Notlar -->
+        <div class="card rounded-2xl shadow-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-sticky-note text-amber-500 mr-3"></i>
+                📝 Teknik Notlar
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-500">
+                    <div class="font-semibold text-amber-800 mb-2">Tasarım</div>
+                    <ul class="text-sm text-amber-700 space-y-1">
+                        <li>• Tabler.io + Bootstrap (Admin)</li>
+                        <li>• Tailwind CSS (Frontend)</li>
+                        <li>• FontAwesome 6 (Icons)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-sky-50 p-4 rounded-lg border-l-4 border-sky-500">
+                    <div class="font-semibold text-sky-800 mb-2">Teknoloji</div>
+                    <ul class="text-sm text-sky-700 space-y-1">
+                        <li>• Livewire Components</li>
+                        <li>• Spatie Media Library</li>
+                        <li>• Laravel DomPDF</li>
+                    </ul>
+                </div>
+
+                <div class="bg-rose-50 p-4 rounded-lg border-l-4 border-rose-500">
+                    <div class="font-semibold text-rose-800 mb-2">Cache</div>
+                    <ul class="text-sm text-rose-700 space-y-1">
+                        <li>• Değişiklik sonrası cache:clear</li>
+                        <li>• View:clear + responsecache:clear</li>
+                        <li>• npm run prod (CSS değişikliği)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-violet-50 p-4 rounded-lg border-l-4 border-violet-500">
+                    <div class="font-semibold text-violet-800 mb-2">Güvenlik</div>
+                    <ul class="text-sm text-violet-700 space-y-1">
+                        <li>• Silme işlemleri için kullanıcı onayı</li>
+                        <li>• Rol bazlı erişim kontrolü</li>
+                        <li>• Dosya izinleri (chown/chmod)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-white">
+            <div class="text-sm opacity-75">
+                16 Ocak 2026 • Muzibu.com
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

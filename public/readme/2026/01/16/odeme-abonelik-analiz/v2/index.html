@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme-Abonelik Analizi - ÇÖZÜLDÜ | Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto p-6 space-y-6">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-green-600 to-green-800 rounded-lg p-8 shadow-xl">
+            <div class="flex items-start gap-4">
+                <div class="text-6xl">✅</div>
+                <div class="flex-1">
+                    <h1 class="text-4xl font-bold mb-2">SİSTEM TAMAMEN ÇALIŞIYOR!</h1>
+                    <p class="text-green-100 text-lg">TAHA CELEP - Ödeme analizi ve gerçek durum tespiti</p>
+                    <div class="bg-green-900/30 rounded-lg p-3 mt-3">
+                        <p class="text-sm text-green-200">✨ Subscription başarıyla oluşturuldu ve zincire eklendi - Sistem tasarlandığı gibi çalışıyor</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- SONUÇ ÖZETİ -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 shadow-xl">
+            <h2 class="text-2xl font-bold mb-4">🎯 SONUÇ ÖZETİ</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-white/10 rounded-lg p-4">
+                    <h3 class="font-bold text-lg mb-2 text-yellow-300">❓ Bildirilen Sorun</h3>
+                    <p class="text-sm">Subscription sayfasında TAHA CELEP görünmüyor</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-4">
+                    <h3 class="font-bold text-lg mb-2 text-green-300">✅ Gerçek Durum</h3>
+                    <p class="text-sm">Subscription VAR ama filtre "active" olduğu için gizli (status: pending)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GÜNCEL DURUM -->
+        <div class="bg-slate-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">📊 TAHA CELEP - Güncel Durum</h2>
+
+            <div class="space-y-4">
+                <!-- User Bilgileri -->
+                <div class="bg-slate-700 rounded-lg p-4">
+                    <h3 class="font-bold text-lg mb-3 text-purple-300">👤 Kullanıcı Bilgileri</h3>
+                    <div class="grid md:grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <span class="text-slate-400">Ad Soyad:</span>
+                            <span class="ml-2 font-semibold">TAHA CELEP</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Email:</span>
+                            <span class="ml-2 font-semibold">burcu@ketenciinsaat.com.tr</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">User ID:</span>
+                            <span class="ml-2 font-semibold text-blue-400">1733</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Premium Durumu:</span>
+                            <span class="ml-2 font-semibold text-green-400">✅ AKTİF</span>
+                        </div>
+                        <div class="col-span-2 bg-green-900/30 p-3 rounded border border-green-500">
+                            <span class="text-slate-400">Son Premium Tarihi:</span>
+                            <span class="ml-2 font-bold text-green-300 text-lg">19 Ocak 2027, 17:19</span>
+                            <p class="text-xs text-green-200 mt-1">📅 1 yıl 3 gün kaldı (yeni satın alım eklendi)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ödeme Bilgileri -->
+                <div class="bg-slate-700 rounded-lg p-4">
+                    <h3 class="font-bold text-lg mb-3 text-green-300">💰 Ödeme Bilgileri (16 Ocak 2026, 17:32)</h3>
+                    <div class="grid md:grid-cols-3 gap-3 text-sm">
+                        <div class="bg-slate-800 p-3 rounded">
+                            <p class="text-slate-400 text-xs">Payment Number</p>
+                            <p class="font-mono text-blue-400">PAY-20260116172554-2318F0</p>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded">
+                            <p class="text-slate-400 text-xs">Order Number</p>
+                            <p class="font-mono text-blue-400">ORD2026011622E266</p>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded">
+                            <p class="text-slate-400 text-xs">Tutar</p>
+                            <p class="font-bold text-green-400 text-lg">4.800 ₺</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 bg-green-900/30 p-3 rounded border border-green-500">
+                        <p class="text-sm">
+                            <span class="text-green-400 font-bold">✅ Status:</span>
+                            <span class="text-green-300">Completed (Başarılı)</span>
+                        </p>
+                        <p class="text-xs text-slate-400 mt-1">Ödeme türü: Kredi Kartı (1 taksit)</p>
+                    </div>
+                </div>
+
+                <!-- Subscription Detayları -->
+                <div class="bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-lg p-4 border border-purple-500">
+                    <h3 class="font-bold text-lg mb-3 text-purple-300">🎫 Subscription Detayları</h3>
+
+                    <div class="space-y-3">
+                        <!-- Mevcut Aktif Subscription -->
+                        <div class="bg-slate-800 rounded p-3 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-green-400">Subscription #1 (Mevcut Aktif)</h4>
+                                <span class="bg-green-500 text-white px-3 py-1 rounded text-xs font-bold">ACTIVE</span>
+                            </div>
+                            <div class="text-sm space-y-1 text-slate-300">
+                                <p>📅 Başlangıç: <span class="text-slate-100">Önceki tarih</span></p>
+                                <p>📅 Bitiş: <span class="text-green-300 font-semibold">19 Ocak 2026, 17:19</span></p>
+                                <p class="text-xs text-slate-400 mt-2">⏰ 3 gün sonra sona erecek → Sonraki subscription otomatik devreye girecek</p>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Satın Alınan Subscription -->
+                        <div class="bg-slate-800 rounded p-3 border-l-4 border-yellow-500">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-yellow-400">Subscription #2230 (YENİ SATIN ALINAN)</h4>
+                                <span class="bg-yellow-500 text-black px-3 py-1 rounded text-xs font-bold">PENDING</span>
+                            </div>
+                            <div class="text-sm space-y-1 text-slate-300">
+                                <p>📦 Plan: <span class="text-white font-semibold">Premium Ol - Yıllık Paket</span></p>
+                                <p>💰 Fiyat: <span class="text-green-400 font-semibold">4.800 ₺</span></p>
+                                <p>📅 Başlangıç: <span class="text-yellow-300 font-semibold">19 Ocak 2026, 17:19</span></p>
+                                <p>📅 Bitiş: <span class="text-yellow-300 font-semibold">19 Ocak 2027, 17:19</span> (1 yıl)</p>
+                                <p>📦 Order ID: <span class="font-mono text-blue-400">79 (ORD2026011622E266)</span></p>
+                            </div>
+                            <div class="bg-yellow-900/30 p-2 rounded mt-2 border border-yellow-500/30">
+                                <p class="text-xs text-yellow-200">
+                                    🔗 <strong>ZİNCİR SİSTEMİ:</strong> Bu subscription şu anda zincirde sırada.
+                                    Mevcut aktif subscription bitince (19 Ocak) otomatik olarak aktif olacak.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Özet İstatistik -->
+                    <div class="bg-slate-800 rounded p-4 mt-4">
+                        <h4 class="font-semibold mb-2 text-purple-300">📊 Toplam İstatistik</h4>
+                        <div class="grid md:grid-cols-3 gap-3 text-sm">
+                            <div class="text-center">
+                                <p class="text-3xl font-bold text-blue-400">2</p>
+                                <p class="text-xs text-slate-400">Toplam Subscription</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-3xl font-bold text-green-400">1</p>
+                                <p class="text-xs text-slate-400">Aktif</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-3xl font-bold text-yellow-400">1</p>
+                                <p class="text-xs text-slate-400">Pending (Sırada)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SİSTEM AKIŞI - NE OLDU? -->
+        <div class="bg-slate-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-green-400">⚙️ Sistem Akışı - Ne Oldu?</h2>
+
+            <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm">1</div>
+                    <div class="flex-1 bg-slate-700 rounded p-3">
+                        <p class="font-semibold">Ödeme başlatıldı (17:25:54)</p>
+                        <code class="text-xs text-slate-400 block mt-1">Payment #590 oluşturuldu (status: pending)</code>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm">2</div>
+                    <div class="flex-1 bg-slate-700 rounded p-3">
+                        <p class="font-semibold">PayTR'den callback geldi (17:32:08)</p>
+                        <code class="text-xs text-green-400 block mt-1">✅ Status: success, Amount: 480000 kuruş (4.800 ₺)</code>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm">3</div>
+                    <div class="flex-1 bg-slate-700 rounded p-3">
+                        <p class="font-semibold">Payment güncellendi (17:32:08)</p>
+                        <code class="text-xs text-green-400 block mt-1">✅ pending → completed</code>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm">4</div>
+                    <div class="flex-1 bg-slate-700 rounded p-3">
+                        <p class="font-semibold">Order.activateSubscriptionItems() çalıştı (17:32:09)</p>
+                        <code class="text-xs text-slate-400 block mt-1">Subscription aktivasyon süreci başlatıldı</code>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm">5</div>
+                    <div class="flex-1 bg-green-900/30 rounded p-3 border border-green-500">
+                        <p class="font-semibold text-green-300">Subscription #2230 oluşturuldu! ✅</p>
+                        <div class="text-xs text-slate-300 mt-2 space-y-1">
+                            <p>• Status: <span class="text-yellow-400 font-semibold">pending</span> (çünkü zaten aktif subscription var)</p>
+                            <p>• Start: 2026-01-19 17:19:52 (mevcut subscription bitince)</p>
+                            <p>• End: 2027-01-19 17:19:52 (1 yıl eklendi)</p>
+                        </div>
+                        <code class="text-xs text-green-400 block mt-2">🔗 Zincir sistemi: Yeni subscription son subscription'ın bittiği yerden başlıyor</code>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm">6</div>
+                    <div class="flex-1 bg-slate-700 rounded p-3">
+                        <p class="font-semibold">User subscription_expires_at güncellendi (17:32:09)</p>
+                        <code class="text-xs text-green-400 block mt-1">✅ 2027-01-19 17:19:52 (1 yıl uzatıldı)</code>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm">7</div>
+                    <div class="flex-1 bg-slate-700 rounded p-3">
+                        <p class="font-semibold">E-postalar gönderildi (17:32:09-11)</p>
+                        <div class="text-xs text-slate-300 mt-1">
+                            <p>✅ Müşteriye onay maili</p>
+                            <p>✅ Admin'e bildirim maili</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEDEN PENDING? -->
+        <div class="bg-slate-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-yellow-400">❓ Neden Status "PENDING"?</h2>
+
+            <div class="bg-yellow-900/20 border border-yellow-500 rounded-lg p-5">
+                <h3 class="font-bold text-lg mb-3 text-yellow-300">🔗 Zincir Sistemi Çalışıyor</h3>
+
+                <p class="text-slate-300 mb-4">Muzibu'da <strong>Subscription Chain System</strong> var. Kullanıcı birden fazla subscription satın aldığında:</p>
+
+                <div class="space-y-3">
+                    <div class="bg-slate-900 p-4 rounded">
+                        <p class="text-sm mb-2 text-slate-300"><strong>1. Kontrol:</strong> Kullanıcının aktif/pending subscription'ı var mı?</p>
+                        <code class="text-xs text-blue-400">$lastEndDate = $user->getLastSubscriptionEndDate();</code>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded">
+                        <p class="text-sm mb-2 text-slate-300"><strong>2. Karar:</strong></p>
+                        <code class="text-xs text-yellow-400 block">if ($hasActiveOrPending) {</code>
+                        <code class="text-xs text-yellow-400 block ml-4">$status = 'pending';  // Zincire ekle</code>
+                        <code class="text-xs text-yellow-400 block">} else {</code>
+                        <code class="text-xs text-yellow-400 block ml-4">$status = 'active';  // Hemen aktif et</code>
+                        <code class="text-xs text-yellow-400 block">}</code>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded">
+                        <p class="text-sm mb-2 text-slate-300"><strong>3. Tarih Ayarla:</strong></p>
+                        <code class="text-xs text-green-400 block">$startDate = $lastEndDate; // Mevcut subscription bitince başla</code>
+                        <code class="text-xs text-green-400 block">$endDate = $startDate->addDays(365); // 1 yıl ekle</code>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/30 p-4 rounded mt-4 border border-blue-500">
+                    <p class="text-sm text-blue-200">
+                        <strong>📌 TAHA CELEP'in Durumu:</strong><br>
+                        Mevcut aktif subscription'ı 19 Ocak 2026'da bitiyor. Yeni satın aldığı subscription tam o tarihte başlayacak şekilde ayarlandı.
+                        Bu sayede <strong>kesintisiz premium üyelik</strong> sağlanıyor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN PANELDE NASIL GÖRÜLÜR? -->
+        <div class="bg-slate-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">🔍 Admin Panelde Nasıl Görürsün?</h2>
+
+            <div class="space-y-4">
+                <!-- Yöntem 1 -->
+                <div class="bg-purple-900/20 border border-purple-500 rounded-lg p-4">
+                    <h3 class="font-bold mb-2 text-purple-300">Yöntem 1: Filtre Değiştir</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-300">
+                        <li>Admin panel → <code class="bg-slate-900 px-2 py-1 rounded">/admin/subscription</code></li>
+                        <li>Üstteki filtrede <strong>"Pending"</strong> seç</li>
+                        <li>TAHA CELEP'i göreceksin</li>
+                    </ol>
+                </div>
+
+                <!-- Yöntem 2 -->
+                <div class="bg-purple-900/20 border border-purple-500 rounded-lg p-4">
+                    <h3 class="font-bold mb-2 text-purple-300">Yöntem 2: Tüm Durumlar</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-300">
+                        <li>Filtre dropdown'dan <strong>"Tüm Durumlar"</strong> seç (boş bırak)</li>
+                        <li>Hem active hem pending göreceksin</li>
+                    </ol>
+                </div>
+
+                <!-- Yöntem 3 -->
+                <div class="bg-purple-900/20 border border-purple-500 rounded-lg p-4">
+                    <h3 class="font-bold mb-2 text-purple-300">Yöntem 3: Kullanıcı Detayı (EN İYİSİ)</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-300">
+                        <li>Subscription listesinde herhangi bir kullanıcının adına tıkla</li>
+                        <li>Kullanıcı detay modal'ı açılır</li>
+                        <li>O kullanıcının <strong>TÜM subscriptions</strong> görünür (active, pending, expired hepsi)</li>
+                        <li>TAHA CELEP için bunu yap → 2 subscription göreceksin</li>
+                    </ol>
+                    <div class="bg-green-900/30 p-3 rounded mt-2 border border-green-500">
+                        <p class="text-xs text-green-200">💡 <strong>İpucu:</strong> Modal'da subscription zinciri de görünür, hangi subscription hangi tarihte aktif olacak net şekilde görürsün.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SORUN VAR MI? -->
+        <div class="bg-gradient-to-r from-green-600 to-blue-600 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">✅ SORUN YOK!</h2>
+
+            <div class="space-y-3 text-slate-100">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                        <p class="font-semibold">Ödeme başarılı</p>
+                        <p class="text-sm text-slate-200">4.800 ₺ PayTR üzerinden tahsil edildi</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                        <p class="font-semibold">Subscription oluşturuldu</p>
+                        <p class="text-sm text-slate-200">Subscription #2230 başarıyla kaydedildi</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                        <p class="font-semibold">Premium süresi uzatıldı</p>
+                        <p class="text-sm text-slate-200">2026-01-19 → 2027-01-19 (1 yıl eklendi)</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                        <p class="font-semibold">Zincir sistemi çalıştı</p>
+                        <p class="text-sm text-slate-200">Yeni subscription mevcut olanın bittiği tarihten başlayacak şekilde ayarlandı</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                        <p class="font-semibold">E-postalar gönderildi</p>
+                        <p class="text-sm text-slate-200">Hem müşteri hem admin bilgilendirildi</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white/10 rounded-lg p-4 mt-4">
+                <p class="text-lg font-semibold">🎯 Tek "sorun": Admin panelde varsayılan filtre "active" olduğu için pending subscription'lar gizli kalıyor.</p>
+                <p class="text-sm mt-2 text-slate-200"><strong>Çözüm:</strong> Filtre değiştir veya kullanıcı detay modal'ını kullan (yukarıda anlatıldı)</p>
+            </div>
+        </div>
+
+        <!-- ÖNERİLER -->
+        <div class="bg-slate-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">💡 İyileştirme Önerileri</h2>
+
+            <div class="space-y-4">
+                <div class="bg-blue-900/20 border border-blue-500 rounded-lg p-4">
+                    <h3 class="font-bold mb-2 text-blue-300">1. Varsayılan Filtreyi Değiştir</h3>
+                    <p class="text-sm text-slate-300 mb-2">Subscription sayfasında varsayılan olarak tüm durumlar gösterilsin.</p>
+                    <div class="bg-slate-900 p-3 rounded text-xs">
+                        <p class="text-slate-400 mb-1">Dosya: <code class="text-blue-400">SubscriptionComponent.php:22</code></p>
+                        <code class="text-red-400 block">- public $filterStatus = 'active';</code>
+                        <code class="text-green-400 block">+ public $filterStatus = ''; // Tüm durumlar</code>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-500 rounded-lg p-4">
+                    <h3 class="font-bold mb-2 text-blue-300">2. Kullanıcı Bazlı Gruplama Ekle</h3>
+                    <p class="text-sm text-slate-300 mb-2">Subscription listesinde aynı kullanıcının tüm subscription'larını gruplayarak göster.</p>
+                    <p class="text-xs text-slate-400">Böylece zincir sistemi daha net görünür.</p>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-500 rounded-lg p-4">
+                    <h3 class="font-bold mb-2 text-blue-300">3. "Pending" Badge'ine Açıklama Ekle</h3>
+                    <p class="text-sm text-slate-300 mb-2">Pending subscription'ların yanına tooltip ekle:</p>
+                    <div class="bg-slate-900 p-2 rounded text-xs text-yellow-300">
+                        <p>"Bu abonelik zincirde sırada. {tarih} tarihinde otomatik olarak aktif olacak."</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-500 rounded-lg p-4">
+                    <h3 class="font-bold mb-2 text-blue-300">4. Timeline Görünümü Ekle</h3>
+                    <p class="text-sm text-slate-300 mb-2">Kullanıcı detay modal'ında subscription zincirini timeline olarak görselleştir.</p>
+                    <div class="text-xs text-slate-400 mt-2">
+                        <p>Örnek: [Active: 2024-2026] → [Pending: 2026-2027] → [Pending: 2027-2028]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Kayıtları -->
+        <div class="bg-slate-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-slate-400">📋 Log Kayıtları (Referans)</h2>
+            <div class="bg-slate-900 p-4 rounded font-mono text-xs overflow-x-auto">
+                <div class="space-y-1 text-slate-400">
+                    <p><span class="text-green-400">[17:32:08]</span> PayTR callback received</p>
+                    <p><span class="text-green-400">[17:32:08]</span> Payment update: pending → completed</p>
+                    <p><span class="text-green-400">[17:32:09]</span> recalculateSubscriptionExpiry: valid_subscriptions_count=2</p>
+                    <p><span class="text-green-400">[17:32:09]</span> <strong class="text-yellow-300">✅ Subscription zincire eklendi (pending_payment → pending)</strong></p>
+                    <p class="ml-8 text-blue-400">subscription_id: 2230</p>
+                    <p class="ml-8 text-blue-400">user_id: 1733</p>
+                    <p class="ml-8 text-blue-400">status: pending</p>
+                    <p class="ml-8 text-blue-400">start_date: 2026-01-19 17:19:52</p>
+                    <p class="ml-8 text-blue-400">end_date: 2027-01-19 17:19:52</p>
+                    <p class="ml-8 text-blue-400">duration_days: 365</p>
+                    <p><span class="text-green-400">[17:32:09]</span> User subscription_expires_at güncellendi: 2027-01-19 17:19:52</p>
+                    <p><span class="text-green-400">[17:32:09]</span> ✅ Sipariş tamamlandı</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-sm py-4 border-t border-slate-700">
+            <p>16 Ocak 2026 • Muzibu.com</p>
+            <p class="text-xs mt-1">v2 - Güncellenmiş rapor (Log analizi ile doğrulandı)</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -26,15 +26,12 @@ class CartComponent extends Component
     #[Url]
     public $includeGuests = false;
 
+    #[Url]
+    public $includeEmpty = false;
+
     public $selectedCart = null;
     public $showModal = false;
     public $cartIds = [];
-
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'status' => ['except' => ''],
-        'includeGuests' => ['except' => false],
-    ];
 
     public function updatingSearch()
     {
@@ -48,18 +45,13 @@ class CartComponent extends Component
 
     public function viewCart($cartId)
     {
-        $this->selectedCart = Cart::with(['items.cartable', 'items.product', 'currency', 'customer'])
-            ->find($cartId);
+        $cart = Cart::with(['items', 'currency', 'customer'])->find($cartId);
 
-        if (!$this->selectedCart) {
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Sepet bulunamadı',
-                'type' => 'error',
-            ]);
+        if (!$cart) {
             return;
         }
 
+        $this->selectedCart = $cart;
         $this->showModal = true;
     }
 
@@ -248,6 +240,10 @@ class CartComponent extends Component
             // Misafirler hariç (varsayılan) veya dahil
             ->when(!$this->includeGuests, function ($query) {
                 $query->whereNotNull('customer_id');
+            })
+            // Boş sepetler hariç (varsayılan) veya dahil
+            ->when(!$this->includeEmpty, function ($query) {
+                $query->where('items_count', '>', 0);
             })
             // Önce üyeler, sonra aktivite tarihine göre sırala
             ->orderByRaw('CASE WHEN customer_id IS NOT NULL THEN 0 ELSE 1 END')

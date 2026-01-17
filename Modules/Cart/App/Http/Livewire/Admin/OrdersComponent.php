@@ -27,6 +27,29 @@ class OrdersComponent extends Component
     #[Url]
     public $perPage = 25;
 
+    // Yeni filtreler
+    #[Url]
+    public $dateFrom = '';
+
+    #[Url]
+    public $dateTo = '';
+
+    #[Url]
+    public $amountMin = '';
+
+    #[Url]
+    public $amountMax = '';
+
+    #[Url]
+    public $paymentMethod = '';
+
+    // Beklemedeki ve başarısız ödemeleri göster (default: false - gizle)
+    #[Url]
+    public $showPending = false;
+
+    #[Url]
+    public $showFailed = false;
+
     public $selectedOrder = null;
     public $showModal = false;
     public $orderIds = [];
@@ -36,10 +59,21 @@ class OrdersComponent extends Component
     public $trackingNumber = '';
     public $adminNotes = '';
 
+    // Bulk selection
+    public $selectedOrders = [];
+    public $selectAll = false;
+
     protected $queryString = [
         'search' => ['except' => ''],
         'status' => ['except' => ''],
         'paymentStatus' => ['except' => ''],
+        'dateFrom' => ['except' => ''],
+        'dateTo' => ['except' => ''],
+        'amountMin' => ['except' => ''],
+        'amountMax' => ['except' => ''],
+        'paymentMethod' => ['except' => ''],
+        'showPending' => ['except' => false],
+        'showFailed' => ['except' => false],
     ];
 
     public function updatingSearch()
@@ -197,10 +231,203 @@ class OrdersComponent extends Component
         $this->viewOrder($previousId);
     }
 
-    public function render()
+    /**
+     * Tüm filtreleri temizle
+     */
+    public function clearFilters()
     {
-        $query = Order::query()
-            ->with(['items', 'user'])
+        $this->search = '';
+        $this->status = '';
+        $this->paymentStatus = '';
+        $this->dateFrom = '';
+        $this->dateTo = '';
+        $this->amountMin = '';
+        $this->amountMax = '';
+        $this->paymentMethod = '';
+        $this->showPending = false;
+        $this->showFailed = false;
+        $this->selectedOrders = [];
+        $this->selectAll = false;
+        $this->resetPage();
+    }
+
+    /**
+     * Filtre aktif mi kontrol et
+     */
+    public function hasActiveFilters(): bool
+    {
+        return $this->search !== ''
+            || $this->status !== ''
+            || $this->paymentStatus !== ''
+            || $this->dateFrom !== ''
+            || $this->dateTo !== ''
+            || $this->amountMin !== ''
+            || $this->amountMax !== ''
+            || $this->paymentMethod !== ''
+            || $this->showPending === true
+            || $this->showFailed === true;
+    }
+
+    /**
+     * Bulk selection - Tümünü seç/kaldır
+     */
+    public function updatedSelectAll()
+    {
+        if ($this->selectAll) {
+            $this->selectedOrders = $this->getOrdersQuery()->pluck('order_id')->map(fn($id) => (string) $id)->toArray();
+        } else {
+            $this->selectedOrders = [];
+        }
+    }
+
+    /**
+     * Toplu ödendi işaretle
+     */
+    public function bulkMarkAsPaid()
+    {
+        if (empty($this->selectedOrders)) {
+            $this->dispatch('toast', ['title' => 'Uyarı', 'message' => 'Lütfen en az bir sipariş seçin', 'type' => 'warning']);
+            return;
+        }
+
+        $marked = 0;
+        foreach ($this->selectedOrders as $orderId) {
+            $order = Order::find($orderId);
+            if ($order && $order->payment_status === 'pending') {
+                $order->markAsPaid();
+                $marked++;
+            }
+        }
+
+        $this->selectedOrders = [];
+        $this->selectAll = false;
+
+        $this->dispatch('toast', ['title' => 'Başarılı', 'message' => "{$marked} sipariş ödendi olarak işaretlendi", 'type' => 'success']);
+    }
+
+    /**
+     * Toplu durum değiştir
+     */
+    public function bulkChangeStatus($newStatus)
+    {
+        if (empty($this->selectedOrders)) {
+            $this->dispatch('toast', ['title' => 'Uyarı', 'message' => 'Lütfen en az bir sipariş seçin', 'type' => 'warning']);
+            return;
+        }
+
+        Order::whereIn('order_id', $this->selectedOrders)->update(['status' => $newStatus]);
+
+        $this->selectedOrders = [];
+        $this->selectAll = false;
+
+        $this->dispatch('toast', ['title' => 'Başarılı', 'message' => 'Durum güncellendi', 'type' => 'success']);
+    }
+
+    /**
+     * CSV Export
+     */
+    public function exportOrders()
+    {
+        $query = $this->getOrdersQuery();
+
+        $filename = 'orders_' . date('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function() use ($query) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM for Excel UTF-8 support
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Header
+            fputcsv($handle, [
+                'Sipariş No',
+                'Müşteri',
+                'Email',
+                'Telefon',
+                'Ürün Sayısı',
+                'Ara Toplam',
+                'KDV',
+                'İndirim',
+                'Toplam',
+                'Ödeme Yöntemi',
+                'Sipariş Durumu',
+                'Ödeme Durumu',
+                'Tarih'
+            ], ';');
+
+            // Data (chunk ile bellek optimizasyonu)
+            $query->with(['items', 'payments'])->chunk(100, function($orders) use ($handle) {
+                foreach($orders as $order) {
+                    $paymentMethod = $order->payments->first()?->gateway ?? '-';
+
+                    fputcsv($handle, [
+                        $order->order_number,
+                        $order->customer_name,
+                        $order->customer_email,
+                        $order->customer_phone,
+                        $order->items->count(),
+                        number_format($order->subtotal, 2, ',', ''),
+                        number_format($order->tax_amount ?? 0, 2, ',', ''),
+                        number_format($order->discount_amount ?? 0, 2, ',', ''),
+                        number_format($order->total_amount, 2, ',', ''),
+                        $paymentMethod,
+                        $order->status,
+                        $order->payment_status,
+                        $order->created_at->format('Y-m-d H:i'),
+                    ], ';');
+                }
+            });
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    /**
+     * İstatistikleri hesapla
+     */
+    public function getStats()
+    {
+        $query = $this->getOrdersQuery();
+
+        $totalCount = (clone $query)->count();
+        $totalAmount = (clone $query)->sum('total_amount');
+        $paidCount = (clone $query)->where('payment_status', 'paid')->count();
+        $paidAmount = (clone $query)->where('payment_status', 'paid')->sum('total_amount');
+        $pendingCount = (clone $query)->where('payment_status', 'pending')->count();
+        $pendingAmount = (clone $query)->where('payment_status', 'pending')->sum('total_amount');
+
+        return [
+            'total_count' => $totalCount,
+            'total_amount' => $totalAmount,
+            'paid_count' => $paidCount,
+            'paid_amount' => $paidAmount,
+            'pending_count' => $pendingCount,
+            'pending_amount' => $pendingAmount,
+        ];
+    }
+
+    /**
+     * Base query builder (filtreler uygulanmış)
+     */
+    protected function getOrdersQuery()
+    {
+        return Order::query()
+            ->with(['items', 'user', 'payments'])
+            // Beklemedeki ve başarısız ödemeleri göster/gizle (default: gizle)
+            ->when(!$this->paymentStatus, function ($query) {
+                $excludeStatuses = [];
+                if (!$this->showPending) {
+                    $excludeStatuses[] = 'pending';
+                }
+                if (!$this->showFailed) {
+                    $excludeStatuses[] = 'failed';
+                }
+                if (!empty($excludeStatuses)) {
+                    $query->whereNotIn('payment_status', $excludeStatuses);
+                }
+            })
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('order_number', 'like', '%' . $this->search . '%')
@@ -215,7 +442,32 @@ class OrdersComponent extends Component
             ->when($this->paymentStatus, function ($query) {
                 $query->where('payment_status', $this->paymentStatus);
             })
+            // Tarih filtreleri
+            ->when($this->dateFrom, function ($query) {
+                $query->whereDate('created_at', '>=', $this->dateFrom);
+            })
+            ->when($this->dateTo, function ($query) {
+                $query->whereDate('created_at', '<=', $this->dateTo);
+            })
+            // Tutar filtreleri
+            ->when($this->amountMin, function ($query) {
+                $query->where('total_amount', '>=', (float) $this->amountMin);
+            })
+            ->when($this->amountMax, function ($query) {
+                $query->where('total_amount', '<=', (float) $this->amountMax);
+            })
+            // Ödeme yöntemi filtresi
+            ->when($this->paymentMethod, function ($query) {
+                $query->whereHas('payments', function ($q) {
+                    $q->where('gateway', $this->paymentMethod);
+                });
+            })
             ->orderBy('created_at', 'desc');
+    }
+
+    public function render()
+    {
+        $query = $this->getOrdersQuery();
 
         $orders = $query->paginate($this->perPage);
 
@@ -226,10 +478,14 @@ class OrdersComponent extends Component
         $statuses = ['pending', 'processing', 'shipped', 'delivered', 'completed', 'cancelled', 'payment_failed'];
         $paymentStatuses = ['pending', 'paid', 'failed', 'refunded'];
 
+        // İstatistikler
+        $stats = $this->getStats();
+
         return view('cart::livewire.admin.orders-component', [
             'orders' => $orders,
             'statuses' => $statuses,
             'paymentStatuses' => $paymentStatuses,
+            'stats' => $stats,
         ]);
     }
 }

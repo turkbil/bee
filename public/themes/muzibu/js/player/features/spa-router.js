@@ -300,6 +300,75 @@ const MuzibuSpaRouter = {
     },
 
     /**
+     * 📧 CLOUDFLARE EMAIL DECODE: Decode obfuscated emails after SPA navigation
+     * CloudFlare's email protection encodes emails on page load, but SPA navigation
+     * doesn't trigger the decode script again. This function manually decodes them.
+     */
+    decodeCloudflareEmails() {
+        // Find all CloudFlare obfuscated email elements
+        const obfuscatedEmails = document.querySelectorAll('a[href^="/cdn-cgi/l/email-protection"], .__cf_email__, [data-cfemail]');
+
+        if (obfuscatedEmails.length === 0) return;
+
+        obfuscatedEmails.forEach(el => {
+            try {
+                // Get encoded string from data-cfemail attribute or href
+                let encoded = el.getAttribute('data-cfemail');
+
+                if (!encoded) {
+                    // Try to extract from href (format: /cdn-cgi/l/email-protection#encodedstring)
+                    const href = el.getAttribute('href') || '';
+                    const match = href.match(/email-protection#([a-f0-9]+)/i);
+                    if (match) {
+                        encoded = match[1];
+                    }
+                }
+
+                if (!encoded) return;
+
+                // Decode the email using CloudFlare's algorithm
+                const decoded = this.cfDecodeEmail(encoded);
+
+                if (decoded) {
+                    // Update the element
+                    if (el.tagName === 'A') {
+                        el.href = 'mailto:' + decoded;
+                        // Update text content if it shows "[email protected]"
+                        if (el.textContent.includes('[email') || el.textContent.includes('email protected')) {
+                            el.textContent = decoded;
+                        }
+                    } else {
+                        el.textContent = decoded;
+                    }
+
+                    // Remove CloudFlare attributes to prevent re-processing
+                    el.removeAttribute('data-cfemail');
+                    el.classList.remove('__cf_email__');
+                }
+            } catch (e) {
+                console.warn('⚠️ CloudFlare email decode failed:', e);
+            }
+        });
+    },
+
+    /**
+     * CloudFlare email decoding algorithm
+     * @param {string} encodedString - The encoded email string from data-cfemail
+     * @returns {string} - Decoded email address
+     */
+    cfDecodeEmail(encodedString) {
+        let email = '';
+        const r = parseInt(encodedString.substr(0, 2), 16);
+
+        for (let n = 2; n < encodedString.length; n += 2) {
+            const charCode = parseInt(encodedString.substr(n, 2), 16) ^ r;
+            email += String.fromCharCode(charCode);
+        }
+
+        return email;
+    },
+
+    /**
      * 🔴 Check if path is a dynamic page (user-specific, should NOT be cached)
      * Bu sayfalar kullanıcıya özel içerik gösterir: favoriler, playlistler, dashboard vb.
      */
@@ -569,6 +638,9 @@ const MuzibuSpaRouter = {
                         // Then set correct value based on route
                         sidebar.updateRightSidebarVisibility();
                     }
+
+                    // 📧 CLOUDFLARE EMAIL DECODE: Re-decode obfuscated emails after SPA navigation
+                    this.decodeCloudflareEmails();
 
                     // 🔥 RE-OBSERVE NEW LINKS: DISABLED (viewport prefetch kapatıldı)
                     // setTimeout(() => this.observeLinks(), 100);

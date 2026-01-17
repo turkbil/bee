@@ -3,7 +3,7 @@
 {{-- 🎯 Rotating messages, bubble animations, pulse effects --}}
 <div
     x-data="$store.tenant1001AI"
-    class="fixed bottom-28 md:bottom-32 right-4 md:right-6 lg:right-8 z-[65]"
+    class="fixed bottom-28 md:bottom-32 right-4 md:right-6 lg:right-8 z-[10]"
     x-cloak
 >
     {{-- Floating Button (when closed) --}}

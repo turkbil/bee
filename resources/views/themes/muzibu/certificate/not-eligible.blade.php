@@ -23,7 +23,7 @@
 
             {{-- CTA Button --}}
             <a href="{{ route('subscription.plans') }}"
-                class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40">
+                class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40" data-spa>
                 <i class="fas fa-crown"></i>
                 {{ __('muzibu::front.certificate.upgrade_button') }}
             </a>

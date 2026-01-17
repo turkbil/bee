@@ -78,10 +78,10 @@
 
             {{-- Header --}}
             <div class="px-8 pt-8 pb-8">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between gap-4">
                     <div class="flex-1">
-                        <h1 class="text-4xl font-semibold text-white mb-2 tracking-wide">Üyelik Belgesı</h1>
-                        <p class="text-slate-400 text-sm">Muzibu Kurumsal Premium Üyelik</p>
+                        <h1 class="text-3xl font-semibold text-white mb-2 tracking-wide leading-tight">Ticari Müzik<br>Kullanım Belgesi</h1>
+                        <p class="text-slate-400 text-sm">Muzibu Premium Üyelik</p>
                     </div>
                     {{-- Crown Badge --}}
                     <div class="w-16 h-16 rounded-full gold-bg border gold-border flex items-center justify-center flex-shrink-0">
@@ -102,7 +102,7 @@
             <div class="mx-8 mb-8 bg-slate-800/50 border border-slate-700 rounded-lg overflow-hidden">
                 <div class="grid grid-cols-2 divide-x divide-slate-700">
                     <div class="p-4 text-center">
-                        <div class="text-xs text-slate-500 mb-1">SERTİFİKA NO</div>
+                        <div class="text-xs text-slate-500 mb-1">BELGE NO</div>
                         <div class="cert-mono gold-text font-semibold text-lg">{{ $certificate->certificate_code }}</div>
                     </div>
                     <div class="p-4 text-center">
@@ -199,7 +199,26 @@
             <div class="space-y-3 text-sm text-slate-400 leading-relaxed">
                 <p>Muzibu, yalnızca kendisinin ürettiği ve tüm yayın hakları tamamen kendisine ait olan içerikleri kullanarak ticari işletmelere müzik yayın hizmeti sunar. Bu lisans, Muzibu altyapısı üzerinden sağlanan müzik yayınlarının herhangi bir üçüncü taraf telif kuruluşundan ek bir lisans gerektirmediğini beyan eder.</p>
                 <p>Bu lisans kapsamında sunulan tüm müzik içeriklerinin telif hakları %100 Muzibu'ya aittir. Yayında kullanılan müzikler, ticari işletmelerde ve kamusal alanlarda çalınmaya uygundur. Ancak Muzibu hizmeti alınan süre boyunca, işletmede Muzibu dışındaki başka kaynaklardan yapılan müzik yayınları bu lisans kapsamı dışındadır.</p>
-                <p class="text-slate-300 font-medium">MUZİBU MEDYA YAPIM A.Ş.</p>
+                <div class="mt-6 pt-4 border-t border-slate-700/50">
+                    <p class="text-slate-200 font-bold mb-3 text-base">MUZİBU MEDYA YAPIM A.Ş.</p>
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex flex-col sm:flex-row sm:gap-2">
+                            <span class="text-slate-500 min-w-[100px]">Vergi Dairesi:</span>
+                            <span class="text-slate-400">Kozyatağı</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:gap-2">
+                            <span class="text-slate-500 min-w-[100px]">Vergi No:</span>
+                            <span class="text-slate-400 cert-mono">6260824284</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:gap-2">
+                            <span class="text-slate-500 min-w-[100px]">Adres:</span>
+                            <span class="text-slate-400">
+                                Metropol İstanbul C1 Blok No: 2B İç Kapı No: 376 Atatürk Mah. Ertuğrul Gazi Sk.<br>
+                                Ataşehir, İstanbul
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

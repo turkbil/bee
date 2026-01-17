@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasarım 4 - Tek Kolon Basit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @page { margin: 0; size: A4 landscape; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .certificate {
+            width: 297mm;
+            height: 210mm;
+            background: white;
+            border: 6px solid #d4af37;
+            padding: 20mm;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 10mm;
+            margin-bottom: 12mm;
+        }
+        .header h1 {
+            font-size: 42pt;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 3mm;
+        }
+        .header p {
+            font-size: 10pt;
+            color: #6b7280;
+            letter-spacing: 2px;
+        }
+        .company-block {
+            text-align: center;
+            margin-bottom: 12mm;
+        }
+        .company-block .intro {
+            font-size: 10pt;
+            color: #6b7280;
+            margin-bottom: 3mm;
+        }
+        .company-block .name {
+            display: inline-block;
+            font-size: 48pt;
+            font-weight: bold;
+            color: #111827;
+            border-bottom: 5px solid #d4af37;
+            padding-bottom: 3mm;
+        }
+        .info-list {
+            margin-bottom: 12mm;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4mm 0;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .info-row .label {
+            font-size: 12pt;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        .info-row .value {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #111827;
+        }
+        .info-row .value.gold {
+            color: #d97706;
+            font-family: 'Courier New', monospace;
+        }
+        .qr-section {
+            text-align: center;
+        }
+        .qr-box {
+            display: inline-block;
+            width: 110px;
+            height: 110px;
+            background: #e5e7eb;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 3mm;
+            border-radius: 8px;
+        }
+        .qr-box i {
+            font-size: 70px;
+            color: #9ca3af;
+        }
+        .qr-section p {
+            font-size: 9pt;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <!-- Başlık -->
+        <div class="header">
+            <h1>TİCARİ MÜZİK KULLANIM BELGESİ</h1>
+            <p>COMMERCIAL MUSIC USE CERTIFICATE</p>
+        </div>
+
+        <!-- Firma Adı -->
+        <div class="company-block">
+            <p class="intro">Bu belge aşağıdaki firmaya verilmiştir:</p>
+            <div class="name">ABC TEKNOLOJİ A.Ş.</div>
+        </div>
+
+        <!-- Bilgi Listesi -->
+        <div class="info-list">
+            <div class="info-row">
+                <span class="label">Belge No:</span>
+                <span class="value gold">MZB-2024-001</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Üyelik Tarihi:</span>
+                <span class="value">01 Ocak 2024</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Vergi Dairesi:</span>
+                <span class="value">Kadıköy Vergi Dairesi</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Vergi No:</span>
+                <span class="value gold">1234567890</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Adres:</span>
+                <span class="value">Atatürk Caddesi No:15 Kadıköy/İstanbul</span>
+            </div>
+        </div>
+
+        <!-- QR Kod -->
+        <div class="qr-section">
+            <div class="qr-box">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <p>Belgeyi doğrulamak için QR kodu tarayın</p>
+        </div>
+    </div>
+</body>
+</html>

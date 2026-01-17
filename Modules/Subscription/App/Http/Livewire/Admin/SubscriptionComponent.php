@@ -19,7 +19,7 @@ class SubscriptionComponent extends Component
     public $search = '';
 
     #[Url]
-    public $filterStatus = 'active'; // Varsayılan: Sadece aktif abonelikler
+    public $filterStatus = ''; // Varsayılan: TÜM abonelikler (pending_payment dahil!)
 
     #[Url]
     public $filterPlan = '';
@@ -28,15 +28,60 @@ class SubscriptionComponent extends Component
     public $perPage = 25;
 
     #[Url]
-    public $sortField = 'subscription_id';
+    public $sortField = 'updated_at'; // Varsayılan: en son ödeme yapan önce
 
     #[Url]
     public $sortDirection = 'desc';
+
+    // Yeni filtreler
+    #[Url]
+    public $startDateFrom = '';
+
+    #[Url]
+    public $startDateTo = '';
+
+    #[Url]
+    public $endDateFrom = '';
+
+    #[Url]
+    public $endDateTo = '';
+
+    #[Url]
+    public $priceMin = '';
+
+    #[Url]
+    public $priceMax = '';
+
+    #[Url]
+    public $expiryWarning = false; // Sadece 7 gün içinde bitenler
+
+    #[Url]
+    public $corporateFilter = ''; // all, corporate, individual
+
+    #[Url]
+    public $showFree = false; // Varsayılan: ücretsizler gizli
+
+    #[Url]
+    public $showPendingPayment = false; // Varsayılan: ödeme bekleyenler gizli
+
+    #[Url(except: false)]
+    public bool $showExpired = false; // Varsayılan: süresi bitenler gizli
 
     protected $queryString = [
         'search' => ['except' => ''],
         'filterStatus' => ['except' => ''],
         'filterPlan' => ['except' => ''],
+        'startDateFrom' => ['except' => ''],
+        'startDateTo' => ['except' => ''],
+        'endDateFrom' => ['except' => ''],
+        'endDateTo' => ['except' => ''],
+        'priceMin' => ['except' => ''],
+        'priceMax' => ['except' => ''],
+        'expiryWarning' => ['except' => false],
+        'corporateFilter' => ['except' => ''],
+        'showFree' => ['except' => false],
+        'showPendingPayment' => ['except' => false],
+        // showExpired artık #[Url(except: false)] ile yönetiliyor
     ];
 
     protected $listeners = [
@@ -82,6 +127,27 @@ class SubscriptionComponent extends Component
         $query = Subscription::query()
             ->with(['customer', 'plan']);
 
+        // Varsayılan: Ücretsizleri gizle (showFree=false ise price_per_cycle > 0)
+        if (!$this->showFree) {
+            $query->where('price_per_cycle', '>', 0);
+        }
+
+        // Varsayılan: Ödeme bekleyenleri gizle (showPendingPayment=false ise pending_payment hariç)
+        if (!$this->showPendingPayment) {
+            $query->where('subscriptions.status', '!=', 'pending_payment');
+        }
+
+        // Varsayılan: Süresi bitenleri gizle (showExpired=false ise)
+        if (!$this->showExpired) {
+            $query->where(function($q) {
+                $q->where('subscriptions.status', '!=', 'expired')
+                  ->where(function($q2) {
+                      $q2->whereNull('subscriptions.current_period_end')
+                         ->orWhere('subscriptions.current_period_end', '>', now());
+                  });
+            });
+        }
+
         // Search
         if (!empty($this->search)) {
             $search = strtolower($this->search);
@@ -99,55 +165,55 @@ class SubscriptionComponent extends Component
             switch ($this->filterStatus) {
                 case 'trial':
                     // Trial: has_trial=true VE trial_ends_at gelecekte
-                    $query->where('has_trial', true)
-                          ->where('trial_ends_at', '>', now());
+                    $query->where('subscriptions.has_trial', true)
+                          ->where('subscriptions.trial_ends_at', '>', now());
                     break;
 
                 case 'active':
                     // Active: Premium (trial olmayan) VE period_end gelecekte veya null
-                    $query->where('status', 'active')
+                    $query->where('subscriptions.status', 'active')
                           ->where(function($q) {
-                              $q->whereNull('current_period_end')
-                                ->orWhere('current_period_end', '>', now());
+                              $q->whereNull('subscriptions.current_period_end')
+                                ->orWhere('subscriptions.current_period_end', '>', now());
                           })
                           ->where(function($q) {
-                              $q->where('has_trial', false)
-                                ->orWhereNull('has_trial')
-                                ->orWhere('trial_ends_at', '<=', now())
-                                ->orWhereNull('trial_ends_at');
+                              $q->where('subscriptions.has_trial', false)
+                                ->orWhereNull('subscriptions.has_trial')
+                                ->orWhere('subscriptions.trial_ends_at', '<=', now())
+                                ->orWhereNull('subscriptions.trial_ends_at');
                           });
                     break;
 
                 case 'expired':
                     // Expired: Status expired VEYA period_end geçmiş
                     $query->where(function($q) {
-                        $q->where('status', 'expired')
+                        $q->where('subscriptions.status', 'expired')
                           ->orWhere(function($q2) {
-                              $q2->whereNotNull('current_period_end')
-                                 ->where('current_period_end', '<=', now())
-                                 ->where('status', '!=', 'cancelled');
+                              $q2->whereNotNull('subscriptions.current_period_end')
+                                 ->where('subscriptions.current_period_end', '<=', now())
+                                 ->where('subscriptions.status', '!=', 'cancelled');
                           });
                     });
                     break;
 
                 case 'cancelled':
                     // Cancelled: Status cancelled
-                    $query->where('status', 'cancelled');
+                    $query->where('subscriptions.status', 'cancelled');
                     break;
 
                 case 'paused':
                     // Paused: Status paused
-                    $query->where('status', 'paused');
+                    $query->where('subscriptions.status', 'paused');
                     break;
 
                 case 'pending_payment':
                     // Pending payment: Status pending_payment
-                    $query->where('status', 'pending_payment');
+                    $query->where('subscriptions.status', 'pending_payment');
                     break;
 
                 default:
                     // Diğer durumlar için direkt status kontrolü
-                    $query->where('status', $this->filterStatus);
+                    $query->where('subscriptions.status', $this->filterStatus);
                     break;
             }
         }
@@ -157,7 +223,72 @@ class SubscriptionComponent extends Component
             $query->where('subscription_plan_id', $this->filterPlan);
         }
 
-        return $query->orderBy($this->sortField, $this->sortDirection)->paginate((int) $this->perPage);
+        // Yeni filtreler - Başlangıç tarihi
+        if (!empty($this->startDateFrom)) {
+            $query->whereDate('current_period_start', '>=', $this->startDateFrom);
+        }
+        if (!empty($this->startDateTo)) {
+            $query->whereDate('current_period_start', '<=', $this->startDateTo);
+        }
+
+        // Bitiş tarihi
+        if (!empty($this->endDateFrom)) {
+            $query->whereDate('current_period_end', '>=', $this->endDateFrom);
+        }
+        if (!empty($this->endDateTo)) {
+            $query->whereDate('current_period_end', '<=', $this->endDateTo);
+        }
+
+        // Fiyat aralığı
+        if (!empty($this->priceMin)) {
+            $query->where('price_per_cycle', '>=', (float) $this->priceMin);
+        }
+        if (!empty($this->priceMax)) {
+            $query->where('price_per_cycle', '<=', (float) $this->priceMax);
+        }
+
+        // 7 gün içinde bitenler
+        if ($this->expiryWarning) {
+            $query->where('subscriptions.status', 'active')
+                  ->whereNotNull('subscriptions.current_period_end')
+                  ->whereBetween('subscriptions.current_period_end', [now(), now()->addDays(7)]);
+        }
+
+        // Kurumsal filtre
+        if (!empty($this->corporateFilter)) {
+            if ($this->corporateFilter === 'corporate') {
+                $query->where(function($q) {
+                    $q->whereRaw("JSON_EXTRACT(subscriptions.metadata, '$.corporate') = true");
+                });
+            } elseif ($this->corporateFilter === 'individual') {
+                $query->where(function($q) {
+                    $q->whereNull('subscriptions.metadata')
+                      ->orWhereRaw("JSON_EXTRACT(subscriptions.metadata, '$.corporate') IS NULL")
+                      ->orWhereRaw("JSON_EXTRACT(subscriptions.metadata, '$.corporate') = false");
+                });
+            }
+        }
+
+        // Son ödeme tarihine göre sıralama (özel)
+        if ($this->sortField === 'last_payment_date') {
+            // Subquery ile son ödeme tarihi al
+            $query->select('subscriptions.*')
+                ->addSelect([
+                    'last_payment_date' => \Modules\Cart\App\Models\Order::selectRaw('MAX(created_at)')
+                        ->whereColumn('cart_orders.user_id', 'subscriptions.user_id')
+                        ->whereIn('payment_status', ['paid', 'completed'])
+                ]);
+
+            if ($this->sortDirection === 'desc') {
+                $query->orderByRaw('last_payment_date IS NULL, last_payment_date DESC');
+            } else {
+                $query->orderByRaw('last_payment_date IS NULL DESC, last_payment_date ASC');
+            }
+        } else {
+            $query->orderBy($this->sortField, $this->sortDirection);
+        }
+
+        return $query->paginate((int) $this->perPage);
     }
 
     #[Computed]
@@ -168,9 +299,185 @@ class SubscriptionComponent extends Component
 
     public function clearFilters()
     {
-        $this->reset(['search', 'filterPlan']);
-        $this->filterStatus = 'active'; // Varsayılan'a dön
+        $this->search = '';
+        $this->filterPlan = '';
+        $this->filterStatus = '';
+        $this->startDateFrom = '';
+        $this->startDateTo = '';
+        $this->endDateFrom = '';
+        $this->endDateTo = '';
+        $this->priceMin = '';
+        $this->priceMax = '';
+        $this->expiryWarning = false;
+        $this->corporateFilter = '';
+        $this->showFree = false;
+        $this->showPendingPayment = false;
+        $this->showExpired = false;
         $this->resetPage();
+    }
+
+    /**
+     * Aktif filtre var mı kontrol et
+     */
+    public function hasActiveFilters(): bool
+    {
+        return $this->search !== ''
+            || $this->filterStatus !== ''
+            || $this->filterPlan !== ''
+            || $this->startDateFrom !== ''
+            || $this->startDateTo !== ''
+            || $this->endDateFrom !== ''
+            || $this->endDateTo !== ''
+            || $this->priceMin !== ''
+            || $this->priceMax !== ''
+            || $this->expiryWarning === true
+            || $this->corporateFilter !== '';
+    }
+
+    /**
+     * MRR İstatistiklerini hesapla
+     */
+    public function getMrrStats(): array
+    {
+        // Aktif abonelikler
+        $activeSubscriptions = Subscription::where('status', 'active')
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            })
+            ->get();
+
+        $mrr = 0;
+        foreach ($activeSubscriptions as $sub) {
+            // Dönem süresini hesapla
+            $cycleDays = 30; // default
+            if ($sub->current_period_start && $sub->current_period_end) {
+                $cycleDays = $sub->current_period_start->diffInDays($sub->current_period_end);
+            } elseif (!empty($sub->cycle_metadata['duration_days'])) {
+                $cycleDays = $sub->cycle_metadata['duration_days'];
+            }
+            // Aylık eşdeğer
+            $monthlyEquivalent = ($sub->price_per_cycle / max($cycleDays, 1)) * 30;
+            $mrr += $monthlyEquivalent;
+        }
+
+        return [
+            'active_count' => $activeSubscriptions->count(),
+            'mrr' => $mrr,
+            'pending_payment_count' => Subscription::where('status', 'pending_payment')->count(),
+            'pending_payment_amount' => Subscription::where('status', 'pending_payment')->sum('price_per_cycle'),
+            'expiring_this_month' => Subscription::where('status', 'active')
+                ->whereNotNull('current_period_end')
+                ->whereBetween('current_period_end', [now(), now()->endOfMonth()])
+                ->count(),
+            'premium_expiring_7_days' => Subscription::where('status', 'active')
+                ->whereNotNull('current_period_end')
+                ->whereBetween('current_period_end', [now(), now()->addDays(7)])
+                ->where(function($q) {
+                    $q->where('has_trial', false)
+                      ->orWhereNull('has_trial')
+                      ->orWhere('trial_ends_at', '<=', now());
+                })
+                ->count(),
+            'trial_expiring_7_days' => Subscription::where('has_trial', true)
+                ->whereNotNull('trial_ends_at')
+                ->whereBetween('trial_ends_at', [now(), now()->addDays(7)])
+                ->count(),
+            'trial_count' => Subscription::where('has_trial', true)
+                ->where('trial_ends_at', '>', now())
+                ->count(),
+            'total_revenue' => Subscription::whereIn('status', ['active', 'expired', 'cancelled'])->sum('price_per_cycle'),
+        ];
+    }
+
+    /**
+     * CSV Export
+     */
+    public function exportSubscriptions()
+    {
+        $filename = 'subscriptions_' . date('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function() {
+            $handle = fopen('php://output', 'w');
+
+            // BOM for Excel UTF-8 support
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Header
+            fputcsv($handle, [
+                'Abonelik No',
+                'Müşteri',
+                'Email',
+                'Plan',
+                'Durum',
+                'Sıra',
+                'Dönem Fiyatı',
+                'Başlangıç',
+                'Bitiş',
+                'Kalan Gün',
+                'Kurumsal',
+                'Oluşturulma'
+            ], ';');
+
+            // Data - subscriptions computed property kullan ama tüm veriyi çek
+            $query = Subscription::query()
+                ->with(['customer', 'plan']);
+
+            // Mevcut filtreleri uygula
+            if (!empty($this->search)) {
+                $search = strtolower($this->search);
+                $query->where(function($q) use ($search) {
+                    $q->where('subscription_number', 'like', "%{$search}%")
+                      ->orWhereHas('customer', function($q2) use ($search) {
+                          $q2->where('name', 'like', "%{$search}%")
+                             ->orWhere('email', 'like', "%{$search}%");
+                      });
+                });
+            }
+
+            if (!empty($this->filterStatus)) {
+                $query->where('status', $this->filterStatus);
+            }
+
+            if (!empty($this->filterPlan)) {
+                $query->where('subscription_plan_id', $this->filterPlan);
+            }
+
+            $query->orderBy('subscription_id', 'desc')
+                  ->chunk(100, function($subscriptions) use ($handle) {
+                foreach ($subscriptions as $sub) {
+                    $planTitle = is_array($sub->plan?->title)
+                        ? ($sub->plan->title['tr'] ?? $sub->plan->title['en'] ?? '-')
+                        : ($sub->plan?->title ?? '-');
+
+                    $daysLeft = 0;
+                    if ($sub->current_period_end && $sub->current_period_end->isFuture()) {
+                        $daysLeft = (int) now()->diffInDays($sub->current_period_end, false);
+                    }
+
+                    $isCorporate = !empty($sub->metadata['corporate']) ? 'Evet' : 'Hayır';
+
+                    fputcsv($handle, [
+                        $sub->subscription_number,
+                        $sub->customer?->name ?? '-',
+                        $sub->customer?->email ?? '-',
+                        $planTitle,
+                        $sub->status,
+                        $sub->chain_position ?? '-',
+                        number_format($sub->price_per_cycle ?? 0, 2, ',', ''),
+                        $sub->current_period_start?->format('Y-m-d') ?? '-',
+                        $sub->current_period_end?->format('Y-m-d') ?? '-',
+                        $daysLeft,
+                        $isCorporate,
+                        $sub->created_at->format('Y-m-d H:i'),
+                    ], ';');
+                }
+            });
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 
     /**
@@ -398,7 +705,7 @@ class SubscriptionComponent extends Component
             $query->where('status', $this->modalFilterStatus);
         }
 
-        $subscriptions = $query->orderBy('current_period_start', 'asc')
+        $subscriptions = $query->orderBy('subscription_id', 'desc')
             ->get()
             ->map(function ($sub) {
                 // Order bilgisi (metadata'dan order_id)
@@ -465,7 +772,7 @@ class SubscriptionComponent extends Component
                     'started_at' => $sub->started_at?->format('d.m.Y'),
                     'current_period_start' => $sub->current_period_start?->format('d.m.Y'),
                     'current_period_end' => $sub->current_period_end?->format('d.m.Y H:i'),
-                    'price' => number_format((float) ($sub->price_per_cycle ?? 0), 2) . ' ' . ($sub->currency ?? 'TRY'),
+                    'price' => number_format((float) ($sub->price_per_cycle ?? 0) * 1.20, 2) . ' ' . ($sub->currency ?? 'TRY'), // KDV dahil
                     'cycle_label' => is_array($sub->cycle_metadata['label'] ?? null)
                         ? ($sub->cycle_metadata['label']['tr'] ?? $sub->cycle_metadata['label']['en'] ?? $sub->billing_cycle ?? '-')
                         : ($sub->cycle_metadata['label'] ?? $sub->billing_cycle ?? '-'),
@@ -575,10 +882,10 @@ class SubscriptionComponent extends Component
                 'total_subscriptions' => count($subscriptions),
                 // Aktif sayısı: Sadece active ve pending (pending_payment hariç!)
                 'active_count' => collect($subscriptions)->whereIn('status', ['active', 'pending'])->count(),
-                // Ödenmiş toplam: active, pending, cancelled, expired (pending_payment HARİÇ!)
+                // Ödenmiş toplam: active, pending, cancelled, expired (pending_payment HARİÇ!) - KDV dahil
                 'total_paid' => Subscription::where('user_id', $this->selectedUserId)
                     ->whereIn('status', ['active', 'cancelled', 'expired', 'pending'])
-                    ->sum('price_per_cycle'),
+                    ->sum('price_per_cycle') * 1.20,
                 // Ödeme bekleyen abonelikler (bunlar yok sayılır, etkisiz)
                 'pending_payment_count' => Subscription::where('user_id', $this->selectedUserId)
                     ->where('status', 'pending_payment')
@@ -729,6 +1036,7 @@ class SubscriptionComponent extends Component
         return view('subscription::admin.livewire.subscription-component', [
             'subscriptions' => $this->subscriptions,
             'plans' => $this->plans,
+            'mrrStats' => $this->getMrrStats(),
         ]);
     }
 }

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Log Analizi - Kritik Sorunlar Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; }
+        .badge-critical { background: #dc2626; color: white; }
+        .badge-warning { background: #f59e0b; color: white; }
+        .badge-info { background: #3b82f6; color: white; }
+        .code-block { background: #1e293b; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.875rem; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-4 md:p-8">
+
+<div class="max-w-6xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-white">Muzibu Log Analizi</h1>
+                <p class="text-slate-400">Kritik Sorunlar ve Döngüler Raporu</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-red-400">8,833</div>
+                    <div class="text-sm text-slate-400">Toplam Hata</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-orange-400">5</div>
+                    <div class="text-sm text-slate-400">Kritik Sorun</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-yellow-400">%90</div>
+                    <div class="text-sm text-slate-400">Disk Doluluk</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">52,259</div>
+                    <div class="text-sm text-slate-400">Log Satırı</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Özet -->
+    <div class="bg-red-900/20 border border-red-800 rounded-xl p-6 mb-8">
+        <h2 class="text-xl font-bold text-red-400 mb-3">⚠️ Acil Müdahale Gerekli</h2>
+        <p class="text-slate-300 leading-relaxed mb-4">
+            Sistem loglarında <strong class="text-red-400">5 kritik sorun</strong> tespit edildi.
+            Bunlardan en önemlisi <strong class="text-red-400">disk alanının %90'a ulaşması</strong> ve
+            <strong class="text-red-400">PayTR ödeme döngüsü</strong>. Redis yazma işlemleri disk doluluk nedeniyle
+            durmuş durumda. Ayrıca bazı kod hataları kullanıcı deneyimini olumsuz etkiliyor.
+        </p>
+        <div class="flex flex-wrap gap-2">
+            <span class="badge badge-critical">DİSK %90</span>
+            <span class="badge badge-critical">REDİS MISCONF</span>
+            <span class="badge badge-warning">ÖDEME DÖNGÜSÜ</span>
+            <span class="badge badge-warning">SESSION HATASI</span>
+            <span class="badge badge-info">KOD HATALARI</span>
+        </div>
+    </div>
+
+    <!-- Kritik Sorunlar -->
+    <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+        <span class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-sm">1</span>
+        Kritik Sorunlar (Acil)
+    </h2>
+
+    <!-- Disk Doluluk -->
+    <div class="card bg-slate-800 border border-red-700 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-red-400 mb-2">🔴 Disk Alanı Kritik Seviyede</h3>
+                <span class="badge badge-critical mb-3">ACİL</span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">📝 Basit Anlatım:</h4>
+            <p class="text-slate-300 leading-relaxed">
+                Sunucunun sabit diskinde <strong>sadece %10 yer kaldı</strong> (789GB/885GB kullanılıyor, 96GB boş).
+                Bu durum sistemi yavaşlatıyor ve bazı işlemlerin yapılamamasına neden oluyor. Örneğin:
+            </p>
+            <ul class="list-disc list-inside text-slate-300 mt-2 space-y-1 ml-4">
+                <li>Görseller cache'lenemiyor (thumbmaker hatası)</li>
+                <li>Redis veritabanı yazamıyor (MISCONF hatası)</li>
+                <li>Blade template'ler derlenemiyor</li>
+                <li>Session bilgileri kaydedilemiyor</li>
+            </ul>
+        </div>
+
+        <div class="bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">🔧 Teknik Detaylar:</h4>
+            <div class="code-block text-slate-300 mb-3">
+                <strong class="text-red-400">Disk Kullanımı:</strong>
+                /dev/md3: 885G total, 789G used, 96G available (90% full)
+            </div>
+            <div class="code-block text-slate-300 mb-3">
+                <strong class="text-red-400">Hata Mesajları:</strong>
+                file_put_contents(): Failed to open stream: No space left on device
+                storage/tenant1001/app/public/thumbmaker-cache/*.webp
+            </div>
+            <div class="text-slate-300 space-y-2">
+                <p><strong>Thumbmaker Cache:</strong> 642MB</p>
+                <p><strong>Etkilenen Dosyalar:</strong></p>
+                <ul class="list-disc list-inside ml-4 text-sm">
+                    <li>storage/tenant1001/app/public/thumbmaker-cache/</li>
+                    <li>storage/framework/views/*.php (Blade compiled)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+            <h4 class="font-semibold text-green-400 mb-2">✅ Çözüm Önerileri:</h4>
+            <ol class="list-decimal list-inside text-slate-300 space-y-2 ml-4">
+                <li><strong>Thumbmaker cache temizle:</strong> 642MB yer kazanılır</li>
+                <li><strong>Eski log dosyalarını sil/arşivle:</strong> storage/logs/*</li>
+                <li><strong>Laravel cache temizle:</strong> storage/framework/cache/*</li>
+                <li><strong>Eski backup dosyalarını kontrol et</strong></li>
+                <li><strong>Media library'de kullanılmayan dosyaları sil</strong></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Redis MISCONF -->
+    <div class="card bg-slate-800 border border-red-700 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-red-400 mb-2">🔴 Redis Yazma Hatası (MISCONF)</h3>
+                <span class="badge badge-critical mb-3">KRİTİK</span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">📝 Basit Anlatım:</h4>
+            <p class="text-slate-300 leading-relaxed">
+                Redis (hızlı veri saklama sistemi), disk dolduğu için verilerinizi kaydedemediğini söylüyor ve
+                yazma işlemlerini engelliyor. Bu durum:
+            </p>
+            <ul class="list-disc list-inside text-slate-300 mt-2 space-y-1 ml-4">
+                <li><strong>Session'lar</strong> kaydedilemiyor (kullanıcılar logout olabilir)</li>
+                <li><strong>Cache</strong> yazılamıyor (site yavaşlıyor)</li>
+                <li><strong>Queue işleri</strong> engellenebilir</li>
+            </ul>
+            <p class="text-orange-400 mt-3 font-semibold">
+                ⚠️ Bu hata disk doluluk sorunu çözülünce otomatik düzelecektir.
+            </p>
+        </div>
+
+        <div class="bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">🔧 Teknik Detaylar:</h4>
+            <div class="code-block text-red-300">
+RedisException: MISCONF Redis is configured to save RDB snapshots,
+but it is currently not able to persist on disk. Commands that may
+modify the data set are disabled, because this instance is configured
+to report errors during writes if RDB snapshotting fails
+(stop-writes-on-bgsave-error option).
+            </div>
+            <p class="text-slate-300 mt-3"><strong>Konum:</strong> vendor/laravel/framework/src/Illuminate/Redis/Connections/Connection.php:119</p>
+            <p class="text-slate-300"><strong>Etkilenen İşlemler:</strong> setex(), incrBy(), session storage</p>
+            <p class="text-slate-300"><strong>Tekrar Sayısı:</strong> 2 kez (03:14:50)</p>
+        </div>
+
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+            <h4 class="font-semibold text-green-400 mb-2">✅ Çözüm:</h4>
+            <p class="text-slate-300">
+                Disk alanı açıldıktan sonra Redis otomatik düzelecektir. Ek bir işlem gerekmez.
+            </p>
+        </div>
+    </div>
+
+    <!-- PayTR Döngüsü -->
+    <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2 mt-10">
+        <span class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-sm">2</span>
+        Ödeme Sistemi Sorunları
+    </h2>
+
+    <div class="card bg-slate-800 border border-orange-700 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-orange-400 mb-2">⚠️ PayTR Callback Döngüsü</h3>
+                <span class="badge badge-warning mb-3">DÖNGÜ</span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">📝 Basit Anlatım:</h4>
+            <p class="text-slate-300 leading-relaxed">
+                PayTR ödeme sistemi, bazı ödemeler için <strong>sürekli tekrar tekrar callback (geri bildirim) gönderiyor</strong>.
+                Özellikle Payment ID <strong>563-574</strong> arasındaki ödemeler her dakika hata mesajı üretiyor.
+            </p>
+            <p class="text-slate-300 mt-3">
+                <strong>Sorun:</strong> PayTR, ödeme tutarını <strong>0.00 TL</strong> olarak gönderiyor,
+                ama sistem <strong>720.00 TL</strong> veya <strong>1.00 TL</strong> bekliyor. Bu uyumsuzluk nedeniyle
+                işlem reddediliyor, ancak PayTR tekrar tekrar deniyor.
+            </p>
+        </div>
+
+        <div class="bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">🔧 Teknik Detaylar:</h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                    <div class="text-2xl font-bold text-orange-400">34</div>
+                    <div class="text-sm text-slate-400">Callback Tekrarı</div>
+                </div>
+                <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                    <div class="text-2xl font-bold text-red-400">12</div>
+                    <div class="text-sm text-slate-400">Etkilenen Payment</div>
+                </div>
+                <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                    <div class="text-2xl font-bold text-yellow-400">~1 dk</div>
+                    <div class="text-sm text-slate-400">Tekrar Sıklığı</div>
+                </div>
+            </div>
+
+            <div class="code-block text-slate-300 mb-3">
+[2026-01-15 03:28:08] ERROR: ❌ PayTR callback: Tutar uyumsuzluğu
+{"payment_id":563,"expected":"720.00","received":"0.00"}
+
+[2026-01-15 03:29:08] ERROR: ❌ PayTR callback: Tutar uyumsuzluğu
+{"payment_id":563,"expected":"720.00","received":"0.00"}
+
+... 34 kez tekrar ediyor ...
+            </div>
+
+            <p class="text-slate-300 mb-2"><strong>En Çok Etkilenen Payment ID'ler:</strong></p>
+            <ul class="list-disc list-inside text-slate-300 ml-4 text-sm space-y-1">
+                <li>Payment 566: <span class="text-orange-400">722 log satırı</span></li>
+                <li>Payment 573: <span class="text-orange-400">721 log satırı</span></li>
+                <li>Payment 571: <span class="text-orange-400">721 log satırı</span></li>
+                <li>Payment 568: <span class="text-orange-400">721 log satırı</span></li>
+                <li>Payment 563: <span class="text-orange-400">713 log satırı</span></li>
+            </ul>
+
+            <p class="text-slate-300 mt-4"><strong>İlave Hata:</strong></p>
+            <div class="code-block text-red-300 text-sm">
+❌ PayTR iframe token error:
+"merchant_oid benzersiz olmalidir, bu merchant_oid daha once kullanilmis (639045)"
+Payment ID: 566
+            </div>
+        </div>
+
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+            <h4 class="font-semibold text-green-400 mb-2">✅ Çözüm Önerileri:</h4>
+            <ol class="list-decimal list-inside text-slate-300 space-y-2 ml-4">
+                <li><strong>Callback controller'ı incele:</strong> Neden 0.00 TL geliyor?</li>
+                <li><strong>PayTR webhook log'larını kontrol et:</strong> Test mode aktif mi?</li>
+                <li><strong>Merchant OID üretimi:</strong> Benzersizlik sorunu var</li>
+                <li><strong>Callback rate limiting ekle:</strong> Aynı payment_id için 1 dakikada 1 callback</li>
+                <li><strong>Test mode flag'ini kontrol et:</strong> paytr-requests.log'da "test_mode": "1"</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Kod Hataları -->
+    <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2 mt-10">
+        <span class="w-8 h-8 bg-yellow-600 rounded-lg flex items-center justify-center text-sm">3</span>
+        Kod Hataları (Düzeltilmeli)
+    </h2>
+
+    <!-- Session Store Error -->
+    <div class="card bg-slate-800 border border-yellow-700 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span class="text-xl">🔑</span>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-yellow-400 mb-2">Session Store Not Set</h3>
+                <span class="badge badge-warning mb-3">165 KEZ</span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">📝 Basit Anlatım:</h4>
+            <p class="text-slate-300 leading-relaxed">
+                Bazı isteklerde session (oturum bilgisi) sistemi başlatılmadan kullanılmaya çalışılıyor.
+                Bu, muhtemelen <strong>API istekleri</strong> veya <strong>middleware sırası</strong> nedeniyle oluyor.
+            </p>
+        </div>
+
+        <div class="bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">🔧 Teknik Detaylar:</h4>
+            <div class="code-block text-red-300">
+RuntimeException: Session store not set on request.
+Location: vendor/laravel/framework/src/Illuminate/Http/Request.php:608
+Occurrences: 165 times
+            </div>
+        </div>
+
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+            <h4 class="font-semibold text-green-400 mb-2">✅ Çözüm:</h4>
+            <p class="text-slate-300">
+                API route'larında session kullanılmamalı veya middleware'de StartSession eklenmelidir.
+            </p>
+        </div>
+    </div>
+
+    <!-- toggleFavorite Error -->
+    <div class="card bg-slate-800 border border-yellow-700 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span class="text-xl">❤️</span>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-yellow-400 mb-2">Artist::toggleFavorite() Undefined</h3>
+                <span class="badge badge-warning mb-3">17 KEZ</span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">📝 Basit Anlatım:</h4>
+            <p class="text-slate-300 leading-relaxed">
+                Kullanıcılar bir <strong>sanatçıyı favorilere eklerken/çıkarırken</strong> hata alıyor.
+                <strong>Artist</strong> modeli üzerinde <strong>toggleFavorite()</strong> metodu tanımlı değil.
+            </p>
+        </div>
+
+        <div class="bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">🔧 Teknik Detaylar:</h4>
+            <div class="code-block text-red-300">
+BadMethodCallException: Call to undefined method
+Modules\Muzibu\App\Models\Artist::toggleFavorite()
+
+Location: vendor/laravel/framework/src/Illuminate/Support/Traits/ForwardsCalls.php:67
+Called From: Modules\Favorite\App\Services\FavoriteService->toggleFavorite()
+User ID: 1528
+Time: 15:08:49-15:08:50
+Occurrences: 17 times
+            </div>
+        </div>
+
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+            <h4 class="font-semibold text-green-400 mb-2">✅ Çözüm:</h4>
+            <ol class="list-decimal list-inside text-slate-300 space-y-2 ml-4">
+                <li><strong>Artist modelinde trait ekle:</strong> use HasFavorites veya Favoriteable</li>
+                <li><strong>Veya FavoriteService düzelt:</strong> toggleFavorite() metodu generic hale getir</li>
+                <li><strong>Diğer modelleri kontrol et:</strong> Song, Album, Playlist bu trait'e sahip mi?</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Livewire Regex Error -->
+    <div class="card bg-slate-800 border border-yellow-700 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span class="text-xl">📄</span>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-yellow-400 mb-2">Livewire: Regex Too Large</h3>
+                <span class="badge badge-warning mb-3">3 KEZ</span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">📝 Basit Anlatım:</h4>
+            <p class="text-slate-300 leading-relaxed">
+                Livewire, bir <strong>Blade template'i derlerken</strong> çok büyük bir regular expression (düzenli ifade)
+                oluşturmaya çalışıyor ve PHP'nin sınırına takılıyor. Bu, muhtemelen <strong>çok fazla component</strong>
+                veya <strong>içiçe geçmiş yapılar</strong> nedeniyle oluyor.
+            </p>
+        </div>
+
+        <div class="bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">🔧 Teknik Detaylar:</h4>
+            <div class="code-block text-red-300">
+ErrorException: preg_match(): Compilation failed:
+regular expression is too large at offset 37638
+
+Location: vendor/livewire/livewire/src/Features/
+          SupportMorphAwareBladeCompilation/
+          SupportMorphAwareBladeCompilation.php:452
+
+Times: 06:29:12, 07:50:16, 07:50:17
+Occurrences: 3 times
+            </div>
+        </div>
+
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+            <h4 class="font-semibold text-green-400 mb-2">✅ Çözüm Önerileri:</h4>
+            <ol class="list-decimal list-inside text-slate-300 space-y-2 ml-4">
+                <li><strong>Template'i böl:</strong> Çok büyük template'i küçük component'lere ayır</li>
+                <li><strong>Livewire versiyonu güncelle:</strong> Bu bilinen bir bug olabilir</li>
+                <li><strong>PHP pcre.backtrack_limit yükselt:</strong> php.ini ayarı</li>
+                <li><strong>Hangi template olduğunu bul:</strong> Log'da hangi view render ediliyordu?</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Player Errors -->
+    <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2 mt-10">
+        <span class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm">4</span>
+        Player (Müzik Çalar) Hataları
+    </h2>
+
+    <div class="card bg-slate-800 border border-blue-700 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-blue-400 mb-2">🎵 mediaSessionNotSupported</h3>
+                <span class="badge badge-info mb-3">114 KEZ</span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">📝 Basit Anlatım:</h4>
+            <p class="text-slate-300 leading-relaxed">
+                <strong>Android cihazlardaki kullanıcılar</strong>, müzik çalarken <strong>Media Session API'yi desteklemeyen</strong>
+                tarayıcılar kullanıyor. Bu, bildirimlerde müzik kontrollerinin (play/pause/next) görünmemesi anlamına gelir.
+            </p>
+            <p class="text-slate-400 text-sm mt-2">
+                Bu bir hata değil, bilgilendirme log'u. Eski cihazlarda normal bir durum.
+            </p>
+        </div>
+
+        <div class="bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 class="font-semibold text-slate-200 mb-2">🔧 Teknik Detaylar:</h4>
+            <div class="code-block text-slate-300">
+Action: mediaSessionNotSupported
+Total Occurrences: 114 times
+Device Example: Linux armv7l (Android 12)
+Browser: Chrome 143.0.7499.146
+            </div>
+            <p class="text-slate-300 mt-3"><strong>Örnek Cihaz:</strong> 9309X2_TR (600x1024 ekran)</p>
+            <p class="text-slate-300"><strong>User Agent:</strong> Android 12, Chrome 143</p>
+        </div>
+
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-400 mb-2">ℹ️ Not:</h4>
+            <p class="text-slate-300">
+                Bu bir uyumluluk sorunu, kritik değil. Kullanıcılar müzik dinleyebilir, sadece bildirim kontrollerini göremezler.
+                Bu log'ları azaltmak için mediaSession kontrolünü try-catch içine alıp silent mode yapabilirsiniz.
+            </p>
+        </div>
+    </div>
+
+    <!-- Log Dosya Boyutları -->
+    <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2 mt-10">
+        <span class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-sm">5</span>
+        Log Dosya İstatistikleri
+    </h2>
+
+    <div class="card bg-slate-800 border border-slate-700 rounded-xl p-6 mb-8">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-slate-700">
+                        <th class="text-left py-3 px-4 text-slate-300 font-semibold">Dosya</th>
+                        <th class="text-right py-3 px-4 text-slate-300 font-semibold">Boyut</th>
+                        <th class="text-right py-3 px-4 text-slate-300 font-semibold">Satır</th>
+                        <th class="text-left py-3 px-4 text-slate-300 font-semibold">Durum</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-300">
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3 px-4 font-mono text-xs">tenant-2026-01-15.log</td>
+                        <td class="py-3 px-4 text-right font-semibold text-orange-400">5.3 MB</td>
+                        <td class="py-3 px-4 text-right">32,275</td>
+                        <td class="py-3 px-4"><span class="badge badge-warning">Büyük</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3 px-4 font-mono text-xs">laravel-2026-01-15.log</td>
+                        <td class="py-3 px-4 text-right font-semibold text-orange-400">5.3 MB</td>
+                        <td class="py-3 px-4 text-right">17,811</td>
+                        <td class="py-3 px-4"><span class="badge badge-warning">Büyük</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3 px-4 font-mono text-xs">player-errors-2026-01-15.log</td>
+                        <td class="py-3 px-4 text-right text-blue-400">118 KB</td>
+                        <td class="py-3 px-4 text-right">113</td>
+                        <td class="py-3 px-4"><span class="badge badge-info">Normal</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3 px-4 font-mono text-xs">paytr-requests.log</td>
+                        <td class="py-3 px-4 text-right text-green-400">52 KB</td>
+                        <td class="py-3 px-4 text-right">1,464</td>
+                        <td class="py-3 px-4"><span class="badge badge-info">Normal</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3 px-4 font-mono text-xs">laravel.log</td>
+                        <td class="py-3 px-4 text-right text-green-400">38 KB</td>
+                        <td class="py-3 px-4 text-right">236</td>
+                        <td class="py-3 px-4"><span class="badge badge-info">Normal</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3 px-4 font-mono text-xs">paytr-debug.log</td>
+                        <td class="py-3 px-4 text-right text-green-400">5.4 KB</td>
+                        <td class="py-3 px-4 text-right">75</td>
+                        <td class="py-3 px-4"><span class="badge badge-info">Normal</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3 px-4 font-mono text-xs">checkout-proceed-debug.log</td>
+                        <td class="py-3 px-4 text-right text-green-400">4.3 KB</td>
+                        <td class="py-3 px-4 text-right">280</td>
+                        <td class="py-3 px-4"><span class="badge badge-info">Normal</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-mono text-xs">paytr-error.log</td>
+                        <td class="py-3 px-4 text-right text-green-400">164 B</td>
+                        <td class="py-3 px-4 text-right">5</td>
+                        <td class="py-3 px-4"><span class="badge badge-info">Normal</span></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="border-t-2 border-slate-600">
+                        <td class="py-3 px-4 font-bold text-white">TOPLAM</td>
+                        <td class="py-3 px-4 text-right font-bold text-purple-400">~10.6 MB</td>
+                        <td class="py-3 px-4 text-right font-bold text-white">52,259</td>
+                        <td class="py-3 px-4"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Öncelik Sıralaması -->
+    <div class="bg-gradient-to-r from-red-900/30 to-orange-900/30 border border-red-800 rounded-xl p-6 mb-8">
+        <h2 class="text-2xl font-bold text-white mb-4">🎯 Öncelik Sıralaması</h2>
+        <ol class="space-y-3">
+            <li class="flex items-start gap-3">
+                <span class="w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">1</span>
+                <div>
+                    <div class="font-bold text-white">Disk Alanı Açma</div>
+                    <div class="text-slate-300 text-sm">642MB thumbmaker cache + eski log'lar + framework cache</div>
+                </div>
+            </li>
+            <li class="flex items-start gap-3">
+                <span class="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">2</span>
+                <div>
+                    <div class="font-bold text-white">PayTR Callback Döngüsünü Durdur</div>
+                    <div class="text-slate-300 text-sm">Payment 563-574 sürekli hata üretiyor, rate limiting ekle</div>
+                </div>
+            </li>
+            <li class="flex items-start gap-3">
+                <span class="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">3</span>
+                <div>
+                    <div class="font-bold text-white">Artist::toggleFavorite() Ekle</div>
+                    <div class="text-slate-300 text-sm">Favorite trait'ini Artist modeline implement et</div>
+                </div>
+            </li>
+            <li class="flex items-start gap-3">
+                <span class="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">4</span>
+                <div>
+                    <div class="font-bold text-white">Session Store Hatası</div>
+                    <div class="text-slate-300 text-sm">API route'larında session kullanımını kontrol et</div>
+                </div>
+            </li>
+            <li class="flex items-start gap-3">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">5</span>
+                <div>
+                    <div class="font-bold text-white">Livewire Regex Hatası</div>
+                    <div class="text-slate-300 text-sm">Büyük template'leri böl veya Livewire güncelle</div>
+                </div>
+            </li>
+        </ol>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+        15 Ocak 2026 • Muzibu.com
+    </div>
+
+</div>
+
+</body>
+</html>

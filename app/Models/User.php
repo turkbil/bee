@@ -259,8 +259,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     protected function isMuzibuTenant(): bool
     {
-        // Tenant varsa ve subscription özelliği aktifse true
-        return (bool) tenant();
+        // Sadece Muzibu tenant'ı (ID: 1001) için true döner
+        return tenant() && tenant()->id == 1001;
     }
 
     // ==========================================

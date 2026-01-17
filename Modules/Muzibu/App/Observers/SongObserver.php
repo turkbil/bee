@@ -114,9 +114,11 @@ class SongObserver
         }
 
         // Activity log - değişiklikleri kaydet
+        // 🔴 play_count değişikliği loglanMAMALI - her dinlemede tetikleniyor!
         if (function_exists('log_activity')) {
             $changes = $song->getChanges();
             unset($changes['updated_at']);
+            unset($changes['play_count']); // 🎵 Her dinlemede log oluşturmasın!
 
             if (!empty($changes)) {
                 // Eski başlığı al (title değiştiyse)

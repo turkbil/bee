@@ -300,6 +300,9 @@
     @include('themes.muzibu.components.playlist-select-modal')
     @include('themes.muzibu.components.confirm-modal')
 
+    {{-- Toast Notification System --}}
+    @include('themes.muzibu.components.toast-notification')
+
     {{-- 🍪 COOKIE CONSENT - Design 2 (Compact Modern) --}}
     @include('themes.muzibu.components.cookie-consent')
 

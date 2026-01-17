@@ -9,15 +9,15 @@
         .wrapper { border: 4px solid #d4af37; background: #1e293b; padding: 4mm; }
         .inner { border: 2px solid #b8860b; padding: 10mm 12mm; }
         table { width: 100%; border-collapse: collapse; }
-        .left { width: 68mm; text-align: center; vertical-align: middle; border-right: 2px solid #d4af37; padding: 8mm 5mm; }
-        .right { vertical-align: middle; padding: 6mm 12mm; }
+        .left { width: 68mm; text-align: center; vertical-align: middle; border-right: 2px solid #d4af37; padding: 5mm 3mm; }
+        .right { vertical-align: middle; padding: 5mm 12mm; }
         .logo { width: 24mm; height: 24mm; background: #d4af37; border-radius: 50%; margin: 0 auto 5mm; line-height: 24mm; font-size: 13mm; font-weight: bold; color: #1e293b; }
-        .brand { font-size: 8mm; font-weight: bold; color: #d4af37; margin-bottom: 2mm; }
-        .sub { font-size: 3.5mm; color: #94a3b8; letter-spacing: 2mm; margin-bottom: 8mm; }
-        .qr { background: #fff; padding: 3mm; display: inline-block; margin-bottom: 3mm; }
-        .qr img { width: 30mm; height: 30mm; }
-        .hint { font-size: 2.5mm; color: #64748b; }
-        .title { font-size: 10mm; font-weight: bold; color: #fff; text-align: center; margin-bottom: 2mm; }
+        .brand { font-size: 9mm; font-weight: bold; color: #d4af37; margin-bottom: 3mm; }
+        .sub { font-size: 4mm; color: #94a3b8; letter-spacing: 2mm; margin-bottom: 8mm; }
+        .qr { background: #fff; padding: 3mm; display: inline-block; margin-bottom: 4mm; }
+        .qr img { width: 35mm; height: 35mm; }
+        .hint { font-size: 3.5mm; color: #64748b; }
+        .title { font-size: 5.8mm; font-weight: bold; color: #fff; text-align: center; margin-bottom: 2mm; letter-spacing: 0.3mm; white-space: nowrap; }
         .subtitle { font-size: 3.5mm; color: #94a3b8; text-align: center; margin-bottom: 8mm; letter-spacing: 1.5mm; }
         .intro { font-size: 3mm; color: #64748b; text-align: center; margin-bottom: 2mm; }
         .name { font-size: 7mm; font-weight: bold; color: #fff; font-family: 'DejaVu Sans Mono', monospace; border-bottom: 3px solid #d4af37; padding-bottom: 2mm; margin: 3mm 0; display: inline-block; }
@@ -38,22 +38,21 @@
 <div class="wrapper"><div class="inner">
 <table><tr>
 <td class="left">
-    <div class="logo">M</div>
-    <div class="brand">MUZIBU</div>
+    <div class="brand" style="margin-top: 8mm;">MUZIBU</div>
     <div class="sub">PREMIUM</div>
     <div class="qr"><img src="{{ $qrBase64 }}"></div>
     <div class="hint">Tarayarak doğrulayın</div>
 </td>
 <td class="right">
-    <div class="title">ÜYELİK SERTİFİKASI</div>
-    <div class="subtitle">MEMBERSHIP CERTIFICATE</div>
+    <div class="title">TİCARİ MÜZİK KULLANIM BELGESİ</div>
+    <div class="subtitle">COMMERCIAL MUSIC USE CERTIFICATE</div>
     <div style="text-align:center;">
         <div class="intro">BU BELGE</div>
         <div class="name">{{ $certificate->member_name }}</div>
         <div class="outro">ADINA DÜZENLENMİŞTİR</div>
     </div>
     <table class="info"><tr>
-        <td><div class="lbl">SERTİFİKA NO</div><div class="val gold">{{ $certificate->certificate_code }}</div></td>
+        <td><div class="lbl">BELGE NO</div><div class="val gold">{{ $certificate->certificate_code }}</div></td>
         <td><div class="lbl">ÜYELİK TARİHİ</div><div class="val">{{ $certificate->membership_start->format('d.m.Y') }}</div></td>
         @if($certificate->tax_office)<td><div class="lbl">VERGİ DAİRESİ</div><div class="val">{{ $certificate->tax_office }}</div></td>@endif
         @if($certificate->tax_number)<td><div class="lbl">VERGİ NO</div><div class="val">{{ $certificate->tax_number }}</div></td>@endif

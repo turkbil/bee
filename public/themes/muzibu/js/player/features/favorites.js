@@ -80,8 +80,8 @@ document.addEventListener('alpine:init', () => {
                     // Show toast (using frontLang for i18n)
                     if (window.Alpine?.store('toast')?.show) {
                         const lang = window.muzibuPlayerConfig?.frontLang?.player || {};
-                        const addedMsg = lang.added_to_favorites || 'Added to favorites';
-                        const removedMsg = lang.removed_from_favorites || 'Removed from favorites';
+                        const addedMsg = lang.added_to_favorites || 'Favorilere eklendi';
+                        const removedMsg = lang.removed_from_favorites || 'Favorilerden kaldırıldı';
                         window.Alpine.store('toast').show(
                             data.data.is_favorited ? addedMsg : removedMsg,
                             data.data.is_favorited ? 'success' : 'info'

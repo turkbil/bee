@@ -35,7 +35,27 @@ if (!function_exists('muzibu_generate_ai_cover')) {
      */
     function muzibu_generate_ai_cover($model, string $title, string $type): void
     {
-        // Universal helper'ı kullan
+        // Song için özel GenerateSongCover job'u kullan (genre bazlı prompt desteği)
+        if ($type === 'song' && $model instanceof \Modules\Muzibu\App\Models\Song) {
+            // Hero görseli zaten varsa job dispatch etme
+            if (method_exists($model, 'hasMedia') && $model->hasMedia('hero')) {
+                return;
+            }
+
+            \Modules\Muzibu\App\Jobs\GenerateSongCover::dispatch(
+                songId: $model->song_id,
+                songTitle: $title,
+                artistName: $model->album?->artist?->title,
+                genreName: $model->genre?->title,
+                userId: auth()->id(),
+                tenantId: tenant('id'),
+                genreId: $model->genre_id, // Genre bazlı özel prompt için
+                forceRegenerate: false
+            );
+            return;
+        }
+
+        // Diğer tipler için universal helper'ı kullan
         generate_ai_cover($model, $title, $type);
     }
 }

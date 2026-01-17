@@ -31,6 +31,9 @@ class ListeningHistoryComponent extends Component
     #[Url]
     public int $perPage = 50;
 
+    #[Url]
+    public string $viewMode = 'hourly'; // hourly, daily, weekly, monthly
+
     // Kullanıcı arama
     public string $userSearch = '';
     public bool $showUserDropdown = false;
@@ -55,7 +58,8 @@ class ListeningHistoryComponent extends Component
     private function cacheKey(string $suffix): string
     {
         $tenantId = tenant('id') ?? 'central';
-        return "listening_history_{$tenantId}_{$this->selectedDate}_{$suffix}";
+        $userPart = $this->filterUser ? "user_{$this->filterUser}_" : '';
+        return "listening_history_{$tenantId}_{$userPart}{$this->selectedDate}_{$suffix}";
     }
 
     // 5 dakika cache (gerçek zamana yakın)
@@ -155,24 +159,27 @@ class ListeningHistoryComponent extends Component
     #[Computed]
     public function stats(): array
     {
-        return Cache::remember($this->cacheKey('stats'), $this->cacheTTL(), function () {
+        $filterUser = $this->filterUser;
+        return Cache::remember($this->cacheKey('stats'), $this->cacheTTL(), function () use ($filterUser) {
             $date = Carbon::parse($this->selectedDate);
             $startOfDay = $date->copy()->startOfDay();
             $endOfDay = $date->copy()->endOfDay();
 
-            $totalPlays = SongPlay::whereBetween('created_at', [$startOfDay, $endOfDay])->count();
+            $baseQuery = SongPlay::whereBetween('created_at', [$startOfDay, $endOfDay])
+                ->when($filterUser, fn($q) => $q->where('user_id', $filterUser));
 
-            $uniqueListeners = SongPlay::whereBetween('created_at', [$startOfDay, $endOfDay])
+            $totalPlays = (clone $baseQuery)->count();
+
+            $uniqueListeners = $filterUser ? 1 : (clone $baseQuery)
                 ->whereNotNull('user_id')
                 ->distinct('user_id')
                 ->count('user_id');
 
-            $uniqueSongs = SongPlay::whereBetween('created_at', [$startOfDay, $endOfDay])
+            $uniqueSongs = (clone $baseQuery)
                 ->distinct('song_id')
                 ->count('song_id');
 
-            $totalDuration = SongPlay::whereBetween('created_at', [$startOfDay, $endOfDay])
-                ->sum('listened_duration');
+            $totalDuration = (clone $baseQuery)->sum('listened_duration');
 
             return [
                 'total_plays' => $totalPlays,
@@ -186,29 +193,132 @@ class ListeningHistoryComponent extends Component
     #[Computed]
     public function hourlyStats(): array
     {
-        return Cache::remember($this->cacheKey('hourly'), $this->cacheTTL(), function () {
+        $filterUser = $this->filterUser;
+        return Cache::remember($this->cacheKey('hourly'), $this->cacheTTL(), function () use ($filterUser) {
             $date = Carbon::parse($this->selectedDate);
             $startOfDay = $date->copy()->startOfDay();
             $endOfDay = $date->copy()->endOfDay();
+
+            $currentHour = $date->isToday() ? now()->hour : 24;
 
             $hourlyData = SongPlay::select(
                     DB::raw('HOUR(created_at) as hour'),
                     DB::raw('COUNT(*) as plays')
                 )
                 ->whereBetween('created_at', [$startOfDay, $endOfDay])
+                ->when($filterUser, fn($q) => $q->where('user_id', $filterUser))
+                ->when($date->isToday(), function($q) use ($currentHour) {
+                    $q->whereRaw('HOUR(created_at) < ?', [$currentHour]);
+                })
                 ->groupBy('hour')
                 ->orderBy('hour')
                 ->pluck('plays', 'hour')
                 ->toArray();
 
-            // Tüm 24 saati doldur
             $fullHours = [];
-            for ($i = 0; $i < 24; $i++) {
+            $maxHour = $date->isToday() ? $currentHour : 24;
+            for ($i = 0; $i < $maxHour; $i++) {
                 $fullHours[$i] = $hourlyData[$i] ?? 0;
             }
 
             return $fullHours;
         });
+    }
+
+    #[Computed]
+    public function dailyStats(): array
+    {
+        $filterUser = $this->filterUser;
+        return Cache::remember($this->cacheKey('daily'), $this->cacheTTL(), function () use ($filterUser) {
+            $endDate = Carbon::parse($this->selectedDate)->endOfDay();
+            $startDate = $endDate->copy()->subDays(6)->startOfDay();
+
+            $dailyData = SongPlay::select(
+                    DB::raw('DATE(created_at) as date'),
+                    DB::raw('COUNT(*) as plays')
+                )
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->when($filterUser, fn($q) => $q->where('user_id', $filterUser))
+                ->groupBy('date')
+                ->orderBy('date')
+                ->pluck('plays', 'date')
+                ->toArray();
+
+            $fullDays = [];
+            for ($i = 6; $i >= 0; $i--) {
+                $date = $endDate->copy()->subDays($i)->format('Y-m-d');
+                $fullDays[$date] = $dailyData[$date] ?? 0;
+            }
+
+            return $fullDays;
+        });
+    }
+
+    #[Computed]
+    public function weeklyStats(): array
+    {
+        $filterUser = $this->filterUser;
+        return Cache::remember($this->cacheKey('weekly'), $this->cacheTTL(), function () use ($filterUser) {
+            $endDate = Carbon::parse($this->selectedDate)->endOfWeek();
+            $startDate = $endDate->copy()->subWeeks(3)->startOfWeek();
+
+            $weeklyData = SongPlay::select(
+                    DB::raw('YEARWEEK(created_at, 1) as yearweek'),
+                    DB::raw('COUNT(*) as plays')
+                )
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->when($filterUser, fn($q) => $q->where('user_id', $filterUser))
+                ->groupBy('yearweek')
+                ->orderBy('yearweek')
+                ->pluck('plays', 'yearweek')
+                ->toArray();
+
+            $fullWeeks = [];
+            for ($i = 3; $i >= 0; $i--) {
+                $weekStart = $endDate->copy()->subWeeks($i)->startOfWeek();
+                $yearweek = $weekStart->format('oW');
+                $label = $weekStart->format('d M') . ' - ' . $weekStart->copy()->endOfWeek()->format('d M');
+                $fullWeeks[$label] = $weeklyData[$yearweek] ?? 0;
+            }
+
+            return $fullWeeks;
+        });
+    }
+
+    #[Computed]
+    public function monthlyStats(): array
+    {
+        $filterUser = $this->filterUser;
+        return Cache::remember($this->cacheKey('monthly'), $this->cacheTTL(), function () use ($filterUser) {
+            $endDate = Carbon::parse($this->selectedDate)->endOfMonth();
+            $startDate = $endDate->copy()->subMonths(5)->startOfMonth();
+
+            $monthlyData = SongPlay::select(
+                    DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+                    DB::raw('COUNT(*) as plays')
+                )
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->when($filterUser, fn($q) => $q->where('user_id', $filterUser))
+                ->groupBy('month')
+                ->orderBy('month')
+                ->pluck('plays', 'month')
+                ->toArray();
+
+            $fullMonths = [];
+            for ($i = 5; $i >= 0; $i--) {
+                $monthDate = $endDate->copy()->subMonths($i);
+                $key = $monthDate->format('Y-m');
+                $label = $monthDate->translatedFormat('F Y');
+                $fullMonths[$label] = $monthlyData[$key] ?? 0;
+            }
+
+            return $fullMonths;
+        });
+    }
+
+    public function setViewMode(string $mode): void
+    {
+        $this->viewMode = $mode;
     }
 
     #[Computed]
@@ -227,7 +337,7 @@ class ListeningHistoryComponent extends Component
 
     public function refreshData(): void
     {
-        $suffixes = ['stats', 'hourly', 'cache_time'];
+        $suffixes = ['stats', 'hourly', 'daily', 'weekly', 'monthly', 'cache_time'];
         foreach ($suffixes as $suffix) {
             Cache::forget($this->cacheKey($suffix));
         }

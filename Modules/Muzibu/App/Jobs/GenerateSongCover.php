@@ -25,6 +25,11 @@ class GenerateSongCover implements ShouldQueue
     public ?int $tenantId = null;
 
     /**
+     * Genre ID'leri - özel görsel kuralları olan genre'ler
+     */
+    protected const GENRE_TASAVVUFI = 27;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(
@@ -33,7 +38,9 @@ class GenerateSongCover implements ShouldQueue
         public ?string $artistName = null,
         public ?string $genreName = null,
         public ?int $userId = null,
-        ?int $tenantId = null
+        ?int $tenantId = null,
+        public ?int $genreId = null,
+        public bool $forceRegenerate = false
     ) {
         // Save tenant context - explicitly passed or auto-detect
         $this->tenantId = $tenantId ?? tenant('id');
@@ -69,23 +76,31 @@ class GenerateSongCover implements ShouldQueue
             }
 
             // ✅ KULLANICI GÖRSELİ KONTROLÜ: Hero varsa AI üretme!
-            // Kullanıcının yüklediği görsel daha değerli, AI onu ezmemeli
+            // forceRegenerate true ise mevcut görseli sil ve yeniden üret
             if ($song->hasMedia('hero')) {
-                Log::info('🎵 GenerateSongCover: SKIPPED - Hero already exists (user uploaded)', [
-                    'song_id' => $this->songId,
-                    'existing_media_id' => $song->getFirstMedia('hero')?->id,
-                ]);
-                return;
+                if ($this->forceRegenerate) {
+                    Log::info('🎵 GenerateSongCover: Force regenerate - deleting existing hero', [
+                        'song_id' => $this->songId,
+                        'existing_media_id' => $song->getFirstMedia('hero')?->id,
+                    ]);
+                    $song->clearMediaCollection('hero');
+                } else {
+                    Log::info('🎵 GenerateSongCover: SKIPPED - Hero already exists (user uploaded)', [
+                        'song_id' => $this->songId,
+                        'existing_media_id' => $song->getFirstMedia('hero')?->id,
+                    ]);
+                    return;
+                }
             }
 
             Log::info('🎵 GenerateSongCover: Song found', [
                 'song_id' => $song->song_id,
             ]);
 
-            // 🎨 SERBEST HAYAL GÜCÜ: Sadece başlığı ver, AI kendi hayal etsin
-            // Hiçbir yönlendirme, kısıtlama, şablon YOK
-            // Leonardo AI başlığı alıp kendi yorumlasın
-            $prompt = $this->songTitle;
+            // 🎨 GENRE BAZLI PROMPT SEÇİMİ
+            // Tasavvufi genre için özel abstract pastel prompt
+            $genreIdToCheck = $this->genreId ?? $song->genre_id;
+            $prompt = $this->buildPromptForGenre($genreIdToCheck, $this->songTitle);
 
             Log::info('🎵 Song Cover Job: Free imagination mode', [
                 'song_id' => $this->songId,
@@ -176,5 +191,39 @@ class GenerateSongCover implements ShouldQueue
             // Job fail olsun ki retry olmasın
             $this->fail($e);
         }
+    }
+
+    /**
+     * Genre bazlı prompt oluştur
+     * Tasavvufi genre için özel abstract pastel prompt
+     *
+     * @param int|null $genreId
+     * @param string $title
+     * @return string
+     */
+    protected function buildPromptForGenre(?int $genreId, string $title): string
+    {
+        // Tasavvufi genre (ID: 27) için özel abstract pastel prompt
+        if ($genreId === self::GENRE_TASAVVUFI) {
+            $pastelStyles = [
+                'soft lavender and mint green flowing shapes',
+                'gentle rose pink and sky blue abstract waves',
+                'muted coral and sage green organic forms',
+                'pale peach and dusty blue geometric patterns',
+                'soft lilac and warm cream fluid shapes',
+                'delicate blush and seafoam abstract composition',
+                'subtle mauve and pale gold ethereal forms',
+                'soft apricot and powder blue minimalist shapes',
+            ];
+
+            $randomStyle = $pastelStyles[array_rand($pastelStyles)];
+
+            return "Abstract minimalist art, {$randomStyle}, spiritual serene atmosphere, " .
+                   "soft pastel color palette, peaceful meditation mood, gentle gradients, " .
+                   "no text, no human figures, ethereal and calming, high quality digital art";
+        }
+
+        // Diğer genre'ler için sadece başlık (mevcut davranış)
+        return $title;
     }
 }

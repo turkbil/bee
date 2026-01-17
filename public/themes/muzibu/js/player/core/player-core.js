@@ -1798,11 +1798,13 @@ function muzibuApp() {
 
         toggleMute() {
             this.isMuted = !this.isMuted;
-            const targetVolume = this.isMuted ? 0 : this.volume / 100;
-            // toggleMute
+            // Mute = 0, Unmute = %100
+            this.volume = this.isMuted ? 0 : 100;
+            const targetVolume = this.volume / 100;
 
             if (this.howl) {
                 this.howl.mute(this.isMuted);
+                this.howl.volume(targetVolume);
             }
 
             // 🔊 FIX: HLS için her iki audio element'i de kontrol et
@@ -1812,12 +1814,10 @@ function muzibuApp() {
             if (audio1) {
                 audio1.muted = this.isMuted;
                 audio1.volume = targetVolume;
-                // hlsAudio volume set
             }
             if (audio2) {
                 audio2.muted = this.isMuted;
                 audio2.volume = targetVolume;
-                // hlsAudioNext volume set
             }
         },
 

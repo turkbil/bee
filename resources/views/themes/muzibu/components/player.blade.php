@@ -284,56 +284,11 @@
         <span class="text-xs text-zinc-400 w-10 tabular-nums" x-text="formatTime(animatedDuration)">0:00</span>
     </div>
 
-    {{-- Volume Control - Twitter Style (Vertical Hover) --}}
-    <div class="relative" x-data="{ showVolumeSlider: false, isDragging: false, volumeTimeout: null }"
-         @mouseleave="clearTimeout(volumeTimeout); volumeTimeout = setTimeout(() => { if (!isDragging) { showVolumeSlider = false; } }, 200)"
-         @pointerup.window="isDragging = false; if($refs.volumeTrack) { try { $refs.volumeTrack.releasePointerCapture($event.pointerId) } catch(e) {} }; clearTimeout(volumeTimeout); volumeTimeout = setTimeout(() => { showVolumeSlider = false; }, 200)"
-         @pointercancel.window="isDragging = false; if($refs.volumeTrack) { try { $refs.volumeTrack.releasePointerCapture($event.pointerId) } catch(e) {} }; showVolumeSlider = false; clearTimeout(volumeTimeout)"
-         @click.outside="showVolumeSlider = false; isDragging = false; clearTimeout(volumeTimeout)">
-        {{-- Volume Button --}}
-        <button class="w-8 h-8 text-white/60 hover:text-white flex items-center justify-center transition-colors"
-                @click="toggleMute()"
-                @mouseenter="clearTimeout(volumeTimeout); showVolumeSlider = true">
-            <i class="fas fa-volume-up" :class="isMuted ? 'fa-volume-mute' : (volume > 50 ? 'fa-volume-up' : 'fa-volume-down')"></i>
-        </button>
-
-        {{-- Vertical Volume Slider (Hover) --}}
-        <div x-show="showVolumeSlider"
-             x-cloak
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 scale-95 translate-y-2"
-             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-             x-transition:leave-end="opacity-0 scale-95 translate-y-2"
-             @mouseenter="clearTimeout(volumeTimeout)"
-             @mouseleave="clearTimeout(volumeTimeout); volumeTimeout = setTimeout(() => { if (!isDragging) { showVolumeSlider = false; } }, 200)"
-             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 rounded-lg px-3 pt-3 pb-2.5 shadow-2xl z-[9999] select-none flex flex-col items-center"
-             style="background: #18181b; border: 1px solid rgba(255,255,255,0.1);">
-
-            {{-- Vertical Track --}}
-            <div class="volume-track h-32 w-2 my-2 bg-white/10 rounded-full relative cursor-pointer select-none"
-                 x-ref="volumeTrack"
-                 @pointerdown="isDragging = true; clearTimeout(volumeTimeout); try { $el.setPointerCapture($event.pointerId) } catch(e) {}"
-                 @pointerup="isDragging = false; try { $el.releasePointerCapture($event.pointerId) } catch(e) {}; clearTimeout(volumeTimeout); volumeTimeout = setTimeout(() => { showVolumeSlider = false; }, 200)"
-                 @pointercancel="isDragging = false; try { $el.releasePointerCapture($event.pointerId) } catch(e) {}; showVolumeSlider = false"
-                 @lostpointercapture="isDragging = false"
-                 @click="const rect = $el.getBoundingClientRect(); const clickY = $event.clientY - rect.top; const newVolume = Math.max(0, Math.min(100, 100 - (clickY / rect.height * 100))); updateVolume(newVolume);"
-                 @pointermove="if (isDragging) { const rect = $el.getBoundingClientRect(); const moveY = $event.clientY - rect.top; const newVolume = Math.max(0, Math.min(100, 100 - (moveY / rect.height * 100))); updateVolume(newVolume); }">
-                {{-- Fill (bottom to top) - Beyaz --}}
-                <div class="absolute bottom-0 w-full bg-white/90 rounded-full transition-all pointer-events-none"
-                     :style="`height: ${isMuted ? 0 : volume}%`"></div>
-
-                {{-- Handle - Beyaz --}}
-                <div class="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg pointer-events-none"
-                     :style="`bottom: calc(${isMuted ? 0 : volume}% - 8px)`"></div>
-            </div>
-
-            {{-- Percentage Display (Fixed Width, Centered) - Beyaz --}}
-            <p class="w-8 mx-auto text-xs text-center mt-2 mb-0.5 text-white/70 tabular-nums select-none"
-               x-text="isMuted ? 0 : (Math.round(volume) >= 99 ? 100 : Math.round(volume))"></p>
-        </div>
-    </div>
+    {{-- Volume Control - Mute/Unmute Toggle --}}
+    <button class="w-9 h-9 text-white/60 hover:text-white flex items-center justify-center transition-colors"
+            @click="toggleMute()">
+        <i class="fas" :class="isMuted ? 'fa-volume-mute' : 'fa-volume-up'"></i>
+    </button>
 
     {{-- Queue Button (Radyo modunda gizli) --}}
     <button x-show="$store.muzibu?.playContext?.type !== 'radio'"

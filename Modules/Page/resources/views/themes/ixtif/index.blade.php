@@ -1,6 +1,3 @@
-{{-- ⚠️ DİKKAT: Bu dosya TÜM tenant'larda kullanılabilir!
-     Tenant-specific kod (Muzibu, İxtif vb.) BURAYA EKLEME!
-     Tenant-specific veriler ilgili temanın kendi dosyasında @php bloğu ile çekilmeli. --}}
 @php
     $themeService = app(\App\Services\ThemeService::class);
     $activeTheme = $themeService->getActiveTheme();

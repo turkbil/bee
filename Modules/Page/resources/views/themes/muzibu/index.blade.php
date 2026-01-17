@@ -1,4 +1,3 @@
-{{-- ⚠️ DİKKAT: Tenant-specific kod için @php bloğu kullan, PageController'a EKLEME! --}}
 @php
     $themeService = app(\App\Services\ThemeService::class);
     $activeTheme = $themeService->getActiveTheme();

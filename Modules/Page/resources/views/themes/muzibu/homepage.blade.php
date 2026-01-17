@@ -2,6 +2,58 @@
 
 @section('title', 'Muzibu - Ana Sayfa')
 
+{{-- 🎵 Muzibu Homepage Data - Tema içinde veri çekme (PageController'dan bağımsız) --}}
+@php
+use Illuminate\Support\Facades\Cache;
+
+// Genres
+$genres = $genres ?? Cache::remember('home_genres_v4', 300, fn() =>
+    \Modules\Muzibu\App\Models\Genre::where('is_active', 1)
+        ->where('songs_count', '>', 0)
+        ->with(['iconMedia'])
+        ->orderBy('songs_count', 'desc')
+        ->limit(15)
+        ->get()
+);
+
+// Featured Playlists
+$featuredPlaylists = $featuredPlaylists ?? Cache::remember('home_featured_playlists_v5', 300, fn() =>
+    \Modules\Muzibu\App\Models\Playlist::where('is_active', 1)
+        ->where('is_system', 1)
+        ->where('is_radio', 0)
+        ->where('songs_count', '>', 0)
+        ->with(['coverMedia'])
+        ->limit(10)
+        ->get()
+);
+
+// New Releases (Albums)
+$newReleases = $newReleases ?? Cache::remember('home_new_releases_v4', 300, fn() =>
+    \Modules\Muzibu\App\Models\Album::where('is_active', 1)
+        ->where('songs_count', '>', 0)
+        ->with(['artist', 'coverMedia'])
+        ->orderBy('created_at', 'desc')
+        ->limit(10)
+        ->get()
+);
+
+// Radios
+$radios = $radios ?? Cache::remember('home_radios_v4', 300, fn() =>
+    \Modules\Muzibu\App\Models\Radio::where('is_active', 1)
+        ->with(['logoMedia'])
+        ->limit(10)
+        ->get()
+);
+
+// Sectors
+$sectors = $sectors ?? Cache::remember('home_sectors_v4', 300, fn() =>
+    \Modules\Muzibu\App\Models\Sector::where('is_active', 1)
+        ->with(['iconMedia'])
+        ->limit(10)
+        ->get()
+);
+@endphp
+
 @section('content')
 {{-- 🎯 Reset sidebar to homepage state --}}
 <script>

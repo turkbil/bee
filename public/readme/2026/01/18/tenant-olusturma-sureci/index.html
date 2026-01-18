@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Oluşturma Süreci - Kapsamlı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .code-block { background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 16px; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 13px; }
+        .code-block .comment { color: #64748b; }
+        .code-block .keyword { color: #f472b6; }
+        .code-block .string { color: #a5f3fc; }
+        .code-block .function { color: #fbbf24; }
+        .step-number { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .timeline-line { width: 2px; background: linear-gradient(180deg, #3b82f6, #8b5cf6, #ec4899); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="bg-white/20 p-4 rounded-2xl">
+                    <i class="fas fa-sitemap text-4xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold">Tenant Oluşturma Süreci</h1>
+                    <p class="text-white/80 text-lg mt-1">Multi-Tenant Mimari - Kapsamlı Teknik Analiz</p>
+                </div>
+            </div>
+            <div class="flex gap-4 mt-6 text-sm">
+                <span class="bg-white/20 px-4 py-2 rounded-full"><i class="fas fa-database mr-2"></i>Central + Tenant DB</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full"><i class="fas fa-server mr-2"></i>Plesk Entegrasyonu</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full"><i class="fas fa-lock mr-2"></i>SSL Sertifikası</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full"><i class="fas fa-folder mr-2"></i>Storage Yönetimi</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Basit Anlatım -->
+        <section class="bg-slate-800 rounded-2xl p-8 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-green-500/20 text-green-400 p-2 rounded-lg"><i class="fas fa-lightbulb"></i></span>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-700/50 p-6 rounded-xl">
+                    <h3 class="font-bold text-green-400 mb-3"><i class="fas fa-question-circle mr-2"></i>Tenant Nedir?</h3>
+                    <p class="text-slate-300">Tenant, sistemde bağımsız çalışan bir "kiracı site"dir. Her tenant'ın kendi veritabanı, dosyaları ve ayarları vardır. Örneğin: muzibu.com bir tenant, ixtif.com başka bir tenant'tır.</p>
+                </div>
+                <div class="bg-slate-700/50 p-6 rounded-xl">
+                    <h3 class="font-bold text-blue-400 mb-3"><i class="fas fa-cogs mr-2"></i>Ne Oluyor?</h3>
+                    <p class="text-slate-300">Yeni tenant oluşturulduğunda: veritabanı yaratılır, tablolar oluşturulur, dosya klasörleri hazırlanır, domain Plesk'e kaydedilir ve SSL sertifikası yenilenir.</p>
+                </div>
+                <div class="bg-slate-700/50 p-6 rounded-xl">
+                    <h3 class="font-bold text-purple-400 mb-3"><i class="fas fa-clock mr-2"></i>Ne Kadar Sürer?</h3>
+                    <p class="text-slate-300">Tüm işlemler senkron (anında) çalışır. Sadece SSL sertifikası yenileme 10 saniye sonra queue'da çalışır (DNS propagation beklemek için).</p>
+                </div>
+                <div class="bg-slate-700/50 p-6 rounded-xl">
+                    <h3 class="font-bold text-orange-400 mb-3"><i class="fas fa-shield-alt mr-2"></i>Neden Önemli?</h3>
+                    <p class="text-slate-300">Her site izole çalışır - birinin verileri diğerini etkilemez. Plesk entegrasyonu sayesinde domain yönetimi ve SSL otomatiktir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Genel Akış -->
+        <section class="bg-slate-800 rounded-2xl p-8 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-blue-500/20 text-blue-400 p-2 rounded-lg"><i class="fas fa-project-diagram"></i></span>
+                Genel Akış Şeması
+            </h2>
+            <div class="bg-slate-900 p-6 rounded-xl">
+                <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+                    <span class="bg-blue-600 px-4 py-2 rounded-lg font-medium">1. Tenant::create()</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-purple-600 px-4 py-2 rounded-lg font-medium">2. TenantCreated Event</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-pink-600 px-4 py-2 rounded-lg font-medium">3. CreateDatabase Job</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-orange-600 px-4 py-2 rounded-lg font-medium">4. MigrateDatabase Job</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-green-600 px-4 py-2 rounded-lg font-medium">5. SeedDatabase Job</span>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-3 text-sm mt-4">
+                    <span class="bg-teal-600 px-4 py-2 rounded-lg font-medium">6. DatabaseMigrated Event</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-cyan-600 px-4 py-2 rounded-lg font-medium">7. Storage + Plesk DB</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-indigo-600 px-4 py-2 rounded-lg font-medium">8. Domain Ekleme</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-violet-600 px-4 py-2 rounded-lg font-medium">9. Plesk Alias</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-rose-600 px-4 py-2 rounded-lg font-medium">10. SSL Yenileme</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detaylı Adımlar -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-purple-500/20 text-purple-400 p-2 rounded-lg"><i class="fas fa-list-ol"></i></span>
+                Detaylı Adımlar
+            </h2>
+
+            <!-- STEP 1 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-blue-600 text-white">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-400 mb-2">Tenant::create() - Central DB'ye Kayıt</h3>
+                        <p class="text-slate-400 mb-4">Kullanıcı yeni tenant oluşturduğunda başlangıç noktası</p>
+
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-3"><i class="fas fa-file-code mr-2 text-blue-400"></i>Tetikleyen Dosya</h4>
+                                <div class="code-block text-sm">
+<span class="comment">// Modules/TenantManagement/App/Http/Controllers/</span>
+<span class="comment">// TenantManagementController.php:41-91</span>
+
+$tenant = <span class="keyword">Tenant</span>::<span class="function">create</span>([
+    <span class="string">'title'</span> => $validated[<span class="string">'title'</span>],
+    <span class="string">'tenancy_db_name'</span> => $dbName,
+    <span class="string">'is_active'</span> => <span class="keyword">true</span>,
+    <span class="string">'theme_id'</span> => $validated[<span class="string">'theme_id'</span>],
+    <span class="string">'data'</span> => $data,
+]);
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-3"><i class="fas fa-database mr-2 text-green-400"></i>Central DB - tenants Tablosu</h4>
+                                <div class="bg-slate-900 rounded-lg p-4">
+                                    <table class="w-full text-sm">
+                                        <thead class="text-slate-400 border-b border-slate-700">
+                                            <tr><th class="text-left py-2">Alan</th><th class="text-left py-2">Açıklama</th></tr>
+                                        </thead>
+                                        <tbody class="text-slate-300">
+                                            <tr><td class="py-1"><code>id</code></td><td>Auto increment</td></tr>
+                                            <tr><td class="py-1"><code>title</code></td><td>Tenant adı</td></tr>
+                                            <tr><td class="py-1"><code>tenancy_db_name</code></td><td>tenant_[slug]_[6hex] (unique)</td></tr>
+                                            <tr><td class="py-1"><code>is_active</code></td><td>Boolean</td></tr>
+                                            <tr><td class="py-1"><code>theme_id</code></td><td>FK → themes</td></tr>
+                                            <tr><td class="py-1"><code>ai_credits_balance</code></td><td>AI kredi bakiyesi</td></tr>
+                                            <tr><td class="py-1"><code>data</code></td><td>JSON ek veriler</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                            <p class="text-yellow-400 text-sm"><i class="fas fa-info-circle mr-2"></i><strong>DB Name Oluşturma:</strong> <code>tenant_[title_slug]_[6_hex_random]</code> formatında unique isim üretilir. Örnek: <code>tenant_kirmizi_a5f2c1</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-purple-600 text-white">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-purple-400 mb-2">TenantCreated Event → JobPipeline</h3>
+                        <p class="text-slate-400 mb-4">Tenant kaydedilince otomatik tetiklenen event ve job'lar</p>
+
+                        <div class="code-block mb-4">
+<span class="comment">// app/Providers/TenancyServiceProvider.php:27-39</span>
+
+Events\<span class="keyword">TenantCreated</span>::class => [
+    <span class="function">JobPipeline</span>::<span class="function">make</span>([
+        Jobs\<span class="keyword">CreateDatabase</span>::class,     <span class="comment">// ✅ 1. Veritabanı oluştur</span>
+        Jobs\<span class="keyword">MigrateDatabase</span>::class,    <span class="comment">// ✅ 2. Migration'ları çalıştır</span>
+        Jobs\<span class="keyword">SeedDatabase</span>::class,       <span class="comment">// ✅ 3. Seeder'ları çalıştır</span>
+    ])-><span class="function">shouldBeQueued</span>(<span class="keyword">false</span>),       <span class="comment">// Senkron çalışır</span>
+],
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                                <h5 class="font-bold text-green-400 mb-2"><i class="fas fa-database mr-2"></i>CreateDatabase</h5>
+                                <p class="text-sm text-slate-300">MySQL'de yeni veritabanı oluşturur: <code>CREATE DATABASE tenant_xxx</code></p>
+                            </div>
+                            <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                                <h5 class="font-bold text-blue-400 mb-2"><i class="fas fa-table mr-2"></i>MigrateDatabase</h5>
+                                <p class="text-sm text-slate-300"><code>php artisan tenants:migrate</code> ile tüm tenant migration'ları çalıştırır</p>
+                            </div>
+                            <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
+                                <h5 class="font-bold text-purple-400 mb-2"><i class="fas fa-seedling mr-2"></i>SeedDatabase</h5>
+                                <p class="text-sm text-slate-300"><code>php artisan tenants:seed</code> ile başlangıç verilerini ekler</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-pink-600 text-white">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-pink-400 mb-2">Tenant Database Migration'ları</h3>
+                        <p class="text-slate-400 mb-4">Tenant DB'de oluşturulan tüm tablolar</p>
+
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-3"><i class="fas fa-folder mr-2 text-yellow-400"></i>Base Migrations (database/migrations/tenant/)</h4>
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>users</code> - Kullanıcılar</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>cache</code> - Cache tablosu</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>jobs</code> - Queue jobs</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>sessions</code> - Session'lar</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>media</code> - Medya dosyaları</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>activity_log</code> - Activity log</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>module_tenant_settings</code></li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>tenant_usage_logs</code></li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i><code>tags</code>, <code>taggables</code></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-3"><i class="fas fa-puzzle-piece mr-2 text-purple-400"></i>Modül Migrations (Modules/*/database/migrations/tenant/)</h4>
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-blue-400"></i><strong>UserManagement:</strong> permissions, roles</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-blue-400"></i><strong>LanguageManagement:</strong> tenant_languages</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-blue-400"></i><strong>MenuManagement:</strong> menus, menu_items</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-blue-400"></i><strong>Page:</strong> pages</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-blue-400"></i><strong>Blog:</strong> blog_categories, blogs</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-blue-400"></i><strong>Portfolio:</strong> portfolio_categories, portfolios</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-blue-400"></i><strong>Shop:</strong> 30+ tablo (products, orders vb.)</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-blue-400"></i><strong>Cart, Payment, Coupon, AI...</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-slate-900 p-4 rounded-lg">
+                            <p class="text-sm text-slate-400"><i class="fas fa-info-circle mr-2 text-blue-400"></i><strong>Toplam:</strong> ~100+ migration dosyası, tüm modüllerin tenant tabloları otomatik oluşturulur.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-orange-600 text-white">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-orange-400 mb-2">TenantDatabaseSeeder - Başlangıç Verileri</h3>
+                        <p class="text-slate-400 mb-4">Tenant DB'ye eklenen varsayılan veriler</p>
+
+                        <div class="code-block mb-4 text-sm">
+<span class="comment">// database/seeders/TenantDatabaseSeeder.php</span>
+
+1. <span class="function">seedLanguages()</span>       <span class="comment">// 100 dil kopyala (sadece TR aktif)</span>
+2. <span class="function">seedModuleTenants()</span>   <span class="comment">// Central'dan aktif modülleri al</span>
+3. <span class="function">seedPermissions()</span>     <span class="comment">// Central'dan permission'ları kopyala</span>
+4. <span class="function">seedRoles()</span>           <span class="comment">// root, admin, editor, user rolleri</span>
+5. <span class="function">assignPermissionsToRoles()</span> <span class="comment">// Rol-permission ilişkileri</span>
+6. <span class="function">seedUsers()</span>           <span class="comment">// 2 varsayılan kullanıcı</span>
+7. <span class="function">seedMenu()</span>            <span class="comment">// Central'dan header menüsünü kopyala</span>
+8. <span class="function">seedHomePage()</span>        <span class="comment">// Anasayfa oluştur</span>
+9. <span class="function">seedAIKnowledgeBase()</span> <span class="comment">// AI bilgi bankası</span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-900 rounded-lg p-4">
+                                <h5 class="font-bold text-green-400 mb-2"><i class="fas fa-users mr-2"></i>Varsayılan Kullanıcılar</h5>
+                                <ul class="text-sm space-y-1">
+                                    <li><code>nurullah@nurullah.net</code> / g0nulcelen → <span class="text-red-400">root</span></li>
+                                    <li><code>info@turkbilisim.com.tr</code> / gonu1celen → <span class="text-blue-400">admin</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900 rounded-lg p-4">
+                                <h5 class="font-bold text-purple-400 mb-2"><i class="fas fa-user-shield mr-2"></i>Varsayılan Roller</h5>
+                                <ul class="text-sm space-y-1">
+                                    <li><span class="text-red-400">root</span> - Tüm yetkiler</li>
+                                    <li><span class="text-blue-400">admin</span> - view, create, update (delete hariç)</li>
+                                    <li><span class="text-green-400">editor</span> - view, create, update</li>
+                                    <li><span class="text-slate-400">user</span> - Sadece view</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-teal-600 text-white">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-teal-400 mb-2">DatabaseMigrated Event → Storage + Plesk DB</h3>
+                        <p class="text-slate-400 mb-4">Migration tamamlanınca tetiklenen işlemler</p>
+
+                        <div class="code-block mb-4 text-sm">
+<span class="comment">// app/Listeners/RegisterTenantDatabaseToPlesk.php</span>
+
+Events\<span class="keyword">DatabaseMigrated</span>::class => [
+    \App\Listeners\<span class="keyword">RegisterTenantDatabaseToPlesk</span>::class,
+],
+                        </div>
+
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-3"><i class="fas fa-folder-open mr-2 text-yellow-400"></i>Storage Klasörleri Oluşturma</h4>
+                                <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+<pre class="text-green-400">storage/tenant{ID}/
+├── framework/
+│   ├── cache/
+│   ├── sessions/
+│   └── views/
+├── app/
+│   └── public/
+└── logs/</pre>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-2"><i class="fas fa-link mr-1"></i>Symlink: <code>public/storage/tenant{ID}</code> → <code>storage/tenant{ID}/app/public</code></p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-3"><i class="fas fa-server mr-2 text-blue-400"></i>Plesk Veritabanı Kaydı</h4>
+                                <div class="code-block text-sm">
+<span class="comment">// Plesk data_bases tablosuna INSERT</span>
+
+1. Domain ID bul (tuufi.com → 1)
+2. DB Server ID bul (localhost → 1)
+3. INSERT INTO data_bases:
+   - name: tenant_xxx
+   - type: mysql
+   - dom_id: 1
+   - db_server_id: 1
+                                </div>
+                                <p class="text-sm text-slate-400 mt-2"><i class="fas fa-redo mr-1"></i>3 deneme, 2 saniye bekleme (retry logic)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-cyan-600 text-white">6</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-cyan-400 mb-2">Domain Ekleme → Central DB</h3>
+                        <p class="text-slate-400 mb-4">Tenant'a domain eklendiğinde tetiklenen işlemler</p>
+
+                        <div class="code-block mb-4 text-sm">
+<span class="comment">// Central DB - domains tablosu</span>
+
+$domain = <span class="keyword">Domain</span>::<span class="function">create</span>([
+    <span class="string">'domain'</span>    => <span class="string">'yenisite.com'</span>,
+    <span class="string">'tenant_id'</span> => $tenant->id,
+]);
+                        </div>
+
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <table class="w-full text-sm">
+                                <thead class="text-slate-400 border-b border-slate-700">
+                                    <tr><th class="text-left py-2">Alan</th><th class="text-left py-2">Açıklama</th></tr>
+                                </thead>
+                                <tbody class="text-slate-300">
+                                    <tr><td class="py-1"><code>id</code></td><td>Auto increment</td></tr>
+                                    <tr><td class="py-1"><code>tenant_id</code></td><td>FK → tenants.id (cascade delete)</td></tr>
+                                    <tr><td class="py-1"><code>domain</code></td><td>Domain adı (unique)</td></tr>
+                                    <tr><td class="py-1"><code>is_primary</code></td><td>Primary domain flag</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-indigo-600 text-white">7</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-indigo-400 mb-2">DomainCreated Event → Otomatik WWW + Plesk Alias</h3>
+                        <p class="text-slate-400 mb-4">Domain oluşturulunca tetiklenen listener'lar</p>
+
+                        <div class="code-block mb-4 text-sm">
+<span class="comment">// app/Providers/TenancyServiceProvider.php:56-59</span>
+
+Events\<span class="keyword">DomainCreated</span>::class => [
+    \App\Listeners\<span class="keyword">CreateTenantDomains</span>::class,       <span class="comment">// ✅ Otomatik www.domain</span>
+    \App\Listeners\<span class="keyword">RegisterDomainAliasInPlesk</span>::class, <span class="comment">// ✅ Plesk alias</span>
+],
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                                <h5 class="font-bold text-green-400 mb-2"><i class="fas fa-globe mr-2"></i>CreateTenantDomains</h5>
+                                <p class="text-sm text-slate-300 mb-2"><strong>Dosya:</strong> <code>app/Listeners/CreateTenantDomains.php</code></p>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• <code>yenisite.com</code> eklenince</li>
+                                    <li>• Otomatik <code>www.yenisite.com</code> eklenir</li>
+                                    <li>• Central tenant'lara ekleme yapmaz</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                                <h5 class="font-bold text-blue-400 mb-2"><i class="fas fa-server mr-2"></i>RegisterDomainAliasInPlesk</h5>
+                                <p class="text-sm text-slate-300 mb-2"><strong>Dosya:</strong> <code>app/Listeners/RegisterDomainAliasInPlesk.php</code></p>
+                                <div class="bg-slate-900 rounded p-2 text-xs font-mono mt-2">
+sudo /usr/sbin/plesk bin domalias \
+  --create yenisite.com \
+  -domain tuufi.com \
+  -web true -mail true -dns true \
+  -seo-redirect false
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                            <p class="text-yellow-400 text-sm"><i class="fas fa-info-circle mr-2"></i><strong>Önemli:</strong> Tüm domain'ler <code>tuufi.com</code>'a alias olarak bağlanır. Plesk alias oluşturulunca www subdomain'i otomatik eklenir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 8 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-rose-600 text-white">8</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-rose-400 mb-2">SSL Sertifikası Yenileme (Let's Encrypt)</h3>
+                        <p class="text-slate-400 mb-4">Yeni domain eklenince SSL sertifikası otomatik yenilenir</p>
+
+                        <div class="code-block mb-4 text-sm">
+<span class="comment">// app/Jobs/ReissueLetsEncryptCertificate.php</span>
+
+<span class="comment">// 10 saniye delay (DNS propagation için)</span>
+$this->delay = <span class="function">now</span>()-><span class="function">addSeconds</span>(10);
+
+<span class="comment">// Plesk Let's Encrypt komutu</span>
+sudo /usr/sbin/plesk bin extension --exec letsencrypt cli.php \
+  -d tuufi.com -d www.tuufi.com \
+  -d yenisite.com -d www.yenisite.com \
+  -d eskisite.com -d www.eskisite.com \
+  ... <span class="comment">(tüm domain'ler)</span> \
+  -m ssl@tuufi.com
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-900 rounded-lg p-4">
+                                <h5 class="font-bold text-green-400 mb-2"><i class="fas fa-cog mr-2"></i>Job Özellikleri</h5>
+                                <ul class="text-sm space-y-1">
+                                    <li><code>$tries = 2</code> - 2 deneme</li>
+                                    <li><code>$timeout = 120</code> - 2 dakika timeout</li>
+                                    <li><code>$backoff = 30</code> - 30 sn retry bekleme</li>
+                                    <li><code>$delay = 10s</code> - DNS için bekleme</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900 rounded-lg p-4">
+                                <h5 class="font-bold text-blue-400 mb-2"><i class="fas fa-list-check mr-2"></i>Çalışma Mantığı</h5>
+                                <ul class="text-sm space-y-1">
+                                    <li>1. Central DB'den tüm domain'leri al</li>
+                                    <li>2. Her domain için -d parametresi ekle</li>
+                                    <li>3. www. subdomain'leri de ekle</li>
+                                    <li>4. Plesk Let's Encrypt CLI çalıştır</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                            <p class="text-red-400 text-sm"><i class="fas fa-exclamation-triangle mr-2"></i><strong>Rate Limit:</strong> Let's Encrypt rate limit'e takılırsa warning log yazılır ve daha sonra tekrar denenir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 9 -->
+            <div class="bg-slate-800 rounded-2xl p-6 mb-6 border border-slate-700">
+                <div class="flex gap-4">
+                    <div class="step-number bg-violet-600 text-white">9</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-violet-400 mb-2">TenancyInitialized Event - Runtime Konfigürasyonu</h3>
+                        <p class="text-slate-400 mb-4">Tenant context'e geçildiğinde yapılan ayarlar</p>
+
+                        <div class="code-block mb-4 text-sm">
+<span class="comment">// app/Providers/TenancyServiceProvider.php:88-146</span>
+
+Events\<span class="keyword">TenancyInitialized</span>::class => [
+    <span class="comment">// 1. Log yapılandırması</span>
+    <span class="function">config</span>([<span class="string">'logging.channels.tenant.path'</span> => storage_path(<span class="string">'logs/tenant.log'</span>)]);
+
+    <span class="comment">// 2. Session lifetime (tenant setting'den)</span>
+    <span class="function">config</span>([<span class="string">'session.lifetime'</span> => <span class="function">setting</span>(<span class="string">'auth_session_lifetime'</span>, 525600)]);
+
+    <span class="comment">// 3. Session prefix (Redis için)</span>
+    <span class="function">config</span>([<span class="string">'database.redis.session.options.prefix'</span> => <span class="string">"tenant_{$tenantId}_session_"</span>]);
+
+    <span class="comment">// 4. Cookie domain (.domain.com formatında)</span>
+    <span class="function">config</span>([<span class="string">'session.domain'</span> => <span class="string">'.yenisite.com'</span>]);
+],
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Silme İşlemleri -->
+        <section class="bg-slate-800 rounded-2xl p-8 mb-8 border border-red-500/30">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-red-500/20 text-red-400 p-2 rounded-lg"><i class="fas fa-trash-alt"></i></span>
+                Tenant/Domain Silme İşlemleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold text-red-400 mb-3"><i class="fas fa-building mr-2"></i>Tenant Silindiğinde</h3>
+                    <div class="code-block text-sm mb-4">
+Events\<span class="keyword">TenantDeleted</span>::class => [
+    <span class="keyword">SafeDeleteDatabase</span>::class,        <span class="comment">// DB sil</span>
+    <span class="keyword">UnregisterDatabaseFromPlesk</span>::class, <span class="comment">// Plesk'ten kaldır</span>
+],
+                    </div>
+                    <ul class="text-sm space-y-2">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Veritabanı güvenli silinir</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Plesk data_bases kaydı silinir</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Domain'ler cascade delete ile silinir</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-orange-400 mb-3"><i class="fas fa-globe mr-2"></i>Domain Silindiğinde</h3>
+                    <div class="code-block text-sm mb-4">
+Events\<span class="keyword">DeletingDomain</span>::class => [
+    <span class="keyword">UnregisterDomainAliasFromPlesk</span>::<span class="function">dispatchSync</span>(),
+],
+                    </div>
+                    <ul class="text-sm space-y-2">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Plesk alias silinir (<code>domalias --delete</code>)</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Senkron çalışır (domain silinmeden önce)</li>
+                        <li><i class="fas fa-info-circle text-blue-400 mr-2"></i>SSL'den otomatik çıkar (bir sonraki yenilemede)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kritik Dosyalar -->
+        <section class="bg-slate-800 rounded-2xl p-8 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-yellow-500/20 text-yellow-400 p-2 rounded-lg"><i class="fas fa-file-code"></i></span>
+                Kritik Dosyalar Özet
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-900 text-slate-300">
+                        <tr>
+                            <th class="text-left p-3 rounded-tl-lg">Dosya</th>
+                            <th class="text-left p-3">Rol</th>
+                            <th class="text-left p-3 rounded-tr-lg">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-blue-400">app/Models/Tenant.php</code></td>
+                            <td class="p-3"><span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">Model</span></td>
+                            <td class="p-3">Tenant modeli, relationships, AI helpers</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-blue-400">app/Models/Domain.php</code></td>
+                            <td class="p-3"><span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">Model</span></td>
+                            <td class="p-3">Domain modeli (stancl/tenancy)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-purple-400">app/Providers/TenancyServiceProvider.php</code></td>
+                            <td class="p-3"><span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs">Provider</span></td>
+                            <td class="p-3">Tüm event → listener mapping'leri</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-green-400">app/Listeners/RegisterTenantDatabaseToPlesk.php</code></td>
+                            <td class="p-3"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">Listener</span></td>
+                            <td class="p-3">Storage oluşturma + Plesk DB kaydı</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-green-400">app/Listeners/RegisterDomainAliasInPlesk.php</code></td>
+                            <td class="p-3"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">Listener</span></td>
+                            <td class="p-3">Plesk domain alias oluşturma</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-green-400">app/Listeners/CreateTenantDomains.php</code></td>
+                            <td class="p-3"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">Listener</span></td>
+                            <td class="p-3">Otomatik www.domain ekleme</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-orange-400">app/Jobs/ReissueLetsEncryptCertificate.php</code></td>
+                            <td class="p-3"><span class="bg-orange-500/20 text-orange-400 px-2 py-1 rounded text-xs">Job</span></td>
+                            <td class="p-3">SSL sertifikası yenileme (queue)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-red-400">app/Jobs/UnregisterDomainAliasFromPlesk.php</code></td>
+                            <td class="p-3"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">Job</span></td>
+                            <td class="p-3">Plesk domain alias silme</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-red-400">app/Jobs/UnregisterDatabaseFromPlesk.php</code></td>
+                            <td class="p-3"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">Job</span></td>
+                            <td class="p-3">Plesk DB kaydı silme</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-pink-400">database/seeders/TenantDatabaseSeeder.php</code></td>
+                            <td class="p-3"><span class="bg-pink-500/20 text-pink-400 px-2 py-1 rounded text-xs">Seeder</span></td>
+                            <td class="p-3">Tenant başlangıç verileri</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/50">
+                            <td class="p-3"><code class="text-cyan-400">Modules/TenantManagement/.../Controller.php</code></td>
+                            <td class="p-3"><span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-xs">Controller</span></td>
+                            <td class="p-3">CRUD API endpoints</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Plesk Komutları -->
+        <section class="bg-slate-800 rounded-2xl p-8 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-indigo-500/20 text-indigo-400 p-2 rounded-lg"><i class="fas fa-terminal"></i></span>
+                Plesk Komutları Özet
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold text-green-400 mb-3"><i class="fas fa-plus-circle mr-2"></i>Oluşturma Komutları</h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900 rounded-lg p-3">
+                            <p class="text-xs text-slate-400 mb-1">Domain Alias Oluştur:</p>
+                            <code class="text-xs text-green-300">sudo /usr/sbin/plesk bin domalias --create {domain} -domain tuufi.com -web true -mail true -dns true -seo-redirect false</code>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3">
+                            <p class="text-xs text-slate-400 mb-1">DB Kaydı (SQL):</p>
+                            <code class="text-xs text-green-300">sudo /usr/sbin/plesk db "INSERT INTO data_bases (name, type, dom_id, db_server_id) VALUES ('{dbName}', 'mysql', {domainId}, {serverId})"</code>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3">
+                            <p class="text-xs text-slate-400 mb-1">SSL Yenile:</p>
+                            <code class="text-xs text-green-300">sudo /usr/sbin/plesk bin extension --exec letsencrypt cli.php -d domain1 -d domain2 ... -m ssl@tuufi.com</code>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-bold text-red-400 mb-3"><i class="fas fa-minus-circle mr-2"></i>Silme Komutları</h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900 rounded-lg p-3">
+                            <p class="text-xs text-slate-400 mb-1">Domain Alias Sil:</p>
+                            <code class="text-xs text-red-300">sudo /usr/sbin/plesk bin domalias --delete {domain}</code>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3">
+                            <p class="text-xs text-slate-400 mb-1">DB Kaydı Sil (SQL):</p>
+                            <code class="text-xs text-red-300">sudo /usr/sbin/plesk db "DELETE FROM data_bases WHERE name = '{dbName}'"</code>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3">
+                            <p class="text-xs text-slate-400 mb-1">Alias Kontrol:</p>
+                            <code class="text-xs text-blue-300">sudo /usr/sbin/plesk bin domalias --info {domain}</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet Diagram -->
+        <section class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-pink-500/20 text-pink-400 p-2 rounded-lg"><i class="fas fa-sitemap"></i></span>
+                Özet: Tüm Oluşturulan Kaynaklar
+            </h2>
+
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-center">
+                    <div class="text-4xl mb-2"><i class="fas fa-database text-blue-400"></i></div>
+                    <h4 class="font-bold text-blue-400">Central DB</h4>
+                    <ul class="text-xs text-slate-300 mt-2 text-left">
+                        <li>• tenants tablosu</li>
+                        <li>• domains tablosu</li>
+                        <li>• module_tenants</li>
+                    </ul>
+                </div>
+                <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
+                    <div class="text-4xl mb-2"><i class="fas fa-server text-green-400"></i></div>
+                    <h4 class="font-bold text-green-400">Tenant DB</h4>
+                    <ul class="text-xs text-slate-300 mt-2 text-left">
+                        <li>• MySQL database</li>
+                        <li>• 100+ tablo</li>
+                        <li>• Başlangıç verileri</li>
+                    </ul>
+                </div>
+                <div class="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center">
+                    <div class="text-4xl mb-2"><i class="fas fa-folder text-purple-400"></i></div>
+                    <h4 class="font-bold text-purple-400">Dosya Sistemi</h4>
+                    <ul class="text-xs text-slate-300 mt-2 text-left">
+                        <li>• storage/tenant{ID}/</li>
+                        <li>• public symlink</li>
+                        <li>• logs klasörü</li>
+                    </ul>
+                </div>
+                <div class="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
+                    <div class="text-4xl mb-2"><i class="fas fa-cloud text-orange-400"></i></div>
+                    <h4 class="font-bold text-orange-400">Plesk</h4>
+                    <ul class="text-xs text-slate-300 mt-2 text-left">
+                        <li>• data_bases kaydı</li>
+                        <li>• Domain alias</li>
+                        <li>• SSL sertifikası</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TODO Checklist -->
+        <section class="bg-gradient-to-br from-emerald-900/30 to-slate-900 rounded-2xl p-8 mt-8 border-2 border-emerald-500/30">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-emerald-500/20 text-emerald-400 p-2 rounded-lg"><i class="fas fa-clipboard-check"></i></span>
+                Yeni Tenant Oluşturma TODO Checklist
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Otomatik Yapılanlar -->
+                <div class="bg-slate-800/80 rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-bold text-emerald-400 mb-4 text-lg"><i class="fas fa-robot mr-2"></i>Otomatik Yapılanlar (Sistem)</h3>
+
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Central DB - tenants tablosuna kayıt</p>
+                                <p class="text-xs text-slate-400">id, title, tenancy_db_name, theme_id, is_active...</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">MySQL veritabanı oluştur</p>
+                                <p class="text-xs text-slate-400">tenant_[slug]_[6hex] formatında unique isim</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Tenant migration'ları çalıştır</p>
+                                <p class="text-xs text-slate-400">php artisan tenants:migrate (100+ tablo)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Seeder çalıştır (başlangıç verileri)</p>
+                                <p class="text-xs text-slate-400">Diller, roller, kullanıcılar, menü, anasayfa</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Storage klasörleri oluştur</p>
+                                <p class="text-xs text-slate-400">storage/tenant{ID}/ (cache, sessions, views, logs, app/public)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Public symlink oluştur</p>
+                                <p class="text-xs text-slate-400">public/storage/tenant{ID} → storage/tenant{ID}/app/public</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Plesk veritabanı kaydı</p>
+                                <p class="text-xs text-slate-400">INSERT INTO data_bases (tuufi.com domain'ine bağlı)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain Eklendiğinde -->
+                <div class="bg-slate-800/80 rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-bold text-blue-400 mb-4 text-lg"><i class="fas fa-globe mr-2"></i>Domain Eklendiğinde (Otomatik)</h3>
+
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-blue-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Central DB - domains tablosuna kayıt</p>
+                                <p class="text-xs text-slate-400">domain (unique), tenant_id (FK)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-blue-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Otomatik www. subdomain ekle</p>
+                                <p class="text-xs text-slate-400">yenisite.com → www.yenisite.com otomatik eklenir</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-blue-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">Plesk domain alias oluştur</p>
+                                <p class="text-xs text-slate-400">plesk bin domalias --create (web, mail, dns enabled)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <i class="fas fa-check-circle text-blue-400 mt-1"></i>
+                            <div>
+                                <p class="font-medium text-slate-200">SSL sertifikası yenile (Let's Encrypt)</p>
+                                <p class="text-xs text-slate-400">10sn delay sonra queue'da çalışır, tüm domain'ler dahil edilir</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-700">
+                        <h3 class="font-bold text-orange-400 mb-4 text-lg"><i class="fas fa-user-cog mr-2"></i>Manuel Kontroller (Opsiyonel)</h3>
+
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                                <i class="far fa-square text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="font-medium text-slate-200">DNS kayıtları kontrol et</p>
+                                    <p class="text-xs text-slate-400">Domain'in tuufi.com sunucusuna yönlendirildiğinden emin ol</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                                <i class="far fa-square text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="font-medium text-slate-200">SSL sertifikası kontrolü</p>
+                                    <p class="text-xs text-slate-400">https://yenisite.com açılıyor mu? Sertifika geçerli mi?</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                                <i class="far fa-square text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="font-medium text-slate-200">Tenant CSS oluştur (gerekirse)</p>
+                                    <p class="text-xs text-slate-400">npm run prod veya npm run css:tenant{ID}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                                <i class="far fa-square text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="font-medium text-slate-200">Admin panele giriş test et</p>
+                                    <p class="text-xs text-slate-400">nurullah@nurullah.net / g0nulcelen ile giriş yap</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hızlı Komutlar -->
+            <div class="mt-6 bg-slate-900 rounded-xl p-6">
+                <h3 class="font-bold text-cyan-400 mb-4"><i class="fas fa-terminal mr-2"></i>Hızlı Kontrol Komutları</h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm font-mono">
+                    <div class="bg-slate-800 p-3 rounded-lg">
+                        <p class="text-slate-400 text-xs mb-1"># Plesk alias kontrol:</p>
+                        <code class="text-cyan-300">sudo /usr/sbin/plesk bin domalias --info yenisite.com</code>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded-lg">
+                        <p class="text-slate-400 text-xs mb-1"># SSL sertifika kontrol:</p>
+                        <code class="text-cyan-300">curl -vI https://yenisite.com 2>&1 | grep -i "SSL\|expire"</code>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded-lg">
+                        <p class="text-slate-400 text-xs mb-1"># Tenant DB kontrol:</p>
+                        <code class="text-cyan-300">mysql -e "SHOW DATABASES LIKE 'tenant_%'"</code>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded-lg">
+                        <p class="text-slate-400 text-xs mb-1"># Storage symlink kontrol:</p>
+                        <code class="text-cyan-300">ls -la public/storage/ | grep tenant</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Akış Özeti -->
+            <div class="mt-6 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-6">
+                <h3 class="font-bold text-emerald-400 mb-4"><i class="fas fa-route mr-2"></i>Oluşturma Akışı Özeti</h3>
+                <div class="flex flex-wrap items-center gap-2 text-sm">
+                    <span class="bg-blue-600 px-3 py-1 rounded-full">1. Tenant::create()</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-purple-600 px-3 py-1 rounded-full">2. CreateDatabase</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-pink-600 px-3 py-1 rounded-full">3. MigrateDatabase</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-orange-600 px-3 py-1 rounded-full">4. SeedDatabase</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-teal-600 px-3 py-1 rounded-full">5. Storage + Plesk DB</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-cyan-600 px-3 py-1 rounded-full">6. Domain Ekle</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-indigo-600 px-3 py-1 rounded-full">7. Plesk Alias</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-rose-600 px-3 py-1 rounded-full">8. SSL Yenile</span>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <span class="bg-emerald-600 px-3 py-1 rounded-full">✓ HAZIR</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-6 mt-12">
+        <div class="container mx-auto px-6 text-center text-slate-400 text-sm">
+            18 Ocak 2026 • Tuufi.com
+        </div>
+    </footer>
+</body>
+</html>

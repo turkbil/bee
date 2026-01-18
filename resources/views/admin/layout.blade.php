@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      x-data="{ darkMode: (document.cookie.match(/dark=([^;]+)/) || ['', 'auto'])[1] === '1' ? 'dark' : 'light' }"
 
 <head>
     <meta charset="utf-8" />
@@ -794,6 +795,35 @@ window.addEventListener('load', function() {
 
 <!-- AI Content Builder JS -->
 <script src="{{ asset('assets/js/ai-content-builder.js') }}"></script>
+
+{{-- Livewire 419 Auto-Reload - Session expired handler --}}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Livewire 3: Request hook ile 419 yakala
+    if (window.Livewire) {
+        Livewire.hook('request', ({ fail }) => {
+            fail(({ status, preventDefault }) => {
+                if (status === 419) {
+                    preventDefault();
+                    // Sessizce sayfayı yenile
+                    window.location.reload();
+                }
+            });
+        });
+    }
+
+    // Fetch API interceptor - tüm 419 hatalarını yakala
+    const originalFetch = window.fetch;
+    window.fetch = async function(...args) {
+        const response = await originalFetch.apply(this, args);
+        if (response.status === 419) {
+            console.warn('419 Session Expired - Reloading...');
+            window.location.reload();
+        }
+        return response;
+    };
+});
+</script>
 
 </body>
 </html>

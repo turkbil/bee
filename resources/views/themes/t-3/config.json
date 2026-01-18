@@ -1,0 +1,11 @@
+{
+    "name": "t-3",
+    "title": "Yıldırım Panjur Teması",
+    "version": "1.0.0",
+    "description": "Tenant 3 (Yıldırım Panjur) için otomatik oluşturulan tema",
+    "extends": "simple",
+    "colors": {
+        "primary": "#1e3a5f",
+        "secondary": "#f59e0b"
+    }
+}

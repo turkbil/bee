@@ -62,11 +62,8 @@ return new class extends Migration
                   ->onDelete('cascade')
                   ->comment('Kupon silinirse kullanım kayıtları da silinir');
 
-            $table->foreign('order_id')
-                  ->references('order_id')
-                  ->on('shop_orders')
-                  ->onDelete('cascade')
-                  ->comment('Sipariş silinirse ID null olur ama kayıt kalır');
+            // NOT: shop_orders tablosu kaldırıldı, Cart modülünde orders tablosu kullanılıyor
+            // order_id foreign key kaldırıldı
 
             $table->foreign('customer_id')
                   ->references('customer_id')

@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni Tenant Teması Oluşturma Rehberi - Multi-Tenant Tema Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.875rem; }
+        pre code { background: none; padding: 0; }
+        .file-tree { font-family: 'Courier New', monospace; }
+        .file-new { color: #22c55e; }
+        .file-edit { color: #f59e0b; }
+        .file-exists { color: #64748b; }
+        .nav-link { transition: all 0.2s; }
+        .nav-link:hover { background: rgba(139, 92, 246, 0.2); }
+        .nav-link.active { background: rgba(139, 92, 246, 0.3); border-left: 3px solid #8b5cf6; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+    <div class="flex">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 fixed h-screen overflow-y-auto border-r border-slate-700 p-4 hidden lg:block">
+            <div class="mb-8">
+                <h2 class="text-lg font-bold text-purple-400 mb-2">
+                    <i class="fas fa-palette mr-2"></i>Tema Rehberi
+                </h2>
+                <p class="text-xs text-slate-500">v2 - 18 Ocak 2026</p>
+            </div>
+            <nav class="space-y-1 text-sm">
+                <a href="#ozet" class="nav-link block px-3 py-2 rounded">Özet</a>
+                <a href="#kurallar" class="nav-link block px-3 py-2 rounded">Temel Kurallar</a>
+                <a href="#klasor-yapisi" class="nav-link block px-3 py-2 rounded">Klasör Yapısı</a>
+                <a href="#dosya-listesi" class="nav-link block px-3 py-2 rounded">Dosya Listesi</a>
+                <a href="#layouts" class="nav-link block px-3 py-2 rounded">Layouts</a>
+                <a href="#homepage" class="nav-link block px-3 py-2 rounded">Homepage</a>
+                <a href="#moduller" class="nav-link block px-3 py-2 rounded">Modül View'ları</a>
+                <a href="#components" class="nav-link block px-3 py-2 rounded">Components</a>
+                <a href="#css-system" class="nav-link block px-3 py-2 rounded">CSS Sistemi</a>
+                <a href="#themeservice" class="nav-link block px-3 py-2 rounded">ThemeService</a>
+                <a href="#yeni-tenant" class="nav-link block px-3 py-2 rounded">Yeni Tenant</a>
+                <a href="#checklist" class="nav-link block px-3 py-2 rounded">Checklist</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-64 p-4 md:p-8 max-w-5xl">
+            <!-- Header -->
+            <header class="text-center mb-12">
+                <div class="inline-flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-full mb-6">
+                    <i class="fas fa-book text-purple-400 text-xl"></i>
+                    <span class="text-slate-400">Kapsamlı Rehber</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    Yeni Tenant Teması Oluşturma
+                </h1>
+                <p class="text-slate-400">Multi-Tenant Merkezi Tema Sistemi</p>
+            </header>
+
+            <!-- Özet -->
+            <section id="ozet" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-info-circle text-blue-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Özet</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <h3 class="font-semibold text-green-400 mb-3"><i class="fas fa-check mr-2"></i>Ne Yapıyoruz?</h3>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Merkezi tema yapısı kuruyoruz</li>
+                            <li>• "Simple" altın standart tema olacak</li>
+                            <li>• Yeni tenantlar merkezi yapıyı kullanacak</li>
+                            <li>• Eski sistem (Muzibu/İxtif) çalışmaya devam edecek</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <h3 class="font-semibold text-amber-400 mb-3"><i class="fas fa-shield-alt mr-2"></i>Dokunulmayacaklar</h3>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• <code>Modules/*/themes/muzibu/</code></li>
+                            <li>• <code>Modules/*/themes/ixtif/</code></li>
+                            <li>• Mevcut ThemeService fallback mantığı</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Temel Kurallar -->
+            <section id="kurallar" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gavel text-red-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Temel Kurallar</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-purple-500">
+                        <h3 class="font-semibold text-purple-300 mb-2">1. Merkezi Konum</h3>
+                        <p class="text-sm text-slate-400">Tüm yeni tema dosyaları <code>resources/views/themes/</code> altında olacak.</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-green-500">
+                        <h3 class="font-semibold text-green-300 mb-2">2. Simple = Fallback</h3>
+                        <p class="text-sm text-slate-400">Tenant'ta dosya yoksa <code>themes/simple/</code> kullanılır. Bu tema mükemmel olmalı.</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-amber-500">
+                        <h3 class="font-semibold text-amber-300 mb-2">3. Tenant Override</h3>
+                        <p class="text-sm text-slate-400">Tenant sadece farklı olan dosyaları override eder. Örn: sadece <code>homepage.blade.php</code></p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-cyan-500">
+                        <h3 class="font-semibold text-cyan-300 mb-2">4. CSS Variables</h3>
+                        <p class="text-sm text-slate-400">Renkler CSS variables ile. Tenant sadece <code>:root</code> değişkenlerini değiştirir.</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-pink-500">
+                        <h3 class="font-semibold text-pink-300 mb-2">5. Geriye Uyumluluk</h3>
+                        <p class="text-sm text-slate-400">ThemeService önce merkezi, sonra modül içi, sonra simple'a bakar.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Klasör Yapısı -->
+            <section id="klasor-yapisi" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-folder-tree text-purple-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Klasör Yapısı</h2>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl p-6 overflow-x-auto">
+                    <pre class="file-tree text-sm leading-relaxed">
+<span class="text-slate-500">resources/views/themes/</span>
+│
+├── <span class="file-new">simple/</span>                          <span class="text-green-400">← ALTIN STANDART</span>
+│   │
+│   ├── <span class="file-new">layouts/</span>
+│   │   ├── <span class="file-new">app.blade.php</span>            <span class="text-slate-500">← Master template</span>
+│   │   ├── <span class="file-new">header.blade.php</span>         <span class="text-slate-500">← Navigation bar</span>
+│   │   ├── <span class="file-new">footer.blade.php</span>         <span class="text-slate-500">← Site footer</span>
+│   │   └── <span class="file-new">partials/</span>
+│   │       ├── <span class="file-new">head.blade.php</span>       <span class="text-slate-500">← &lt;head&gt; içeriği</span>
+│   │       ├── <span class="file-new">scripts.blade.php</span>    <span class="text-slate-500">← JS yüklemeleri</span>
+│   │       ├── <span class="file-new">breadcrumb.blade.php</span> <span class="text-slate-500">← Breadcrumb</span>
+│   │       └── <span class="file-new">meta.blade.php</span>       <span class="text-slate-500">← SEO meta tags</span>
+│   │
+│   ├── <span class="file-new">homepage.blade.php</span>           <span class="text-slate-500">← Anasayfa</span>
+│   │
+│   ├── <span class="file-new">blog/</span>                        <span class="text-slate-500">← Blog modülü</span>
+│   │   ├── <span class="file-new">index.blade.php</span>          <span class="text-slate-500">← Liste</span>
+│   │   ├── <span class="file-new">show.blade.php</span>           <span class="text-slate-500">← Detay</span>
+│   │   └── <span class="file-new">partials/</span>
+│   │       └── <span class="file-new">card.blade.php</span>       <span class="text-slate-500">← Blog kartı</span>
+│   │
+│   ├── <span class="file-new">page/</span>                        <span class="text-slate-500">← Sayfa modülü</span>
+│   │   └── <span class="file-new">show.blade.php</span>
+│   │
+│   ├── <span class="file-new">shop/</span>                        <span class="text-slate-500">← Mağaza modülü</span>
+│   │   ├── <span class="file-new">index.blade.php</span>
+│   │   ├── <span class="file-new">show.blade.php</span>
+│   │   ├── <span class="file-new">cart.blade.php</span>
+│   │   └── <span class="file-new">partials/</span>
+│   │       └── <span class="file-new">product-card.blade.php</span>
+│   │
+│   ├── <span class="file-new">portfolio/</span>                   <span class="text-slate-500">← Portfolyo modülü</span>
+│   │   ├── <span class="file-new">index.blade.php</span>
+│   │   └── <span class="file-new">show.blade.php</span>
+│   │
+│   ├── <span class="file-new">announcement/</span>                <span class="text-slate-500">← Duyuru modülü</span>
+│   │   ├── <span class="file-new">index.blade.php</span>
+│   │   └── <span class="file-new">show.blade.php</span>
+│   │
+│   ├── <span class="file-new">components/</span>                  <span class="text-slate-500">← Ortak componentler</span>
+│   │   ├── <span class="file-new">card.blade.php</span>
+│   │   ├── <span class="file-new">pagination.blade.php</span>
+│   │   ├── <span class="file-new">search-box.blade.php</span>
+│   │   ├── <span class="file-new">social-share.blade.php</span>
+│   │   ├── <span class="file-new">image.blade.php</span>
+│   │   └── <span class="file-new">alert.blade.php</span>
+│   │
+│   ├── <span class="file-new">auth/</span>                        <span class="text-slate-500">← Giriş/Kayıt</span>
+│   │   ├── <span class="file-new">login.blade.php</span>
+│   │   ├── <span class="file-new">register.blade.php</span>
+│   │   └── <span class="file-new">forgot-password.blade.php</span>
+│   │
+│   └── <span class="file-new">config.json</span>                  <span class="text-slate-500">← Tema ayarları</span>
+│
+├── <span class="file-new">tenant-{id}/</span>                     <span class="text-amber-400">← YENİ TENANT ÖRNEK</span>
+│   ├── <span class="file-new">homepage.blade.php</span>           <span class="text-slate-500">← Sadece özel anasayfa</span>
+│   ├── <span class="file-new">config.json</span>                  <span class="text-slate-500">← Tenant ayarları</span>
+│   └── <span class="file-new">blog/</span>                        <span class="text-slate-500">← İsterse override</span>
+│       └── <span class="file-new">show.blade.php</span>
+│
+├── <span class="file-exists">muzibu/</span>                          <span class="text-slate-500">← MEVCUT (dokunma)</span>
+│   └── ...
+│
+└── <span class="file-exists">ixtif/</span>                           <span class="text-slate-500">← MEVCUT (dokunma)</span>
+    └── ...</pre>
+                </div>
+            </section>
+
+            <!-- Dosya Listesi -->
+            <section id="dosya-listesi" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-file-code text-green-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Oluşturulacak Dosyalar</h2>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700 text-left">
+                                <th class="py-3 px-4">Dosya</th>
+                                <th class="py-3 px-4">Açıklama</th>
+                                <th class="py-3 px-4 text-center">Öncelik</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <!-- Layouts -->
+                            <tr class="border-b border-slate-800 bg-purple-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-purple-400">
+                                    <i class="fas fa-layer-group mr-2"></i>Layouts
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>layouts/app.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Master template - HTML yapısı</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>layouts/header.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Navigation bar, logo, menü</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>layouts/footer.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Footer, linkler, copyright</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>layouts/partials/head.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Meta, CSS, fonts</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>layouts/partials/scripts.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">JS dosyaları, Livewire</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>layouts/partials/breadcrumb.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Breadcrumb navigation</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span></td>
+                            </tr>
+
+                            <!-- Homepage -->
+                            <tr class="border-b border-slate-800 bg-green-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-green-400">
+                                    <i class="fas fa-home mr-2"></i>Homepage
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>homepage.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Anasayfa - hero, sections</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+
+                            <!-- Blog -->
+                            <tr class="border-b border-slate-800 bg-blue-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-blue-400">
+                                    <i class="fas fa-blog mr-2"></i>Blog Modülü
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>blog/index.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Blog listesi</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>blog/show.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Blog detay</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>blog/partials/card.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Blog kartı component</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span></td>
+                            </tr>
+
+                            <!-- Page -->
+                            <tr class="border-b border-slate-800 bg-cyan-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-cyan-400">
+                                    <i class="fas fa-file-alt mr-2"></i>Page Modülü
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>page/show.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Sayfa detay</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span></td>
+                            </tr>
+
+                            <!-- Shop -->
+                            <tr class="border-b border-slate-800 bg-pink-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-pink-400">
+                                    <i class="fas fa-shopping-cart mr-2"></i>Shop Modülü
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>shop/index.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Ürün listesi</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>shop/show.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Ürün detay</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>shop/cart.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Sepet sayfası</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span></td>
+                            </tr>
+
+                            <!-- Portfolio -->
+                            <tr class="border-b border-slate-800 bg-orange-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-orange-400">
+                                    <i class="fas fa-images mr-2"></i>Portfolio Modülü
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>portfolio/index.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Portfolyo listesi</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>portfolio/show.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Portfolyo detay</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span></td>
+                            </tr>
+
+                            <!-- Announcement -->
+                            <tr class="border-b border-slate-800 bg-yellow-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-yellow-400">
+                                    <i class="fas fa-bullhorn mr-2"></i>Announcement Modülü
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>announcement/index.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Duyuru listesi</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>announcement/show.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Duyuru detay</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span></td>
+                            </tr>
+
+                            <!-- Components -->
+                            <tr class="border-b border-slate-800 bg-violet-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-violet-400">
+                                    <i class="fas fa-puzzle-piece mr-2"></i>Components
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>components/card.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Genel kart component</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>components/pagination.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Sayfalama</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>components/search-box.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Arama kutusu</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>components/social-share.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Sosyal medya paylaşım</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span></td>
+                            </tr>
+
+                            <!-- Auth -->
+                            <tr class="border-b border-slate-800 bg-red-900/10">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-red-400">
+                                    <i class="fas fa-user-lock mr-2"></i>Auth
+                                </td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>auth/login.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Giriş sayfası</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4"><code>auth/register.blade.php</code></td>
+                                <td class="py-2 px-4 text-slate-400">Kayıt sayfası</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span></td>
+                            </tr>
+
+                            <!-- Config -->
+                            <tr class="border-b border-slate-800 bg-slate-800/50">
+                                <td colspan="3" class="py-2 px-4 font-semibold text-slate-400">
+                                    <i class="fas fa-cog mr-2"></i>Config
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4"><code>config.json</code></td>
+                                <td class="py-2 px-4 text-slate-400">Tema ayarları (renkler, font, vs)</td>
+                                <td class="py-2 px-4 text-center"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6 flex gap-4 flex-wrap">
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">P1</span>
+                        <span class="text-slate-400">Kritik - İlk aşama</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">P2</span>
+                        <span class="text-slate-400">Önemli - İkinci aşama</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">P3</span>
+                        <span class="text-slate-400">İsteğe bağlı - Üçüncü aşama</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Layouts Detay -->
+            <section id="layouts" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-layer-group text-purple-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Layouts Yapısı</h2>
+                </div>
+
+                <!-- app.blade.php -->
+                <div class="bg-slate-800/50 rounded-xl p-5 mb-6">
+                    <h3 class="font-semibold text-purple-300 mb-3">
+                        <i class="fas fa-file-code mr-2"></i>app.blade.php
+                    </h3>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-slate-500">&lt;!DOCTYPE html&gt;</span>
+<span class="text-slate-500">&lt;html</span> lang="{{ app()->getLocale() }}" <span class="text-slate-500">&gt;</span>
+<span class="text-slate-500">&lt;head&gt;</span>
+    <span class="text-green-400">@include('themes.simple.layouts.partials.head')</span>
+    <span class="text-cyan-400">@stack('styles')</span>
+<span class="text-slate-500">&lt;/head&gt;</span>
+<span class="text-slate-500">&lt;body</span> class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"<span class="text-slate-500">&gt;</span>
+
+    <span class="text-green-400">@include('themes.simple.layouts.header')</span>
+
+    <span class="text-slate-500">&lt;main</span> class="min-h-screen"<span class="text-slate-500">&gt;</span>
+        <span class="text-cyan-400">@yield('content')</span>
+    <span class="text-slate-500">&lt;/main&gt;</span>
+
+    <span class="text-green-400">@include('themes.simple.layouts.footer')</span>
+    <span class="text-green-400">@include('themes.simple.layouts.partials.scripts')</span>
+    <span class="text-cyan-400">@stack('scripts')</span>
+
+<span class="text-slate-500">&lt;/body&gt;</span>
+<span class="text-slate-500">&lt;/html&gt;</span></pre>
+                </div>
+
+                <!-- head.blade.php -->
+                <div class="bg-slate-800/50 rounded-xl p-5 mb-6">
+                    <h3 class="font-semibold text-purple-300 mb-3">
+                        <i class="fas fa-file-code mr-2"></i>partials/head.blade.php
+                    </h3>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-slate-500">&lt;meta</span> charset="UTF-8"<span class="text-slate-500">&gt;</span>
+<span class="text-slate-500">&lt;meta</span> name="viewport" content="width=device-width, initial-scale=1.0"<span class="text-slate-500">&gt;</span>
+<span class="text-slate-500">&lt;meta</span> name="csrf-token" content="{{ csrf_token() }}"<span class="text-slate-500">&gt;</span>
+
+<span class="text-slate-500">&lt;title&gt;</span>{{ $title ?? setting('site_name') }}<span class="text-slate-500">&lt;/title&gt;</span>
+
+<span class="text-amber-400">{{-- SEO Meta --}}</span>
+<span class="text-slate-500">&lt;x-seo-meta /&gt;</span>
+
+<span class="text-amber-400">{{-- Favicon --}}</span>
+<span class="text-slate-500">&lt;link</span> rel="icon" href="{{ setting('favicon') }}"<span class="text-slate-500">&gt;</span>
+
+<span class="text-amber-400">{{-- CSS --}}</span>
+<span class="text-slate-500">&lt;link</span> rel="stylesheet" href="{{ tenant_css() }}"<span class="text-slate-500">&gt;</span>
+<span class="text-slate-500">&lt;link</span> rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}"<span class="text-slate-500">&gt;</span>
+
+<span class="text-amber-400">{{-- Tema CSS Variables --}}</span>
+<span class="text-slate-500">&lt;style&gt;</span>
+    :root {
+        --color-primary: <span class="text-purple-400">{{ $themeConfig['primary'] ?? '#8b5cf6' }}</span>;
+        --color-secondary: <span class="text-purple-400">{{ $themeConfig['secondary'] ?? '#64748b' }}</span>;
+        --color-accent: <span class="text-purple-400">{{ $themeConfig['accent'] ?? '#f59e0b' }}</span>;
+    }
+<span class="text-slate-500">&lt;/style&gt;</span>
+
+<span class="text-amber-400">{{-- Livewire Styles --}}</span>
+@livewireStyles</pre>
+                </div>
+
+                <!-- header.blade.php -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-purple-300 mb-3">
+                        <i class="fas fa-file-code mr-2"></i>header.blade.php
+                    </h3>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-slate-500">&lt;header</span> class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50"<span class="text-slate-500">&gt;</span>
+    <span class="text-slate-500">&lt;nav</span> class="container mx-auto px-4 py-4"<span class="text-slate-500">&gt;</span>
+        <span class="text-slate-500">&lt;div</span> class="flex items-center justify-between"<span class="text-slate-500">&gt;</span>
+
+            <span class="text-amber-400">{{-- Logo --}}</span>
+            <span class="text-slate-500">&lt;a</span> href="{{ url('/') }}" class="flex items-center"<span class="text-slate-500">&gt;</span>
+                <span class="text-slate-500">&lt;img</span> src="{{ setting('logo') }}" alt="{{ setting('site_name') }}" class="h-10"<span class="text-slate-500">&gt;</span>
+            <span class="text-slate-500">&lt;/a&gt;</span>
+
+            <span class="text-amber-400">{{-- Navigation --}}</span>
+            <span class="text-slate-500">&lt;div</span> class="hidden md:flex items-center space-x-6"<span class="text-slate-500">&gt;</span>
+                @foreach($menuItems as $item)
+                    <span class="text-slate-500">&lt;a</span> href="{{ $item->url }}" class="text-gray-600 hover:text-primary"<span class="text-slate-500">&gt;</span>
+                        {{ $item->title }}
+                    <span class="text-slate-500">&lt;/a&gt;</span>
+                @endforeach
+            <span class="text-slate-500">&lt;/div&gt;</span>
+
+            <span class="text-amber-400">{{-- Mobile Menu Button --}}</span>
+            <span class="text-slate-500">&lt;button</span> class="md:hidden" @click="mobileMenuOpen = !mobileMenuOpen"<span class="text-slate-500">&gt;</span>
+                <span class="text-slate-500">&lt;i</span> class="fas fa-bars text-xl"<span class="text-slate-500">&gt;&lt;/i&gt;</span>
+            <span class="text-slate-500">&lt;/button&gt;</span>
+
+        <span class="text-slate-500">&lt;/div&gt;</span>
+    <span class="text-slate-500">&lt;/nav&gt;</span>
+<span class="text-slate-500">&lt;/header&gt;</span></pre>
+                </div>
+            </section>
+
+            <!-- Homepage -->
+            <section id="homepage" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-home text-green-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Homepage Yapısı</h2>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">@extends('themes.simple.layouts.app')</span>
+
+<span class="text-green-400">@section('content')</span>
+
+    <span class="text-amber-400">{{-- Hero Section --}}</span>
+    <span class="text-slate-500">&lt;section</span> class="bg-gradient-to-r from-primary to-secondary py-20"<span class="text-slate-500">&gt;</span>
+        <span class="text-slate-500">&lt;div</span> class="container mx-auto px-4 text-center text-white"<span class="text-slate-500">&gt;</span>
+            <span class="text-slate-500">&lt;h1</span> class="text-4xl md:text-6xl font-bold mb-4"<span class="text-slate-500">&gt;</span>
+                {{ setting('site_slogan') ?? 'Hoş Geldiniz' }}
+            <span class="text-slate-500">&lt;/h1&gt;</span>
+            <span class="text-slate-500">&lt;p</span> class="text-xl opacity-90"<span class="text-slate-500">&gt;</span>
+                {{ setting('site_description') }}
+            <span class="text-slate-500">&lt;/p&gt;</span>
+        <span class="text-slate-500">&lt;/div&gt;</span>
+    <span class="text-slate-500">&lt;/section&gt;</span>
+
+    <span class="text-amber-400">{{-- Featured Content --}}</span>
+    <span class="text-slate-500">&lt;section</span> class="py-16"<span class="text-slate-500">&gt;</span>
+        <span class="text-slate-500">&lt;div</span> class="container mx-auto px-4"<span class="text-slate-500">&gt;</span>
+            <span class="text-slate-500">&lt;h2</span> class="text-3xl font-bold mb-8 text-center"<span class="text-slate-500">&gt;</span>Öne Çıkanlar<span class="text-slate-500">&lt;/h2&gt;</span>
+
+            <span class="text-slate-500">&lt;div</span> class="grid md:grid-cols-3 gap-6"<span class="text-slate-500">&gt;</span>
+                @foreach($featuredItems as $item)
+                    <span class="text-green-400">@include('themes.simple.components.card', ['item' => $item])</span>
+                @endforeach
+            <span class="text-slate-500">&lt;/div&gt;</span>
+        <span class="text-slate-500">&lt;/div&gt;</span>
+    <span class="text-slate-500">&lt;/section&gt;</span>
+
+    <span class="text-amber-400">{{-- Latest Blog Posts --}}</span>
+    @if(isset($latestPosts) && $latestPosts->count())
+    <span class="text-slate-500">&lt;section</span> class="py-16 bg-gray-100 dark:bg-gray-800"<span class="text-slate-500">&gt;</span>
+        <span class="text-slate-500">&lt;div</span> class="container mx-auto px-4"<span class="text-slate-500">&gt;</span>
+            <span class="text-slate-500">&lt;h2</span> class="text-3xl font-bold mb-8"<span class="text-slate-500">&gt;</span>Son Yazılar<span class="text-slate-500">&lt;/h2&gt;</span>
+            <span class="text-slate-500">&lt;div</span> class="grid md:grid-cols-3 gap-6"<span class="text-slate-500">&gt;</span>
+                @foreach($latestPosts as $post)
+                    <span class="text-green-400">@include('themes.simple.blog.partials.card', ['post' => $post])</span>
+                @endforeach
+            <span class="text-slate-500">&lt;/div&gt;</span>
+        <span class="text-slate-500">&lt;/div&gt;</span>
+    <span class="text-slate-500">&lt;/section&gt;</span>
+    @endif
+
+<span class="text-green-400">@endsection</span></pre>
+                </div>
+            </section>
+
+            <!-- Modül View'ları -->
+            <section id="moduller" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-cubes text-blue-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Modül View Yapıları</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Blog Index -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <h3 class="font-semibold text-blue-300 mb-3">
+                            <i class="fas fa-list mr-2"></i>blog/index.blade.php
+                        </h3>
+                        <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">@extends('themes.simple.layouts.app')</span>
+
+<span class="text-green-400">@section('content')</span>
+<span class="text-slate-500">&lt;div</span> class="container mx-auto px-4 py-8"<span class="text-slate-500">&gt;</span>
+
+    <span class="text-green-400">@include('themes.simple.layouts.partials.breadcrumb')</span>
+
+    <span class="text-slate-500">&lt;h1</span> class="text-3xl font-bold mb-8"<span class="text-slate-500">&gt;</span>Blog<span class="text-slate-500">&lt;/h1&gt;</span>
+
+    <span class="text-slate-500">&lt;div</span> class="grid md:grid-cols-3 gap-6"<span class="text-slate-500">&gt;</span>
+        @foreach($posts as $post)
+            <span class="text-green-400">@include('themes.simple.blog.partials.card')</span>
+        @endforeach
+    <span class="text-slate-500">&lt;/div&gt;</span>
+
+    {{ $posts->links() }}
+
+<span class="text-slate-500">&lt;/div&gt;</span>
+<span class="text-green-400">@endsection</span></pre>
+                    </div>
+
+                    <!-- Blog Show -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <h3 class="font-semibold text-blue-300 mb-3">
+                            <i class="fas fa-file-alt mr-2"></i>blog/show.blade.php
+                        </h3>
+                        <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">@extends('themes.simple.layouts.app')</span>
+
+<span class="text-green-400">@section('content')</span>
+<span class="text-slate-500">&lt;article</span> class="container mx-auto px-4 py-8"<span class="text-slate-500">&gt;</span>
+
+    <span class="text-green-400">@include('themes.simple.layouts.partials.breadcrumb')</span>
+
+    <span class="text-amber-400">{{-- Hero Image --}}</span>
+    @if($post->hero)
+    <span class="text-slate-500">&lt;img</span> src="{{ thumb($post->hero, 1200, 600) }}"
+         class="w-full rounded-xl mb-8"<span class="text-slate-500">&gt;</span>
+    @endif
+
+    <span class="text-slate-500">&lt;h1</span> class="text-4xl font-bold mb-4"<span class="text-slate-500">&gt;</span>
+        {{ $post->title }}
+    <span class="text-slate-500">&lt;/h1&gt;</span>
+
+    <span class="text-slate-500">&lt;div</span> class="prose dark:prose-invert max-w-none"<span class="text-slate-500">&gt;</span>
+        {!! $post->content !!}
+    <span class="text-slate-500">&lt;/div&gt;</span>
+
+    <span class="text-green-400">@include('themes.simple.components.social-share')</span>
+
+<span class="text-slate-500">&lt;/article&gt;</span>
+<span class="text-green-400">@endsection</span></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CSS Sistemi -->
+            <section id="css-system" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-palette text-pink-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">CSS Variables Sistemi</h2>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5 mb-6">
+                    <h3 class="font-semibold text-pink-300 mb-3">config.json Örneği</h3>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+{
+    "name": "simple",
+    "title": "Simple Theme",
+    "version": "1.0.0",
+
+    "colors": {
+        "primary": "#8b5cf6",
+        "secondary": "#64748b",
+        "accent": "#f59e0b",
+        "success": "#22c55e",
+        "danger": "#ef4444",
+        "warning": "#f59e0b",
+        "info": "#3b82f6"
+    },
+
+    "fonts": {
+        "heading": "Inter",
+        "body": "Inter"
+    },
+
+    "layout": {
+        "container_width": "1280px",
+        "header_height": "64px",
+        "sidebar_width": "280px"
+    },
+
+    "features": {
+        "dark_mode": true,
+        "sticky_header": true,
+        "back_to_top": true
+    }
+}</pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-pink-300 mb-3">Tenant Override Örneği</h3>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-slate-500">// themes/tenant-123/config.json</span>
+{
+    "name": "tenant-123",
+    "extends": "simple",    <span class="text-green-400">← Simple'ı extend ediyor</span>
+
+    "colors": {
+        "primary": "#f97316",   <span class="text-green-400">← Sadece primary değişti</span>
+        "accent": "#eab308"
+    }
+    <span class="text-slate-500">// Diğer tüm ayarlar simple'dan gelir</span>
+}</pre>
+                </div>
+            </section>
+
+            <!-- ThemeService -->
+            <section id="themeservice" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-cogs text-cyan-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">ThemeService Güncellemesi</h2>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5 mb-6">
+                    <h3 class="font-semibold text-cyan-300 mb-3">Yeni Fallback Sırası</h3>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-amber-400">// getThemeViewPath() güncellemesi</span>
+
+public function getThemeViewPath(string $view, string $module = null): string
+{
+    $themeName = $this->getActiveTheme()->name;
+
+    $paths = [];
+
+    if ($module) {
+        <span class="text-green-400">// 1. Merkezi tenant view</span>
+        $paths[] = "themes.{$themeName}.{$module}.{$view}";
+
+        <span class="text-green-400">// 2. Modül içi tenant view (eski sistem - geriye uyumluluk)</span>
+        $paths[] = "{$module}::themes.{$themeName}.{$view}";
+
+        <span class="text-green-400">// 3. Merkezi simple view</span>
+        if ($themeName !== 'simple') {
+            $paths[] = "themes.simple.{$module}.{$view}";
+        }
+
+        <span class="text-green-400">// 4. Modül içi simple view (eski sistem)</span>
+        $paths[] = "{$module}::themes.simple.{$view}";
+
+        <span class="text-green-400">// 5. Front fallback (son çare)</span>
+        $paths[] = "{$module}::front.{$view}";
+    } else {
+        <span class="text-green-400">// Modülsüz view'lar için</span>
+        $paths[] = "themes.{$themeName}.{$view}";
+        if ($themeName !== 'simple') {
+            $paths[] = "themes.simple.{$view}";
+        }
+    }
+
+    foreach ($paths as $path) {
+        if (view()->exists($path)) {
+            return $path;
+        }
+    }
+
+    throw new ViewNotFoundException("View not found: {$view}");
+}</pre>
+                </div>
+
+                <div class="bg-amber-900/20 border border-amber-700 rounded-xl p-5">
+                    <h3 class="font-semibold text-amber-300 mb-3">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Dikkat
+                    </h3>
+                    <p class="text-sm text-slate-300">
+                        Bu değişiklik mevcut Muzibu ve İxtif temalarını etkilemez.
+                        Onlar <code>Modules/*/themes/</code> içinde kalmaya devam eder ve
+                        2. sırada kontrol edilir.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Yeni Tenant Oluşturma -->
+            <section id="yeni-tenant" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-plus-circle text-green-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Yeni Tenant Teması Oluşturma</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Adım 1 -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">1</span>
+                            <h3 class="font-semibold text-green-300">Klasör Oluştur</h3>
+                        </div>
+                        <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+mkdir -p resources/views/themes/tenant-{ID}/</pre>
+                    </div>
+
+                    <!-- Adım 2 -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">2</span>
+                            <h3 class="font-semibold text-green-300">config.json Oluştur</h3>
+                        </div>
+                        <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+{
+    "name": "tenant-{ID}",
+    "extends": "simple",
+    "colors": {
+        "primary": "#YOUR_COLOR"
+    }
+}</pre>
+                    </div>
+
+                    <!-- Adım 3 -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">3</span>
+                            <h3 class="font-semibold text-green-300">homepage.blade.php Oluştur (Opsiyonel)</h3>
+                        </div>
+                        <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">@extends('themes.simple.layouts.app')</span>
+
+<span class="text-green-400">@section('content')</span>
+    <span class="text-amber-400">{{-- Tenant'a özel anasayfa içeriği --}}</span>
+    ...
+<span class="text-green-400">@endsection</span></pre>
+                    </div>
+
+                    <!-- Adım 4 -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">4</span>
+                            <h3 class="font-semibold text-green-300">Veritabanına Kaydet</h3>
+                        </div>
+                        <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-slate-500">-- themes tablosuna ekle</span>
+INSERT INTO themes (name, title, folder_name, is_active)
+VALUES ('tenant-{ID}', 'Tenant Adı', 'tenant-{ID}', 1);
+
+<span class="text-slate-500">-- tenant'ı güncelle</span>
+UPDATE tenants SET theme_id = {THEME_ID} WHERE id = {TENANT_ID};</pre>
+                    </div>
+
+                    <!-- Adım 5 -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">5</span>
+                            <h3 class="font-semibold text-green-300">Cache Temizle</h3>
+                        </div>
+                        <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+php artisan cache:clear
+php artisan view:clear
+php artisan config:clear</pre>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-green-900/20 border border-green-700 rounded-xl p-5">
+                    <h3 class="font-semibold text-green-300 mb-2">
+                        <i class="fas fa-check-circle mr-2"></i>Sonuç
+                    </h3>
+                    <p class="text-sm text-slate-300">
+                        Artık tenant-{ID} teması aktif. Sadece <code>homepage.blade.php</code> ve
+                        <code>config.json</code> oluşturdun. Tüm iç sayfalar otomatik olarak
+                        <code>simple</code> temasından geliyor.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Checklist -->
+            <section id="checklist" class="card rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-tasks text-amber-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Uygulama Checklist</h2>
+                </div>
+
+                <div class="space-y-3">
+                    <!-- P1 -->
+                    <div class="bg-red-900/20 border border-red-800 rounded-xl p-4">
+                        <h3 class="font-semibold text-red-400 mb-3">P1 - Kritik (İlk Aşama)</h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>Klasör yapısını oluştur</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>layouts/app.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>layouts/header.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>layouts/footer.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>layouts/partials/head.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>layouts/partials/scripts.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>homepage.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>blog/index.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>blog/show.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>page/show.blade.php</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- P2 -->
+                    <div class="bg-amber-900/20 border border-amber-800 rounded-xl p-4">
+                        <h3 class="font-semibold text-amber-400 mb-3">P2 - Önemli (İkinci Aşama)</h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>config.json</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>ThemeService güncelle</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>shop/index.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>shop/show.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>components/card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>components/pagination.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>layouts/partials/breadcrumb.blade.php</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- P3 -->
+                    <div class="bg-green-900/20 border border-green-800 rounded-xl p-4">
+                        <h3 class="font-semibold text-green-400 mb-3">P3 - İsteğe Bağlı (Üçüncü Aşama)</h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>portfolio/index.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>portfolio/show.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>announcement/index.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>announcement/show.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>auth/login.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>auth/register.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>components/search-box.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>components/social-share.blade.php</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Test -->
+                    <div class="bg-purple-900/20 border border-purple-800 rounded-xl p-4">
+                        <h3 class="font-semibold text-purple-400 mb-3">Test</h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>Yeni tenant oluştur ve test et</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>Fallback sistemini test et (tenant view sil, simple'a düşmeli)</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>Muzibu/İxtif'in bozulmadığını doğrula</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>Mobile responsive test</span>
+                            </label>
+                            <label class="flex items-center gap-3 text-slate-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                <span>Dark mode test</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="text-center text-slate-500 text-sm py-8">
+                18 Ocak 2026 • Tuufi.com
+            </footer>
+        </main>
+    </div>
+</body>
+</html>

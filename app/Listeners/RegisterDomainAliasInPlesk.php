@@ -36,6 +36,8 @@ class RegisterDomainAliasInPlesk
             'tenant_id' => $domain->tenant_id,
         ]);
 
+        $aliasCreated = false;
+
         try {
             // Domain alias zaten var mı kontrol et
             $checkResult = Process::timeout(10)->run(
@@ -43,33 +45,45 @@ class RegisterDomainAliasInPlesk
             );
 
             if ($checkResult->successful() && !str_contains($checkResult->output(), 'not found')) {
-                Log::channel('system')->warning("⚠️ Domain alias zaten mevcut: {$domainName}", [
+                Log::channel('system')->info("ℹ️ Domain alias zaten mevcut, SSL yenilenecek: {$domainName}", [
                     'tenant_id' => $domain->tenant_id,
                 ]);
-                return;
+                $aliasCreated = true; // Alias var, SSL yenilemesi yapılacak
+            } else {
+                // Domain alias oluştur
+                // SEO redirect kapalı (her domain kendi içeriğini gösterecek)
+                $createResult = Process::timeout(30)->run(
+                    "sudo /usr/sbin/plesk bin domalias --create {$domainName} -domain {$this->parentDomain} -web true -mail true -dns true -seo-redirect false"
+                );
+
+                if ($createResult->successful()) {
+                    Log::channel('system')->info("✅ Plesk domain alias oluşturuldu: {$domainName}", [
+                        'tenant_id' => $domain->tenant_id,
+                        'parent_domain' => $this->parentDomain,
+                    ]);
+                    $aliasCreated = true;
+                } else {
+                    Log::channel('system')->error("❌ Plesk domain alias hatası: {$domainName}", [
+                        'tenant_id' => $domain->tenant_id,
+                        'error' => substr($createResult->errorOutput(), 0, 300),
+                        'output' => substr($createResult->output(), 0, 300),
+                    ]);
+                }
             }
 
-            // Domain alias oluştur
-            // SEO redirect kapalı (her domain kendi içeriğini gösterecek)
-            $createResult = Process::timeout(30)->run(
-                "sudo /usr/sbin/plesk bin domalias --create {$domainName} -domain {$this->parentDomain} -web true -mail true -dns true -seo-redirect false"
-            );
-
-            if ($createResult->successful()) {
-                Log::channel('system')->info("✅ Plesk domain alias oluşturuldu: {$domainName}", [
-                    'tenant_id' => $domain->tenant_id,
-                    'parent_domain' => $this->parentDomain,
-                ]);
-
-                // SSL sertifikasını yenile (yeni domain'i dahil et)
-                ReissueLetsEncryptCertificate::dispatch();
-                Log::channel('system')->info("🔐 SSL yenileme job'ı kuyruğa eklendi: {$domainName}");
-            } else {
-                Log::channel('system')->error("❌ Plesk domain alias hatası: {$domainName}", [
-                    'tenant_id' => $domain->tenant_id,
-                    'error' => substr($createResult->errorOutput(), 0, 300),
-                    'output' => substr($createResult->output(), 0, 300),
-                ]);
+            // SSL sertifikasını yenile (alias oluşturulduysa veya zaten varsa)
+            if ($aliasCreated) {
+                // Senkron çalıştır - tenant oluşturma sırasında SSL hemen yenilensin
+                Log::channel('system')->info("🔐 SSL yenileme başlatılıyor: {$domainName}");
+                try {
+                    (new ReissueLetsEncryptCertificate())->handle();
+                    Log::channel('system')->info("✅ SSL yenileme tamamlandı: {$domainName}");
+                } catch (\Exception $sslException) {
+                    // SSL hatası tenant oluşturmayı engellemesin
+                    Log::channel('system')->warning("⚠️ SSL yenileme hatası (tenant oluşturma devam ediyor): {$domainName}", [
+                        'error' => $sslException->getMessage(),
+                    ]);
+                }
             }
         } catch (\Exception $e) {
             Log::channel('system')->error("❌ Plesk domain alias exception: {$domainName}", [

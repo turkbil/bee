@@ -44,7 +44,7 @@
 
         <!-- Header -->
         <header class="text-center mb-10 lg:mb-14">
-            <div class="inline-flex items-center px-4 py-2 text-sm font-medium bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-200 rounded-full mb-4">
+            <div class="inline-flex items-center px-4 py-2 text-sm font-medium bg-primary-50 text-primary-600 dark:bg-primary-900/40 dark:text-primary-200 rounded-full mb-4">
                 <i class="fa-solid fa-hashtag mr-2"></i>
                 Etiket
             </div>
@@ -104,7 +104,7 @@
                                     </div>
                                 @endif
 
-                                <h2 class="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+                                <h2 class="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
                                     <a href="{{ $postUrl }}" class="stretched-link">
                                         {{ $postTitle }}
                                     </a>
@@ -148,7 +148,7 @@
                                                 }
                                             @endphp
                                             <a href="{{ $tagUrl }}"
-                                               class="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-200 rounded-full hover:bg-blue-100 dark:hover:bg-blue-800/60 transition-colors z-10 relative"
+                                               class="inline-flex items-center px-2 py-1 text-xs font-medium bg-primary-50 text-primary-600 dark:bg-primary-900/40 dark:text-primary-200 rounded-full hover:bg-primary-100 dark:hover:bg-primary-800/60 transition-colors z-10 relative"
                                                rel="tag"
                                                data-tag="{{ $postTag }}"
                                                title="{{ $postTag }} etiketli yazılar">
@@ -188,7 +188,7 @@
                 </p>
 
                 <a href="{{ $blogIndexUrl }}"
-                   class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                   class="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors duration-200">
                     <i class="fa-solid fa-arrow-left mr-2"></i>
                     Tüm Yazılara Dön
                 </a>

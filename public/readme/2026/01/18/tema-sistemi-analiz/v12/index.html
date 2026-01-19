@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t-{id} Tema Yapisi - Multi-Tenant Tema Sistemi v12</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.875rem; }
+        pre code { background: none; padding: 0; }
+        .file-new { color: #22c55e; }
+        .nav-link { transition: all 0.2s; }
+        .nav-link:hover { background: rgba(139, 92, 246, 0.2); }
+        .section-anchor { scroll-margin-top: 100px; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-wrap gap-2 justify-center text-sm">
+                <a href="#felsefe" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-purple-400">Felsefe</a>
+                <a href="#single-header" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-orange-400">Single Header</a>
+                <a href="#page-modulu" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-cyan-400">Page Modulu</a>
+                <a href="#spacing" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-yellow-400">Spacing</a>
+                <a href="#alpine-collapse" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-green-400">Alpine Collapse</a>
+                <a href="#istemiyorum" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-red-400">Istemiyorum</a>
+                <a href="#slider" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-emerald-400">Slider</a>
+                <a href="#logo" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-violet-400">Logo</a>
+                <a href="#modul" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-blue-400">Modul Path</a>
+                <a href="#root-buttons" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-amber-400">Root Butonlar</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-full mb-6">
+                <i class="fas fa-palette text-purple-400 text-xl"></i>
+                <span class="text-slate-400">v12 - Single Header Kurali Eklendi</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                t-{id} Tema Yapisi
+            </h1>
+            <p class="text-slate-400">Multi-Tenant Tema Sistemi - Single Header, Page Modulu, Spacing, Alpine Collapse</p>
+        </header>
+
+        <!-- ===== BOLUM 1: FELSEFE ===== -->
+        <section id="felsefe" class="section-anchor card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-purple-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">1. Felsefe</h2>
+            </div>
+            <div class="text-slate-300 space-y-3">
+                <p><strong>t-{id}</strong> = Tenant temasi. Sadece ozel dosyalar burada.</p>
+                <p><strong>simple</strong> = Fallback (mevcut, zaten var). t-{id}'de yoksa buradan alir.</p>
+                <p><strong>Ornek:</strong> t-3/homepage.blade.php var -> onu kullan, t-3/blog/show.blade.php yok -> simple'dan al</p>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 2: SINGLE HEADER KURALI (YENI v12!) ===== -->
+        <section id="single-header" class="section-anchor card rounded-2xl p-6 mb-8 border border-orange-700 bg-orange-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-grip-lines text-orange-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-orange-300">2. Single Header Kurali</h2>
+                <span class="bg-green-600 text-white text-xs px-2 py-1 rounded">KRITIK v12</span>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold text-green-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Tum sitede <strong>TEK BIR HEADER DOSYASI</strong> kullanilmali! Homepage dahil her sayfa <code>layouts/header.blade.php</code> dosyasini <code>@include</code> ile cagirmali. Inline header YASAK!</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- YASAK: Inline Header -->
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-ban mr-2"></i>YASAK: Inline Header!</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">// YANLIS - homepage.blade.php icinde inline header</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;...&lt;/head&gt;
+&lt;body&gt;
+    <span class="text-red-400">&lt;!-- 150 satir header kodu BURADA --&gt;</span>
+    &lt;header&gt;
+        &lt;nav&gt;...&lt;/nav&gt;
+        &lt;!-- Cache butonlari eksik kalabilir! --&gt;
+    &lt;/header&gt;
+    ...
+&lt;/body&gt;</pre>
+                </div>
+
+                <!-- DOGRU: @extends + @include -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>DOGRU: Layout Extend + Include</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- homepage.blade.php --}}</span>
+@php
+    $isHomepage = true;
+@endphp
+<span class="text-cyan-400">@extends('themes.t-3.layouts.app')</span>
+
+@section('content')
+    <span class="text-slate-500">{{-- Sadece icerik --}}</span>
+@endsection
+
+<span class="text-green-400">{{-- layouts/app.blade.php --}}</span>
+&lt;body&gt;
+    <span class="text-cyan-400">@include('themes.t-3.layouts.header')</span>  <span class="text-green-400">&lt;-- TEK HEADER!</span>
+    @yield('content')
+    <span class="text-cyan-400">@include('themes.t-3.layouts.footer')</span>
+&lt;/body&gt;</pre>
+                </div>
+
+                <!-- $isHomepage Parametresi -->
+                <div class="bg-blue-900/30 border border-blue-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-blue-300 mb-2"><i class="fas fa-code mr-2"></i>$isHomepage Parametresi</h4>
+                    <p class="text-slate-300 text-sm mb-3">Homepage'de navigasyon anchor (#hizmetler), ic sayfalarda URL (/service). Bunu header'da kontrol et:</p>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- header.blade.php --}}</span>
+@php
+    $isHomepage = $isHomepage ?? false;
+@endphp
+
+&lt;nav&gt;
+    &lt;a href="{{ $isHomepage ? '#hizmetler' : url('/service') }}"&gt;Hizmetlerimiz&lt;/a&gt;
+    &lt;a href="{{ $isHomepage ? '#hakkimizda' : url('/page/hakkimizda') }}"&gt;Hakkimizda&lt;/a&gt;
+    &lt;a href="{{ $isHomepage ? '#iletisim' : url('/page/iletisim') }}"&gt;Iletisim&lt;/a&gt;
+&lt;/nav&gt;</pre>
+                </div>
+
+                <!-- Avantajlar -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-list text-orange-400 mr-2"></i>Single Header Avantajlari</h4>
+                    <ul class="text-slate-300 text-sm space-y-2">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Root butonlari (cache/AI) tum sayfalarda gorunur</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Header degisikligi tek dosyadan yapilir</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Kod tekrari (duplicate) onlenir</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Tutarli kullanici deneyimi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 3: PAGE MODULU OZGURLUGU ===== -->
+        <section id="page-modulu" class="section-anchor card rounded-2xl p-6 mb-8 border border-cyan-700 bg-cyan-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-file-alt text-cyan-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-cyan-300">3. Page Modulu Ozgurlugu</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold text-green-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Page modulu <strong>OZGUR</strong> olmali! Template sadece wrapper (subheader + container). Her sayfanin kendine ozel tasarimi <code>pages</code> tablosundaki <code>css</code> ve <code>js</code> kolonlarinda saklanir.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- KURAL: Free Template -->
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-ban mr-2"></i>YASAK: Template'de Zorla Ekleme!</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">// YANLIS - Template'e sidebar, CTA, gallery ekleme!</span>
+&lt;div class="grid grid-cols-3"&gt;
+    &lt;div class="col-span-2"&gt;{{ $body }}&lt;/div&gt;
+    &lt;aside class="col-span-1"&gt;SIDEBAR ZORLA&lt;/aside&gt;  <span class="text-red-400">// YASAK!</span>
+&lt;/div&gt;
+
+<span class="text-green-400">// DOGRU - Sadece container, icerik veritabanindan</span>
+&lt;div class="page-content"&gt;
+    @parsewidgets($body ?? '')
+&lt;/div&gt;
+@if($item->css)&lt;style&gt;{!! $item->css !!}&lt;/style&gt;@endif
+@if($item->js)&lt;script&gt;{!! $item->js !!}&lt;/script&gt;@endif</pre>
+                </div>
+
+                <!-- Template Yapisi -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-file-code text-cyan-400 mr-2"></i>Page show.blade.php Template Yapisi</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- SUBHEADER (Breadcrumb + Title) --}}</span>
+&lt;section class="bg-gray-50 dark:bg-gray-800 border-b"&gt;
+    &lt;div class="container mx-auto px-4 py-4"&gt;
+        &lt;nav&gt;{{ breadcrumb }}&lt;/nav&gt;
+        &lt;h1&gt;{{ $title }}&lt;/h1&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+
+<span class="text-green-400">{{-- CONTENT - Sadece container --}}</span>
+&lt;section class="bg-white dark:bg-gray-900 py-10"&gt;
+    &lt;div class="container mx-auto px-4"&gt;
+        &lt;div class="page-content prose max-w-none"&gt;
+            @parsewidgets($body ?? '')
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+
+<span class="text-green-400">{{-- CSS/JS veritabanindan --}}</span>
+@if($item->css)&lt;style&gt;{!! $item->css !!}&lt;/style&gt;@endif
+@if($item->js)&lt;script&gt;{!! $item->js !!}&lt;/script&gt;@endif</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 4: SPACING KURALLARI ===== -->
+        <section id="spacing" class="section-anchor card rounded-2xl p-6 mb-8 border border-yellow-700 bg-yellow-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-arrows-alt-v text-yellow-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-yellow-300">4. Spacing Kurallari</h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- mb-16 Kurali -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>mb-16: Bolumler Arasi</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">&lt;!-- Her buyuk bolumun sonunda mb-16 --&gt;</span>
+&lt;div class="grid grid-cols-1 lg:grid-cols-2 gap-8 <span class="text-cyan-400">mb-16</span>"&gt;...&lt;/div&gt;
+&lt;div class="<span class="text-cyan-400">mb-16</span>"&gt;&lt;h2&gt;Degerlerimiz&lt;/h2&gt;...&lt;/div&gt;</pre>
+                </div>
+
+                <!-- Ozet Tablo -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-table text-yellow-400 mr-2"></i>Spacing Ozet</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Class</th><th class="text-left pb-2">Durum</th><th class="text-left pb-2">Aciklama</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr><td class="py-1"><code>mb-16</code></td><td>Bolum sonu</td><td>Her buyuk section'dan sonra</td></tr>
+                            <tr><td class="py-1"><code>mb-4</code></td><td>h2 altinda</td><td>Baslik ile aciklama arasinda</td></tr>
+                            <tr><td class="py-1"><code>mb-8</code></td><td>Aciklama altinda</td><td>Aciklama ile icerik arasinda</td></tr>
+                            <tr><td class="py-1"><code>gap-4/6</code></td><td>Grid/Flex ici</td><td>Kartlar arasinda</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 5: ALPINE COLLAPSE PLUGIN ===== -->
+        <section id="alpine-collapse" class="section-anchor card rounded-2xl p-6 mb-8 border border-green-700 bg-green-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chevron-down text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-green-300">5. Alpine Collapse Plugin</h2>
+            </div>
+
+            <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-code mr-2"></i>Script Yukleme Sirasi (KRITIK!)</h4>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">&lt;!-- 1. ONCE Collapse plugin --&gt;</span>
+&lt;script defer src="https://unpkg.com/<span class="text-cyan-400">@alpinejs/collapse</span>@3.x.x/dist/cdn.min.js"&gt;&lt;/script&gt;
+
+<span class="text-green-400">&lt;!-- 2. SONRA Ana Alpine --&gt;</span>
+&lt;script defer src="https://unpkg.com/<span class="text-cyan-400">alpinejs</span>@3.x.x/dist/cdn.min.js"&gt;&lt;/script&gt;</pre>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 6: ISTEMIYORUM LISTESI ===== -->
+        <section id="istemiyorum" class="section-anchor card rounded-2xl p-6 mb-8 border border-red-700 bg-red-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-ban text-red-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-red-300">6. Kullanici Tercihleri: ISTEMIYORUM!</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>1. Link Underline'lari</h4>
+                    <p class="text-slate-400 text-sm">Linklerde alt cizgi OLMAMALI: <code>.page-content a { text-decoration: none !important; }</code></p>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>2. Inline Header</h4>
+                    <p class="text-slate-400 text-sm">Homepage dahil TUM sayfalar <code>@include('layouts.header')</code> kullanmali. Inline header YASAK!</p>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>3. "Odeme Secenekleri" Sorusu</h4>
+                    <p class="text-slate-400 text-sm">Bu soruyu FAQ'dan ve HER YERDEN kaldir. Panjur tamir sitesi icin anlamsiz.</p>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>4. Tutarsiz Bosluklar</h4>
+                    <p class="text-slate-400 text-sm">Basliklar icerigin altina yapisik olmamali. Tum sayfalarda AYNI bosluk pattern'i kullan.</p>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>5. Template'de Zorla Sidebar/CTA</h4>
+                    <p class="text-slate-400 text-sm">Page modulu FREE olmali. Her sayfaya ayni sidebar, gorsel, numara ekleme.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 7: HERO SLIDER SISTEMI ===== -->
+        <section id="slider" class="section-anchor card rounded-2xl p-6 mb-8 border border-emerald-700 bg-emerald-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-images text-emerald-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-emerald-300">7. Hero Slider Sistemi</h2>
+            </div>
+
+            <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>KRITIK: Query Hatasi!</h4>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">// YANLIS - slug degisebilir!</span>
+$homepagePage = Page::where('slug', 'anasayfa')->first();
+
+<span class="text-green-400">// DOGRU - is_homepage flag'i kullan</span>
+$homepagePage = Page::where('is_homepage', true)->first();</pre>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 8: LOGO KURALLARI ===== -->
+        <section id="logo" class="section-anchor card rounded-2xl p-6 mb-8 border border-violet-700 bg-violet-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-image text-violet-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-violet-300">8. Logo Kurallari</h2>
+            </div>
+
+            <div class="bg-red-900/30 border border-red-500 rounded-xl p-4 mb-4">
+                <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-ban mr-2"></i>KURAL: Logo + Yazi BERABER OLMAZ!</h4>
+                <p class="text-sm text-slate-300">Logo varsa SADECE logo gosterilir. Logo yoksa icon + site adi.</p>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-4">
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+$logoService = app(\App\Services\LogoService::class);
+$logos = $logoService->getLogos();
+$hasLogo = $logos['has_light'] || $logos['has_dark'];
+
+@if($hasLogo)
+    &lt;img src="{{ $logos['light_logo_url'] }}" class="dark:hidden h-10"&gt;
+    &lt;img src="{{ $logos['dark_logo_url'] }}" class="hidden dark:block h-10"&gt;
+@else
+    &lt;i class="fa-blinds"&gt;&lt;/i&gt;
+    &lt;span&gt;{{ $siteName }}&lt;/span&gt;
+@endif</pre>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 9: MODUL VIEW PATH'LERI ===== -->
+        <section id="modul" class="section-anchor card rounded-2xl p-6 mb-8 border border-blue-700 bg-blue-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cubes text-blue-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-blue-300">9. Modul View Path'leri</h2>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-4">
+                <h4 class="font-semibold text-white mb-2"><i class="fas fa-folder-tree text-blue-400 mr-2"></i>Homepage Konumlari</h4>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-red-400">1. ONCELIKLI (Modules):</span>
+Modules/Page/resources/views/themes/t-3/homepage.blade.php
+
+<span class="text-blue-400">2. Fallback (resources):</span>
+resources/views/themes/t-3/homepage.blade.php</pre>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 10: ROOT ADMIN BUTONLARI ===== -->
+        <section id="root-buttons" class="section-anchor card rounded-2xl p-6 mb-8 border border-amber-700 bg-amber-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user-shield text-amber-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-amber-300">10. Root Admin Butonlari</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold text-green-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Her temanin header'inda logonun yaninda <strong>cache sifirlama</strong> ve <strong>AI sifirlama</strong> butonlari olmali. Sadece <code>root</code> rolu gorebilir.</p>
+            </div>
+
+            <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-code mr-2"></i>Konum ve Kod</h4>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- header.blade.php - Logo'nun yaninda --}}</span>
+@auth
+    @if(auth()->user()->hasRole('root'))
+    &lt;div class="flex items-center gap-1 ml-2"&gt;
+        &lt;button @click="fetch('/admin/cache/clear', {...}).then(() => reload())"&gt;
+            &lt;i class="<span class="text-cyan-400">fa-sync-alt</span>"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+        &lt;button @click="localStorage.removeItem(...); reload()"&gt;
+            &lt;i class="<span class="text-cyan-400">fa-robot</span>"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
+    @endif
+@endauth</pre>
+            </div>
+        </section>
+
+        <!-- ===== CHECKLIST ===== -->
+        <section id="todo" class="section-anchor card rounded-2xl p-6 mb-8 border border-green-700 bg-green-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list-check text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-green-300">Yeni Sayfa Checklist</h2>
+            </div>
+
+            <div class="space-y-2 text-sm">
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Homepage <code>@extends('layouts.app')</code> kullaniyor (inline header YOK)</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Header tek dosyadan <code>@include</code> ile cagiriliyor</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Root butonlari header'da ve TUM sayfalarda gorunuyor</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Page template sadece wrapper (subheader + container)</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>CSS/JS veritabaninda <code>pages.css</code> ve <code>pages.js</code> kolonlarinda</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Bolumler arasi <code>mb-16</code>, baslik altinda <code>mb-4</code>, aciklama altinda <code>mb-8</code></span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Alpine Collapse plugin ana Alpine'dan ONCE yukleniyor</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Link underline'lari YOK</span></label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-8">
+            19 Ocak 2026 v12 &bull; Tuufi.com
+        </footer>
+    </div>
+</body>
+</html>

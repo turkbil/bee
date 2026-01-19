@@ -16,7 +16,7 @@
     $backgroundImage = $backgroundImage ?? null;
 @endphp
 
-<section class="relative bg-gradient-to-r from-blue-600 to-purple-700 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
+<section class="relative bg-gradient-to-r from-primary-600 to-purple-700 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
     @if($backgroundImage)
         <div class="absolute inset-0 opacity-20">
             <img src="{{ $backgroundImage }}" alt="" class="w-full h-full object-cover">

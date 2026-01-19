@@ -13,7 +13,7 @@
 @php
     $breadcrumbs = $breadcrumbs ?? [];
     $icon = $icon ?? null;
-    $gradient = $gradient ?? 'from-blue-500 to-indigo-600';
+    $gradient = $gradient ?? 'from-primary-500 to-indigo-600';
 @endphp
 
 <section class="bg-gradient-to-r {{ $gradient }}">

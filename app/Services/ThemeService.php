@@ -240,7 +240,13 @@ class ThemeService
     
     /**
      * Tema view path'ini getirir (modül desteği ile)
-     * 3 seviyeli fallback: aktif tema → simple → front
+     * 4 seviyeli fallback: resources/views tema → modül tema → simple → front
+     *
+     * ÖNCELİK SIRASI:
+     * 1. resources/views/themes/{tema}/{view} - Ana tema klasörü (TEK DOSYA PRENSİBİ)
+     * 2. modül::themes.{tema}.{view} - Modül içi tema (fallback)
+     * 3. modül::themes.simple.{view} - Simple tema fallback
+     * 4. modül::front.{view} - Front fallback
      */
     public function getThemeViewPath(string $view, string $module = null): string
     {
@@ -248,14 +254,29 @@ class ThemeService
         $themeName = $theme ? $theme->name : 'simple';
 
         if ($module) {
-            // 1. Aktif tema view'ı
+            // 🎯 YENİ: resources/views/themes/ klasöründe ARA (TEK DOSYA PRENSİBİ)
+            // Tema dosyaları SADECE resources/views/themes/ altında olmalı
+            $resourceThemeView = "themes.{$themeName}.{$view}";
+            if (view()->exists($resourceThemeView)) {
+                return $resourceThemeView;
+            }
+
+            // 2. Modül tema view'ı (eski sistem - fallback)
             $activeThemeView = "{$module}::themes.{$themeName}.{$view}";
             if (view()->exists($activeThemeView)) {
                 return $activeThemeView;
             }
 
-            // 2. Simple tema fallback (aktif tema simple değilse)
+            // 3. Simple tema fallback (aktif tema simple değilse)
             if ($themeName !== 'simple') {
+                // Önce resources/views/themes/simple
+                $simpleResourceView = "themes.simple.{$view}";
+                if (view()->exists($simpleResourceView)) {
+                    Log::debug("Theme fallback: {$resourceThemeView} → {$simpleResourceView}");
+                    return $simpleResourceView;
+                }
+
+                // Sonra modül simple
                 $simpleView = "{$module}::themes.simple.{$view}";
                 if (view()->exists($simpleView)) {
                     Log::debug("Theme fallback: {$activeThemeView} → {$simpleView}");
@@ -263,16 +284,16 @@ class ThemeService
                 }
             }
 
-            // 3. Front fallback (son çare)
+            // 4. Front fallback (son çare)
             $frontView = "{$module}::front.{$view}";
             if (view()->exists($frontView)) {
                 Log::debug("Theme fallback: {$activeThemeView} → {$frontView}");
                 return $frontView;
             }
 
-            // Hiçbiri bulunamadı - hata logla ve aktif tema dön (Laravel hata verecek)
+            // Hiçbiri bulunamadı - hata logla ve resources tema dön (Laravel hata verecek)
             Log::warning("Theme view not found: {$view} in module {$module}");
-            return $activeThemeView;
+            return $resourceThemeView;
         }
 
         // Genel tema view'ı (layout için)

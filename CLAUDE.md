@@ -357,6 +357,17 @@ Tailwind class eklediysen → safelist'e ekle → npm run prod
 
 **Tasarımsal değişiklik:** Önce HTML taslak göster, "UYGUNDUR" al, sonra kodla
 
+**🚨 TEMA DOSYALARI KONUMU:**
+```
+✅ DOĞRU: resources/views/themes/t-{id}/
+❌ YANLIŞ: Modules/*/resources/views/themes/
+```
+
+- Tema dosyaları (homepage, header, footer, layouts) SADECE `resources/views/themes/` altında
+- Modules içine tema dosyası AÇMA (kullanıcı özellikle istemediği sürece)
+- Header/Footer tek dosya olmalı, tüm sayfalar `@include` ile kullanmalı
+- Homepage dahil hiçbir sayfa inline header/footer içermemeli
+
 ---
 
 ### 5.2 SİSTEM BİLGİLERİ

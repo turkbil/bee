@@ -6,6 +6,7 @@ return [
         'all_pages' => 'All Pages',
         'read_more' => 'Read More',
         'homepage' => 'Homepage',
+        'home' => 'Home',
         'previous' => 'Previous',
         'next' => 'Next',
         'no_pages_found' => 'No pages found yet.',

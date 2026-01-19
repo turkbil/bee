@@ -84,9 +84,10 @@ class ModuleSlugService
     public static function getDefaultModuleName(string $moduleName, string $locale): string
     {
         try {
-            // Önce modules tablosundan display_name'i al
-            if (\Schema::hasTable('modules')) {
-                $module = \DB::table('modules')
+            // Önce modules tablosundan display_name'i al (CENTRAL DB!)
+            $centralConnection = config('tenancy.central_connection', 'mysql');
+            if (\Schema::connection($centralConnection)->hasTable('modules')) {
+                $module = \DB::connection($centralConnection)->table('modules')
                     ->where('name', strtolower($moduleName))
                     ->first();
                 

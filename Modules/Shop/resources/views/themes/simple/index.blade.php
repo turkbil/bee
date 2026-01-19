@@ -9,11 +9,11 @@
     <div class="relative" x-data="shopsList()" x-init="init()">
 
         <!-- Gradient Background -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
 
         <!-- Header -->
         <div class="relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-600/10 to-purple-600/10 dark:from-primary-600/20 dark:to-purple-600/20"></div>
             <div class="relative py-20">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="max-w-3xl">
@@ -100,7 +100,7 @@
                                     <div class="bg-white dark:bg-gray-800 p-6">
                                         @if ($variants->count() > 0)
                                             <div class="text-sm font-bold text-gray-900 dark:text-white mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
-                                                <i class="fa-solid fa-layer-group text-blue-600 dark:text-blue-400 mr-2"></i>
+                                                <i class="fa-solid fa-layer-group text-primary-600 dark:text-primary-400 mr-2"></i>
                                                 Varyantlar <span class="text-gray-500 dark:text-gray-400 font-normal">({{ $variants->count() }})</span>
                                             </div>
                                             <ul class="space-y-2 max-h-[280px] overflow-y-auto">
@@ -111,7 +111,7 @@
                                                     @endphp
                                                     <li>
                                                         <a href="{{ $variantUrl }}"
-                                                            class="group flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 p-2 rounded-lg transition-all">
+                                                            class="group flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-gray-700 p-2 rounded-lg transition-all">
                                                             <i class="fa-solid fa-angle-right text-xs mt-1 group-hover:translate-x-1 transition-transform"></i>
                                                             <span class="flex-1">{{ $variantTitle }}</span>
                                                         </a>

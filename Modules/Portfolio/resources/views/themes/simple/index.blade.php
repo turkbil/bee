@@ -10,13 +10,13 @@
 
         <!-- Gradient Background -->
         <div
-            class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10">
+            class="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10">
         </div>
 
         <!-- Header -->
         <div class="relative overflow-hidden">
             <div
-                class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20">
+                class="absolute inset-0 bg-gradient-to-r from-primary-600/10 to-purple-600/10 dark:from-primary-600/20 dark:to-purple-600/20">
             </div>
             <div class="relative py-20">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,7 +90,7 @@ if (
 
                                 <!-- Gradient Overlay -->
                                 <div
-                                    class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    class="absolute inset-0 bg-gradient-to-br from-primary-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 </div>
 
                                 <div class="relative p-6 cursor-pointer">
@@ -107,7 +107,7 @@ if (
 
                                     <!-- Title with hover effect -->
                                     <h2
-                                        class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
+                                        class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-primary-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
                                         {{ $title }}
                                     </h2>
 
@@ -119,12 +119,12 @@ if (
                                     @endif
 
                                     <!-- Read More with Alpine animation -->
-                                    <div class="inline-flex items-center text-sm font-semibold text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text group-hover:from-blue-700 group-hover:to-purple-700 transition-all duration-300"
+                                    <div class="inline-flex items-center text-sm font-semibold text-transparent bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text group-hover:from-primary-700 group-hover:to-purple-700 transition-all duration-300"
                                         x-show="true" x-transition:enter="transition ease-out duration-200"
                                         x-transition:enter-start="opacity-75 transform translate-x-0"
                                         x-transition:enter-end="opacity-100 transform translate-x-0">
                                         {{ __('portfolio::front.general.read_more') }}
-                                        <svg class="h-4 w-4 ml-2 text-blue-600 group-hover:text-purple-600 transition-all duration-300"
+                                        <svg class="h-4 w-4 ml-2 text-primary-600 group-hover:text-purple-600 transition-all duration-300"
                                             :class="localHover ? 'translate-x-1' : 'translate-x-0'" fill="currentColor"
                                             viewBox="0 0 20 20">
                                             <path fill-rule="evenodd"
@@ -135,7 +135,7 @@ if (
 
                                     <!-- Hover Border Effect -->
                                     <div
-                                        class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300">
+                                        class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-600 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300">
                                     </div>
                                 </div>
                             </article>

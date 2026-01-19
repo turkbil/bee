@@ -1,0 +1,9 @@
+{
+    "name": "Service",
+    "alias": "service",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": ["Modules\\Service\\Providers\\ServiceServiceProvider"],
+    "files": []
+}

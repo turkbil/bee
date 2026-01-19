@@ -9,18 +9,18 @@
 <div class="relative" x-data="pagesList()" x-init="init()">
     
     <!-- Gradient Background -->
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
     
     <!-- Header -->
     <div class="relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-primary-600/10 to-purple-600/10 dark:from-primary-600/20 dark:to-purple-600/20"></div>
         <div class="relative py-20">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-3xl">
                 <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
                     {{ $moduleTitle ?? __('page::front.general.pages') }}
                 </h1>
-                <p class="text-lg text-gray-600 dark:text-gray-400">
+                <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
                     Bilgi sayfalarımızı keşfedin
                 </p>
                 </div>
@@ -75,7 +75,7 @@
                      @mouseleave.self="localHover = false">
                 
                 <!-- Gradient Overlay -->
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-primary-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div class="relative p-6 cursor-pointer">
                     
@@ -88,25 +88,25 @@
                     </div>
 
                     <!-- Title with hover effect -->
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-primary-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
                         {{ $title }}
                     </h2>
 
                     <!-- Description -->
                     @if($description)
-                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 line-clamp-3">
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 line-clamp-3 text-base">
                         {{ Str::limit($description, 120) }}
                     </p>
                     @endif
 
                     <!-- Read More with Alpine animation -->
-                    <div class="inline-flex items-center text-sm font-semibold text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text group-hover:from-blue-700 group-hover:to-purple-700 transition-all duration-300"
+                    <div class="inline-flex items-center text-sm font-semibold text-transparent bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text group-hover:from-primary-700 group-hover:to-purple-700 transition-all duration-300"
                          x-show="true"
                          x-transition:enter="transition ease-out duration-200"
                          x-transition:enter-start="opacity-75 transform translate-x-0"
                          x-transition:enter-end="opacity-100 transform translate-x-0">
                         {{ __('page::front.general.read_more') }}
-                        <svg class="h-4 w-4 ml-2 text-blue-600 group-hover:text-purple-600 transition-all duration-300"
+                        <svg class="h-4 w-4 ml-2 text-primary-600 group-hover:text-purple-600 transition-all duration-300"
                              :class="localHover ? 'translate-x-1' : 'translate-x-0'"
                              fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -114,7 +114,7 @@
                     </div>
                     
                     <!-- Hover Border Effect -->
-                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-600 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                 </div>
             </article>
             @endforeach

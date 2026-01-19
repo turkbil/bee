@@ -67,7 +67,7 @@
         <header class="mb-8 md:mb-12">
             @if($categoryName)
                 <div class="mb-4">
-                    <span class="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                    <span class="text-sm text-primary-600 dark:text-primary-400 font-medium">
                         {{ $categoryName }}
                     </span>
                 </div>
@@ -76,7 +76,7 @@
             <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
                 {{ $title }}
             </h1>
-            <div class="h-1 w-20 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full mb-6"></div>
+            <div class="h-1 w-20 bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-500 dark:to-primary-300 rounded-full mb-6"></div>
 
             @if($excerpt)
                 <p class="text-xl leading-relaxed text-gray-600 dark:text-gray-400 mb-8">
@@ -140,15 +140,15 @@
                           prose-h3:text-xl prose-h3:md:text-2xl prose-h3:mt-10 prose-h3:mb-4
                           prose-h4:text-lg prose-h4:md:text-xl prose-h4:mt-8 prose-h4:mb-3
                           prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-6
-                          prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
-                          prose-a:font-medium hover:prose-a:text-blue-700 dark:hover:prose-a:text-blue-300
+                          prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-a:no-underline hover:prose-a:underline
+                          prose-a:font-medium hover:prose-a:text-primary-700 dark:hover:prose-a:text-primary-300
                           prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-semibold
                           prose-ul:my-6 prose-ol:my-6 prose-li:my-2 prose-li:leading-relaxed
-                          prose-blockquote:border-l-4 prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-50/50
-                          dark:prose-blockquote:bg-blue-900/10 prose-blockquote:py-4 prose-blockquote:px-6
+                          prose-blockquote:border-l-4 prose-blockquote:border-l-primary-500 prose-blockquote:bg-primary-50/50
+                          dark:prose-blockquote:bg-primary-900/10 prose-blockquote:py-4 prose-blockquote:px-6
                           prose-blockquote:italic prose-blockquote:my-8
-                          prose-code:text-blue-600 dark:prose-code:text-blue-400 prose-code:bg-blue-50
-                          dark:prose-code:bg-blue-900/20 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                          prose-code:text-primary-600 dark:prose-code:text-primary-400 prose-code:bg-primary-50
+                          dark:prose-code:bg-primary-900/20 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
                           prose-code:font-mono prose-code:text-sm
                           prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800 prose-pre:rounded-lg
                           prose-pre:shadow-lg prose-pre:my-8
@@ -164,7 +164,7 @@
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
                                 {{ __('mediamanagement::admin.gallery') }}
                             </h2>
-                            <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                            <div class="h-1 w-16 bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-500 dark:to-primary-300 rounded-full"></div>
                         </header>
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                             @foreach($galleryImages as $image)
@@ -209,10 +209,10 @@
                         <section id="nasil-yapilir" class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/HowTo">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3" itemprop="name">
-                                    <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-3"></i>
+                                    <i class="fas fa-tasks text-primary-600 dark:text-primary-400 mr-3"></i>
                                     {{ $howtoName }}
                                 </h2>
-                                <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                                <div class="h-1 w-16 bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-500 dark:to-primary-300 rounded-full"></div>
                                 @if(!empty($howtoDesc))
                                     <p class="mt-4 text-base text-gray-600 dark:text-gray-400" itemprop="description">
                                         {{ $howtoDesc }}
@@ -236,12 +236,12 @@
                                             </div>
 
                                             {{-- Icon - Prominent with Hover Animation --}}
-                                            <div class="flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 mx-auto mb-6 shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl">
+                                            <div class="flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-600 to-indigo-600 dark:from-primary-500 dark:to-indigo-500 mx-auto mb-6 shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl">
                                                 <i class="{{ $stepIcon }} text-4xl text-white transition-transform duration-300 group-hover:scale-110"></i>
                                             </div>
 
                                             {{-- Title - Prominent with Hover Effect --}}
-                                            <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center leading-tight transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" itemprop="name">
+                                            <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center leading-tight transition-colors duration-300 group-hover:text-primary-600 dark:group-hover:text-primary-400" itemprop="name">
                                                 {{ $stepName }}
                                             </h3>
 
@@ -266,7 +266,7 @@
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
                                 Bunları da Beğenebilirsin
                             </h2>
-                            <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                            <div class="h-1 w-16 bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-500 dark:to-primary-300 rounded-full"></div>
                         </header>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach($relatedBlogs as $relatedBlog)
@@ -279,7 +279,7 @@
                                                  class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                                         @endif
                                         <div class="p-6">
-                                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                                 {{ $relatedBlog->getTranslated('title', $currentLocale) }}
                                             </h3>
                                             @if($relatedBlog->getTranslated('excerpt', $currentLocale))
@@ -294,7 +294,7 @@
                         </div>
                         <div class="mt-8 text-center">
                             <a href="{{ $blogIndexUrl }}"
-                               class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                               class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 dark:from-primary-500 dark:to-primary-400 dark:hover:from-primary-600 dark:hover:to-primary-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
                                 Tüm Yazıları Gör
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -325,10 +325,10 @@
                                     }
                                 @endphp
                                 <a href="{{ $tagUrl }}"
-                                   class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-800 transition-all duration-300 shadow-sm hover:shadow-md dark:bg-gradient-to-r dark:from-blue-500/20 dark:to-blue-600/20 dark:text-blue-200 dark:hover:from-blue-500/30 dark:hover:to-blue-600/30"
+                                   class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 px-3 py-1.5 text-xs font-semibold text-primary-800 transition-all duration-300 shadow-sm hover:shadow-md dark:bg-gradient-to-r dark:from-primary-500/20 dark:to-primary-600/20 dark:text-primary-200 dark:hover:from-primary-500/30 dark:hover:to-primary-600/30"
                                    rel="tag"
                                    title="{{ $tagName }} etiketli yazılar">
-                                    <i class="fas fa-hashtag text-blue-600 dark:text-blue-300"></i>{{ $tagName }}
+                                    <i class="fas fa-hashtag text-primary-600 dark:text-primary-300"></i>{{ $tagName }}
                                 </a>
                             @endforeach
                         </div>
@@ -340,11 +340,11 @@
                     <nav class="mt-12 grid gap-6 md:grid-cols-2">
                         @if($prevPost)
                             <a href="{{ $prevPost->getUrl($currentLocale) }}"
-                               class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-500">
+                               class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary-300 dark:hover:border-primary-500">
                                 <span class="text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3 block">
-                                    <i class="fas fa-arrow-left text-blue-500 mr-2"></i>Önceki Yazı
+                                    <i class="fas fa-arrow-left text-primary-500 mr-2"></i>Önceki Yazı
                                 </span>
-                                <span class="line-clamp-2 text-lg font-bold text-gray-900 dark:text-white transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                <span class="line-clamp-2 text-lg font-bold text-gray-900 dark:text-white transition-colors group-hover:text-primary-600 dark:group-hover:text-primary-400">
                                     {{ $prevPost->getTranslated('title', $currentLocale) }}
                                 </span>
                             </a>
@@ -352,11 +352,11 @@
 
                         @if($nextPost)
                             <a href="{{ $nextPost->getUrl($currentLocale) }}"
-                               class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 text-right transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-500">
+                               class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 text-right transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary-300 dark:hover:border-primary-500">
                                 <span class="text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3 block">
-                                    Sonraki Yazı<i class="fas fa-arrow-right text-blue-500 ml-2"></i>
+                                    Sonraki Yazı<i class="fas fa-arrow-right text-primary-500 ml-2"></i>
                                 </span>
-                                <span class="line-clamp-2 text-lg font-bold text-gray-900 dark:text-white transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                <span class="line-clamp-2 text-lg font-bold text-gray-900 dark:text-white transition-colors group-hover:text-primary-600 dark:group-hover:text-primary-400">
                                     {{ $nextPost->getTranslated('title', $currentLocale) }}
                                 </span>
                             </a>
@@ -384,10 +384,10 @@
                         <section id="sik-sorulan-sorular" class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/FAQPage">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                                    <i class="fas fa-question-circle text-blue-600 dark:text-blue-400 mr-3"></i>
+                                    <i class="fas fa-question-circle text-primary-600 dark:text-primary-400 mr-3"></i>
                                     {{ __('blog::front.general.faq_title') }}
                                 </h2>
-                                <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                                <div class="h-1 w-16 bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-500 dark:to-primary-300 rounded-full"></div>
                             </header>
                             <div class="space-y-4">
                                 @foreach($faqData as $index => $faq)
@@ -400,16 +400,16 @@
                                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl"
                                              itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                                             <details class="group">
-                                                <summary class="flex items-center justify-between w-full px-6 md:px-8 py-5 md:py-6 cursor-pointer list-none select-none hover:bg-blue-50 dark:hover:bg-gray-700/50 transition-all duration-300">
+                                                <summary class="flex items-center justify-between w-full px-6 md:px-8 py-5 md:py-6 cursor-pointer list-none select-none hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-all duration-300">
                                                     <div class="flex items-center gap-4 flex-1">
                                                         @php
                                                             $iconClass = str_replace(['fas ', 'far ', 'fab ', 'fa-solid ', 'fa-regular '], '', $faqIcon);
                                                             $iconClass = trim($iconClass);
                                                         @endphp
-                                                        <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-2xl">
+                                                        <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-600 to-indigo-600 dark:from-primary-500 dark:to-indigo-500 flex items-center justify-center shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-2xl">
                                                             <i class="fa-light {{ $iconClass }} group-hover:fa-solid text-white text-2xl transition-all duration-300 group-hover:scale-110"></i>
                                                         </div>
-                                                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white pr-4 transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" itemprop="name">
+                                                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white pr-4 transition-colors duration-300 group-hover:text-primary-600 dark:group-hover:text-primary-400" itemprop="name">
                                                             {{ $question }}
                                                         </h3>
                                                     </div>
@@ -435,7 +435,7 @@
                 {{-- Social Share (Article Bottom) --}}
                 <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <h3 class="text-xl font-bold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
-                        <i class="fas fa-share-alt text-blue-500"></i>
+                        <i class="fas fa-share-alt text-primary-500"></i>
                         Bu yazıyı paylaş
                     </h3>
                     <div class="flex flex-wrap gap-3 justify-center md:justify-start">
@@ -449,7 +449,7 @@
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
+                           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
                             <i class="fab fa-facebook-f text-xl"></i>
                             Facebook
                         </a>
@@ -463,7 +463,7 @@
                         <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($shareUrl) }}"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
+                           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary-700 hover:bg-primary-800 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
                             <i class="fab fa-linkedin-in text-xl"></i>
                             LinkedIn
                         </a>
@@ -484,7 +484,7 @@
 
                 <footer class="mt-16 md:mt-20 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
                     <a href="{{ $blogIndexUrl }}"
-                       class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                       class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 dark:from-primary-500 dark:to-primary-400 dark:hover:from-primary-600 dark:hover:to-primary-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
                         <i class="fas fa-arrow-left"></i>
                         <span>Tüm yazılara dön</span>
                     </a>

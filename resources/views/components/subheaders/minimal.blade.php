@@ -21,7 +21,7 @@
             <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                 @foreach($breadcrumbs as $index => $crumb)
                     @if(isset($crumb['url']))
-                        <a href="{{ $crumb['url'] }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
+                        <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition">
                             {{ $crumb['label'] }}
                         </a>
                         @if($index < count($breadcrumbs) - 1)

@@ -135,12 +135,24 @@ class TenancyServiceProvider extends ServiceProvider
                     if ($primaryDomain) {
                         $domain = $primaryDomain->domain;
                         // Remove www. if present, add leading dot
-                        $domain = preg_replace('/^www\./', '', $domain);
-                        $cookieDomain = '.' . $domain;
+                        $cleanDomain = preg_replace('/^www\./', '', $domain);
+                        $cookieDomain = '.' . $cleanDomain;
 
                         config([
                             'session.domain' => $cookieDomain,
                         ]);
+
+                        // 🌐 APP_URL: Primary domain'e göre dinamik ayarla
+                        $primaryUrl = 'https://' . $domain;
+                        config(['app.url' => $primaryUrl]);
+                        \Illuminate\Support\Facades\URL::forceRootUrl($primaryUrl);
+                        \Illuminate\Support\Facades\URL::forceScheme('https');
+
+                        // 📁 Filesystem disk URL'lerini de güncelle (Spatie Media Library için)
+                        // Tenant storage path: /storage/tenant{id}/
+                        $tenantStorageUrl = $primaryUrl . '/storage/tenant' . $tenantId;
+                        config(['filesystems.disks.public.url' => $tenantStorageUrl]);
+                        config(['filesystems.disks.tenant.url' => $tenantStorageUrl]);
                     }
                 },
             ],

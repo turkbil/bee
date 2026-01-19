@@ -37,6 +37,13 @@ class CacheController extends Controller
                 // View cache temizleme
                 Artisan::call('view:clear');
                 $clearedItems[] = 'View Cache';
+
+                // Compiled views silme
+                $viewPath = storage_path('framework/views');
+                if (is_dir($viewPath)) {
+                    array_map('unlink', glob("$viewPath/*.php"));
+                    $clearedItems[] = 'Compiled Views';
+                }
                 
                 // Route cache temizleme
                 Artisan::call('route:clear');
@@ -45,12 +52,17 @@ class CacheController extends Controller
                 // Config cache temizleme
                 Artisan::call('config:clear');
                 $clearedItems[] = 'Config Cache';
-                
-                // Tenant-specific ResponseCache temizleme
+
+                // OPCache temizleme
+                if (function_exists('opcache_reset')) {
+                    opcache_reset();
+                    $clearedItems[] = 'OPCache';
+                }
+
+                // ResponseCache temizleme
                 if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
-                    $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
-                    \Spatie\ResponseCache\Facades\ResponseCache::forget($tenantTag);
-                    $clearedItems[] = 'Response Cache (Tenant)';
+                    \Spatie\ResponseCache\Facades\ResponseCache::clear();
+                    $clearedItems[] = 'Response Cache';
                 }
                 
                 // Cache temizleme log'u
@@ -86,18 +98,30 @@ class CacheController extends Controller
                 // System cache'leri
                 Artisan::call('view:clear');
                 $clearedItems[] = 'View Cache';
-                
+
+                // Compiled views silme
+                $viewPath = storage_path('framework/views');
+                if (is_dir($viewPath)) {
+                    array_map('unlink', glob("$viewPath/*.php"));
+                    $clearedItems[] = 'Compiled Views';
+                }
+
                 Artisan::call('route:clear');
                 $clearedItems[] = 'Route Cache';
                 
                 Artisan::call('config:clear');
                 $clearedItems[] = 'Config Cache';
-                
-                // Central-specific ResponseCache temizleme
+
+                // OPCache temizleme
+                if (function_exists('opcache_reset')) {
+                    opcache_reset();
+                    $clearedItems[] = 'OPCache';
+                }
+
+                // ResponseCache temizleme
                 if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
-                    $centralTag = 'central_response_cache';
-                    \Spatie\ResponseCache\Facades\ResponseCache::forget($centralTag);
-                    $clearedItems[] = 'Response Cache (Central)';
+                    \Spatie\ResponseCache\Facades\ResponseCache::clear();
+                    $clearedItems[] = 'Response Cache';
                 }
                 
                 // Central cache temizleme log'u

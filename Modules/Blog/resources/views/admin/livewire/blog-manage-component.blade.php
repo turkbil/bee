@@ -227,7 +227,7 @@
                         {{-- FAQ & HOWTO VISUAL EDITORS --}}
                         <div class="row mb-4">
                             {{-- FAQ VISUAL EDITOR --}}
-                            <div class="col-12 col-xl-6" x-data="faqEditor(@entangle('inputs.faq_data').defer)">
+                            <div class="col-12 col-xl-6" x-data="faqEditor()">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <label class="form-label mb-0">{{ __('blog::admin.faq') }}</label>
                                     <button type="button" @click="addFaq()" class="btn btn-primary">
@@ -287,7 +287,7 @@
                             </div>
 
                             {{-- HOWTO VISUAL EDITOR --}}
-                            <div class="col-12 col-xl-6" x-data="howtoEditor(@entangle('inputs.howto_data').defer)">
+                            <div class="col-12 col-xl-6" x-data="howtoEditor()">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <label class="form-label mb-0">{{ __('blog::admin.howto') }}</label>
                                     <button type="button" @click="addStep()" class="btn btn-primary">
@@ -439,38 +439,22 @@
         {{-- FAQ & HowTo Visual Editors --}}
         <script>
             // FAQ Visual Editor Component
-            function faqEditor(wireModel) {
+            function faqEditor() {
                 return {
                     faqs: [],
                     sortable: null,
+                    isUpdatingFromWire: false,
 
                     init() {
-                        // Livewire'dan veriyi al (JSON string veya array)
+                        // İlk yükleme - veri artık array olarak geliyor (model cast)
+                        this.syncFromWire(this.$wire.inputs.faq_data);
+
+                        // Livewire'dan gelen değişiklikleri izle
                         this.$watch('$wire.inputs.faq_data', (value) => {
-                            if (typeof value === 'string' && value) {
-                                try {
-                                    this.faqs = JSON.parse(value);
-                                } catch (e) {
-                                    this.faqs = [];
-                                }
-                            } else if (Array.isArray(value)) {
-                                this.faqs = value;
-                            } else {
-                                this.faqs = [];
+                            if (!this.isUpdatingFromWire) {
+                                this.syncFromWire(value);
                             }
                         });
-
-                        // İlk yükleme
-                        const initialValue = this.$wire.inputs.faq_data;
-                        if (typeof initialValue === 'string' && initialValue) {
-                            try {
-                                this.faqs = JSON.parse(initialValue);
-                            } catch (e) {
-                                this.faqs = [];
-                            }
-                        } else if (Array.isArray(initialValue)) {
-                            this.faqs = initialValue;
-                        }
 
                         // Sortable.js init
                         this.$nextTick(() => {
@@ -479,8 +463,8 @@
                                 this.sortable = Sortable.create(container, {
                                     handle: '.handle',
                                     animation: 150,
+                                    draggable: '.faq-item',
                                     onEnd: (evt) => {
-                                        // Array'i yeniden düzenle (sıralama için)
                                         const movedItem = this.faqs.splice(evt.oldIndex, 1)[0];
                                         this.faqs.splice(evt.newIndex, 0, movedItem);
                                         this.updateWire();
@@ -493,6 +477,22 @@
                         this.$watch('faqs', () => {
                             this.updateWire();
                         }, { deep: true });
+                    },
+
+                    syncFromWire(value) {
+                        // JSON string olarak gelebilir (eski veri) veya array olarak (yeni)
+                        if (typeof value === 'string' && value) {
+                            try {
+                                this.faqs = JSON.parse(value);
+                            } catch (e) {
+                                this.faqs = [];
+                            }
+                        } else if (Array.isArray(value)) {
+                            // Deep clone yaparak reactive proxy sorununu önle
+                            this.faqs = JSON.parse(JSON.stringify(value));
+                        } else {
+                            this.faqs = [];
+                        }
                     },
 
                     addFaq() {
@@ -508,14 +508,18 @@
                     },
 
                     updateWire() {
-                        // JSON string olarak Livewire'a gönder
+                        this.isUpdatingFromWire = true;
+                        // JSON string olarak Livewire'a gönder (save metodunda decode edilecek)
                         this.$wire.set('inputs.faq_data', JSON.stringify(this.faqs));
+                        this.$nextTick(() => {
+                            this.isUpdatingFromWire = false;
+                        });
                     }
                 }
             }
 
             // HowTo Visual Editor Component
-            function howtoEditor(wireModel) {
+            function howtoEditor() {
                 return {
                     howto: {
                         name: '',
@@ -523,36 +527,18 @@
                         steps: []
                     },
                     sortable: null,
+                    isUpdatingFromWire: false,
 
                     init() {
-                        // Livewire'dan veriyi al
+                        // İlk yükleme - veri artık object olarak geliyor (model cast)
+                        this.syncFromWire(this.$wire.inputs.howto_data);
+
+                        // Livewire'dan gelen değişiklikleri izle
                         this.$watch('$wire.inputs.howto_data', (value) => {
-                            if (typeof value === 'string' && value) {
-                                try {
-                                    this.howto = JSON.parse(value);
-                                    if (!this.howto.steps) this.howto.steps = [];
-                                } catch (e) {
-                                    this.howto = { name: '', description: '', steps: [] };
-                                }
-                            } else if (typeof value === 'object' && value !== null) {
-                                this.howto = value;
-                                if (!this.howto.steps) this.howto.steps = [];
+                            if (!this.isUpdatingFromWire) {
+                                this.syncFromWire(value);
                             }
                         });
-
-                        // İlk yükleme
-                        const initialValue = this.$wire.inputs.howto_data;
-                        if (typeof initialValue === 'string' && initialValue) {
-                            try {
-                                this.howto = JSON.parse(initialValue);
-                                if (!this.howto.steps) this.howto.steps = [];
-                            } catch (e) {
-                                this.howto = { name: '', description: '', steps: [] };
-                            }
-                        } else if (typeof initialValue === 'object' && initialValue !== null) {
-                            this.howto = initialValue;
-                            if (!this.howto.steps) this.howto.steps = [];
-                        }
 
                         // Sortable.js init
                         this.$nextTick(() => {
@@ -561,8 +547,8 @@
                                 this.sortable = Sortable.create(container, {
                                     handle: '.handle',
                                     animation: 150,
+                                    draggable: '.howto-item',
                                     onEnd: (evt) => {
-                                        // Array'i yeniden düzenle (badge numaraları için)
                                         const movedItem = this.howto.steps.splice(evt.oldIndex, 1)[0];
                                         this.howto.steps.splice(evt.newIndex, 0, movedItem);
                                         this.updateWire();
@@ -575,6 +561,24 @@
                         this.$watch('howto', () => {
                             this.updateWire();
                         }, { deep: true });
+                    },
+
+                    syncFromWire(value) {
+                        // JSON string olarak gelebilir (eski veri) veya object olarak (yeni)
+                        if (typeof value === 'string' && value) {
+                            try {
+                                this.howto = JSON.parse(value);
+                                if (!this.howto.steps) this.howto.steps = [];
+                            } catch (e) {
+                                this.howto = { name: '', description: '', steps: [] };
+                            }
+                        } else if (typeof value === 'object' && value !== null) {
+                            // Deep clone yaparak reactive proxy sorununu önle
+                            this.howto = JSON.parse(JSON.stringify(value));
+                            if (!this.howto.steps) this.howto.steps = [];
+                        } else {
+                            this.howto = { name: '', description: '', steps: [] };
+                        }
                     },
 
                     addStep() {
@@ -590,8 +594,12 @@
                     },
 
                     updateWire() {
-                        // JSON string olarak Livewire'a gönder
+                        this.isUpdatingFromWire = true;
+                        // JSON string olarak Livewire'a gönder (save metodunda decode edilecek)
                         this.$wire.set('inputs.howto_data', JSON.stringify(this.howto));
+                        this.$nextTick(() => {
+                            this.isUpdatingFromWire = false;
+                        });
                     }
                 }
             }

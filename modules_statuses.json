@@ -24,5 +24,6 @@
     "Cart": true,
     "Mail": true,
     "Subscription": true,
-    "Coupon": true
+    "Coupon": true,
+    "Service": true
 }

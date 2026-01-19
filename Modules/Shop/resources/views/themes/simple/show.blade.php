@@ -228,11 +228,11 @@
 
         {{-- 🎯 HERO SECTION --}}
         <section id="hero-section"
-            class="relative bg-gradient-to-r from-blue-600 via-slate-800 to-slate-950 text-white overflow-hidden">
+            class="relative bg-gradient-to-r from-primary-600 via-slate-800 to-slate-950 text-white overflow-hidden">
             {{-- Decorative elements --}}
             <div class="absolute top-0 left-0 w-full h-full opacity-15">
                 <div
-                    class="absolute top-20 right-20 w-96 h-96 bg-blue-400 rounded-full mix-blend-overlay filter blur-3xl animate-pulse">
+                    class="absolute top-20 right-20 w-96 h-96 bg-primary-400 rounded-full mix-blend-overlay filter blur-3xl animate-pulse">
                 </div>
                 <div class="absolute bottom-10 left-10 w-[500px] h-[500px] bg-slate-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"
                     style="animation-delay: 2s;"></div>
@@ -251,19 +251,19 @@
                         </h1>
 
                         @if ($shortDescription)
-                            <p class="text-xl text-blue-100 leading-relaxed mb-8">
+                            <p class="text-xl text-primary-100 leading-relaxed mb-8">
                                 {{ $shortDescription }}
                             </p>
                         @endif
 
                         <div class="flex flex-col sm:flex-row gap-4">
                             <a href="#contact"
-                                class="inline-flex items-center justify-center gap-3 bg-white text-blue-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-50 transition-colors">
+                                class="inline-flex items-center justify-center gap-3 bg-white text-primary-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-primary-50 transition-colors">
                                 <i class="fa-solid fa-envelope"></i>
                                 <span>Teklif Al</span>
                             </a>
                             <a href="tel:02167553555"
-                                class="inline-flex items-center justify-center gap-3 bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-blue-700 transition-colors">
+                                class="inline-flex items-center justify-center gap-3 bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-primary-700 transition-colors">
                                 <i class="fa-solid fa-phone"></i>
                                 <span>0216 755 3 555</span>
                             </a>
@@ -297,78 +297,78 @@
                         <div class="flex gap-2" id="toc-buttons">
                             @if ($galleryImages->count() > 0)
                                 <a href="#gallery" data-target="gallery"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-images mr-1.5"></i>Galeri
                                 </a>
                             @endif
                             @if ($longDescription)
                                 <a href="#description" data-target="description"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-align-left mr-1.5"></i>Açıklama
                                 </a>
                             @endif
                             @if ($highlightedFeatures->isNotEmpty() || !empty($featuresList))
                                 <a href="#features" data-target="features"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-sparkles mr-1.5"></i>Özellikler
                                 </a>
                             @endif
                             @if ($siblingVariants->count() > 0)
                                 <a href="#variants" data-target="variants"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-layer-group mr-1.5"></i>Varyantlar
                                 </a>
                             @endif
                             @if (!empty($competitiveAdvantages))
                                 <a href="#competitive" data-target="competitive"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-trophy mr-1.5"></i>Avantajlar
                                 </a>
                             @endif
                             @if (!empty($technicalSpecs))
                                 <a href="#technical" data-target="technical"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-cogs mr-1.5"></i>Teknik
                                 </a>
                             @endif
                             @if (!empty($accessories))
                                 <a href="#accessories" data-target="accessories"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-puzzle-piece mr-1.5"></i>Aksesuarlar
                                 </a>
                             @endif
                             @if (!empty($useCases))
                                 <a href="#usecases" data-target="usecases"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-bullseye mr-1.5"></i>Kullanım
                                 </a>
                             @endif
                             @if (!empty($targetIndustries))
                                 <a href="#industries" data-target="industries"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-briefcase mr-1.5"></i>Sektörler
                                 </a>
                             @endif
                             @if (!empty($certifications))
                                 <a href="#certifications" data-target="certifications"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-certificate mr-1.5"></i>Sertifikalar
                                 </a>
                             @endif
                             @if ($warrantyInfo)
                                 <a href="#warranty" data-target="warranty"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-shield-heart mr-1.5"></i>Garanti
                                 </a>
                             @endif
                             @if ($faqEntries->isNotEmpty())
                                 <a href="#faq" data-target="faq"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-primary-100 hover:text-primary-700 dark:hover:bg-primary-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-question-circle mr-1.5"></i>SSS
                                 </a>
                             @endif
                             <a href="#contact" data-target="contact"
-                                class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-blue-600 dark:bg-blue-600 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-700 transition-all whitespace-nowrap">
+                                class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-primary-600 dark:bg-primary-600 text-white rounded hover:bg-primary-700 dark:hover:bg-primary-700 transition-all whitespace-nowrap">
                                 <i class="fa-solid fa-envelope mr-1.5"></i>Teklif
                             </a>
                         </div>
@@ -387,8 +387,8 @@
                         <section id="gallery" class="scroll-mt-24 mb-20 lg:mb-24">
                             <header class="text-center mb-12">
                                 <div
-                                    class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl mb-4">
-                                    <i class="fa-solid fa-images text-3xl text-blue-600 dark:text-blue-400"></i>
+                                    class="inline-flex items-center justify-center w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl mb-4">
+                                    <i class="fa-solid fa-images text-3xl text-primary-600 dark:text-primary-400"></i>
                                 </div>
                                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
                                     Ürün Görselleri
@@ -398,7 +398,7 @@
                             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 @foreach ($galleryImages as $image)
                                     <a href="{{ $image->getUrl() }}"
-                                        class="glightbox block rounded-xl overflow-hidden hover:ring-2 ring-blue-500 dark:ring-blue-400 transition-all hover:scale-105"
+                                        class="glightbox block rounded-xl overflow-hidden hover:ring-2 ring-primary-500 dark:ring-primary-400 transition-all hover:scale-105"
                                         data-gallery="prod">
                                         <img src="{{ $image->hasGeneratedConversion('medium') ? $image->getUrl('medium') : $image->getUrl() }}"
                                             alt="" class="w-full h-48 object-cover">
@@ -422,14 +422,14 @@
                                 @foreach ($primarySpecs as $spec)
                                     <div class="group relative overflow-hidden">
                                         <div
-                                            class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all">
+                                            class="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-purple-500/10 dark:from-primary-500/5 dark:to-purple-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all">
                                         </div>
                                         <div
-                                            class="relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:shadow-xl">
+                                            class="relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-primary-400 dark:hover:border-primary-500 transition-all hover:shadow-xl">
                                             {{-- İkon + Başlık (Üstte) --}}
                                             <div class="flex items-center gap-3 mb-4">
                                                 <div
-                                                    class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                                    class="w-12 h-12 bg-gradient-to-br from-primary-500 to-purple-600 dark:from-primary-600 dark:to-purple-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
                                                     <i class="fa-solid fa-bolt text-white text-lg"></i>
                                                 </div>
                                                 <h4 class="text-base font-semibold text-gray-700 dark:text-gray-300">
@@ -466,11 +466,11 @@
                                 <div class="grid grid-cols-1 gap-6 mb-8">
                                     @foreach ($highlightedFeatures as $feature)
                                         <div
-                                            class="flex gap-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg transition-all">
+                                            class="flex gap-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-lg transition-all">
                                             <div
-                                                class="w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                class="w-14 h-14 bg-primary-100 dark:bg-primary-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
                                                 <i
-                                                    class="fa-solid fa-{{ $feature['icon'] }} text-blue-600 dark:text-blue-400 text-xl"></i>
+                                                    class="fa-solid fa-{{ $feature['icon'] }} text-primary-600 dark:text-primary-400 text-xl"></i>
                                             </div>
                                             <div>
                                                 <h4 class="font-bold text-gray-900 dark:text-white mb-2">
@@ -542,7 +542,7 @@
                                             : null;
                                     @endphp
                                     <a href="{{ $variantUrl }}"
-                                        class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                                        class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-primary-500 dark:hover:border-primary-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
 
                                         @if ($variantImageUrl)
                                             <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
@@ -554,11 +554,11 @@
                                         <div class="p-6">
                                             <div class="flex items-start justify-between mb-3">
                                                 <h3
-                                                    class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                    class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                                     {{ $variantTitle }}
                                                 </h3>
                                                 <i
-                                                    class="fa-solid fa-arrow-right text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                                    class="fa-solid fa-arrow-right text-primary-600 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
                                             </div>
 
                                             @if ($variantDescription)
@@ -569,7 +569,7 @@
 
                                             @if ($variant->variant_type)
                                                 <div
-                                                    class="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full mb-3">
+                                                    class="inline-flex items-center gap-2 text-xs font-semibold text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 px-3 py-1.5 rounded-full mb-3">
                                                     <i class="fa-solid fa-tag"></i>
                                                     <span>{{ ucfirst(str_replace('-', ' ', $variant->variant_type)) }}</span>
                                                 </div>
@@ -583,7 +583,7 @@
 
                                             <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                                                 <span
-                                                    class="text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
+                                                    class="text-sm font-semibold text-primary-600 dark:text-primary-400 group-hover:underline">
                                                     Detayları Görüntüle <i class="fa-solid fa-chevron-right ml-1"></i>
                                                 </span>
                                             </div>
@@ -650,7 +650,7 @@
 
                                 @if ($isFlat)
                                     <div
-                                        class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 px-5 py-4">
+                                        class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-700 dark:to-primary-800 px-5 py-4">
                                         <h3 class="text-base font-bold text-white flex items-center gap-2">
                                             <i class="fa-solid fa-cog text-sm"></i>
                                             Teknik Özellikler
@@ -658,7 +658,7 @@
                                     </div>
                                     @foreach ($technicalSpecs as $key => $value)
                                         <div
-                                            class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-blue-50 dark:hover:bg-gray-800/50 transition-colors">
+                                            class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-primary-50 dark:hover:bg-gray-800/50 transition-colors">
                                             <div class="px-5 py-3.5">
                                                 <span
                                                     class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $key }}</span>
@@ -687,7 +687,7 @@
                                                 }
                                             @endphp
                                             <div
-                                                class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 px-5 py-4">
+                                                class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-700 dark:to-primary-800 px-5 py-4">
                                                 <h3 class="text-base font-bold text-white flex items-center gap-2">
                                                     <i class="fa-solid fa-{{ $sectionIcon }} text-sm"></i>
                                                     {{ $sectionTitle }}
@@ -695,7 +695,7 @@
                                             </div>
                                             @foreach ($sectionValues as $key => $value)
                                                 <div
-                                                    class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-blue-50 dark:hover:bg-gray-800/50 transition-colors">
+                                                    class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-primary-50 dark:hover:bg-gray-800/50 transition-colors">
                                                     <div class="px-5 py-3.5">
                                                         <span
                                                             class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $key }}</span>
@@ -753,7 +753,7 @@
                                             </span>
                                         @else
                                             <span
-                                                class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-xs font-semibold rounded-full">
+                                                class="px-3 py-1.5 bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-xs font-semibold rounded-full">
                                                 <i class="fa-solid fa-plus"></i> Opsiyonel
                                             </span>
                                         @endif
@@ -780,8 +780,8 @@
                     <section id="usecases" class="scroll-mt-24 mb-20 lg:mb-24">
                         <header class="text-center mb-12">
                             <div
-                                class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-2xl mb-4">
-                                <i class="fa-solid fa-bullseye text-3xl text-blue-600 dark:text-blue-400"></i>
+                                class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-100 to-cyan-100 dark:from-primary-900/30 dark:to-cyan-900/30 rounded-2xl mb-4">
+                                <i class="fa-solid fa-bullseye text-3xl text-primary-600 dark:text-primary-400"></i>
                             </div>
                             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
                                 Kullanım Alanları
@@ -796,12 +796,12 @@
                                 @endphp
                                 <div class="group relative">
                                     <div
-                                        class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 dark:from-blue-500/5 dark:to-cyan-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all">
+                                        class="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-cyan-500/10 dark:from-primary-500/5 dark:to-cyan-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all">
                                     </div>
                                     <div
-                                        class="relative flex gap-4 p-6 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:shadow-xl">
+                                        class="relative flex gap-4 p-6 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-400 dark:hover:border-primary-500 transition-all hover:shadow-xl">
                                         <div
-                                            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 dark:from-blue-600 dark:to-cyan-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                            class="w-12 h-12 bg-gradient-to-br from-primary-500 to-cyan-600 dark:from-primary-600 dark:to-cyan-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
                                             <i class="fa-solid fa-{{ $caseIcon }} text-white text-lg"></i>
                                         </div>
                                         <p
@@ -860,7 +860,7 @@
                     <section id="certifications" class="scroll-mt-24 mb-20 lg:mb-24">
                         <header class="text-center mb-12">
                             <div
-                                class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/30 dark:to-blue-900/30 rounded-2xl mb-4">
+                                class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-100 to-primary-100 dark:from-cyan-900/30 dark:to-primary-900/30 rounded-2xl mb-4">
                                 <i class="fa-solid fa-certificate text-3xl text-cyan-600 dark:text-cyan-400"></i>
                             </div>
                             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
@@ -875,11 +875,11 @@
                                     $certIcon = $cert['icon'] ?? 'certificate';
                                 @endphp
                                 <div
-                                    class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 transition-all text-center hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-lg">
+                                    class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 transition-all text-center hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-lg">
                                     <div
-                                        class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        class="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <i
-                                            class="fa-solid fa-{{ $certIcon }} text-blue-600 dark:text-blue-400 text-2xl"></i>
+                                            class="fa-solid fa-{{ $certIcon }} text-primary-600 dark:text-primary-400 text-2xl"></i>
                                     </div>
                                     <h3 class="text-base font-bold text-gray-900 dark:text-white mb-3">
                                         {{ $cert['name'] }}</h3>
@@ -952,11 +952,11 @@
                         <div class="space-y-4">
                             @foreach ($faqEntries as $index => $faq)
                                 <div
-                                    class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-300 dark:hover:border-blue-600 transition-all bg-white dark:bg-gray-800">
+                                    class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-primary-300 dark:hover:border-primary-600 transition-all bg-white dark:bg-gray-800">
                                     <button
                                         @click="openFaq = (openFaq === {{ $index }} ? null : {{ $index }})"
                                         class="w-full px-6 py-5 flex items-center justify-between gap-4 text-left transition-colors"
-                                        :class="openFaq === {{ $index }} ? 'bg-blue-50 dark:bg-gray-700' :
+                                        :class="openFaq === {{ $index }} ? 'bg-primary-50 dark:bg-gray-700' :
                                             'bg-white dark:bg-gray-800'">
                                         <span
                                             class="flex-1 font-semibold text-gray-900 dark:text-white">{{ $faq['question'] }}</span>
@@ -1008,12 +1008,12 @@
                             {{-- CTA Buttons --}}
                             <div class="space-y-4">
                                 <a href="#contact"
-                                    class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-blue-400 dark:hover:border-blue-500 transition-all">
+                                    class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-primary-400 dark:hover:border-primary-500 transition-all">
                                     <i class="fa-solid fa-envelope"></i>Teklif İste
                                 </a>
                                 <div class="grid grid-cols-2 gap-3">
                                     <a href="tel:02167553555"
-                                        class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-blue-400 dark:hover:border-blue-500 transition-all">
+                                        class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-primary-400 dark:hover:border-primary-500 transition-all">
                                         <i class="fa-solid fa-phone"></i>Ara
                                     </a>
                                     <a href="{{ whatsapp_link() }}" target="_blank"
@@ -1034,23 +1034,23 @@
     <section id="trust-signals" class="relative mt-16 scroll-mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div
-                class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
+                class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                     {{-- GARANTİLİ --}}
                     <div class="flex items-center gap-4">
                         <i class="fa-solid fa-shield-halved text-4xl md:text-5xl text-green-400"></i>
                         <div>
                             <div class="font-bold text-base md:text-lg text-white">GARANTİLİ</div>
-                            <div class="text-xs md:text-sm text-blue-100">Orijinal Ürün</div>
+                            <div class="text-xs md:text-sm text-primary-100">Orijinal Ürün</div>
                         </div>
                     </div>
 
                     {{-- HIZLI TESLİMAT --}}
                     <div class="flex items-center gap-4">
-                        <i class="fa-solid fa-truck-fast text-4xl md:text-5xl text-blue-300"></i>
+                        <i class="fa-solid fa-truck-fast text-4xl md:text-5xl text-primary-300"></i>
                         <div>
                             <div class="font-bold text-base md:text-lg text-white">HIZLI TESLİMAT</div>
-                            <div class="text-xs md:text-sm text-blue-100">Türkiye Geneli</div>
+                            <div class="text-xs md:text-sm text-primary-100">Türkiye Geneli</div>
                         </div>
                     </div>
 
@@ -1059,7 +1059,7 @@
                         <i class="fa-solid fa-headset text-4xl md:text-5xl text-purple-400"></i>
                         <div>
                             <div class="font-bold text-base md:text-lg text-white">7/24 DESTEK</div>
-                            <div class="text-xs md:text-sm text-blue-100">Kesintisiz Hizmet</div>
+                            <div class="text-xs md:text-sm text-primary-100">Kesintisiz Hizmet</div>
                         </div>
                     </div>
 
@@ -1068,7 +1068,7 @@
                         <i class="fa-solid fa-award text-4xl md:text-5xl text-yellow-400"></i>
                         <div>
                             <div class="font-bold text-base md:text-lg text-white">SERTİFİKALI</div>
-                            <div class="text-xs md:text-sm text-blue-100">Uluslararası</div>
+                            <div class="text-xs md:text-sm text-primary-100">Uluslararası</div>
                         </div>
                     </div>
                 </div>
@@ -1079,7 +1079,7 @@
     {{-- 📬 MODERN CONTACT FORM --}}
     <section id="contact" class="relative mt-32 overflow-hidden">
         {{-- Gradient Background with Pattern --}}
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-700 to-slate-900"></div>
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl">
             </div>
@@ -1112,45 +1112,45 @@
                                 <div>
                                     <label
                                         class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">
-                                        <i class="fa-solid fa-user text-blue-600 dark:text-blue-400"></i>
+                                        <i class="fa-solid fa-user text-primary-600 dark:text-primary-400"></i>
                                         Ad Soyad *
                                     </label>
                                     <input type="text" name="name" required placeholder="Adınız Soyadınız"
-                                        class="w-full px-5 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900/50 transition-all">
+                                        class="w-full px-5 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-900/50 transition-all">
                                 </div>
                                 <div>
                                     <label
                                         class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">
-                                        <i class="fa-solid fa-envelope text-blue-600 dark:text-blue-400"></i>
+                                        <i class="fa-solid fa-envelope text-primary-600 dark:text-primary-400"></i>
                                         E-posta *
                                     </label>
                                     <input type="email" name="email" required placeholder="ornek@email.com"
-                                        class="w-full px-5 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900/50 transition-all">
+                                        class="w-full px-5 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-900/50 transition-all">
                                 </div>
                             </div>
 
                             <div>
                                 <label
                                     class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">
-                                    <i class="fa-solid fa-phone text-blue-600 dark:text-blue-400"></i>
+                                    <i class="fa-solid fa-phone text-primary-600 dark:text-primary-400"></i>
                                     Telefon *
                                 </label>
                                 <input type="tel" name="phone" required placeholder="0555 555 55 55"
-                                    class="w-full px-5 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900/50 transition-all">
+                                    class="w-full px-5 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-900/50 transition-all">
                             </div>
 
                             <div>
                                 <label
                                     class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">
-                                    <i class="fa-solid fa-message text-blue-600 dark:text-blue-400"></i>
+                                    <i class="fa-solid fa-message text-primary-600 dark:text-primary-400"></i>
                                     Mesajınız
                                 </label>
                                 <textarea name="message" rows="5" placeholder="Ürün hakkında merak ettiklerinizi yazabilirsiniz..."
-                                    class="w-full px-5 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900/50 transition-all resize-none"></textarea>
+                                    class="w-full px-5 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-900/50 transition-all resize-none"></textarea>
                             </div>
 
                             <button type="submit"
-                                class="group relative w-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white font-bold py-5 rounded-xl transition-all hover:shadow-xl transform hover:-translate-y-0.5">
+                                class="group relative w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-700 dark:hover:to-primary-800 text-white font-bold py-5 rounded-xl transition-all hover:shadow-xl transform hover:-translate-y-0.5">
                                 <span class="flex items-center justify-center gap-3">
                                     <i
                                         class="fa-solid fa-paper-plane text-xl group-hover:rotate-45 transition-transform"></i>
@@ -1165,13 +1165,13 @@
                 <div class="w-full md:w-5/12 space-y-8">
                     {{-- İletişim Bilgileri --}}
                     <a href="tel:02167553555"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-blue-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-blue-400 hover:shadow-lg cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-primary-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-primary-400 hover:shadow-lg cursor-pointer">
                         <div
                             class="w-14 h-14 bg-white rounded-xl flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-all duration-300">
-                            <i class="fa-solid fa-phone text-blue-600 text-xl group-hover:animate-pulse"></i>
+                            <i class="fa-solid fa-phone text-primary-600 text-xl group-hover:animate-pulse"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">Telefon</div>
+                            <div class="text-sm text-primary-100 dark:text-primary-200 mb-1">Telefon</div>
                             <div class="text-xl font-bold text-white">0216 755 3 555</div>
                         </div>
                     </a>
@@ -1183,7 +1183,7 @@
                             <i class="fa-brands fa-whatsapp text-white text-xl group-hover:animate-pulse"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">WhatsApp</div>
+                            <div class="text-sm text-primary-100 dark:text-primary-200 mb-1">WhatsApp</div>
                             <div class="text-xl font-bold text-white">{{ setting('contact_whatsapp_1') }}</div>
                         </div>
                     </a>
@@ -1195,7 +1195,7 @@
                             <i class="fa-solid fa-envelope text-white text-xl group-hover:animate-pulse"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">E-posta</div>
+                            <div class="text-sm text-primary-100 dark:text-primary-200 mb-1">E-posta</div>
                             <div class="text-lg font-bold text-white break-all">info@ixtif.com</div>
                         </div>
                     </a>
@@ -1205,12 +1205,12 @@
                         <div class="text-center mb-5">
                             <h3 class="text-2xl font-bold text-white mb-1">Türkiye'nin İstif Pazarı
                             </h3>
-                            <p class="text-sm text-blue-100">Forklift ve İstif Makineleri Merkezi
+                            <p class="text-sm text-primary-100">Forklift ve İstif Makineleri Merkezi
                             </p>
                         </div>
                         <div class="grid grid-cols-3 gap-3">
                             <div class="text-center p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-box text-blue-200 text-xl mb-2"></i>
+                                <i class="fa-solid fa-box text-primary-200 text-xl mb-2"></i>
                                 <div class="text-xs font-semibold text-white">Sıfır</div>
                             </div>
                             <div class="text-center p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">

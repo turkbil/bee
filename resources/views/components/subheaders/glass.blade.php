@@ -5,7 +5,7 @@
     @include('components.subheaders.glass', [
         'title' => 'Page Title',
         'icon' => 'fa-solid fa-store',
-        'iconGradient' => 'from-blue-500 to-purple-600',
+        'iconGradient' => 'from-primary-500 to-purple-600',
         'breadcrumbs' => [
             ['label' => 'Ana Sayfa', 'url' => '/', 'icon' => 'fa-home'],
             ['label' => 'Ürünler', 'url' => '/shop'],
@@ -16,7 +16,7 @@
 --}}
 
 @php
-    $iconGradient = $iconGradient ?? 'from-blue-500 to-purple-600';
+    $iconGradient = $iconGradient ?? 'from-primary-500 to-primary-600';
     $icon = $icon ?? null;
     $breadcrumbs = $breadcrumbs ?? [];
     $rightSlot = $rightSlot ?? null;
@@ -41,7 +41,7 @@
                             <div class="hidden lg:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mt-3">
                                 @foreach($breadcrumbs as $index => $crumb)
                                     @if(isset($crumb['url']))
-                                        <a href="{{ $crumb['url'] }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
+                                        <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition flex items-center gap-1.5">
                                             @if(isset($crumb['icon']))
                                                 <i class="{{ $crumb['icon'] }} text-xs"></i>
                                             @endif
@@ -64,7 +64,7 @@
                     <div class="flex lg:hidden items-center gap-2 text-sm text-gray-600 dark:text-gray-400 overflow-x-auto pb-2 scrollbar-hide">
                         @foreach($breadcrumbs as $index => $crumb)
                             @if(isset($crumb['url']))
-                                <a href="{{ $crumb['url'] }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5 whitespace-nowrap flex-shrink-0">
+                                <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition flex items-center gap-1.5 whitespace-nowrap flex-shrink-0">
                                     @if(isset($crumb['icon']))
                                         <i class="{{ $crumb['icon'] }} text-xs"></i>
                                     @endif

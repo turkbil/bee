@@ -50,10 +50,10 @@ document.addEventListener('alpine:init', () => {
 </x-muzibu.horizontal-scroll-section>
 @endif
 
-{{-- Çalma Listeleri (Spotify Style) --}}
-@if($featuredPlaylists && $featuredPlaylists->count() > 0)
+{{-- Çalma Listeleri (Son Eklenenler) --}}
+@if($homePlaylists && $homePlaylists->count() > 0)
 <x-muzibu.horizontal-scroll-section title="Çalma Listeleri" icon="fa-list-music" viewAllUrl="/playlists">
-    @foreach($featuredPlaylists as $playlist)
+    @foreach($homePlaylists as $playlist)
         <x-muzibu.playlist-card :playlist="$playlist" :preview="true" :compact="true" :index="$loop->index" />
     @endforeach
 </x-muzibu.horizontal-scroll-section>

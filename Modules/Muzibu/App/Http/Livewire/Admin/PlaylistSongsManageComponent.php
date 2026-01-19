@@ -15,16 +15,21 @@ class PlaylistSongsManageComponent extends Component
     public int $playlistId;
     public string $search = '';
 
-    protected ?Playlist $playlist = null;
-
     public function mount(int $playlistId): void
     {
         $this->playlistId = $playlistId;
 
-        // Playlist var mı kontrolü
-        $this->playlist = Playlist::findOrFail($playlistId);
+        // Playlist var mı kontrolü (ilk yüklemede)
+        Playlist::findOrFail($playlistId);
+    }
 
-        // Yetki kontrolü - Middleware zaten module.permission kontrolü yapıyor, burada tekrar kontrol gereksiz
+    /**
+     * Playlist computed property - her request'te yüklenir
+     */
+    #[Computed]
+    public function playlist(): Playlist
+    {
+        return Playlist::findOrFail($this->playlistId);
     }
 
     /**

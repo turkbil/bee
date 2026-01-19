@@ -28,6 +28,7 @@ class GenerateSongCover implements ShouldQueue
      * Genre ID'leri - özel görsel kuralları olan genre'ler
      */
     protected const GENRE_TASAVVUFI = 27;
+    protected const GENRE_TSM = 21; // Enstrümantal TSM (Türk Sanat Müziği)
 
     /**
      * Create a new job instance.
@@ -203,8 +204,8 @@ class GenerateSongCover implements ShouldQueue
      */
     protected function buildPromptForGenre(?int $genreId, string $title): string
     {
-        // Tasavvufi genre (ID: 27) için özel abstract pastel prompt
-        if ($genreId === self::GENRE_TASAVVUFI) {
+        // Tasavvufi ve TSM genre'leri için özel abstract pastel prompt
+        if ($genreId === self::GENRE_TASAVVUFI || $genreId === self::GENRE_TSM) {
             $pastelStyles = [
                 'soft lavender and mint green flowing shapes',
                 'gentle rose pink and sky blue abstract waves',

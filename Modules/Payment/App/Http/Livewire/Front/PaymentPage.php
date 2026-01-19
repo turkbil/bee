@@ -39,7 +39,23 @@ class PaymentPage extends Component
                 return;
             }
 
-            // 3. PayTR token al (eğer yoksa)
+            // 3. Ödeme durumu kontrolü - tamamlanmış veya başarısız ise session temizle
+            $sessionKey = 'paytr_merchant_oid_' . $this->payment->payment_id;
+            if (in_array($this->payment->status, ['completed', 'failed', 'refunded'])) {
+                session()->forget($sessionKey);
+                \Log::info('🧹 PaymentPage: Ödeme tamamlanmış/başarısız, session temizlendi', [
+                    'payment_id' => $this->payment->payment_id,
+                    'status' => $this->payment->status,
+                ]);
+
+                if ($this->payment->status === 'completed') {
+                    $this->error = 'Bu ödeme zaten tamamlanmış.';
+                    return;
+                }
+                // Failed durumunda kullanıcı tekrar deneyebilir - yeni token alınacak
+            }
+
+            // 4. PayTR token al (eğer yoksa)
             $this->preparePayTRToken();
 
             \Log::info('💳 PaymentPage mounted', [
@@ -57,12 +73,46 @@ class PaymentPage extends Component
 
     protected function preparePayTRToken()
     {
-        // Zaten token varsa kullan
+        // Session key: Bu ödeme için merchantOid
+        $sessionKey = 'paytr_merchant_oid_' . $this->payment->payment_id;
+
+        // Zaten token varsa ve expire olmamışsa kullan
         if ($this->payment->gateway_response) {
             $gatewayResponse = json_decode($this->payment->gateway_response, true);
             if (isset($gatewayResponse['token'])) {
-                $this->paymentIframeUrl = 'https://www.paytr.com/odeme/guvenli/' . $gatewayResponse['token'];
-                return;
+                // Token yaşını kontrol et (PayTR token'ları ~30 dk geçerli, 25 dk'da yenile)
+                $tokenExpired = false;
+                if (isset($gatewayResponse['token_created_at'])) {
+                    $tokenAge = now()->diffInMinutes($gatewayResponse['token_created_at']);
+                    if ($tokenAge >= 25) {
+                        $tokenExpired = true;
+                    }
+                } else {
+                    // Timestamp yoksa (eski kayıt) token'ı expired kabul et
+                    $tokenExpired = true;
+                    \Log::info('⚠️ PaymentPage: Token timestamp yok, expired kabul edildi', [
+                        'payment_id' => $this->payment->payment_id,
+                    ]);
+                }
+
+                if ($tokenExpired) {
+                    // ÖNEMLİ: Token expire olduğunda eski merchantOid'i de temizle
+                    // Çünkü PayTR aynı merchantOid ile yeni token vermiyor!
+                    session()->forget($sessionKey);
+                    \Log::info('⏰ PaymentPage: Token expired, session temizlendi, yeni token alınacak', [
+                        'payment_id' => $this->payment->payment_id,
+                    ]);
+                }
+
+                if (!$tokenExpired) {
+                    $this->paymentIframeUrl = 'https://www.paytr.com/odeme/guvenli/' . $gatewayResponse['token'];
+                    \Log::info('♻️ PaymentPage: Mevcut token kullanılıyor', [
+                        'payment_id' => $this->payment->payment_id,
+                        'session_merchant_oid' => session($sessionKey),
+                    ]);
+                    return;
+                }
+                // Token expired ise devam et, yeni token alınacak
             }
         }
 
@@ -94,17 +144,34 @@ class PaymentPage extends Component
                 'items' => $items,
             ];
 
+            // Session'dan mevcut merchantOid var mı kontrol et (sayfa yenilemelerinde aynı ID kullan)
+            $existingMerchantOid = session($sessionKey);
+
             \Log::info('🔍 PayTR Token Request', [
                 'userInfo' => $userInfo,
                 'orderInfo' => $orderInfo,
+                'existing_merchant_oid' => $existingMerchantOid,
             ]);
 
-            $result = $iframeService->prepareIframePayment($this->payment, $userInfo, $orderInfo);
+            // prepareIframePayment'a mevcut merchantOid'i gönder (varsa)
+            $result = $iframeService->prepareIframePayment($this->payment, $userInfo, $orderInfo, $existingMerchantOid);
 
             if ($result['success']) {
-                // Token'ı kaydet
-                $this->payment->gateway_response = json_encode(['token' => $result['token']]);
+                // Token'ı ve oluşturma zamanını kaydet (expire kontrolü için)
+                $this->payment->gateway_response = json_encode([
+                    'token' => $result['token'],
+                    'token_created_at' => now()->toISOString(),
+                ]);
                 $this->payment->save();
+
+                // merchantOid'i session'a kaydet (sonraki sayfa yenilemelerinde aynı ID kullanılacak)
+                if (isset($result['merchant_oid'])) {
+                    session([$sessionKey => $result['merchant_oid']]);
+                    \Log::info('💾 PaymentPage: merchantOid session\'a kaydedildi', [
+                        'payment_id' => $this->payment->payment_id,
+                        'merchant_oid' => $result['merchant_oid'],
+                    ]);
+                }
 
                 $this->paymentIframeUrl = 'https://www.paytr.com/odeme/guvenli/' . $result['token'];
             } else {

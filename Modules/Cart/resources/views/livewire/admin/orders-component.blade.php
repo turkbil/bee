@@ -111,17 +111,23 @@
                             <label class="form-label small text-muted">{{ __('cart::admin.max_amount') }} (TL)</label>
                             <input type="number" wire:model.live.debounce.500ms="amountMax" class="form-control form-control-sm" placeholder="~">
                         </div>
-                        <div class="col-md-4"></div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <label class="form-check form-switch mb-0">
+                                <input type="checkbox" wire:model.live="showPaid" class="form-check-input">
+                                <span class="form-check-label small text-success"><i class="fas fa-check-circle me-1"></i>Ödenenler</span>
+                            </label>
+                        </div>
                         <div class="col-md-2">
                             <label class="form-check form-switch mb-0">
                                 <input type="checkbox" wire:model.live="showPending" class="form-check-input">
-                                <span class="form-check-label small">Bekleyenleri Dahil Et</span>
+                                <span class="form-check-label small text-warning"><i class="fas fa-clock me-1"></i>Bekleyenler</span>
                             </label>
                         </div>
                         <div class="col-md-2">
                             <label class="form-check form-switch mb-0">
                                 <input type="checkbox" wire:model.live="showFailed" class="form-check-input">
-                                <span class="form-check-label small">Başarısızları Dahil Et</span>
+                                <span class="form-check-label small text-danger"><i class="fas fa-times-circle me-1"></i>Başarısızlar</span>
                             </label>
                         </div>
                     </div>
@@ -152,6 +158,9 @@
                         @endif
                         @if($amountMax)
                             <span class="badge bg-red-lt text-red">Max: {{ $amountMax }} TL</span>
+                        @endif
+                        @if(!$showPaid)
+                            <span class="badge bg-secondary-lt text-secondary">Ödenenler Hariç</span>
                         @endif
                         @if($showPending)
                             <span class="badge bg-yellow-lt text-yellow">Bekleyenler Dahil</span>

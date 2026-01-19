@@ -16,13 +16,14 @@ $genres = $genres ?? Cache::remember('home_genres_v4', 300, fn() =>
         ->get()
 );
 
-// Featured Playlists
-$featuredPlaylists = $featuredPlaylists ?? Cache::remember('home_featured_playlists_v5', 300, fn() =>
+// Featured Playlists - Son eklenenler
+$featuredPlaylists = $featuredPlaylists ?? Cache::remember('home_featured_playlists_v6', 300, fn() =>
     \Modules\Muzibu\App\Models\Playlist::where('is_active', 1)
         ->where('is_system', 1)
         ->where('is_radio', 0)
         ->where('songs_count', '>', 0)
         ->with(['coverMedia'])
+        ->orderBy('created_at', 'desc')
         ->limit(10)
         ->get()
 );

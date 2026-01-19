@@ -419,6 +419,7 @@ function muzibuApp() {
 
         // Player states
         isPlaying: false,
+        isBuffering: false, // 🛡️ Buffer yetersiz, bekliyor (loading spinner için)
         isToggling: false, // 🚫 Debounce flag for togglePlayPause
         currentTime: 0,
         duration: 240,
@@ -472,6 +473,16 @@ function muzibuApp() {
         _preloadNextInProgress: false, // Preload işlemi devam ediyor mu
         _lastNextTrackTime: null, // Double-trigger guard için son nextTrack zamanı
         _nextTrackInProgress: false, // Concurrent nextTrack guard
+
+        // 🛡️ BUFFER HEALTH SYSTEM: Sadece monitoring (auto-pause YOK!)
+        // Strateji: Full preload + agresif buffer + yüksek buffer hole toleransı
+        _bufferHealthEnabled: false,     // Auto-pause KAPALI - müşteriyi rahatsız etmemek için
+        _minBufferBeforePlay: 8,         // Referans (auto-pause kapalı olduğu için kullanılmıyor)
+        _lowBufferThreshold: 3,          // Referans (auto-pause kapalı olduğu için kullanılmıyor)
+        _resumeBufferThreshold: 8,       // Referans (auto-pause kapalı olduğu için kullanılmıyor)
+        _bufferPausedByHealth: false,
+        _bufferCheckInterval: null,
+        _lastBufferAmount: 0,
 
         // Computed: Current stream type
         get currentStreamType() {
@@ -1047,6 +1058,9 @@ function muzibuApp() {
                         this.playbackStartTime = null; // Reset until play
                     }
 
+                    // 🛡️ BUFFER HEALTH: Monitor'ü durdur (pause'da gereksiz)
+                    this.stopBufferHealthMonitor();
+
                     // State'i sıfırla
                     this.isPlaying = false;
                     this.isCrossfading = false;
@@ -1091,6 +1105,8 @@ function muzibuApp() {
                             if (!this.progressInterval) {
                                 this.startProgressTracking('hls');
                             }
+                            // 🛡️ BUFFER HEALTH: Resume'da monitor'ü yeniden başlat
+                            this.startBufferHealthMonitor();
                             window.dispatchEvent(new CustomEvent('player:play', {
                                 detail: {
                                     songId: this.currentSong?.song_id,
@@ -1115,6 +1131,8 @@ function muzibuApp() {
                             if (!this.progressInterval) {
                                 this.startProgressTracking('hls');
                             }
+                            // 🛡️ BUFFER HEALTH: Safari resume'da monitor'ü yeniden başlat
+                            this.startBufferHealthMonitor();
                             window.dispatchEvent(new CustomEvent('player:play', {
                                 detail: {
                                     songId: this.currentSong?.song_id,
@@ -1195,8 +1213,6 @@ function muzibuApp() {
 
                         if (autoPlay) {
                             await this.playSongFromQueue(0);
-                            const genreTitle = firstGenre.title?.tr || firstGenre.title;
-                            this.showToast(`🎵 ${(this.frontLang?.messages?.now_playing || ':title is playing').replace(':title', genreTitle)}`, 'success');
                         } else {
                             // Sadece yükle, çalma (space tuşu için hazır olsun)
                             await this.playSongFromQueue(0, false);
@@ -2927,10 +2943,6 @@ function muzibuApp() {
 
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
-
-                    // Safe album title extraction
-                    const albumTitle = album.album_title?.tr || album.album_title?.en || album.album_title || this.frontLang?.general?.album || 'Album';
-                    this.showToast((this.frontLang?.messages?.now_playing || ':title is playing').replace(':title', albumTitle), 'success');
                 }
             } catch (error) {
                 console.error('Failed to play album:', error);
@@ -3021,10 +3033,6 @@ function muzibuApp() {
 
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
-
-                    // Safe playlist title extraction
-                    const playlistTitle = playlist.title?.tr || playlist.title?.en || playlist.title || this.frontLang?.general?.playlist || 'Playlist';
-                    this.showToast((this.frontLang?.messages?.now_playing || ':title is playing').replace(':title', playlistTitle), 'success');
                 }
             } catch (error) {
                 console.error('Failed to play playlist:', error);
@@ -3059,9 +3067,6 @@ function muzibuApp() {
 
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
-
-                    const genreTitle = data.genre?.title?.tr || data.genre?.title?.en || data.genre?.title || this.frontLang?.general?.genre || 'Genre';
-                    this.showToast((this.frontLang?.messages?.now_playing || ':title is playing').replace(':title', genreTitle), 'success');
                 }
             } catch (error) {
                 console.error('Failed to play genre:', error);
@@ -3096,9 +3101,6 @@ function muzibuApp() {
 
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
-
-                    const sectorTitle = data.sector?.title?.tr || data.sector?.title?.en || data.sector?.title || this.frontLang?.general?.sector || 'Sector';
-                    this.showToast((this.frontLang?.messages?.now_playing || ':title is playing').replace(':title', sectorTitle), 'success');
                 }
             } catch (error) {
                 console.error('Failed to play sector:', error);
@@ -3151,7 +3153,6 @@ function muzibuApp() {
                     }
 
                     await this.playSongFromQueue(0);
-                    this.showToast(`📻 ${(this.frontLang?.messages?.now_playing || ':title is playing').replace(':title', radioTitle)}`, 'success');
                 } else {
                     this.showToast(this.frontLang?.messages?.radio_no_playable_songs || 'No playable songs in this radio', 'error');
                 }
@@ -3383,11 +3384,6 @@ function muzibuApp() {
                     try {
                         const nextSongs = await muzibuStore.refillQueue(1, 15); // offset=1 (mevcut şarkıdan sonraki)
 
-                        // 🔍 MOBILE DEBUG: Queue sonucu (sadece root)
-                        if (this.currentUser?.is_root) {
-                            this.showToast(`🎵 Queue: ${nextSongs?.length || 0} şarkı geldi`, 'info');
-                        }
-
                         if (nextSongs && nextSongs.length > 0) {
                             // 🛡️ DUPLICATE FILTER: Mevcut şarkı + kendi aralarındaki duplicate'leri filtrele
                             const currentSongId = song.song_id;
@@ -3432,7 +3428,6 @@ function muzibuApp() {
                     streamData.stream_type,
                     streamData.preview_duration || null
                 );
-                this.showToast(this.frontLang?.messages?.song_playing || 'Song is playing', 'success');
             } catch (error) {
                 console.error('Failed to play song:', error);
                 this.isSongLoading = false;
@@ -3879,6 +3874,9 @@ function muzibuApp() {
                             this.isPlaying = true;
                             this.isSongLoading = false;
                             this.startProgressTracking('hls');
+
+                            // 🛡️ BUFFER HEALTH: Monitor'ü başlat (preloaded path)
+                            this.startBufferHealthMonitor();
 
                             // Event dispatch
                             window.dispatchEvent(new CustomEvent('player:play', {
@@ -4397,7 +4395,7 @@ onplay: function() {
                     maxBufferLength: bufferLength, // Preload: 1sn, Normal: 150sn (increased)
                     maxMaxBufferLength: isPreloadMode ? 5 : 250, // Preload: 5sn, Normal: 250sn (increased from 200)
                     maxBufferSize: bufferSize, // Preload: 5MB, Normal: 200MB (increased)
-                    maxBufferHole: 1.0, // Buffer hole tolerance: 1 second (increased from 0.5)
+                    maxBufferHole: 2.5, // Buffer hole tolerance: 2.5 saniye - küçük boşlukları atla, donma!
                     maxFragLookUpTolerance: 0.5, // Fragment lookup tolerance
                     backBufferLength: isPreloadMode ? 0 : 30,
                     // 🔑 KEY LOADING POLICY - Prevent keyLoadError with aggressive retries
@@ -4579,6 +4577,9 @@ onplay: function() {
                             self.isSongLoading = false; // 🔄 Loading tamamlandı
                             // 🚀 INSTANT: No fade, volume already set
                             self.startProgressTracking('hls');
+
+                            // 🛡️ BUFFER HEALTH: Monitor'ü başlat (şarkı ortasında donma önleme)
+                            self.startBufferHealthMonitor();
 
                             // 🚫 REMOVED: Başlangıçta preload yok, %80'de yapılacak
                             // self.preloadNextSong();
@@ -6625,14 +6626,14 @@ onplay: function() {
                         }
                     }
 
-                    // Yeni HLS instance oluştur (sadece İLK SEGMENT için düşük buffer)
-                    // Segment süresi ~10sn, maxBufferLength: 8 ile sadece 1 segment yüklenir
+                    // Yeni HLS instance oluştur (TÜM ŞARKIYI YÜKLE - gapless için)
+                    // Sonraki şarkı tamamen yüklensin, geçişte donma olmasın
                     const hlsPreload = new Hls({
                         enableWorker: false,
                         lowLatencyMode: false,
-                        maxBufferLength: 8,   // 8 saniye - sadece ilk segment (10sn) yüklenecek
-                        maxMaxBufferLength: 10,
-                        maxBufferSize: 10 * 1000 * 1000,
+                        maxBufferLength: 600,   // 600 saniye = 10 dakika (en uzun şarkıdan fazla)
+                        maxMaxBufferLength: 600,
+                        maxBufferSize: 200 * 1000 * 1000, // 200MB - tam şarkı için yeterli
                         backBufferLength: 0,
                         startLevel: -1,
                         abrEwmaDefaultEstimate: 500000
@@ -6652,21 +6653,15 @@ onplay: function() {
                     hlsPreload.loadSource(data.stream_url);
                     hlsPreload.attachMedia(nextAudio);
 
-                    // İlk segment yüklenince hazır işaretle ve DURDUR
+                    // İlk segment yüklenince hazır işaretle (DURMA, tam şarkı yüklensin!)
                     hlsPreload.on(Hls.Events.FRAG_BUFFERED, function(event, fragData) {
                         if (self._preloadedNext && self._preloadedNext.songId === nextSong.song_id && !self._preloadedNext.ready) {
                             self._preloadedNext.ready = true;
                             self._preloadNextInProgress = false;
 
-                            // Preload READY
-
-                            // 🛑 İlk segment yüklendi, DURDUR (bandwidth tasarrufu)
-                            // startLoad() ile devam ettirilecek
-                            try {
-                                hlsPreload.stopLoad();
-                            } catch (e) {
-                                console.warn('stopLoad error:', e);
-                            }
+                            // Preload READY (first segment)
+                            // 🚀 FULL PRELOAD: Durma, tüm şarkı yüklenene kadar devam et
+                            // Bu sayede sonraki şarkıya geçişte donma olmaz
                         }
                     });
 
@@ -6718,10 +6713,8 @@ onplay: function() {
                             self._preloadedNext.ready = true;
                             self._preloadNextInProgress = false;
                             // Preload READY (Safari)
-                            // 🛑 Pause to stop further buffering (save bandwidth)
-                            try {
-                                nextAudio.pause();
-                            } catch (e) {}
+                            // 🚀 FULL PRELOAD: Durma, tüm şarkı yüklensin
+                            // Safari preload='auto' ile tam şarkıyı yükler
                         }
                     };
 
@@ -6771,6 +6764,117 @@ onplay: function() {
 
                 this._preloadedNext = null;
             }
+        },
+
+        /**
+         * 🛡️ BUFFER HEALTH: Mevcut buffer miktarını saniye cinsinden döndür
+         */
+        getBufferedAmount() {
+            const audio = this.getActiveHlsAudio();
+            if (!audio) return 0;
+
+            const currentTime = audio.currentTime || 0;
+            const buffered = audio.buffered;
+
+            if (!buffered || buffered.length === 0) return 0;
+
+            // currentTime'ın bulunduğu buffer aralığını bul
+            for (let i = 0; i < buffered.length; i++) {
+                const start = buffered.start(i);
+                const end = buffered.end(i);
+                if (currentTime >= start && currentTime <= end) {
+                    return end - currentTime; // Kalan buffer süresi
+                }
+            }
+            return 0;
+        },
+
+        /**
+         * 🛡️ BUFFER HEALTH MONITOR: Buffer durumunu izle, gerekirse duraklat/devam et
+         */
+        startBufferHealthMonitor() {
+            if (!this._bufferHealthEnabled) return;
+
+            // Mevcut interval varsa temizle
+            this.stopBufferHealthMonitor();
+
+            const self = this;
+            this._bufferCheckInterval = setInterval(function() {
+                if (!self.isPlaying || !self.isHlsStream) return;
+
+                const bufferedAmount = self.getBufferedAmount();
+                self._lastBufferAmount = bufferedAmount;
+
+                // Buffer yetersiz ve henüz duraklatılmadıysa
+                if (bufferedAmount < self._lowBufferThreshold && !self._bufferPausedByHealth) {
+                    self._bufferPausedByHealth = true;
+                    const audio = self.getActiveHlsAudio();
+                    if (audio && !audio.paused) {
+                        audio.pause();
+                        console.log('🛡️ BUFFER LOW - Auto paused:', bufferedAmount.toFixed(1) + 's remaining');
+                        // UI'a bildir (loading spinner için)
+                        self.isBuffering = true;
+                        if (typeof self.onBufferStateChange === 'function') {
+                            self.onBufferStateChange(true);
+                        }
+                    }
+                }
+
+                // Buffer yeterli ve daha önce duraklatıldıysa devam et
+                if (bufferedAmount >= self._resumeBufferThreshold && self._bufferPausedByHealth) {
+                    self._bufferPausedByHealth = false;
+                    const audio = self.getActiveHlsAudio();
+                    if (audio && audio.paused && self.isPlaying) {
+                        audio.play().catch(function(e) {
+                            console.warn('Buffer resume play failed:', e);
+                        });
+                        console.log('🛡️ BUFFER OK - Auto resumed:', bufferedAmount.toFixed(1) + 's buffered');
+                        self.isBuffering = false;
+                        if (typeof self.onBufferStateChange === 'function') {
+                            self.onBufferStateChange(false);
+                        }
+                    }
+                }
+            }, 500); // Her 500ms'de kontrol et
+        },
+
+        /**
+         * 🛡️ BUFFER HEALTH MONITOR: Durdur
+         */
+        stopBufferHealthMonitor() {
+            if (this._bufferCheckInterval) {
+                clearInterval(this._bufferCheckInterval);
+                this._bufferCheckInterval = null;
+            }
+            this._bufferPausedByHealth = false;
+        },
+
+        /**
+         * 🛡️ BUFFER HEALTH: Play öncesi yeterli buffer bekle
+         * @returns {Promise} Buffer yeterli olunca resolve olur
+         */
+        async waitForMinBuffer(audio, minSeconds) {
+            if (!audio || !this._bufferHealthEnabled) return true;
+
+            const self = this;
+            const maxWaitMs = 15000; // Maksimum 15 saniye bekle
+            const startTime = Date.now();
+
+            return new Promise(function(resolve) {
+                function checkBuffer() {
+                    const buffered = self.getBufferedAmount();
+
+                    // Yeterli buffer var veya timeout olduysa devam et
+                    if (buffered >= minSeconds || (Date.now() - startTime) > maxWaitMs) {
+                        resolve(true);
+                        return;
+                    }
+
+                    // Bekle ve tekrar kontrol et
+                    setTimeout(checkBuffer, 200);
+                }
+                checkBuffer();
+            });
         },
 
         async refreshHlsUrlForCurrentSong(applyToActive = false) {

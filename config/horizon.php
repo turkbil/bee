@@ -248,6 +248,8 @@ return [
                 'scout',                    // Scout (search indexing)
                 'tenant',                   // Tenant isleri
                 'broadcasting',             // Broadcasting
+                'muzibu-abuse-scan',        // Suistimal taramasi
+                'muzibu-abuse-scan:notify', // Suistimal bildirimleri
             ],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
@@ -321,6 +323,8 @@ return [
                     'sitemap',
                     'cache',
                     'cleanup',
+                    'muzibu-abuse-scan',
+                    'muzibu-abuse-scan:notify',
                 ],
                 'memory' => 256,
                 'timeout' => 300,

@@ -25,9 +25,10 @@ class PaymentsComponent extends Component
     public $amountMin = '';
     public $amountMax = '';
 
-    // Beklemedeki ve başarısız ödemeleri göster (default: false - gizle)
-    public $showPending = false;
-    public $showFailed = false;
+    // Durum filtreleri (default: sadece aktifler gösterilir)
+    public $showCompleted = true;   // Tamamlananlar (varsayılan: göster)
+    public $showPending = false;    // Bekleyenler (varsayılan: gizle)
+    public $showFailed = false;     // Başarısızlar (varsayılan: gizle)
 
     public $selectedPayment = null;
     public $showModal = false;
@@ -54,6 +55,7 @@ class PaymentsComponent extends Component
         'dateTo' => ['except' => ''],
         'amountMin' => ['except' => ''],
         'amountMax' => ['except' => ''],
+        'showCompleted' => ['except' => true],
         'showPending' => ['except' => false],
         'showFailed' => ['except' => false],
     ];
@@ -305,6 +307,7 @@ class PaymentsComponent extends Component
         $this->dateTo = '';
         $this->amountMin = '';
         $this->amountMax = '';
+        $this->showCompleted = true;  // varsayılan
         $this->showPending = false;
         $this->showFailed = false;
         $this->selectedPayments = [];
@@ -324,6 +327,7 @@ class PaymentsComponent extends Component
             || $this->dateTo !== ''
             || $this->amountMin !== ''
             || $this->amountMax !== ''
+            || $this->showCompleted === false  // varsayılandan farklıysa
             || $this->showPending === true
             || $this->showFailed === true;
     }
@@ -505,17 +509,21 @@ class PaymentsComponent extends Component
     {
         return Payment::query()
             ->with(['payable'])
-            // Beklemedeki ve başarısız ödemeleri göster/gizle (default: gizle)
+            // Durum filtreleri: hangi durumlar gösterilsin?
             ->when(!$this->status, function ($query) {
-                $excludeStatuses = [];
-                if (!$this->showPending) {
-                    $excludeStatuses[] = 'pending';
+                $includeStatuses = [];
+                if ($this->showCompleted) {
+                    $includeStatuses[] = 'completed';
                 }
-                if (!$this->showFailed) {
-                    $excludeStatuses[] = 'failed';
+                if ($this->showPending) {
+                    $includeStatuses[] = 'pending';
                 }
-                if (!empty($excludeStatuses)) {
-                    $query->whereNotIn('status', $excludeStatuses);
+                if ($this->showFailed) {
+                    $includeStatuses[] = 'failed';
+                }
+                // Hiçbiri seçili değilse hepsini göster
+                if (!empty($includeStatuses)) {
+                    $query->whereIn('status', $includeStatuses);
                 }
             })
             ->when($this->search, function ($query) {

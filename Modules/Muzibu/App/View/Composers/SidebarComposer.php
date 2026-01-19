@@ -47,7 +47,7 @@ class SidebarComposer
             // Also share globally for helper function access
             \Illuminate\Support\Facades\View::share('userFavoritedIds', $userFavoritedIds);
         }
-        // Featured Playlists - CACHED
+        // Featured Playlists - CACHED (shuffle için sırasız)
         if (!$view->offsetExists('featuredPlaylists')) {
             $featuredPlaylists = Cache::remember('sidebar_featured_playlists', 43200, function () {
                 return Playlist::where('is_active', 1)

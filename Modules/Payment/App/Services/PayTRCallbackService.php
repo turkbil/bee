@@ -38,43 +38,45 @@ class PayTRCallbackService
             }
 
             // 2. Payment kaydını bul
-            // Önce gateway_transaction_id ile ara (PayTR'ye gönderilen merchant_oid)
+            // gateway_transaction_id ile ara (PayTR'ye gönderilen merchant_oid)
             $payment = Payment::where('gateway_transaction_id', $merchantOid)->first();
 
-            // Bulamazsa payment_number'ı reconstruct et ve dene
             if (!$payment) {
-                // merchant_oid formatı: T{tenant_id}PAY{year}{number} (örn: T2PAY202500010)
-                // payment_number formatı: PAY-2025-00010
-                // Tenant prefix'ini kaldır ve tireli formatı oluştur
-                if (preg_match('/^T\d+PAY(\d{4})(\d+)$/', $merchantOid, $matches)) {
-                    $reconstructedPaymentNumber = 'PAY-' . $matches[1] . '-' . $matches[2];
-                    $payment = Payment::where('payment_number', $reconstructedPaymentNumber)->first();
-                }
-            }
-
-            // Son çare: stripped payment_number ile ara
-            if (!$payment) {
-                // merchant_oid'den tenant prefix'ini kaldır: T2PAY202500010 -> PAY202500010
-                $strippedMerchantOid = preg_replace('/^T\d+/', '', $merchantOid);
-                $payment = Payment::where('status', 'pending')
-                    ->whereRaw("REPLACE(REPLACE(REPLACE(payment_number, '-', ''), '_', ''), ' ', '') = ?", [$strippedMerchantOid])
-                    ->first();
-            }
-
-            if (!$payment) {
-                Log::error('❌ PayTR callback: Payment bulunamadı', ['merchant_oid' => $merchantOid]);
+                Log::error('❌ PayTR callback: Payment bulunamadı', [
+                    'merchant_oid' => $merchantOid,
+                ]);
                 return ['success' => false, 'message' => 'Payment bulunamadı'];
             }
 
             // 3. Duplicate kontrolü (payment zaten işlenmiş mi?)
-            if (in_array($payment->status, ['completed', 'failed', 'refunded'])) {
-                if (setting('paytr_debug', false)) {
-                    Log::info('⚠️ PayTR callback: Duplicate - payment zaten işlenmiş', [
-                        'payment_id' => $payment->payment_id,
-                        'status' => $payment->status,
-                    ]);
-                }
+            // NOT: Kullanıcı birden fazla ödeme denemesi yapabilir (iframe yenileme)
+            // Success callback her zaman işlenmeli (failed durumunu override eder)
+            // Failed callback sadece pending durumunda işlenmeli
+            if ($payment->status === 'completed' || $payment->status === 'refunded') {
+                // Completed veya refunded ise kesinlikle atla
+                Log::info('⚠️ PayTR callback: Duplicate - payment zaten tamamlanmış', [
+                    'payment_id' => $payment->payment_id,
+                    'status' => $payment->status,
+                ]);
                 return ['success' => true, 'message' => 'Duplicate - zaten işlenmiş'];
+            }
+
+            if ($payment->status === 'failed' && $status === 'failed') {
+                // Zaten failed ve yeni gelen de failed ise atla
+                Log::info('⚠️ PayTR callback: Duplicate - payment zaten başarısız', [
+                    'payment_id' => $payment->payment_id,
+                ]);
+                return ['success' => true, 'message' => 'Duplicate - zaten başarısız'];
+            }
+
+            // ÖNEMLI: Eğer payment failed ama yeni callback success ise, işlemeye devam et!
+            // Bu, kullanıcının birden fazla deneme yaptığı ve sonunda başardığı durumdur.
+            if ($payment->status === 'failed' && $status === 'success') {
+                Log::info('✅ PayTR callback: Failed payment için success callback geldi - işlenecek', [
+                    'payment_id' => $payment->payment_id,
+                    'merchant_oid' => $merchantOid,
+                ]);
+                // Devam et, success işlenecek
             }
 
             // 4. Hash kontrolü (güvenlik)

@@ -556,9 +556,9 @@ class SongStreamController extends Controller
             }
 
             // 🔑 Build path to encryption key file
-            // Format: storage/tenant{id}/app/public/muzibu/hls/{song_id}/enc.key
+            // Format: storage/tenant{id}/app/public/muzibu/hls/{song_id}/enc.bin
             $tenantId = tenant('id');
-            $keyPath = storage_path("../tenant{$tenantId}/app/public/muzibu/hls/{$songId}/enc.key");
+            $keyPath = storage_path("../tenant{$tenantId}/app/public/muzibu/hls/{$songId}/enc.bin");
 
             // ⚠️ Check if key file exists
             if (!file_exists($keyPath)) {

@@ -58,6 +58,11 @@ class ScanUserForAbuseJob implements ShouldQueue
     protected Carbon $periodEnd;
 
     /**
+     * Tenant ID for multi-tenancy support
+     */
+    public ?int $tenantId = null;
+
+    /**
      * Create a new job instance.
      *
      * @param int $userId Taranacak kullanıcı ID
@@ -69,6 +74,9 @@ class ScanUserForAbuseJob implements ShouldQueue
         $this->userId = $userId;
         $this->periodStart = $periodStart;
         $this->periodEnd = $periodEnd;
+
+        // Save tenant context
+        $this->tenantId = tenant('id');
 
         // Horizon'da görünecek queue
         $this->onQueue('muzibu-abuse-scan');
@@ -82,6 +90,11 @@ class ScanUserForAbuseJob implements ShouldQueue
      */
     public function handle(AbuseDetectionService $service): void
     {
+        // Restore tenant context
+        if ($this->tenantId && (!tenant() || tenant('id') != $this->tenantId)) {
+            tenancy()->initialize($this->tenantId);
+        }
+
         $periodLabel = $this->periodStart->format('d.m.Y') . ' - ' . $this->periodEnd->format('d.m.Y');
 
         try {

@@ -11,8 +11,13 @@ class PayTRIframeService
     /**
      * PayTR iframe token oluştur
      * Kart bilgilerini PayTR iframe'de toplayacak
+     *
+     * @param Payment $payment
+     * @param array $userInfo
+     * @param array $orderInfo
+     * @param string|null $existingMerchantOid Session'dan gelen mevcut merchantOid (sayfa yenilemelerinde aynı ID'yi kullanmak için)
      */
-    public function prepareIframePayment(Payment $payment, array $userInfo, array $orderInfo): array
+    public function prepareIframePayment(Payment $payment, array $userInfo, array $orderInfo, ?string $existingMerchantOid = null): array
     {
         // 🔥 DEBUG: Function called - write to MULTIPLE locations
         file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 🚀 prepareIframePayment CALLED: payment_id={$payment->payment_id}\n", FILE_APPEND);
@@ -50,11 +55,20 @@ class PayTRIframeService
             // Token oluşturma için hash string
             // PayTR merchant_oid sadece alfanumerik olmalı - özel karakter içeremez!
             // Tenant ID prefix ekle: T{tenant_id}{payment_number_stripped}{retry_suffix}
-            $tenantId = tenant()->id ?? 1;
-            $strippedPaymentNumber = str_replace(['-', '_', ' '], '', $payment->payment_number);
-            // Benzersizlik için timestamp'in son 4 hanesi (her denemede farklı)
-            $retrySuffix = substr(time(), -4);
-            $merchantOid = 'T' . $tenantId . $strippedPaymentNumber . $retrySuffix;
+
+            // Session'dan gelen merchantOid varsa onu kullan (sayfa yenilemelerinde aynı ID)
+            if ($existingMerchantOid) {
+                $merchantOid = $existingMerchantOid;
+                \Log::info('♻️ PayTR: Mevcut merchantOid kullanılıyor (session)', ['merchantOid' => $merchantOid]);
+            } else {
+                // Yeni merchantOid oluştur
+                $tenantId = tenant()->id ?? 1;
+                $strippedPaymentNumber = str_replace(['-', '_', ' '], '', $payment->payment_number);
+                // Benzersizlik için timestamp'in son 4 hanesi (her denemede farklı)
+                $retrySuffix = substr(time(), -4);
+                $merchantOid = 'T' . $tenantId . $strippedPaymentNumber . $retrySuffix;
+                \Log::info('🆕 PayTR: Yeni merchantOid oluşturuldu', ['merchantOid' => $merchantOid]);
+            }
 
             // 🔥 FIX: PayTR IPv6 desteklemiyor! IPv4'e çevir veya fallback kullan
             $userIp = request()->ip();
@@ -195,6 +209,7 @@ class PayTRIframeService
                 'success' => true,
                 'token' => $iframeToken,
                 'iframe_url' => 'https://www.paytr.com/odeme/guvenli/' . $iframeToken,
+                'merchant_oid' => $merchantOid, // Session'a kaydetmek için
             ];
 
         } catch (\Exception $e) {

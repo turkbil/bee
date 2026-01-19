@@ -84,7 +84,7 @@ class ConvertToHLSJob implements ShouldQueue
 
             // Generate unique encryption key (16 bytes for AES-128)
             $encryptionKey = random_bytes(16);
-            $keyPath = $tenantStoragePath . '/enc.key';
+            $keyPath = $tenantStoragePath . '/enc.bin';
             file_put_contents($keyPath, $encryptionKey);
             chmod($keyPath, 0644);
 
@@ -93,7 +93,7 @@ class ConvertToHLSJob implements ShouldQueue
             // Line 1: Key URI (used in playlist.m3u8)
             // Line 2: Key file path (for FFmpeg to read)
             // Line 3: IV (optional, we use default)
-            $keyUri = url('storage/muzibu/hls/' . $song->song_id . '/enc.key');
+            $keyUri = url('storage/tenant' . tenant()->id . '/muzibu/hls/' . $song->song_id . '/enc.bin');
             $keyInfoPath = $tenantStoragePath . '/enc.keyinfo';
             $keyInfoContent = $keyUri . "\n" . $keyPath . "\n";
             file_put_contents($keyInfoPath, $keyInfoContent);
@@ -155,7 +155,7 @@ class ConvertToHLSJob implements ShouldQueue
             }
 
             // Update song record - use direct DB query to ensure correct tenant database
-            $relativePath = 'muzibu/hls/' . $song->song_id . '/playlist.m3u8';
+            $relativePath = 'tenant' . tenant()->id . '/muzibu/hls/' . $song->song_id . '/playlist.m3u8';
 
             Log::info('Muzibu HLS: Before DB Update', [
                 'song_id' => $song->song_id,

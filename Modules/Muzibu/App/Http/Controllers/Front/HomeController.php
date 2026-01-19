@@ -16,12 +16,15 @@ class HomeController extends Controller
     public function index(): View
     {
         try {
-            // 🔥 CACHE: Featured Playlists (5 min) - 10 items max
-            $featuredPlaylists = Cache::remember('home_featured_playlists_v4', 300, function () {
+            // 🔥 CACHE: Homepage Playlists (5 min) - 10 items max - Son eklenenler
+            \Log::info('HomeController: Loading homePlaylists');
+            $homePlaylists = Cache::remember('home_playlists_latest_v2', 300, function () {
                 return Playlist::where('is_active', 1)
                     ->where('is_system', 1)
+                    ->where('is_radio', 0)
                     ->where('songs_count', '>', 0)
                     ->with(['coverMedia'])
+                    ->orderBy('created_at', 'desc')
                     ->limit(10)
                     ->get();
             });
@@ -97,7 +100,7 @@ class HomeController extends Controller
                 : collect([]);
 
             return view('themes.muzibu.index', compact(
-                'featuredPlaylists',
+                'homePlaylists',
                 'newReleases',
                 'popularSongs',
                 'newSongs',
@@ -115,7 +118,7 @@ class HomeController extends Controller
             ]);
 
             return view('themes.muzibu.index', [
-                'featuredPlaylists' => collect([]),
+                'homePlaylists' => collect([]),
                 'newReleases' => collect([]),
                 'popularSongs' => collect([]),
                 'newSongs' => collect([]),

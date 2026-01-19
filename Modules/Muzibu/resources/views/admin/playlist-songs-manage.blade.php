@@ -800,13 +800,12 @@ $(document).ready(function() {
             // Boşsa hepsini göster
             $('#sortable-playlist .sortable-item').show();
         } else {
-            // Filtrele
+            // Filtrele - tüm song-content içindeki metni ara
             $('#sortable-playlist .sortable-item').each(function() {
                 const $item = $(this);
-                const title = $item.find('strong').text().toLowerCase();
-                const artist = $item.find('small').text().toLowerCase();
+                const content = $item.find('.song-content').text().toLowerCase();
 
-                if (title.includes(search) || artist.includes(search)) {
+                if (content.includes(search)) {
                     $item.show();
                 } else {
                     $item.hide();

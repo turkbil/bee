@@ -114,10 +114,18 @@ class PaymentSuccessController extends Controller
 
         // Session'dan payment verilerini temizle (ama localStorage için cart_id kalsın)
         // NOT: Pending durumunda da temizle çünkü sepet kullanıldı
-        session()->forget([
+        $sessionKeysToForget = [
             'last_order_number',
             'checkout_user_info',
-        ]);
+        ];
+
+        // PayTR merchantOid session'ını da temizle (sayfa yenileme koruması artık gerekli değil)
+        if ($payment && $payment->payment_id) {
+            $sessionKeysToForget[] = 'paytr_merchant_oid_' . $payment->payment_id;
+            Log::info('🧹 PayTR merchantOid session cleared', ['payment_id' => $payment->payment_id]);
+        }
+
+        session()->forget($sessionKeysToForget);
 
         // Layout: Tenant temasından (header/footer için)
         $theme = tenant()->theme ?? 'simple';

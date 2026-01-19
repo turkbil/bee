@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Sistem Analizi - Gerçek Veriler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .stat-card { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1)); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+
+    <header class="bg-slate-800 border-b border-slate-700">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-server text-2xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Muzibu.com Sistem Analizi</h1>
+                    <p class="text-slate-400">Gerçek sunucu verileri ile detaylı rapor</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- ÖZET KARTLAR -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="stat-card rounded-xl p-4 border border-slate-700">
+                <div class="text-3xl font-bold text-white">29,712</div>
+                <div class="text-slate-400 text-sm">Toplam Şarkı</div>
+            </div>
+            <div class="stat-card rounded-xl p-4 border border-slate-700">
+                <div class="text-3xl font-bold text-white">1,727</div>
+                <div class="text-slate-400 text-sm">Kullanıcı</div>
+            </div>
+            <div class="stat-card rounded-xl p-4 border border-slate-700">
+                <div class="text-3xl font-bold text-emerald-400">589</div>
+                <div class="text-slate-400 text-sm">Aktif Abonelik</div>
+            </div>
+            <div class="stat-card rounded-xl p-4 border border-slate-700">
+                <div class="text-3xl font-bold text-blue-400">~50K</div>
+                <div class="text-slate-400 text-sm">Günlük Dinleme</div>
+            </div>
+        </section>
+
+        <!-- SUNUCU -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-server text-blue-400"></i> Sunucu Donanımı
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">DONANIM</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">CPU</td>
+                            <td class="py-2 text-white font-medium">Intel Xeon Gold 6554S</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Core/Thread</td>
+                            <td class="py-2 text-white">36 Core / <strong class="text-emerald-400">72 Thread</strong></td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">RAM</td>
+                            <td class="py-2 text-white"><strong class="text-emerald-400">251 GB</strong> (22GB kullanımda)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Disk</td>
+                            <td class="py-2 text-white">885 GB (362GB kullanımda, %41)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">Uptime</td>
+                            <td class="py-2 text-white">11 gün</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">YAZILIM</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">OS</td>
+                            <td class="py-2 text-white">AlmaLinux 9.7</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Web Server</td>
+                            <td class="py-2 text-white">Nginx 1.28</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Database</td>
+                            <td class="py-2 text-white">MariaDB 11.4</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Cache</td>
+                            <td class="py-2 text-white">Redis 6.2 (4.53GB, 627K key)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">Queue Workers</td>
+                            <td class="py-2 text-white"><strong class="text-emerald-400">63 aktif</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+                <i class="fas fa-check-circle text-emerald-400 mr-2"></i>
+                <span class="text-emerald-300">Sunucu çok güçlü. 72 thread, 251GB RAM - sorun donanım değil.</span>
+            </div>
+        </section>
+
+        <!-- VERİTABANI -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-database text-purple-400"></i> Veritabanı (tenant_muzibu_1528d0)
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">İÇERİK</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Toplam Şarkı</td>
+                            <td class="py-2 text-white text-right">29,712</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Aktif Şarkı</td>
+                            <td class="py-2 text-white text-right">29,703</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">HLS Dönüştürülmüş</td>
+                            <td class="py-2 text-emerald-400 text-right">29,657 (%99.8)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Albüm</td>
+                            <td class="py-2 text-white text-right">657</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Sanatçı</td>
+                            <td class="py-2 text-white text-right">44</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">Tür</td>
+                            <td class="py-2 text-white text-right">39</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">KULLANICI</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Toplam Kullanıcı</td>
+                            <td class="py-2 text-white text-right">1,727</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Aktif Abonelik</td>
+                            <td class="py-2 text-emerald-400 text-right">589 (%34)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">Playlist</td>
+                            <td class="py-2 text-white text-right">758</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">TABLO BOYUTLARI</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">song_plays</td>
+                            <td class="py-2 text-white text-right">187 MB</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">media</td>
+                            <td class="py-2 text-white text-right">32 MB</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">songs</td>
+                            <td class="py-2 text-white text-right">30 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">activity_log</td>
+                            <td class="py-2 text-white text-right">26 MB</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- DİNLEME İSTATİSTİKLERİ -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-chart-line text-emerald-400"></i> Dinleme İstatistikleri (Son 14 Gün)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">GÜNLÜK VERİLER</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">19 Ocak (Bugün)</td>
+                            <td class="py-2 text-white text-right">29,338</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">18 Ocak</td>
+                            <td class="py-2 text-white text-right">50,574</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">17 Ocak</td>
+                            <td class="py-2 text-emerald-400 text-right font-bold">60,826</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">16 Ocak</td>
+                            <td class="py-2 text-emerald-400 text-right font-bold">60,849</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">15 Ocak</td>
+                            <td class="py-2 text-white text-right">45,194</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">14 Ocak</td>
+                            <td class="py-2 text-slate-500 text-right">921</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">13 Ocak ve öncesi</td>
+                            <td class="py-2 text-slate-500 text-right">&lt;1000</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">ÖZET</h3>
+                    <div class="space-y-4">
+                        <div class="bg-slate-700/50 rounded-lg p-4">
+                            <div class="text-2xl font-bold text-white">248,688</div>
+                            <div class="text-slate-400 text-sm">Son 7 gün toplam</div>
+                        </div>
+                        <div class="bg-slate-700/50 rounded-lg p-4">
+                            <div class="text-2xl font-bold text-emerald-400">~50,000</div>
+                            <div class="text-slate-400 text-sm">Günlük ortalama (aktif günler)</div>
+                        </div>
+                        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-sm">
+                            <i class="fas fa-info-circle text-yellow-400 mr-2"></i>
+                            <span class="text-yellow-300">14 Ocak öncesi düşük - sistem yeni aktif olmuş görünüyor</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORAGE -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-hdd text-orange-400"></i> Storage Analizi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">DOSYA BOYUTLARI</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">MP3 Dosyaları</td>
+                            <td class="py-2 text-white text-right"><strong>128 GB</strong></td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">HLS Dosyaları</td>
+                            <td class="py-2 text-white text-right"><strong>183 GB</strong></td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Toplam Tenant Storage</td>
+                            <td class="py-2 text-orange-400 text-right font-bold">333 GB</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">Kalan Disk</td>
+                            <td class="py-2 text-emerald-400 text-right">524 GB (%59)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">DOSYA SAYILARI</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">MP3 Dosyası</td>
+                            <td class="py-2 text-white text-right">40,988</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">HLS Playlist (.m3u8)</td>
+                            <td class="py-2 text-white text-right">29,657</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">Ortalama Şarkı Boyutu</td>
+                            <td class="py-2 text-white text-right">~4.3 MB (MP3)</td>
+                        </tr>
+                    </table>
+                    <div class="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg text-sm">
+                        <i class="fas fa-info-circle text-blue-400 mr-2"></i>
+                        <span class="text-blue-300">HLS = MP3'ün ~1.43 katı (encryption overhead)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HLS STREAM -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-stream text-cyan-400"></i> HLS Stream Yapısı
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">YAPILANDIRMA</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Segment Süresi</td>
+                            <td class="py-2 text-white text-right">10 saniye</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Şifreleme</td>
+                            <td class="py-2 text-emerald-400 text-right">AES-128</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Segment Boyutu</td>
+                            <td class="py-2 text-white text-right">~350 KB</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">Ortalama Şarkı</td>
+                            <td class="py-2 text-white text-right">~22 segment</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">ÖRNEK HLS KLASÖRÜ</h3>
+                    <div class="bg-slate-900 rounded-lg p-3 text-xs font-mono text-slate-300">
+                        <div>hls/32295/</div>
+                        <div class="pl-4 text-slate-500">├── playlist.m3u8 (996 B)</div>
+                        <div class="pl-4 text-slate-500">├── enc.bin (16 B - AES key)</div>
+                        <div class="pl-4 text-slate-500">├── enc.keyinfo</div>
+                        <div class="pl-4 text-slate-500">├── segment-000.ts (351 KB)</div>
+                        <div class="pl-4 text-slate-500">├── segment-001.ts (351 KB)</div>
+                        <div class="pl-4 text-slate-500">├── ... (22 segment)</div>
+                        <div class="pl-4 text-slate-500">└── segment-022.ts (295 KB)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLAYER -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-play-circle text-pink-400"></i> Player Analizi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">DOSYALAR</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">player-core.js</td>
+                            <td class="py-2 text-white text-right"><strong>7,717 satır</strong></td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">safe-storage.js</td>
+                            <td class="py-2 text-white text-right">38 satır</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Features (6 dosya)</td>
+                            <td class="py-2 text-white text-right">~1,500 satır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">SongStreamController</td>
+                            <td class="py-2 text-white text-right">858 satır</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">TEKNOLOJİLER</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">HLS.js</span>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">Howler.js</span>
+                        <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-sm">Alpine.js</span>
+                        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm">AES-128</span>
+                    </div>
+                    <div class="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm">
+                        <i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>
+                        <span class="text-red-300">7,717 satır = karmaşık kod, hata potansiyeli yüksek</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h3 class="text-sm text-slate-400 mb-3">TESPİT EDİLEN SORUNLAR</h3>
+                <div class="grid md:grid-cols-2 gap-3">
+                    <div class="bg-red-500/10 border-l-4 border-red-500 rounded-r-lg p-3">
+                        <div class="font-medium text-red-400">HLS Fatal Error Handler</div>
+                        <div class="text-sm text-slate-400">Eski HLS instance temizlenmiyor → memory leak</div>
+                    </div>
+                    <div class="bg-red-500/10 border-l-4 border-red-500 rounded-r-lg p-3">
+                        <div class="font-medium text-red-400">Blob URL Leak</div>
+                        <div class="text-sm text-slate-400">revokeBlobUrl() tanımlı ama çağrılmıyor</div>
+                    </div>
+                    <div class="bg-orange-500/10 border-l-4 border-orange-500 rounded-r-lg p-3">
+                        <div class="font-medium text-orange-400">Buffer Timeout</div>
+                        <div class="text-sm text-slate-400">3sn timeout, buffer kontrolsüz kapatılıyor</div>
+                    </div>
+                    <div class="bg-orange-500/10 border-l-4 border-orange-500 rounded-r-lg p-3">
+                        <div class="font-medium text-orange-400">Interval Birikimi</div>
+                        <div class="text-sm text-slate-400">Progress tracking interval'lar üst üste</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLOUDFLARE -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-cloud text-orange-400"></i> Cloudflare Pro
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">MEVCUT DURUM</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Plan</td>
+                            <td class="py-2 text-orange-400 text-right font-bold">Cloudflare Pro</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">cf-ray</td>
+                            <td class="py-2 text-white text-right">CDG (Paris)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 text-slate-400">Cache Status</td>
+                            <td class="py-2 text-yellow-400 text-right">DYNAMIC</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-slate-400">SSL</td>
+                            <td class="py-2 text-emerald-400 text-right">Full (Strict)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="text-sm text-slate-400 mb-3">SORUN</h3>
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                        <p class="text-yellow-300 text-sm mb-2">
+                            <strong>cf-cache-status: DYNAMIC</strong> = HLS dosyaları cache'lenmiyor!
+                        </p>
+                        <p class="text-slate-400 text-sm">
+                            Her segment isteği origin sunucuya gidiyor.
+                            50K dinleme × 22 segment = <strong>1.1M request/gün</strong> direkt sunucuya.
+                        </p>
+                    </div>
+                    <div class="mt-3 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-sm">
+                        <i class="fas fa-lightbulb text-emerald-400 mr-2"></i>
+                        <span class="text-emerald-300">Cloudflare cache kuralları ayarlanırsa sunucu yükü %80 düşer</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BANDWIDTH HESABI -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-tachometer-alt text-cyan-400"></i> Bandwidth Hesabı
+            </h2>
+
+            <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                <div class="text-slate-400"># Günlük Bandwidth Hesabı</div>
+                <div class="mt-2">
+                    <span class="text-slate-500">Günlük dinleme:</span> <span class="text-white">50,000</span>
+                </div>
+                <div>
+                    <span class="text-slate-500">Ortalama şarkı:</span> <span class="text-white">8 MB (HLS encrypted)</span>
+                </div>
+                <div>
+                    <span class="text-slate-500">Günlük traffic:</span> <span class="text-emerald-400">50,000 × 8MB = 400 GB/gün</span>
+                </div>
+                <div>
+                    <span class="text-slate-500">Aylık traffic:</span> <span class="text-emerald-400">400 × 30 = 12 TB/ay</span>
+                </div>
+                <div class="mt-3 pt-3 border-t border-slate-700">
+                    <span class="text-slate-500">100K/gün olursa:</span> <span class="text-yellow-400">24 TB/ay</span>
+                </div>
+            </div>
+
+            <div class="mt-4 grid md:grid-cols-2 gap-4">
+                <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4">
+                    <div class="font-medium text-emerald-400 mb-2">Cloudflare Pro ile</div>
+                    <div class="text-slate-300 text-sm">
+                        Sınırsız bandwidth dahil. 24TB/ay = <strong class="text-white">$25/ay</strong>
+                    </div>
+                </div>
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                    <div class="font-medium text-blue-400 mb-2">Sunucu bandwidth</div>
+                    <div class="text-slate-300 text-sm">
+                        OVH'de dahil. Ekstra maliyet yok (şu an).
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section class="bg-gradient-to-r from-emerald-900/30 to-blue-900/30 rounded-xl p-6 border border-emerald-500/30">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-clipboard-check text-emerald-400"></i> Sonuç ve Öneriler
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-medium text-emerald-400 mb-2">Sunucu</h3>
+                    <p class="text-slate-300">Çok güçlü (72 thread, 251GB RAM). Donma sorunu donanımdan değil.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-medium text-yellow-400 mb-2">Player Kodu</h3>
+                    <p class="text-slate-300">7,717 satır karmaşık kod. Memory leak ve race condition sorunları var. Düzeltmek mümkün.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-medium text-orange-400 mb-2">Cloudflare Cache</h3>
+                    <p class="text-slate-300">HLS segmentleri cache'lenmiyor (DYNAMIC). Cache kuralı eklenirse sunucu yükü %80 düşer.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-medium text-blue-400 mb-2">Harici CDN Gerekli mi?</h3>
+                    <p class="text-slate-300">Hayır. Cloudflare Pro + doğru cache kuralları yeterli. Bunny/Mux'a gerek yok.</p>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-emerald-500/20 border border-emerald-500/30 rounded-lg">
+                <h3 class="font-bold text-emerald-400 mb-2"><i class="fas fa-tasks mr-2"></i>Yapılması Gerekenler</h3>
+                <ol class="text-slate-300 space-y-2">
+                    <li><strong class="text-white">1.</strong> Player kodundaki 4 kritik hatayı düzelt (ücretsiz)</li>
+                    <li><strong class="text-white">2.</strong> Cloudflare'de HLS cache kuralı ekle (ücretsiz)</li>
+                    <li><strong class="text-white">3.</strong> Buffer durumu için loading spinner ekle (UX)</li>
+                </ol>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800 mt-12 py-6">
+        <div class="max-w-6xl mx-auto px-4 text-center text-slate-500 text-sm">
+            19 Ocak 2026 • Muzibu.com
+        </div>
+    </footer>
+</body>
+</html>

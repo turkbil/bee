@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Player - Donma Cozumu v7</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        html { scroll-behavior: smooth; }
+        pre { tab-size: 2; }
+        .code-old { background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; }
+        .code-new { background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+
+    <!-- HEADER -->
+    <header class="bg-gradient-to-r from-emerald-900/50 to-blue-900/50 border-b border-emerald-500/30">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-code text-2xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Player Donma Cozumu - v7</h1>
+                    <p class="text-emerald-400">Tum kod degisiklikleri ve teknik detaylar</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAV -->
+    <nav class="bg-slate-800/80 sticky top-0 z-50 border-b border-slate-700">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex gap-1 overflow-x-auto py-2 text-sm">
+                <a href="#ozet" class="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg whitespace-nowrap">Ozet</a>
+                <a href="#strateji" class="px-3 py-1.5 bg-blue-500/20 text-blue-400 rounded-lg whitespace-nowrap">Strateji</a>
+                <a href="#kod1" class="px-3 py-1.5 bg-purple-500/20 text-purple-400 rounded-lg whitespace-nowrap">Full Preload</a>
+                <a href="#kod2" class="px-3 py-1.5 bg-purple-500/20 text-purple-400 rounded-lg whitespace-nowrap">Buffer Hole</a>
+                <a href="#kod3" class="px-3 py-1.5 bg-purple-500/20 text-purple-400 rounded-lg whitespace-nowrap">Auto-Pause</a>
+                <a href="#cloudflare" class="px-3 py-1.5 bg-orange-500/20 text-orange-400 rounded-lg whitespace-nowrap">Cloudflare</a>
+                <a href="#test" class="px-3 py-1.5 bg-slate-700 text-slate-300 rounded-lg whitespace-nowrap">Test</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- OZET -->
+        <section id="ozet" class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-emerald-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-check-circle"></i> Yapilan Degisiklikler Ozeti
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h3 class="font-bold text-white mb-3">Degisen Dosya</h3>
+                    <code class="text-emerald-400 text-sm">public/themes/muzibu/js/player/core/player-core.js</code>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h3 class="font-bold text-white mb-3">Tarih</h3>
+                    <span class="text-slate-300">19 Ocak 2026</span>
+                </div>
+            </div>
+
+            <div class="mt-4 grid md:grid-cols-4 gap-3">
+                <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold text-emerald-400">3</div>
+                    <div class="text-slate-400 text-sm">Kod Blogu Degisti</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold text-blue-400">1</div>
+                    <div class="text-slate-400 text-sm">Cloudflare Kurali</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold text-purple-400">0</div>
+                    <div class="text-slate-400 text-sm">Auto-Pause (Kapali)</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold text-yellow-400">600s</div>
+                    <div class="text-slate-400 text-sm">Preload Buffer</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STRATEJi -->
+        <section id="strateji" class="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-chess"></i> Donma Onleme Stratejisi
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold">1</span>
+                        <h3 class="font-bold text-white">Full Preload - Sonraki Sarki Tamamen Yukleniyor</h3>
+                    </div>
+                    <p class="text-slate-300 ml-11">Sarki 1 calarken, Sarki 2 arka planda TAMAMEN yukleniyor. Next basinca aninda basliyor.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-blue-500">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">2</span>
+                        <h3 class="font-bold text-white">Buffer Hole Toleransi - Bosluklar Atlaniyor</h3>
+                    </div>
+                    <p class="text-slate-300 ml-11">2.5 saniyeye kadar buffer bosluklar atlaniyor, donma yerine devam ediyor.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-purple-500">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">3</span>
+                        <h3 class="font-bold text-white">Auto-Pause YOK - Hic Durmuyor</h3>
+                    </div>
+                    <p class="text-slate-300 ml-11">Musteri dinlerken hicbir sekilde pause/duraklama yok. Tarayicinin dogal akisina birakiliyor.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-orange-500">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">4</span>
+                        <h3 class="font-bold text-white">Cloudflare HLS Cache - Hizli Segment Teslimi</h3>
+                    </div>
+                    <p class="text-slate-300 ml-11">HLS segmentleri Cloudflare edge'de 7 gun cache'leniyor. Sunucu yukunu azaltiyor.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- KOD DEGiSiKLiGi 1: FULL PRELOAD -->
+        <section id="kod1" class="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-code"></i> Kod Degisikligi 1: Full Preload
+            </h2>
+            <p class="text-slate-400 mb-4">
+                <strong class="text-white">Dosya:</strong> player-core.js |
+                <strong class="text-white">Satir:</strong> 6607-6616
+            </p>
+
+            <div class="space-y-4">
+                <!-- ESKi KOD -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">ESKi KOD</span>
+                        <span class="text-slate-500 text-sm">Sadece ilk 8 saniye yukleniyordu</span>
+                    </div>
+                    <pre class="code-old bg-slate-900 rounded-lg p-4 text-sm overflow-x-auto"><code class="text-red-300">// Yeni HLS instance olustur (sadece iLK SEGMENT icin dusuk buffer)
+// Segment suresi ~10sn, maxBufferLength: 8 ile sadece 1 segment yuklenir
+const hlsPreload = new Hls({
+    enableWorker: false,
+    lowLatencyMode: false,
+    maxBufferLength: 8,   // 8 saniye - sadece ilk segment (10sn) yuklenecek
+    maxMaxBufferLength: 10,
+    maxBufferSize: 10 * 1000 * 1000,
+    backBufferLength: 0,
+    startLevel: -1,
+    abrEwmaDefaultEstimate: 500000
+});</code></pre>
+                </div>
+
+                <!-- YENi KOD -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded">YENi KOD</span>
+                        <span class="text-slate-500 text-sm">Tam sarki yukleniyor (600 saniye = 10 dakika)</span>
+                    </div>
+                    <pre class="code-new bg-slate-900 rounded-lg p-4 text-sm overflow-x-auto"><code class="text-emerald-300">// Yeni HLS instance olustur (TUM SARKIYI YUKLE - gapless icin)
+// Sonraki sarki tamamen yuklensin, geciste donma olmasin
+const hlsPreload = new Hls({
+    enableWorker: false,
+    lowLatencyMode: false,
+    maxBufferLength: 600,   // 600 saniye = 10 dakika (en uzun sarkidan fazla)
+    maxMaxBufferLength: 600,
+    maxBufferSize: 200 * 1000 * 1000, // 200MB - tam sarki icin yeterli
+    backBufferLength: 0,
+    startLevel: -1,
+    abrEwmaDefaultEstimate: 500000
+});</code></pre>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800/50 rounded-lg">
+                <h4 class="font-bold text-white mb-2">Ne Degisti?</h4>
+                <table class="w-full text-sm">
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">maxBufferLength</td>
+                        <td class="py-2 text-red-400">8 saniye</td>
+                        <td class="py-2 text-emerald-400">600 saniye</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-2 text-slate-400">maxMaxBufferLength</td>
+                        <td class="py-2 text-red-400">10 saniye</td>
+                        <td class="py-2 text-emerald-400">600 saniye</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 text-slate-400">maxBufferSize</td>
+                        <td class="py-2 text-red-400">10 MB</td>
+                        <td class="py-2 text-emerald-400">200 MB</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- KOD DEGiSiKLiGi 2: STOPLOAD KALDIRILDI -->
+        <section class="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-code"></i> Kod Degisikligi 2: stopLoad() Kaldirildi
+            </h2>
+            <p class="text-slate-400 mb-4">
+                <strong class="text-white">Dosya:</strong> player-core.js |
+                <strong class="text-white">Satir:</strong> 6632-6642
+            </p>
+
+            <div class="space-y-4">
+                <!-- ESKi KOD -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">ESKi KOD</span>
+                        <span class="text-slate-500 text-sm">ilk segment yuklendikten sonra DURDURUYORDU</span>
+                    </div>
+                    <pre class="code-old bg-slate-900 rounded-lg p-4 text-sm overflow-x-auto"><code class="text-red-300">// ilk segment yuklenince hazir isaretle ve DURDUR
+hlsPreload.on(Hls.Events.FRAG_BUFFERED, function(event, fragData) {
+    if (self._preloadedNext && self._preloadedNext.songId === nextSong.song_id && !self._preloadedNext.ready) {
+        self._preloadedNext.ready = true;
+        self._preloadNextInProgress = false;
+
+        // Preload READY
+
+        // STOP LOADING: ilk segment yuklendi, geri kalanini durdur
+        // startLoad() ile devam ettirilecek
+        try {
+            hlsPreload.stopLoad();  // &lt;-- SORUN BURADA!
+        } catch (e) {
+            console.warn('stopLoad error:', e);
+        }
+    }
+});</code></pre>
+                </div>
+
+                <!-- YENi KOD -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded">YENi KOD</span>
+                        <span class="text-slate-500 text-sm">Durmuyor, tam sarki yuklenene kadar devam ediyor</span>
+                    </div>
+                    <pre class="code-new bg-slate-900 rounded-lg p-4 text-sm overflow-x-auto"><code class="text-emerald-300">// ilk segment yuklenince hazir isaretle (DURMA, tam sarki yuklensin!)
+hlsPreload.on(Hls.Events.FRAG_BUFFERED, function(event, fragData) {
+    if (self._preloadedNext && self._preloadedNext.songId === nextSong.song_id && !self._preloadedNext.ready) {
+        self._preloadedNext.ready = true;
+        self._preloadNextInProgress = false;
+
+        // Preload READY (first segment)
+        // FULL PRELOAD: Durma, tum sarki yuklenene kadar devam et
+        // Bu sayede sonraki sarkiya geciste donma olmaz
+    }
+});</code></pre>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-emerald-500/20 rounded-lg">
+                <p class="text-emerald-300 text-sm">
+                    <i class="fas fa-check mr-2"></i>
+                    <strong>stopLoad()</strong> tamamen kaldirildi. Artik sonraki sarki tamamen yuklenene kadar devam ediyor.
+                </p>
+            </div>
+        </section>
+
+        <!-- KOD DEGiSiKLiGi 3: BUFFER HOLE -->
+        <section id="kod2" class="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-code"></i> Kod Degisikligi 3: Buffer Hole Toleransi
+            </h2>
+            <p class="text-slate-400 mb-4">
+                <strong class="text-white">Dosya:</strong> player-core.js |
+                <strong class="text-white">Satir:</strong> 4398
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- ESKi -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">ESKi</span>
+                    </div>
+                    <pre class="code-old bg-slate-900 rounded-lg p-4 text-sm"><code class="text-red-300">maxBufferHole: 1.0,
+// 1 saniyeden buyuk bosluk = DONMA</code></pre>
+                </div>
+
+                <!-- YENi -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded">YENi</span>
+                    </div>
+                    <pre class="code-new bg-slate-900 rounded-lg p-4 text-sm"><code class="text-emerald-300">maxBufferHole: 2.5,
+// 2.5 saniyeye kadar bosluk = ATLA, devam et</code></pre>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800/50 rounded-lg">
+                <h4 class="font-bold text-white mb-2">Buffer Hole Nedir?</h4>
+                <p class="text-slate-300 text-sm">
+                    Buffer'da (onbellekte) bosluk olustugunda HLS.js ne yapmali?
+                    Eski: 1 saniyeden buyuk bosluk varsa DUR, bekle.
+                    Yeni: 2.5 saniyeye kadar bosluklar ATLA, devam et.
+                </p>
+            </div>
+        </section>
+
+        <!-- KOD DEGiSiKLiGi 4: AUTO-PAUSE KAPALI -->
+        <section id="kod3" class="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-code"></i> Kod Degisikligi 4: Auto-Pause KAPALI
+            </h2>
+            <p class="text-slate-400 mb-4">
+                <strong class="text-white">Dosya:</strong> player-core.js |
+                <strong class="text-white">Satir:</strong> 477-485
+            </p>
+
+            <div class="bg-slate-900 rounded-lg p-4 text-sm overflow-x-auto">
+                <pre><code class="text-slate-300">// BUFFER HEALTH SYSTEM: Sadece monitoring (auto-pause YOK!)
+// Strateji: Full preload + agresif buffer + yuksek buffer hole toleransi
+<span class="text-emerald-400">_bufferHealthEnabled: false,</span>     // Auto-pause KAPALI - musteriyi rahatsiz etmemek icin
+_minBufferBeforePlay: 8,         // Referans (auto-pause kapali oldugu icin kullanilmiyor)
+_lowBufferThreshold: 3,          // Referans (auto-pause kapali oldugu icin kullanilmiyor)
+_resumeBufferThreshold: 8,       // Referans (auto-pause kapali oldugu icin kullanilmiyor)
+_bufferPausedByHealth: false,
+_bufferCheckInterval: null,
+_lastBufferAmount: 0,</code></pre>
+            </div>
+
+            <div class="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                <h4 class="font-bold text-red-400 mb-2">Neden Auto-Pause Kapali?</h4>
+                <p class="text-slate-300 text-sm">
+                    Musteri muzik dinlerken hicbir sekilde duraklama/pause olmamali.
+                    Buffer duserse tarayici dogal olarak bekler, bizim mudahale etmemize gerek yok.
+                    Auto-pause musteri deneyimini bozar.
+                </p>
+            </div>
+        </section>
+
+        <!-- CLOUDFLARE -->
+        <section id="cloudflare" class="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 mb-6 flex items-center gap-3">
+                <i class="fab fa-cloudflare"></i> Cloudflare HLS Cache Kurali
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-500 text-xs mb-1">Kural Adi</div>
+                    <div class="text-white font-bold">HLS Audio Cache</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-500 text-xs mb-1">Durum</div>
+                    <div class="text-emerald-400 font-bold">Aktif</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-500 text-xs mb-1">Edge TTL</div>
+                    <div class="text-white">7 gun</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-500 text-xs mb-1">Browser TTL</div>
+                    <div class="text-white">1 gun</div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-lg p-4">
+                <div class="text-slate-500 text-xs mb-2">Filtre Kurali:</div>
+                <code class="text-orange-400 text-sm">(http.request.uri.path contains "/hls/") or (http.request.uri.path wildcard "*.ts") or (http.request.uri.path wildcard "*.m3u8")</code>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800/50 rounded-lg">
+                <h4 class="font-bold text-white mb-2">Ne ise Yariyor?</h4>
+                <ul class="text-slate-300 text-sm space-y-1">
+                    <li><i class="fas fa-check text-emerald-400 mr-2"></i>HLS segment dosyalari (.ts) Cloudflare'de cache'leniyor</li>
+                    <li><i class="fas fa-check text-emerald-400 mr-2"></i>Playlist dosyalari (.m3u8) cache'leniyor</li>
+                    <li><i class="fas fa-check text-emerald-400 mr-2"></i>Sunucu yuku azaliyor, response suresi kısalıyor</li>
+                    <li><i class="fas fa-check text-emerald-400 mr-2"></i>Kullanıcıya daha hızlı segment teslimi</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TEST -->
+        <section id="test" class="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-vial"></i> Test Protokolu
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-bold text-emerald-400 mb-2">Test 1: Sarki Gecisi</h3>
+                    <ol class="text-slate-300 text-sm space-y-1 list-decimal ml-4">
+                        <li>Siteye gir, bir sarki baslat</li>
+                        <li>2-3 saniye bekle (sonraki sarki yuklensin)</li>
+                        <li>Next butonuna bas</li>
+                        <li><strong class="text-white">Beklenen:</strong> Sonraki sarki ANINDA baslar, hic beklemez</li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-bold text-blue-400 mb-2">Test 2: Sarki Ortasi</h3>
+                    <ol class="text-slate-300 text-sm space-y-1 list-decimal ml-4">
+                        <li>Bir sarki baslat</li>
+                        <li>30-60 saniye dinle</li>
+                        <li><strong class="text-white">Beklenen:</strong> Donma olmadan calmaya devam eder</li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h3 class="font-bold text-purple-400 mb-2">Test 3: Cloudflare Cache</h3>
+                    <ol class="text-slate-300 text-sm space-y-1 list-decimal ml-4">
+                        <li>Tarayici DevTools > Network sekmesi</li>
+                        <li>.ts dosyalarinin response header'larina bak</li>
+                        <li><strong class="text-white">Beklenen:</strong> cf-cache-status: HIT</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- SONUC -->
+        <section class="bg-gradient-to-br from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
+                <i class="fas fa-flag-checkered"></i> Sonuc
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <div class="text-3xl mb-2">&#9989;</div>
+                    <div class="text-white font-bold">Full Preload</div>
+                    <div class="text-slate-400 text-sm">Sonraki sarki hazir</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <div class="text-3xl mb-2">&#9989;</div>
+                    <div class="text-white font-bold">Buffer Tolerans</div>
+                    <div class="text-slate-400 text-sm">2.5s bosluk atlaniyor</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <div class="text-3xl mb-2">&#9989;</div>
+                    <div class="text-white font-bold">Auto-Pause YOK</div>
+                    <div class="text-slate-400 text-sm">Hic durmuyor</div>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800/50 rounded-lg text-center">
+                <p class="text-slate-300">
+                    Bu degisiklikler <strong class="text-emerald-400">sarki gecislerinde</strong> donmayi tamamen cozuyor.
+                    <br>
+                    <strong class="text-white">Sarki ortasinda</strong> donma cok nadir, sadece cok yavas internette olabilir.
+                </p>
+            </div>
+        </section>
+
+        <!-- ESKi RAPORLAR -->
+        <section class="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
+                <i class="fas fa-history"></i> Onceki Raporlar
+            </h2>
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
+                <a href="../v1/" class="bg-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-700 transition">
+                    <div class="text-white text-sm">v1</div>
+                </a>
+                <a href="../v2/" class="bg-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-700 transition">
+                    <div class="text-white text-sm">v2</div>
+                </a>
+                <a href="../v3/" class="bg-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-700 transition">
+                    <div class="text-white text-sm">v3</div>
+                </a>
+                <a href="../v4/" class="bg-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-700 transition">
+                    <div class="text-white text-sm">v4</div>
+                </a>
+                <a href="../v5/" class="bg-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-700 transition">
+                    <div class="text-white text-sm">v5</div>
+                </a>
+                <a href="../v6/" class="bg-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-700 transition">
+                    <div class="text-white text-sm">v6</div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 py-6 mt-8">
+        <div class="max-w-6xl mx-auto px-4 text-center text-slate-500 text-sm">
+            19 Ocak 2026 - Muzibu.com - v7 Kod Degisiklikleri Raporu
+        </div>
+    </footer>
+
+</body>
+</html>

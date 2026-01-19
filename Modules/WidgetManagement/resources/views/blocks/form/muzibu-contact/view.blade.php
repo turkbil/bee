@@ -73,7 +73,7 @@
 }">
 
     <!-- Top Section: Contact Information -->
-    <div class="w-full relative bg-gray-50 dark:bg-gray-900 p-8 lg:p-16 animate-slide-in-left">
+    <div class="w-full relative bg-gray-50 dark:bg-gray-900 p-0 lg:p-16 animate-slide-in-left">
 
         <!-- Background Decoration (Music Theme) -->
         <div class="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none">
@@ -162,12 +162,12 @@
             </div>
 
             <!-- Copyright Info - Full Width -->
-            <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-200 dark:border-purple-800">
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-8 border border-purple-200 dark:border-purple-800">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 hidden md:flex items-center justify-center flex-shrink-0">
                             <i class="fa-solid fa-shield-check text-xl text-white"></i>
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1 pr-4 md:pr-4">
                             <h3 class="text-base font-bold text-gray-900 dark:text-white mb-3">Telifsiz ve Yasal Müzik</h3>
                             <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
                                 Muzibu'da yer alan tüm müzikler, telifsiz ve yasal olarak işletmelerde kullanıma uygundur.

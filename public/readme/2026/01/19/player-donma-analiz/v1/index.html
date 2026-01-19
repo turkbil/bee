@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Player Donma Analizi & Profesyonel Streaming Çözümleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-border { background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); }
+        .glass { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        .code-block { background: #0f172a; font-family: 'Monaco', 'Menlo', monospace; }
+        .severity-critical { border-left: 4px solid #ef4444; }
+        .severity-high { border-left: 4px solid #f97316; }
+        .severity-medium { border-left: 4px solid #eab308; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-border">
+        <div class="bg-slate-900 py-8">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-headphones text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">Player Donma Analizi</h1>
+                        <p class="text-slate-400">Muzibu Audio Player & Profesyonel Streaming Çözümleri</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full"><i class="fas fa-code mr-1"></i> HLS.js</span>
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full"><i class="fas fa-music mr-1"></i> Howler.js</span>
+                    <span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full"><i class="fas fa-bug mr-1"></i> 10 Kritik Sorun</span>
+                    <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full"><i class="fas fa-lightbulb mr-1"></i> 8 Alternatif</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Basit Anlatım Bölümü -->
+        <section class="glass rounded-2xl p-6 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-emerald-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Basit Anlatım (Herkes İçin)</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-white mb-3"><i class="fas fa-question-circle text-blue-400 mr-2"></i>Sorun Nedir?</h3>
+                    <p class="text-slate-300 leading-relaxed">
+                        Müzik çalar (player) bazı durumlarda donuyor. Özellikle:
+                    </p>
+                    <ul class="mt-3 space-y-2 text-slate-400">
+                        <li><i class="fas fa-wifi text-red-400 mr-2"></i>Yavaş internet bağlantısında</li>
+                        <li><i class="fas fa-mobile-alt text-red-400 mr-2"></i>Eski cihazlarda</li>
+                        <li><i class="fas fa-forward text-red-400 mr-2"></i>Şarkı atlarken</li>
+                        <li><i class="fas fa-window-minimize text-red-400 mr-2"></i>Sekme arka plana alındığında</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-white mb-3"><i class="fas fa-tools text-yellow-400 mr-2"></i>Neden Oluyor?</h3>
+                    <p class="text-slate-300 leading-relaxed">
+                        Player kodu karmaşık bir yapıya sahip. Ana sorunlar:
+                    </p>
+                    <ul class="mt-3 space-y-2 text-slate-400">
+                        <li><i class="fas fa-memory text-orange-400 mr-2"></i>Bellek (RAM) düzgün temizlenmiyor</li>
+                        <li><i class="fas fa-sync text-orange-400 mr-2"></i>Şarkı geçişlerinde karışıklık</li>
+                        <li><i class="fas fa-exclamation-triangle text-orange-400 mr-2"></i>Hata yakalama yetersiz</li>
+                        <li><i class="fas fa-clock text-orange-400 mr-2"></i>Zamanlayıcılar üst üste biniyor</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-white mb-3"><i class="fas fa-check-circle text-green-400 mr-2"></i>Çözüm Seçenekleri</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li><strong class="text-blue-400">Kod Düzeltme:</strong> Mevcut player'ı tamir et (haftalar/aylar)</li>
+                        <li><strong class="text-purple-400">Profesyonel SDK:</strong> Hazır çözüm satın al (hızlı)</li>
+                        <li><strong class="text-emerald-400">Hibrit:</strong> Kritik sorunları düzelt + ileride geçiş</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-white mb-3"><i class="fas fa-star text-yellow-400 mr-2"></i>Öneri</h3>
+                    <p class="text-slate-300 leading-relaxed">
+                        <strong class="text-emerald-400">Hibrit yaklaşım</strong> önerilir: Önce kritik 3-4 sorunu düzelt (acil rahatlama), sonra profesyonel çözüme geçiş planla. Spotify, Deezer gibi devler bile kendi player'larını geliştiriyor ama <strong>milyonlarca dolar</strong> yatırım yapıyorlar.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mevcut Player Analizi -->
+        <section class="glass rounded-2xl p-6 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-search text-red-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Mevcut Player Analizi</h2>
+                <span class="ml-auto px-3 py-1 bg-slate-700 rounded-full text-sm">342 KB • 4000+ satır</span>
+            </div>
+
+            <!-- Mimari -->
+            <div class="mb-6">
+                <h3 class="font-semibold text-white mb-3"><i class="fas fa-sitemap text-blue-400 mr-2"></i>Sistem Mimarisi</h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="text-blue-400 font-medium mb-2">Core</div>
+                        <ul class="text-sm text-slate-400 space-y-1">
+                            <li>player-core.js (ana mantık)</li>
+                            <li>safe-storage.js (localStorage)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="text-purple-400 font-medium mb-2">Features</div>
+                        <ul class="text-sm text-slate-400 space-y-1">
+                            <li>api.js, session.js</li>
+                            <li>spot-player.js (anons)</li>
+                            <li>spa-router.js, favorites.js</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="text-emerald-400 font-medium mb-2">Kütüphaneler</div>
+                        <ul class="text-sm text-slate-400 space-y-1">
+                            <li>HLS.js (streaming)</li>
+                            <li>Howler.js (MP3 fallback)</li>
+                            <li>Alpine.js (state)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kritik Sorunlar -->
+            <div>
+                <h3 class="font-semibold text-white mb-4"><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>Tespit Edilen Kritik Sorunlar</h3>
+
+                <div class="space-y-4">
+                    <!-- Sorun 1 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 severity-critical">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded font-bold">KRİTİK</span>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-white">HLS Fatal Error Crash</h4>
+                                <p class="text-sm text-slate-400 mt-1">Fatal HLS hatası (bufferAppendError, networkError) olduğunda cleanup eksik. Event listener'lar temizlenmiyor → sonsuz döngü riski.</p>
+                                <div class="code-block text-xs p-3 rounded mt-2 text-green-400 overflow-x-auto">
+                                    <pre>// player-core.js:2110-2156
+this.hlsNext.on(Hls.Events.ERROR, async function(event, data) {
+    if (data.fatal) {
+        // ❌ Eski HLS event listener'ları temizlenmiyor!
+        if (self.hlsNext) { self.hlsNext.destroy(); }
+        // Recursive playSongFromQueue() çağrısı
+        self.playSongFromQueue(nextIdx);
+    }
+});</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sorun 2 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 severity-critical">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded font-bold">KRİTİK</span>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-white">Crossfade Timeout Sonsuz Döngü</h4>
+                                <p class="text-sm text-slate-400 mt-1">Crossfade devre dışı ama state'ler tutuluyor. Fatal error → timeout cancel → ama nextIndex play başlatılıyor → state karışıklığı.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sorun 3 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 severity-high">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded font-bold">YÜKSEK</span>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-white">Buffer Timeout Sorunu</h4>
+                                <p class="text-sm text-slate-400 mt-1">Seek işlemi sırasında isSeeking=true kalabilir. 3 saniye sonra zorla kapatılıyor ama buffer yüklenmemişse müzik donmuş görünür.</p>
+                                <div class="code-block text-xs p-3 rounded mt-2 text-green-400 overflow-x-auto">
+                                    <pre>// player-core.js:2323-2329
+setTimeout(() => {
+    if (self.isSeeking) {
+        self.isSeeking = false; // ❌ Buffer kontrol edilmiyor!
+    }
+}, 3000);</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sorun 4 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 severity-high">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded font-bold">YÜKSEK</span>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-white">Audio Element Cleanup Hatası</h4>
+                                <p class="text-sm text-slate-400 mt-1">audio.load() empty source ile buffer temizlemeyi amaçlıyor ama HLS.js ile çakışma yaratabiliyor. Progress tracking interval'ları temizlenmiyor → memory leak.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sorun 5 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 severity-high">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded font-bold">YÜKSEK</span>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-white">Blob URL Memory Leak</h4>
+                                <p class="text-sm text-slate-400 mt-1">revokeBlobUrl() fonksiyonu tanımlı ama ASLA çağrılmıyor. HLS.js blob URL'leri tab kapatılana kadar memory'de kalıyor.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sorun 6 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 severity-medium">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded font-bold">ORTA</span>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-white">Safari Native HLS Deadlock (iOS)</h4>
+                                <p class="text-sm text-slate-400 mt-1">Safari native HLS path'inde audio.load() beklenmedik buffer eviction tetikleyebiliyor → iOS'ta donma/restart.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sorun 7 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 severity-medium">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded font-bold">ORTA</span>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-white">Spot Player Overlap</h4>
+                                <p class="text-sm text-slate-400 mt-1">Anons audio element ve müzik player audio element'ları çatışabiliyor. Anons sonrası müzik başlamayabilir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Donma Akış Diyagramı -->
+        <section class="glass rounded-2xl p-6 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-project-diagram text-purple-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Donma Nasıl Oluşuyor? (Root Cause)</h2>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6">
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 font-bold shrink-0">1</span>
+                        <div>
+                            <div class="text-white font-medium">Kullanıcı şarkı başlatır</div>
+                            <div class="text-slate-400">HLS.js instance oluşturulur, event listener'lar set edilir, progress tracking başlar</div>
+                        </div>
+                    </div>
+                    <div class="w-0.5 h-4 bg-slate-600 ml-4"></div>
+                    <div class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center text-yellow-400 font-bold shrink-0">2</span>
+                        <div>
+                            <div class="text-white font-medium">Ağ yavaşlar → Buffering</div>
+                            <div class="text-slate-400">onwaiting event tetiklenir ama kullanıcıya görsel feedback yok (silent buffer)</div>
+                        </div>
+                    </div>
+                    <div class="w-0.5 h-4 bg-slate-600 ml-4"></div>
+                    <div class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center text-orange-400 font-bold shrink-0">3</span>
+                        <div>
+                            <div class="text-white font-medium">Kullanıcı sabırsızlanır → Şarkı atlar</div>
+                            <div class="text-slate-400">nextTrack() çağrılır (şarkı hala yüklenirken), ESKİ HLS cleanup tamamlanmadan YENİ başlatılır</div>
+                        </div>
+                    </div>
+                    <div class="w-0.5 h-4 bg-slate-600 ml-4"></div>
+                    <div class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center text-red-400 font-bold shrink-0">4</span>
+                        <div>
+                            <div class="text-white font-medium">RACE CONDITION</div>
+                            <div class="text-slate-400">Eski HLS destroy çağrılır → ama hlsNext fragment'ları hala yükleniyor → Fatal error tetiklenir → Auto-recovery tekrar playSongFromQueue() çağırır</div>
+                        </div>
+                    </div>
+                    <div class="w-0.5 h-4 bg-slate-600 ml-4"></div>
+                    <div class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-red-600/30 rounded-full flex items-center justify-center text-red-500 font-bold shrink-0">5</span>
+                        <div>
+                            <div class="text-white font-medium">SONUÇ: DONMA</div>
+                            <div class="text-slate-400">Audio element state karışık, progress tracking interval'lar üst üste, player görsel olarak responsive ama ses çıkmıyor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profesyonel Streaming Çözümleri -->
+        <section class="glass rounded-2xl p-6 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-rocket text-emerald-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Profesyonel Streaming Çözümleri</h2>
+            </div>
+
+            <!-- Kurumsal SDK'lar -->
+            <div class="mb-8">
+                <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-building text-blue-400"></i>
+                    Kurumsal (Enterprise) SDK'lar
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <!-- THEOplayer -->
+                    <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 rounded-xl p-5 border border-blue-500/20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-play-circle text-2xl text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">THEOplayer</h4>
+                                <span class="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">ÖNERİLEN</span>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Low-latency HLS desteği (ilk sağlayan)</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Tüm platformlar (Web, iOS, Android, Smart TV)</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>White-label, tam özelleştirme</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Enterprise SLA ve destek</li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-slate-600">
+                            <div class="text-xs text-slate-400">Fiyat: Özel teklif (enterprise)</div>
+                            <a href="https://www.theoplayer.com/" target="_blank" class="text-blue-400 text-sm hover:underline">theoplayer.com →</a>
+                        </div>
+                    </div>
+
+                    <!-- Bitmovin -->
+                    <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-5 border border-purple-500/20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-video text-2xl text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Bitmovin</h4>
+                                <span class="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded">PREMIUM</span>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>En hızlı ticari adaptive streaming</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>VP9, HEVC, 4K/60FPS desteği</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Kubernetes tabanlı encoding</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Gelişmiş analytics</li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-slate-600">
+                            <div class="text-xs text-slate-400">Fiyat: Özel teklif (enterprise)</div>
+                            <a href="https://bitmovin.com/" target="_blank" class="text-purple-400 text-sm hover:underline">bitmovin.com →</a>
+                        </div>
+                    </div>
+
+                    <!-- JW Player -->
+                    <div class="bg-gradient-to-br from-orange-900/30 to-red-900/30 rounded-xl p-5 border border-orange-500/20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-play text-2xl text-orange-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">JW Player</h4>
+                                <span class="text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 rounded">POPÜLER</span>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>En yüksek pazar payı</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Kolay entegrasyon</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Geniş dokümantasyon</li>
+                            <li><i class="fas fa-times text-red-400 mr-2"></i>Standalone SDK yok (OTT app)</li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-slate-600">
+                            <div class="text-xs text-slate-400">Fiyat: $10/ay'dan başlıyor</div>
+                            <a href="https://jwplayer.com/" target="_blank" class="text-orange-400 text-sm hover:underline">jwplayer.com →</a>
+                        </div>
+                    </div>
+
+                    <!-- Wowza -->
+                    <div class="bg-gradient-to-br from-emerald-900/30 to-teal-900/30 rounded-xl p-5 border border-emerald-500/20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-broadcast-tower text-2xl text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Wowza</h4>
+                                <span class="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">PROFESYONEL</span>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Ultra-low latency HLS</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>SecureToken koruması</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>CSS skinning, plugins</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Yayıncılar tarafından tercih ediliyor</li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-slate-600">
+                            <div class="text-xs text-slate-400">Fiyat: $0.99/1000 dk (audio)</div>
+                            <a href="https://www.wowza.com/" target="_blank" class="text-emerald-400 text-sm hover:underline">wowza.com →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Realtime SDK'lar -->
+            <div class="mb-8">
+                <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-bolt text-yellow-400"></i>
+                    Realtime Audio SDK'lar
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <!-- ZEGOCLOUD -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-cloud text-cyan-400"></i>
+                            </div>
+                            <h4 class="font-bold text-white">ZEGOCLOUD</h4>
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Adaptive bitrate streaming</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>iOS, Android, Flutter, React Native</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Milyonlara ölçeklenebilir</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-slate-400">$0.99/1000 dk</div>
+                    </div>
+
+                    <!-- Agora -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-microphone text-indigo-400"></i>
+                            </div>
+                            <h4 class="font-bold text-white">Agora</h4>
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Gaming endüstrisinde popüler</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Cross-platform</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Yüksek stabilite</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-slate-400">Usage-based pricing</div>
+                    </div>
+
+                    <!-- Superpowered -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-rose-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-music text-rose-400"></i>
+                            </div>
+                            <h4 class="font-bold text-white">Superpowered SDK</h4>
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Tüm platformlar + Web</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>HLS örnek projeleri</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Efektler, time stretching</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-slate-400">Free tier mevcut</div>
+                    </div>
+
+                    <!-- Ant Media -->
+                    <div class="bg-slate-800/50 rounded-xl p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-server text-amber-400"></i>
+                            </div>
+                            <h4 class="font-bold text-white">Ant Media Server</h4>
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>WebRTC, HLS, RTMP, SRT</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Self-hosted seçeneği</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Community Edition ücretsiz</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-slate-400">Community (free) / Enterprise</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Open Source Alternatifler -->
+            <div>
+                <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                    <i class="fab fa-github text-slate-400"></i>
+                    Open Source Alternatifler
+                </h3>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">Video.js + HLS Plugin</h4>
+                        <p class="text-xs text-slate-400">CSS ile özelleştirme, güçlü plugin sistemi. Mevcut HLS.js'den daha iyi yapılandırılmış.</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">Amplitude.js</h4>
+                        <p class="text-xs text-slate-400">Howler.js'in en iyi alternatifi. jQuery bağımlılığı yok, tamamen özelleştirilebilir.</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">ExoPlayer (Android)</h4>
+                        <p class="text-xs text-slate-400">Google tarafından geliştiriliyor. Granüler kontrol, Play Store güncellemeleri.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spotify/Deezer Nasıl Yapıyor? -->
+        <section class="glass rounded-2xl p-6 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fab fa-spotify text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Devler Nasıl Yapıyor?</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-green-400 mb-3"><i class="fab fa-spotify mr-2"></i>Spotify</h3>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li><strong class="text-white">Mimari:</strong> Microservices (Java, Scala, Node.js)</li>
+                        <li><strong class="text-white">Streaming:</strong> Apache Kafka (real-time), RTSP + HLS</li>
+                        <li><strong class="text-white">Storage:</strong> Apache Cassandra (yüksek erişilebilirlik)</li>
+                        <li><strong class="text-white">CDN:</strong> Global edge servers, bölgesel routing</li>
+                        <li><strong class="text-white">Codec:</strong> Ogg Vorbis + MPEG</li>
+                        <li><strong class="text-white">Altyapı:</strong> Google Cloud (10 yıldır)</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-slate-900/50 rounded-lg text-xs text-slate-400">
+                        💡 Spotify'ın player'ı tamamen in-house. Milyonlarca dolar Ar-Ge bütçesi.
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-purple-400 mb-3"><i class="fab fa-deezer mr-2"></i>Deezer & Apple Music</h3>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li><strong class="text-white">Deezer HiFi:</strong> 16-bit/44.1kHz FLAC, 1,411 kbps</li>
+                        <li><strong class="text-white">Apple Music:</strong> 256 kbps AAC + ALAC lossless</li>
+                        <li><strong class="text-white">Apple Lossless:</strong> 24-bit/192kHz, 3730 kbps'e kadar</li>
+                        <li><strong class="text-white">Buffer:</strong> Adaptive, 128-512 frame</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-slate-900/50 rounded-lg text-xs text-slate-400">
+                        💡 Düşük latency için buffer size: 128 frame veya altı önerilir. Opus codec live audio için ideal.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Karşılaştırma Tablosu -->
+        <section class="glass rounded-2xl p-6 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-table text-blue-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Karşılaştırma Tablosu</h2>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-600">
+                            <th class="text-left py-3 px-4 text-slate-400">Çözüm</th>
+                            <th class="text-center py-3 px-4 text-slate-400">Fiyat</th>
+                            <th class="text-center py-3 px-4 text-slate-400">Entegrasyon</th>
+                            <th class="text-center py-3 px-4 text-slate-400">Low Latency</th>
+                            <th class="text-center py-3 px-4 text-slate-400">Destek</th>
+                            <th class="text-center py-3 px-4 text-slate-400">Audio Odaklı</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="py-3 px-4 font-medium text-white">THEOplayer</td>
+                            <td class="py-3 px-4 text-center">$$$</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Kolay</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Enterprise</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="py-3 px-4 font-medium text-white">Bitmovin</td>
+                            <td class="py-3 px-4 text-center">$$$$</td>
+                            <td class="py-3 px-4 text-center"><span class="text-yellow-400">Orta</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Enterprise</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-minus text-slate-500"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="py-3 px-4 font-medium text-white">Wowza</td>
+                            <td class="py-3 px-4 text-center">$$</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Kolay</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="py-3 px-4 text-center"><span class="text-blue-400">Pro</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="py-3 px-4 font-medium text-white">JW Player</td>
+                            <td class="py-3 px-4 text-center">$</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Çok Kolay</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-minus text-slate-500"></i></td>
+                            <td class="py-3 px-4 text-center"><span class="text-yellow-400">Standard</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-minus text-slate-500"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="py-3 px-4 font-medium text-white">ZEGOCLOUD</td>
+                            <td class="py-3 px-4 text-center">$</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Kolay</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="py-3 px-4 text-center"><span class="text-blue-400">Pro</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="py-3 px-4 font-medium text-white">Video.js</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Ücretsiz</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-yellow-400">Orta</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-minus text-slate-500"></i></td>
+                            <td class="py-3 px-4 text-center"><span class="text-slate-400">Community</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-minus text-slate-500"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30 bg-yellow-500/5">
+                            <td class="py-3 px-4 font-medium text-white">Mevcut (HLS.js)</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Ücretsiz</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-red-400">Karmaşık</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-minus text-slate-500"></i></td>
+                            <td class="py-3 px-4 text-center"><span class="text-slate-400">Yok</span></td>
+                            <td class="py-3 px-4 text-center"><i class="fas fa-minus text-slate-500"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Öneriler -->
+        <section class="glass rounded-2xl p-6 border border-emerald-500/30 bg-emerald-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-emerald-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Öneriler</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Acil -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-red-400 mb-3"><i class="fas fa-fire mr-2"></i>Acil (Bu Hafta)</h3>
+                    <ol class="space-y-2 text-slate-300">
+                        <li class="flex gap-2"><span class="text-red-400 font-bold">1.</span> HLS Fatal Error handler'ı izole et (try-catch nested)</li>
+                        <li class="flex gap-2"><span class="text-red-400 font-bold">2.</span> Progress interval cleanup'ı tüm yerlere ekle</li>
+                        <li class="flex gap-2"><span class="text-red-400 font-bold">3.</span> revokeBlobUrl() çağrılarını ekle</li>
+                        <li class="flex gap-2"><span class="text-red-400 font-bold">4.</span> Buffer durumu için görsel feedback ekle (spinner)</li>
+                    </ol>
+                </div>
+
+                <!-- Kısa Vadeli -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-yellow-400 mb-3"><i class="fas fa-clock mr-2"></i>Kısa Vadeli</h3>
+                    <ol class="space-y-2 text-slate-300">
+                        <li class="flex gap-2"><span class="text-yellow-400 font-bold">1.</span> State machine refactor (tek kaynak)</li>
+                        <li class="flex gap-2"><span class="text-yellow-400 font-bold">2.</span> iOS Safari path'ini test et ve düzelt</li>
+                        <li class="flex gap-2"><span class="text-yellow-400 font-bold">3.</span> Spot player overlap sorununu çöz</li>
+                        <li class="flex gap-2"><span class="text-yellow-400 font-bold">4.</span> Session polling'i yeniden değerlendir</li>
+                    </ol>
+                </div>
+
+                <!-- Uzun Vadeli -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-blue-400 mb-3"><i class="fas fa-road mr-2"></i>Uzun Vadeli</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="text-white font-medium mb-2">Seçenek A: Kod Refactor</h4>
+                            <ul class="text-sm text-slate-400 space-y-1">
+                                <li>• Event emitter pattern</li>
+                                <li>• Async queue (concurrent engelle)</li>
+                                <li>• FSM (Finite State Machine)</li>
+                                <li>• Unit testler</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-medium mb-2">Seçenek B: SDK Geçişi</h4>
+                            <ul class="text-sm text-slate-400 space-y-1">
+                                <li>• THEOplayer veya Wowza değerlendir</li>
+                                <li>• POC (Proof of Concept) yap</li>
+                                <li>• Maliyet/fayda analizi</li>
+                                <li>• Kademeli geçiş planı</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Öneri -->
+                <div class="bg-gradient-to-r from-emerald-900/30 to-blue-900/30 rounded-xl p-5 border border-emerald-500/30">
+                    <h3 class="font-semibold text-emerald-400 mb-3"><i class="fas fa-star mr-2"></i>Benim Önerim</h3>
+                    <p class="text-slate-300">
+                        <strong class="text-white">Hibrit Yaklaşım:</strong> Önce acil düzeltmeleri yap (1-2 hafta), kullanıcı deneyimini hemen iyileştir.
+                        Paralelde <strong>Wowza</strong> veya <strong>THEOplayer</strong> için POC hazırla. Eğer profesyonel SDK'nın ROI'si mantıklıysa,
+                        Q2'de geçiş planla. Audio streaming için <strong>Wowza</strong> fiyat/performans açısından en mantıklı görünüyor.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kaynaklar -->
+        <section class="glass rounded-2xl p-6 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-slate-600/50 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-link text-slate-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Kaynaklar</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h4 class="text-slate-400 mb-2">Kurumsal SDK'lar</h4>
+                    <ul class="space-y-1">
+                        <li><a href="https://www.theoplayer.com/" target="_blank" class="text-blue-400 hover:underline">THEOplayer</a></li>
+                        <li><a href="https://bitmovin.com/" target="_blank" class="text-blue-400 hover:underline">Bitmovin</a></li>
+                        <li><a href="https://jwplayer.com/" target="_blank" class="text-blue-400 hover:underline">JW Player</a></li>
+                        <li><a href="https://www.wowza.com/" target="_blank" class="text-blue-400 hover:underline">Wowza</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-slate-400 mb-2">Araştırma</h4>
+                    <ul class="space-y-1">
+                        <li><a href="https://www.fastpix.io/blog/system-design-and-site-architecture-for-an-audio-streaming-app-like-spotify" target="_blank" class="text-blue-400 hover:underline">Spotify Mimari Analizi</a></li>
+                        <li><a href="https://www.zegocloud.com/blog/best-live-streaming-sdk-providers" target="_blank" class="text-blue-400 hover:underline">Live Streaming SDK Karşılaştırması</a></li>
+                        <li><a href="https://alternativeto.net/software/howler-js/" target="_blank" class="text-blue-400 hover:underline">Howler.js Alternatifleri</a></li>
+                        <li><a href="https://www.dacast.com/blog/best-live-streaming-software-for-hls-streaming/" target="_blank" class="text-blue-400 hover:underline">HLS Streaming Yazılımları</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-12 py-6">
+        <div class="max-w-6xl mx-auto px-4 text-center text-slate-500 text-sm">
+            19 Ocak 2026 • Muzibu.com
+        </div>
+    </footer>
+</body>
+</html>

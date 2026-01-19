@@ -3902,6 +3902,11 @@ function muzibuApp() {
                                                 safeAudioCleanup(oldAudio);
                                             }
                                         }
+                                        // 🧹 BLOB URL CLEANUP: Memory leak önleme
+                                        if (self._currentBlobUrl) {
+                                            revokeBlobUrl(self._currentBlobUrl);
+                                            self._currentBlobUrl = null;
+                                        }
                                         oldHls.destroy();
                                     } catch (e) {}
                                 }
@@ -4225,6 +4230,11 @@ function muzibuApp() {
                     }
                     // 🧹 Safe cleanup (hata tetiklemez)
                     safeAudioCleanup(audio);
+                }
+                // 🧹 BLOB URL CLEANUP: Memory leak önleme
+                if (this._currentBlobUrl) {
+                    revokeBlobUrl(this._currentBlobUrl);
+                    this._currentBlobUrl = null;
                 }
                 // 🔧 FIX: Clear instance ID BEFORE destroy to ignore pending error events
                 this._currentHlsInstanceId = null;
@@ -4799,6 +4809,12 @@ onplay: function() {
                                 safeAudioCleanup(audio);
                             }
 
+                            // 🧹 BLOB URL CLEANUP: Memory leak önleme
+                            if (self._currentBlobUrl) {
+                                revokeBlobUrl(self._currentBlobUrl);
+                                self._currentBlobUrl = null;
+                            }
+
                             // Cleanup HLS
                             if (self.hls) {
                                 self.hls.destroy();
@@ -4823,6 +4839,13 @@ onplay: function() {
                                 hlsError: data.details,
                                 hasFallbackUrl: !!self.currentFallbackUrl
                             });
+
+                            // 🧹 BLOB URL CLEANUP: Memory leak önleme
+                            if (self._currentBlobUrl) {
+                                revokeBlobUrl(self._currentBlobUrl);
+                                self._currentBlobUrl = null;
+                            }
+
                             self.showToast(self.frontLang?.messages?.song_loading_failed_next || 'Şarkı yüklenemedi, sonrakiye geçiliyor', 'warning');
                             if (!self.deviceLimitExceeded && !self._sessionTerminatedHandling) {
                                 self.nextTrack();
@@ -5259,6 +5282,11 @@ onplay: function() {
                     }
                     safeAudioCleanup(currentAudio);
                 }
+                // 🧹 BLOB URL CLEANUP: Memory leak önleme
+                if (this._currentBlobUrl) {
+                    revokeBlobUrl(this._currentBlobUrl);
+                    this._currentBlobUrl = null;
+                }
                 if (this.hls) {
                     try { this.hls.destroy(); } catch (e) {}
                     this.hls = null;
@@ -5279,6 +5307,12 @@ onplay: function() {
             // HLS audio element'i temizle
             if (audio) {
                 safeAudioCleanup(audio);
+            }
+
+            // 🧹 BLOB URL CLEANUP: Memory leak önleme
+            if (this._currentBlobUrl) {
+                revokeBlobUrl(this._currentBlobUrl);
+                this._currentBlobUrl = null;
             }
 
             // HLS instance'i temizle

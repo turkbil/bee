@@ -7,6 +7,7 @@ return [
     'slugs' => [
         'index' => 'service',
         'show' => 'service',
+        'category' => 'kategori',
     ],
 
     'routes' => [
@@ -17,6 +18,10 @@ return [
         'show' => [
             'controller' => \Modules\Service\App\Http\Controllers\Front\ServiceController::class,
             'method' => 'show'
+        ],
+        'category' => [
+            'controller' => \Modules\Service\App\Http\Controllers\Front\ServiceController::class,
+            'method' => 'category'
         ]
     ],
 

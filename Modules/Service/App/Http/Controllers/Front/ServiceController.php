@@ -60,6 +60,46 @@ class ServiceController extends Controller
         }
     }
 
+    /**
+     * Kategori sayfası - /service/kategori/{slug}
+     */
+    public function category($slug)
+    {
+        $currentLocale = app()->getLocale();
+
+        // Kategoriyi bul
+        $category = \Modules\Service\App\Models\ServiceCategory::where('is_active', true)
+            ->where(function($q) use ($slug, $currentLocale) {
+                $q->whereJsonContains("slug->{$currentLocale}", $slug)
+                  ->orWhereJsonContains("slug->tr", $slug);
+            })
+            ->first();
+
+        if (!$category) {
+            abort(404, "Kategori bulunamadı: {$slug}");
+        }
+
+        // Kategorideki hizmetleri al
+        $items = $category->services()
+            ->where('is_active', true)
+            ->orderBy('service_id')
+            ->paginate(12);
+
+        // Modül title'ını al
+        $moduleTitle = $this->getModuleTitle('Service');
+
+        // Kategori bilgisini view'a geç
+        $selectedCategory = $category;
+
+        try {
+            $viewPath = $this->themeService->getThemeViewPath('index', 'service');
+            return view($viewPath, compact('items', 'moduleTitle', 'selectedCategory'));
+        } catch (\Exception $e) {
+            Log::error("Theme Error: " . $e->getMessage());
+            return view('service::front.index', compact('items', 'moduleTitle', 'selectedCategory'));
+        }
+    }
+
     public function clearCache()
     {
         try {

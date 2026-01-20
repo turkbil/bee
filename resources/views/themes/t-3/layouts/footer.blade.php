@@ -16,7 +16,8 @@
 
 {{-- Footer --}}
 <footer class="bg-gray-900 dark:bg-black text-white pt-16 pb-8">
-    <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+
         <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-12 mb-12">
             {{-- Column 1: About --}}
             <div>
@@ -58,6 +59,7 @@
                 <ul class="space-y-3">
                     <li><a href="{{ url('/') }}" class="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs text-primary-500"></i> Ana Sayfa</a></li>
                     <li><a href="{{ url('/service') }}" class="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs text-primary-500"></i> Hizmetler</a></li>
+                    <li><a href="{{ url('/blog') }}" class="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs text-primary-500"></i> Blog</a></li>
                     <li><a href="{{ url('/page/hakkimizda') }}" class="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs text-primary-500"></i> Hakkımızda</a></li>
                     <li><a href="{{ url('/page/iletisim') }}" class="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs text-primary-500"></i> İletişim</a></li>
                 </ul>

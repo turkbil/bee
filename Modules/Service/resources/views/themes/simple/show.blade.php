@@ -52,9 +52,9 @@
     @endphp
 
     {{-- MINIMAL SUBHEADER --}}
-    <section class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div class="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4">
-            <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+    <section class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pt-20">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2 py-4">
+            <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 @foreach($breadcrumbsArray as $index => $crumb)
                     @if(isset($crumb['url']))
                         <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition">{{ $crumb['label'] }}</a>
@@ -72,7 +72,7 @@
 
     {{-- CONTENT SECTION --}}
     <section class="bg-white dark:bg-gray-900 py-10 md:py-16">
-        <div class="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2">
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
                 {{-- Main Content - Sol taraf --}}
                 <article class="{{ $featuredImage ? 'lg:col-span-3' : 'lg:col-span-5 max-w-4xl mx-auto' }}">
@@ -123,17 +123,31 @@
                                 </a>
                             </figure>
 
-                            {{-- Quick Contact Card --}}
-                            @if($sitePhone || $whatsappUrl)
+                            {{-- Quick Contact Card - Dinamik Grid --}}
+                            @php
+                                $contactEmail = setting('contact_email_1');
+                                $contactItems = collect();
+                                if($sitePhone) $contactItems->push('phone');
+                                if($whatsappUrl) $contactItems->push('whatsapp');
+                                if($contactEmail && strlen($contactEmail) <= 25) $contactItems->push('email');
+                                $contactCount = $contactItems->count();
+                                $contactGridClass = match($contactCount) {
+                                    1 => 'grid-cols-1',
+                                    2 => 'grid-cols-2',
+                                    3 => 'grid-cols-3',
+                                    default => 'grid-cols-1'
+                                };
+                            @endphp
+                            @if($contactCount > 0)
                                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4">
-                                    <div class="grid grid-cols-2 gap-2">
+                                    <div class="grid {{ $contactGridClass }} gap-2">
                                         @if($sitePhone)
                                             <a href="tel:{{ preg_replace('/[^0-9+]/', '', $sitePhone) }}"
                                                class="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-3 transition-all">
                                                 <i class="fa-solid fa-phone text-primary-600 dark:text-primary-400"></i>
-                                                <div>
+                                                <div class="min-w-0">
                                                     <div class="text-xs text-gray-500 dark:text-gray-400">Telefon</div>
-                                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ $sitePhone }}</div>
+                                                    <div class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $sitePhone }}</div>
                                                 </div>
                                             </a>
                                         @endif
@@ -141,9 +155,19 @@
                                             <a href="{{ $whatsappUrl }}" target="_blank"
                                                class="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-3 transition-all">
                                                 <i class="fa-brands fa-whatsapp text-green-600 dark:text-green-400 text-lg"></i>
-                                                <div>
+                                                <div class="min-w-0">
                                                     <div class="text-xs text-gray-500 dark:text-gray-400">WhatsApp</div>
-                                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ setting('contact_whatsapp_1') ?: setting('contact_phone_2') }}</div>
+                                                    <div class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ setting('contact_whatsapp_1') ?: setting('contact_phone_2') }}</div>
+                                                </div>
+                                            </a>
+                                        @endif
+                                        @if($contactEmail && strlen($contactEmail) <= 25)
+                                            <a href="mailto:{{ $contactEmail }}"
+                                               class="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-3 transition-all">
+                                                <i class="fa-solid fa-envelope text-red-600 dark:text-red-400"></i>
+                                                <div class="min-w-0">
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">E-posta</div>
+                                                    <div class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $contactEmail }}</div>
                                                 </div>
                                             </a>
                                         @endif
@@ -160,7 +184,7 @@
     {{-- GALLERY SECTION --}}
     @if($galleryImages->count() > 0)
         <section class="bg-gray-50 dark:bg-gray-800 py-12 md:py-20">
-            <div class="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="text-center mb-8">
                     <h2 class="text-xl md:text-2xl font-bold font-heading text-gray-900 dark:text-white mb-3">Galeri</h2>
                     <div class="w-16 h-1 bg-gradient-to-r from-primary-500 to-primary-600 mx-auto rounded-full"></div>
@@ -186,7 +210,7 @@
     {{-- RELATED SERVICES SECTION --}}
     @if($relatedServices->isNotEmpty())
         <section class="bg-white dark:bg-gray-900 py-12 md:py-20">
-            <div class="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="text-center mb-8">
                     <h2 class="text-xl md:text-2xl font-bold font-heading text-gray-900 dark:text-white mb-2">Diğer Hizmetlerimiz</h2>
                     <p class="text-sm text-gray-600 dark:text-gray-400 font-body">Sunduğumuz diğer profesyonel hizmetleri inceleyin</p>
@@ -244,7 +268,7 @@
 
     {{-- CTA SECTION --}}
     <section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-700 dark:to-primary-800 py-12 md:py-16">
-        <div class="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 text-center">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2 text-center">
             <h2 class="text-xl md:text-2xl font-bold font-heading text-white mb-4">Ücretsiz Keşif ve Fiyat Teklifi</h2>
             <p class="text-base text-primary-100 mb-8 max-w-2xl mx-auto font-body">
                 Profesyonel ekibimiz size en uygun çözümü sunmak için hazır. Hemen iletişime geçin!

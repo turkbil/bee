@@ -309,6 +309,9 @@
     {{-- Theme Main Scripts --}}
     <script defer src="{{ asset('assets/js/themes/simple/main.js') }}?v=1.0.1"></script>
 
+    {{-- instant.page v5.2.0 - Intelligent Preloading --}}
+    <script src="{{ asset('js/instantpage.js') }}" type="module"></script>
+
     {{-- PWA Service Worker Registration --}}
     <x-pwa-registration />
 

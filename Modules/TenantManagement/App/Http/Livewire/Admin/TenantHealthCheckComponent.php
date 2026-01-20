@@ -128,10 +128,18 @@ class TenantHealthCheckComponent extends Component
     
     private function checkDatabaseConnection($tenant)
     {
+        // Tenant context'ini DEĞİŞTİRMEDEN doğrudan SQL ile kontrol et
+        // Bu sayede URL::forceRootUrl() bozulmaz
         try {
-            tenancy()->initialize($tenant);
-            DB::connection('tenant')->select('SELECT 1');
-            return true;
+            $dbName = $tenant->tenancy_db_name;
+            if (empty($dbName)) {
+                return false;
+            }
+
+            // Doğrudan MySQL sorgusu ile database varlığını kontrol et
+            $result = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$dbName]);
+
+            return !empty($result);
         } catch (\Exception $e) {
             return false;
         }

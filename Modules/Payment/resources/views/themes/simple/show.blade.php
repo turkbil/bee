@@ -6,154 +6,119 @@
 @extends('themes.' . $themeName . '.layouts.app')
 
 @section('module_content')
-    <div class="min-h-screen">
-        @php
-            $currentLocale = app()->getLocale();
-            $title = $item->getTranslated('title', $currentLocale);
-            $body = $item->getTranslated('body', $currentLocale);
+    @php
+        $currentLocale = app()->getLocale();
+        $title = $item->getTranslated('title', $currentLocale);
+        $body = $item->getTranslated('body', $currentLocale);
 
-            $moduleSlugService = app(\App\Services\ModuleSlugService::class);
-            $indexSlug = $moduleSlugService->getMultiLangSlug('Payment', 'index', $currentLocale);
-            $defaultLocale = get_tenant_default_locale();
-            $localePrefix = $currentLocale !== $defaultLocale ? '/' . $currentLocale : '';
-            $paymentIndexUrl = $localePrefix . '/' . $indexSlug;
+        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+        $indexSlug = $moduleSlugService->getMultiLangSlug('Payment', 'index', $currentLocale);
+        $defaultLocale = get_tenant_default_locale();
+        $localePrefix = $currentLocale !== $defaultLocale ? '/' . $currentLocale : '';
+        $paymentIndexUrl = $localePrefix . '/' . $indexSlug;
 
-            // Medya verilerini çek
-            $featuredImage = $item->getFirstMedia('featured_image');
-            $galleryImages = $item->getMedia('gallery');
-        @endphp
+        // Media
+        $featuredImage = $item->getFirstMedia('featured_image');
+        $galleryImages = $item->getMedia('gallery') ?? collect();
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-            {{-- Sayfa Başlığı --}}
-            <header class="mb-8 md:mb-12">
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                    {{ $title }}
-                </h1>
-                <div class="h-1 w-20 bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-500 dark:to-primary-300 rounded-full"></div>
-            </header>
+        // Breadcrumbs
+        $breadcrumbsArray = [
+            ['label' => __('payment::front.general.home'), 'url' => url('/')],
+            ['label' => __('payment::front.general.payments'), 'url' => url($paymentIndexUrl)],
+            ['label' => $title]
+        ];
+    @endphp
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
-                {{-- Ana Görsel - Sol Taraf --}}
-                @if($featuredImage)
-                    <div class="lg:col-span-1 order-2 lg:order-1">
-                        <figure class="sticky top-8">
-                            <a href="{{ $featuredImage->getUrl() }}"
-                               class="glightbox"
-                               data-gallery="payment-gallery"
-                               data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                               data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                                <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
-                                     alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
-                                     class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
-                            </a>
-                            @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
-                                <figcaption class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <strong class="block font-semibold text-gray-900 dark:text-white mb-1">
-                                        {{ $featuredImage->getCustomProperty('title')[$currentLocale] }}
-                                    </strong>
-                                    @if($featuredImage->getCustomProperty('description')[$currentLocale] ?? false)
-                                        <span class="block leading-relaxed">
-                                            {{ $featuredImage->getCustomProperty('description')[$currentLocale] }}
-                                        </span>
-                                    @endif
-                                </figcaption>
-                            @endif
-                        </figure>
-                    </div>
-                @endif
+    {{-- MINIMAL SUBHEADER --}}
+    <section class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2 py-4">
+            <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                @foreach($breadcrumbsArray as $index => $crumb)
+                    @if(isset($crumb['url']))
+                        <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition">{{ $crumb['label'] }}</a>
+                        @if($index < count($breadcrumbsArray) - 1)
+                            <span class="mx-2">/</span>
+                        @endif
+                    @else
+                        <span class="text-gray-900 dark:text-white font-medium">{{ $crumb['label'] }}</span>
+                    @endif
+                @endforeach
+            </nav>
+            <h1 class="text-2xl md:text-3xl font-bold font-heading text-gray-900 dark:text-white">{{ $title }}</h1>
+        </div>
+    </section>
 
-                {{-- İçerik --}}
-                <article class="{{ $featuredImage ? 'lg:col-span-2' : 'lg:col-span-3' }} order-1 lg:order-2">
-                    <div class="prose prose-lg md:prose-xl max-w-none dark:prose-invert
-                          prose-headings:font-bold prose-headings:tracking-tight
-                          prose-headings:text-gray-900 dark:prose-headings:text-white
-                          prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mt-12 prose-h2:mb-6
-                          prose-h3:text-xl prose-h3:md:text-2xl prose-h3:mt-10 prose-h3:mb-4
-                          prose-h4:text-lg prose-h4:md:text-xl prose-h4:mt-8 prose-h4:mb-3
-                          prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-6
-                          prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-a:no-underline hover:prose-a:underline
-                          prose-a:font-medium hover:prose-a:text-primary-700 dark:hover:prose-a:text-primary-300
-                          prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-semibold
-                          prose-ul:my-6 prose-ol:my-6 prose-li:my-2 prose-li:leading-relaxed
-                          prose-blockquote:border-l-4 prose-blockquote:border-l-primary-500 prose-blockquote:bg-primary-50/50
-                          dark:prose-blockquote:bg-primary-900/10 prose-blockquote:py-4 prose-blockquote:px-6
-                          prose-blockquote:italic prose-blockquote:my-8
-                          prose-code:text-primary-600 dark:prose-code:text-primary-400 prose-code:bg-primary-50
-                          dark:prose-code:bg-primary-900/20 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-                          prose-code:font-mono prose-code:text-sm
-                          prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800 prose-pre:rounded-lg
-                          prose-pre:shadow-lg prose-pre:my-8
-                          prose-img:rounded-xl prose-img:shadow-md prose-img:my-8
-                          prose-hr:my-12 prose-hr:border-gray-200 dark:prose-hr:border-gray-700">
+    {{-- CONTENT SECTION --}}
+    <section class="bg-white dark:bg-gray-900 py-10 md:py-16">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+                {{-- Main Content --}}
+                <article class="{{ $featuredImage ? 'lg:col-span-3' : 'lg:col-span-5 max-w-4xl mx-auto' }}">
+                    {{-- Body Content --}}
+                    <div class="prose prose-base max-w-none dark:prose-invert font-body
+                              prose-headings:font-heading prose-headings:text-gray-900 dark:prose-headings:text-white
+                              prose-p:text-gray-600 dark:prose-p:text-gray-300
+                              prose-a:text-primary-600 dark:prose-a:text-primary-400 hover:prose-a:underline
+                              prose-strong:text-gray-900 dark:prose-strong:text-white
+                              prose-ul:text-gray-600 dark:prose-ul:text-gray-300
+                              prose-ol:text-gray-600 dark:prose-ol:text-gray-300
+                              prose-blockquote:border-l-primary-500
+                              prose-img:rounded-xl prose-img:shadow-lg">
                         @parsewidgets($body ?? '')
                     </div>
                 </article>
-            </div>
 
-            {{-- Galeri - İçeriğin Altında --}}
-            @if($galleryImages->count() > 0)
-                <div class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700">
-                    <header class="mb-8">
-                        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                            {{ __('mediamanagement::admin.gallery') }}
-                        </h2>
-                        <div class="h-1 w-16 bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-500 dark:to-primary-300 rounded-full"></div>
-                    </header>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                        @foreach($galleryImages as $image)
-                            <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
-                                <a href="{{ $image->getUrl() }}"
-                                   class="glightbox"
-                                   data-gallery="payment-gallery"
-                                   data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                                   data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                                    <img src="{{ $image->getUrl('thumb') }}"
-                                         alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                         class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110">
+                {{-- Sidebar --}}
+                @if($featuredImage)
+                    <aside class="lg:col-span-2">
+                        <div class="sticky top-24 space-y-6">
+                            {{-- Featured Image --}}
+                            <figure class="rounded-2xl overflow-hidden shadow-2xl">
+                                <a href="{{ $featuredImage->getUrl() }}" class="glightbox block" data-gallery="payment-main">
+                                    <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
+                                         alt="{{ $title }}"
+                                         class="w-full aspect-square object-cover hover:scale-105 transition-transform duration-500">
                                 </a>
-                                @if($image->getCustomProperty('title')[$currentLocale] ?? false)
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4 pointer-events-none">
-                                        <div class="text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                            <strong class="block text-sm font-semibold mb-1">
-                                                {{ $image->getCustomProperty('title')[$currentLocale] }}
-                                            </strong>
-                                            @if($image->getCustomProperty('description')[$currentLocale] ?? false)
-                                                <span class="block text-xs leading-relaxed line-clamp-2">
-                                                    {{ $image->getCustomProperty('description')[$currentLocale] }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endif
                             </figure>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-
-            @if (isset($item->js))
-                <script>
-                    {!! $item->js !!}
-                </script>
-            @endif
-
-            @if (isset($item->css))
-                <style>
-                    {!! $item->css !!}
-                </style>
-            @endif
-
-            <footer class="mt-16 md:mt-20 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
-                <a href="{{ $paymentIndexUrl }}"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 dark:from-primary-500 dark:to-primary-400 dark:hover:from-primary-600 dark:hover:to-primary-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    <span>{{ __('payment::front.general.all_payments') }}</span>
-                </a>
-            </footer>
+                        </div>
+                    </aside>
+                @endif
+            </div>
         </div>
-    </div>
+    </section>
+
+    {{-- GALLERY SECTION --}}
+    @if($galleryImages->count() > 0)
+        <section class="bg-gray-50 dark:bg-gray-800 py-12 md:py-20">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                <div class="text-center mb-8">
+                    <h2 class="text-xl md:text-2xl font-bold font-heading text-gray-900 dark:text-white mb-3">Galeri</h2>
+                    <div class="w-16 h-1 bg-gradient-to-r from-primary-500 to-primary-600 mx-auto rounded-full"></div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    @foreach($galleryImages as $image)
+                        <a href="{{ $image->getUrl() }}"
+                           class="glightbox group relative aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+                           data-gallery="payment-gallery">
+                            <img src="{{ $image->hasGeneratedConversion('thumb') ? $image->getUrl('thumb') : $image->getUrl() }}"
+                                 alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                                <i class="fa-solid fa-expand text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- Custom JS/CSS --}}
+    @if(isset($item->js))
+        <script>{!! $item->js !!}</script>
+    @endif
+    @if(isset($item->css))
+        <style>{!! $item->css !!}</style>
+    @endif
 
 @endsection

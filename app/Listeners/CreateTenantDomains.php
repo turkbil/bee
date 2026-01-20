@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Log;
 class CreateTenantDomains
 {
     /**
-     * Domain oluşturulduğunda otomatik olarak www.domain ekle
+     * Domain oluşturulduğunda:
+     * 1. Otomatik olarak www.domain ekle
+     * 2. İlk domain ise (primary yoksa) → is_primary = true yap
      *
      * Örnek: ixtif.com.tr oluşturulduğunda → www.ixtif.com.tr otomatik eklenir
      */
@@ -30,6 +32,9 @@ class CreateTenantDomains
         if (str_starts_with($domainName, 'www.')) {
             return;
         }
+
+        // Primary domain kontrolü ve ayarlama
+        $this->setPrimaryIfNeeded($createdDomain, $tenant);
 
         // www. domain'i oluştur
         $wwwDomain = 'www.' . $domainName;
@@ -55,6 +60,23 @@ class CreateTenantDomains
 
         } catch (\Exception $e) {
             Log::error("WWW domain ekleme hatası (Tenant {$tenant->id}): " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Tenant'ın primary domain'i yoksa, bu domain'i primary yap
+     */
+    protected function setPrimaryIfNeeded($domain, $tenant): void
+    {
+        // Tenant'ın zaten primary domain'i var mı?
+        $hasPrimary = Domain::where('tenant_id', $tenant->id)
+            ->where('is_primary', true)
+            ->exists();
+
+        if (!$hasPrimary) {
+            // Bu domain'i primary yap
+            $domain->update(['is_primary' => true]);
+            Log::channel('system')->info("⭐ Primary domain ayarlandı: {$domain->domain} → Tenant {$tenant->id}");
         }
     }
 }

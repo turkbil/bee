@@ -254,6 +254,9 @@ class ThemeService
         $themeName = $theme ? $theme->name : 'simple';
 
         if ($module) {
+            // Modül namespace'i küçük harfle kullanılmalı (Laravel convention)
+            $moduleNamespace = strtolower($module);
+
             // 🎯 YENİ: resources/views/themes/ klasöründe ARA (TEK DOSYA PRENSİBİ)
             // Tema dosyaları SADECE resources/views/themes/ altında olmalı
             $resourceThemeView = "themes.{$themeName}.{$view}";
@@ -262,30 +265,30 @@ class ThemeService
             }
 
             // 2. Modül tema view'ı (eski sistem - fallback)
-            $activeThemeView = "{$module}::themes.{$themeName}.{$view}";
+            $activeThemeView = "{$moduleNamespace}::themes.{$themeName}.{$view}";
             if (view()->exists($activeThemeView)) {
                 return $activeThemeView;
             }
 
             // 3. Simple tema fallback (aktif tema simple değilse)
             if ($themeName !== 'simple') {
-                // Önce resources/views/themes/simple
+                // Önce modül simple (module-specific öncelikli!)
+                $simpleView = "{$moduleNamespace}::themes.simple.{$view}";
+                if (view()->exists($simpleView)) {
+                    Log::debug("Theme fallback: {$activeThemeView} → {$simpleView}");
+                    return $simpleView;
+                }
+
+                // Sonra resources/views/themes/simple (generic fallback)
                 $simpleResourceView = "themes.simple.{$view}";
                 if (view()->exists($simpleResourceView)) {
                     Log::debug("Theme fallback: {$resourceThemeView} → {$simpleResourceView}");
                     return $simpleResourceView;
                 }
-
-                // Sonra modül simple
-                $simpleView = "{$module}::themes.simple.{$view}";
-                if (view()->exists($simpleView)) {
-                    Log::debug("Theme fallback: {$activeThemeView} → {$simpleView}");
-                    return $simpleView;
-                }
             }
 
             // 4. Front fallback (son çare)
-            $frontView = "{$module}::front.{$view}";
+            $frontView = "{$moduleNamespace}::front.{$view}";
             if (view()->exists($frontView)) {
                 Log::debug("Theme fallback: {$activeThemeView} → {$frontView}");
                 return $frontView;

@@ -16,6 +16,18 @@
     {{-- SEO Meta Tags --}}
     <x-seo-meta />
 
+    {{-- PWA Manifest --}}
+    <link rel="manifest" href="{{ route('manifest') }}">
+
+    {{-- Apple Touch Icon (iOS Safari) --}}
+    @php
+        $logoService = app(\App\Services\LogoService::class);
+        $appleTouchIcon = $logoService->getSchemaLogoUrl();
+    @endphp
+    @if($appleTouchIcon)
+        <link rel="apple-touch-icon" href="{{ $appleTouchIcon }}">
+    @endif
+
     {{-- Tailwind CSS CDN with Typography Plugin --}}
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
@@ -124,5 +136,11 @@
     </script>
 
     @stack('scripts')
+
+    {{-- instant.page v5.2.0 - Intelligent Preloading --}}
+    <script src="{{ asset('js/instantpage.js') }}" type="module"></script>
+
+    {{-- PWA Service Worker Registration --}}
+    <x-pwa-registration />
 </body>
 </html>

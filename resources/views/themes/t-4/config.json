@@ -1,0 +1,45 @@
+{
+    "name": "t-4",
+    "title": "Unimad Madencilik Teması",
+    "version": "1.0.0",
+    "description": "Madencilik, mimarlık ve jeoteknik mühendisliği için profesyonel tema",
+    "extends": null,
+    "fonts": {
+        "heading": "Outfit",
+        "body": "Inter"
+    },
+    "colors": {
+        "primary": {
+            "50": "#f0f7fc",
+            "100": "#dceaf5",
+            "200": "#b8d5eb",
+            "300": "#8ebfe0",
+            "400": "#72aed4",
+            "500": "#5590CF",
+            "600": "#4a7eb8",
+            "700": "#3d6a9c",
+            "800": "#325680",
+            "900": "#2a4a6e",
+            "950": "#1e3a5c"
+        },
+        "dark": {
+            "50": "#f4f5f6",
+            "100": "#e4e6e8",
+            "200": "#c9cdd1",
+            "300": "#a3a9af",
+            "400": "#6b7280",
+            "500": "#4a5158",
+            "600": "#3A3F45",
+            "700": "#2f3338",
+            "800": "#24272b",
+            "900": "#1a1c1f",
+            "950": "#0f1012"
+        }
+    },
+    "features": {
+        "dark_mode": true,
+        "mega_menu": true,
+        "stats_counter": true,
+        "smooth_gradients": true
+    }
+}

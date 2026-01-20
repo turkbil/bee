@@ -5,7 +5,10 @@
         "suistimal-tespit-gelistirme",
         "guvenlik-tarama-rehberi",
         "root-ownership-fixer",
-        "sunucu-tasima-checklist"
+        "sunucu-tasima-checklist",
+        "automaker-analiz",
+        "tema-sistemi-analiz",
+        "tenant-olusturma-sureci"
     ],
     "hidden": [
         "ixtif-performans-analiz",

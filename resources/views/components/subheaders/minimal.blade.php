@@ -18,7 +18,7 @@
 <section class="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
     <div class="container mx-auto px-4 py-6">
         @if(!empty($breadcrumbs))
-            <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 @foreach($breadcrumbs as $index => $crumb)
                     @if(isset($crumb['url']))
                         <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition">

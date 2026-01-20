@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecrin Turizm - Tasarım Dokümantasyonu</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome Pro 7 LOCAL -->
+    <link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fat fa-file-code text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-white">Ecrin Turizm</h1>
+                        <p class="text-xs text-slate-400">Tasarım Dokümantasyonu</p>
+                    </div>
+                </div>
+                <a href="index.html" target="_blank" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white text-sm rounded-lg transition-colors">
+                    <i class="fat fa-external-link mr-2"></i>Siteyi Gör
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Intro -->
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="text-center mb-8">
+                <span class="inline-block px-3 py-1 bg-sky-900/50 text-sky-300 rounded-full text-sm mb-4">v1 - Ocak 2026</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                    <span class="gradient-text">Ecrin Turizm</span> Tasarım Dokümantasyonu
+                </h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    A Grubu Seyahat Acentası için modern, güvenilir ve profesyonel kurumsal web sitesi tasarımı.
+                </p>
+            </div>
+        </div>
+
+        <!-- Design Specifications -->
+        <div class="grid lg:grid-cols-2 gap-8 mb-12">
+            <!-- Sector & Style -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <i class="fat fa-palette mr-3 text-sky-400"></i>
+                    Sektör & Tarz
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Sektör</span>
+                        <span class="text-white font-medium">Turizm & Taşımacılık</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Firma</span>
+                        <span class="text-white font-medium">Ecrin Turizm (Olçun Travel)</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Tarz</span>
+                        <span class="text-white font-medium">Modern / Contemporary</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                        <span class="text-slate-400">His</span>
+                        <span class="text-white font-medium">Güvenilir, Profesyonel, Açık</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2">
+                        <span class="text-slate-400">Layout Stili</span>
+                        <span class="text-white font-medium">Nefes Alan / Spacious</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colors -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <i class="fat fa-swatchbook mr-3 text-sky-400"></i>
+                    Renk Paleti
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-sky-500"></div>
+                            <span class="text-slate-300">Primary</span>
+                        </div>
+                        <code class="text-xs bg-slate-700 px-2 py-1 rounded text-sky-300">sky-500/600</code>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-600"></div>
+                            <span class="text-slate-300">Secondary</span>
+                        </div>
+                        <code class="text-xs bg-slate-700 px-2 py-1 rounded text-blue-300">blue-600</code>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-amber-400"></div>
+                            <span class="text-slate-300">Accent</span>
+                        </div>
+                        <code class="text-xs bg-slate-700 px-2 py-1 rounded text-amber-300">amber-400/500</code>
+                    </div>
+                    <div class="flex items-center justify-between py-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-slate-700"></div>
+                            <span class="text-slate-300">Neutral</span>
+                        </div>
+                        <code class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">slate</code>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-slate-700/50 rounded-lg">
+                    <p class="text-xs text-slate-400 mb-2">Gradient Preset: <span class="text-white">#5 Sky Blue</span></p>
+                    <div class="h-8 rounded-lg bg-gradient-to-r from-sky-500 to-blue-600"></div>
+                </div>
+            </div>
+
+            <!-- Typography -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <i class="fat fa-font mr-3 text-sky-400"></i>
+                    Tipografi
+                </h3>
+                <div class="space-y-4">
+                    <div class="py-3 border-b border-slate-700">
+                        <p class="text-slate-400 text-sm mb-1">Heading Font</p>
+                        <p class="text-2xl font-bold text-white" style="font-family: 'Inter', sans-serif;">Inter</p>
+                        <code class="text-xs bg-slate-700 px-2 py-1 rounded text-sky-300 mt-2 inline-block">Google Fonts</code>
+                    </div>
+                    <div class="py-3">
+                        <p class="text-slate-400 text-sm mb-1">Body Font</p>
+                        <p class="text-xl text-white" style="font-family: 'Roboto', sans-serif;">Roboto</p>
+                        <code class="text-xs bg-slate-700 px-2 py-1 rounded text-sky-300 mt-2 inline-block">Google Fonts</code>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-slate-700/50 rounded-lg">
+                    <p class="text-xs text-slate-400">Font Çifti: <span class="text-white">#17 Inter + Roboto</span> (Modern kategori)</p>
+                </div>
+            </div>
+
+            <!-- Layout Choices -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <i class="fat fa-objects-column mr-3 text-sky-400"></i>
+                    Layout Seçimleri
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Hero</span>
+                        <span class="text-white text-sm">#21 Split Layout (Sol metin + Sağ görsel)</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Stats</span>
+                        <span class="text-white text-sm">#21 Giant Counters Grid</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Services</span>
+                        <span class="text-white text-sm">#1 3-Column Card Grid</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Why Us</span>
+                        <span class="text-white text-sm">#61 Split + Feature Grid</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Process</span>
+                        <span class="text-white text-sm">#26 Numbered Horizontal Steps</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">About</span>
+                        <span class="text-white text-sm">#81 Storytelling + Values Grid</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Contact</span>
+                        <span class="text-white text-sm">#1 Split (Info + Form)</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-slate-400">Footer</span>
+                        <span class="text-white text-sm">#1 4-Column Classic</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Tokens -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12">
+            <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                <i class="fat fa-sliders mr-3 text-sky-400"></i>
+                Design Token Sistemi
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h4 class="text-sm font-medium text-sky-400 mb-3">Buttons</h4>
+                    <code class="text-xs text-slate-300 block mb-2">Primary: bg-gradient-to-r from-sky-500 to-blue-600</code>
+                    <code class="text-xs text-slate-300 block mb-2">Border Radius: rounded-lg</code>
+                    <code class="text-xs text-slate-300 block">Padding: px-8 py-4</code>
+                </div>
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h4 class="text-sm font-medium text-sky-400 mb-3">Cards</h4>
+                    <code class="text-xs text-slate-300 block mb-2">Border Radius: rounded-2xl</code>
+                    <code class="text-xs text-slate-300 block mb-2">Padding: p-8</code>
+                    <code class="text-xs text-slate-300 block">Shadow: shadow-lg</code>
+                </div>
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h4 class="text-sm font-medium text-sky-400 mb-3">Spacing</h4>
+                    <code class="text-xs text-slate-300 block mb-2">Section: py-16 md:py-24</code>
+                    <code class="text-xs text-slate-300 block mb-2">Container: px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20</code>
+                    <code class="text-xs text-slate-300 block">Gap: gap-6 lg:gap-8</code>
+                </div>
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h4 class="text-sm font-medium text-sky-400 mb-3">Typography</h4>
+                    <code class="text-xs text-slate-300 block mb-2">H1: text-5xl lg:text-7xl font-bold</code>
+                    <code class="text-xs text-slate-300 block mb-2">H2: text-3xl lg:text-5xl font-bold</code>
+                    <code class="text-xs text-slate-300 block">Body: text-lg leading-relaxed</code>
+                </div>
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h4 class="text-sm font-medium text-sky-400 mb-3">Hover Effects</h4>
+                    <code class="text-xs text-slate-300 block mb-2">#1: Icon thin → solid (fat → fas)</code>
+                    <code class="text-xs text-slate-300 block mb-2">#2: Icon scale(1.1)</code>
+                    <code class="text-xs text-slate-300 block">#14: Border color change</code>
+                </div>
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h4 class="text-sm font-medium text-sky-400 mb-3">Icons</h4>
+                    <code class="text-xs text-slate-300 block mb-2">Library: FontAwesome Pro 7</code>
+                    <code class="text-xs text-slate-300 block mb-2">Default: fat (thin)</code>
+                    <code class="text-xs text-slate-300 block">Hover: fas (solid)</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Order -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12">
+            <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                <i class="fat fa-list-ol mr-3 text-sky-400"></i>
+                Section Sıralaması
+            </h3>
+            <div class="flex flex-wrap gap-3">
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">1. Header</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">2. Hero</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">3. Stats</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">4. Services</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">5. Why Us</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">6. Process</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">7. About</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">8. License</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">9. Contact</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">10. CTA</span>
+                <i class="fat fa-arrow-right text-slate-600 self-center"></i>
+                <span class="px-4 py-2 bg-sky-900/50 text-sky-300 rounded-lg text-sm">11. Footer</span>
+            </div>
+            <p class="mt-4 text-sm text-slate-400">
+                <i class="fat fa-info-circle mr-2 text-sky-400"></i>
+                Sıralama: Hero > Stats > Services > Why Us > Process > About > Contact (Hizmet odaklı - Alternatif #1)
+            </p>
+        </div>
+
+        <!-- Fingerprint -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12">
+            <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                <i class="fat fa-fingerprint mr-3 text-sky-400"></i>
+                Tasarım Fingerprint
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <p class="text-sm text-slate-400 mb-2">Hash</p>
+                    <code class="text-lg font-mono text-sky-300">ECR-T1-SKY-INT</code>
+                </div>
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <p class="text-sm text-slate-400 mb-2">Kombinasyon</p>
+                    <code class="text-sm text-slate-300">Hero#21 + Color#5 + Font#17 + Hover#1,14</code>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-amber-900/20 border border-amber-700/50 rounded-lg">
+                <p class="text-sm text-amber-300">
+                    <i class="fat fa-triangle-exclamation mr-2"></i>
+                    Bu kombinasyon Ecrin Turizm firması için v1 olarak kaydedildi. Sonraki versiyonlarda farklı kombinasyon kullanılmalı.
+                </p>
+            </div>
+        </div>
+
+        <!-- Leonardo.ai Image Prompts -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12">
+            <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                <i class="fat fa-image mr-3 text-amber-400"></i>
+                Leonardo.ai Görsel Promptları
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Image 1: Hero -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">hero-main.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of a modern luxury tour bus parked in front of a scenic Turkish coastal landscape, Mediterranean blue sea in background, morning golden hour lighting, professional tourism atmosphere, Canon R5 85mm f/2.8, shallow depth of field, Kodak Portra 400 film look, subtle lens flare, warm color grading, 8k quality, hyper-realistic
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Preset: Photo Real</span>
+                    </div>
+                </div>
+
+                <!-- Image 2: About -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">about-office.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of a professional travel agency office interior, modern minimalist design, large windows with city view, team members working at desks, warm ambient lighting, clean corporate atmosphere, Nikon Z9 35mm f/1.8, environmental portrait style, Fuji Pro 400H film simulation, soft shadows, neutral color palette with blue accents, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Preset: Photo Real</span>
+                    </div>
+                </div>
+
+                <!-- Image 3: Why Us -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">fleet-modern.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of a fleet of modern white tour buses lined up at a professional transportation depot, blue sky with soft clouds, morning light, clean and organized composition, birds eye view angle, professional fleet management atmosphere, DJI Mavic 3 camera, aerial perspective, Kodak Ektar 100 film look, crisp details, corporate blue and white color scheme, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Preset: Photo Real</span>
+                    </div>
+                </div>
+
+                <!-- Image 4: Services - Tourism -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">service-tourism.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of happy tourists boarding a luxury VIP tour bus at a historical site in Turkey, Cappadocia hot air balloons in distant background, warm sunset light, joyful travel atmosphere, families and groups, Canon R6 50mm f/2, lifestyle photography, Fuji Superia 400 film look, warm tones, authentic travel moment, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Preset: Photo Real</span>
+                    </div>
+                </div>
+
+                <!-- Image 5: Services - Personnel -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">service-personnel.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of corporate employees boarding a modern shuttle bus at an office building entrance, early morning commute, professional attire, organized queue, modern glass building in background, Sony A7IV 35mm f/2.8, documentary style, Kodak ColorPlus 200 film look, neutral corporate tones, clean composition, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Preset: Photo Real</span>
+                    </div>
+                </div>
+
+                <!-- Image 6: Services - Student -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">service-student.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of a bright yellow school bus with children safely boarding, Turkish school in background, caring driver helping students, morning light, safety first atmosphere, parents waving goodbye, Canon 5D Mark IV 70-200mm f/4, lifestyle journalism, Fuji C200 film look, warm and safe feeling, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Preset: Photo Real</span>
+                    </div>
+                </div>
+
+                <!-- Image 7: Services - Hotel -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">service-hotel.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of a luxury 5-star hotel resort entrance in Antalya Turkey, Mediterranean architecture, palm trees, infinity pool glimpse, elegant guests arriving, sunset golden hour, Sony A1 24mm f/1.4, architectural photography, Kodak Portra 160 film look, warm luxury atmosphere, premium hospitality feeling, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Preset: Photo Real</span>
+                    </div>
+                </div>
+
+                <!-- Image 8: Services - Yacht -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">service-yacht.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of a luxury white yacht sailing on turquoise Aegean sea near Turkish coastline, dramatic rocky cliffs in background, crystal clear water, summer afternoon light, premium sailing experience, DJI Inspire 3 aerial camera, drone photography, Kodak Ektachrome film look, vibrant blues and whites, Mediterranean paradise feeling, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Preset: Photo Real</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Notes -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12">
+            <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                <i class="fat fa-code mr-3 text-sky-400"></i>
+                Teknik Notlar
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-3">
+                    <h4 class="text-sm font-medium text-sky-400">Kullanılan Teknolojiler</h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>Tailwind CSS v4 (CDN)</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>Alpine.js 3.x</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>FontAwesome Pro 7 (Local)</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>AOS (Animate On Scroll)</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>Google Fonts (Inter, Roboto)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="space-y-3">
+                    <h4 class="text-sm font-medium text-sky-400">Özellikler</h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>Dark/Light Mode Toggle</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>Fully Responsive</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>Smooth Scroll</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>Sticky Header with Scroll Effect</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fat fa-check text-green-400"></i>
+                            <span>Icon Hover Animations (fat → fas)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Special Notes -->
+        <div class="bg-slate-800 rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                <i class="fat fa-lightbulb mr-3 text-amber-400"></i>
+                Özel Notlar
+            </h3>
+            <ul class="space-y-3 text-slate-300">
+                <li class="flex items-start space-x-3">
+                    <i class="fat fa-circle-check text-green-400 mt-1"></i>
+                    <span>Sky renk paleti turizm sektörü için güven ve açıklık hissi veriyor</span>
+                </li>
+                <li class="flex items-start space-x-3">
+                    <i class="fat fa-circle-check text-green-400 mt-1"></i>
+                    <span>Amber accent rengi CTA ve önemli elementler için dikkat çekici</span>
+                </li>
+                <li class="flex items-start space-x-3">
+                    <i class="fat fa-circle-check text-green-400 mt-1"></i>
+                    <span>Inter + Roboto kombinasyonu modern ve profesyonel his katıyor</span>
+                </li>
+                <li class="flex items-start space-x-3">
+                    <i class="fat fa-circle-check text-green-400 mt-1"></i>
+                    <span>Nefes alan (spacious) layout turizm sektörüne özgürlük hissi veriyor</span>
+                </li>
+                <li class="flex items-start space-x-3">
+                    <i class="fat fa-circle-check text-green-400 mt-1"></i>
+                    <span>A Grubu Lisans bilgisi güven için öne çıkarıldı</span>
+                </li>
+                <li class="flex items-start space-x-3">
+                    <i class="fat fa-circle-check text-green-400 mt-1"></i>
+                    <span>WhatsApp butonu mobil kullanıcılar için kolay erişim sağlıyor</span>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-6 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm">
+                20 Ocak 2026 &bull; Tuufi.com
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

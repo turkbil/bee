@@ -1,0 +1,6 @@
+<IfModule mod_headers.c>
+    # CORS for fonts
+    <FilesMatch "\.(ttf|otf|eot|woff|woff2)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>

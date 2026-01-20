@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t-{id} Tema Yapisi - Multi-Tenant Tema Sistemi v15</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.875rem; }
+        pre code { background: none; padding: 0; }
+        .file-new { color: #22c55e; }
+        .nav-link { transition: all 0.2s; }
+        .nav-link:hover { background: rgba(139, 92, 246, 0.2); }
+        .section-anchor { scroll-margin-top: 100px; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-wrap gap-2 justify-center text-sm">
+                <a href="#felsefe" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-purple-400">Felsefe</a>
+                <a href="#oncelik" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-red-400">Oncelik Sirasi</a>
+                <a href="#breakpoints" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-blue-400">Breakpoints</a>
+                <a href="#grid" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-emerald-400">Grid Sistemi</a>
+                <a href="#typography" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-pink-400">Typography</a>
+                <a href="#header" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-orange-400">Header Yapisi</a>
+                <a href="#settings" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-cyan-400">Settings</a>
+                <a href="#logo" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-violet-400">Logo Service</a>
+                <a href="#page-modulu" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-teal-400">Page Modulu</a>
+                <a href="#standalone" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-rose-400">Standalone Yasak</a>
+                <a href="#istemiyorum" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-red-400">Istemiyorum</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-full mb-6">
+                <i class="fas fa-palette text-purple-400 text-xl"></i>
+                <span class="text-slate-400">v15 - Breakpoint + Grid + Typography + Settings</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                t-{id} Tema Yapisi
+            </h1>
+            <p class="text-slate-400">Multi-Tenant Tema Sistemi - Kapsamli Referans Dokumani</p>
+        </header>
+
+        <!-- ===== DEGISIKLIK NOTU v15 ===== -->
+        <section class="card rounded-2xl p-6 mb-8 border-2 border-green-500 bg-green-900/20">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-bell text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-green-300">v15 Degisiklikler</h2>
+            </div>
+            <ul class="text-slate-300 space-y-2 text-sm">
+                <li><i class="fas fa-check text-blue-400 mr-2"></i><strong>BREAKPOINTS:</strong> Header xl (1280px) breakpoint sistemi - lg yerine xl kullanilmali</li>
+                <li><i class="fas fa-check text-emerald-400 mr-2"></i><strong>GRID:</strong> Mobilde grid-cols-2 varsayilan - col-1 yerine col-2</li>
+                <li><i class="fas fa-check text-pink-400 mr-2"></i><strong>TYPOGRAPHY:</strong> Line-height standardizasyonu - leading-relaxed (1.625)</li>
+                <li><i class="fas fa-check text-cyan-400 mr-2"></i><strong>SETTINGS:</strong> contact_phone_1, contact_phone_2, contact_whatsapp_1 pattern'i</li>
+                <li><i class="fas fa-check text-violet-400 mr-2"></i><strong>LOGO:</strong> LogoService light/dark logo yonetimi</li>
+                <li><i class="fas fa-check text-orange-400 mr-2"></i><strong>HEADER:</strong> Top bar, desktop CTA, mobile menu yapisi</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>HELPER:</strong> whatsapp_link() global helper fonksiyonu</li>
+                <li><i class="fas fa-ban text-red-400 mr-2"></i><strong>DUZELTME:</strong> social_whatsapp YANLIS -> contact_whatsapp_1 DOGRU</li>
+            </ul>
+        </section>
+
+        <!-- ===== BOLUM 1: FELSEFE ===== -->
+        <section id="felsefe" class="section-anchor card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-purple-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">1. Felsefe</h2>
+            </div>
+            <div class="text-slate-300 space-y-3">
+                <p><strong>t-{id}</strong> = Tenant temasi. Sadece ozel dosyalar burada.</p>
+                <p><strong>simple</strong> = Fallback (mevcut, zaten var). t-{id}'de yoksa buradan alir.</p>
+                <p><strong>Ornek:</strong> t-3/homepage.blade.php var -> onu kullan, t-3/blog/show.blade.php yok -> simple'dan al</p>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 2: ONCELIK SIRASI (KRITIK!) ===== -->
+        <section id="oncelik" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-red-500 bg-red-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-sort-numeric-down text-red-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-red-300">2. View Path Oncelik Sirasi</h2>
+                <span class="bg-red-600 text-white text-xs px-2 py-1 rounded animate-pulse">KRITIK!</span>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Dogru Siralama -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-3"><i class="fas fa-check mr-2"></i>DOGRU Oncelik Sirasi (ThemeService.php)</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3">
+                            <span class="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                            <div>
+                                <code class="text-green-400">resources/views/themes/{tema}/{view}</code>
+                                <p class="text-slate-400 text-xs mt-1">Ana tema klasoru - TEK DOSYA PRENSIBI - ONCELIKLI!</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3">
+                            <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                            <div>
+                                <code class="text-blue-400">Modules/{Modul}/views/themes/{tema}/{view}</code>
+                                <p class="text-slate-400 text-xs mt-1">Modul ici tema - Fallback (resources'da yoksa)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3">
+                            <span class="bg-yellow-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                            <div>
+                                <code class="text-yellow-400">themes.simple.{view}</code>
+                                <p class="text-slate-400 text-xs mt-1">Simple tema fallback (aktif tema simple degilse)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3">
+                            <span class="bg-slate-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                            <div>
+                                <code class="text-slate-400">{modul}::front.{view}</code>
+                                <p class="text-slate-400 text-xs mt-1">Son care - Modul front klasoru</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 3: BREAKPOINT SISTEMI (YENI!) ===== -->
+        <section id="breakpoints" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-blue-500 bg-blue-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-mobile-screen-button text-blue-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-blue-300">3. Breakpoint Sistemi</h2>
+                <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">YENI v15</span>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-blue-500">
+                <h3 class="font-semibold text-blue-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Header ve navigasyon icin <strong>xl (1280px)</strong> breakpoint kullaniyoruz. lg (1024px) kullanmak tablet boyutlarinda sorunlara yol acar!</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Tailwind Breakpoints -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-3"><i class="fas fa-ruler text-blue-400 mr-2"></i>Tailwind Breakpoint'leri</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Class</th><th class="text-left pb-2">Piksel</th><th class="text-left pb-2">Kullanim</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr><td class="py-1"><code>sm:</code></td><td>640px</td><td>Buyuk telefonlar</td></tr>
+                            <tr><td class="py-1"><code>md:</code></td><td>768px</td><td>Tablet dikey</td></tr>
+                            <tr><td class="py-1"><code>lg:</code></td><td>1024px</td><td>Tablet yatay / Kucuk laptop</td></tr>
+                            <tr class="bg-blue-900/30"><td class="py-1"><code class="text-blue-400">xl:</code></td><td class="text-blue-300">1280px</td><td class="text-blue-300"><strong>HEADER BREAKPOINT!</strong></td></tr>
+                            <tr><td class="py-1"><code>2xl:</code></td><td>1536px</td><td>Buyuk ekranlar</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Header Breakpoint Kurali -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>DOGRU: xl Breakpoint</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- Desktop navigasyon (xl ve uzeri) --}}</span>
+&lt;nav class="<span class="text-cyan-400">hidden xl:flex</span> items-center gap-8"&gt;
+    ...
+&lt;/nav&gt;
+
+<span class="text-green-400">{{-- Mobil/Tablet butonlar (xl altinda) --}}</span>
+&lt;div class="flex items-center gap-2 <span class="text-cyan-400">xl:hidden</span>"&gt;
+    ...
+&lt;/div&gt;
+
+<span class="text-green-400">{{-- Desktop CTA butonlari (xl ve uzeri) --}}</span>
+&lt;div class="<span class="text-cyan-400">hidden xl:flex</span> items-center gap-2"&gt;
+    ...
+&lt;/div&gt;</pre>
+                </div>
+
+                <!-- YANLIS Kullanim -->
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>YANLIS: lg Breakpoint (Tablet Sorunu)</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">{{-- YANLIS! lg kullanma --}}</span>
+&lt;nav class="hidden <span class="text-red-400">lg:flex</span>"&gt;  <span class="text-red-400">// 1024px - tablet yatayda bozuk!</span>
+&lt;div class="<span class="text-red-400">lg:hidden</span>"&gt;          <span class="text-red-400">// Cift ikon sorunu!</span>
+
+<span class="text-green-400">{{-- DOGRU! xl kullan --}}</span>
+&lt;nav class="hidden <span class="text-green-400">xl:flex</span>"&gt;  <span class="text-green-400">// 1280px - temiz gecis</span>
+&lt;div class="<span class="text-green-400">xl:hidden</span>"&gt;          <span class="text-green-400">// Tek ikon</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 4: GRID SISTEMI (YENI!) ===== -->
+        <section id="grid" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-emerald-500 bg-emerald-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-grid-4 text-emerald-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-emerald-300">4. Grid Sistemi</h2>
+                <span class="bg-emerald-600 text-white text-xs px-2 py-1 rounded">YENI v15</span>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-emerald-500">
+                <h3 class="font-semibold text-emerald-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Mobilde <strong>2 kolon (grid-cols-2)</strong> varsayilan! Tek kolon (grid-cols-1) kullanma - cok bos gorunur.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Grid Kaliplari -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-3"><i class="fas fa-check mr-2"></i>DOGRU Grid Kaliplari</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Bolum</th><th class="text-left pb-2">Class</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr>
+                                <td class="py-2">Hizmetler</td>
+                                <td><code class="text-green-400">grid-cols-2 lg:grid-cols-3</code></td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Neden Biz?</td>
+                                <td><code class="text-green-400">grid-cols-2 lg:grid-cols-3</code></td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Cozum Surecleri</td>
+                                <td><code class="text-green-400">grid-cols-2 lg:grid-cols-4</code></td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Galeri</td>
+                                <td><code class="text-green-400">grid-cols-2 md:grid-cols-3 lg:grid-cols-4</code></td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Blog Listesi</td>
+                                <td><code class="text-green-400">grid-cols-1 md:grid-cols-2 lg:grid-cols-3</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- YANLIS Kullanim -->
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>YANLIS: Mobilde Tek Kolon</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">{{-- YANLIS! Mobilde cok bos --}}</span>
+&lt;div class="grid <span class="text-red-400">grid-cols-1</span> md:grid-cols-2 lg:grid-cols-3"&gt;
+
+<span class="text-green-400">{{-- DOGRU! Mobilde 2 kolon --}}</span>
+&lt;div class="grid <span class="text-green-400">grid-cols-2</span> lg:grid-cols-3"&gt;</pre>
+                </div>
+
+                <!-- Responsive Grid Ornegi -->
+                <div class="bg-blue-900/30 border border-blue-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-blue-300 mb-2"><i class="fas fa-code mr-2"></i>Ornek: Hizmetler Grid</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- Hizmetler bolumu --}}</span>
+&lt;div class="grid <span class="text-cyan-400">grid-cols-2 lg:grid-cols-3</span> gap-4 md:gap-6"&gt;
+    @foreach($services as $service)
+        &lt;div class="bg-white dark:bg-slate-800 rounded-xl p-4"&gt;
+            ...
+        &lt;/div&gt;
+    @endforeach
+&lt;/div&gt;
+
+<span class="text-slate-500">// Mobil (0-1023px): 2 kolon</span>
+<span class="text-slate-500">// Desktop (1024px+): 3 kolon</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 5: TYPOGRAPHY (YENI!) ===== -->
+        <section id="typography" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-pink-500 bg-pink-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-font text-pink-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-pink-300">5. Typography (Line-Height)</h2>
+                <span class="bg-pink-600 text-white text-xs px-2 py-1 rounded">YENI v15</span>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-pink-500">
+                <h3 class="font-semibold text-pink-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Tum paragraflar <strong>leading-relaxed (1.625)</strong> kullanmali. Farki satir yukseklikleri okumasi zor metinler olusturur!</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Line-Height Degerleri -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-3"><i class="fas fa-text-height text-pink-400 mr-2"></i>Line-Height Degerleri</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Class</th><th class="text-left pb-2">Deger</th><th class="text-left pb-2">Kullanim</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr><td class="py-1"><code>leading-tight</code></td><td>1.25</td><td>Basliklar</td></tr>
+                            <tr><td class="py-1"><code>leading-snug</code></td><td>1.375</td><td>Alt basliklar</td></tr>
+                            <tr class="bg-pink-900/30"><td class="py-1"><code class="text-pink-400">leading-relaxed</code></td><td class="text-pink-300">1.625</td><td class="text-pink-300"><strong>PARAGRAFLAR - STANDART!</strong></td></tr>
+                            <tr><td class="py-1"><code>leading-loose</code></td><td>2</td><td>Cok seyrek</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Prose Plugin -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>Prose Plugin Kullanimi</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- Icerik alanlari icin --}}</span>
+&lt;div class="prose <span class="text-cyan-400">prose-lg</span> max-w-none dark:prose-invert
+            <span class="text-cyan-400">prose-p:leading-relaxed</span>
+            <span class="text-cyan-400">prose-li:leading-relaxed</span>
+            prose-headings:font-heading
+            prose-a:text-primary-600"&gt;
+    @parsewidgets($body ?? '')
+&lt;/div&gt;
+
+<span class="text-green-400">{{-- Normal paragraflar icin --}}</span>
+&lt;p class="text-gray-600 dark:text-gray-300 <span class="text-cyan-400">leading-relaxed</span>"&gt;
+    Aciklama metni...
+&lt;/p&gt;</pre>
+                </div>
+
+                <!-- YANLIS Kullanim -->
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>YANLIS: Tutarsiz Line-Height</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">{{-- YANLIS! prose-base ve prose-lg karisik --}}</span>
+&lt;div class="prose <span class="text-red-400">prose-base</span>"&gt;  <span class="text-slate-500">// Sayfa 1</span>
+&lt;div class="prose <span class="text-red-400">prose-lg</span>"&gt;    <span class="text-slate-500">// Sayfa 2 - FARKLI!</span>
+
+<span class="text-green-400">{{-- DOGRU! Tutarli prose-lg --}}</span>
+&lt;div class="prose <span class="text-green-400">prose-lg prose-p:leading-relaxed</span>"&gt;</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 6: HEADER YAPISI (YENI!) ===== -->
+        <section id="header" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-orange-500 bg-orange-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-grip-lines text-orange-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-orange-300">6. Header Yapisi</h2>
+                <span class="bg-orange-600 text-white text-xs px-2 py-1 rounded">YENI v15</span>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Header Yapisi -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-3"><i class="fas fa-layer-group text-orange-400 mr-2"></i>Header Katmanlari</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3 border border-gray-700">
+                            <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                            <div>
+                                <code class="text-orange-400">Top Bar</code>
+                                <p class="text-slate-400 text-xs mt-1">Telefon numaralari, WhatsApp, calisma saatleri. Mobil/tablet icin sadelesilmis.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3 border border-gray-700">
+                            <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                            <div>
+                                <code class="text-orange-400">Main Header (sticky)</code>
+                                <p class="text-slate-400 text-xs mt-1">Logo, navigasyon, dark mode toggle, CTA butonlari</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3 border border-gray-700">
+                            <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                            <div>
+                                <code class="text-orange-400">Mobile Menu (xl:hidden)</code>
+                                <p class="text-slate-400 text-xs mt-1">x-show ile acilir/kapanir. Navigasyon + arama butonlari</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop vs Mobile -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                        <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-desktop mr-2"></i>Desktop (xl+)</h4>
+                        <ul class="text-slate-300 text-sm space-y-1">
+                            <li>- Top bar: Telefon + WhatsApp + Bilgiler</li>
+                            <li>- Navigasyon: Inline linkler</li>
+                            <li>- CTA: Telefon + WhatsApp butonlari</li>
+                            <li>- Dark mode toggle</li>
+                        </ul>
+                    </div>
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-xl p-4">
+                        <h4 class="font-semibold text-blue-300 mb-2"><i class="fas fa-mobile mr-2"></i>Mobil/Tablet (xl alti)</h4>
+                        <ul class="text-slate-300 text-sm space-y-1">
+                            <li>- Top bar: Sadece numaralar (pill style)</li>
+                            <li>- Hamburger menu butonu</li>
+                            <li>- Dark mode toggle</li>
+                            <li>- Mobil menu: Linkler + Arama butonlari</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Root Butonlari -->
+                <div class="bg-amber-900/30 border border-amber-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-amber-300 mb-2"><i class="fas fa-user-shield mr-2"></i>Root Admin Butonlari (Logo Yaninda)</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+@auth
+    @if(auth()->user()->hasRole('root'))
+    &lt;div class="flex items-center gap-1 ml-2"&gt;
+        <span class="text-green-400">{{-- Cache Sifirla --}}</span>
+        &lt;button @click="fetch('/admin/cache/clear'...)"&gt;
+            &lt;i class="fat fa-sync-alt"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+        <span class="text-green-400">{{-- AI Reset --}}</span>
+        &lt;button @click="localStorage.removeItem('tenant'+tenantId+'_ai_session')"&gt;
+            &lt;i class="fat fa-robot"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
+    @endif
+@endauth</pre>
+                </div>
+
+                <!-- Header Kod Ornegi -->
+                <div class="bg-purple-900/30 border border-purple-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-purple-300 mb-2"><i class="fas fa-code mr-2"></i>Header PHP Degiskenleri</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+@php
+    $siteName = setting('site_title') ?: setting('site_company_name');
+    $siteSlogan = setting('site_slogan');
+    $sitePhone = setting('<span class="text-cyan-400">contact_phone_1</span>');       <span class="text-green-400">// Ana telefon</span>
+    $siteMobile = setting('<span class="text-cyan-400">contact_phone_2</span>') ?: setting('contact_whatsapp_1');
+    $siteWhatsapp = setting('<span class="text-cyan-400">contact_whatsapp_1</span>')
+        ? preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1')) : null;
+    $whatsappUrl = <span class="text-cyan-400">whatsapp_link()</span>;  <span class="text-green-400">// Global helper!</span>
+
+    <span class="text-green-400">// Logo Service</span>
+    $logoService = app(\App\Services\LogoService::class);
+    $logos = $logoService->getLogos();
+    $hasLogo = $logos['has_light'] || $logos['has_dark'];
+@endphp</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 7: SETTINGS PATTERN (YENI!) ===== -->
+        <section id="settings" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-cyan-500 bg-cyan-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cog text-cyan-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-cyan-300">7. Settings Pattern</h2>
+                <span class="bg-cyan-600 text-white text-xs px-2 py-1 rounded">YENI v15</span>
+            </div>
+
+            <div class="mb-6 p-4 bg-red-900/30 rounded-lg border-l-4 border-red-500">
+                <h3 class="font-semibold text-red-300 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>v14'teki HATA DUZELTILDI!</h3>
+                <p class="text-slate-300 text-sm"><code>social_whatsapp</code> YANLIS! Dogru key: <code class="text-green-400">contact_whatsapp_1</code></p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Iletisim Ayarlari -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-3"><i class="fas fa-phone mr-2"></i>Iletisim Ayarlari</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Key</th><th class="text-left pb-2">Aciklama</th><th class="text-left pb-2">Ornek</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr><td class="py-2"><code class="text-green-400">contact_phone_1</code></td><td>Ana telefon (sabit)</td><td>0212 XXX XX XX</td></tr>
+                            <tr><td class="py-2"><code class="text-green-400">contact_phone_2</code></td><td>Mobil telefon</td><td>0533 XXX XX XX</td></tr>
+                            <tr><td class="py-2"><code class="text-green-400">contact_whatsapp_1</code></td><td>WhatsApp numarasi</td><td>0533 XXX XX XX</td></tr>
+                            <tr><td class="py-2"><code class="text-green-400">contact_email_1</code></td><td>E-posta</td><td>info@site.com</td></tr>
+                            <tr><td class="py-2"><code class="text-green-400">contact_address_1</code></td><td>Adres</td><td>Istanbul, Turkiye</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Site Ayarlari -->
+                <div class="bg-blue-900/30 border border-blue-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-blue-300 mb-3"><i class="fas fa-globe mr-2"></i>Site Ayarlari</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Key</th><th class="text-left pb-2">Aciklama</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr><td class="py-2"><code>site_title</code></td><td>Site basligi</td></tr>
+                            <tr><td class="py-2"><code>site_company_name</code></td><td>Sirket adi</td></tr>
+                            <tr><td class="py-2"><code>site_slogan</code></td><td>Slogan</td></tr>
+                            <tr><td class="py-2"><code>site_description</code></td><td>Site aciklamasi</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- WhatsApp Helper -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fab fa-whatsapp mr-2"></i>whatsapp_link() Helper</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">// Global helper fonksiyonu - helpers.php</span>
+function whatsapp_link($message = null) {
+    $number = setting('contact_whatsapp_1');
+    if (!$number) return null;
+
+    $clean = preg_replace('/[^0-9]/', '', $number);
+    $url = 'https://wa.me/' . $clean;
+
+    if ($message) {
+        $url .= '?text=' . urlencode($message);
+    }
+
+    return $url;
+}
+
+<span class="text-green-400">// Kullanim:</span>
+$whatsappUrl = whatsapp_link();  <span class="text-slate-500">// https://wa.me/905331234567</span>
+$whatsappUrl = whatsapp_link('Merhaba, bilgi almak istiyorum');
+
+<span class="text-green-400">// Blade'de:</span>
+@if($whatsappUrl = whatsapp_link())
+    &lt;a href="{{ $whatsappUrl }}" target="_blank"&gt;WhatsApp&lt;/a&gt;
+@endif</pre>
+                </div>
+
+                <!-- YANLIS Kullanim -->
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>YANLIS Setting Key'leri</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">// YANLIS!</span>
+setting('<span class="text-red-400">social_whatsapp</span>')   <span class="text-slate-500">// Boyle key YOK!</span>
+setting('<span class="text-red-400">site_phone</span>')        <span class="text-slate-500">// Boyle key YOK!</span>
+setting('<span class="text-red-400">whatsapp</span>')          <span class="text-slate-500">// Boyle key YOK!</span>
+
+<span class="text-green-400">// DOGRU!</span>
+setting('<span class="text-green-400">contact_whatsapp_1</span>')
+setting('<span class="text-green-400">contact_phone_1</span>')
+setting('<span class="text-green-400">contact_phone_2</span>')</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 8: LOGO SERVICE (YENI!) ===== -->
+        <section id="logo" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-violet-500 bg-violet-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-image text-violet-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-violet-300">8. Logo Service</h2>
+                <span class="bg-violet-600 text-white text-xs px-2 py-1 rounded">YENI v15</span>
+            </div>
+
+            <div class="space-y-4">
+                <!-- LogoService Kullanimi -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-code mr-2"></i>LogoService Kullanimi</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+@php
+    $logoService = app(\App\Services\LogoService::class);
+    $logos = $logoService->getLogos();
+
+    <span class="text-green-400">// Donen deger:</span>
+    [
+        'has_light' => true,           <span class="text-slate-500">// Light logo var mi?</span>
+        'has_dark' => true,            <span class="text-slate-500">// Dark logo var mi?</span>
+        'light_logo_url' => '...',     <span class="text-slate-500">// Light logo URL</span>
+        'dark_logo_url' => '...',      <span class="text-slate-500">// Dark logo URL</span>
+    ]
+
+    $hasLogo = $logos['has_light'] || $logos['has_dark'];
+@endphp</pre>
+                </div>
+
+                <!-- Logo Gosterim Mantigi -->
+                <div class="bg-blue-900/30 border border-blue-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-blue-300 mb-2"><i class="fas fa-palette mr-2"></i>Dark/Light Mode Logo Gosterimi</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+@if($hasLogo)
+    @if($logos['has_light'] && $logos['has_dark'])
+        <span class="text-green-400">{{-- Her iki logo da var --}}</span>
+        &lt;img src="{{ $logos['light_logo_url'] }}" class="<span class="text-cyan-400">dark:hidden</span> h-10"&gt;
+        &lt;img src="{{ $logos['dark_logo_url'] }}" class="<span class="text-cyan-400">hidden dark:block</span> h-10"&gt;
+    @elseif($logos['has_light'])
+        <span class="text-green-400">{{-- Sadece light logo --}}</span>
+        &lt;img src="{{ $logos['light_logo_url'] }}" class="h-10"&gt;
+    @elseif($logos['has_dark'])
+        <span class="text-green-400">{{-- Sadece dark logo --}}</span>
+        &lt;img src="{{ $logos['dark_logo_url'] }}" class="h-10"&gt;
+    @endif
+@else
+    <span class="text-green-400">{{-- Fallback: Icon + Site ismi --}}</span>
+    &lt;div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center"&gt;
+        &lt;i class="fat fa-blinds text-white"&gt;&lt;/i&gt;
+    &lt;/div&gt;
+    &lt;span&gt;{{ $siteName }}&lt;/span&gt;
+@endif</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 9: PAGE MODULU OZGURLUGU ===== -->
+        <section id="page-modulu" class="section-anchor card rounded-2xl p-6 mb-8 border border-teal-700 bg-teal-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-teal-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-file-alt text-teal-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-teal-300">9. Page Modulu Ozgurlugu</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold text-green-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Page modulu <strong>OZGUR</strong> olmali! Template sadece wrapper. Her sayfanin kendine ozel tasarimi <code>pages</code> tablosundaki <code>css</code> ve <code>js</code> kolonlarinda saklanir.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Database Yapisi -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-3"><i class="fas fa-database text-teal-400 mr-2"></i>pages Tablosu</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Kolon</th><th class="text-left pb-2">Tip</th><th class="text-left pb-2">Aciklama</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr><td class="py-1"><code>title</code></td><td>JSON</td><td>Cok dilli baslik</td></tr>
+                            <tr><td class="py-1"><code>body</code></td><td>JSON (longText)</td><td>Cok dilli icerik (widget destekli)</td></tr>
+                            <tr class="bg-teal-900/30"><td class="py-1"><code class="text-teal-400">css</code></td><td>TEXT</td><td>Sayfa ozel CSS</td></tr>
+                            <tr class="bg-teal-900/30"><td class="py-1"><code class="text-teal-400">js</code></td><td>TEXT</td><td>Sayfa ozel JavaScript</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Template Yapisi -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-code mr-2"></i>show.blade.php Template</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- SUBHEADER (Breadcrumb + Title) --}}</span>
+&lt;section class="bg-gray-50 dark:bg-gray-800 border-b"&gt;
+    &lt;div class="container"&gt;
+        &lt;nav&gt;{{ breadcrumb }}&lt;/nav&gt;
+        &lt;h1&gt;{{ $title }}&lt;/h1&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+
+<span class="text-green-400">{{-- CONTENT - Sadece container --}}</span>
+&lt;section class="bg-white dark:bg-gray-900 py-10"&gt;
+    &lt;div class="container"&gt;
+        &lt;div class="page-content prose prose-lg max-w-none <span class="text-cyan-400">prose-p:leading-relaxed</span>"&gt;
+            @parsewidgets($body ?? '')
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+
+<span class="text-green-400">{{-- CSS/JS veritabanindan --}}</span>
+@if(isset($item->css))&lt;style&gt;{!! $item->css !!}&lt;/style&gt;@endif
+@if(isset($item->js))&lt;script&gt;{!! $item->js !!}&lt;/script&gt;@endif</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 10: STANDALONE DOSYA YASAGI ===== -->
+        <section id="standalone" class="section-anchor card rounded-2xl p-6 mb-8 border border-rose-700 bg-rose-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-rose-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-file-circle-xmark text-rose-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-rose-300">10. Standalone Dosya Yasagi</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-rose-500">
+                <h3 class="font-semibold text-rose-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm"><code>resources/views/themes/{tema}/</code> klasorunde SADECE layout kullanan dosyalar olmali. Standalone HTML dosyasi (DOCTYPE ile baslayan) YASAK!</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- DOGRU -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>DOGRU: Layout Kullanan Dosyalar</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">// resources/views/themes/t-3/homepage.blade.php</span>
+<span class="text-cyan-400">@extends('themes.t-3.layouts.app')</span>  <span class="text-green-400">&lt;-- LAYOUT VAR!</span>
+
+@section('content')
+    {{-- Sayfa icerigi --}}
+@endsection</pre>
+                </div>
+
+                <!-- YANLIS -->
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>YANLIS: Standalone</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">// YANLIS - Standalone</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;...&lt;/head&gt;  <span class="text-red-400">&lt;-- LAYOUT YOK! YASAK!</span></pre>
+                </div>
+
+                <!-- KURAL -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-gavel text-rose-400 mr-2"></i>KURAL</h4>
+                    <ul class="text-slate-300 text-sm space-y-2">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i><code>resources/views/themes/{tema}/</code> = Sadece homepage, ozel sayfalar</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Her dosya <code>@extends('themes.{tema}.layouts.app')</code> ile baslamali</li>
+                        <li><i class="fas fa-ban text-red-400 mr-2"></i>Modul icerikleri (blog/show, shop/show) BURAYA KOYMA!</li>
+                        <li><i class="fas fa-ban text-red-400 mr-2"></i>Standalone HTML (DOCTYPE ile baslayan) YASAK!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 11: ISTEMIYORUM LISTESI ===== -->
+        <section id="istemiyorum" class="section-anchor card rounded-2xl p-6 mb-8 border border-red-700 bg-red-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-ban text-red-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-red-300">11. Kullanici Tercihleri: ISTEMIYORUM!</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>Link Underline</h4>
+                    <p class="text-slate-400 text-sm"><code>prose-a:no-underline</code> kullan</p>
+                </div>
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>Inline Header</h4>
+                    <p class="text-slate-400 text-sm">TUM sayfalar @include kullanmali</p>
+                </div>
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>Standalone Dosya</h4>
+                    <p class="text-slate-400 text-sm">resources/themes/ icinde DOCTYPE YASAK</p>
+                </div>
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>Zorla Sidebar/CTA</h4>
+                    <p class="text-slate-400 text-sm">Page modulu FREE olmali</p>
+                </div>
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>Mobilde Tek Kolon</h4>
+                    <p class="text-slate-400 text-sm">grid-cols-1 degil, grid-cols-2 kullan</p>
+                </div>
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>Tutarsiz Line-Height</h4>
+                    <p class="text-slate-400 text-sm">Her yerde leading-relaxed kullan</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CHECKLIST ===== -->
+        <section id="todo" class="section-anchor card rounded-2xl p-6 mb-8 border border-green-700 bg-green-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list-check text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-green-300">Yeni Tema Dosyasi Checklist</h2>
+            </div>
+
+            <div class="space-y-2 text-sm">
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span><code>@extends('themes.{tema}.layouts.app')</code> ile basliyor (standalone DEGIL)</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Header tek dosyadan <code>@include</code> ile cagiriliyor</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Root butonlari header'da ve TUM sayfalarda gorunuyor</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3 border border-blue-500/50">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span class="text-blue-300"><strong>BREAKPOINT:</strong> Header icin xl (1280px) kullanildi, lg DEGIL</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3 border border-emerald-500/50">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span class="text-emerald-300"><strong>GRID:</strong> Mobilde grid-cols-2 kullanildi, grid-cols-1 DEGIL</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3 border border-pink-500/50">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span class="text-pink-300"><strong>TYPOGRAPHY:</strong> prose-lg + prose-p:leading-relaxed kullanildi</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3 border border-cyan-500/50">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span class="text-cyan-300"><strong>SETTINGS:</strong> contact_phone_1, contact_phone_2, contact_whatsapp_1 kullanildi</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3 border border-cyan-500/50">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span class="text-cyan-300"><strong>WHATSAPP:</strong> whatsapp_link() helper kullanildi</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3 border border-violet-500/50">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span class="text-violet-300"><strong>LOGO:</strong> LogoService ile light/dark logo yonetimi yapildi</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Modul icerikleri (blog/show) resources/themes/ icine KONMADI</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Alpine Collapse plugin ana Alpine'dan ONCE yukleniyor</span></label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-8">
+            19 Ocak 2026 v15 &bull; Tuufi.com
+        </footer>
+    </div>
+</body>
+</html>

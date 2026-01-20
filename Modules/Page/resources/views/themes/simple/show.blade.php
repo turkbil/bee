@@ -38,10 +38,10 @@
         ];
     @endphp
 
-    {{-- SUBHEADER --}}
-    <section class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div class="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4">
-            <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+    {{-- SUBHEADER (Service ile aynı) --}}
+    <section class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pt-20">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2 py-4">
+            <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 @foreach($breadcrumbsArray as $index => $crumb)
                     @if(isset($crumb['url']))
                         <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition">{{ $crumb['label'] }}</a>
@@ -57,8 +57,8 @@
 
     {{-- CONTENT --}}
     <section class="bg-white dark:bg-gray-900 py-10 md:py-16">
-        <div class="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
-            <div class="page-content prose prose-lg max-w-none dark:prose-invert prose-a:no-underline prose-p:leading-relaxed prose-li:leading-relaxed">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="page-content prose prose-base max-w-none font-body dark:prose-invert prose-a:no-underline prose-p:leading-relaxed prose-li:leading-relaxed">
                 @parsewidgets($body ?? '')
             </div>
         </div>

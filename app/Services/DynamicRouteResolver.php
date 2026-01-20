@@ -159,8 +159,22 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
                 
                 // Two slug pattern - show action veya diğer action'lar için
                 if ($slug2 && !$slug3) {
-                    // 1. Önce index slug + content slug pattern'ini kontrol et (portfolio/web-design gibi)
-                    if ($slug1 === $moduleSlugMap['index'] && isset($routes['show'])) {
+                    // 1. Önce show slug + content slug pattern'ini kontrol et (/haberler/content-slug)
+                    // Bu, kullanıcının show için özel slug tanımlamasına olanak sağlar
+                    if (isset($moduleSlugMap['show']) && $slug1 === $moduleSlugMap['show'] && isset($routes['show'])) {
+                        return [
+                            'controller' => $routes['show']['controller'],
+                            'method' => $routes['show']['method'],
+                            'module' => $moduleName,
+                            'action' => 'show',
+                            'params' => [$slug2]
+                        ];
+                    }
+
+                    // 2. Backward compatibility: index slug + content slug pattern'ini de kontrol et
+                    // Eğer show slug tanımlı değilse veya index slug ile aynıysa bu pattern çalışır
+                    if ($slug1 === $moduleSlugMap['index'] && isset($routes['show']) &&
+                        (!isset($moduleSlugMap['show']) || $moduleSlugMap['show'] === $moduleSlugMap['index'])) {
                         return [
                             'controller' => $routes['show']['controller'],
                             'method' => $routes['show']['method'],

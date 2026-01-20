@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unimad Madencilik - İçerik Uygulama Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e3a5c 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(10px); }
+        code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.875rem; }
+        .module-service { border-left: 4px solid #5590CF; }
+        .module-page { border-left: 4px solid #22c55e; }
+        .module-settings { border-left: 4px solid #f59e0b; }
+        .count-badge { background: linear-gradient(135deg, #5590CF, #3d6a9c); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-full mb-6">
+                <i class="fas fa-mountain text-primary-400 text-xl" style="color: #5590CF;"></i>
+                <span class="text-slate-400">Tenant 4 - unimad.tuufi.com</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Unimad Madencilik - İçerik Uygulama Planı
+            </h1>
+            <p class="text-slate-400">UNIMAD_MADENCILIK_ICERIK.md + UNIMAD_SITE_HARITASI.md → Sistem Modülleri</p>
+        </header>
+
+        <!-- Özet İstatistikler -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-chart-pie text-cyan-400"></i> Özet
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <div class="count-badge text-white text-3xl font-bold rounded-lg px-4 py-2 inline-block mb-2">6</div>
+                    <p class="text-slate-400 text-sm">Hizmet Kategorisi</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <div class="count-badge text-white text-3xl font-bold rounded-lg px-4 py-2 inline-block mb-2">49</div>
+                    <p class="text-slate-400 text-sm">Toplam Hizmet</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <div class="bg-green-600 text-white text-3xl font-bold rounded-lg px-4 py-2 inline-block mb-2">2</div>
+                    <p class="text-slate-400 text-sm">Statik Sayfa</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <div class="bg-amber-600 text-white text-3xl font-bold rounded-lg px-4 py-2 inline-block mb-2">12</div>
+                    <p class="text-slate-400 text-sm">Settings Ayarı</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigasyon Planı -->
+        <section class="card rounded-2xl p-6 mb-8 border border-indigo-700 bg-indigo-900/20">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-bars text-indigo-400"></i> Navigasyon (Menü) Planı
+            </h2>
+
+            <!-- Menü Görsel -->
+            <div class="bg-slate-900/70 rounded-xl p-4 mb-6 overflow-x-auto">
+                <div class="flex items-center gap-1 text-sm whitespace-nowrap min-w-max">
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-700 w-10 h-10 rounded-lg flex items-center justify-center mr-2">
+                        <i class="fas fa-mountain text-white"></i>
+                    </div>
+                    <span class="font-semibold text-white mr-4">UNIMAD</span>
+                    <span class="text-slate-400 mx-2">|</span>
+                    <a class="px-3 py-2 text-slate-300 hover:text-white">Ana Sayfa</a>
+                    <span class="text-slate-400 mx-2">|</span>
+                    <a class="px-3 py-2 text-blue-400 font-medium">Madencilik <i class="fas fa-chevron-down text-xs ml-1"></i></a>
+                    <span class="text-slate-400 mx-2">|</span>
+                    <a class="px-3 py-2 text-purple-400 font-medium">YTK <i class="fas fa-chevron-down text-xs ml-1"></i></a>
+                    <span class="text-slate-400 mx-2">|</span>
+                    <a class="px-3 py-2 text-teal-400 font-medium">Mühendislik <i class="fas fa-chevron-down text-xs ml-1"></i></a>
+                    <span class="text-slate-400 mx-2">|</span>
+                    <a class="px-3 py-2 text-pink-400">Mimarlık</a>
+                    <span class="text-slate-400 mx-2">|</span>
+                    <a class="px-3 py-2 text-green-400">Hakkımızda</a>
+                    <span class="text-slate-400 mx-2">|</span>
+                    <a class="px-3 py-2 text-amber-400">İletişim</a>
+                </div>
+            </div>
+
+            <!-- Menü Detay Tablosu -->
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-sm">
+                    <thead class="text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="text-left py-2 px-3">Menü Öğesi</th>
+                            <th class="text-left py-2 px-3">Tip</th>
+                            <th class="text-left py-2 px-3">Hedef URL</th>
+                            <th class="text-left py-2 px-3">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-3 font-medium">Ana Sayfa</td>
+                            <td class="py-2 px-3"><span class="bg-slate-700 px-2 py-1 rounded text-xs">Link</span></td>
+                            <td class="py-2 px-3"><code>/</code></td>
+                            <td class="py-2 px-3 text-slate-400">Homepage</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50 bg-blue-900/20">
+                            <td class="py-2 px-3 font-medium text-blue-300">Madencilik <i class="fas fa-chevron-down text-xs"></i></td>
+                            <td class="py-2 px-3"><span class="bg-blue-700 px-2 py-1 rounded text-xs">Dropdown</span></td>
+                            <td class="py-2 px-3"><code>/hizmetler/madencilik</code></td>
+                            <td class="py-2 px-3 text-slate-400">7 hizmet listesi</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50 bg-purple-900/20">
+                            <td class="py-2 px-3 font-medium text-purple-300">YTK <i class="fas fa-chevron-down text-xs"></i></td>
+                            <td class="py-2 px-3"><span class="bg-purple-700 px-2 py-1 rounded text-xs">Dropdown</span></td>
+                            <td class="py-2 px-3"><code>/hizmetler/ytk</code></td>
+                            <td class="py-2 px-3 text-slate-400">14 hizmet listesi</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50 bg-teal-900/20">
+                            <td class="py-2 px-3 font-medium text-teal-300">Mühendislik <i class="fas fa-chevron-down text-xs"></i></td>
+                            <td class="py-2 px-3"><span class="bg-teal-700 px-2 py-1 rounded text-xs">Mega Dropdown</span></td>
+                            <td class="py-2 px-3"><code>#</code></td>
+                            <td class="py-2 px-3 text-slate-400">3 kategori (Jeoloji, Hidrojeoloji, Jeoteknik)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-3 font-medium text-pink-300">Mimarlık</td>
+                            <td class="py-2 px-3"><span class="bg-slate-700 px-2 py-1 rounded text-xs">Link</span></td>
+                            <td class="py-2 px-3"><code>/hizmetler/mimarlik</code></td>
+                            <td class="py-2 px-3 text-slate-400">Kategori sayfası</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-3 font-medium text-green-300">Hakkımızda</td>
+                            <td class="py-2 px-3"><span class="bg-green-700 px-2 py-1 rounded text-xs">Link</span></td>
+                            <td class="py-2 px-3"><code>/sayfa/hakkimizda</code></td>
+                            <td class="py-2 px-3 text-slate-400">Page modülü</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-3 font-medium text-amber-300">İletişim</td>
+                            <td class="py-2 px-3"><span class="bg-amber-700 px-2 py-1 rounded text-xs">Link</span></td>
+                            <td class="py-2 px-3"><code>/sayfa/iletisim</code></td>
+                            <td class="py-2 px-3 text-slate-400">Page modülü</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Dropdown İçerikleri -->
+            <h3 class="text-lg font-semibold mb-4 text-indigo-300">Dropdown İçerikleri</h3>
+            <div class="grid md:grid-cols-3 gap-4">
+                <!-- Madencilik Dropdown -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-blue-500">
+                    <h4 class="font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-mountain"></i> Madencilik (7)
+                    </h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Maden Sahası Teknik Etüt</li>
+                        <li>• Fizibilite ve Yatırım Analizleri</li>
+                        <li>• Rezerv Tespiti</li>
+                        <li>• Açık Ocak / Yeraltı Planlaması</li>
+                        <li>• Üretim Optimizasyonu</li>
+                        <li>• Devlet Kurumları Koordinasyon</li>
+                        <li>• Denetim ve Raporlama</li>
+                    </ul>
+                </div>
+
+                <!-- YTK Dropdown -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-purple-500">
+                    <h4 class="font-semibold text-purple-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-file-certificate"></i> YTK (14)
+                    </h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Maden Arama Projeleri</li>
+                        <li>• Maden Hukuku Danışmanlığı</li>
+                        <li>• Yeraltı Kömür Danışmanlığı</li>
+                        <li>• Ruhsatlandırma Süreçleri</li>
+                        <li>• İhale Dosyası Hazırlama</li>
+                        <li>• Jeotermal Ruhsat İşlemleri</li>
+                        <li>• MAPEG Süreç Yönetimi</li>
+                        <li class="text-slate-500">... +7 daha</li>
+                    </ul>
+                </div>
+
+                <!-- Mühendislik Mega Dropdown -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-teal-500">
+                    <h4 class="font-semibold text-teal-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-hard-hat"></i> Mühendislik (20)
+                    </h4>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-teal-400 text-xs font-semibold">JEOLOJİ (8)</span>
+                            <p class="text-slate-400 text-xs">Etüt, Haritalama, 3B Modelleme...</p>
+                        </div>
+                        <div>
+                            <span class="text-cyan-400 text-xs font-semibold">HİDROJEOLOJİ (8)</span>
+                            <p class="text-slate-400 text-xs">Yeraltı Suyu, Jeotermal, Modelleme...</p>
+                        </div>
+                        <div>
+                            <span class="text-orange-400 text-xs font-semibold">JEOTEKNİK (4)</span>
+                            <p class="text-slate-400 text-xs">Zemin Etüdü, Stabilite, Deneyler...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menü Notu -->
+            <div class="mt-6 bg-slate-800/30 rounded-lg p-4">
+                <h4 class="font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                    <i class="fas fa-mobile-alt"></i> Mobile Menü (Hamburger)
+                </h4>
+                <p class="text-slate-400 text-sm">
+                    Accordion yapısı: Ana menü öğeleri listelenecek, Madencilik, YTK ve Mühendislik tıklandığında alt öğeler açılacak.
+                </p>
+            </div>
+        </section>
+
+        <!-- Site Ağacı -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-sitemap text-purple-400"></i> Site Ağacı
+            </h2>
+            <div class="bg-slate-900/50 rounded-xl p-6 font-mono text-sm overflow-x-auto">
+<pre class="text-slate-300">
+unimad.tuufi.com/
+├── <span class="text-cyan-400">/</span> <span class="text-slate-500">← Homepage (t-4/homepage.blade.php)</span>
+│
+├── <span class="text-blue-400">/hizmetler/</span> <span class="text-slate-500">← Service Index</span>
+│   ├── <span class="text-blue-400">/hizmetler/madencilik/</span> <span class="text-slate-500">← Kategori: Madencilik (7 hizmet)</span>
+│   │   ├── maden-sahasi-teknik-etut-ve-degerlendirme
+│   │   ├── fizibilite-on-fizibilite-ve-yatirim-analizleri
+│   │   ├── rezerv-tespiti-ve-kaynak-raporlamasi
+│   │   ├── acik-ocak-ve-yeralti-isletme-planlamasi
+│   │   ├── uretim-ve-isletme-optimizasyonu
+│   │   ├── devlet-kurumlari-ile-teknik-ve-idari-koordinasyon
+│   │   └── maden-sahasi-denetim-ve-teknik-raporlama
+│   │
+│   ├── <span class="text-blue-400">/hizmetler/ytk/</span> <span class="text-slate-500">← Kategori: YTK (14 hizmet)</span>
+│   │   ├── maden-arama-ve-isletme-projeleri
+│   │   ├── maden-hukuku-danismanligi
+│   │   ├── yeralti-komur-ve-metalik-madenler-danismanligi
+│   │   ├── ruhsatlandirma-ve-resmi-izin-surecleri
+│   │   ├── bos-alan-sorgulama-ve-ilk-muracaat-islemleri
+│   │   ├── ihale-dosyasi-hazirlama
+│   │   ├── yapi-hammaddesi-talep-projesi
+│   │   ├── jeotermal-dogal-mineralli-sular-ruhsat-islemleri
+│   │   ├── devir-ve-rodovans-islemleri
+│   │   ├── arama-ve-isletme-faaliyet-raporlari
+│   │   ├── maden-sahasi-uygunluk-ve-mevzuat-denetimleri
+│   │   ├── mapeg-ve-ilgili-kurumlar-resmi-surec-yonetimi
+│   │   ├── mevzuata-uyum-ve-sureklilik-danismanligi
+│   │   └── ytk-kapsaminda-surekli-teknik-destek
+│   │
+│   ├── <span class="text-blue-400">/hizmetler/jeoloji/</span> <span class="text-slate-500">← Kategori: Jeoloji (8 hizmet)</span>
+│   │   ├── jeolojik-etut-raporu
+│   │   ├── jeolojik-haritalama-hizmetleri
+│   │   ├── maden-sahasi-jeolojik-degerlendirme
+│   │   ├── rezerv-hesaplama-3b-modelleme
+│   │   ├── prospeksiyon-ve-numune-analizleri
+│   │   ├── acik-kapali-ocak-jeolojisi
+│   │   ├── jeoloji-sondaj-hizmetleri
+│   │   └── maden-arama-calismalari
+│   │
+│   ├── <span class="text-blue-400">/hizmetler/hidrojeoloji/</span> <span class="text-slate-500">← Kategori: Hidrojeoloji (8 hizmet)</span>
+│   │   ├── jeotermal-dogal-mineralli-su-ruhsatlandirma
+│   │   ├── hidrojeolojik-etut-ve-degerlendirme
+│   │   ├── yeralti-suyu-arama-analizi
+│   │   ├── akifer-testleri
+│   │   ├── susuzlastirma-ve-su-yonetimi
+│   │   ├── su-kalite-analizi
+│   │   ├── hidrojeolojik-modelleme
+│   │   └── yeralti-yerustu-suyu-etkilesimi
+│   │
+│   ├── <span class="text-blue-400">/hizmetler/jeoteknik/</span> <span class="text-slate-500">← Kategori: Jeoteknik (4 hizmet)</span>
+│   │   ├── jeoteknik-etut-raporu
+│   │   ├── zemin-etudu
+│   │   ├── temel-stabilite-analizi
+│   │   └── laboratuvar-arazi-deneyleri
+│   │
+│   └── <span class="text-blue-400">/hizmetler/mimarlik/</span> <span class="text-slate-500">← Kategori: Mimarlık (8 hizmet)</span>
+│       ├── konut-projeleri
+│       ├── otel-tasarimi
+│       ├── ofis-tasarimi
+│       ├── restoran-ve-kafeler
+│       ├── egitim-yapilari
+│       ├── kultur-yapilari
+│       ├── saglik-yapilari
+│       └── spor-ve-wellness-tesisleri
+│
+├── <span class="text-green-400">/sayfa/hakkimizda</span> <span class="text-slate-500">← Page Module</span>
+└── <span class="text-green-400">/sayfa/iletisim</span> <span class="text-slate-500">← Page Module (veya static template)</span>
+</pre>
+            </div>
+        </section>
+
+        <!-- Modül Eşleştirmesi -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-puzzle-piece text-emerald-400"></i> Modül Eşleştirmesi
+            </h2>
+
+            <!-- SERVICE MODULE -->
+            <div class="module-service bg-slate-800/50 rounded-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-blue-400">
+                        <i class="fas fa-cogs mr-2"></i>SERVICE Modülü
+                    </h3>
+                    <span class="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">6 Kategori + 49 Hizmet</span>
+                </div>
+                <p class="text-slate-400 text-sm mb-4">Tüm hizmet sayfaları Service modülü ile yönetilecek.</p>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400 border-b border-slate-700">
+                            <tr>
+                                <th class="text-left py-2 px-3">Kategori</th>
+                                <th class="text-left py-2 px-3">Slug</th>
+                                <th class="text-center py-2 px-3">Hizmet Sayısı</th>
+                                <th class="text-left py-2 px-3">URL Pattern</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-2 px-3 font-medium">Madencilik</td>
+                                <td class="py-2 px-3"><code>madencilik</code></td>
+                                <td class="py-2 px-3 text-center"><span class="bg-blue-600/30 px-2 py-1 rounded">7</span></td>
+                                <td class="py-2 px-3 text-slate-400">/hizmetler/madencilik/*</td>
+                            </tr>
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-2 px-3 font-medium">YTK</td>
+                                <td class="py-2 px-3"><code>ytk</code></td>
+                                <td class="py-2 px-3 text-center"><span class="bg-blue-600/30 px-2 py-1 rounded">14</span></td>
+                                <td class="py-2 px-3 text-slate-400">/hizmetler/ytk/*</td>
+                            </tr>
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-2 px-3 font-medium">Jeoloji</td>
+                                <td class="py-2 px-3"><code>jeoloji</code></td>
+                                <td class="py-2 px-3 text-center"><span class="bg-blue-600/30 px-2 py-1 rounded">8</span></td>
+                                <td class="py-2 px-3 text-slate-400">/hizmetler/jeoloji/*</td>
+                            </tr>
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-2 px-3 font-medium">Hidrojeoloji</td>
+                                <td class="py-2 px-3"><code>hidrojeoloji</code></td>
+                                <td class="py-2 px-3 text-center"><span class="bg-blue-600/30 px-2 py-1 rounded">8</span></td>
+                                <td class="py-2 px-3 text-slate-400">/hizmetler/hidrojeoloji/*</td>
+                            </tr>
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-2 px-3 font-medium">Jeoteknik</td>
+                                <td class="py-2 px-3"><code>jeoteknik</code></td>
+                                <td class="py-2 px-3 text-center"><span class="bg-blue-600/30 px-2 py-1 rounded">4</span></td>
+                                <td class="py-2 px-3 text-slate-400">/hizmetler/jeoteknik/*</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-3 font-medium">Mimarlık & İç Mimarlık</td>
+                                <td class="py-2 px-3"><code>mimarlik</code></td>
+                                <td class="py-2 px-3 text-center"><span class="bg-blue-600/30 px-2 py-1 rounded">8</span></td>
+                                <td class="py-2 px-3 text-slate-400">/hizmetler/mimarlik/*</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PAGE MODULE -->
+            <div class="module-page bg-slate-800/50 rounded-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-green-400">
+                        <i class="fas fa-file-alt mr-2"></i>PAGE Modülü
+                    </h3>
+                    <span class="bg-green-600 text-white text-xs px-3 py-1 rounded-full">2 Sayfa</span>
+                </div>
+                <p class="text-slate-400 text-sm mb-4">Statik içerik sayfaları Page modülü ile yönetilecek.</p>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-300 mb-2">Hakkımızda</h4>
+                        <p class="text-slate-400 text-xs mb-2">Slug: <code>hakkimizda</code></p>
+                        <ul class="text-slate-300 text-sm space-y-1">
+                            <li>• Firma tanıtımı</li>
+                            <li>• Değerlerimiz (6 madde)</li>
+                            <li>• Misyon & Vizyon</li>
+                            <li>• Hizmet alanları özeti</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-300 mb-2">İletişim</h4>
+                        <p class="text-slate-400 text-xs mb-2">Slug: <code>iletisim</code></p>
+                        <ul class="text-slate-300 text-sm space-y-1">
+                            <li>• İletişim bilgileri</li>
+                            <li>• İletişim formu</li>
+                            <li>• Google Maps</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div class="module-settings bg-slate-800/50 rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-amber-400">
+                        <i class="fas fa-cog mr-2"></i>Settings (Ayarlar)
+                    </h3>
+                    <span class="bg-amber-600 text-white text-xs px-3 py-1 rounded-full">12 Ayar</span>
+                </div>
+                <p class="text-slate-400 text-sm mb-4">Header, Footer ve iletişim bilgileri Settings tablosundan çekilecek.</p>
+
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-amber-300 mb-3">Firma Bilgileri</h4>
+                        <table class="w-full">
+                            <tbody class="text-slate-300">
+                                <tr><td class="py-1"><code>site_name</code></td><td>Unimad Madencilik</td></tr>
+                                <tr><td class="py-1"><code>site_description</code></td><td>Madencilik, YTK, Mühendislik...</td></tr>
+                                <tr><td class="py-1"><code>contact_address</code></td><td>Emek Mah. M.A.C. Kırımoğlu Sok...</td></tr>
+                                <tr><td class="py-1"><code>contact_phone_1</code></td><td>+90 (312) 212 68 09</td></tr>
+                                <tr><td class="py-1"><code>contact_phone_2</code></td><td>+90 (312) 212 68 10</td></tr>
+                                <tr><td class="py-1"><code>contact_email_1</code></td><td>info@unimadmadencilik.com</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-amber-300 mb-3">Sosyal Medya</h4>
+                        <table class="w-full">
+                            <tbody class="text-slate-300">
+                                <tr><td class="py-1"><code>social_facebook</code></td><td>facebook.com/unimadmadencilik</td></tr>
+                                <tr><td class="py-1"><code>social_twitter</code></td><td>twitter.com/unimadmadencilk</td></tr>
+                                <tr><td class="py-1"><code>social_instagram</code></td><td>instagram.com/unimadmadencilik</td></tr>
+                                <tr><td class="py-1"><code>social_linkedin</code></td><td>(Varsa)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detaylı Hizmet Listesi -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-list-check text-rose-400"></i> Detaylı Hizmet Listesi (49 Adet)
+            </h2>
+
+            <!-- Madencilik -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-mountain"></i> Madencilik (7 Hizmet)
+                </h3>
+                <div class="bg-slate-800/30 rounded-lg p-4 space-y-2 text-sm">
+                    <div class="flex items-start gap-2"><span class="text-blue-400">1.</span> <span>Maden Sahası Teknik Etüt ve Değerlendirme</span></div>
+                    <div class="flex items-start gap-2"><span class="text-blue-400">2.</span> <span>Fizibilite, Ön Fizibilite ve Yatırım Analizleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-blue-400">3.</span> <span>Rezerv Tespiti ve Kaynak Raporlaması</span></div>
+                    <div class="flex items-start gap-2"><span class="text-blue-400">4.</span> <span>Açık Ocak ve Yeraltı İşletme Planlaması</span></div>
+                    <div class="flex items-start gap-2"><span class="text-blue-400">5.</span> <span>Üretim ve İşletme Optimizasyonu</span></div>
+                    <div class="flex items-start gap-2"><span class="text-blue-400">6.</span> <span>Devlet Kurumları ile Teknik ve İdari Koordinasyon</span></div>
+                    <div class="flex items-start gap-2"><span class="text-blue-400">7.</span> <span>Maden Sahası Denetim ve Teknik Raporlama</span></div>
+                </div>
+            </div>
+
+            <!-- YTK -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-purple-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-file-certificate"></i> YTK - Yetkilendirilmiş Tüzel Kişilik (14 Hizmet)
+                </h3>
+                <div class="bg-slate-800/30 rounded-lg p-4 space-y-2 text-sm">
+                    <div class="flex items-start gap-2"><span class="text-purple-400">1.</span> <span>Maden Arama ve İşletme Projeleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">2.</span> <span>Maden Hukuku Danışmanlığı</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">3.</span> <span>Yeraltı Kömür ve Metalik Madenler Danışmanlığı ve YTK Hizmeti</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">4.</span> <span>Ruhsatlandırma ve Resmi İzin Süreçleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">5.</span> <span>Boş Alan Sorgulama ve İlk Müracaat İşlemleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">6.</span> <span>İhale Dosyası Hazırlama</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">7.</span> <span>Yapı Hammaddesi Talep Projesi</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">8.</span> <span>Jeotermal ve Doğal Mineralli Sular Ruhsat Müracaat İşlemleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">9.</span> <span>Devir ve Rödövans İşlemleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">10.</span> <span>Arama ve İşletme Faaliyet Raporları</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">11.</span> <span>Maden Sahası Uygunluk ve Mevzuat Denetimleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">12.</span> <span>MAPEG ve İlgili Kurumlar ile Resmi Süreç Yönetimi</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">13.</span> <span>Mevzuata Uyum ve Süreklilik Danışmanlığı</span></div>
+                    <div class="flex items-start gap-2"><span class="text-purple-400">14.</span> <span>YTK Kapsamında Sürekli Teknik Destek</span></div>
+                </div>
+            </div>
+
+            <!-- Jeoloji -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-teal-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-gem"></i> Jeoloji (8 Hizmet)
+                </h3>
+                <div class="bg-slate-800/30 rounded-lg p-4 space-y-2 text-sm">
+                    <div class="flex items-start gap-2"><span class="text-teal-400">1.</span> <span>Jeolojik Etüt Raporu</span></div>
+                    <div class="flex items-start gap-2"><span class="text-teal-400">2.</span> <span>Jeolojik Haritalama Hizmetleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-teal-400">3.</span> <span>Maden Sahası Jeolojik Değerlendirme</span></div>
+                    <div class="flex items-start gap-2"><span class="text-teal-400">4.</span> <span>Rezerv Hesaplama & 3B Modelleme</span></div>
+                    <div class="flex items-start gap-2"><span class="text-teal-400">5.</span> <span>Prospeksiyon ve Numune Analizleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-teal-400">6.</span> <span>Açık / Kapalı Ocak Jeolojisi</span></div>
+                    <div class="flex items-start gap-2"><span class="text-teal-400">7.</span> <span>Jeoloji Sondaj Hizmetleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-teal-400">8.</span> <span>Maden Arama Çalışmaları</span></div>
+                </div>
+            </div>
+
+            <!-- Hidrojeoloji -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-cyan-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-water"></i> Hidrojeoloji (8 Hizmet)
+                </h3>
+                <div class="bg-slate-800/30 rounded-lg p-4 space-y-2 text-sm">
+                    <div class="flex items-start gap-2"><span class="text-cyan-400">1.</span> <span>Jeotermal / Doğal Mineralli Su Ruhsat Alanları Arama ve Ruhsatlandırılması</span></div>
+                    <div class="flex items-start gap-2"><span class="text-cyan-400">2.</span> <span>Hidrojeolojik Etüt ve Değerlendirme</span></div>
+                    <div class="flex items-start gap-2"><span class="text-cyan-400">3.</span> <span>Yeraltı Suyu Arama & Analizi</span></div>
+                    <div class="flex items-start gap-2"><span class="text-cyan-400">4.</span> <span>Akifer Testleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-cyan-400">5.</span> <span>Susuzlaştırma ve Su Yönetimi</span></div>
+                    <div class="flex items-start gap-2"><span class="text-cyan-400">6.</span> <span>Su Kalite Analizi</span></div>
+                    <div class="flex items-start gap-2"><span class="text-cyan-400">7.</span> <span>Hidrojeolojik Modelleme</span></div>
+                    <div class="flex items-start gap-2"><span class="text-cyan-400">8.</span> <span>Yeraltı / Yerüstü Suyu Etkileşimi</span></div>
+                </div>
+            </div>
+
+            <!-- Jeoteknik -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-orange-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-layer-group"></i> Jeoteknik (4 Hizmet)
+                </h3>
+                <div class="bg-slate-800/30 rounded-lg p-4 space-y-2 text-sm">
+                    <div class="flex items-start gap-2"><span class="text-orange-400">1.</span> <span>Jeoteknik Etüt Raporu</span></div>
+                    <div class="flex items-start gap-2"><span class="text-orange-400">2.</span> <span>Zemin Etüdü</span></div>
+                    <div class="flex items-start gap-2"><span class="text-orange-400">3.</span> <span>Temel Stabilite Analizi</span></div>
+                    <div class="flex items-start gap-2"><span class="text-orange-400">4.</span> <span>Laboratuvar + Arazi Deneyleri</span></div>
+                </div>
+            </div>
+
+            <!-- Mimarlık -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-pink-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-drafting-compass"></i> Mimarlık & İç Mimarlık (8 Hizmet)
+                </h3>
+                <div class="bg-slate-800/30 rounded-lg p-4 space-y-2 text-sm">
+                    <div class="flex items-start gap-2"><span class="text-pink-400">1.</span> <span>Konut Projeleri</span></div>
+                    <div class="flex items-start gap-2"><span class="text-pink-400">2.</span> <span>Otel Tasarımı</span></div>
+                    <div class="flex items-start gap-2"><span class="text-pink-400">3.</span> <span>Ofis Tasarımı</span></div>
+                    <div class="flex items-start gap-2"><span class="text-pink-400">4.</span> <span>Restoran ve Kafeler</span></div>
+                    <div class="flex items-start gap-2"><span class="text-pink-400">5.</span> <span>Eğitim Yapıları</span></div>
+                    <div class="flex items-start gap-2"><span class="text-pink-400">6.</span> <span>Kültür Yapıları</span></div>
+                    <div class="flex items-start gap-2"><span class="text-pink-400">7.</span> <span>Sağlık Yapıları</span></div>
+                    <div class="flex items-start gap-2"><span class="text-pink-400">8.</span> <span>Spor ve Wellness Tesisleri</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Uygulama Adımları -->
+        <section class="card rounded-2xl p-6 mb-8 border border-green-700 bg-green-900/20">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-tasks text-green-400"></i> Uygulama Adımları
+            </h2>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4 bg-slate-800/30 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">1</div>
+                    <div>
+                        <h4 class="font-semibold text-green-300">Settings Ayarlarını Güncelle</h4>
+                        <p class="text-slate-400 text-sm">Admin → Ayarlar → İletişim bilgileri, sosyal medya, site adı vs.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/30 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">2</div>
+                    <div>
+                        <h4 class="font-semibold text-green-300">Service Kategorileri Oluştur (6 adet)</h4>
+                        <p class="text-slate-400 text-sm">Admin → Hizmetler → Kategoriler: Madencilik, YTK, Jeoloji, Hidrojeoloji, Jeoteknik, Mimarlık</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/30 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">3</div>
+                    <div>
+                        <h4 class="font-semibold text-green-300">Services Ekle (49 adet)</h4>
+                        <p class="text-slate-400 text-sm">Her kategori altına ilgili hizmetleri MD dosyasındaki içeriklerle ekle</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/30 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">4</div>
+                    <div>
+                        <h4 class="font-semibold text-green-300">Pages Oluştur (2 adet)</h4>
+                        <p class="text-slate-400 text-sm">Admin → Sayfalar: Hakkımızda, İletişim</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/30 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">5</div>
+                    <div>
+                        <h4 class="font-semibold text-green-300">Homepage Template Güncelle</h4>
+                        <p class="text-slate-400 text-sm">t-4/homepage.blade.php'yi dinamik içeriklerle güncelleyerek Service verilerini çek</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/30 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">6</div>
+                    <div>
+                        <h4 class="font-semibold text-green-300">Header/Footer Dinamikleştir</h4>
+                        <p class="text-slate-400 text-sm">Logo, menü linkleri, iletişim bilgilerini Settings ve dinamik routelarla değiştir</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Veritabanı Tabloları -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-database text-violet-400"></i> Veritabanı Tabloları (tenant4 DB)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-semibold text-violet-300 mb-3">service_categories</h4>
+                    <pre class="text-xs bg-slate-900 rounded p-3 text-slate-300">
+category_id | name          | slug
+------------|---------------|---------------
+1           | Madencilik    | madencilik
+2           | YTK           | ytk
+3           | Jeoloji       | jeoloji
+4           | Hidrojeoloji  | hidrojeoloji
+5           | Jeoteknik     | jeoteknik
+6           | Mimarlık      | mimarlik</pre>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-semibold text-violet-300 mb-3">services (örnek)</h4>
+                    <pre class="text-xs bg-slate-900 rounded p-3 text-slate-300">
+service_id | title              | category_id
+-----------|--------------------|-----------
+1          | Maden Sahası...    | 1
+2          | Fizibilite...      | 1
+...        | ...                | ...
+49         | Spor ve Wellness   | 6</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-8 border-t border-slate-700">
+            20 Ocak 2026 • Tuufi.com
+        </footer>
+    </div>
+</body>
+</html>

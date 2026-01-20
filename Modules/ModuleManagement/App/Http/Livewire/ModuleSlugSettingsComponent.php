@@ -167,17 +167,36 @@ class ModuleSlugSettingsComponent extends Component
     
     protected function loadModuleData()
     {
-        $configPath = base_path("Modules/{$this->moduleName}/config/config.php");
-        
-        if (file_exists($configPath)) {
-            $config = include $configPath;
-            $this->moduleDisplayName = $config['name'] ?? $this->moduleName;
-            $this->defaultSlugs = $config['slugs'] ?? [];
-        } else {
-            // Config dosyası yoksa fallback display name
+        // Modül klasörünü case-insensitive bul (Linux case-sensitive!)
+        $modulesPath = base_path('Modules');
+        $actualModuleName = null;
+
+        if (is_dir($modulesPath)) {
+            foreach (scandir($modulesPath) as $dir) {
+                if ($dir === '.' || $dir === '..') continue;
+                if (strtolower($dir) === strtolower($this->moduleName)) {
+                    $actualModuleName = $dir;
+                    break;
+                }
+            }
+        }
+
+        // Gerçek modül adı bulunduysa config'i yükle
+        if ($actualModuleName) {
+            $configPath = base_path("Modules/{$actualModuleName}/config/config.php");
+
+            if (file_exists($configPath)) {
+                $config = include $configPath;
+                $this->moduleDisplayName = $config['name'] ?? $actualModuleName;
+                $this->defaultSlugs = $config['slugs'] ?? [];
+            }
+        }
+
+        // Config bulunamadıysa fallback
+        if (empty($this->defaultSlugs)) {
             $this->moduleDisplayName = ModuleSlugService::getDefaultModuleName($this->moduleName, app()->getLocale());
         }
-        
+
         // Initialize slugs with defaults
         $this->slugs = $this->defaultSlugs;
     }

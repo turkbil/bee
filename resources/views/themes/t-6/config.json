@@ -1,0 +1,11 @@
+{
+    "name": "t-6",
+    "title": "Tenant 6 Teması",
+    "version": "1.0.0",
+    "description": "Tenant 6 için otomatik oluşturulan tema",
+    "extends": "simple",
+    "colors": {
+        "primary": "#3b82f6",
+        "secondary": "#f59e0b"
+    }
+}

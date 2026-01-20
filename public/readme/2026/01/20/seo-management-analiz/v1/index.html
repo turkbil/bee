@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Management Sistemi Analiz Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { background: #0f172a; }
+        .card { background: #1e293b; border: 1px solid #334155; }
+        .card-header { background: #334155; }
+        code { background: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+        pre { background: #0f172a; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+        .badge { padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #334155; font-weight: 600; }
+        tr:hover { background: rgba(59, 130, 246, 0.1); }
+    </style>
+</head>
+<body class="text-slate-300 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-white mb-4">
+                <i class="fas fa-search text-blue-500 mr-3"></i>
+                SEO Management Sistemi
+            </h1>
+            <p class="text-xl text-slate-400">Kapsamlı Analiz ve Kullanım Rehberi</p>
+            <div class="mt-4 flex justify-center gap-4 flex-wrap">
+                <span class="badge bg-blue-600 text-white">SeoManagement Modülü</span>
+                <span class="badge bg-green-600 text-white">Multi-Tenant</span>
+                <span class="badge bg-purple-600 text-white">Çoklu Dil Desteği</span>
+            </div>
+        </header>
+
+        <!-- Basit Anlatım Bölümü -->
+        <section class="card rounded-xl mb-8">
+            <div class="card-header px-6 py-4 rounded-t-xl">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                    Basit Anlatım (Herkes İçin)
+                </h2>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+                    <h3 class="font-bold text-blue-400 mb-2">SEO Nedir?</h3>
+                    <p>SEO (Arama Motoru Optimizasyonu), web sitelerinin Google gibi arama motorlarında daha üst sıralarda çıkmasını sağlayan ayarlardır. İyi bir SEO, daha fazla ziyaretçi demektir.</p>
+                </div>
+
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                    <h3 class="font-bold text-green-400 mb-2">Sistem Ne Yapıyor?</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Her sayfa için ayrı SEO başlığı ve açıklaması tanımlayabilirsiniz</li>
+                        <li>Sosyal medya paylaşımlarında özel görsel ve metin gösterebilirsiniz</li>
+                        <li>Google'a hangi sayfaları indekslemesi gerektiğini söyleyebilirsiniz</li>
+                        <li>Türkçe, İngilizce gibi farklı dillerde SEO ayarı yapabilirsiniz</li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-4">
+                    <h3 class="font-bold text-purple-400 mb-2">Neden Önemli?</h3>
+                    <p>Doğru SEO ayarları yapıldığında sayfalarınız Google aramalarında üst sıralarda çıkar, sosyal medyada paylaşıldığında düzgün görünür ve daha fazla kişi sitenizi ziyaret eder.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sistem Mimarisi -->
+        <section class="card rounded-xl mb-8">
+            <div class="card-header px-6 py-4 rounded-t-xl">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-sitemap text-cyan-400 mr-2"></i>
+                    Teknik Detaylar - Sistem Mimarisi
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h3 class="font-bold text-cyan-400 mb-3"><i class="fas fa-folder-tree mr-2"></i>Dosya Yapısı</h3>
+                        <pre class="text-sm text-slate-300">
+Modules/SeoManagement/
+├── App/
+│   ├── Models/
+│   │   └── SeoSetting.php
+│   ├── Services/
+│   │   ├── SeoService.php
+│   │   ├── SeoAIService.php
+│   │   └── SchemaGeneratorService.php
+│   └── Http/Livewire/Admin/
+│       ├── UniversalSeoComponent.php
+│       └── UniversalSeoTabComponent.php
+├── database/migrations/
+│   ├── tenant/
+│   │   └── 2025_07_19_000001_create_seo_settings_table.php
+│   └── 2025_07_19_000001_create_seo_settings_table.php
+└── resources/views/components/
+    └── universal-seo-tab.blade.php
+
+app/
+├── Traits/HasSeo.php
+├── Services/SeoMetaTagService.php
+└── Models/SeoSetting.php</pre>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h3 class="font-bold text-cyan-400 mb-3"><i class="fas fa-cogs mr-2"></i>Çalışma Prensibi</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-start gap-2">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs flex-shrink-0">1</span>
+                                <span>Model <code>HasSeo</code> trait kullanır</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs flex-shrink-0">2</span>
+                                <span>Polymorphic ilişki ile <code>seo_settings</code> tablosuna bağlanır</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs flex-shrink-0">3</span>
+                                <span>Admin panelde SEO tab bileşeni görüntülenir</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs flex-shrink-0">4</span>
+                                <span>Frontend'de <code>SeoMetaTagService</code> meta tag'leri üretir</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs flex-shrink-0">5</span>
+                                <span>Blade layout'ta meta tag'ler render edilir</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Veritabanı Tablosu -->
+        <section class="card rounded-xl mb-8">
+            <div class="card-header px-6 py-4 rounded-t-xl">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-database text-green-400 mr-2"></i>
+                    Veritabanı Şeması - seo_settings Tablosu
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="text-sm">
+                        <thead>
+                            <tr>
+                                <th>Kolon</th>
+                                <th>Tip</th>
+                                <th>Zorunlu</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-green-900/20">
+                                <td><code>seoable_type</code></td>
+                                <td>VARCHAR(255)</td>
+                                <td><span class="badge bg-red-600">Evet</span></td>
+                                <td>Model class adı (örn: Modules\Page\App\Models\Page)</td>
+                            </tr>
+                            <tr class="bg-green-900/20">
+                                <td><code>seoable_id</code></td>
+                                <td>BIGINT</td>
+                                <td><span class="badge bg-red-600">Evet</span></td>
+                                <td>Model ID (polymorphic relation)</td>
+                            </tr>
+                            <tr class="bg-blue-900/20">
+                                <td><code>titles</code></td>
+                                <td>JSON</td>
+                                <td><span class="badge bg-yellow-600">Önerilen</span></td>
+                                <td>SEO başlıkları {"tr": "Başlık", "en": "Title"}</td>
+                            </tr>
+                            <tr class="bg-blue-900/20">
+                                <td><code>descriptions</code></td>
+                                <td>JSON</td>
+                                <td><span class="badge bg-yellow-600">Önerilen</span></td>
+                                <td>Meta description {"tr": "Açıklama", "en": "Description"}</td>
+                            </tr>
+                            <tr>
+                                <td><code>og_titles</code></td>
+                                <td>JSON</td>
+                                <td><span class="badge bg-slate-600">Opsiyonel</span></td>
+                                <td>Open Graph başlıkları (sosyal medya)</td>
+                            </tr>
+                            <tr>
+                                <td><code>og_descriptions</code></td>
+                                <td>JSON</td>
+                                <td><span class="badge bg-slate-600">Opsiyonel</span></td>
+                                <td>Open Graph açıklamaları</td>
+                            </tr>
+                            <tr>
+                                <td><code>og_image</code></td>
+                                <td>VARCHAR(255)</td>
+                                <td><span class="badge bg-slate-600">Opsiyonel</span></td>
+                                <td>Sosyal medya paylaşım görseli URL</td>
+                            </tr>
+                            <tr>
+                                <td><code>og_type</code></td>
+                                <td>VARCHAR(255)</td>
+                                <td><span class="badge bg-slate-600">Default: website</span></td>
+                                <td>website, article, product vb.</td>
+                            </tr>
+                            <tr>
+                                <td><code>canonical_url</code></td>
+                                <td>VARCHAR(255)</td>
+                                <td><span class="badge bg-slate-600">Opsiyonel</span></td>
+                                <td>Canonical URL (duplicate content önleme)</td>
+                            </tr>
+                            <tr>
+                                <td><code>robots_meta</code></td>
+                                <td>JSON</td>
+                                <td><span class="badge bg-slate-600">Default: index,follow</span></td>
+                                <td>{"index": true, "follow": true}</td>
+                            </tr>
+                            <tr>
+                                <td><code>schema_type</code></td>
+                                <td>JSON</td>
+                                <td><span class="badge bg-slate-600">Opsiyonel</span></td>
+                                <td>Schema.org tipi {"tr": "Article"}</td>
+                            </tr>
+                            <tr>
+                                <td><code>seo_score</code></td>
+                                <td>INT</td>
+                                <td><span class="badge bg-slate-600">Default: 0</span></td>
+                                <td>SEO puanı (0-100)</td>
+                            </tr>
+                            <tr>
+                                <td><code>author</code></td>
+                                <td>VARCHAR(255)</td>
+                                <td><span class="badge bg-slate-600">Opsiyonel</span></td>
+                                <td>İçerik yazarı (E-E-A-T için)</td>
+                            </tr>
+                            <tr>
+                                <td><code>author_url</code></td>
+                                <td>VARCHAR(255)</td>
+                                <td><span class="badge bg-slate-600">Opsiyonel</span></td>
+                                <td>Yazar profil URL'si</td>
+                            </tr>
+                            <tr>
+                                <td><code>priority_score</code></td>
+                                <td>INT</td>
+                                <td><span class="badge bg-slate-600">Default: 5</span></td>
+                                <td>Öncelik puanı (1-10)</td>
+                            </tr>
+                            <tr>
+                                <td><code>status</code></td>
+                                <td>ENUM</td>
+                                <td><span class="badge bg-slate-600">Default: active</span></td>
+                                <td>active, inactive, pending</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tenant Durumları -->
+        <section class="card rounded-xl mb-8">
+            <div class="card-header px-6 py-4 rounded-t-xl">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-building text-orange-400 mr-2"></i>
+                    Tenant SEO Durumları
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Tenant 2 -->
+                    <div class="bg-slate-800 rounded-lg p-4 border border-blue-600">
+                        <h3 class="font-bold text-blue-400 mb-3">
+                            <i class="fas fa-industry mr-2"></i>
+                            Tenant 2 - İxtif (Endüstriyel)
+                        </h3>
+                        <p class="text-sm text-slate-400 mb-3">Database: tenant_ixtif</p>
+
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>Toplam SEO Kaydı:</span>
+                                <span class="font-bold text-green-400">4,178</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Blog SEO:</span>
+                                <span>3,081</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Shop Product SEO:</span>
+                                <span>1,020</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Page SEO:</span>
+                                <span>12</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Blog Category SEO:</span>
+                                <span>14</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-green-900/30 rounded">
+                            <span class="text-green-400 text-sm">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                SEO sistemi aktif ve dolu
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Tenant 3 -->
+                    <div class="bg-slate-800 rounded-lg p-4 border border-purple-600">
+                        <h3 class="font-bold text-purple-400 mb-3">
+                            <i class="fas fa-window-maximize mr-2"></i>
+                            Tenant 3 - Yıldırım Panjur
+                        </h3>
+                        <p class="text-sm text-slate-400 mb-3">Database: tenant_yildirimpanjur_04d389</p>
+
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>Toplam SEO Kaydı:</span>
+                                <span class="font-bold text-yellow-400">14</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Service SEO:</span>
+                                <span>9</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Page SEO:</span>
+                                <span>3</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Service Category SEO:</span>
+                                <span>1</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-yellow-900/30 rounded">
+                            <span class="text-yellow-400 text-sm">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                SEO sistemi aktif, yeni site
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modele SEO Ekleme -->
+        <section class="card rounded-xl mb-8">
+            <div class="card-header px-6 py-4 rounded-t-xl">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-code text-pink-400 mr-2"></i>
+                    Modele SEO Desteği Nasıl Eklenir?
+                </h2>
+            </div>
+            <div class="p-6 space-y-6">
+
+                <!-- Adım 1 -->
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="font-bold text-pink-400 mb-3">
+                        <span class="bg-pink-600 text-white rounded-full w-6 h-6 inline-flex items-center justify-center text-xs mr-2">1</span>
+                        Model'e HasSeo Trait Ekle
+                    </h3>
+                    <pre class="text-sm"><code class="text-green-400">&lt;?php
+namespace Modules\Service\App\Models;
+
+use App\Models\BaseModel;
+use App\Traits\HasTranslations;
+<span class="text-yellow-400">use App\Traits\HasSeo;</span>
+
+class Service extends BaseModel
+{
+    <span class="text-yellow-400">use HasTranslations, HasSeo;</span>
+
+    // ... model kodu
+}</code></pre>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="font-bold text-pink-400 mb-3">
+                        <span class="bg-pink-600 text-white rounded-full w-6 h-6 inline-flex items-center justify-center text-xs mr-2">2</span>
+                        Opsiyonel: SEO Fallback Metodlarını Override Et
+                    </h3>
+                    <pre class="text-sm"><code class="text-green-400">/**
+ * SEO başlığı için fallback
+ */
+public function getSeoFallbackTitle(): ?string
+{
+    return $this->getTranslated('title', app()->getLocale());
+}
+
+/**
+ * SEO açıklaması için fallback
+ */
+public function getSeoFallbackDescription(): ?string
+{
+    $content = $this->getTranslated('body', app()->getLocale());
+    return \Illuminate\Support\Str::limit(strip_tags($content), 160);
+}
+
+/**
+ * Canonical URL için fallback
+ */
+public function getSeoFallbackCanonicalUrl(): ?string
+{
+    return $this->getUrl();
+}</code></pre>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="font-bold text-pink-400 mb-3">
+                        <span class="bg-pink-600 text-white rounded-full w-6 h-6 inline-flex items-center justify-center text-xs mr-2">3</span>
+                        Admin Panelde SEO Tab'ı Göster
+                    </h3>
+                    <pre class="text-sm"><code class="text-green-400">{{-- manage.blade.php içinde --}}
+&lt;x-seomanagement::universal-seo-tab
+    :model="$model"
+    :available-languages="$availableLanguages"
+    :current-language="$currentLanguage"
+    :seo-data-cache="$seoDataCache"
+/&gt;</code></pre>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <h3 class="font-bold text-pink-400 mb-3">
+                        <span class="bg-pink-600 text-white rounded-full w-6 h-6 inline-flex items-center justify-center text-xs mr-2">4</span>
+                        Livewire Component'te SEO Kaydet
+                    </h3>
+                    <pre class="text-sm"><code class="text-green-400">// Livewire component'te
+public function save()
+{
+    // ... validasyon
+
+    $this->model->save();
+
+    <span class="text-yellow-400">// SEO verilerini kaydet</span>
+    if ($this->model->seoSetting) {
+        foreach ($this->availableLanguages as $lang) {
+            $this->model->updateSeoForLanguage($lang, [
+                'title' => $this->seoDataCache[$lang]['seo_title'] ?? '',
+                'description' => $this->seoDataCache[$lang]['seo_description'] ?? '',
+                'og_title' => $this->seoDataCache[$lang]['og_title'] ?? '',
+                'og_description' => $this->seoDataCache[$lang]['og_description'] ?? '',
+            ]);
+        }
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEO Verisi Örnekleri -->
+        <section class="card rounded-xl mb-8">
+            <div class="card-header px-6 py-4 rounded-t-xl">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-file-code text-teal-400 mr-2"></i>
+                    Örnek SEO Verisi (JSON Format)
+                </h2>
+            </div>
+            <div class="p-6">
+                <pre class="text-sm"><code class="text-green-400">{
+    "seoable_type": "Modules\\Service\\App\\Models\\Service",
+    "seoable_id": 5,
+    "titles": {
+        "tr": "Garaj Kapısı Istanbul | Otomatik Garaj Kapıları | Yıldırım Panjur",
+        "en": "Garage Door Istanbul | Automatic Garage Doors | Yıldırım Panjur"
+    },
+    "descriptions": {
+        "tr": "Seksiyonel garaj kapısı, otomatik garaj kapısı kurulumu ve tamiri. Uzaktan kumandalı, güvenlik sensörlü sistemler. 5 yıl garanti!",
+        "en": "Sectional garage door, automatic garage door installation and repair. Remote controlled, security sensor systems. 5 year warranty!"
+    },
+    "og_titles": {
+        "tr": "Garaj Kapısı Sistemleri",
+        "en": "Garage Door Systems"
+    },
+    "og_descriptions": {
+        "tr": "Profesyonel garaj kapısı çözümleri",
+        "en": "Professional garage door solutions"
+    },
+    "og_type": "website",
+    "robots_meta": {
+        "index": true,
+        "follow": true,
+        "archive": true
+    },
+    "seo_score": 85,
+    "priority_score": 7,
+    "status": "active"
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Önemli Notlar -->
+        <section class="card rounded-xl mb-8">
+            <div class="card-header px-6 py-4 rounded-t-xl">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i>
+                    Önemli Notlar ve En İyi Uygulamalar
+                </h2>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4">
+                    <h3 class="font-bold text-yellow-400 mb-2"><i class="fas fa-ruler mr-2"></i>Karakter Limitleri</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li><strong>SEO Title:</strong> Maksimum 60 karakter (30-60 ideal)</li>
+                        <li><strong>Meta Description:</strong> Maksimum 160 karakter (120-160 ideal)</li>
+                        <li><strong>OG Title:</strong> Maksimum 60 karakter</li>
+                        <li><strong>OG Description:</strong> Maksimum 155 karakter</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+                    <h3 class="font-bold text-blue-400 mb-2"><i class="fas fa-language mr-2"></i>Çoklu Dil Desteği</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Tüm metin alanları JSON formatında çoklu dil destekler</li>
+                        <li>Format: <code>{"tr": "Değer", "en": "Value"}</code></li>
+                        <li>Fallback sistemi: Dil bulunamazsa varsayılan dile döner</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                    <h3 class="font-bold text-green-400 mb-2"><i class="fas fa-robot mr-2"></i>AI SEO Önerileri</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Admin paneldeki "AI Önerileri" butonu ile otomatik SEO içerik üretilebilir</li>
+                        <li>AI önerileri <code>ai_suggestions</code> kolonunda saklanır</li>
+                        <li>Öneriler tüm diller için aynı anda üretilir</li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-4">
+                    <h3 class="font-bold text-purple-400 mb-2"><i class="fas fa-shield-alt mr-2"></i>Robots Meta Değerleri</h3>
+                    <table class="text-sm w-full mt-2">
+                        <tr>
+                            <td><code>index: true</code></td>
+                            <td>Sayfayı indeksle</td>
+                        </tr>
+                        <tr>
+                            <td><code>follow: true</code></td>
+                            <td>Linkleri takip et</td>
+                        </tr>
+                        <tr>
+                            <td><code>archive: true</code></td>
+                            <td>Cache'e izin ver</td>
+                        </tr>
+                        <tr>
+                            <td><code>noindex</code></td>
+                            <td>Sayfayı indeksleme</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Migration Komutu -->
+        <section class="card rounded-xl mb-8">
+            <div class="card-header px-6 py-4 rounded-t-xl">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-terminal text-red-400 mr-2"></i>
+                    Migration Komutları
+                </h2>
+            </div>
+            <div class="p-6">
+                <pre class="text-sm"><code class="text-green-400"># Central database için
+php artisan migrate --force
+
+# Tenant database'ler için
+php artisan tenants:migrate --force
+
+# Migration dosya konumu:
+# Modules/SeoManagement/database/migrations/tenant/</code></pre>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm mt-12 pb-8">
+            <p>20 Ocak 2026 • Tuufi.com</p>
+        </footer>
+    </div>
+</body>
+</html>

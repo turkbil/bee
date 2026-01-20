@@ -128,7 +128,7 @@
             <div class="absolute bottom-20 right-1/3 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-3xl"></div>
         </div>
 
-        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2 relative z-10">
             <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                 {{-- Left: Text Content --}}
                 <div class="order-2 lg:order-1">
@@ -229,7 +229,7 @@
     {{-- Stats Section --}}
     <section class="py-8 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 relative overflow-hidden">
         <div class="absolute inset-0 bg-black/10"></div>
-        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2 relative z-10">
             <div class="grid grid-cols-3 gap-6 md:gap-8">
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="0">
                     <div class="text-3xl md:text-4xl font-bold text-white mb-1">40</div>
@@ -261,7 +261,7 @@
         $colors = ['primary', 'blue', 'green', 'purple', 'red', 'amber'];
     @endphp
     <section id="hizmetler" class="py-16 md:py-24 bg-gray-50 dark:bg-slate-900">
-        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2">
             {{-- Section Header --}}
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
                 <span class="inline-block px-4 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium rounded-full mb-4" data-aos="fade-up">Hizmetlerimiz</span>
@@ -274,7 +274,7 @@
             </div>
 
             {{-- Services Grid - Dynamic --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
                 @foreach($services as $index => $service)
                 @php
                     $gradient = $gradients[$index % count($gradients)];
@@ -338,7 +338,7 @@
 
     {{-- Why Us Section --}}
     <section id="hakkimizda" class="py-16 md:py-24 bg-white dark:bg-slate-800">
-        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2">
             {{-- Section Header --}}
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
                 <span class="inline-block px-4 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium rounded-full mb-4" data-aos="fade-up">Neden Biz?</span>
@@ -351,7 +351,7 @@
             </div>
 
             {{-- Features Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
                 <div class="card-hover group text-center p-6 md:p-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-700 dark:to-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300" data-aos="fade-up" data-aos-delay="0">
                     <div class="w-16 h-16 mx-auto bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-primary-500/30 icon-hover">
                         <i class="fat fa-medal text-white text-2xl"></i>
@@ -405,7 +405,7 @@
 
     {{-- How It Works Section --}}
     <section class="py-16 md:py-24 bg-gray-50 dark:bg-slate-900">
-        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2">
             {{-- Section Header --}}
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
                 <span class="inline-block px-4 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium rounded-full mb-4" data-aos="fade-up">Süreç</span>
@@ -418,7 +418,7 @@
             </div>
 
             {{-- Steps --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
                 <div class="step-card text-center p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 dark:border-slate-700" data-aos="fade-up" data-aos-delay="0">
                     <div class="relative inline-block mb-6">
                         <div class="step-number w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-primary-500/30 rotate-3">
@@ -491,7 +491,7 @@
             <div class="absolute bottom-10 right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
         </div>
 
-        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2 relative z-10">
             <div class="max-w-4xl mx-auto text-center">
                 <div class="w-20 h-20 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-8" data-aos="zoom-in">
                     <i class="fat fa-phone-volume text-white text-4xl animate-pulse"></i>
@@ -530,6 +530,50 @@
                         </div>
                     </a>
                     @endif
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- SEO Content Section --}}
+    <section class="py-16 md:py-20 bg-white dark:bg-slate-800">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold font-heading text-gray-900 dark:text-white mb-6 text-center" data-aos="fade-up">
+                    İstanbul <span class="text-primary-500">Panjur Tamiri</span> Hizmeti
+                </h2>
+
+                <div class="prose prose-lg dark:prose-invert max-w-none text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="100">
+                    <p class="leading-relaxed mb-6">
+                        <strong>Yıldırım Panjur</strong>, 40 yılı aşkın tecrübesiyle İstanbul'un tüm ilçelerinde <strong>panjur tamiri</strong>, <strong>panjur montajı</strong> ve <strong>panjur bakım</strong> hizmetleri sunmaktadır. Kadıköy, Beşiktaş, Şişli, Bakırköy, Ataşehir, Üsküdar, Fatih, Beylikdüzü, Pendik, Maltepe ve İstanbul'un diğer tüm semtlerinde uzman ekibimizle yanınızdayız.
+                    </p>
+
+                    <p class="leading-relaxed mb-6">
+                        Arızalı panjurunuz mu var? <strong>Panjur motoru bozuldu</strong>, <strong>panjur kayışı koptu</strong>, <strong>panjur açılmıyor</strong> veya <strong>panjur kapanmıyor</strong> mu? Endişelenmeyin! Deneyimli ustalarımız aynı gün içinde adresinize gelerek sorununuzu çözer. <strong>Motorlu panjur tamiri</strong>, <strong>manuel panjur tamiri</strong>, <strong>alüminyum panjur tamiri</strong> ve <strong>plastik panjur tamiri</strong> dahil her türlü panjur arızasına müdahale ediyoruz.
+                    </p>
+
+                    <p class="leading-relaxed mb-6">
+                        Hizmetlerimiz arasında <strong>panjur motor değişimi</strong>, <strong>panjur kumandalı sistem</strong>, <strong>akıllı panjur sistemleri</strong>, <strong>garaj kapısı tamiri</strong>, <strong>otomatik kepenk tamiri</strong> ve <strong>sineklik montajı</strong> da bulunmaktadır. Ev, işyeri, mağaza, ofis ve apartman girişleri için profesyonel çözümler üretiyoruz.
+                    </p>
+
+                    <p class="leading-relaxed">
+                        <strong>Ücretsiz keşif</strong>, <strong>5 yıl garanti</strong> ve <strong>uygun fiyat</strong> avantajlarıyla İstanbul'un en güvenilir panjur firmasıyız. 7/24 acil servis hattımızdan bize ulaşabilir, aynı gün randevu alabilirsiniz. <strong>Panjur fiyatları</strong> ve detaylı bilgi için hemen arayın!
+                    </p>
+                </div>
+
+                {{-- Service Areas --}}
+                <div class="mt-10 pt-8 border-t border-gray-200 dark:border-slate-700" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 text-center">Hizmet Verdiğimiz Bölgeler</h3>
+                    <div class="flex flex-wrap justify-center gap-2 text-sm">
+                        @php
+                            $districts = ['Kadıköy', 'Beşiktaş', 'Şişli', 'Bakırköy', 'Ataşehir', 'Üsküdar', 'Fatih', 'Beylikdüzü', 'Pendik', 'Maltepe', 'Kartal', 'Sarıyer', 'Beyoğlu', 'Zeytinburnu', 'Bahçelievler', 'Bağcılar', 'Küçükçekmece', 'Esenyurt', 'Avcılar', 'Başakşehir'];
+                        @endphp
+                        @foreach($districts as $district)
+                            <a href="{{ url('/blog') }}" class="px-3 py-1.5 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                {{ $district }} Panjur Tamiri
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>

@@ -217,6 +217,67 @@ Route::middleware(['tenant'])->group(function () {
         ->name('search.tags');
 });
 
+// PWA Icon Generator - Logo'dan dinamik PNG oluşturur
+Route::get('/pwa-icon/{size}.png', function ($size) {
+    // Sadece geçerli boyutlar
+    if (!in_array($size, [192, 512])) {
+        abort(404);
+    }
+
+    // Logo URL'sini al
+    $logoPath = setting('site_logo');
+    if (!$logoPath || $logoPath === 'Logo yok') {
+        // Fallback: favicon
+        $logoPath = setting('site_favicon');
+    }
+
+    if (!$logoPath || $logoPath === 'Favicon yok') {
+        abort(404);
+    }
+
+    // URL ise path'e çevir
+    if (filter_var($logoPath, FILTER_VALIDATE_URL)) {
+        $parsedUrl = parse_url($logoPath);
+        $logoPath = ltrim($parsedUrl['path'] ?? '', '/');
+    }
+
+    // Dosya yolunu düzelt
+    $fullPath = public_path($logoPath);
+    if (!file_exists($fullPath)) {
+        // storage/ prefix'li olabilir - symlink kontrol
+        $storagePath = str_replace('storage/', '', $logoPath);
+        $fullPath = storage_path('app/public/' . $storagePath);
+    }
+
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+
+    // Intervention Image ile resize
+    $manager = new \Intervention\Image\ImageManager(
+        new \Intervention\Image\Drivers\Gd\Driver()
+    );
+
+    $image = $manager->read($fullPath);
+
+    // Kare canvas oluştur (beyaz arka plan)
+    $canvas = $manager->create($size, $size)->fill('ffffff');
+
+    // Logo'yu orantılı küçült
+    $image->scaleDown($size - 40, $size - 40); // 20px padding her taraf
+
+    // Ortala
+    $x = intval(($size - $image->width()) / 2);
+    $y = intval(($size - $image->height()) / 2);
+
+    $canvas->place($image, 'top-left', $x, $y);
+
+    // 1 hafta cache
+    return response($canvas->toPng())
+        ->header('Content-Type', 'image/png')
+        ->header('Cache-Control', 'public, max-age=604800');
+})->name('pwa.icon')->where('size', '[0-9]+');
+
 // PWA Manifest - Dynamic (2025 Best Practice)
 Route::get('/manifest.json', function () {
     $siteName = setting('site_name') ?: setting('site_title') ?: config('app.name');
@@ -236,31 +297,17 @@ Route::get('/manifest.json', function () {
         'icons' => []
     ];
 
-    // LogoService'den logo al (header/homepage ile aynı kaynak)
-    $logoService = app(\App\Services\LogoService::class);
-    $logoUrl = $logoService->getSchemaLogoUrl(); // Önce light logo, yoksa dark logo
-
-    if ($logoUrl) {
-        // PWA standartları - Farklı boyutlar
-        $iconSizes = [
-            ['size' => '192x192', 'purpose' => 'any'],
-            ['size' => '512x512', 'purpose' => 'any'],
-            ['size' => '192x192', 'purpose' => 'maskable'],
-            ['size' => '512x512', 'purpose' => 'maskable']
-        ];
-
-        foreach ($iconSizes as $icon) {
-            $manifest['icons'][] = [
-                'src' => $logoUrl,
-                'sizes' => $icon['size'],
-                'type' => 'image/png',
-                'purpose' => $icon['purpose']
-            ];
-        }
-    }
+    // PWA Icons - Dinamik oluşturulan PNG'ler (logo'dan resize)
+    $manifest['icons'] = [
+        ['src' => route('pwa.icon', ['size' => 192]), 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any'],
+        ['src' => route('pwa.icon', ['size' => 512]), 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any'],
+        ['src' => route('pwa.icon', ['size' => 192]), 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'maskable'],
+        ['src' => route('pwa.icon', ['size' => 512]), 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'maskable']
+    ];
 
     // PWA Shortcuts (tenant-aware - Aktif modüllere göre dinamik)
     $shortcuts = [];
+    $shortcutIcon = [['src' => route('pwa.icon', ['size' => 192]), 'sizes' => '192x192']];
 
     // Shop modülü aktifse
     if (Module::isEnabled('Shop')) {
@@ -269,7 +316,7 @@ Route::get('/manifest.json', function () {
             'short_name' => __('Ürünler'),
             'description' => __('Tüm ürünleri görüntüle'),
             'url' => url('/shop'),
-            'icons' => $logoUrl ? [['src' => $logoUrl, 'sizes' => '192x192']] : []
+            'icons' => $shortcutIcon
         ];
     }
 
@@ -280,7 +327,7 @@ Route::get('/manifest.json', function () {
             'short_name' => __('Blog'),
             'description' => __('Blog yazılarını oku'),
             'url' => url('/blog'),
-            'icons' => $logoUrl ? [['src' => $logoUrl, 'sizes' => '192x192']] : []
+            'icons' => $shortcutIcon
         ];
     }
 
@@ -291,7 +338,7 @@ Route::get('/manifest.json', function () {
             'short_name' => __('Portföy'),
             'description' => __('Projelerimizi görüntüle'),
             'url' => url('/portfolio'),
-            'icons' => $logoUrl ? [['src' => $logoUrl, 'sizes' => '192x192']] : []
+            'icons' => $shortcutIcon
         ];
     }
 
@@ -301,15 +348,15 @@ Route::get('/manifest.json', function () {
         'short_name' => __('İletişim'),
         'description' => __('Bize ulaşın'),
         'url' => url('/iletisim'),
-        'icons' => $logoUrl ? [['src' => $logoUrl, 'sizes' => '192x192']] : []
+        'icons' => $shortcutIcon
     ];
 
     // Max 4 shortcut (PWA standardı)
     $manifest['shortcuts'] = array_slice($shortcuts, 0, 4);
 
-    // 1 yıl cache (manifest nadiren değişir)
+    // 1 saat cache (değişiklik sonrası hızlı güncelleme için)
     return response()->json($manifest)
-        ->header('Cache-Control', 'public, max-age=31536000, immutable');
+        ->header('Cache-Control', 'public, max-age=3600');
 })->name('manifest');
 
 // security.txt - Tenant-aware dynamic route (RFC 9116)

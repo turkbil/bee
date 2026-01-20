@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema Klasör Temizlik Analizi | v1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto p-6">
+
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-700 pb-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fas fa-folder-tree text-red-500 text-2xl"></i>
+                <h1 class="text-3xl font-bold">Tema Klasör Temizlik Analizi</h1>
+                <span class="bg-red-600 text-white text-xs px-2 py-1 rounded ml-2">SİLİNECEK</span>
+            </div>
+            <p class="text-slate-400">Modül klasörlerinde bulunmaması gereken tema dosyalarının tespiti ve temizlik planı</p>
+            <p class="text-slate-500 text-sm mt-2">v1 • 20 Ocak 2026</p>
+        </header>
+
+        <!-- PROBLEM -->
+        <section class="mb-8">
+            <div class="bg-red-900/30 border border-red-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    PROBLEM: Yanlış Konumdaki Tema Dosyaları
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800 rounded p-4">
+                        <h3 class="text-red-400 font-bold mb-3 flex items-center gap-2">
+                            <i class="fas fa-times-circle"></i> YANLIŞ Yapı
+                        </h3>
+                        <code class="text-sm text-red-300 block whitespace-pre-wrap">Modules/Page/resources/views/themes/t-4/
+Modules/Blog/resources/views/themes/t-4/
+Modules/Service/resources/views/themes/t-3/
+Modules/Page/resources/views/themes/panjur/</code>
+                        <p class="text-slate-400 text-sm mt-3">
+                            t-3, t-4, t-5, panjur gibi tenant-specific temalar<br>
+                            Modules içinde OLMAMALI!
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-800 rounded p-4">
+                        <h3 class="text-green-400 font-bold mb-3 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i> DOĞRU Yapı
+                        </h3>
+                        <code class="text-sm text-green-300 block whitespace-pre-wrap">resources/views/themes/t-3/
+resources/views/themes/t-4/
+resources/views/themes/t-5/
+resources/views/themes/panjur/</code>
+                        <p class="text-slate-400 text-sm mt-3">
+                            Tüm tema dosyaları (homepage, header, footer, layouts)<br>
+                            SADECE resources/views/themes/ altında!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEK DOSYA PRENSİBİ -->
+        <section class="mb-8">
+            <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    TEK DOSYA PRENSİBİ (KAT'İ KURAL)
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-800 rounded p-4">
+                        <h3 class="text-yellow-400 font-bold mb-2">Tema Dosyaları HİYERARŞİSİ</h3>
+                        <code class="text-sm text-slate-300 block whitespace-pre-wrap">resources/views/themes/t-{id}/
+├── layouts/
+│   ├── app.blade.php          ← Ana layout
+│   ├── header.blade.php       ← TEK header (tüm sayfalar @include)
+│   └── footer.blade.php       ← TEK footer (tüm sayfalar @include)
+├── homepage.blade.php         ← Ana sayfa
+├── components/                ← Tema-specific componentler
+└── partials/                  ← Parça dosyalar</code>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-red-900/20 border border-red-600/50 rounded p-4">
+                            <h4 class="text-red-400 font-bold mb-2">❌ YAPILMAYACAK</h4>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• Modules/*/resources/views/themes/t-X/ klasörü açmak</li>
+                                <li>• Her sayfada inline header/footer yazmak</li>
+                                <li>• Aynı header'ı birden fazla dosyada tekrarlamak</li>
+                                <li>• Homepage içinde header/footer kodu yazmak</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-900/20 border border-green-600/50 rounded p-4">
+                            <h4 class="text-green-400 font-bold mb-2">✅ YAPILACAK</h4>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• Sadece resources/views/themes/t-{id}/ kullanmak</li>
+                                <li>• Header/Footer TEK dosya, @include ile çağırmak</li>
+                                <li>• Modüller fallback ile simple tema kullanır</li>
+                                <li>• Özelleştirme gerekirse resources altına ekle</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FALLBACK SİSTEMİ -->
+        <section class="mb-8">
+            <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-layer-group"></i>
+                    FALLBACK SİSTEMİ
+                </h2>
+
+                <div class="bg-slate-800 rounded p-4 mb-4">
+                    <h3 class="text-yellow-400 font-bold mb-2">View Arama Sırası</h3>
+                    <div class="flex items-center gap-2 flex-wrap text-sm">
+                        <span class="bg-purple-700 px-3 py-1 rounded">1. resources/views/themes/t-{id}/</span>
+                        <i class="fas fa-arrow-right text-slate-500"></i>
+                        <span class="bg-blue-700 px-3 py-1 rounded">2. Modules/*/themes/{theme}/</span>
+                        <i class="fas fa-arrow-right text-slate-500"></i>
+                        <span class="bg-green-700 px-3 py-1 rounded">3. Modules/*/themes/simple/</span>
+                    </div>
+                </div>
+
+                <div class="text-slate-300 text-sm">
+                    <p><strong>Örnek:</strong> t-4 teması için Blog modülü çağrıldığında:</p>
+                    <ol class="list-decimal list-inside mt-2 space-y-1 text-slate-400">
+                        <li>resources/views/themes/t-4/blog/... aranır → <span class="text-yellow-400">YOKSA</span></li>
+                        <li>Modules/Blog/themes/t-4/... aranır → <span class="text-red-400">OLMAMALI!</span></li>
+                        <li>Modules/Blog/themes/simple/... kullanılır → <span class="text-green-400">FALLBACK</span></li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- SİLİNECEK DOSYALAR -->
+        <section class="mb-8">
+            <div class="bg-orange-900/30 border border-orange-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-trash-alt"></i>
+                    SİLİNECEK DOSYALAR (5 Dosya)
+                </h2>
+
+                <div class="space-y-4">
+                    <!-- Page/t-4 -->
+                    <div class="bg-slate-800 rounded p-4">
+                        <h4 class="text-orange-400 font-bold mb-2">
+                            <i class="fas fa-folder text-yellow-500"></i>
+                            Modules/Page/resources/views/themes/t-4/
+                        </h4>
+                        <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                            <li><i class="fas fa-file text-slate-500"></i> show.blade.php</li>
+                        </ul>
+                    </div>
+
+                    <!-- Blog/t-4 -->
+                    <div class="bg-slate-800 rounded p-4">
+                        <h4 class="text-orange-400 font-bold mb-2">
+                            <i class="fas fa-folder text-yellow-500"></i>
+                            Modules/Blog/resources/views/themes/t-4/
+                        </h4>
+                        <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                            <li><i class="fas fa-file text-slate-500"></i> show.blade.php</li>
+                            <li><i class="fas fa-folder text-slate-600"></i> partials/</li>
+                            <li class="ml-4"><i class="fas fa-file text-slate-500"></i> show-content.blade.php</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service/t-3 -->
+                    <div class="bg-slate-800 rounded p-4">
+                        <h4 class="text-orange-400 font-bold mb-2">
+                            <i class="fas fa-folder text-yellow-500"></i>
+                            Modules/Service/resources/views/themes/t-3/
+                        </h4>
+                        <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                            <li><i class="fas fa-file text-slate-500"></i> index.blade.php.backup</li>
+                            <li><i class="fas fa-file text-slate-500"></i> show.blade.php.backup</li>
+                        </ul>
+                    </div>
+
+                    <!-- Page/panjur -->
+                    <div class="bg-slate-800 rounded p-4">
+                        <h4 class="text-orange-400 font-bold mb-2">
+                            <i class="fas fa-folder text-yellow-500"></i>
+                            Modules/Page/resources/views/themes/panjur/
+                        </h4>
+                        <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                            <li><i class="fas fa-file text-slate-500"></i> homepage.blade.php</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-yellow-900/30 border border-yellow-600 rounded text-sm">
+                    <i class="fas fa-info-circle text-yellow-400 mr-2"></i>
+                    <strong class="text-yellow-400">Not:</strong>
+                    <span class="text-slate-300">Bu dosyalar silinmeden önce yedek klasörüne kopyalanacak.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- YEDEKLEME PLANI -->
+        <section class="mb-8">
+            <div class="bg-slate-800 border border-slate-600 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-slate-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-database"></i>
+                    Yedekleme Planı
+                </h2>
+
+                <div class="bg-slate-900 rounded p-4">
+                    <code class="text-sm text-green-400 block whitespace-pre-wrap"># Yedek klasörü
+storage/backups/themes-cleanup-2026-01-20/
+
+# İçerik
+├── Page-t-4/
+│   └── show.blade.php
+├── Blog-t-4/
+│   ├── show.blade.php
+│   └── partials/
+│       └── show-content.blade.php
+├── Service-t-3/
+│   ├── index.blade.php.backup
+│   └── show.blade.php.backup
+└── Page-panjur/
+    └── homepage.blade.php</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- KURALLAR ÖZETİ -->
+        <section class="mb-8">
+            <div class="bg-emerald-900/30 border border-emerald-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-list-check"></i>
+                    KAT'İ KURALLAR (Tema Sistemi Analizine Eklenecek)
+                </h2>
+
+                <ol class="space-y-3 text-slate-300">
+                    <li class="flex gap-3">
+                        <span class="bg-emerald-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">1</span>
+                        <span><strong>Modules içine t-X klasörü AÇILMAZ.</strong> Tüm tenant teması resources/views/themes/t-{id}/ altında.</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="bg-emerald-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">2</span>
+                        <span><strong>Header/Footer TEK dosya.</strong> Tüm sayfalar @include('themes.t-{id}.layouts.header') kullanır.</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="bg-emerald-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">3</span>
+                        <span><strong>Homepage dahil hiçbir sayfa inline header/footer içermez.</strong></span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="bg-emerald-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">4</span>
+                        <span><strong>Modüller fallback ile simple tema kullanır.</strong> Özelleştirme gerekirse resources/views/themes/ altına.</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="bg-emerald-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">5</span>
+                        <span><strong>Modules/*/themes/ altında sadece:</strong> simple, ixtif, muzibu (tenant-specific değil, modül-generic)</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- SONRAKI ADIM -->
+        <section class="mb-8">
+            <div class="bg-cyan-900/30 border border-cyan-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-forward"></i>
+                    Sonraki Adımlar
+                </h2>
+
+                <ol class="text-slate-300 space-y-2">
+                    <li>✅ Analiz tamamlandı</li>
+                    <li>⏳ Kullanıcı onayı bekleniyor</li>
+                    <li>⬜ Dosyaları yedekle</li>
+                    <li>⬜ Dosyaları sil</li>
+                    <li>⬜ Kuralları tema sistemi analizine (v26) ekle</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-6 border-t border-slate-700">
+            20 Ocak 2026 • Tuufi.com
+        </footer>
+    </div>
+</body>
+</html>

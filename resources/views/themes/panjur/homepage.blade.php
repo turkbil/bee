@@ -262,7 +262,7 @@
 
         {{-- Mobile Menu --}}
         <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="lg:hidden bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800">
-            <div class="container mx-auto px-4 py-4">
+            <div class="container mx-auto py-4">
                 <nav class="flex flex-col gap-3">
                     <a href="#" class="py-2 px-4 font-medium text-primary-600 bg-primary-50 dark:bg-primary-900/20 rounded-lg">Ana Sayfa</a>
                     <a href="#hizmetler" @click="mobileMenu = false" class="py-2 px-4 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">Hizmetlerimiz</a>

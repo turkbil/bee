@@ -55,7 +55,7 @@
 
     {{-- Minimal Header --}}
     <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div class="container mx-auto px-4 py-4">
+        <div class="container mx-auto py-4">
             <div class="flex items-center justify-between">
                 {{-- Logo --}}
                 <a href="/" class="flex items-center gap-3">

@@ -31,7 +31,7 @@
 
     {{-- MINIMAL SUBHEADER --}}
     <section class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 py-4">
+        <div class="container mx-auto py-4">
             <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 @foreach($breadcrumbsArray as $index => $crumb)
                     @if(isset($crumb['url']))
@@ -50,7 +50,7 @@
 
     {{-- CONTENT SECTION --}}
     <section class="bg-white dark:bg-gray-900 py-10 md:py-16">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
                 {{-- Main Content --}}
                 <article class="{{ $featuredImage ? 'lg:col-span-3' : 'lg:col-span-5 max-w-4xl mx-auto' }}">
@@ -90,7 +90,7 @@
     {{-- GALLERY SECTION --}}
     @if($galleryImages->count() > 0)
         <section class="bg-gray-50 dark:bg-gray-800 py-12 md:py-20">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div class="text-center mb-8">
                     <h2 class="text-xl md:text-2xl font-bold font-heading text-gray-900 dark:text-white mb-3">Galeri</h2>
                     <div class="w-16 h-1 bg-gradient-to-r from-primary-500 to-primary-600 mx-auto rounded-full"></div>

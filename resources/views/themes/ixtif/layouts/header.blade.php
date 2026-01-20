@@ -276,7 +276,7 @@
         <div id="top-bar"
              class="overflow-hidden bg-gray-100 dark:bg-[#0a0f1a]"
              @mouseenter="activeMegaMenu = null">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div class="flex items-center justify-between text-sm py-3">
                     <div class="flex items-center gap-4 sm:gap-6 text-gray-700 dark:text-gray-300">
                         @php
@@ -431,7 +431,7 @@
 
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="relative bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div id="nav-container" class="flex items-center justify-between transition-all duration-300"
                      :class="scrolled ? 'min-h-[80px]' : ''">
                     {{-- Logo - Sabit Genişlik Container --}}
@@ -1132,7 +1132,7 @@
                      x-transition:leave-end="opacity-0 -translate-y-3"
                      class="absolute left-0 right-0 top-full z-50"
                      x-cloak>
-                    <div class="container mx-auto px-4 sm:px-4 md:px-2 -mt-4 pt-4">
+                    <div class="container mx-auto -mt-4 pt-4">
                         @include('themes.ixtif.partials.mega-menu-products')
                     </div>
                 </div>
@@ -1148,7 +1148,7 @@
                      x-transition:leave-end="opacity-0 -translate-y-3"
                      class="absolute left-0 right-0 top-full z-50"
                      x-cloak>
-                    <div class="container mx-auto px-4 sm:px-4 md:px-2 -mt-4 pt-4">
+                    <div class="container mx-auto -mt-4 pt-4">
                         @include('themes.ixtif.partials.mega-menu-hakkimizda')
                     </div>
                 </div>

@@ -43,8 +43,8 @@
     @endphp
 
     {{-- MINIMAL SUBHEADER --}}
-    <section class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pt-20">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 py-4">
+    <section class="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto py-4">
             <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 @foreach($breadcrumbsArray as $index => $crumb)
                     @if(isset($crumb['url']))
@@ -65,7 +65,7 @@
 
     {{-- CONTENT --}}
     <section class="bg-white dark:bg-gray-900 py-10 md:py-16">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
 
             @if ($showCategories && !$selectedCategory)
                 {{-- KATEGORI LISTESI --}}

@@ -90,9 +90,12 @@
         </div>
 
         <!-- Footer Bottom -->
-        <div class="pt-8 border-t border-slate-800 text-center">
+        <div class="pt-8 border-t border-slate-800 text-center space-y-2">
             <p class="text-slate-500 text-sm">
                 &copy; {{ date('Y') }} {{ $siteName }}. Tüm hakları saklıdır. | A Grubu Seyahat Acentası İşletme Belgesi No: 9817
+            </p>
+            <p class="text-slate-600 text-xs">
+                Yapay Zeka, Web Tasarım ve Yazılım: <a href="https://turkbilisim.com.tr" target="_blank" rel="noopener" class="text-sky-400 hover:text-sky-300 transition-colors">Türk Bilişim</a>
             </p>
         </div>
     </div>

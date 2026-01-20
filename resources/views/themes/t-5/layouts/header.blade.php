@@ -8,7 +8,7 @@
 @endphp
 
 <!-- HEADER -->
-<header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
+<header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm">
     <div class="container mx-auto ">
         <div class="flex items-center justify-between h-20">
             <!-- Logo -->
@@ -24,7 +24,6 @@
 
             <!-- Desktop Navigation -->
             <nav class="hidden xl:flex items-center space-x-8">
-                <a href="{{ url('/') }}" class="font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">Ana Sayfa</a>
                 <a href="{{ module_locale_url('service', 'index') }}" class="font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">Hizmetlerimiz</a>
                 <a href="{{ module_locale_url('page', 'show', ['hakkimizda']) }}" class="font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">Hakkımızda</a>
                 <a href="{{ module_locale_url('page', 'show', ['iletisim']) }}" class="font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">İletişim</a>
@@ -63,7 +62,6 @@
                 </button>
             </div>
             <nav class="space-y-4">
-                <a href="{{ url('/') }}" @click="mobileMenu = false" class="block py-3 px-4 rounded-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 transition-colors">Ana Sayfa</a>
                 <a href="{{ module_locale_url('service', 'index') }}" @click="mobileMenu = false" class="block py-3 px-4 rounded-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 transition-colors">Hizmetlerimiz</a>
                 <a href="{{ module_locale_url('page', 'show', ['hakkimizda']) }}" @click="mobileMenu = false" class="block py-3 px-4 rounded-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 transition-colors">Hakkımızda</a>
                 <a href="{{ module_locale_url('page', 'show', ['iletisim']) }}" @click="mobileMenu = false" class="block py-3 px-4 rounded-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 transition-colors">İletişim</a>

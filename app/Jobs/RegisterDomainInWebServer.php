@@ -115,7 +115,8 @@ class RegisterDomainInWebServer implements ShouldQueue
 
     /**
      * Nginx config'e domain ekle
-     * Dinamik olarak son eklenen domain'den sonra ekler
+     * SADECE ana server bloğuna ekler (qrompt redirect bloğuna değil)
+     * client_max_body_size satırından önce ekler (bu sadece ana blokta var)
      */
     protected function addToNginx(): bool
     {
@@ -126,39 +127,34 @@ class RegisterDomainInWebServer implements ShouldQueue
                 return false;
             }
 
-            // Domain zaten var mı kontrol et
-            if (str_contains($config, "server_name {$this->domain};")) {
-                Log::channel('system')->info("ℹ️ Domain nginx'te zaten mevcut: {$this->domain}");
-                return true;
+            // Domain zaten var mı kontrol et (ana server bloğunda)
+            // client_max_body_size'dan sonraki kısımda ara (ana blok)
+            $mainBlockStart = strpos($config, 'client_max_body_size');
+            if ($mainBlockStart !== false) {
+                $mainBlock = substr($config, $mainBlockStart);
+                if (str_contains($mainBlock, "server_name {$this->domain};")) {
+                    Log::channel('system')->info("ℹ️ Domain nginx'te zaten mevcut: {$this->domain}");
+                    return true;
+                }
             }
 
-            // Dinamik olarak son eklenen tenant domain'ini bul
-            $lastDomain = $this->getLastAddedDomain();
+            // client_max_body_size satırından önce ekle (SADECE ana server bloğu)
+            // Bu satır sadece ana server bloğunda var, qrompt redirect bloğunda yok
+            $pattern = '/(\n)(\s*client_max_body_size\s)/';
+            $replacement = "$1\tserver_name {$this->domain};\n\tserver_name www.{$this->domain};\n$2";
 
-            if ($lastDomain) {
-                // Son domain'den sonra ekle
-                $escapedDomain = preg_quote($lastDomain, '/');
-                $pattern = "/(server_name www\\.{$escapedDomain};)/";
+            $newConfig = preg_replace($pattern, $replacement, $config, 1); // Sadece ilk eşleşme
 
-                $newConfig = preg_replace(
-                    $pattern,
-                    "$1\n\tserver_name {$this->domain};\n\tserver_name www.{$this->domain};",
-                    $config
-                );
-
-                if ($newConfig !== $config) {
-                    if ($this->writeConfig($this->nginxConfig, $newConfig)) {
-                        Log::channel('system')->info("✅ Nginx: {$this->domain} eklendi (www.{$lastDomain} sonrasına)");
-                    } else {
-                        return $this->addToNginxBeforeSSL($config);
-                    }
+            if ($newConfig !== $config) {
+                if ($this->writeConfig($this->nginxConfig, $newConfig)) {
+                    Log::channel('system')->info("✅ Nginx: {$this->domain} eklendi (client_max_body_size öncesine)");
                 } else {
-                    // Fallback: ssl_certificate satırından önce ekle
-                    return $this->addToNginxBeforeSSL($config);
+                    Log::channel('system')->error("❌ Nginx: Config yazılamadı");
+                    return false;
                 }
             } else {
-                // Fallback: ssl_certificate satırından önce ekle
-                return $this->addToNginxBeforeSSL($config);
+                Log::channel('system')->error("❌ Nginx: Domain eklenemedi - client_max_body_size bulunamadı");
+                return false;
             }
 
             // Config test

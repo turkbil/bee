@@ -128,7 +128,7 @@
             <div class="absolute bottom-20 right-1/3 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-3xl"></div>
         </div>
 
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 relative z-10">
+        <div class="container mx-auto relative z-10">
             <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                 {{-- Left: Text Content --}}
                 <div class="order-2 lg:order-1">
@@ -229,7 +229,7 @@
     {{-- Stats Section --}}
     <section class="py-8 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 relative overflow-hidden">
         <div class="absolute inset-0 bg-black/10"></div>
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 relative z-10">
+        <div class="container mx-auto relative z-10">
             <div class="grid grid-cols-3 gap-6 md:gap-8">
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="0">
                     <div class="text-3xl md:text-4xl font-bold text-white mb-1">40</div>
@@ -261,7 +261,7 @@
         $colors = ['primary', 'blue', 'green', 'purple', 'red', 'amber'];
     @endphp
     <section id="hizmetler" class="py-16 md:py-24 bg-gray-50 dark:bg-slate-900">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             {{-- Section Header --}}
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
                 <span class="inline-block px-4 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium rounded-full mb-4" data-aos="fade-up">Hizmetlerimiz</span>
@@ -338,7 +338,7 @@
 
     {{-- Why Us Section --}}
     <section id="hakkimizda" class="py-16 md:py-24 bg-white dark:bg-slate-800">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             {{-- Section Header --}}
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
                 <span class="inline-block px-4 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium rounded-full mb-4" data-aos="fade-up">Neden Biz?</span>
@@ -405,7 +405,7 @@
 
     {{-- How It Works Section --}}
     <section class="py-16 md:py-24 bg-gray-50 dark:bg-slate-900">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             {{-- Section Header --}}
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
                 <span class="inline-block px-4 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium rounded-full mb-4" data-aos="fade-up">Süreç</span>
@@ -491,7 +491,7 @@
             <div class="absolute bottom-10 right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
         </div>
 
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 relative z-10">
+        <div class="container mx-auto relative z-10">
             <div class="max-w-4xl mx-auto text-center">
                 <div class="w-20 h-20 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-8" data-aos="zoom-in">
                     <i class="fat fa-phone-volume text-white text-4xl animate-pulse"></i>
@@ -537,7 +537,7 @@
 
     {{-- SEO Content Section --}}
     <section class="py-16 md:py-20 bg-white dark:bg-slate-800">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-2xl md:text-3xl font-bold font-heading text-gray-900 dark:text-white mb-6 text-center" data-aos="fade-up">
                     İstanbul <span class="text-primary-500">Panjur Tamiri</span> Hizmeti

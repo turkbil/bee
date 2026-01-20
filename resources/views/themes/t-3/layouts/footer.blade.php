@@ -16,7 +16,7 @@
 
 {{-- Footer --}}
 <footer class="bg-gray-900 dark:bg-black text-white pt-16 pb-8">
-    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+    <div class="container mx-auto">
 
         <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-12 mb-12">
             {{-- Column 1: About --}}

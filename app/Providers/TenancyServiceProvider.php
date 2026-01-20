@@ -29,6 +29,7 @@ class TenancyServiceProvider extends ServiceProvider
                     Jobs\CreateDatabase::class, // ✅ DB oluştur
                     Jobs\MigrateDatabase::class, // ✅ Migration çalıştır
                     Jobs\SeedDatabase::class, // ✅ Otomatik seed: roles, users, sample data
+                    \App\Jobs\CreateThemeFiles::class, // ✅ Otomatik tema dosyaları oluştur
 
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!

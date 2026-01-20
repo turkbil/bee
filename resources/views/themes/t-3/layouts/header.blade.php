@@ -16,7 +16,7 @@
 {{-- Top Bar - Telefon numaralari --}}
 @if($sitePhone || $siteMobile)
 <div class="bg-gradient-to-r from-gray-900 to-gray-800 dark:from-black dark:to-gray-900 text-white py-2 text-sm">
-    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+    <div class="container mx-auto">
         {{-- Mobil/Tablet: Numaralar --}}
         <div class="flex xl:hidden items-center justify-center gap-2 flex-wrap">
             @if($sitePhone)
@@ -71,7 +71,7 @@
 
 {{-- Main Header --}}
 <header class="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 transition-all duration-300">
-    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+    <div class="container mx-auto">
         <div class="flex items-center justify-between py-3 lg:py-4">
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-3 group shrink-0">
@@ -175,7 +175,7 @@
 
     {{-- Mobile Menu (below xl) --}}
     <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-cloak class="xl:hidden bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800">
-        <div class="container mx-auto px-4 py-4">
+        <div class="container mx-auto py-4">
             <nav class="flex flex-col gap-2">
                 <a href="{{ url('/service') }}" @click="mobileMenu = false" class="py-3 px-4 font-medium {{ request()->is('service*') ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800' }} rounded-lg transition-colors">Hizmetler</a>
                 <a href="{{ url('/page/hakkimizda') }}" @click="mobileMenu = false" class="py-3 px-4 font-medium {{ request()->is('page/hakkimizda') ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800' }} rounded-lg transition-colors">Hakkımızda</a>

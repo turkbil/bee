@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Dokümanı | Mahmutoğlu Hukuk & Danışmanlık</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+
+    <div class="container mx-auto px-4 py-12 max-w-5xl">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-full mb-4">
+                <i class="fat fa-file-code text-amber-500"></i>
+                <span class="text-amber-400 text-sm">Prompt Dokümanı</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4">Mahmutoğlu Hukuk & Danışmanlık</h1>
+            <p class="text-white/60">Web Sitesi Tasarım Dokümanı - v1</p>
+        </div>
+
+        <!-- Fingerprint -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-amber-500/20">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-amber-400 mb-1">
+                        <i class="fat fa-fingerprint mr-2"></i>Tasarım Fingerprint
+                    </h2>
+                    <p class="text-white/60 text-sm">Bu kombinasyon benzersiz olarak kaydedildi</p>
+                </div>
+                <div class="text-right">
+                    <code class="text-2xl font-mono text-amber-500">MH-v1-a7f3</code>
+                    <p class="text-white/40 text-xs mt-1">20 Ocak 2026</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sektor ve Tarz -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-briefcase mr-2"></i>Sektör ve Tarz Bilgileri
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-white/70 text-sm mb-2">Sektör</h3>
+                    <p class="text-white font-medium">Hukuk Bürosu / Avukatlık</p>
+                </div>
+                <div>
+                    <h3 class="text-white/70 text-sm mb-2">Firma</h3>
+                    <p class="text-white font-medium">Mahmutoğlu Hukuk & Danışmanlık</p>
+                </div>
+                <div>
+                    <h3 class="text-white/70 text-sm mb-2">Ana Tarz</h3>
+                    <p class="text-white font-medium">Lüks / Premium</p>
+                </div>
+                <div>
+                    <h3 class="text-white/70 text-sm mb-2">Alternatif Tarz</h3>
+                    <p class="text-white font-medium">Art Deco</p>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-slate-800">
+                <h3 class="text-white/70 text-sm mb-3">Seçilen Stil Etiketleri</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm">Lüks / Premium</span>
+                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm">Art Deco</span>
+                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm">Amber Palette</span>
+                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm">Nefes Alan / Spacious</span>
+                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm">Mega Menu</span>
+                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm">Centered Footer</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Token Sistemi -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-palette mr-2"></i>Design Token Sistemi
+            </h2>
+
+            <!-- Renk Paleti -->
+            <div class="mb-6">
+                <h3 class="text-white/70 text-sm mb-3">Renk Paleti (40 Gradient'ten #7 Navy Professional + Amber)</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <div class="h-16 bg-amber-500 rounded-lg mb-2"></div>
+                        <p class="text-white text-sm font-medium">Primary</p>
+                        <p class="text-white/50 text-xs">amber-500 (#f59e0b)</p>
+                    </div>
+                    <div>
+                        <div class="h-16 bg-amber-600 rounded-lg mb-2"></div>
+                        <p class="text-white text-sm font-medium">Secondary</p>
+                        <p class="text-white/50 text-xs">amber-600 (#d97706)</p>
+                    </div>
+                    <div>
+                        <div class="h-16 bg-amber-700 rounded-lg mb-2"></div>
+                        <p class="text-white text-sm font-medium">Accent</p>
+                        <p class="text-white/50 text-xs">amber-700 (#b45309)</p>
+                    </div>
+                    <div>
+                        <div class="h-16 bg-slate-950 rounded-lg mb-2 border border-slate-800"></div>
+                        <p class="text-white text-sm font-medium">Background</p>
+                        <p class="text-white/50 text-xs">slate-950 (#020617)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gradient Ailesi -->
+            <div class="mb-6">
+                <h3 class="text-white/70 text-sm mb-3">Gradient Ailesi</h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div>
+                        <div class="h-16 bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg mb-2"></div>
+                        <p class="text-white text-sm">Primary Gradient</p>
+                        <code class="text-white/50 text-xs">from-amber-500 to-amber-600</code>
+                    </div>
+                    <div>
+                        <div class="h-16 bg-gradient-to-br from-amber-500 to-amber-700 rounded-lg mb-2"></div>
+                        <p class="text-white text-sm">Icon/Badge Gradient</p>
+                        <code class="text-white/50 text-xs">from-amber-500 to-amber-700</code>
+                    </div>
+                    <div>
+                        <div class="h-16 bg-gradient-to-br from-amber-500/20 to-amber-700/10 rounded-lg mb-2"></div>
+                        <p class="text-white text-sm">Subtle Gradient</p>
+                        <code class="text-white/50 text-xs">from-amber-500/20 to-amber-700/10</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typography -->
+            <div class="mb-6">
+                <h3 class="text-white/70 text-sm mb-3">Font Çifti (50 Çift'ten #41 - Premium Kategorisi)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-800/50 rounded-lg">
+                        <p class="text-white/50 text-xs mb-1">Heading Font</p>
+                        <p class="text-2xl text-white" style="font-family: 'Cinzel', serif;">Cinzel</p>
+                        <p class="text-white/50 text-sm mt-2">Klasik, güçlü, hukuki otorite hissi</p>
+                    </div>
+                    <div class="p-4 bg-slate-800/50 rounded-lg">
+                        <p class="text-white/50 text-xs mb-1">Body Font</p>
+                        <p class="text-2xl text-white" style="font-family: 'Inter', sans-serif;">Inter</p>
+                        <p class="text-white/50 text-sm mt-2">Modern, okunabilir, profesyonel</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spacing & Border -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-white/70 text-sm mb-3">Spacing Sistemi</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="text-white/60"><span class="text-amber-400">Section Padding:</span> py-20 md:py-32</li>
+                        <li class="text-white/60"><span class="text-amber-400">Container:</span> px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20</li>
+                        <li class="text-white/60"><span class="text-amber-400">Card Padding:</span> p-6 md:p-8</li>
+                        <li class="text-white/60"><span class="text-amber-400">Gap:</span> gap-6 md:gap-8</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white/70 text-sm mb-3">Border & Shadow</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="text-white/60"><span class="text-amber-400">Card Border:</span> rounded-2xl</li>
+                        <li class="text-white/60"><span class="text-amber-400">Button Border:</span> rounded-lg</li>
+                        <li class="text-white/60"><span class="text-amber-400">Accent Border:</span> border-amber-500/10</li>
+                        <li class="text-white/60"><span class="text-amber-400">Hover Border:</span> border-amber-500/30</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layout Seçimleri -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-layer-group mr-2"></i>Layout Seçimleri
+            </h2>
+
+            <div class="space-y-4">
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">Hero Section</span>
+                        <span class="text-amber-400 text-sm">#113 Dark Luxury</span>
+                    </div>
+                    <p class="text-white/60 text-sm">Full-screen image with dark overlay + centered content + Art Deco geometric elements + animated gradient text + stats bar</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">About Section</span>
+                        <span class="text-amber-400 text-sm">#21 Split Layout</span>
+                    </div>
+                    <p class="text-white/60 text-sm">Sol %60 metin + Sağ %40 animated border image + floating stat card</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">Why Us Section</span>
+                        <span class="text-amber-400 text-sm">#61 Card-Based Grid</span>
+                    </div>
+                    <p class="text-white/60 text-sm">3-column grid + icon headers + hover border effect + CTA card</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">Services Section</span>
+                        <span class="text-amber-400 text-sm">#1 Card Grid 4-column</span>
+                    </div>
+                    <p class="text-white/60 text-sm">4-column grid + gradient border cards + icon hover effect</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">Process Section</span>
+                        <span class="text-amber-400 text-sm">#26 Numbered Horizontal</span>
+                    </div>
+                    <p class="text-white/60 text-sm">5-step horizontal process + numbered circles + arrow connections</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">Team Section</span>
+                        <span class="text-amber-400 text-sm">#61 Card-Based</span>
+                    </div>
+                    <p class="text-white/60 text-sm">Featured founder card + 3-column team grid</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">Blog Section</span>
+                        <span class="text-amber-400 text-sm">#1 Card Grid 4-column</span>
+                    </div>
+                    <p class="text-white/60 text-sm">4-column blog cards + image hover zoom + category badges</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">FAQ Section</span>
+                        <span class="text-amber-400 text-sm">#7 Accordion Sidebar</span>
+                    </div>
+                    <p class="text-white/60 text-sm">Split layout: Sol CTA + Sağ accordion (Alpine.js)</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">Contact Section</span>
+                        <span class="text-amber-400 text-sm">#1 Split Form</span>
+                    </div>
+                    <p class="text-white/60 text-sm">5-column grid: 2-col info cards + 3-col form + map</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium">Footer</span>
+                        <span class="text-amber-400 text-sm">#1 Multi-Column + Centered Copyright</span>
+                    </div>
+                    <p class="text-white/60 text-sm">4-column footer: Logo/about + Quick links + Services + Contact + centered copyright</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Sırası -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-list-ol mr-2"></i>Section Sırası
+            </h2>
+            <p class="text-white/60 text-sm mb-4">Seçilen Sıralama: <span class="text-amber-400">#2 İnsan Odaklı (Modifiye)</span></p>
+            <ol class="space-y-2">
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">1</span>
+                    <span class="text-white">Hero</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">2</span>
+                    <span class="text-white">About (Hakkımızda)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">3</span>
+                    <span class="text-white">Why Us (Neden Biz)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">4</span>
+                    <span class="text-white">Services (8 Hizmet Alanı)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">5</span>
+                    <span class="text-white">Process (Süreçlerimiz)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">6</span>
+                    <span class="text-white">Team (Ekibimiz)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">7</span>
+                    <span class="text-white">Blog (Makaleler)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">8</span>
+                    <span class="text-white">FAQ (SSS)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">9</span>
+                    <span class="text-white">Contact (İletişim)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm font-medium">10</span>
+                    <span class="text-white">Footer</span>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Mega Menu & Hover -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-mouse-pointer mr-2"></i>Mega Menu & Hover Efektleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-white font-medium mb-3">Mega Menu Stili</h3>
+                    <p class="text-white/60 text-sm mb-2">Seçilen: <span class="text-amber-400">#1 Full-Width Mega (Grid with Icons)</span></p>
+                    <ul class="space-y-1 text-sm text-white/60">
+                        <li>• Kurumsal: 3 link dropdown</li>
+                        <li>• Hizmetler: 2-column grid (8 hizmet)</li>
+                        <li>• Icon hover: fat → fas geçişi</li>
+                        <li>• Animated reveal (opacity + translateY)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-3">Hover Efektleri</h3>
+                    <p class="text-white/60 text-sm mb-2">Seçilenler (20 efektten):</p>
+                    <ul class="space-y-1 text-sm text-white/60">
+                        <li>• <span class="text-amber-400">#1</span> Icon weight değişimi (fat → fas)</li>
+                        <li>• <span class="text-amber-400">#2</span> Icon scale (1.1x)</li>
+                        <li>• <span class="text-amber-400">#9</span> Text renk değişimi (title → amber)</li>
+                        <li>• <span class="text-amber-400">#14</span> Gradient border reveal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-slate-800/50 rounded-lg">
+                <h3 class="text-white font-medium mb-2">Hover Kuralı (Kritik!)</h3>
+                <p class="text-white/60 text-sm">
+                    ✅ Card SABİT kalır - transform/scale/translate YOK<br>
+                    ✅ İçerik hareket eder - icon scale, title color change<br>
+                    ✅ Border hover - shadow yerine border-color değişimi
+                </p>
+            </div>
+        </div>
+
+        <!-- Özel Efektler -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-sparkles mr-2"></i>Özel Efektler
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-white font-medium mb-3">Animated Gradient Text</h3>
+                    <p class="text-white/60 text-sm mb-2">Hero ve section başlıklarında kullanıldı</p>
+                    <code class="block p-3 bg-slate-800 rounded text-xs text-amber-400">
+                        background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b, #d97706);<br>
+                        animation: gradientFlow 6s ease infinite;
+                    </code>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-3">Animated Gradient Border</h3>
+                    <p class="text-white/60 text-sm mb-2">Featured cards ve form container'da</p>
+                    <code class="block p-3 bg-slate-800 rounded text-xs text-amber-400">
+                        background: linear-gradient(90deg, #f59e0b, #fbbf24, #d97706);<br>
+                        animation: borderFlow 4s ease infinite;
+                    </code>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-3">Art Deco Pattern</h3>
+                    <p class="text-white/60 text-sm mb-2">Background pattern olarak kullanıldı</p>
+                    <code class="block p-3 bg-slate-800 rounded text-xs text-amber-400">
+                        SVG diamond pattern<br>
+                        fill-opacity: 0.05
+                    </code>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-3">Geometric Diamonds</h3>
+                    <p class="text-white/60 text-sm mb-2">Hero section dekoratif elementler</p>
+                    <code class="block p-3 bg-slate-800 rounded text-xs text-amber-400">
+                        transform: rotate(45deg);<br>
+                        border: 2px solid rgba(245, 158, 11, 0.3);
+                    </code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dark/Light Mode -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-circle-half-stroke mr-2"></i>Dark/Light Mode
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-white font-medium mb-3">Dark Mode (Varsayılan)</h3>
+                    <ul class="space-y-2 text-sm text-white/60">
+                        <li>• Background: slate-950, slate-900</li>
+                        <li>• Text: white, white/80, white/60</li>
+                        <li>• Accent: amber-500, amber-400</li>
+                        <li>• Border: amber-500/10, amber-500/20</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-3">Light Mode</h3>
+                    <ul class="space-y-2 text-sm text-white/60">
+                        <li>• Background: white, slate-50</li>
+                        <li>• Text: slate-900, slate-700</li>
+                        <li>• Accent: amber-600, amber-500</li>
+                        <li>• Border: amber-500/20, slate-200</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                <p class="text-amber-400 text-sm">
+                    <i class="fat fa-info-circle mr-2"></i>
+                    Toggle butonu header'da mevcut. localStorage ile tercih hatırlanır.
+                </p>
+            </div>
+        </div>
+
+        <!-- Leonardo.ai Görsel Promptları -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-image mr-2"></i>Leonardo.ai Görsel Promptları
+            </h2>
+
+            <div class="space-y-6">
+
+                <!-- Hero Background -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">hero-bg.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of a prestigious law firm office interior, floor-to-ceiling windows with Istanbul Bosphorus view at golden hour, dark mahogany wood paneling, leather Chesterfield sofas, brass accents and Art Deco geometric patterns, warm ambient lighting, professional atmosphere, Canon EOS R5 24-70mm f/2.8, shallow depth of field, Kodak Portra 400 film look, subtle lens flare, 8k quality, architectural photography style
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-amber-900/50 text-amber-300 rounded">Preset: Premium Interior</span>
+                    </div>
+                </div>
+
+                <!-- About Image -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">about-office.jpg</span>
+                        <span class="text-xs text-slate-400">800x933</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Professional editorial photograph of a modern law firm meeting room, long polished conference table, executive leather chairs, legal books on shelves, city skyline through windows, natural daylight, warm wood tones with gold accents, sophisticated corporate atmosphere, Sony A7R IV 35mm f/1.4, medium depth of field, clean composition, Fuji Velvia color tones, subtle vignette, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Editorial</span>
+                    </div>
+                </div>
+
+                <!-- Founder Portrait -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">founder-portrait.jpg</span>
+                        <span class="text-xs text-slate-400">600x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Professional headshot portrait of a distinguished Turkish male lawyer in his 50s, silver-gray hair, wearing tailored navy blue suit with gold tie, confident but approachable expression, law office background with bookshelves slightly blurred, Rembrandt lighting, Canon EOS R5 85mm f/1.4, shallow depth, warm skin tones, subtle film grain, executive portrait style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Portrait</span>
+                    </div>
+                </div>
+
+                <!-- Team Member 1 -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">team-lawyer-1.jpg</span>
+                        <span class="text-xs text-slate-400">600x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Professional headshot of a Turkish female lawyer in her 30s, dark brown hair in professional updo, wearing charcoal gray blazer with white blouse, intelligent and confident expression, modern office background, soft studio lighting, Canon EOS R5 85mm f/1.8, shallow depth, natural makeup, corporate portrait style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Portrait</span>
+                    </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">team-lawyer-2.jpg</span>
+                        <span class="text-xs text-slate-400">600x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Professional headshot of a Turkish male lawyer in his 40s, short dark hair with slight gray at temples, wearing black suit with burgundy tie, serious but approachable expression, law library background, split lighting, Sony A7R IV 85mm f/1.4, shallow depth, warm skin tones, executive portrait style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Portrait</span>
+                    </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">team-lawyer-3.jpg</span>
+                        <span class="text-xs text-slate-400">600x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Professional headshot of a young Turkish male lawyer in his early 30s, clean-shaven, wearing navy blue suit with light blue tie, energetic and determined expression, modern glass office background, natural window light, Canon EOS R5 50mm f/1.2, medium depth, fresh professional look, corporate portrait style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Portrait</span>
+                    </div>
+                </div>
+
+                <!-- Blog Images -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">blog-mobbing.jpg</span>
+                        <span class="text-xs text-slate-400">800x450</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of a stressed office worker at desk, subtle shadows, corporate office environment, papers scattered, laptop screen glowing, dramatic side lighting creating tension, conceptual workplace harassment imagery, Canon EOS R5 35mm f/1.8, shallow depth, desaturated color grade with warm highlights, documentary style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Documentary</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">blog-traffic.jpg</span>
+                        <span class="text-xs text-slate-400">800x450</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of traffic accident scene aftermath, two cars with minor damage, police lights in background, insurance documents visible, urban street setting, evening blue hour lighting, Canon EOS R5 24mm f/2.8, wide angle, cinematic color grade with orange-teal tones, photojournalism style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Photojournalism</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">blog-company.jpg</span>
+                        <span class="text-xs text-slate-400">800x450</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of business meeting in modern boardroom, professionals reviewing documents with company registration papers, laptop showing corporate structure chart, glass table with legal documents, natural daylight, Canon EOS R5 35mm f/2.0, medium depth, warm corporate atmosphere, business photography style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Corporate</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">blog-law-update.jpg</span>
+                        <span class="text-xs text-slate-400">800x450</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Editorial photograph of Turkish Labor Law book on desk, gavel beside it, reading glasses resting on open pages, warm desk lamp lighting, shallow depth of field focusing on book title, dark wood desk, professional atmosphere, Canon EOS R5 50mm f/1.4, Kodak Portra color tones, still life photography, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Still Life</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Teknik Notlar -->
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 border border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400">
+                <i class="fat fa-code mr-2"></i>Teknik Notlar
+            </h2>
+
+            <div class="space-y-4 text-sm">
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <h3 class="text-white font-medium mb-2">Kullanılan Teknolojiler</h3>
+                    <ul class="space-y-1 text-white/60">
+                        <li>• Tailwind CSS v4 (CDN)</li>
+                        <li>• Alpine.js (Accordion, interactions)</li>
+                        <li>• AOS (Scroll animations)</li>
+                        <li>• FontAwesome Pro 7 (Local)</li>
+                        <li>• Google Fonts (Cinzel + Inter)</li>
+                    </ul>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <h3 class="text-white font-medium mb-2">Responsive Breakpoints</h3>
+                    <ul class="space-y-1 text-white/60">
+                        <li>• sm: 640px</li>
+                        <li>• md: 768px</li>
+                        <li>• lg: 1024px</li>
+                        <li>• xl: 1280px</li>
+                        <li>• 2xl: 1536px</li>
+                    </ul>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <h3 class="text-white font-medium mb-2">Performans Optimizasyonları</h3>
+                    <ul class="space-y-1 text-white/60">
+                        <li>• Lazy loading images</li>
+                        <li>• AOS once: true (tek seferlik animasyon)</li>
+                        <li>• GPU-accelerated animations (transform, opacity)</li>
+                        <li>• Preconnect for Google Fonts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center pt-8 border-t border-slate-800">
+            <p class="text-white/40 text-sm">20 Ocak 2026 • Mahmutoğlu Hukuk & Danışmanlık Tasarım Dokümanı</p>
+        </div>
+    </div>
+
+</body>
+</html>

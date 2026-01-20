@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahmutoğlu Hukuk & Danışmanlık | Hukuki Haklarınız İçin Güvenilir Çözüm Ortağınız</title>
+    <meta name="description" content="Mahmutoğlu Hukuk & Danışmanlık | İstanbul merkezli profesyonel hukuk bürosu. Ticaret, şirketler, ceza, sağlık, sigorta, idare, borçlar ve iş hukuku alanlarında uzman avukatlık hizmetleri.">
+
+    <!-- Fonts: Cinzel (Art Deco Headings) + Lora (Readable Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome Pro 7 Local -->
+    <link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'heading': ['Cinzel', 'serif'],
+                        'body': ['Lora', 'serif'],
+                    },
+                    colors: {
+                        'gold': {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Art Deco Geometric Pattern */
+        .art-deco-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f59e0b' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Animated Gradient Text */
+        .gradient-text-animate {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #d97706, #f59e0b);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientFlow 6s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Static Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Gradient Border Card */
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24, #d97706);
+            padding: 1px;
+            border-radius: 0.75rem;
+        }
+
+        .gradient-border-inner {
+            background: #ffffff;
+            border-radius: calc(0.75rem - 1px);
+            height: 100%;
+        }
+
+        .dark .gradient-border-inner {
+            background: #0f172a;
+        }
+
+        /* Animated Border */
+        .animated-border {
+            position: relative;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #d97706, #f59e0b);
+            background-size: 300% 100%;
+            padding: 2px;
+            border-radius: 0.75rem;
+            animation: borderFlow 4s ease infinite;
+        }
+
+        @keyframes borderFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .animated-border-inner {
+            background: #ffffff;
+            border-radius: calc(0.75rem - 2px);
+            height: 100%;
+        }
+
+        .dark .animated-border-inner {
+            background: #0f172a;
+        }
+
+        /* Art Deco Line */
+        .art-deco-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #f59e0b 20%, #fbbf24 50%, #f59e0b 80%, transparent 100%);
+        }
+
+        /* Art Deco Diamond */
+        .art-deco-diamond {
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            transform: rotate(45deg);
+        }
+
+        /* Icon Hover Effect */
+        .icon-hover {
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .icon-hover {
+            transform: scale(1.1);
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #f59e0b, #d97706);
+            border-radius: 4px;
+        }
+
+        /* Mobile Menu Animation */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Art Deco Corner */
+        .art-deco-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #f59e0b;
+        }
+
+        .art-deco-corner-tl {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .art-deco-corner-tr {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .art-deco-corner-bl {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+        }
+
+        .art-deco-corner-br {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* Underline Animation */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Button Shine Effect */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-shine:hover::before {
+            left: 100%;
+        }
+
+        /* Service Card Hover */
+        .service-card {
+            border: 1px solid transparent;
+            transition: all 0.4s ease;
+        }
+
+        .service-card:hover {
+            border-color: #f59e0b;
+            transform: translateY(-4px);
+        }
+
+        /* Value Card */
+        .value-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(180deg, #f59e0b, #fbbf24);
+            transition: height 0.4s ease;
+        }
+
+        .value-card:hover::before {
+            height: 100%;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Scrollbar Light Mode */
+        ::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-body antialiased transition-colors duration-300">
+
+    <!-- ========== HEADER ========== -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="header">
+        <div class="bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-amber-500/10 dark:border-amber-500/10">
+            <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+                <nav class="flex items-center justify-between py-4 lg:py-5">
+
+                    <!-- Logo (Left) -->
+                    <div class="flex-shrink-0">
+                        <a href="#" class="flex flex-col items-center group">
+                            <div class="flex items-center space-x-2">
+                                <div class="art-deco-diamond"></div>
+                                <span class="font-heading text-lg lg:text-xl tracking-[0.15em] uppercase gradient-text font-semibold">Mahmutoğlu</span>
+                                <div class="art-deco-diamond"></div>
+                            </div>
+                            <span class="font-heading text-[9px] lg:text-[10px] tracking-[0.3em] uppercase text-amber-700 dark:text-amber-500/70 mt-0.5">Hukuk & Danışmanlık</span>
+                        </a>
+                    </div>
+
+                    <!-- Nav Links (Right - Desktop) -->
+                    <div class="hidden lg:flex items-center space-x-8">
+                        <a href="#hizmetler" class="nav-link font-heading text-sm font-semibold tracking-widest uppercase text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Hizmetler</a>
+                        <a href="#hakkimizda" class="nav-link font-heading text-sm font-semibold tracking-widest uppercase text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Hakkımızda</a>
+                        <a href="#degerler" class="nav-link font-heading text-sm font-semibold tracking-widest uppercase text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Değerler</a>
+                        <a href="#iletisim" class="nav-link font-heading text-sm font-semibold tracking-widest uppercase text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">İletişim</a>
+
+                        <!-- Dark/Light Toggle -->
+                        <button id="themeToggle" class="p-2 text-amber-700 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors" aria-label="Tema Değiştir">
+                            <i class="fat fa-sun-bright text-lg hidden dark:inline"></i>
+                            <i class="fat fa-moon-stars text-lg dark:hidden"></i>
+                        </button>
+
+                        <!-- CTA Button -->
+                        <a href="#iletisim" class="btn-shine bg-gradient-to-r from-amber-600 to-amber-500 text-white font-heading text-sm tracking-widest uppercase px-6 py-3 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all">
+                            Randevu
+                        </a>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" class="lg:hidden p-2 text-amber-700 dark:text-amber-400" aria-label="Menü">
+                        <i class="fat fa-bars text-2xl"></i>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-80 max-w-full bg-white dark:bg-slate-950 z-50 shadow-2xl lg:hidden">
+        <div class="flex flex-col h-full p-6">
+            <div class="flex justify-between items-center mb-8">
+                <span class="font-heading text-lg tracking-widest uppercase gradient-text">Menü</span>
+                <button id="mobileMenuClose" class="p-2 text-amber-700 dark:text-amber-400">
+                    <i class="fat fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            <nav class="flex flex-col space-y-4">
+                <a href="#hizmetler" class="font-heading text-lg font-semibold tracking-widest uppercase text-slate-800 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors py-3 border-b border-slate-200 dark:border-slate-800">Hizmetler</a>
+                <a href="#hakkimizda" class="font-heading text-lg font-semibold tracking-widest uppercase text-slate-800 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors py-3 border-b border-slate-200 dark:border-slate-800">Hakkımızda</a>
+                <a href="#degerler" class="font-heading text-lg font-semibold tracking-widest uppercase text-slate-800 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors py-3 border-b border-slate-200 dark:border-slate-800">Değerler</a>
+                <a href="#iletisim" class="font-heading text-lg font-semibold tracking-widest uppercase text-slate-800 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors py-3 border-b border-slate-200 dark:border-slate-800">İletişim</a>
+            </nav>
+            <div class="mt-auto">
+                <a href="#iletisim" class="btn-shine block text-center bg-gradient-to-r from-amber-600 to-amber-500 text-white font-heading tracking-widest uppercase px-6 py-4 rounded-lg">
+                    Randevu Al
+                </a>
+                <div class="flex items-center justify-center mt-6 space-x-4">
+                    <button id="themeToggleMobile" class="p-3 text-amber-700 dark:text-amber-400 border border-amber-600/30 dark:border-amber-500/30 rounded-lg">
+                        <i class="fat fa-sun-bright hidden dark:inline"></i>
+                        <i class="fat fa-moon-stars dark:hidden"></i>
+                    </button>
+                    <a href="tel:+902166296411" class="p-3 text-amber-700 dark:text-amber-400 border border-amber-600/30 dark:border-amber-500/30 rounded-lg">
+                        <i class="fat fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/60 z-40 hidden lg:hidden"></div>
+
+    <!-- ========== HERO SECTION ========== -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden art-deco-pattern bg-gradient-to-b from-slate-100 to-white dark:from-slate-950 dark:to-slate-900">
+        <!-- Background Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-b from-amber-50/30 via-transparent to-white/50 dark:from-slate-950 dark:via-slate-900/50 dark:to-slate-950"></div>
+
+        <!-- Art Deco Decorative Lines -->
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+
+        <!-- Floating Geometric Shapes -->
+        <div class="absolute top-1/4 left-10 w-20 h-20 border border-amber-500/10 rotate-45 floating" style="animation-delay: 0s;"></div>
+        <div class="absolute top-1/3 right-20 w-16 h-16 border border-amber-500/10 rotate-45 floating" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-1/4 left-1/4 w-12 h-12 border border-amber-500/10 rotate-45 floating" style="animation-delay: 4s;"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10 pt-24">
+            <div class="max-w-5xl mx-auto text-center">
+
+                <!-- Art Deco Ornament -->
+                <div class="flex items-center justify-center mb-8" data-aos="fade-down" data-aos-duration="800">
+                    <div class="w-16 h-px bg-gradient-to-r from-transparent to-amber-500"></div>
+                    <div class="mx-4 art-deco-diamond"></div>
+                    <div class="w-16 h-px bg-gradient-to-l from-transparent to-amber-500"></div>
+                </div>
+
+                <!-- Tagline -->
+                <p class="font-heading text-sm md:text-base tracking-[0.3em] uppercase text-amber-700 dark:text-amber-400/80 mb-6" data-aos="fade-up" data-aos-delay="100">
+                    2009'dan Beri Güvenilir Hukuk Hizmeti
+                </p>
+
+                <!-- Main Headline -->
+                <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-8" data-aos="fade-up" data-aos-delay="200">
+                    <span class="text-slate-900 dark:text-white">Hukuki Haklarınız İçin</span> <span class="gradient-text-animate">Güvenilir Çözüm Ortağınız</span>
+                </h1>
+
+                <!-- Sub Headline -->
+                <p class="text-base text-slate-800 dark:text-slate-300 font-medium max-w-3xl mx-auto mb-12 leading-relaxed" data-aos="fade-up" data-aos-delay="300">
+                    Bireysel ve kurumsal müvekkillerimize <span class="text-amber-700 dark:text-amber-400">geniş bir yelpazede</span> profesyonel hukuki destek sunuyoruz. Adaletin ve hakkaniyet ilkelerinin savunucusu olarak, haklarınızı titizlikle koruyoruz.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-16" data-aos="fade-up" data-aos-delay="400">
+                    <a href="#iletisim" class="btn-shine group bg-gradient-to-r from-amber-600 to-amber-500 text-white font-heading text-sm tracking-widest uppercase px-8 py-4 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all flex items-center">
+                        <span>Randevu Alın</span>
+                        <i class="fat fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="#hizmetler" class="group border-2 border-amber-600 dark:border-amber-500/50 text-amber-700 dark:text-amber-400 font-heading text-sm tracking-widest uppercase px-8 py-4 rounded-lg hover:bg-amber-500/10 hover:border-amber-500 transition-all flex items-center">
+                        <span>Hizmetlerimiz</span>
+                        <i class="fat fa-chevron-down ml-3 group-hover:translate-y-1 transition-transform"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-amber-700 dark:text-amber-500/70">
+            <span class="font-heading text-[10px] tracking-widest uppercase mb-2">Keşfet</span>
+            <div class="w-6 h-10 border-2 border-amber-500/30 rounded-full flex justify-center">
+                <div class="w-1 h-3 bg-amber-500/50 rounded-full mt-2 animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SERVICES SECTION ========== -->
+    <section id="hizmetler" class="py-20 md:py-28 lg:py-32 bg-slate-100 dark:bg-slate-900 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 art-deco-pattern opacity-50"></div>
+
+        <!-- Top Line -->
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20">
+                <div class="flex items-center justify-center mb-6" data-aos="fade-up">
+                    <div class="w-12 h-px bg-gradient-to-r from-transparent to-amber-500"></div>
+                    <div class="mx-3 art-deco-diamond scale-75"></div>
+                    <div class="w-12 h-px bg-gradient-to-l from-transparent to-amber-500"></div>
+                </div>
+                <p class="font-heading text-sm tracking-[0.3em] uppercase text-amber-700 dark:text-amber-400/80 mb-4" data-aos="fade-up" data-aos-delay="100">Uzmanlık Alanlarımız</p>
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-6" data-aos="fade-up" data-aos-delay="200">
+                    <span class="gradient-text">Kapsamlı</span> <span class="text-slate-900 dark:text-white">Hukuki Destek</span>
+                </h2>
+                <p class="text-base text-slate-800 dark:text-slate-300 leading-relaxed font-medium" data-aos="fade-up" data-aos-delay="300">
+                    Her dosyayı titizlikle inceler, müvekkillerimizin hukuki çıkarlarını koruyacak stratejiler geliştiririz.
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Service 1: Ticaret Hukuku -->
+                <div class="service-card group bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fat fa-handshake icon-hover text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-3 tracking-wide">Ticaret Hukuku</h3>
+                    <p class="text-slate-800 dark:text-slate-300 text-base leading-relaxed font-medium">Ticari sözleşmeler, anlaşmazlıklar ve uluslararası ticaret hukuku konularında danışmanlık.</p>
+                </div>
+
+                <!-- Service 2: Şirketler Hukuku -->
+                <div class="service-card group bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="150">
+                    <div class="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fat fa-building icon-hover text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-3 tracking-wide">Şirketler Hukuku</h3>
+                    <p class="text-slate-800 dark:text-slate-300 text-base leading-relaxed font-medium">Şirket kuruluşu, birleşme-devir, konkordato ve iflas süreçlerinde hukuki destek.</p>
+                </div>
+
+                <!-- Service 3: Ceza Hukuku -->
+                <div class="service-card group bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fat fa-gavel icon-hover text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-3 tracking-wide">Ceza Hukuku</h3>
+                    <p class="text-slate-800 dark:text-slate-300 text-base leading-relaxed font-medium">Soruşturma ve kovuşturma aşamalarında müdafilik, yeniden yargılama başvuruları.</p>
+                </div>
+
+                <!-- Service 4: Sağlık Hukuku -->
+                <div class="service-card group bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="250">
+                    <div class="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fat fa-stethoscope icon-hover text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-3 tracking-wide">Sağlık Hukuku</h3>
+                    <p class="text-slate-800 dark:text-slate-300 text-base leading-relaxed font-medium">Tıbbi malpraktis, hekim sorumlulukları, hasta hakları konularında danışmanlık.</p>
+                </div>
+
+                <!-- Service 5: Sigorta Hukuku -->
+                <div class="service-card group bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fat fa-shield-check icon-hover text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-3 tracking-wide">Sigorta Hukuku</h3>
+                    <p class="text-slate-800 dark:text-slate-300 text-base leading-relaxed font-medium">Sigorta sözleşmelerinden kaynaklanan uyuşmazlıklar ve tazminat talepleri.</p>
+                </div>
+
+                <!-- Service 6: İdare ve İmar Hukuku -->
+                <div class="service-card group bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="350">
+                    <div class="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fat fa-landmark icon-hover text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-3 tracking-wide">İdare ve İmar Hukuku</h3>
+                    <p class="text-slate-800 dark:text-slate-300 text-base leading-relaxed font-medium">İdari işlem ve eylemler, imar uygulamaları, kamulaştırma ve iptal davaları.</p>
+                </div>
+
+                <!-- Service 7: Borçlar Hukuku -->
+                <div class="service-card group bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fat fa-file-contract icon-hover text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-3 tracking-wide">Borçlar Hukuku</h3>
+                    <p class="text-slate-800 dark:text-slate-300 text-base leading-relaxed font-medium">Sözleşme hukuku, haksız fiil, sebepsiz zenginleşme ve tazminat davaları.</p>
+                </div>
+
+                <!-- Service 8: İş Hukuku -->
+                <div class="service-card group bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="450">
+                    <div class="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fat fa-briefcase icon-hover text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-3 tracking-wide">İş Hukuku</h3>
+                    <p class="text-slate-800 dark:text-slate-300 text-base leading-relaxed font-medium">İş sözleşmeleri, işçi-işveren uyuşmazlıkları, kıdem-ihbar tazminatı davaları.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========== ABOUT SECTION ========== -->
+    <section id="hakkimizda" class="py-20 md:py-28 lg:py-32 bg-white dark:bg-slate-950 relative overflow-hidden">
+        <!-- Art Deco Corner Decorations -->
+        <div class="absolute top-8 left-8 art-deco-corner art-deco-corner-tl hidden lg:block"></div>
+        <div class="absolute top-8 right-8 art-deco-corner art-deco-corner-tr hidden lg:block"></div>
+        <div class="absolute bottom-8 left-8 art-deco-corner art-deco-corner-bl hidden lg:block"></div>
+        <div class="absolute bottom-8 right-8 art-deco-corner art-deco-corner-br hidden lg:block"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+                <!-- Left: Content -->
+                <div>
+                    <div class="flex items-center mb-6" data-aos="fade-right">
+                        <div class="w-12 h-px bg-gradient-to-r from-amber-500 to-transparent"></div>
+                        <div class="ml-3 art-deco-diamond scale-75"></div>
+                    </div>
+                    <p class="font-heading text-sm tracking-[0.3em] uppercase text-amber-700 dark:text-amber-400/80 mb-4" data-aos="fade-right" data-aos-delay="100">Kurumsal</p>
+                    <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-8" data-aos="fade-right" data-aos-delay="200">
+                        <span class="gradient-text">Profesyonel Hukuki Çözümler</span> <span class="text-slate-900 dark:text-white">İçin Doğru Adres</span>
+                    </h2>
+
+                    <div class="space-y-6 text-base text-slate-800 dark:text-slate-300 leading-relaxed font-medium" data-aos="fade-right" data-aos-delay="300">
+                        <p>
+                            <span class="text-amber-800 dark:text-amber-400 font-bold">Mahmutoğlu Hukuk & Danışmanlık</span>, İstanbul merkezli, ulusal ve uluslararası hukuki hizmetler sunan profesyonel bir avukatlık bürosudur. 2009 yılından bu yana bireysel ve kurumsal müvekkillerimize adalet ve hakkaniyet ilkeleri doğrultusunda hizmet vermekteyiz.
+                        </p>
+                        <p>
+                            Her müvekkil için özel stratejiler geliştiriyor, karmaşık hukuki sorunlara pratik ve etkili çözümler üretiyoruz. Hukuki süreçlerde <span class="text-slate-900 dark:text-white">şeffaflık, dürüstlük ve müvekkil memnuniyeti</span> bizim için öncelikli değerlerdir.
+                        </p>
+                    </div>
+
+                    <!-- Key Points -->
+                    <div class="grid grid-cols-2 gap-4 mt-8" data-aos="fade-right" data-aos-delay="400">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded bg-amber-500/20 dark:bg-amber-500/10 flex items-center justify-center">
+                                <i class="fat fa-check text-amber-700 dark:text-amber-400"></i>
+                            </div>
+                            <span class="text-slate-800 dark:text-slate-300 text-base font-medium">Deneyimli Kadro</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded bg-amber-500/20 dark:bg-amber-500/10 flex items-center justify-center">
+                                <i class="fat fa-check text-amber-700 dark:text-amber-400"></i>
+                            </div>
+                            <span class="text-slate-800 dark:text-slate-300 text-base font-medium">Çözüm Odaklı</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded bg-amber-500/20 dark:bg-amber-500/10 flex items-center justify-center">
+                                <i class="fat fa-check text-amber-700 dark:text-amber-400"></i>
+                            </div>
+                            <span class="text-slate-800 dark:text-slate-300 text-base font-medium">Şeffaf İletişim</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded bg-amber-500/20 dark:bg-amber-500/10 flex items-center justify-center">
+                                <i class="fat fa-check text-amber-700 dark:text-amber-400"></i>
+                            </div>
+                            <span class="text-slate-800 dark:text-slate-300 text-base font-medium">Gizlilik Garantisi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Image & Quote -->
+                <div class="relative" data-aos="fade-left" data-aos-delay="200">
+                    <!-- Main Image -->
+                    <div class="animated-border">
+                        <div class="animated-border-inner p-2">
+                            <img
+                                src="https://picsum.photos/600/700?grayscale"
+                                alt="Mahmutoğlu Hukuk Ofisi"
+                                class="w-full h-auto rounded-lg object-cover"
+                                loading="lazy"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Floating Quote Card -->
+                    <div class="absolute -bottom-8 -left-8 lg:-left-16 max-w-xs bg-gradient-to-br from-amber-600 to-amber-500 rounded-xl p-6 shadow-2xl" data-aos="fade-up" data-aos-delay="400">
+                        <i class="fat fa-quote-left text-3xl text-slate-950/30 mb-3"></i>
+                        <p class="text-slate-950 font-medium text-base leading-relaxed font-semibold italic">
+                            "Adaletin savunucusu olarak, müvekkillerimizin haklarını titizlikle korumak en önemli görevimizdir."
+                        </p>
+                        <div class="mt-4 flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-950/20 flex items-center justify-center">
+                                <i class="fas fa-user text-slate-950"></i>
+                            </div>
+                            <div>
+                                <p class="font-heading text-sm font-semibold text-slate-950">Av. Semih Mahmutoğlu</p>
+                                <p class="text-xs text-slate-950/70">Kurucu Ortak</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== VALUES SECTION ========== -->
+    <section id="degerler" class="py-20 md:py-28 lg:py-32 bg-slate-100 dark:bg-slate-900 relative overflow-hidden">
+        <!-- Background -->
+        <div class="absolute inset-0 art-deco-pattern opacity-30"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <div class="flex items-center justify-center mb-6" data-aos="fade-up">
+                    <div class="w-12 h-px bg-gradient-to-r from-transparent to-amber-500"></div>
+                    <div class="mx-3 art-deco-diamond scale-75"></div>
+                    <div class="w-12 h-px bg-gradient-to-l from-transparent to-amber-500"></div>
+                </div>
+                <p class="font-heading text-sm tracking-[0.3em] uppercase text-amber-700 dark:text-amber-400/80 mb-4" data-aos="fade-up" data-aos-delay="100">Değerlerimiz</p>
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold" data-aos="fade-up" data-aos-delay="200">
+                    <span class="text-slate-900 dark:text-white">Hizmet Anlayışımızın</span> <span class="gradient-text">Temelleri</span>
+                </h2>
+            </div>
+
+            <!-- Values Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Value 1 -->
+                <div class="value-card bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6">
+                        <i class="fat fa-scale-balanced text-3xl text-amber-700 dark:text-amber-400"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-slate-900 dark:text-white mb-4">Adalet ve Dürüstlük</h3>
+                    <p class="text-slate-800 dark:text-slate-300 leading-relaxed">Her davada adalet ve dürüstlük ilkelerini ön planda tutar, hukukun üstünlüğüne olan inancımızı davranışlarımıza yansıtırız.</p>
+                </div>
+
+                <!-- Value 2 -->
+                <div class="value-card bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="150">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6">
+                        <i class="fat fa-award text-3xl text-amber-700 dark:text-amber-400"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-slate-900 dark:text-white mb-4">Profesyonellik</h3>
+                    <p class="text-slate-800 dark:text-slate-300 leading-relaxed">Mesleki etik kurallarına sıkı sıkıya bağlı kalarak, her işi yüksek standartlarda gerçekleştiririz.</p>
+                </div>
+
+                <!-- Value 3 -->
+                <div class="value-card bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6">
+                        <i class="fat fa-lock text-3xl text-amber-700 dark:text-amber-400"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-slate-900 dark:text-white mb-4">Gizlilik</h3>
+                    <p class="text-slate-800 dark:text-slate-300 leading-relaxed">Müvekkil-avukat arasındaki güven ilişkisinin temelini oluşturan gizlilik ilkesine azami özen gösteririz.</p>
+                </div>
+
+                <!-- Value 4 -->
+                <div class="value-card bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="250">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6">
+                        <i class="fat fa-graduation-cap text-3xl text-amber-700 dark:text-amber-400"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-slate-900 dark:text-white mb-4">Sürekli Gelişim</h3>
+                    <p class="text-slate-800 dark:text-slate-300 leading-relaxed">Hukuk alanındaki değişimleri ve yenilikleri takip ederek kendimizi sürekli geliştiriyor, güncel bilgiyi sunuyoruz.</p>
+                </div>
+
+                <!-- Value 5 -->
+                <div class="value-card bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6">
+                        <i class="fat fa-heart text-3xl text-amber-700 dark:text-amber-400"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-slate-900 dark:text-white mb-4">Müvekkil Memnuniyeti</h3>
+                    <p class="text-slate-800 dark:text-slate-300 leading-relaxed">Müvekkillerimizin memnuniyeti bizim için en önemli başarı kriteridir. Her aşamada şeffaf süreç yönetimi sağlarız.</p>
+                </div>
+
+                <!-- Value 6 -->
+                <div class="value-card bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-xl p-8 shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="350">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6">
+                        <i class="fat fa-users text-3xl text-amber-700 dark:text-amber-400"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-slate-900 dark:text-white mb-4">Ekip Çalışması</h3>
+                    <p class="text-slate-800 dark:text-slate-300 leading-relaxed">Büromuzdaki tüm avukat ve uzmanlar işbirliği içinde çalışarak müvekkillerimize profesyonel hizmet sunar.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========== CONTACT CTA SECTION ========== -->
+    <section id="iletisim" class="py-20 md:py-28 lg:py-32 bg-white dark:bg-slate-900 relative overflow-hidden">
+        <!-- Art Deco Background -->
+        <div class="absolute inset-0 art-deco-pattern opacity-30"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white dark:from-slate-900 dark:via-transparent dark:to-slate-900"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+
+            <div class="max-w-5xl mx-auto">
+
+                <!-- Section Header -->
+                <div class="text-center mb-16">
+                    <div class="flex items-center justify-center mb-6" data-aos="fade-up">
+                        <div class="w-12 h-px bg-gradient-to-r from-transparent to-amber-500"></div>
+                        <div class="mx-3 art-deco-diamond scale-75"></div>
+                        <div class="w-12 h-px bg-gradient-to-l from-transparent to-amber-500"></div>
+                    </div>
+                    <p class="font-heading text-sm tracking-[0.3em] uppercase text-amber-700 dark:text-amber-400/80 mb-4" data-aos="fade-up" data-aos-delay="100">İletişim</p>
+                    <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-6" data-aos="fade-up" data-aos-delay="200">
+                        <span class="text-slate-900 dark:text-white">Hukuki Destek İçin</span> <span class="gradient-text">Bize Ulaşın</span>
+                    </h2>
+                    <p class="text-lg text-slate-800 dark:text-slate-300 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="300">
+                        Hukuki sorunlarınız ve sorularınız için bizimle iletişime geçebilirsiniz. Size en kısa sürede dönüş yapacağız.
+                    </p>
+                </div>
+
+                <!-- Contact Cards -->
+                <div class="grid md:grid-cols-3 gap-6 mb-12">
+
+                    <!-- Phone -->
+                    <div class="gradient-border group" data-aos="fade-up" data-aos-delay="100">
+                        <div class="gradient-border-inner p-8 text-center">
+                            <div class="w-16 h-16 mx-auto rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-phone text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-2">Telefon</h3>
+                            <a href="tel:+902166296411" class="text-amber-700 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition-colors text-lg font-semibold">+90 216 629 6411</a>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="gradient-border group" data-aos="fade-up" data-aos-delay="200">
+                        <div class="gradient-border-inner p-8 text-center">
+                            <div class="w-16 h-16 mx-auto rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-envelope text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-2">E-posta</h3>
+                            <a href="mailto:info@mahmutoglu.com.tr" class="text-amber-700 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition-colors font-semibold">info@mahmutoglu.com.tr</a>
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="gradient-border group" data-aos="fade-up" data-aos-delay="300">
+                        <div class="gradient-border-inner p-8 text-center">
+                            <div class="w-16 h-16 mx-auto rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-location-dot text-2xl text-amber-700 dark:text-amber-400 group-hover:font-black transition-all"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-slate-900 dark:text-white mb-2">Adres</h3>
+                            <p class="text-slate-800 dark:text-slate-300 text-base font-medium">Akasya Acıbadem Koru Kule<br>Üsküdar/İstanbul</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="400">
+                    <a href="tel:+902166296411" class="btn-shine bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 font-heading text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all flex items-center justify-center">
+                        <i class="fas fa-phone mr-3"></i>
+                        <span>Hemen Ara</span>
+                    </a>
+                    <a href="mailto:info@mahmutoglu.com.tr" class="border-2 border-amber-600 dark:border-amber-500/50 text-amber-700 dark:text-amber-400 font-heading text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-lg hover:bg-amber-500/10 hover:border-amber-500 transition-all flex items-center justify-center">
+                        <i class="fas fa-envelope mr-3"></i>
+                        <span>E-posta Gönder</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="py-12 md:py-16 bg-slate-100 dark:bg-slate-950 border-t border-amber-500/20 dark:border-amber-500/10">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+
+            <!-- Centered Footer Content -->
+            <div class="text-center">
+
+                <!-- Logo -->
+                <div class="flex flex-col items-center mb-8">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="art-deco-diamond scale-75"></div>
+                        <span class="font-heading text-xl tracking-[0.2em] uppercase gradient-text font-semibold">Mahmutoğlu</span>
+                        <div class="art-deco-diamond scale-75"></div>
+                    </div>
+                    <span class="font-heading text-xs tracking-[0.4em] uppercase text-amber-700 dark:text-amber-500/70">Hukuk & Danışmanlık</span>
+                </div>
+
+                <!-- Art Deco Line -->
+                <div class="art-deco-line max-w-xs mx-auto mb-8"></div>
+
+                <!-- Address -->
+                <p class="text-slate-800 dark:text-slate-300 mb-2 font-medium">
+                    Akasya Acıbadem Koru Kule, Acıbadem Mah. Çeçen Sokak, No:46G K:25 D:147
+                </p>
+                <p class="text-slate-800 dark:text-slate-300 mb-6 font-medium">Üsküdar/İstanbul</p>
+
+                <!-- Contact Info -->
+                <div class="flex flex-wrap items-center justify-center gap-6 mb-8">
+                    <a href="tel:+902166296411" class="text-amber-700 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors flex items-center font-semibold">
+                        <i class="fat fa-phone mr-2"></i>
+                        +90 216 629 6411
+                    </a>
+                    <span class="text-slate-400 dark:text-slate-700 hidden sm:inline">|</span>
+                    <a href="mailto:info@mahmutoglu.com.tr" class="text-amber-700 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors flex items-center font-semibold">
+                        <i class="fat fa-envelope mr-2"></i>
+                        info@mahmutoglu.com.tr
+                    </a>
+                </div>
+
+                <!-- Social Links -->
+                <div class="flex items-center justify-center gap-4 mb-8">
+                    <a href="#" class="w-10 h-10 rounded-lg border border-amber-600/50 dark:border-amber-500/30 flex items-center justify-center text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 hover:border-amber-500 transition-all">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-lg border border-amber-600/50 dark:border-amber-500/30 flex items-center justify-center text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 hover:border-amber-500 transition-all">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-lg border border-amber-600/50 dark:border-amber-500/30 flex items-center justify-center text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 hover:border-amber-500 transition-all">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-lg border border-amber-600/50 dark:border-amber-500/30 flex items-center justify-center text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 hover:border-amber-500 transition-all">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+
+                <!-- Copyright -->
+                <p class="text-slate-500 dark:text-slate-600 text-sm font-medium">
+                    20 Ocak 2026 &bull; mahmutoglu.com.tr
+                </p>
+
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- ========== PROMPT MODAL BUTTON ========== -->
+    <button id="promptBtn" class="fixed bottom-4 right-4 z-40 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg text-xs font-heading tracking-wider uppercase shadow-lg transition-colors">
+        <i class="fat fa-code mr-2"></i>Prompt
+    </button>
+
+    <!-- Prompt Modal -->
+    <div id="promptModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/80" id="promptModalOverlay"></div>
+        <div class="relative bg-slate-900 rounded-xl max-w-lg w-full p-6 border border-amber-500/20">
+            <button id="promptModalClose" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fat fa-xmark text-xl"></i>
+            </button>
+            <h3 class="font-heading text-xl font-semibold text-slate-900 dark:text-white mb-4">Tasarım Dokümantasyonu</h3>
+            <p class="text-slate-400 mb-6">Bu tasarımın detaylı prompt ve görsel bilgilerini inceleyebilirsiniz.</p>
+            <a href="prompt.html" class="btn-shine block text-center bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 font-heading text-sm tracking-widest uppercase px-6 py-3 rounded-lg">
+                <i class="fat fa-external-link mr-2"></i>Prompt Dokümanını Aç
+            </a>
+        </div>
+    </div>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Dark/Light Mode Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleMobile = document.getElementById('themeToggleMobile');
+        const html = document.documentElement;
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            html.classList.toggle('dark', savedTheme === 'dark');
+        } else {
+            // Default to dark mode for premium feel
+            html.classList.add('dark');
+        }
+
+        function toggleTheme() {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        themeToggle?.addEventListener('click', toggleTheme);
+        themeToggleMobile?.addEventListener('click', toggleTheme);
+
+        // Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('open');
+            mobileMenuOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('open');
+            mobileMenuOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn?.addEventListener('click', openMobileMenu);
+        mobileMenuClose?.addEventListener('click', closeMobileMenu);
+        mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
+
+        // Close mobile menu on link click
+        mobileMenu?.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // Header scroll effect
+        const header = document.getElementById('header');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                header.classList.add('shadow-xl');
+            } else {
+                header.classList.remove('shadow-xl');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Prompt Modal
+        const promptBtn = document.getElementById('promptBtn');
+        const promptModal = document.getElementById('promptModal');
+        const promptModalClose = document.getElementById('promptModalClose');
+        const promptModalOverlay = document.getElementById('promptModalOverlay');
+
+        function openPromptModal() {
+            promptModal.classList.remove('hidden');
+            promptModal.classList.add('flex');
+        }
+
+        function closePromptModal() {
+            promptModal.classList.add('hidden');
+            promptModal.classList.remove('flex');
+        }
+
+        promptBtn?.addEventListener('click', openPromptModal);
+        promptModalClose?.addEventListener('click', closePromptModal);
+        promptModalOverlay?.addEventListener('click', closePromptModal);
+
+        // Icon hover effect (thin to solid)
+        document.querySelectorAll('.service-card, .value-card, .gradient-border').forEach(card => {
+            const icon = card.querySelector('.icon-hover');
+            if (icon && icon.classList.contains('fat')) {
+                card.addEventListener('mouseenter', () => {
+                    icon.classList.remove('fat');
+                    icon.classList.add('fas');
+                });
+                card.addEventListener('mouseleave', () => {
+                    icon.classList.remove('fas');
+                    icon.classList.add('fat');
+                });
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

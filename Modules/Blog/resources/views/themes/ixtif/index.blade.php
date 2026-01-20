@@ -134,7 +134,7 @@
         {{-- Categories Slider (Shop tarzı) --}}
         @if(isset($categories) && $categories->count() > 0)
         <section class="py-6 border-b border-gray-200 dark:border-white/10 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
                     {{-- Tüm Yazılar --}}
                     <a href="{{ url('/blog') }}"
@@ -168,7 +168,7 @@
         {{-- NEWS PORTAL SECTION: 8+4 Column Layout (ixtif theme only) --}}
         @if($themeName === 'ixtif' && $items->count() >= 12)
         <section class="py-8 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800" x-data="newsSlider()">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div class="grid lg:grid-cols-12 gap-6">
 
                     {{-- 8 COLUMNS: Main Slider (6 slides - 5-10. haberler) --}}
@@ -355,7 +355,7 @@
         @endphp
 
         <section class="py-6">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <a href="{{ $featuredUrl }}" class="group block relative bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 dark:from-indigo-900 dark:via-purple-900 dark:to-indigo-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
 
@@ -411,7 +411,7 @@
         {{-- MAIN CONTENT WITH SIDEBAR: 8-4 Layout --}}
         @if($themeName === 'ixtif' && $items->count() >= 14)
         <section class="py-8">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div class="grid lg:grid-cols-12 gap-8">
 
                     {{-- LEFT SIDE (SOL): 8 Columns - Main Content --}}
@@ -850,7 +850,7 @@
         {{-- Alt Kategoriler (Sadece kategori seçiliyse ve alt kategorileri varsa) --}}
         @if(isset($selectedCategory) && $selectedCategory && $selectedCategory->children && $selectedCategory->children->count() > 0)
         <section class="py-8 border-b border-gray-200 dark:border-white/10">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                     <i class="fa-light fa-folder-tree text-blue-600 dark:text-blue-400"></i>
                     Alt Kategoriler
@@ -882,7 +882,7 @@
         @endif
 
         <div class="py-12">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 @if ($items->count() > 0)
                     <!-- Articles Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blogs-grid">

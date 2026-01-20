@@ -436,7 +436,7 @@
          x-transition
          class="xl:hidden fixed inset-0 top-[72px] bg-white dark:bg-dark-950 z-40 overflow-y-auto"
          x-cloak>
-        <div class="container mx-auto px-4 py-4">
+        <div class="container mx-auto py-4">
 
             @if($madencilik)
             <div x-data="{ open: false }" class="mt-1">

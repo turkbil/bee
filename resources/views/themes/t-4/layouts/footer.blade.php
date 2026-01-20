@@ -49,7 +49,7 @@
 
 <!-- ========== FOOTER ========== -->
 <footer class="bg-dark-900 dark:bg-dark-950 text-white pt-16 pb-8">
-    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+    <div class="container mx-auto">
 
         <!-- Footer Top -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 pb-12 border-b border-slate-800">

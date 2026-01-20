@@ -52,8 +52,8 @@
     @endphp
 
     {{-- MINIMAL SUBHEADER --}}
-    <section class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pt-20">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 py-4">
+    <section class="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto py-4">
             <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 @foreach($breadcrumbsArray as $index => $crumb)
                     @if(isset($crumb['url']))
@@ -72,7 +72,7 @@
 
     {{-- CONTENT SECTION --}}
     <section class="bg-white dark:bg-gray-900 py-10 md:py-16">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
                 {{-- Main Content - Sol taraf --}}
                 <article class="{{ $featuredImage ? 'lg:col-span-3' : 'lg:col-span-5 max-w-4xl mx-auto' }}">
@@ -184,7 +184,7 @@
     {{-- GALLERY SECTION --}}
     @if($galleryImages->count() > 0)
         <section class="bg-gray-50 dark:bg-gray-800 py-12 md:py-20">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div class="text-center mb-8">
                     <h2 class="text-xl md:text-2xl font-bold font-heading text-gray-900 dark:text-white mb-3">Galeri</h2>
                     <div class="w-16 h-1 bg-gradient-to-r from-primary-500 to-primary-600 mx-auto rounded-full"></div>
@@ -210,7 +210,7 @@
     {{-- RELATED SERVICES SECTION --}}
     @if($relatedServices->isNotEmpty())
         <section class="bg-white dark:bg-gray-900 py-12 md:py-20">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div class="text-center mb-8">
                     <h2 class="text-xl md:text-2xl font-bold font-heading text-gray-900 dark:text-white mb-2">Diğer Hizmetlerimiz</h2>
                     <p class="text-sm text-gray-600 dark:text-gray-400 font-body">Sunduğumuz diğer profesyonel hizmetleri inceleyin</p>
@@ -265,32 +265,6 @@
             </div>
         </section>
     @endif
-
-    {{-- CTA SECTION --}}
-    <section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-700 dark:to-primary-800 py-12 md:py-16">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 text-center">
-            <h2 class="text-xl md:text-2xl font-bold font-heading text-white mb-4">Ücretsiz Keşif ve Fiyat Teklifi</h2>
-            <p class="text-base text-primary-100 mb-8 max-w-2xl mx-auto font-body">
-                Profesyonel ekibimiz size en uygun çözümü sunmak için hazır. Hemen iletişime geçin!
-            </p>
-            <div class="flex flex-wrap justify-center gap-3">
-                @if($sitePhone)
-                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $sitePhone) }}"
-                       class="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-100 text-primary-700 font-semibold text-sm rounded-lg shadow-lg transition-all">
-                        <i class="fa-solid fa-phone"></i>
-                        <span>{{ $sitePhone }}</span>
-                    </a>
-                @endif
-                @if($whatsappUrl)
-                    <a href="{{ $whatsappUrl }}" target="_blank"
-                       class="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold text-sm rounded-lg shadow-lg transition-all">
-                        <i class="fa-brands fa-whatsapp"></i>
-                        <span>WhatsApp</span>
-                    </a>
-                @endif
-            </div>
-        </div>
-    </section>
 
     {{-- Custom JS/CSS --}}
     @if(isset($item->js))

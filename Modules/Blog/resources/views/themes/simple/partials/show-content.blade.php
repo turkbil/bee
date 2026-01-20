@@ -99,7 +99,7 @@
 ])
 
 <div class="min-h-screen bg-white dark:bg-gray-900 pb-20 lg:pb-8">
-    <div class="container mx-auto px-4 sm:px-4 md:px-2 py-8 md:py-12">
+    <div class="container mx-auto py-8 md:py-12">
 
         {{-- Kategori Badge + Etiketler --}}
         @if($categoryName || $tags->isNotEmpty())

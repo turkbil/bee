@@ -52,36 +52,31 @@
     </script>
 
     <style>
-        /* Container - Tema Kuralları */
+        /* Container - Unimad Referans (DOKUNMA!) */
         .container {
-            width: 100% !important;
             max-width: 100% !important;
-            padding-left: 20px !important;
-            padding-right: 20px !important;
+            padding-left: 1.25rem !important;
+            padding-right: 1.25rem !important;
         }
-
         @media (min-width: 768px) {
             .container {
-                padding-left: 32px !important;
-                padding-right: 32px !important;
+                padding-left: 2rem !important;
+                padding-right: 2rem !important;
             }
         }
-
         @media (min-width: 1024px) {
             .container {
-                padding-left: 48px !important;
-                padding-right: 48px !important;
+                padding-left: 3rem !important;
+                padding-right: 3rem !important;
             }
         }
-
         @media (min-width: 1280px) {
             .container {
                 max-width: 1280px !important;
-                padding-left: 32px !important;
-                padding-right: 32px !important;
+                padding-left: 2rem !important;
+                padding-right: 2rem !important;
             }
         }
-
         @media (min-width: 1536px) {
             .container {
                 max-width: 1536px !important;
@@ -222,8 +217,8 @@
     {{-- Header --}}
     @include('themes.t-5.layouts.header')
 
-    {{-- Main Content --}}
-    <main class="flex-1">
+    {{-- Main Content (pt-20 = fixed header height) --}}
+    <main class="flex-1 pt-20">
         {{ $slot ?? '' }}
 
         @yield('content')

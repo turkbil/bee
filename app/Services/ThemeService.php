@@ -259,6 +259,13 @@ class ThemeService
 
             // 🎯 YENİ: resources/views/themes/ klasöründe ARA (TEK DOSYA PRENSİBİ)
             // Tema dosyaları SADECE resources/views/themes/ altında olmalı
+            // Önce modül klasörü ile ara: themes.t-3.page.show
+            $resourceThemeModuleView = "themes.{$themeName}.{$moduleNamespace}.{$view}";
+            if (view()->exists($resourceThemeModuleView)) {
+                return $resourceThemeModuleView;
+            }
+
+            // Sonra direkt ara: themes.t-3.show (eski uyumluluk)
             $resourceThemeView = "themes.{$themeName}.{$view}";
             if (view()->exists($resourceThemeView)) {
                 return $resourceThemeView;

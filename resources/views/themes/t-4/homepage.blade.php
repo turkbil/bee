@@ -65,7 +65,7 @@
             <div class="absolute bottom-0 left-0 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl"></div>
         </div>
 
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 relative z-10">
+        <div class="container mx-auto relative z-10">
             <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
                 <!-- Left: Content -->
@@ -161,7 +161,7 @@
 
     <!-- ========== SERVICES SECTION - 6 Kategorili ========== -->
     <section id="services" class="section-padding bg-smooth-light">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             <!-- Section Header -->
             <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
                 <a href="{{ url('/' . $serviceIndexSlug) }}" class="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 text-sm font-semibold rounded-full mb-4 hover:bg-primary-200 dark:hover:bg-primary-700 transition-colors">
@@ -228,7 +228,7 @@
 
     <!-- ========== ABOUT SECTION ========== -->
     <section id="about" class="section-padding bg-white dark:bg-dark-900">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
 
                 <!-- Left: Image Composition -->
@@ -367,7 +367,7 @@
         };
     @endphp
     <section id="blog" class="section-padding bg-smooth-alt">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             <!-- Section Header -->
             <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
                 <a href="{{ url('/blog') }}" class="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 text-sm font-semibold rounded-full mb-4 hover:bg-primary-200 dark:hover:bg-primary-700 transition-colors">
@@ -452,7 +452,7 @@
     <!-- ========== CTA SECTION ========== -->
     <section class="section-padding cta-mesh relative overflow-hidden">
 
-        <div class="container mx-auto px-4 sm:px-4 md:px-2 relative z-10">
+        <div class="container mx-auto relative z-10">
             <div class="max-w-4xl mx-auto text-center" data-aos="zoom-in">
                 <span class="inline-block px-4 py-2 bg-white/20 border border-white/30 rounded-full text-sm font-medium text-white mb-6">
                     <i class="fal fa-handshake mr-2"></i>Birlikte Çalışalım
@@ -478,7 +478,7 @@
 
     <!-- ========== CONTACT SECTION ========== -->
     <section id="contact" class="section-padding bg-white dark:bg-dark-900">
-        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+        <div class="container mx-auto">
             <div class="grid lg:grid-cols-2 gap-12 items-stretch">
 
                 <!-- Left: Contact Info -->

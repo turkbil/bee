@@ -216,6 +216,51 @@
 <span class="text-emerald-400">{{TEMA_ID}}</span>           → <span class="text-emerald-300">text</span>     <span class="text-slate-500">// diğer her şey</span></code></pre>
                 </div>
             </div>
+
+            <!-- Dinamik Çoklu Değişken Örneği -->
+            <h3 class="text-base font-semibold text-white mb-3 mt-6">Dinamik Çoklu Değişken</h3>
+            <div class="bg-violet-900/20 border border-violet-700/50 rounded-lg p-4">
+                <p class="text-sm text-slate-400 mb-3">Bir template'de <strong class="text-white">istediğin kadar</strong> değişken kullanabilirsin:</p>
+
+                <div class="code-block !p-3 mb-4">
+<pre><code class="text-sm"><span class="text-slate-400">// Örnek: 5 URL + 1 text + 1 textarea</span>
+
+<span class="text-violet-400">{{KAYNAK_URL}}</span> sitesindeki <span class="text-emerald-400">{{MODUL_ADI}}</span> modülünü <span class="text-violet-400">{{HEDEF_URL}}</span> sitesine taşı.
+
+Referanslar:
+- Tema kuralları: <span class="text-violet-400">{{TEMA_KURALLARI_URL}}</span>
+- Modül docs: <span class="text-violet-400">{{MODUL_DOCS_URL}}</span>
+- Örnek site: <span class="text-violet-400">{{ORNEK_URL}}</span>
+
+<span class="text-blue-400">{{EK_TALIMATLAR_DETAY}}</span></code></pre>
+                </div>
+
+                <p class="text-sm text-slate-400 mb-3">Sistem otomatik olarak <strong class="text-white">7 input</strong> oluşturur:</p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="bg-slate-800 rounded px-3 py-2 text-xs">
+                        <span class="text-violet-400"><i class="fas fa-link mr-1"></i>KAYNAK_URL</span>
+                    </div>
+                    <div class="bg-slate-800 rounded px-3 py-2 text-xs">
+                        <span class="text-emerald-400"><i class="fas fa-font mr-1"></i>MODUL_ADI</span>
+                    </div>
+                    <div class="bg-slate-800 rounded px-3 py-2 text-xs">
+                        <span class="text-violet-400"><i class="fas fa-link mr-1"></i>HEDEF_URL</span>
+                    </div>
+                    <div class="bg-slate-800 rounded px-3 py-2 text-xs">
+                        <span class="text-violet-400"><i class="fas fa-link mr-1"></i>TEMA_KURALLARI_URL</span>
+                    </div>
+                    <div class="bg-slate-800 rounded px-3 py-2 text-xs">
+                        <span class="text-violet-400"><i class="fas fa-link mr-1"></i>MODUL_DOCS_URL</span>
+                    </div>
+                    <div class="bg-slate-800 rounded px-3 py-2 text-xs">
+                        <span class="text-violet-400"><i class="fas fa-link mr-1"></i>ORNEK_URL</span>
+                    </div>
+                    <div class="bg-slate-800 rounded px-3 py-2 text-xs col-span-2">
+                        <span class="text-blue-400"><i class="fas fa-align-left mr-1"></i>EK_TALIMATLAR_DETAY</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Özel Prefill Değerleri -->

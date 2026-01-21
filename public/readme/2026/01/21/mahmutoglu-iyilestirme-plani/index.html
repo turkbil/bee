@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahmutoğlu Hukuk - Tema İyileştirme Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#172033',
+                            950: '#0a0f1a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .priority-critical { border-left: 4px solid #ef4444; }
+        .priority-high { border-left: 4px solid #f97316; }
+        .priority-medium { border-left: 4px solid #eab308; }
+        .priority-low { border-left: 4px solid #22c55e; }
+        .status-todo { background: #ef4444; }
+        .status-progress { background: #f97316; }
+        .status-done { background: #22c55e; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-amber-500/20 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-scale-balanced text-amber-400"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Mahmutoğlu Hukuk</h1>
+                        <p class="text-sm text-slate-400">Tema İyileştirme Planı</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 bg-amber-500/20 text-amber-400 rounded-full text-sm font-medium">
+                        <i class="fas fa-code-branch mr-1"></i> t-6
+                    </span>
+                    <span class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm">
+                        v1.0 Draft
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- Hero Section -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 border border-amber-500/20">
+                <div class="flex flex-col lg:flex-row gap-8 items-center">
+                    <div class="flex-1">
+                        <span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-400 rounded-full text-sm font-medium mb-4">
+                            <i class="fas fa-clipboard-check mr-1"></i> Analiz Raporu
+                        </span>
+                        <h2 class="text-3xl font-bold mb-4">
+                            <span class="gradient-text">Tema Kurallarına Göre</span><br>
+                            <span class="text-white">İyileştirme Planı</span>
+                        </h2>
+                        <p class="text-slate-300 leading-relaxed mb-6">
+                            Bu rapor, <a href="https://ixtif.com/readme/2026/01/18/tema-sistemi-analiz/" target="_blank" class="text-amber-400 hover:text-amber-300 underline">Tema Sistemi Analiz</a> dökümanındaki kurallara göre
+                            <strong class="text-white">mahmutoglu.tuufi.com</strong> sitesinin eksik ve iyileştirme gerektiren noktalarını tespit eder.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="bg-slate-800 rounded-lg px-4 py-3">
+                                <span class="block text-2xl font-bold text-red-400">7</span>
+                                <span class="text-sm text-slate-400">Kritik Eksik</span>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg px-4 py-3">
+                                <span class="block text-2xl font-bold text-orange-400">5</span>
+                                <span class="text-sm text-slate-400">Orta Öncelik</span>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg px-4 py-3">
+                                <span class="block text-2xl font-bold text-green-400">8</span>
+                                <span class="text-sm text-slate-400">Doğru Yapılan</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:w-80">
+                        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                            <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                                <i class="fas fa-server text-amber-400"></i> Tenant Bilgisi
+                            </h3>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between">
+                                    <span class="text-slate-400">Tenant ID:</span>
+                                    <span class="text-white font-mono">6</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-slate-400">Tema:</span>
+                                    <span class="text-amber-400 font-mono">t-6</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-slate-400">Domain:</span>
+                                    <span class="text-white text-xs">mahmutoglu.tuufi.com</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-slate-400">Veritabanı:</span>
+                                    <span class="text-slate-300 text-xs font-mono">tenant_mahmutogluhukuk_*</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BASIT ANLATIM ==================== -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user text-blue-400"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white">📝 Basit Anlatım (Herkes İçin)</h2>
+                    <p class="text-sm text-slate-400">Teknik terimler olmadan, ne yapılacağının özeti</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                <div class="prose prose-invert max-w-none">
+                    <h3 class="text-amber-400 text-lg font-semibold mb-4">🎯 Ne Yapılacak?</h3>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="text-red-400 font-semibold mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Acil Düzeltilmesi Gerekenler</h4>
+                            <ul class="text-slate-300 text-sm space-y-2">
+                                <li>• <strong>Zıplayan Kartlar:</strong> Hizmet kartları üzerine gelince "zıplıyor" - bu yasak, sadece renk değişmeli</li>
+                                <li>• <strong>Sayfa Tasarımları:</strong> Hakkımızda ve İletişim sayfaları şablonda kodlanmış, veritabanından gelmeli</li>
+                                <li>• <strong>Üst Bar Eksik:</strong> Telefon ve email'in göründüğü küçük üst bar yok</li>
+                                <li>• <strong>Görseller Eksik:</strong> Hizmet sayfaları için özel görseller (Leonardo AI ile) oluşturulmalı</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="text-orange-400 font-semibold mb-2"><i class="fas fa-tools mr-2"></i>İyileştirilmesi Gerekenler</h4>
+                            <ul class="text-slate-300 text-sm space-y-2">
+                                <li>• <strong>İkon Efekti:</strong> Menüdeki ikonlar hover'da değişmiyor</li>
+                                <li>• <strong>WhatsApp Butonu:</strong> Footer'da ve sabit bir yerde WhatsApp butonu yok</li>
+                                <li>• <strong>Sosyal Medya:</strong> Footer'da sosyal medya linkleri eksik</li>
+                                <li>• <strong>İletişim Formu:</strong> Form gönderimi çalışmıyor (sadece görsel)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="text-green-400 text-lg font-semibold mb-4">✅ Zaten Doğru Yapılanlar</h3>
+                    <div class="bg-green-500/10 rounded-lg p-4 border border-green-500/20">
+                        <ul class="text-slate-300 text-sm space-y-1 columns-2">
+                            <li>✓ Mobil uyumluluk (responsive)</li>
+                            <li>✓ Karanlık/Aydınlık mod geçişi</li>
+                            <li>✓ Sayfa açılış animasyonları</li>
+                            <li>✓ Hızlı sayfa yükleme (PWA)</li>
+                            <li>✓ Yapışkan menü (sticky header)</li>
+                            <li>✓ Mobil menü (hamburger)</li>
+                            <li>✓ Animasyonlu gradient yazılar</li>
+                            <li>✓ FOUC önleme (titreme yok)</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="text-amber-400 text-lg font-semibold mt-6 mb-4">📊 Neden Önemli?</h3>
+                    <p class="text-slate-300">
+                        Bu iyileştirmeler yapıldığında site:
+                    </p>
+                    <ul class="text-slate-300 text-sm mt-2">
+                        <li>• <strong>Daha profesyonel</strong> görünecek (zıplayan kartlar dikkat dağıtır)</li>
+                        <li>• <strong>Daha kolay güncellenebilir</strong> olacak (tasarımlar veritabanından gelince admin panelden değiştirilebilir)</li>
+                        <li>• <strong>Daha fazla müşteri</strong> çekecek (WhatsApp butonu = anında iletişim)</li>
+                        <li>• <strong>Diğer sitelerle tutarlı</strong> olacak (tema kurallarına uyum)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TEKNİK DETAYLAR ==================== -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-code text-purple-400"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+                    <p class="text-sm text-slate-400">Dosya yolları, kod değişiklikleri ve uygulama adımları</p>
+                </div>
+            </div>
+
+            <!-- Kritik Eksikler -->
+            <div class="space-y-4 mb-8">
+                <h3 class="text-lg font-semibold text-red-400 flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i> Kritik Eksikler (7 Madde)
+                </h3>
+
+                <!-- 1. Hover Animasyon Yasağı -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-critical overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 font-bold">1</span>
+                            <h4 class="font-semibold text-white">Hover Animasyon Yasağı İhlali</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-medium">KRİTİK</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">
+                            <strong>Kural:</strong> <code class="bg-slate-800 px-1 rounded">scale()</code>, <code class="bg-slate-800 px-1 rounded">translateY()</code> ve zıplama animasyonları YASAK!
+                        </p>
+                        <div class="bg-slate-800 rounded-lg p-3 mb-3">
+                            <p class="text-xs text-slate-400 mb-2">📁 Dosya: <code>resources/views/themes/t-6/layouts/app.blade.php:177-180</code></p>
+                            <pre class="text-xs text-red-400 overflow-x-auto"><code>/* ❌ YANLIŞ - Mevcut Kod */
+.service-card:hover {
+    border-color: #f59e0b;
+    transform: translateY(-4px);  /* YASAK! */
+}</code></pre>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3">
+                            <p class="text-xs text-slate-400 mb-2">✅ Olması Gereken:</p>
+                            <pre class="text-xs text-green-400 overflow-x-auto"><code>/* ✅ DOĞRU - Sadece renk/shadow değişimi */
+.service-card:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 10px 40px -10px rgba(245, 158, 11, 0.3);
+}</code></pre>
+                        </div>
+                        <div class="mt-3 p-3 bg-red-500/10 rounded-lg border border-red-500/20">
+                            <p class="text-xs text-red-300">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                <strong>Ayrıca:</strong> <code>service/index.blade.php:85</code> satırında <code>group-hover:scale-105</code> var - bu da kaldırılmalı!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. DB Body Prensibi -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-critical overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 font-bold">2</span>
+                            <h4 class="font-semibold text-white">DB Body Prensibi İhlali (Hardcode If/Else)</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-medium">KRİTİK</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">
+                            <strong>Kural:</strong> Sayfa ve hizmet içeriklerinde hardcode if/else blokları YASAK! Tüm tasarımlar <code class="bg-slate-800 px-1 rounded">pages.body</code> veya <code class="bg-slate-800 px-1 rounded">services.body</code> JSON alanından gelmeli.
+                        </p>
+                        <div class="bg-slate-800 rounded-lg p-3 mb-3">
+                            <p class="text-xs text-slate-400 mb-2">📁 Dosya: <code>resources/views/themes/t-6/page/show.blade.php:82-395</code></p>
+                            <pre class="text-xs text-red-400 overflow-x-auto"><code>/* ❌ YANLIŞ - Mevcut Kod */
+@if($page->slug === 'hakkimizda')
+    {{-- 74 satır hardcode HTML --}}
+@elseif($page->slug === 'iletisim')
+    {{-- 152 satır hardcode HTML --}}
+@else
+    {{-- Generic page --}}
+@endif</code></pre>
+                        </div>
+                        <div class="bg-green-500/10 rounded-lg p-3 border border-green-500/20">
+                            <p class="text-xs text-green-300 mb-2">✅ Olması Gereken:</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>• "Hakkımızda" ve "İletişim" sayfalarının HTML tasarımları admin panelden <code>pages.body</code> alanına girilmeli</li>
+                                <li>• <code>page/show.blade.php</code> sadece <code>{!! $page->body !!}</code> ile içerik göstermeli</li>
+                                <li>• Özel section'lar (değerler, iletişim kartları) veritabanından JSON olarak gelmeli</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Top Bar Eksik -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-critical overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 font-bold">3</span>
+                            <h4 class="font-semibold text-white">Top Bar Eksik</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-medium">KRİTİK</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">
+                            <strong>Kural:</strong> Header yapısında "Top bar, sticky main header, mobile hamburger menu" olmalı.
+                        </p>
+                        <div class="bg-slate-800 rounded-lg p-3 mb-3">
+                            <p class="text-xs text-slate-400 mb-2">📁 Dosya: <code>resources/views/themes/t-6/layouts/header.blade.php</code></p>
+                            <p class="text-xs text-red-400">❌ Top bar bölümü YOK - direkt main header başlıyor</p>
+                        </div>
+                        <div class="bg-green-500/10 rounded-lg p-3 border border-green-500/20">
+                            <p class="text-xs text-green-300 mb-2">✅ Eklenmesi Gereken Top Bar:</p>
+                            <pre class="text-xs text-slate-300 overflow-x-auto"><code>&lt;!-- Top Bar --&gt;
+&lt;div class="hidden lg:block bg-slate-900 dark:bg-slate-950 border-b border-amber-500/10"&gt;
+    &lt;div class="container mx-auto px-6 py-2"&gt;
+        &lt;div class="flex items-center justify-between text-sm"&gt;
+            &lt;div class="flex items-center gap-6"&gt;
+                &lt;a href="tel:..." class="text-slate-400 hover:text-amber-400"&gt;
+                    &lt;i class="fat fa-phone mr-2"&gt;&lt;/i&gt;+90 212 XXX XX XX
+                &lt;/a&gt;
+                &lt;a href="mailto:..." class="text-slate-400 hover:text-amber-400"&gt;
+                    &lt;i class="fat fa-envelope mr-2"&gt;&lt;/i&gt;info@mahmutoglu.av.tr
+                &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div class="flex items-center gap-4"&gt;
+                &lt;!-- Sosyal Medya İkonları --&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Leonardo AI Görseller -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-critical overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 font-bold">4</span>
+                            <h4 class="font-semibold text-white">Leonardo AI Görseller Eksik</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-medium">KRİTİK</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">
+                            <strong>Kural:</strong> Site rengi (amber/gold) kıyafet, ekipman ve aksanlara ZORUNLU entegre edilmeli!
+                        </p>
+                        <div class="bg-slate-800 rounded-lg p-3 mb-3">
+                            <p class="text-xs text-slate-400 mb-2">📁 Klasör: <code>storage/app/public/themes/t-6/</code></p>
+                            <p class="text-xs text-red-400">❌ Klasör YOK - Görseller oluşturulmamış</p>
+                        </div>
+                        <div class="bg-amber-500/10 rounded-lg p-3 border border-amber-500/20">
+                            <p class="text-xs text-amber-300 mb-2">🎨 Oluşturulması Gereken Görseller:</p>
+                            <table class="w-full text-xs mt-2">
+                                <thead>
+                                    <tr class="text-slate-400">
+                                        <th class="text-left py-1">Dosya</th>
+                                        <th class="text-left py-1">Boyut</th>
+                                        <th class="text-left py-1">Açıklama</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-300">
+                                    <tr><td>hero-bg.jpg</td><td>1472×832</td><td>Ana sayfa hero arka plan</td></tr>
+                                    <tr><td>hero-lawyer.jpg</td><td>1024×1024</td><td>Avukat portre/ofis</td></tr>
+                                    <tr><td>hakkimizda-hero.jpg</td><td>1472×832</td><td>Hakkımızda sayfa görseli</td></tr>
+                                    <tr><td>service-*.jpg (8 adet)</td><td>1024×1024</td><td>Her hizmet için ayrı görsel</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-xs text-amber-200 mt-3">
+                                <i class="fas fa-lightbulb mr-1"></i>
+                                <strong>Prompt İpucu:</strong> "Professional law office, golden/amber accent lighting, art deco style, warm tones, legal books, scales of justice with gold details"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Settings Fallback -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-critical overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 font-bold">5</span>
+                            <h4 class="font-semibold text-white">Settings Fallback Kullanımı</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-medium">KRİTİK</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">
+                            <strong>Kural:</strong> <code class="bg-slate-800 px-1 rounded">setting('key')</code> fallback YASAK. Tüm ayarlar DB'ye eklenmeli.
+                        </p>
+                        <div class="bg-slate-800 rounded-lg p-3 mb-3">
+                            <p class="text-xs text-slate-400 mb-2">📁 Örnekler (birçok dosyada):</p>
+                            <pre class="text-xs text-red-400 overflow-x-auto"><code>/* ❌ YANLIŞ */
+$siteName = setting('site_title') ?: setting('site_company_name') ?: 'Mahmutoglu';
+$siteEmail = setting('contact_email_1') ?: setting('site_email');</code></pre>
+                        </div>
+                        <div class="bg-green-500/10 rounded-lg p-3 border border-green-500/20">
+                            <p class="text-xs text-green-300 mb-2">✅ Yapılması Gereken:</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>1. Admin panelden tüm settings değerleri doldurulmalı</li>
+                                <li>2. Fallback'ler kaldırılmalı: <code>$siteName = setting('site_title');</code></li>
+                                <li>3. Boş değer kontrolü blade'de yapılmalı: <code>@if($siteName)</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Icon Hover Megamenu -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-critical overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 font-bold">6</span>
+                            <h4 class="font-semibold text-white">Icon Hover Megamenu'de Çalışmıyor</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-medium">KRİTİK</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">
+                            <strong>Kural:</strong> fal (light) → fas (solid) animasyonlu geçiş, CARD üzerinde tetiklenmeli!
+                        </p>
+                        <div class="bg-slate-800 rounded-lg p-3 mb-3">
+                            <p class="text-xs text-slate-400 mb-2">📁 Dosya: <code>header.blade.php:115</code></p>
+                            <pre class="text-xs text-red-400 overflow-x-auto"><code>&lt;!-- ❌ Megamenu'deki ikonlar hover'da değişmiyor --&gt;
+&lt;i class="fat {{ $icon }} text-lg text-amber-700"&gt;&lt;/i&gt;</code></pre>
+                        </div>
+                        <div class="bg-green-500/10 rounded-lg p-3 border border-green-500/20">
+                            <p class="text-xs text-green-300 mb-2">✅ Olması Gereken:</p>
+                            <pre class="text-xs text-slate-300 overflow-x-auto"><code>&lt;i class="fat {{ $icon }} icon-hover text-lg text-amber-700"&gt;&lt;/i&gt;
+
+// + app.blade.php'deki JS'e megamenu item'ları da eklenmeli</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. WhatsApp Float Button -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-critical overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 font-bold">7</span>
+                            <h4 class="font-semibold text-white">WhatsApp Float Button Eksik</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-medium">KRİTİK</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">
+                            WhatsApp iletişim butonu sitede sabit olarak görünmeli (sağ alt köşe).
+                        </p>
+                        <div class="bg-green-500/10 rounded-lg p-3 border border-green-500/20">
+                            <p class="text-xs text-green-300 mb-2">✅ Eklenmesi Gereken (app.blade.php veya footer.blade.php):</p>
+                            <pre class="text-xs text-slate-300 overflow-x-auto"><code>@if(setting('contact_whatsapp_1'))
+&lt;a href="{{ whatsapp_link() }}" target="_blank"
+   class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600
+          rounded-full flex items-center justify-center shadow-lg
+          hover:shadow-xl transition-all group"&gt;
+    &lt;i class="fab fa-whatsapp text-white text-2xl
+              group-hover:scale-110 transition-transform"&gt;&lt;/i&gt;
+&lt;/a&gt;
+@endif</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orta Öncelikli -->
+            <div class="space-y-4 mb-8">
+                <h3 class="text-lg font-semibold text-orange-400 flex items-center gap-2">
+                    <i class="fas fa-exclamation"></i> Orta Öncelikli (5 Madde)
+                </h3>
+
+                <!-- 1. Sosyal Medya -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-medium overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold">1</span>
+                            <h4 class="font-semibold text-white">Footer Sosyal Medya Linkleri Eksik</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-medium">ORTA</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">📁 <code>resources/views/themes/t-6/layouts/footer.blade.php</code></p>
+                        <p class="text-xs text-slate-400">Footer'da LinkedIn, Instagram, Twitter vb. sosyal medya ikonları eklenmeli.</p>
+                    </div>
+                </div>
+
+                <!-- 2. İletişim Formu -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-medium overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold">2</span>
+                            <h4 class="font-semibold text-white">İletişim Formu Çalışmıyor</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-medium">ORTA</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">📁 <code>page/show.blade.php:281-333</code></p>
+                        <p class="text-xs text-slate-400">Form <code>action="#"</code> ile tanımlı - backend entegrasyonu veya Livewire component gerekli.</p>
+                    </div>
+                </div>
+
+                <!-- 3. Türkçe Karakter -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-medium overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold">3</span>
+                            <h4 class="font-semibold text-white">Türkçe Karakter Hataları</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-medium">ORTA</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm mb-3">📁 <code>config.json:4-5</code></p>
+                        <pre class="text-xs text-red-400"><code>"title": "Mahmutoglu Hukuk Art Deco Tema"  ❌ → "Mahmutoğlu Hukuk Art Deco Tema"
+"description": "...Danismanlik..."  ❌ → "...Danışmanlık..."</code></pre>
+                    </div>
+                </div>
+
+                <!-- 4. Footer Türk Bilişim -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-low overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 font-bold">4</span>
+                            <h4 class="font-semibold text-white">Footer Credit Link</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-medium">DÜŞÜK</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm">✅ Footer'da "Türk Bilişim" linki var - Doğru</p>
+                        <p class="text-xs text-slate-400 mt-1">❌ "Claude AI" veya "Yapay Zeka" ifadesi YOK - Doğru</p>
+                    </div>
+                </div>
+
+                <!-- 5. Google Maps -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 priority-medium overflow-hidden">
+                    <div class="p-4 bg-slate-800/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold">5</span>
+                            <h4 class="font-semibold text-white">İletişim Sayfasında Harita Eksik</h4>
+                        </div>
+                        <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-medium">ORTA</span>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-slate-300 text-sm">İletişim sayfasında Google Maps embed veya Leaflet harita eklenmeli.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doğru Yapılanlar -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-green-400 flex items-center gap-2 mb-4">
+                    <i class="fas fa-check-circle"></i> Doğru Yapılanlar (8 Madde)
+                </h3>
+                <div class="bg-slate-900 rounded-xl border border-green-500/20 p-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-white font-medium">Responsive Container</p>
+                                <p class="text-xs text-slate-400">1280px altında %100 genişlik + dinamik padding ✓</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-white font-medium">FOUC Prevention</p>
+                                <p class="text-xs text-slate-400">Dark mode flickering önlendi ✓</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-white font-medium">Dark Mode</p>
+                                <p class="text-xs text-slate-400">Alpine.js + localStorage ile state yönetimi ✓</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-white font-medium">Animated Gradient Text</p>
+                                <p class="text-xs text-slate-400">3 renk, 6 saniye animasyon ✓</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-white font-medium">PWA + instant.page</p>
+                                <p class="text-xs text-slate-400">Manifest, service worker, lazy loading ✓</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-white font-medium">Sticky Header</p>
+                                <p class="text-xs text-slate-400">Fixed + backdrop-blur ✓</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-white font-medium">Mobile Hamburger Menu</p>
+                                <p class="text-xs text-slate-400">Alpine.js ile slide-in panel ✓</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-white font-medium">Icon Hover (Kartlarda)</p>
+                                <p class="text-xs text-slate-400">fal → fas geçişi service-card'larda çalışıyor ✓</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== UYGULAMA PLANI ==================== -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-tasks text-amber-400"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white">📋 Uygulama Planı (TODO)</h2>
+                    <p class="text-sm text-slate-400">Sıralı yapılacaklar listesi</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-800">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-slate-400 font-medium">#</th>
+                            <th class="px-4 py-3 text-left text-slate-400 font-medium">Görev</th>
+                            <th class="px-4 py-3 text-left text-slate-400 font-medium">Dosya</th>
+                            <th class="px-4 py-3 text-left text-slate-400 font-medium">Öncelik</th>
+                            <th class="px-4 py-3 text-left text-slate-400 font-medium">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">1</td>
+                            <td class="px-4 py-3 text-white">translateY hover kaldır</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">app.blade.php:177-180</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">2</td>
+                            <td class="px-4 py-3 text-white">scale-105 hover kaldır</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">service/index.blade.php:85</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">3</td>
+                            <td class="px-4 py-3 text-white">Top Bar ekle</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">header.blade.php</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">4</td>
+                            <td class="px-4 py-3 text-white">WhatsApp float button ekle</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">app.blade.php / footer</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">5</td>
+                            <td class="px-4 py-3 text-white">Megamenu icon hover ekle</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">header.blade.php, app.blade.php</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">6</td>
+                            <td class="px-4 py-3 text-white">Settings fallback temizle</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">Tüm blade dosyaları</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">7</td>
+                            <td class="px-4 py-3 text-white">Türkçe karakter düzelt</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">config.json</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs">Orta</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">8</td>
+                            <td class="px-4 py-3 text-white">Footer sosyal medya ekle</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">footer.blade.php</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs">Orta</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">9</td>
+                            <td class="px-4 py-3 text-white">page/show.blade.php if/else kaldır</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">page/show.blade.php</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">10</td>
+                            <td class="px-4 py-3 text-white">Hakkımızda/İletişim DB body hazırla</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">Admin Panel (pages.body)</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">11</td>
+                            <td class="px-4 py-3 text-white">Leonardo AI görseller oluştur</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">storage/themes/t-6/</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Kritik</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-400">12</td>
+                            <td class="px-4 py-3 text-white">İletişim formu backend</td>
+                            <td class="px-4 py-3 text-slate-400 font-mono text-xs">ContactForm Livewire</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs">Orta</span></td>
+                            <td class="px-4 py-3"><span class="w-3 h-3 rounded-full status-todo inline-block"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Onay Bölümü -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-br from-amber-500/10 to-amber-600/5 rounded-xl p-6 border border-amber-500/20">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-question-circle text-amber-400"></i>
+                    Onay Bekliyor
+                </h3>
+                <p class="text-slate-300 mb-4">
+                    Bu plan onaylandığında yukarıdaki TODO listesindeki maddeler sırasıyla uygulanacak.
+                    Hangi maddelerin yapılmasını istiyorsunuz?
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm font-medium">
+                        <i class="fas fa-check mr-1"></i> Tümünü Uygula
+                    </span>
+                    <span class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-sm font-medium">
+                        <i class="fas fa-list-check mr-1"></i> Seçili Maddeleri
+                    </span>
+                    <span class="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg text-sm font-medium">
+                        <i class="fas fa-edit mr-1"></i> Düzenle
+                    </span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-6">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm">
+                21 Ocak 2026 • Tuufi.com
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

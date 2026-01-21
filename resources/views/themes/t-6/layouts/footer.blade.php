@@ -1,10 +1,10 @@
 {{-- t-6 Theme - Art Deco Footer --}}
 @php
-    $siteName = setting('site_title') ?: setting('site_company_name') ?: 'Mahmutoglu';
-    $siteSlogan = setting('site_slogan') ?: 'Hukuk & Danışmanlık';
+    $siteName = setting('site_title');
+    $siteSlogan = setting('site_slogan');
     $siteDescription = setting('site_description');
     $sitePhone = setting('contact_phone_1');
-    $siteEmail = setting('contact_email_1') ?: setting('site_email');
+    $siteEmail = setting('contact_email_1');
     $siteWhatsapp = setting('contact_whatsapp_1');
     $whatsappUrl = whatsapp_link();
     $siteAddress = setting('contact_address');

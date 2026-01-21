@@ -26,8 +26,14 @@ class RenewSSLCertificate implements ShouldQueue
     // Config
     protected string $certName = 'tuufi-all';
     protected string $sslEmail = 'ssl@tuufi.com';
-    protected string $webroot = '/var/www/vhosts/default/htdocs';
+    protected string $webroot = '/var/www/vhosts/default/htdocs';  // Plesk ACME webroot (nginx config'de tanımlı)
     protected string $pleskCertPath = '/usr/local/psa/var/certificates/scffm1s7qbch4jnfprJ4Ox';
+
+    // SSL'den hariç tutulacak domain'ler (Cloudflare proxy, farklı sunucu vb.)
+    protected array $excludedDomains = [
+        'muzibu.com.tr',      // Cloudflare arkasında
+        'ixtif.com.tr',       // Redirect domain
+    ];
 
     // Central domain
     protected string $centralDomain;
@@ -171,16 +177,7 @@ class RenewSSLCertificate implements ShouldQueue
      */
     protected function isRedirectDomain(string $domain): bool
     {
-        // Hariç tutulacak domain'ler
-        $excludedDomains = [
-            // Redirect yapılan
-            'ixtif.com.tr',
-
-            // Cloudflare arkasında / farklı sunucuda
-            'muzibu.com.tr',
-        ];
-
-        return in_array($domain, $excludedDomains);
+        return in_array($domain, $this->excludedDomains);
     }
 
     /**

@@ -10,7 +10,7 @@
 
 @section('content')
     <!-- HERO SECTION -->
-    <section id="anasayfa" class="relative py-16 lg:py-24 bg-gradient-to-br from-sky-50 via-blue-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 overflow-hidden">
+    <section id="anasayfa" class="relative py-16 lg:py-24 bg-gradient-to-br from-sky-50 via-blue-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 overflow-hidden overflow-x-hidden">
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-30 dark:opacity-10">
             <div class="absolute top-20 left-10 w-72 h-72 bg-sky-300 rounded-full mix-blend-multiply filter blur-3xl"></div>
@@ -78,7 +78,7 @@
                         </div>
 
                         <!-- Floating Card 1 -->
-                        <div class="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-4 flex items-center space-x-3" data-aos="fade-up" data-aos-delay="400">
+                        <div class="hidden sm:flex absolute -bottom-6 left-0 sm:-left-6 bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-4 items-center space-x-3" data-aos="fade-up" data-aos-delay="400">
                             <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center">
                                 <i class="fat fa-calendar-check text-white text-xl"></i>
                             </div>
@@ -89,7 +89,7 @@
                         </div>
 
                         <!-- Floating Card 2 -->
-                        <div class="absolute -top-4 -right-4 bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-4 flex items-center space-x-3" data-aos="fade-down" data-aos-delay="500">
+                        <div class="hidden sm:flex absolute -top-4 right-0 sm:-right-4 bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-4 items-center space-x-3" data-aos="fade-down" data-aos-delay="500">
                             <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
                                 <i class="fat fa-certificate text-white text-xl"></i>
                             </div>
@@ -163,7 +163,7 @@
                     ],
                 ];
             @endphp
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+            <div class="services-grid grid gap-4 md:gap-6 lg:gap-8">
                 @foreach($serviceData as $index => $item)
                     <div class="card-hover bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 lg:p-8" data-aos="fade-up" data-aos-delay="{{ ($index + 1) * 50 }}">
                         <div class="w-14 h-14 bg-gradient-to-br {{ isset($item['isContact']) ? 'from-amber-400 to-orange-500' : 'from-sky-500 to-blue-600' }} rounded-xl flex items-center justify-center mb-5">
@@ -198,7 +198,7 @@
                     </div>
 
                     <!-- Badge -->
-                    <div class="absolute -bottom-6 -right-6 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-5" data-aos="fade-up" data-aos-delay="200">
+                    <div class="hidden sm:block absolute -bottom-6 right-0 sm:-right-6 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-5" data-aos="fade-up" data-aos-delay="200">
                         <div class="flex items-center space-x-4">
                             <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
                                 <i class="fat fa-award text-white text-xl"></i>

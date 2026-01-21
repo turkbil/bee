@@ -4,7 +4,7 @@
     // Controller'dan gelen $item'ı $service olarak kullan
     $service = $item;
 
-    $siteName = setting('site_title') ?: setting('site_company_name') ?: 'Mahmutoglu';
+    $siteName = setting('site_title');
 
     // Service icons mapping
     $serviceIcons = [
@@ -53,7 +53,7 @@
     {{-- Background Image --}}
     @if($serviceImage)
     <div class="absolute inset-0">
-        <img src="{{ $serviceImage }}" alt="" class="absolute inset-0 w-full h-full object-cover" aria-hidden="true">
+        <img src="{{ $serviceImage }}" alt="" class="absolute inset-0 w-full h-full object-cover" aria-hidden="true" loading="eager" fetchpriority="high">
         {{-- Light mode: beyaz overlay / Dark mode: koyu overlay --}}
         <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/85 to-white/75 dark:from-slate-950/95 dark:via-slate-950/90 dark:to-slate-950/85"></div>
     </div>
@@ -133,7 +133,7 @@
                 {{-- Service Image Card --}}
                 @if($serviceImage)
                 <div class="rounded-xl overflow-hidden shadow-lg">
-                    <img src="{{ $serviceImage }}" alt="{{ $service->title }}" class="w-full h-48 object-cover">
+                    <img src="{{ $serviceImage }}" alt="{{ $service->title }}" class="w-full h-48 object-cover" loading="lazy" decoding="async">
                 </div>
                 @endif
 

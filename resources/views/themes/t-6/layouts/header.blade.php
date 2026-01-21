@@ -1,8 +1,9 @@
 {{-- t-6 Theme - Art Deco Header --}}
 @php
-    $siteName = setting('site_title') ?: setting('site_company_name') ?: 'Mahmutoglu';
-    $siteSlogan = setting('site_slogan') ?: 'Hukuk & Danışmanlık';
+    $siteName = setting('site_title');
+    $siteSlogan = setting('site_slogan');
     $sitePhone = setting('contact_phone_1');
+    $siteEmail = setting('contact_email_1');
     $siteWhatsapp = setting('contact_whatsapp_1');
     $whatsappUrl = whatsapp_link();
 
@@ -110,9 +111,9 @@
                                             $icon = $serviceIcons[$service->slug] ?? 'fa-scale-balanced';
                                         @endphp
                                         <a href="{{ url('/service/' . $service->slug) }}"
-                                           class="group flex items-start gap-4 p-4 rounded-xl hover:bg-amber-500/5 transition-all duration-200">
+                                           class="megamenu-item group flex items-start gap-4 p-4 rounded-xl hover:bg-amber-500/5 transition-all duration-200">
                                             <div class="w-11 h-11 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-500/20 transition-colors">
-                                                <i class="fat {{ $icon }} text-lg text-amber-700 dark:text-amber-400"></i>
+                                                <i class="fat {{ $icon }} icon-hover text-lg text-amber-700 dark:text-amber-400"></i>
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <h4 class="font-heading text-sm font-semibold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">

@@ -1,0 +1,43 @@
+<div class="absolute w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] orbit-container" :style="'transform: rotate(' + (activeIndex * -90) + 'deg)'" style="transform: rotate(-180deg)">
+
+                        
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 orbit-icon" :style="'transform: translateX(-50%) translateY(-50%) rotate(' + (activeIndex * 90) + 'deg)'" @mouseenter="setActive(0)" @click="setActive(0)" style="transform: translateX(-50%) translateY(-50%) rotate(180deg)">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500 bg-slate-800 hover:bg-slate-700" :class="activeIndex === 0
+                                     ? 'bg-sky-500 shadow-lg shadow-sky-500/50 scale-125'
+                                     : 'bg-slate-800 hover:bg-slate-700'">
+                                <i class="fa-solid fa-leaf text-white text-lg"></i>
+                            </div>
+                            
+                            <div class="absolute inset-0 rounded-full border-2 border-sky-400 scale-150 transition-all duration-500 opacity-0" :class="activeIndex === 0 ? 'opacity-100 animate-ping' : 'opacity-0'"></div>
+                        </div>
+
+                        
+                        <div class="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 orbit-icon" :style="'transform: translateX(50%) translateY(-50%) rotate(' + (activeIndex * 90) + 'deg)'" @mouseenter="setActive(1)" @click="setActive(1)" style="transform: translateX(50%) translateY(-50%) rotate(180deg)">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500 bg-slate-800 hover:bg-slate-700" :class="activeIndex === 1
+                                     ? 'bg-cyan-500 shadow-lg shadow-cyan-500/50 scale-125'
+                                     : 'bg-slate-800 hover:bg-slate-700'">
+                                <i class="fa-solid fa-droplet text-white text-lg"></i>
+                            </div>
+                            <div class="absolute inset-0 rounded-full border-2 border-cyan-400 scale-150 transition-all duration-500 opacity-0" :class="activeIndex === 1 ? 'opacity-100 animate-ping' : 'opacity-0'"></div>
+                        </div>
+
+                        
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 orbit-icon" :style="'transform: translateX(-50%) translateY(50%) rotate(' + (activeIndex * 90) + 'deg)'" @mouseenter="setActive(2)" @click="setActive(2)" style="transform: translateX(-50%) translateY(50%) rotate(180deg)">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500 bg-emerald-500 shadow-lg shadow-emerald-500/50 scale-125" :class="activeIndex === 2
+                                     ? 'bg-emerald-500 shadow-lg shadow-emerald-500/50 scale-125'
+                                     : 'bg-slate-800 hover:bg-slate-700'">
+                                <i class="fa-solid fa-recycle text-white text-lg"></i>
+                            </div>
+                            <div class="absolute inset-0 rounded-full border-2 border-emerald-400 scale-150 transition-all duration-500 opacity-100 animate-ping" :class="activeIndex === 2 ? 'opacity-100 animate-ping' : 'opacity-0'"></div>
+                        </div>
+
+                        
+                        <div class="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 orbit-icon" :style="'transform: translateX(-50%) translateY(-50%) rotate(' + (activeIndex * 90) + 'deg)'" @mouseenter="setActive(3)" @click="setActive(3)" style="transform: translateX(-50%) translateY(-50%) rotate(180deg)">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500 bg-slate-800 hover:bg-slate-700" :class="activeIndex === 3
+                                     ? 'bg-teal-500 shadow-lg shadow-teal-500/50 scale-125'
+                                     : 'bg-slate-800 hover:bg-slate-700'">
+                                <i class="fa-solid fa-cube text-white text-lg"></i>
+                            </div>
+                            <div class="absolute inset-0 rounded-full border-2 border-teal-400 scale-150 transition-all duration-500 opacity-0" :class="activeIndex === 3 ? 'opacity-100 animate-ping' : 'opacity-0'"></div>
+                        </div>
+                    </div>

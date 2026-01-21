@@ -282,7 +282,7 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         .details-section { display: none; }
         .details-section.show { display: block; }
 
-        /* Tooltip */
+        /* Tooltip (altında) */
         .tooltip { position: relative; }
         .tooltip::after {
             content: attr(data-tip);
@@ -301,6 +301,26 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
             z-index: 50;
         }
         .tooltip:hover::after { opacity: 1; }
+
+        /* Tooltip (üstünde) */
+        .tooltip-top { position: relative; }
+        .tooltip-top::after {
+            content: attr(data-tip);
+            position: absolute;
+            top: -28px; left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a; border: 1px solid #334155;
+            color: #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s;
+            z-index: 50;
+        }
+        .tooltip-top:hover::after { opacity: 1; }
 
         /* Drag & Drop */
         .design-card { cursor: grab; }
@@ -471,36 +491,53 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
             <button onclick="filterDesigns('noted')" class="filter-btn tooltip px-3 py-2 text-sm rounded-lg bg-slate-900 text-slate-400 hover:bg-slate-800 shrink-0" data-tip="Notlular"><i class="fas fa-sticky-note text-emerald-400"></i></button>
             <button onclick="filterDesigns('prompted')" class="filter-btn tooltip px-3 py-2 text-sm rounded-lg bg-slate-900 text-slate-400 hover:bg-slate-800 shrink-0" data-tip="Promptlu"><i class="fas fa-terminal text-violet-400"></i></button>
 
-            <select id="filterKategori" onchange="filterByKategori()" class="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2 shrink-0">
-                <option value="">Kategori</option>
-            </select>
-            <select id="filterMarka" onchange="filterByMarka()" class="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2 shrink-0">
-                <option value="">Marka</option>
-            </select>
+            <!-- Filtre Dropdown'ları -->
+            <div class="tooltip shrink-0" data-tip="Kategoriye göre filtrele">
+                <select id="filterKategori" onchange="filterByKategori()" class="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2 cursor-pointer hover:border-slate-600">
+                    <option value="">Kategori</option>
+                </select>
+            </div>
+            <div class="tooltip shrink-0" data-tip="Markaya göre filtrele">
+                <select id="filterMarka" onchange="filterByMarka()" class="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2 cursor-pointer hover:border-slate-600">
+                    <option value="">Marka</option>
+                </select>
+            </div>
 
             <span class="text-slate-700">|</span>
 
-            <!-- Sort & Toggle -->
-            <select id="sortOrder" onchange="sortDesigns()" class="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2 shrink-0">
-                <option value="date-desc" selected>Yeni</option>
-                <option value="date-asc">Eski</option>
-                <option value="alpha">A-Z</option>
-                <option value="alpha-desc">Z-A</option>
-            </select>
+            <!-- Sıralama & Görünüm -->
+            <div class="tooltip shrink-0" data-tip="Sıralama düzeni">
+                <select id="sortOrder" onchange="sortDesigns()" class="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2 cursor-pointer hover:border-slate-600">
+                    <option value="date-desc" selected>Yeni</option>
+                    <option value="date-asc">Eski</option>
+                    <option value="alpha">A-Z</option>
+                    <option value="alpha-desc">Z-A</option>
+                </select>
+            </div>
 
-            <button onclick="toggleAllDetails()" class="tooltip px-3 py-2 text-sm rounded-lg bg-violet-900/50 text-violet-300 hover:bg-violet-800 shrink-0" data-tip="Detaylar">
+            <button onclick="toggleAllDetails()" class="tooltip px-3 py-2 text-sm rounded-lg bg-violet-900/50 text-violet-300 hover:bg-violet-800 shrink-0" data-tip="Tüm detayları aç/kapat">
                 <i class="fas fa-eye" id="toggleAllIcon"></i>
             </button>
 
             <span class="text-slate-700">|</span>
 
-            <!-- Kategori & Marka Yönetimi -->
-            <button onclick="openManageModal()" class="tooltip px-3 py-2 text-sm rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 shrink-0" data-tip="Kategori/Marka">
+            <!-- Yönetim -->
+            <button onclick="openManageModal()" class="tooltip px-3 py-2 text-sm rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 shrink-0" data-tip="Kategori ve marka yönetimi">
                 <i class="fas fa-tags"></i>
             </button>
 
             <!-- Stats -->
-            <span class="ml-auto text-xs shrink-0"><span class="text-violet-400"><?= $promptedDesigns ?>p</span> <span class="text-slate-600">|</span> <span class="text-amber-400" id="favCount">0f</span></span>
+            <div class="ml-auto flex items-center gap-2 text-xs shrink-0">
+                <span class="tooltip cursor-default" data-tip="Promptlu Tasarım Sayısı">
+                    <span class="text-violet-400"><?= $promptedDesigns ?></span>
+                    <span class="text-slate-500 ml-0.5">prompt</span>
+                </span>
+                <span class="text-slate-700">|</span>
+                <span class="tooltip cursor-default" data-tip="Favori Sayısı">
+                    <span class="text-amber-400" id="favCount">0</span>
+                    <span class="text-slate-500 ml-0.5">favori</span>
+                </span>
+            </div>
         </div>
     </header>
 
@@ -527,12 +564,12 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                                         <?= htmlspecialchars($design['categoryDisplay'], ENT_QUOTES, 'UTF-8') ?>
                                     </span>
                                     <div class="flex items-center gap-1.5">
-                                        <div class="star-rating" data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>">
+                                        <div class="star-rating tooltip" data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>" data-tip="Puanla (1-5)">
                                             <?php for($i = 1; $i <= 5; $i++): ?>
                                                 <i class="star-icon fas fa-star text-slate-700 text-xs hover:text-yellow-400 transition-colors" data-rating="<?= $i ?>"></i>
                                             <?php endfor; ?>
                                         </div>
-                                        <button class="fav-btn text-slate-600 hover:text-amber-400 transition text-sm" title="Favori">
+                                        <button class="fav-btn tooltip text-slate-600 hover:text-amber-400 transition text-sm" data-tip="Favorilere ekle">
                                             <i class="fas fa-heart"></i>
                                         </button>
                                     </div>
@@ -546,20 +583,20 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
 
                             <!-- Hover Actions (sağ alt) -->
                             <div class="absolute bottom-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button class="toggle-details-btn w-6 h-6 flex items-center justify-center rounded bg-violet-600 hover:bg-violet-500 text-white text-xs"
+                                <button class="toggle-details-btn tooltip-top w-6 h-6 flex items-center justify-center rounded bg-violet-600 hover:bg-violet-500 text-white text-xs"
                                         data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>"
-                                        title="Detaylar">
+                                        data-tip="Detayları göster">
                                     <i class="fas fa-eye"></i>
                                 </button>
                                 <?php if ($design['hasPrompt']): ?>
-                                <a href="<?= $design['promptUrl'] ?>" target="_blank" onclick="event.stopPropagation()" class="w-6 h-6 flex items-center justify-center rounded bg-violet-600 hover:bg-violet-500 text-white text-xs" title="Prompt">
+                                <a href="<?= $design['promptUrl'] ?>" target="_blank" onclick="event.stopPropagation()" class="tooltip-top w-6 h-6 flex items-center justify-center rounded bg-violet-600 hover:bg-violet-500 text-white text-xs" data-tip="Prompt dosyasını aç">
                                     <i class="fas fa-terminal"></i>
                                 </a>
                                 <?php endif; ?>
-                                <button class="delete-btn w-6 h-6 flex items-center justify-center rounded bg-slate-700 hover:bg-red-600 text-slate-400 hover:text-white text-xs"
+                                <button class="delete-btn tooltip-top w-6 h-6 flex items-center justify-center rounded bg-slate-700 hover:bg-red-600 text-slate-400 hover:text-white text-xs"
                                         data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>"
                                         data-title="<?= htmlspecialchars($design['title'], ENT_QUOTES, 'UTF-8') ?>"
-                                        title="Sil">
+                                        data-tip="Taslağı sil">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
@@ -620,6 +657,14 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
     // Escape helper for onclick attributes
     function escapeAttr(str) {
         return String(str).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+    }
+
+    // Her kelimenin ilk harfini büyük yap (Türkçe destekli)
+    function capitalizeWords(str) {
+        return str.trim().split(' ').map(word => {
+            if (!word) return '';
+            return word.charAt(0).toLocaleUpperCase('tr-TR') + word.slice(1);
+        }).join(' ');
     }
 
     // Metadata'yı JSON'dan yükle
@@ -772,7 +817,8 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
 
     function saveMarka(id, marka) {
         if (!designData[id]) designData[id] = {};
-        designData[id].marka = marka.trim();
+        // Marka için ilk harfleri büyük yap
+        designData[id].marka = capitalizeWords(marka);
         saveData(id); updateFilterDropdowns();
     }
 
@@ -921,7 +967,7 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                 }
             }
         });
-        document.getElementById('favCount').textContent = favCount + 'f';
+        document.getElementById('favCount').textContent = favCount;
     }
 
     function saveData(templateId) {
@@ -1062,7 +1108,8 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         // Global listeye ekle
         const listKey = addModalType === 'kategori' ? 'kategoriler' : 'markalar';
         let list = window[listKey] || [];
-        const normalizedValue = addModalType === 'kategori' ? value.toLowerCase() : value;
+        // Kategori: lowercase, Marka: capitalize
+        const normalizedValue = addModalType === 'kategori' ? value.toLowerCase() : capitalizeWords(value);
 
         if (!list.includes(normalizedValue)) {
             list.push(normalizedValue);

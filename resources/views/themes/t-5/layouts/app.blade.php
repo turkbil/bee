@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr" class="scroll-smooth">
+<html lang="tr" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -180,6 +180,13 @@
         .mobile-menu {
             transform: translateX(100%);
             transition: transform 0.3s ease;
+            background-color: #ffffff !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+        }
+
+        .dark .mobile-menu {
+            background-color: #0f172a !important;
         }
 
         .mobile-menu.open {
@@ -208,11 +215,35 @@
             background-clip: text;
             color: transparent;
         }
+
+        /* Services Grid - Mobile First */
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+        @media (min-width: 640px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 768px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* AOS - Mobilde Disable */
+        @media (max-width: 767px) {
+            [data-aos] {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+        }
     </style>
 
     @stack('styles')
 </head>
-<body class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-body antialiased" x-data="{ darkMode: false, mobileMenu: false }" :class="{ 'dark': darkMode }">
+<body class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-body antialiased overflow-x-hidden" x-data="{ darkMode: false, mobileMenu: false }" :class="{ 'dark': darkMode }">
 
     {{-- Header --}}
     @include('themes.t-5.layouts.header')

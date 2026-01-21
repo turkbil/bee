@@ -226,7 +226,7 @@ class RegisterDomainInWebServer implements ShouldQueue
 
     /**
      * Apache config'e domain ekle
-     * Dinamik olarak son eklenen domain'den sonra ekler
+     * UseCanonicalName Off satırından önce ekler
      */
     protected function addToApache(): bool
     {
@@ -243,24 +243,25 @@ class RegisterDomainInWebServer implements ShouldQueue
                 return true;
             }
 
-            // Dinamik olarak son eklenen tenant domain'ini bul
-            $lastDomain = $this->getLastAddedDomain();
+            // ServerAlias satırlarını oluştur (tab ile indent)
+            $newAliases = "\t\tServerAlias \"{$this->domain}\"\n\t\tServerAlias \"www.{$this->domain}\"\n";
 
-            if ($lastDomain) {
-                // Son domain'den sonra ekle
-                $result = Process::run(
-                    "sudo sed -i '/ServerAlias \"www.{$lastDomain}\"/a\\\\t\\tServerAlias \"{$this->domain}\"\\n\\t\\tServerAlias \"www.{$this->domain}\"' {$this->apacheConfig}"
-                );
+            // UseCanonicalName Off satırından önce ekle
+            $newConfig = str_replace(
+                "\t\tUseCanonicalName Off",
+                $newAliases . "\t\tUseCanonicalName Off",
+                $config
+            );
 
-                if ($result->successful()) {
-                    Log::channel('system')->info("✅ Apache: {$this->domain} eklendi (www.{$lastDomain} sonrasına)");
-                } else {
-                    // Fallback: UseCanonicalName satırından önce ekle
-                    return $this->addToApacheBeforeCanonical();
-                }
-            } else {
-                // Fallback: UseCanonicalName satırından önce ekle
-                return $this->addToApacheBeforeCanonical();
+            if ($newConfig === $config) {
+                Log::channel('system')->error("❌ Apache: UseCanonicalName Off bulunamadı");
+                return false;
+            }
+
+            // Config'i yaz
+            if (!$this->writeConfig($this->apacheConfig, $newConfig)) {
+                Log::channel('system')->error("❌ Apache: Config yazılamadı");
+                return false;
             }
 
             // Config test
@@ -269,9 +270,12 @@ class RegisterDomainInWebServer implements ShouldQueue
                 Log::channel('system')->error("❌ Apache config test hatası", [
                     'error' => $testResult->output(),
                 ]);
+                // Eski config'i geri yükle
+                $this->writeConfig($this->apacheConfig, $config);
                 return false;
             }
 
+            Log::channel('system')->info("✅ Apache: {$this->domain} eklendi");
             return true;
         } catch (\Exception $e) {
             Log::channel('system')->error("❌ Apache config exception", [
@@ -279,27 +283,6 @@ class RegisterDomainInWebServer implements ShouldQueue
             ]);
             return false;
         }
-    }
-
-    /**
-     * Fallback: UseCanonicalName satırından önce ekle
-     */
-    protected function addToApacheBeforeCanonical(): bool
-    {
-        $result = Process::run(
-            "sudo sed -i '/UseCanonicalName Off/i\\\\t\\tServerAlias \"{$this->domain}\"\\n\\t\\tServerAlias \"www.{$this->domain}\"' {$this->apacheConfig}"
-        );
-
-        if ($result->successful()) {
-            Log::channel('system')->info("✅ Apache: {$this->domain} eklendi (UseCanonicalName öncesine)");
-
-            // Config test
-            $testResult = Process::run('sudo apachectl configtest 2>&1');
-            return str_contains($testResult->output(), 'Syntax OK');
-        }
-
-        Log::channel('system')->error("❌ Apache: Domain eklenemedi");
-        return false;
     }
 
     /**

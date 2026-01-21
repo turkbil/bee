@@ -23,6 +23,9 @@ class VerifyCsrfToken extends Middleware
 
         // Logout - Session expire olsa bile çalışmalı (419 hatası önlenir)
         'logout',
+
+        // Contact Form API - public form, CSRF not needed
+        'api/contact',
     ];
     
     /**

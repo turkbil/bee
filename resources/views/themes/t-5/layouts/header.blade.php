@@ -18,7 +18,7 @@
                 </div>
                 <div>
                     <span class="font-heading font-bold text-xl text-slate-900 dark:text-white">{{ $siteName }}</span>
-                    <span class="block text-xs text-sky-600 dark:text-sky-400 font-medium">{{ $siteSlogan }}</span>
+                    <span class="hidden sm:block text-xs text-sky-600 dark:text-sky-400 font-medium">{{ $siteSlogan }}</span>
                 </div>
             </a>
 
@@ -52,8 +52,11 @@
         </div>
     </div>
 
+    <!-- Mobile Menu Overlay -->
+    <div x-show="mobileMenu" x-transition:enter="transition-opacity ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="mobileMenu = false" class="fixed inset-0 bg-black/50 z-40 xl:hidden"></div>
+
     <!-- Mobile Menu -->
-    <div class="mobile-menu fixed inset-y-0 right-0 w-80 bg-white dark:bg-slate-900 shadow-2xl xl:hidden" :class="{ 'open': mobileMenu }">
+    <div class="mobile-menu fixed inset-y-0 right-0 w-80 bg-white dark:bg-slate-900 shadow-2xl xl:hidden z-50" :class="{ 'open': mobileMenu }" style="background-color: #ffffff;">
         <div class="p-6">
             <div class="flex items-center justify-between mb-8">
                 <span class="font-heading font-bold text-xl text-slate-900 dark:text-white">Menü</span>

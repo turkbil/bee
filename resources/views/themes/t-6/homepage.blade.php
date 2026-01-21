@@ -1,11 +1,11 @@
 @extends('themes.t-6.layouts.app')
 
 @php
-    $siteName = setting('site_title') ?: setting('site_company_name') ?: 'Mahmutoğlu';
-    $siteSlogan = setting('site_slogan') ?: 'Hukuk & Danışmanlık';
+    $siteName = setting('site_title');
+    $siteSlogan = setting('site_slogan');
     $siteDescription = setting('site_description');
     $sitePhone = setting('contact_phone_1');
-    $siteEmail = setting('contact_email_1') ?: setting('site_email');
+    $siteEmail = setting('contact_email_1');
     $siteWhatsapp = setting('contact_whatsapp_1');
     $whatsappUrl = whatsapp_link();
     $siteAddress = setting('contact_address');
@@ -35,7 +35,7 @@
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden art-deco-pattern bg-gradient-to-b from-slate-100 to-white dark:from-slate-950 dark:to-slate-900">
     {{-- Background Image - Same for Light/Dark --}}
     <div class="absolute inset-0 z-0">
-        <img src="/storage/themes/t-6/hero-bg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-40 dark:opacity-50 dark:brightness-75" aria-hidden="true">
+        <img src="/storage/themes/t-6/hero-bg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-40 dark:opacity-50 dark:brightness-75" aria-hidden="true" loading="eager" fetchpriority="high">
     </div>
 
     {{-- Background Gradient Overlay --}}
@@ -185,7 +185,7 @@
                 </div>
                 <p class="font-heading text-sm tracking-[0.3em] uppercase text-amber-700 dark:text-amber-400/80 mb-4" data-aos="fade-right" data-aos-delay="100">Kurumsal</p>
                 <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-8" data-aos="fade-right" data-aos-delay="200">
-                    <span class="gradient-text">Profesyonel Hukuki Çözümler</span> <span class="text-slate-900 dark:text-white">İçin Doğru Adres</span>
+                    <span class="gradient-text">Güvenilir</span> <span class="text-slate-900 dark:text-white">Hukuk Danışmanlığı</span>
                 </h2>
 
                 <div class="space-y-6 text-base text-slate-800 dark:text-slate-300 leading-relaxed font-medium" data-aos="fade-right" data-aos-delay="300">
@@ -225,6 +225,7 @@
                             alt="{{ $siteName }} Ofisi"
                             class="w-full h-auto rounded-lg object-cover"
                             loading="lazy"
+                            decoding="async"
                         >
                     </div>
                 </div>

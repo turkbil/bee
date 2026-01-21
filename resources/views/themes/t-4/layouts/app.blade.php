@@ -591,7 +591,7 @@ x-init="
     }, 800);
 "
 :class="{ 'dark': darkMode }"
-class="antialiased bg-white dark:bg-dark-900 text-dark-600 dark:text-primary-100 transition-colors duration-300">
+class="antialiased bg-white dark:bg-dark-900 text-dark-600 dark:text-primary-100 transition-colors duration-300 pt-[72px]">
 
     {{-- Header --}}
     @include('themes.t-4.layouts.header')

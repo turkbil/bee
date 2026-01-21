@@ -1,8 +1,8 @@
 {
     "name": "t-6",
-    "title": "Mahmutoglu Hukuk Art Deco Tema",
+    "title": "Mahmutoğlu Hukuk Art Deco Tema",
     "version": "2.0.0",
-    "description": "Mahmutoglu Hukuk & Danismanlik icin Art Deco tasarimli profesyonel tema",
+    "description": "Mahmutoğlu Hukuk & Danışmanlık için Art Deco tasarımlı profesyonel tema",
     "extends": "simple",
     "colors": {
         "primary": "#f59e0b",

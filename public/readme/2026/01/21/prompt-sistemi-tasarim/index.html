@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Sistemi Tasarımı | Draft v1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .code-block { background: #1e293b; border-radius: 8px; padding: 16px; overflow-x: auto; }
+        .code-block code { color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 13px; }
+        .highlight { background: linear-gradient(120deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; }
+        .variable-tag { display: inline-flex; align-items: center; gap: 4px; background: #7c3aed; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .mockup { background: #0f172a; border: 2px solid #334155; border-radius: 12px; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-terminal text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-white">Prompt Sistemi Tasarımı</h1>
+                            <p class="text-sm text-slate-500">Draft v1 - Planlama Dokümanı</p>
+                        </div>
+                    </div>
+                </div>
+                <span class="text-xs text-slate-600">21 Ocak 2026</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- Özet -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-lightbulb text-amber-400"></i>
+                Ne Yapıyoruz?
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p class="text-base leading-relaxed">
+                    <strong class="text-white">Amaç:</strong> Yeni çalışanların tekrarlayan görevleri (tema taşıma, modül kurulumu, vb.)
+                    kolayca yapabilmesi için <span class="highlight font-semibold">hazır prompt şablonları</span> sistemi.
+                </p>
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">📝</div>
+                        <div class="text-sm font-medium text-white">Şablon Promptlar</div>
+                        <div class="text-xs text-slate-500 mt-1">Hazır talimat setleri</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">🔄</div>
+                        <div class="text-sm font-medium text-white">Dinamik Değişkenler</div>
+                        <div class="text-xs text-slate-500 mt-1">URL, tenant, tema adı</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">📋</div>
+                        <div class="text-sm font-medium text-white">Tek Tık Kopyala</div>
+                        <div class="text-xs text-slate-500 mt-1">Claude'a yapıştır, çalıştır</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kullanım Senaryosu -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-user-check text-emerald-400"></i>
+                Kullanım Senaryosu
+            </h2>
+            <div class="bg-slate-800/50 rounded-lg p-5">
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-violet-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">1</div>
+                        <div>
+                            <div class="font-medium text-white">Yeni çalışan "Tema Taşıma" prompt'unu seçer</div>
+                            <div class="text-sm text-slate-400 mt-1">Tasarım Merkezi → Prompt sekmesi veya template kartından</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-violet-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">2</div>
+                        <div>
+                            <div class="font-medium text-white">Değişkenleri doldurur</div>
+                            <div class="text-sm text-slate-400 mt-1">Template URL, Tenant URL, vb. input'lara yazar</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-violet-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">3</div>
+                        <div>
+                            <div class="font-medium text-white">"Kopyala" butonuna basar</div>
+                            <div class="text-sm text-slate-400 mt-1">Hazır prompt clipboard'a kopyalanır</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">4</div>
+                        <div>
+                            <div class="font-medium text-white">Claude'a yapıştırır, çalıştırır</div>
+                            <div class="text-sm text-slate-400 mt-1">İş tamam!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON Yapısı -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-database text-blue-400"></i>
+                JSON Veri Yapısı
+            </h2>
+
+            <p class="text-slate-400 mb-4">Her prompt bir JSON objesi. <strong class="text-emerald-400">Değişkenler otomatik algılanır!</strong></p>
+
+            <div class="code-block mb-6">
+<pre><code>{
+  "prompts": [
+    {
+      "id": "tema-tasima",
+      "title": "Tema Taşıma",
+      "description": "Taslak temayı tenant'a taşır",
+      "category": "tema",
+      "icon": "fa-truck-moving",
+      "color": "violet",
+      <span class="text-emerald-400">// Değişkenler template içinden otomatik algılanır!</span>
+      <span class="text-emerald-400">// {{TEMPLATE_URL}} → url tipi (çünkü _URL ile bitiyor)</span>
+      <span class="text-emerald-400">// {{TENANT_URL}} → url tipi</span>
+      "template": "{{TEMPLATE_URL}} bu temayı\nhttps://ixtif.com/readme/2026/01/18/tema-sistemi-analiz/ bu kurallara uyarak {{TENANT_URL}} sitesi tenantına taşı.\n\ntema sistemi analizdeki klasör yapısına uy. önce sistemi taşı, sonra düzenleme ve geliştirme yapacağız. şuan olduğu gibi hiç değiştirmeden taşı.\n\nfooter header inline olmayacak",
+      "tags": ["tema", "taşıma", "tenant"]
+    },
+    {
+      "id": "bug-fix",
+      "title": "Bug Fix",
+      "description": "Hata düzeltme talimatı",
+      "category": "gelistirme",
+      "icon": "fa-bug",
+      "color": "red",
+      <span class="text-emerald-400">// {{TENANT_URL}} → url</span>
+      <span class="text-emerald-400">// {{HATA_DETAY}} → textarea (çünkü _DETAY ile bitiyor)</span>
+      <span class="text-emerald-400">// {{DOSYA_YOLU}} → text (varsayılan)</span>
+      "template": "{{TENANT_URL}} sitesinde şu hata var:\n\n{{HATA_DETAY}}\n\nMuhtemel dosya: {{DOSYA_YOLU}}\n\nHatayı bul ve düzelt.",
+      "tags": ["bug", "hata", "fix"]
+    },
+    {
+      "id": "modul-kurulumu",
+      "title": "Modül Kurulumu",
+      "description": "Yeni modül kurar",
+      "category": "modul",
+      "icon": "fa-puzzle-piece",
+      "color": "emerald",
+      "template": "{{TENANT_URL}} sitesine {{MODUL_ADI}} modülünü kur.\n\nMevcut modül yapısını takip et.",
+      "tags": ["modül", "kurulum"]
+    }
+  ]
+}</code></pre>
+            </div>
+
+            <div class="bg-emerald-900/20 border border-emerald-700/50 rounded-lg p-4 mb-6">
+                <div class="flex items-center gap-2 text-emerald-400 font-medium mb-2">
+                    <i class="fas fa-check-circle"></i>
+                    Basitleştirilmiş Yapı
+                </div>
+                <ul class="text-sm text-slate-300 space-y-1">
+                    <li>• <code class="text-violet-400">variables</code> array'i YOK - otomatik algılama</li>
+                    <li>• Sadece <code class="text-emerald-400">template</code> yaz, değişkenleri <code class="text-amber-400">{{}}</code> içine al</li>
+                    <li>• Sistem tip'i değişken adından anlar</li>
+                </ul>
+            </div>
+
+            <h3 class="text-base font-semibold text-white mb-3">Değişken Tipleri (Sadece 3 Tip)</h3>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="variable-tag bg-emerald-600"><i class="fas fa-font"></i> text</span>
+                    </div>
+                    <div class="text-sm text-slate-400">Kısa yazı, başlık</div>
+                    <div class="text-xs text-slate-500 mt-1">Örn: Blog, Varilsan, t-7</div>
+                    <div class="text-xs text-emerald-400 mt-2"><i class="fas fa-magic mr-1"></i>Varsayılan tip</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="variable-tag bg-blue-600"><i class="fas fa-align-left"></i> textarea</span>
+                    </div>
+                    <div class="text-sm text-slate-400">Uzun açıklama, detay</div>
+                    <div class="text-xs text-slate-500 mt-1">Örn: Hata açıklaması, talimat</div>
+                    <div class="text-xs text-blue-400 mt-2"><i class="fas fa-magic mr-1"></i>_DETAY, _ACIKLAMA, _ICERIK</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="variable-tag"><i class="fas fa-link"></i> url</span>
+                    </div>
+                    <div class="text-sm text-slate-400">Link, adres</div>
+                    <div class="text-xs text-slate-500 mt-1">Örn: https://varilsan.tuufi.com/</div>
+                    <div class="text-xs text-violet-400 mt-2"><i class="fas fa-magic mr-1"></i>_URL ile biter</div>
+                </div>
+            </div>
+
+            <h3 class="text-base font-semibold text-white mb-3 mt-6">Otomatik Tip Tanıma</h3>
+            <div class="bg-slate-800/50 rounded-lg p-4">
+                <p class="text-sm text-slate-400 mb-3">Değişken adına göre tip otomatik belirlenir:</p>
+                <div class="code-block !p-3">
+<pre><code class="text-sm"><span class="text-violet-400">{{TEMPLATE_URL}}</span>      → <span class="text-violet-300">url</span>      <span class="text-slate-500">// _URL ile bitiyor</span>
+<span class="text-violet-400">{{TENANT_URL}}</span>        → <span class="text-violet-300">url</span>      <span class="text-slate-500">// _URL ile bitiyor</span>
+<span class="text-blue-400">{{HATA_DETAY}}</span>        → <span class="text-blue-300">textarea</span> <span class="text-slate-500">// _DETAY ile bitiyor</span>
+<span class="text-blue-400">{{TALIMAT_ACIKLAMA}}</span>  → <span class="text-blue-300">textarea</span> <span class="text-slate-500">// _ACIKLAMA ile bitiyor</span>
+<span class="text-blue-400">{{PROMPT_ICERIK}}</span>     → <span class="text-blue-300">textarea</span> <span class="text-slate-500">// _ICERIK ile bitiyor</span>
+<span class="text-emerald-400">{{MODUL_ADI}}</span>         → <span class="text-emerald-300">text</span>     <span class="text-slate-500">// diğer her şey</span>
+<span class="text-emerald-400">{{TEMA_ID}}</span>           → <span class="text-emerald-300">text</span>     <span class="text-slate-500">// diğer her şey</span></code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özel Prefill Değerleri -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-magic text-violet-400"></i>
+                Akıllı Otomatik Doldurma (Prefill)
+            </h2>
+
+            <p class="text-slate-400 mb-4">Bazı değişkenler otomatik doldurulabilir:</p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Prefill Değeri</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Açıklama</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Örnek Sonuç</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4"><code class="text-violet-400">"current"</code></td>
+                            <td class="py-3 px-4">Açık olan template'in URL'i</td>
+                            <td class="py-3 px-4 text-slate-500">https://tuufi.com/design/templates/varilsan-grup/v2/</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4"><code class="text-violet-400">"current_name"</code></td>
+                            <td class="py-3 px-4">Açık olan template'in adı</td>
+                            <td class="py-3 px-4 text-slate-500">varilsan-grup</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4"><code class="text-violet-400">"next_tema_id"</code></td>
+                            <td class="py-3 px-4">Sıradaki tema ID (t-7, t-8...)</td>
+                            <td class="py-3 px-4 text-slate-500">14</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4"><code class="text-violet-400">"today"</code></td>
+                            <td class="py-3 px-4">Bugünün tarihi</td>
+                            <td class="py-3 px-4 text-slate-500">2026-01-21</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- UI Mockup -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-desktop text-cyan-400"></i>
+                UI Tasarım Taslağı
+            </h2>
+
+            <p class="text-slate-400 mb-6">Modal veya slide-over panel olarak açılacak:</p>
+
+            <!-- Mockup -->
+            <div class="mockup p-6 max-w-lg mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-truck-moving text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Tema Taşıma</h3>
+                            <p class="text-xs text-slate-500">Taslak temayı tenant'a taşır</p>
+                        </div>
+                    </div>
+                    <button class="text-slate-500 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Input 1 -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">
+                            Taslak URL <span class="text-red-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text"
+                                   value="https://tuufi.com/design/templates/varilsan-grup/v2/"
+                                   class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
+                                   readonly>
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-400">
+                                <i class="fas fa-check-circle"></i> Otomatik
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Input 2 -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">
+                            Tenant URL <span class="text-red-400">*</span>
+                        </label>
+                        <input type="text"
+                               placeholder="https://example.tuufi.com/"
+                               class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder-slate-500 focus:border-violet-500 focus:ring-1 focus:ring-violet-500">
+                    </div>
+
+                    <!-- Input 3 -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">
+                            Tema ID <span class="text-slate-500 text-xs">(opsiyonel)</span>
+                        </label>
+                        <input type="number"
+                               value="14"
+                               class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm focus:border-violet-500 focus:ring-1 focus:ring-violet-500">
+                        <p class="text-xs text-slate-500 mt-1">Boş bırakılırsa otomatik hesaplanır</p>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="mt-6 pt-4 border-t border-slate-700">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-slate-400">Önizleme</span>
+                        <button class="text-xs text-violet-400 hover:text-violet-300">
+                            <i class="fas fa-expand mr-1"></i>Genişlet
+                        </button>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-3 text-xs text-slate-400 font-mono max-h-32 overflow-y-auto">
+                        https://tuufi.com/design/templates/varilsan-grup/v2/ bu temayı<br>
+                        https://ixtif.com/readme/2026/01/18/tema-sistemi-analiz/ bu kurallara uyarak https://example.tuufi.com/ sitesi tenantına taşı.<br><br>
+                        tema sistemi analizdeki klasör yapısına uy...
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-3 mt-6">
+                    <button class="flex-1 bg-violet-600 hover:bg-violet-500 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-copy"></i>
+                        Kopyala
+                    </button>
+                    <button class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entegrasyon Noktaları -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-plug text-amber-400"></i>
+                Entegrasyon Noktaları
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Nokta 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 bg-violet-600/30 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-th-large text-violet-400"></i>
+                        </div>
+                        <h3 class="font-semibold text-white">Template Kartları</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">
+                        Her template kartında "Prompt" butonu. Tıklanınca o template için uygun promptlar listelenir.
+                    </p>
+                    <div class="text-xs text-slate-500 bg-slate-900 rounded px-3 py-2">
+                        <i class="fas fa-terminal text-violet-400 mr-1"></i>
+                        Mevcut: Zaten prompt.html dosyası var
+                    </div>
+                </div>
+
+                <!-- Nokta 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 bg-emerald-600/30 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-folder text-emerald-400"></i>
+                        </div>
+                        <h3 class="font-semibold text-white">Prompt Sekmesi</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">
+                        /design/prompt/ sayfasında tüm promptlar listelenir. Kategoriye göre filtreleme.
+                    </p>
+                    <div class="text-xs text-slate-500 bg-slate-900 rounded px-3 py-2">
+                        <i class="fas fa-link text-emerald-400 mr-1"></i>
+                        Mevcut: Header'da "Prompt" tab'ı var
+                    </div>
+                </div>
+
+                <!-- Nokta 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 bg-blue-600/30 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-plus text-blue-400"></i>
+                        </div>
+                        <h3 class="font-semibold text-white">Prompt Ekleme</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">
+                        Yeni prompt ekleme formu. JSON'a kaydetme. Admin yetkisi gerekli.
+                    </p>
+                    <div class="text-xs text-slate-500 bg-slate-900 rounded px-3 py-2">
+                        <i class="fas fa-lock text-blue-400 mr-1"></i>
+                        Şifre korumalı olabilir
+                    </div>
+                </div>
+
+                <!-- Nokta 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 bg-amber-600/30 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-history text-amber-400"></i>
+                        </div>
+                        <h3 class="font-semibold text-white">Geçmiş</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">
+                        Son kullanılan promptlar ve girilen değerler. Hızlı tekrar kullanım.
+                    </p>
+                    <div class="text-xs text-slate-500 bg-slate-900 rounded px-3 py-2">
+                        <i class="fas fa-database text-amber-400 mr-1"></i>
+                        localStorage'da saklanır
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dosya Yapısı -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-folder-tree text-emerald-400"></i>
+                Dosya Yapısı
+            </h2>
+
+            <div class="code-block">
+<pre><code>public/design/
+├── templates/
+│   ├── index.php              <span class="text-slate-500"># Mevcut galeri</span>
+│   ├── metadata.json          <span class="text-slate-500"># Template metadata</span>
+│   └── <span class="text-emerald-400">prompts.json</span>           <span class="text-emerald-400"># YENİ: Prompt şablonları</span>
+│
+├── prompt/
+│   ├── index.php              <span class="text-slate-500"># Mevcut prompt sayfası</span>
+│   └── <span class="text-emerald-400">builder.php</span>            <span class="text-emerald-400"># YENİ: Prompt oluşturucu UI</span>
+│
+└── <span class="text-emerald-400">js/</span>
+    └── <span class="text-emerald-400">prompt-builder.js</span>      <span class="text-emerald-400"># YENİ: Prompt builder logic</span></code></pre>
+            </div>
+        </section>
+
+        <!-- Örnek Promptlar -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-list-check text-violet-400"></i>
+                Başlangıç Prompt Listesi
+            </h2>
+
+            <p class="text-slate-400 mb-4">İlk etapta eklenecek promptlar:</p>
+
+            <div class="space-y-3">
+                <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-10 h-10 bg-violet-600/30 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fas fa-truck-moving text-violet-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-white">Tema Taşıma</div>
+                        <div class="text-sm text-slate-500">Taslak temayı tenant'a taşır</div>
+                    </div>
+                    <div class="flex gap-1">
+                        <span class="variable-tag text-xs">TEMPLATE_URL</span>
+                        <span class="variable-tag text-xs">TENANT_URL</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-10 h-10 bg-emerald-600/30 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fas fa-puzzle-piece text-emerald-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-white">Modül Kurulumu</div>
+                        <div class="text-sm text-slate-500">Tenant'a yeni modül kurar</div>
+                    </div>
+                    <div class="flex gap-1">
+                        <span class="variable-tag bg-emerald-600 text-xs">MODUL_ADI</span>
+                        <span class="variable-tag bg-emerald-600 text-xs">TENANT_URL</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-10 h-10 bg-blue-600/30 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fas fa-bug text-blue-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-white">Bug Fix</div>
+                        <div class="text-sm text-slate-500">Hata düzeltme talimatları</div>
+                    </div>
+                    <div class="flex gap-1">
+                        <span class="variable-tag bg-blue-600 text-xs">HATA_ACIKLAMASI</span>
+                        <span class="variable-tag bg-blue-600 text-xs">DOSYA_YOLU</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-10 h-10 bg-amber-600/30 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fas fa-palette text-amber-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-white">Tasarım Güncelleme</div>
+                        <div class="text-sm text-slate-500">CSS/Tailwind değişiklikleri</div>
+                    </div>
+                    <div class="flex gap-1">
+                        <span class="variable-tag bg-amber-600 text-xs">TENANT_URL</span>
+                        <span class="variable-tag bg-amber-600 text-xs">DEGISIKLIK</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-10 h-10 bg-red-600/30 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fas fa-database text-red-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-white">SEO Ayarları</div>
+                        <div class="text-sm text-slate-500">Meta tag ve SEO yapılandırması</div>
+                    </div>
+                    <div class="flex gap-1">
+                        <span class="variable-tag bg-red-600 text-xs">TENANT_URL</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Geliştirme Planı -->
+        <section class="card p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-tasks text-cyan-400"></i>
+                Geliştirme Planı
+            </h2>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-6 h-6 bg-emerald-600 rounded flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">1</div>
+                    <div>
+                        <div class="font-medium text-white">prompts.json oluştur</div>
+                        <div class="text-sm text-slate-400">Başlangıç promptlarını JSON formatında tanımla</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-6 h-6 bg-emerald-600 rounded flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">2</div>
+                    <div>
+                        <div class="font-medium text-white">Prompt Builder UI</div>
+                        <div class="text-sm text-slate-400">Modal/panel tasarımı, input'lar, önizleme</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">3</div>
+                    <div>
+                        <div class="font-medium text-white">Template kartlarına entegre et</div>
+                        <div class="text-sm text-slate-400">Kart hover'ında "Prompt Kullan" butonu</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">4</div>
+                    <div>
+                        <div class="font-medium text-white">/design/prompt/ sayfasını güncelle</div>
+                        <div class="text-sm text-slate-400">Tüm promptları listele, kategorize et</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">5</div>
+                    <div>
+                        <div class="font-medium text-white">Geçmiş & Favoriler</div>
+                        <div class="text-sm text-slate-400">localStorage ile son kullanılanlar</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sorular -->
+        <section class="card p-6 border-amber-600/50">
+            <h2 class="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-question-circle"></i>
+                Karar Bekleyen Noktalar
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-amber-900/20 border border-amber-800/50 rounded-lg p-4">
+                    <div class="font-medium text-amber-300 mb-1">1. Prompt ekleme yetkisi</div>
+                    <div class="text-sm text-slate-400">Herkes ekleyebilsin mi, yoksa şifre korumalı mı olsun?</div>
+                </div>
+                <div class="bg-amber-900/20 border border-amber-800/50 rounded-lg p-4">
+                    <div class="font-medium text-amber-300 mb-1">2. Prompt kategorileri</div>
+                    <div class="text-sm text-slate-400">Tema, Modül, Bug Fix, SEO... Başka ne lazım?</div>
+                </div>
+                <div class="bg-amber-900/20 border border-amber-800/50 rounded-lg p-4">
+                    <div class="font-medium text-amber-300 mb-1">3. Template-Prompt ilişkisi</div>
+                    <div class="text-sm text-slate-400">Her template'e özel prompt mu, yoksa genel mi?</div>
+                </div>
+                <div class="bg-amber-900/20 border border-amber-800/50 rounded-lg p-4">
+                    <div class="font-medium text-amber-300 mb-1">4. Dil</div>
+                    <div class="text-sm text-slate-400">Promptlar Türkçe mi İngilizce mi olsun?</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-6 text-center">
+            <p class="text-sm text-slate-600">21 Ocak 2026 • Tuufi.com</p>
+        </div>
+    </footer>
+
+</body>
+</html>

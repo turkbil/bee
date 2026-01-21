@@ -80,10 +80,10 @@
 
 <x-blog.reading-progress target=".content-body" />
 
-{{-- Subheader Component --}}
+{{-- SUBHEADER (Page ile aynı minimal tasarım) --}}
 @php
     $breadcrumbsArray = [
-        ['label' => __('blog::front.general.home'), 'url' => url('/'), 'icon' => 'fa-home'],
+        ['label' => __('blog::front.general.home'), 'url' => url('/')],
         ['label' => __('blog::front.general.blogs'), 'url' => url($blogIndexUrl)]
     ];
     if($categoryName) {
@@ -92,11 +92,21 @@
     $breadcrumbsArray[] = ['label' => $title];
 @endphp
 
-@subheader([
-    'title' => $title,
-    'icon' => 'fa-solid fa-newspaper',
-    'breadcrumbs' => $breadcrumbsArray
-])
+<section class="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div class="container mx-auto py-4">
+        <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
+            @foreach($breadcrumbsArray as $index => $crumb)
+                @if(isset($crumb['url']))
+                    <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition">{{ $crumb['label'] }}</a>
+                    @if($index < count($breadcrumbsArray) - 1)<span class="mx-2">/</span>@endif
+                @else
+                    <span class="text-gray-900 dark:text-white font-medium">{{ $crumb['label'] }}</span>
+                @endif
+            @endforeach
+        </nav>
+        <h1 class="text-2xl md:text-3xl font-bold font-heading text-gray-900 dark:text-white">{{ $title }}</h1>
+    </div>
+</section>
 
 <div class="min-h-screen bg-white dark:bg-gray-900 pb-20 lg:pb-8">
     <div class="container mx-auto py-8 md:py-12">

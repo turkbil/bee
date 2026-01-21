@@ -29,10 +29,20 @@
         <link rel="apple-touch-icon" href="{{ $appleTouchIcon }}">
     @endif
 
+    {{-- DNS Prefetch & Preconnect for Performance --}}
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+
     {{-- Fonts: Cinzel (Art Deco Headings) + Lora (Readable Body) --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+
+    {{-- Preload Critical Assets --}}
+    <link rel="preload" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.min.css') }}" as="style">
+    <link rel="preload" href="{{ asset('js/instantpage.js') }}" as="script" crossorigin>
 
     {{-- Tailwind CSS CDN with Typography Plugin --}}
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
@@ -86,36 +96,116 @@
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f59e0b' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
-        /* Animated Gradient Text */
+        /* Animated Gradient Text with Shimmer - Light Mode (Çok Koyu) */
         .gradient-text-animate {
-            background: linear-gradient(90deg, #f59e0b, #fbbf24, #d97706, #f59e0b);
-            background-size: 300% 100%;
+            background: linear-gradient(
+                90deg,
+                #78350f 0%,
+                #92400e 20%,
+                #b45309 35%,
+                #d97706 50%,
+                #b45309 65%,
+                #92400e 80%,
+                #78350f 100%
+            );
+            background-size: 200% 100%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: gradientFlow 6s ease infinite;
+            animation: shimmer 3s ease-in-out infinite;
         }
 
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Dark Mode - Açık tonlar */
+        .dark .gradient-text-animate {
+            background: linear-gradient(
+                90deg,
+                #d97706 0%,
+                #f59e0b 20%,
+                #fbbf24 30%,
+                #fef3c7 50%,
+                #fbbf24 70%,
+                #f59e0b 80%,
+                #d97706 100%
+            );
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        /* Static Gradient Text */
+        @keyframes shimmer {
+            0% { background-position: 100% 50%; }
+            100% { background-position: -100% 50%; }
+        }
+
+        /* Static Gradient Text - Light Mode (Çok Koyu) */
         .gradient-text {
-            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
+            background: linear-gradient(
+                90deg,
+                #78350f 0%,
+                #92400e 20%,
+                #b45309 35%,
+                #d97706 50%,
+                #b45309 65%,
+                #92400e 80%,
+                #78350f 100%
+            );
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        /* Dark Mode - Açık tonlar */
+        .dark .gradient-text {
+            background: linear-gradient(
+                90deg,
+                #d97706 0%,
+                #f59e0b 20%,
+                #fbbf24 40%,
+                #fef3c7 50%,
+                #fbbf24 60%,
+                #f59e0b 80%,
+                #d97706 100%
+            );
+            background-size: 200% 100%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
 
-        /* Gradient Border Card */
+        /* Gradient Border Card with Shimmer */
         .gradient-border {
             position: relative;
-            background: linear-gradient(135deg, #f59e0b, #fbbf24, #d97706);
+            background: linear-gradient(
+                90deg,
+                #78350f 0%,
+                #92400e 15%,
+                #b45309 30%,
+                #d97706 50%,
+                #b45309 70%,
+                #92400e 85%,
+                #78350f 100%
+            );
+            background-size: 200% 100%;
             padding: 1px;
             border-radius: 0.75rem;
+            animation: borderShimmer 3s ease-in-out infinite;
+        }
+
+        .dark .gradient-border {
+            background: linear-gradient(
+                90deg,
+                #d97706 0%,
+                #f59e0b 15%,
+                #fbbf24 30%,
+                #fef3c7 50%,
+                #fbbf24 70%,
+                #f59e0b 85%,
+                #d97706 100%
+            );
+            background-size: 200% 100%;
         }
 
         .gradient-border-inner {
@@ -128,20 +218,37 @@
             background: #0f172a;
         }
 
-        /* Animated Border */
+        /* Animated Border with Shimmer */
         .animated-border {
             position: relative;
-            background: linear-gradient(90deg, #f59e0b, #fbbf24, #d97706, #f59e0b);
-            background-size: 300% 100%;
+            background: linear-gradient(
+                90deg,
+                #78350f 0%,
+                #92400e 15%,
+                #b45309 30%,
+                #d97706 50%,
+                #b45309 70%,
+                #92400e 85%,
+                #78350f 100%
+            );
+            background-size: 200% 100%;
             padding: 2px;
             border-radius: 0.75rem;
-            animation: borderFlow 4s ease infinite;
+            animation: borderShimmer 3s ease-in-out infinite;
         }
 
-        @keyframes borderFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .dark .animated-border {
+            background: linear-gradient(
+                90deg,
+                #d97706 0%,
+                #f59e0b 15%,
+                #fbbf24 30%,
+                #fef3c7 50%,
+                #fbbf24 70%,
+                #f59e0b 85%,
+                #d97706 100%
+            );
+            background-size: 200% 100%;
         }
 
         .animated-border-inner {
@@ -168,15 +275,64 @@
             transform: rotate(45deg);
         }
 
-        /* Service Card Hover */
+        /* Service Card with Animated Border on Hover */
         .service-card {
+            position: relative;
             border: 1px solid transparent;
             transition: all 0.4s ease;
         }
 
+        .service-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(
+                90deg,
+                #78350f 0%,
+                #92400e 15%,
+                #b45309 30%,
+                #d97706 50%,
+                #b45309 70%,
+                #92400e 85%,
+                #78350f 100%
+            );
+            background-size: 200% 100%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .dark .service-card::before {
+            background: linear-gradient(
+                90deg,
+                #d97706 0%,
+                #f59e0b 15%,
+                #fbbf24 30%,
+                #fef3c7 50%,
+                #fbbf24 70%,
+                #f59e0b 85%,
+                #d97706 100%
+            );
+            background-size: 200% 100%;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+            animation: borderShimmer 2s ease-in-out infinite;
+        }
+
         .service-card:hover {
-            border-color: #f59e0b;
-            transform: translateY(-4px);
+            box-shadow: 0 10px 40px -10px rgba(245, 158, 11, 0.3);
+        }
+
+        @keyframes borderShimmer {
+            0% { background-position: 100% 50%; }
+            100% { background-position: -100% 50%; }
         }
 
         /* Value Card */
@@ -408,8 +564,8 @@
             localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
         }
 
-        // Icon hover effect (thin to solid)
-        document.querySelectorAll('.service-card, .value-card, .gradient-border').forEach(card => {
+        // Icon hover effect (thin to solid) - tüm kartlar ve megamenu
+        document.querySelectorAll('.service-card, .value-card, .gradient-border, .megamenu-item').forEach(card => {
             const icon = card.querySelector('.icon-hover');
             if (icon && icon.classList.contains('fat')) {
                 card.addEventListener('mouseenter', () => {

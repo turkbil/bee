@@ -535,47 +535,17 @@ class TenantComponent extends Component
                     $domain->setAsPrimary();
                 }
 
-                // ✅ PLESK OTOMASYONU: Alias oluştur + SSL + Nginx reload
+                // ✅ Web server alias otomasyonu (nginx + apache + SSL)
                 try {
-                    $parentDomain = config('tenancy.parent_domain');
-                    $escapedDomain = escapeshellarg($this->newDomain);
-                    $escapedParent = escapeshellarg($parentDomain);
+                    // 1. Nginx ve Apache'ye ekle
+                    \App\Jobs\RegisterDomainInWebServer::dispatchSync($this->newDomain, $this->tenantId);
 
-                    // 1. Plesk alias oluştur
-                    exec("plesk bin subdomain --create {$escapedDomain} -domain {$escapedParent} -www true 2>&1", $output, $returnCode);
+                    // 2. SSL sertifikasını yenile (queue'da çalışsın)
+                    \App\Jobs\RenewSSLCertificate::dispatch();
 
-                    if ($returnCode === 0) {
-                        \Log::info("Plesk alias created: {$this->newDomain}");
-
-                        // 2. SEO redirect kapat (KRİTİK!)
-                        exec("plesk db \"UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = {$escapedDomain}\"");
-
-                        // 3. Nginx config yenile
-                        exec("plesk repair web {$escapedParent} -y 2>&1");
-                        exec("systemctl reload nginx 2>&1");
-
-                        // 4. SSL sertifika talep et (opsiyonel, DNS hazırsa)
-                        $adminEmail = env('TENANT_ADMIN_EMAIL', "admin@{$parentDomain}");
-                        $escapedEmail = escapeshellarg($adminEmail);
-                        exec("plesk bin certificate --issue -domain {$escapedDomain} -admin-email {$escapedEmail} 2>&1", $sslOutput, $sslReturn);
-
-                        if ($sslReturn === 0) {
-                            \Log::info("SSL certificate issued: {$this->newDomain}");
-                        } else {
-                            \Log::warning("SSL certificate failed (DNS may not be ready): {$this->newDomain}");
-                        }
-
-                        // 5. Test et
-                        sleep(1); // Nginx reload için kısa bekle
-                        $testUrl = "https://{$this->newDomain}/";
-                        $statusCode = exec("curl -s -o /dev/null -w '%{http_code}' -k {$testUrl}");
-                        \Log::info("Domain accessibility test: {$this->newDomain} - HTTP {$statusCode}");
-                    } else {
-                        \Log::error("Plesk alias creation failed: {$this->newDomain} - " . implode("\n", $output));
-                    }
+                    \Log::info("✅ Domain web server'a eklendi: {$this->newDomain}");
                 } catch (\Exception $e) {
-                    \Log::error("Plesk automation failed for {$this->newDomain}: " . $e->getMessage());
-                    // Hata olsa bile domain Laravel'e eklendi, sadece log tut
+                    \Log::error("❌ Web server kaydı hatası: {$this->newDomain} - " . $e->getMessage());
                 }
 
                 if (function_exists('log_activity')) {
@@ -632,43 +602,11 @@ class TenantComponent extends Component
                 $oldDomain = $domain->domain;
                 $domain->update(['domain' => $this->editingDomainValue]);
 
-                // ✅ PLESK OTOMASYONU: Eski alias sil, yeni alias oluştur
-                try {
-                    $parentDomain = config('tenancy.parent_domain');
-                    $escapedParent = escapeshellarg($parentDomain);
-                    $escapedOldDomain = escapeshellarg($oldDomain);
-                    $escapedNewDomain = escapeshellarg($this->editingDomainValue);
-
-                    // 1. Eski Plesk alias'ı sil
-                    exec("plesk bin subdomain --remove {$escapedOldDomain} -domain {$escapedParent} 2>&1", $removeOutput, $removeReturn);
-
-                    if ($removeReturn === 0) {
-                        \Log::info("Old Plesk alias removed: {$oldDomain}");
-                    } else {
-                        \Log::warning("Old Plesk alias removal failed (may not exist): {$oldDomain}");
-                    }
-
-                    // 2. Yeni Plesk alias oluştur
-                    exec("plesk bin subdomain --create {$escapedNewDomain} -domain {$escapedParent} -www true 2>&1", $createOutput, $createReturn);
-
-                    if ($createReturn === 0) {
-                        \Log::info("New Plesk alias created: {$this->editingDomainValue}");
-
-                        // 3. SEO redirect kapat
-                        exec("plesk db \"UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = {$escapedNewDomain}\"");
-
-                        // 4. Nginx reload
-                        exec("plesk repair web {$escapedParent} -y 2>&1");
-                        exec("systemctl reload nginx 2>&1");
-
-                        \Log::info("Domain updated in Plesk: {$oldDomain} → {$this->editingDomainValue}");
-                    } else {
-                        \Log::error("New Plesk alias creation failed: {$this->editingDomainValue}");
-                    }
-                } catch (\Exception $e) {
-                    \Log::error("Plesk update automation failed: " . $e->getMessage());
-                    // Hata olsa bile Laravel'de güncellendi
-                }
+                // ✅ Web server alias güncelleme: Eski sil + yeni ekle
+                // DomainUpdated event ile otomatik yapılır
+                // Manuel tetikleme gerekirse:
+                \App\Jobs\UnregisterDomainAliasFromPlesk::dispatchSync($oldDomain, $domain->tenant_id);
+                \App\Jobs\RegisterDomainInWebServer::dispatchSync($this->editingDomainValue, $domain->tenant_id);
 
                 if (function_exists('log_activity')) {
                     log_activity($domain, 'güncellendi');
@@ -699,32 +637,8 @@ class TenantComponent extends Component
             $domain = Domain::find($domainId);
 
             if ($domain) {
-                $domainName = $domain->domain;
-
-                // ✅ PLESK OTOMASYONU: Alias sil + Nginx reload
-                try {
-                    $parentDomain = config('tenancy.parent_domain');
-                    $escapedParent = escapeshellarg($parentDomain);
-                    $escapedDomain = escapeshellarg($domainName);
-
-                    // 1. Plesk alias'ı sil
-                    exec("plesk bin subdomain --remove {$escapedDomain} -domain {$escapedParent} 2>&1", $output, $returnCode);
-
-                    if ($returnCode === 0) {
-                        \Log::info("Plesk alias removed: {$domainName}");
-                    } else {
-                        \Log::warning("Plesk alias removal failed (may not exist): {$domainName}");
-                    }
-
-                    // 2. Nginx config yenile
-                    exec("plesk repair web {$escapedParent} -y 2>&1");
-                    exec("systemctl reload nginx 2>&1");
-
-                    \Log::info("Domain removed from Plesk and Nginx reloaded: {$domainName}");
-                } catch (\Exception $e) {
-                    \Log::error("Plesk delete automation failed for {$domainName}: " . $e->getMessage());
-                    // Hata olsa bile Laravel'den sil
-                }
+                // ✅ Web server alias silme DeletingDomain event ile otomatik yapılır
+                // Bkz: TenancyServiceProvider -> DeletingDomain event
 
                 if (function_exists('log_activity')) {
                     log_activity($domain, 'silindi');

@@ -1,7 +1,7 @@
 @extends('themes.t-6.layouts.app')
 
 @php
-    $siteName = setting('site_title') ?: setting('site_company_name') ?: 'Mahmutoğlu';
+    $siteName = setting('site_title');
 
     // Service icons mapping
     $serviceIcons = [
@@ -34,7 +34,7 @@
 <section class="relative pt-24 pb-10 overflow-hidden">
     {{-- Background Image --}}
     <div class="absolute inset-0">
-        <img src="/storage/themes/t-6/hero-bg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" aria-hidden="true">
+        <img src="/storage/themes/t-6/hero-bg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" aria-hidden="true" loading="eager" fetchpriority="high">
         {{-- Light mode: beyaz overlay / Dark mode: koyu overlay --}}
         <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/85 to-white/75 dark:from-slate-950/95 dark:via-slate-950/90 dark:to-slate-950/85"></div>
     </div>
@@ -82,7 +82,7 @@
             <a href="{{ url('/service/' . $service->slug) }}" class="service-card group bg-slate-50 dark:bg-slate-900/50 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg dark:shadow-none" data-aos="fade-up" data-aos-delay="{{ 100 + ($index * 50) }}">
                 @if($image)
                 <div class="h-48 overflow-hidden">
-                    <img src="{{ $image }}" alt="{{ $service->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="{{ $image }}" alt="{{ $service->title }}" class="w-full h-full object-cover transition-opacity duration-500" loading="lazy">
                 </div>
                 @endif
                 <div class="p-8">

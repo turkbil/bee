@@ -138,13 +138,14 @@ async function createHlsBlobUrl(originalUrl) {
         }
 
         // 3. Relative segment URL'lerini absolute yap
-        // segment-000.ts → https://domain.com/hls/muzibu/songs/{id}/segment-000.ts?token=...
+        // 🚀 CLOUDFLARE CACHE: Segment'lere token EKLEME - tokensız olmalı
+        // segment-000.ts → https://domain.com/hls/muzibu/songs/{id}/segment-000.ts (NO TOKEN)
         m3u8Content = m3u8Content.replace(
             /(segment-\d+\.ts)(\?[^\s\n]*)?/g,
             (match, segment, query) => {
-                // Query varsa kullan, yoksa orijinal URL'den al
-                const finalQuery = query || queryString;
-                return baseUrl + segment + finalQuery;
+                // 🔧 FIX: Token ekleme - Cloudflare cache için tokensız olmalı
+                // Segment'ler AES-128 şifreli, key olmadan çalışmaz → public olabilir
+                return baseUrl + segment;
             }
         );
 

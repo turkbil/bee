@@ -359,6 +359,25 @@ class SongController extends Controller
             return $response;
         }
 
+        // 🔐 SIGNED URL VALIDATION - Key sadece geçerli token ile erişilebilir
+        $token = request()->query('token');
+        $expires = (int) request()->query('expires');
+        $sig = request()->query('sig');
+
+        $signatureBase = "/hls/muzibu/songs/{$id}";
+        $expectedSig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));
+
+        if (!$token || !$expires || !$sig || $sig !== $expectedSig || \Carbon\Carbon::now()->timestamp > $expires) {
+            \Log::warning('🚨 HLS key denied (validation failed)', [
+                'song_id' => $id,
+                'token_provided' => !empty($token),
+                'sig_match' => $sig === $expectedSig,
+                'is_expired' => \Carbon\Carbon::now()->timestamp > $expires,
+                'ip' => request()->ip(),
+            ]);
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
         try {
             // 🔥 DISABLE SESSION FOR THIS REQUEST (before any session starts)
             config(['session.driver' => 'array']); // Temporary in-memory session (won't persist or set cookies)
@@ -369,26 +388,24 @@ class SongController extends Controller
 
             // Cache for 24 hours (key is immutable)
             $keyBinary = \Cache::remember($cacheKey, 86400, function() use ($id) {
-                // 🔒 FIXED: Use Eloquent (tenant-aware)
-                $song = Song::where('song_id', $id)
-                    ->where('is_active', 1)
-                    ->first();
+                // 🔒 Read key from enc.bin file (tenant-aware storage path)
+                $keyPath = storage_path("app/public/muzibu/hls/{$id}/enc.bin");
 
-                if (!$song || !$song->encryption_key) {
-                    \Log::error('Encryption key not found', [
+                if (!file_exists($keyPath)) {
+                    \Log::error('Encryption key file not found', [
                         'song_id' => $id,
-                        'has_song' => !is_null($song),
-                        'has_key' => $song ? !is_null($song->encryption_key) : false
+                        'path' => $keyPath
                     ]);
-                    return null; // Cache miss, will abort below
+                    return null;
                 }
 
-                // Convert hex key to binary
-                $keyBinary = hex2bin($song->encryption_key);
+                $keyBinary = file_get_contents($keyPath);
 
-                if ($keyBinary === false) {
-                    \Log::error('Invalid encryption key format', [
-                        'song_id' => $id
+                if ($keyBinary === false || strlen($keyBinary) !== 16) {
+                    \Log::error('Invalid encryption key file', [
+                        'song_id' => $id,
+                        'path' => $keyPath,
+                        'size' => $keyBinary !== false ? strlen($keyBinary) : 0
                     ]);
                     return null;
                 }

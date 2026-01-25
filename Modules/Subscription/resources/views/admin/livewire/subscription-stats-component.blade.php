@@ -53,19 +53,6 @@
                 </div>
             </div>
         </div>
-        {{-- Odeme Bekliyor (pending_payment) --}}
-        <div class="col-6 col-lg-2">
-            <div class="card border-orange h-100">
-                <div class="card-body text-center py-3">
-                    <span class="bg-orange text-white avatar mb-2">
-                        <i class="fas fa-hourglass-half"></i>
-                    </span>
-                    <div class="display-5 fw-bold text-orange mb-1">{{ $stats['pending_payment'] ?? 0 }}</div>
-                    <h5 class="mb-0">Odeme Bekliyor</h5>
-                    <div class="text-muted small">Henuz odenmedi</div>
-                </div>
-            </div>
-        </div>
         {{-- Suresi Doldu --}}
         <div class="col-6 col-lg-2">
             <div class="card border-danger h-100">
@@ -248,7 +235,7 @@
             </h3>
         </div>
         {{-- Toplam Aktif Gelir --}}
-        <div class="col-md-6 col-lg-3 mb-3">
+        <div class="col-md-6 col-lg-4 mb-3">
             <div class="card border-success h-100">
                 <div class="card-body text-center">
                     <span class="bg-success text-white avatar avatar-lg mb-3">
@@ -261,7 +248,7 @@
             </div>
         </div>
         {{-- Aylik --}}
-        <div class="col-md-6 col-lg-3 mb-3">
+        <div class="col-md-6 col-lg-4 mb-3">
             <div class="card h-100">
                 <div class="card-body text-center">
                     <span class="bg-blue text-white avatar avatar-lg mb-3">
@@ -274,7 +261,7 @@
             </div>
         </div>
         {{-- Yillik --}}
-        <div class="col-md-6 col-lg-3 mb-3">
+        <div class="col-md-6 col-lg-4 mb-3">
             <div class="card h-100">
                 <div class="card-body text-center">
                     <span class="bg-purple text-white avatar avatar-lg mb-3">
@@ -283,19 +270,6 @@
                     <div class="display-4 text-purple mb-2">{{ number_format($revenueStats['yearly_revenue'] ?? 0, 0, ',', '.') }}</div>
                     <h4 class="mb-1">TL Yillik</h4>
                     <div class="text-muted">{{ $revenueStats['yearly_count'] ?? 0 }} yillik abone</div>
-                </div>
-            </div>
-        </div>
-        {{-- Odeme Bekleyen --}}
-        <div class="col-md-6 col-lg-3 mb-3">
-            <div class="card border-orange h-100">
-                <div class="card-body text-center">
-                    <span class="bg-orange text-white avatar avatar-lg mb-3">
-                        <i class="fas fa-hourglass-half fa-lg"></i>
-                    </span>
-                    <div class="display-4 text-orange mb-2">{{ number_format($revenueStats['pending_payment_revenue'] ?? 0, 0, ',', '.') }}</div>
-                    <h4 class="mb-1">TL Bekliyor</h4>
-                    <div class="text-muted">{{ $revenueStats['pending_payment_count'] ?? 0 }} odeme bekliyor</div>
                 </div>
             </div>
         </div>

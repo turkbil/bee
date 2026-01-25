@@ -626,33 +626,38 @@ class SongStreamController extends Controller
             ]);
         }
 
-        // 🔐 İmza doğrulaması (DeviceService kapalı - token = user_id)
+        // 🔐 İmza doğrulaması - SADECE playlist.m3u8 için gerekli
+        // Segment'ler AES-128 şifreli, key olmadan çalışmaz → public olabilir (Cloudflare cache)
+        $isPlaylist = ($filename === 'playlist.m3u8');
+
+        // Query parametrelerini al (playlist için gerekli)
         $token = request()->query('token'); // Aslında user_id
         $expires = (int) request()->query('expires');
         $sig = request()->query('sig');
 
-        $signatureBase = "/hls/muzibu/songs/{$songId}";
-        $expectedSig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));
+        if ($isPlaylist) {
+            $signatureBase = "/hls/muzibu/songs/{$songId}";
+            $expectedSig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));
 
-        // İmza ve süre kontrolü (token = user_id, boş olamaz)
-        if (!$token || !$expires || !$sig || $sig !== $expectedSig || Carbon::now()->timestamp > $expires) {
-            Log::warning('🚨 HLS serve denied (validation failed)', [
-                'song_id' => $songId,
-                'file' => $filename,
-                'token_provided' => !empty($token),
-                'sig_match' => $sig === $expectedSig,
-                'is_expired' => Carbon::now()->timestamp > $expires,
-                'ip' => request()->ip(),
-            ]);
-            return response()->json([
-                'status' => 'session_terminated',
-                'reason' => 'expired_signature',
-                'message' => 'Oturum doğrulanamadı'
-            ], 401);
+            // İmza ve süre kontrolü (token = user_id, boş olamaz)
+            if (!$token || !$expires || !$sig || $sig !== $expectedSig || Carbon::now()->timestamp > $expires) {
+                Log::warning('🚨 HLS playlist denied (validation failed)', [
+                    'song_id' => $songId,
+                    'file' => $filename,
+                    'token_provided' => !empty($token),
+                    'sig_match' => $sig === $expectedSig,
+                    'is_expired' => Carbon::now()->timestamp > $expires,
+                    'ip' => request()->ip(),
+                ]);
+                return response()->json([
+                    'status' => 'session_terminated',
+                    'reason' => 'expired_signature',
+                    'message' => 'Oturum doğrulanamadı'
+                ], 401);
+            }
         }
-
-        // 🔓 DeviceService kapalı - DB session kontrolü yapılmıyor
-        // Token aslında user_id, imza doğrulandıysa URL manipüle edilmemiş demektir
+        // 🚀 Segment'ler için auth YOK - Cloudflare cache'lenebilir
+        // Güvenlik: Segment'ler AES-128 şifreli, key endpoint'i korumalı
 
         try {
             // Security: Only allow specific file types
@@ -687,10 +692,16 @@ class SongStreamController extends Controller
                     'sig' => $sig,
                 ]);
 
-                // Segment ve key satırlarına token + imza ekle
-                $content = preg_replace('/(segment-\\d+\\.ts)/', '$1?' . $query, $content);
-                $content = str_replace("/api/muzibu/songs/{$songId}/key", "/api/muzibu/songs/{$songId}/key?{$query}", $content);
-                // Key URL is already correct (/api/muzibu/songs/{id}/key)
+                // 🔐 KEY URL: Storage URL'ini korumalı API endpoint'e yönlendir
+                // Eski format: https://www.muzibu.com/storage/tenant1001/muzibu/hls/{id}/enc.bin
+                // Yeni format: https://www.muzibu.com/hls-key/muzibu/songs/{id}?token=...&sig=...
+                $storageKeyPattern = '/https?:\/\/[^"\']+\/storage\/tenant\d+\/muzibu\/hls\/\d+\/enc\.bin/';
+                $newKeyUrl = url("/hls-key/muzibu/songs/{$songId}") . '?' . $query;
+                $content = preg_replace($storageKeyPattern, $newKeyUrl, $content);
+
+                // 🚀 SEGMENT URL: Token EKLEME - Cloudflare cache için tokensız kalmalı
+                // Segment'ler şifreli, key olmadan işe yaramaz
+                // $content = preg_replace('/(segment-\\d+\\.ts)/', '$1?' . $query, $content); // KALDIRILDI
 
                 return response($content, 200, [
                     'Content-Type' => $contentType,

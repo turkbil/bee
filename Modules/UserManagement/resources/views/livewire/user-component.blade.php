@@ -31,6 +31,15 @@
             <!-- Sağ Taraf (Filtreler ve Options) -->
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-3">
+                    <!-- Filtre Butonu -->
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse"
+                        data-bs-target="#filterCollapse" aria-expanded="false">
+                        <i class="fas fa-filter me-1"></i>Filtreler
+                        @if($this->hasActiveFilters())
+                        <span class="badge bg-primary ms-1">Aktif</span>
+                        @endif
+                    </button>
+
                     <!-- Rol Filtresi -->
                     <div style="width: 140px; min-width: 140px">
                         <select wire:model.live="roleFilter" class="form-control listing-filter-select"
@@ -84,6 +93,61 @@
                         </select>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Filtre Bölümü - Açılır Kapanır -->
+        <div class="collapse mb-3" id="filterCollapse">
+            <div class="card card-body bg-light">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Başlangıç Tarihi</label>
+                        <input type="date" wire:model="dateFrom" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Bitiş Tarihi</label>
+                        <input type="date" wire:model="dateTo" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-sm btn-primary w-100" wire:click="applyFilters">
+                            <i class="fas fa-check me-1"></i>Filtreleri Uygula
+                        </button>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        @if($this->hasActiveFilters())
+                        <button type="button" class="btn btn-sm btn-outline-danger w-100" wire:click="clearFilters">
+                            <i class="fas fa-times me-1"></i>Temizle
+                        </button>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Aktif Filtreler Badge'leri -->
+                @if($this->hasActiveFilters())
+                <div class="d-flex flex-wrap gap-2 pt-3 border-top">
+                    @if($search)
+                        <span class="badge bg-azure-lt text-azure">Arama: {{ $search }}</span>
+                    @endif
+                    @if($roleFilter)
+                        @php
+                            $roleName = $roles->firstWhere('id', $roleFilter)?->name ?? 'Bilinmeyen';
+                        @endphp
+                        <span class="badge bg-blue-lt text-blue">Rol: {{ $roleName }}</span>
+                    @endif
+                    @if($subscriptionFilter)
+                        @php
+                            $subLabels = ['active' => 'Aktif Üyelik', 'expired' => 'Süresi Dolmuş', 'free' => 'Ücretsiz'];
+                        @endphp
+                        <span class="badge bg-purple-lt text-purple">Üyelik: {{ $subLabels[$subscriptionFilter] ?? $subscriptionFilter }}</span>
+                    @endif
+                    @if($dateFrom)
+                        <span class="badge bg-teal-lt text-teal">Başlangıç: {{ $dateFrom }}</span>
+                    @endif
+                    @if($dateTo)
+                        <span class="badge bg-cyan-lt text-cyan">Bitiş: {{ $dateTo }}</span>
+                    @endif
+                </div>
+                @endif
             </div>
         </div>
 
@@ -420,3 +484,16 @@
     <livewire:modals.user-delete-modal />
 </div>
 
+@push('scripts')
+<script>
+document.addEventListener('livewire:init', () => {
+    Livewire.on('closeFilterCollapse', () => {
+        const collapseElement = document.getElementById('filterCollapse');
+        if (collapseElement) {
+            const bsCollapse = bootstrap.Collapse.getInstance(collapseElement) || new bootstrap.Collapse(collapseElement, { toggle: false });
+            bsCollapse.hide();
+        }
+    });
+});
+</script>
+@endpush

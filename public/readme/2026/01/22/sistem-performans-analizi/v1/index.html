@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Performans Analizi - 21 Ocak 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-700 pb-6">
+            <h1 class="text-3xl font-bold text-white mb-2">Sistem Performans Analizi</h1>
+            <p class="text-slate-400">21-22 Ocak 2026 | Donma ve Yavaşlama Sorunları</p>
+        </header>
+
+        <!-- Özet Kartları -->
+        <div class="grid md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                <div class="text-green-400 text-sm font-medium">ÇÖZÜLDÜ</div>
+                <div class="text-2xl font-bold text-white">3</div>
+                <div class="text-slate-400 text-sm">Kritik Sorun</div>
+            </div>
+            <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4">
+                <div class="text-yellow-400 text-sm font-medium">OPTİMİZASYON</div>
+                <div class="text-2xl font-bold text-white">2</div>
+                <div class="text-slate-400 text-sm">Önerilen İyileştirme</div>
+            </div>
+            <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+                <div class="text-blue-400 text-sm font-medium">NORMAL</div>
+                <div class="text-2xl font-bold text-white">Sunucu</div>
+                <div class="text-slate-400 text-sm">Kaynak Kullanımı</div>
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span class="text-2xl">📝</span> Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p><strong class="text-white">Ne oldu?</strong> Akşam saatlerinde site yavaşladı ve şarkılar dondu.</p>
+
+                <p><strong class="text-white">Neden oldu?</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><strong>Güvenlik duvarı sorunu:</strong> Şarkı dosyalarının şifreleme anahtarları (.key dosyaları) güvenlik sistemi tarafından engelleniyordu. Şarkı çalınamıyordu çünkü şifre çözülemiyordu.</li>
+                    <li><strong>Aşırı log gönderimi:</strong> Müzik çalar her işlemde sunucuya bilgi gönderiyordu (saniyede 7+ istek). Bu gereksiz yük oluşturuyordu.</li>
+                    <li><strong>Cache sorunu:</strong> Playlist dosyaları (.m3u8) her seferinde sunucudan alınıyordu, önbellekten gelmiyordu.</li>
+                </ul>
+
+                <p><strong class="text-white">Ne yaptık?</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>.key, .m3u8, .ts dosyalarını güvenlik duvarı beyaz listesine ekledik</li>
+                    <li>Cloudflare'da HLS cache kuralına .key dosyaları eklendi</li>
+                    <li>Artık şarkılar düzgün çalıyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span class="text-2xl">🔧</span> Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <!-- Sorun 1 -->
+            <div class="border-l-4 border-green-500 pl-4 mb-6">
+                <h3 class="text-lg font-medium text-green-400 mb-2">✅ ModSecurity .key Engeli (ÇÖZÜLDÜ)</h3>
+                <div class="text-sm text-slate-400 space-y-2">
+                    <p><strong>Sorun:</strong> COMODO WAF Rule ID 210730, .key uzantılı dosyaları 403 ile blokluyordu.</p>
+                    <p><strong>Etki:</strong> 5,692 bloklanmış istek. HLS şifreleme anahtarları erişilemez → şarkı decode edilemiyor → donma.</p>
+                    <p><strong>Çözüm:</strong></p>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto mt-2">
+# /etc/httpd/conf/modsecurity.d/rules/comodo_free/userdata_wl_extensions
+# Eklenen uzantılar:
+.key/
+.m3u8/
+.ts/</pre>
+                    <p class="mt-2"><strong>Doğrulama:</strong> <code class="bg-slate-900 px-2 py-1 rounded">curl https://www.muzibu.com/storage/muzibu/hls/33594/enc.key</code> → 200 OK</p>
+                </div>
+            </div>
+
+            <!-- Sorun 2 -->
+            <div class="border-l-4 border-green-500 pl-4 mb-6">
+                <h3 class="text-lg font-medium text-green-400 mb-2">✅ Cloudflare HLS Cache Rule (ÇÖZÜLDÜ)</h3>
+                <div class="text-sm text-slate-400 space-y-2">
+                    <p><strong>Güncellenen Kural:</strong></p>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto mt-2">
+Koşullar: URI Path contains "/hls/" OR ".ts" OR ".m3u8" OR ".key"
+Edge TTL: 1 year
+Browser TTL: 1 month
+cf-cache-status: HIT ✅</pre>
+                </div>
+            </div>
+
+            <!-- Sorun 3 -->
+            <div class="border-l-4 border-yellow-500 pl-4 mb-6">
+                <h3 class="text-lg font-medium text-yellow-400 mb-2">⚠️ Aşırı Debug Log İstekleri (OPTİMİZASYON ÖNERİSİ)</h3>
+                <div class="text-sm text-slate-400 space-y-2">
+                    <p><strong>Sorun:</strong> <code class="bg-slate-900 px-2 py-1 rounded">/api/muzibu/debug-log</code> endpoint'i 3 saatte 75,108 istek aldı.</p>
+                    <p><strong>Sebep:</strong> <code class="bg-slate-900 px-2 py-1 rounded">player-core.js</code> içinde <code>serverLog()</code> fonksiyonu 32 farklı yerde çağrılıyor:</p>
+                    <ul class="list-disc list-inside ml-4 mt-2">
+                        <li>scriptLoaded (her sayfa yüklemesi)</li>
+                        <li>playSong, nextTrack, onTrackEnded</li>
+                        <li>crossfade, genreRefill</li>
+                        <li>Safari timeUpdate event'leri</li>
+                        <li>ve daha fazlası...</li>
+                    </ul>
+                    <p class="mt-2"><strong>Öneri:</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Production'da sadece kritik hataları logla</li>
+                        <li>Rate limiting ekle (örn: 1 istek/10 saniye)</li>
+                        <li>Batch logging yap (biriktir, toplu gönder)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sorun 4 -->
+            <div class="border-l-4 border-yellow-500 pl-4 mb-6">
+                <h3 class="text-lg font-medium text-yellow-400 mb-2">⚠️ .m3u8 Cache Bypass (OPTİMİZASYON ÖNERİSİ)</h3>
+                <div class="text-sm text-slate-400 space-y-2">
+                    <p><strong>Sorun:</strong> Playlist dosyaları Cloudflare'da BYPASS oluyor.</p>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto mt-2">
+curl -I https://www.muzibu.com/storage/muzibu/hls/33594/output.m3u8
+cf-cache-status: BYPASS  ❌
+set-cookie: XSRF-TOKEN=...
+set-cookie: muzibu_session=...</pre>
+                    <p class="mt-2"><strong>Sebep:</strong> Laravel session middleware aktif → Set-Cookie header'ı → Cloudflare cache'lemiyor.</p>
+                    <p><strong>Öneri:</strong> HLS dosyalarını Laravel routing'den geçirme, statik olarak serve et.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sunucu Durumu -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span class="text-2xl">📊</span> Sunucu Durumu (21 Ocak 20:00-23:00)
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900 p-4 rounded">
+                    <h4 class="text-sm font-medium text-slate-400 mb-2">Kaynak Kullanımı</h4>
+                    <ul class="text-sm space-y-1">
+                        <li>CPU: <span class="text-green-400">%0.7 (Normal)</span></li>
+                        <li>RAM: <span class="text-green-400">25GB / 251GB (Normal)</span></li>
+                        <li>Disk: <span class="text-green-400">%42 (Normal)</span></li>
+                        <li>Load Average: <span class="text-green-400">1.90 (Normal)</span></li>
+                    </ul>
+                </div>
+                <div class="bg-slate-900 p-4 rounded">
+                    <h4 class="text-sm font-medium text-slate-400 mb-2">HTTP İstekleri (Origin)</h4>
+                    <ul class="text-sm space-y-1">
+                        <li>20:00 → 86,671 istek</li>
+                        <li>21:00 → <span class="text-blue-400">102,822 istek (pik)</span></li>
+                        <li>22:00 → 89,103 istek</li>
+                        <li>5xx Hata: <span class="text-green-400">1 adet (ihmal edilebilir)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cloudflare Analizi -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span class="text-2xl">☁️</span> Cloudflare Cache Drop Analizi
+            </h2>
+            <div class="text-sm text-slate-400 space-y-3">
+                <p><strong>Grafikteki düşüş:</strong> ~21:00 civarında cache hit 7GB → ~0</p>
+
+                <div class="bg-slate-900 p-4 rounded mt-3">
+                    <h4 class="text-white mb-2">Elenen Olasılıklar:</h4>
+                    <ul class="space-y-1">
+                        <li>❌ Cache Purge yapılmadı (audit log temiz)</li>
+                        <li>❌ Cache Rule değişikliği yok</li>
+                        <li>❌ Origin 5xx hatası yok</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900 p-4 rounded mt-3">
+                    <h4 class="text-white mb-2">Olası Sebepler:</h4>
+                    <ul class="space-y-1">
+                        <li>• Doğal trafik düşüşü (gece saatleri)</li>
+                        <li>• Cloudflare edge cache geçici sorunu</li>
+                        <li>• Development Mode geçici aktifleşmesi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Güvenlik -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span class="text-2xl">🛡️</span> Güvenlik Kontrolü
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-green-900/20 border border-green-800 p-4 rounded">
+                    <h4 class="text-green-400 font-medium mb-2">✅ Hotlinking</h4>
+                    <p class="text-slate-400">Tespit edilmedi. Trafiğin %99'u kendi sitesinden.</p>
+                </div>
+                <div class="bg-green-900/20 border border-green-800 p-4 rounded">
+                    <h4 class="text-green-400 font-medium mb-2">✅ Malware Kalıntısı</h4>
+                    <p class="text-slate-400">8 Ocak'taki dosyalar silinmiş. Aktif tehdit yok.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonraki Adımlar -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span class="text-2xl">📋</span> Sonraki Adımlar (Opsiyonel)
+            </h2>
+            <div class="space-y-3 text-sm text-slate-400">
+                <div class="flex items-start gap-3">
+                    <input type="checkbox" class="mt-1">
+                    <div>
+                        <strong class="text-white">serverLog() optimizasyonu</strong>
+                        <p>Production'da gereksiz logları kapat, rate limiting ekle.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <input type="checkbox" class="mt-1">
+                    <div>
+                        <strong class="text-white">.m3u8 statik serve</strong>
+                        <p>Laravel session middleware'ini HLS route'larından kaldır.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <input type="checkbox" class="mt-1">
+                    <div>
+                        <strong class="text-white">Cloudflare Development Mode kontrolü</strong>
+                        <p>Audit log'da bu ayarın değişip değişmediğini detaylı incele.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-6 border-t border-slate-700">
+            22 Ocak 2026 • Muzibu.com
+        </footer>
+    </div>
+</body>
+</html>

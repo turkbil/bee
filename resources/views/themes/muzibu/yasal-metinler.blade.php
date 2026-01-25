@@ -72,7 +72,31 @@
                 </div>
             </a>
 
-            <!-- 5. KVKK İlgili Kişi Başvuru Formu -->
+            <!-- 5. Ticari Uzaktan Hizmet ve Abonelik Sözleşmesi -->
+            <a href="/page/ticari-uzaktan-hizmet-ve-abonelik-sozlesmesi" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
+                        <i class="fas fa-briefcase text-3xl text-mz-400"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg leading-tight">
+                        TİCARİ UZAKTAN HİZMET VE ABONELİK SÖZLEŞMESİ
+                    </h3>
+                </div>
+            </a>
+
+            <!-- 6. Ön Bilgilendirme Formu -->
+            <a href="/page/on-bilgilendirme-formu" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
+                        <i class="fas fa-file-invoice text-3xl text-mz-400"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg leading-tight">
+                        ÖN BİLGİLENDİRME FORMU
+                    </h3>
+                </div>
+            </a>
+
+            <!-- 7. KVKK İlgili Kişi Başvuru Formu -->
             <a href="/page/kvkk-ilgili-kisi-basvuru-formu" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
@@ -84,7 +108,7 @@
                 </div>
             </a>
 
-            <!-- 6. Ticari Elektronik İleti Hakkında Aydınlatma Metni -->
+            <!-- 8. Ticari Elektronik İleti Hakkında Aydınlatma Metni -->
             <a href="/page/ticari-elektronik-ileti-gonderimi-sureclerine-iliskin-kisisel-verilerin-islenmesi-ve-korunmasi-hakkinda-aydinlatma-metni" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
@@ -96,12 +120,7 @@
                 </div>
             </a>
 
-        </div>
-
-        <!-- Large Documents (Full Width) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <!-- 7. Üyelik ve Satın Alım Faaliyetleri -->
+            <!-- 9. Üyelik ve Satın Alım Faaliyetleri -->
             <a href="/page/uyelik-ve-satin-alim-faaliyetleri-kapsaminda-kisisel-verilerin-islenmesi-ve-korunmasina-iliskin-aydinlatma-metni" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">
@@ -113,7 +132,7 @@
                 </div>
             </a>
 
-            <!-- 8. WhatsApp Destek Hattı -->
+            <!-- 10. WhatsApp Destek Hattı -->
             <a href="/page/whatsapp-destek-hatti-hakkinda-kvkk-aydinlatma-metni" class="group relative bg-dark-800/50 border-2 border-mz-500/30 rounded-2xl p-8 hover:border-mz-500 hover:bg-dark-800 transition-all duration-300 hover:shadow-xl hover:shadow-mz-500/20 hover:scale-105">
                 <div class="flex flex-col items-center text-center space-y-4">
                     <div class="w-16 h-16 bg-mz-500/10 rounded-xl flex items-center justify-center group-hover:bg-mz-500/20 transition-colors">

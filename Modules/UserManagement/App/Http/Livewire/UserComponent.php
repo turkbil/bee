@@ -19,7 +19,7 @@ class UserComponent extends Component
     public $search = '';
 
     #[Url]
-    public $perPage = 8;
+    public $perPage = 12;
 
     #[Url]
     public $sortField = 'id';
@@ -37,16 +37,24 @@ class UserComponent extends Component
     public $subscriptionFilter = '';
 
     #[Url]
+    public $dateFrom = '';
+
+    #[Url]
+    public $dateTo = '';
+
+    #[Url]
     public $viewType = 'grid';
 
     protected $queryString = [
         'sortField' => ['except' => 'id'],
         'sortDirection' => ['except' => 'desc'],
         'search' => ['except' => ''],
-        'perPage' => ['except' => 10],
+        'perPage' => ['except' => 12],
         'roleFilter' => ['except' => ''],
         'statusFilter' => ['except' => ''],
         'subscriptionFilter' => ['except' => ''],
+        'dateFrom' => ['except' => ''],
+        'dateTo' => ['except' => ''],
         'viewType' => ['except' => 'list'],
     ];
 
@@ -89,6 +97,33 @@ class UserComponent extends Component
 
     public function updatedSubscriptionFilter()
     {
+        $this->resetPage();
+    }
+
+    public function applyFilters()
+    {
+        $this->resetPage();
+        $this->dispatch('closeFilterCollapse');
+    }
+
+    public function hasActiveFilters()
+    {
+        return $this->search
+            || $this->roleFilter
+            || $this->statusFilter !== ''
+            || $this->subscriptionFilter !== ''
+            || $this->dateFrom
+            || $this->dateTo;
+    }
+
+    public function clearFilters()
+    {
+        $this->search = '';
+        $this->roleFilter = '';
+        $this->statusFilter = '';
+        $this->subscriptionFilter = '';
+        $this->dateFrom = '';
+        $this->dateTo = '';
         $this->resetPage();
     }
 
@@ -222,6 +257,12 @@ class UserComponent extends Component
                         // Ücretsiz (hiç üyelik almamış)
                         $query->whereNull('subscription_expires_at');
                     }
+                })
+                ->when($this->dateFrom, function ($query) {
+                    $query->whereDate('users.created_at', '>=', $this->dateFrom);
+                })
+                ->when($this->dateTo, function ($query) {
+                    $query->whereDate('users.created_at', '<=', $this->dateTo);
                 });
 
         $users = $query->orderBy($this->sortField, $this->sortDirection)

@@ -100,14 +100,18 @@ class PayTRCallbackService
             }
 
             // 6. Tutar kontrolü (sadece başarılı ödemeler için)
+            // NOT: payment_amount kullanıyoruz (taksitsiz tutar), total_amount değil (taksit farkı dahil)
+            $paymentAmount = $callbackData['payment_amount'] ?? null;
             $expectedAmount = number_format($payment->amount, 2, '.', '');
-            $receivedAmount = number_format($totalAmount / 100, 2, '.', ''); // Kuruş -> TL
+            $receivedAmount = number_format($paymentAmount / 100, 2, '.', ''); // Kuruş -> TL
 
             if ($expectedAmount !== $receivedAmount) {
                 Log::error('❌ PayTR callback: Tutar uyumsuzluğu', [
                     'payment_id' => $payment->payment_id,
                     'expected' => $expectedAmount,
                     'received' => $receivedAmount,
+                    'payment_amount' => $paymentAmount,
+                    'total_amount' => $callbackData['total_amount'] ?? null,
                 ]);
                 return ['success' => false, 'message' => 'Tutar uyumsuzluğu'];
             }

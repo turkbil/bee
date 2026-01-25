@@ -12,13 +12,11 @@
     {{-- SEO Meta Tags --}}
     <x-seo-meta />
 
-    {{-- Favicon --}}
-    @php $favicon = setting('site_favicon'); @endphp
-    @if($favicon && $favicon !== 'Favicon yok')
-        <link rel="icon" type="image/x-icon" href="{{ cdn($favicon) }}">
-    @else
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    @endif
+    {{-- Favicon - Tenant-aware dynamic route --}}
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    {{-- Apple Touch Icon (iOS/Safari) - Uses favicon as fallback --}}
+    <link rel="apple-touch-icon" href="/favicon.ico">
 
     {{-- PWA Manifest --}}
     <link rel="manifest" href="{{ route('manifest') }}">

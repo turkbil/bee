@@ -70,12 +70,9 @@
 
     @livewireStyles
 
-    {{-- Favicon - Settings'den çek, yoksa /favicon.ico fallback --}}
-    @php
-        $faviconUrl = setting('site_favicon') ?: '/favicon.ico';
-    @endphp
-    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
-    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+    {{-- Favicon - Tenant-aware dynamic route (Admin'den yönetilir) --}}
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/favicon.ico">
 
     {{-- PWA Manifest (2025 Best Practice) --}}
     <link rel="manifest" href="{{ route('manifest') }}">

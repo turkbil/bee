@@ -238,17 +238,46 @@ class BlogManageComponent extends Component implements AIContentGeneratable
                 'howto_data'
             ]);
 
-            // FAQ ve HowTo data'yı JSON string'e çevir (textarea için)
-            if (!empty($this->inputs['faq_data'])) {
-                $this->inputs['faq_data'] = is_string($this->inputs['faq_data'])
-                    ? $this->inputs['faq_data']
-                    : json_encode($this->inputs['faq_data'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            // FAQ ve HowTo data - locale-aware flatten (Alpine.js visual editor için)
+            // Veri multi-language nested olarak saklanıyor: {"question": {"tr": "..."}, ...}
+            // Form için flatten ediyoruz: {"question": "...", ...}
+            $locale = $this->currentLanguage;
+
+            if (!empty($this->inputs['faq_data']) && is_array($this->inputs['faq_data'])) {
+                $this->inputs['faq_data'] = array_map(function($faq) use ($locale) {
+                    return [
+                        'question' => is_array($faq['question'] ?? null)
+                            ? ($faq['question'][$locale] ?? reset($faq['question']) ?: '')
+                            : ($faq['question'] ?? ''),
+                        'answer' => is_array($faq['answer'] ?? null)
+                            ? ($faq['answer'][$locale] ?? reset($faq['answer']) ?: '')
+                            : ($faq['answer'] ?? ''),
+                        'icon' => $faq['icon'] ?? 'fa-question-circle'
+                    ];
+                }, $this->inputs['faq_data']);
             }
 
-            if (!empty($this->inputs['howto_data'])) {
-                $this->inputs['howto_data'] = is_string($this->inputs['howto_data'])
-                    ? $this->inputs['howto_data']
-                    : json_encode($this->inputs['howto_data'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            if (!empty($this->inputs['howto_data']) && is_array($this->inputs['howto_data'])) {
+                $howto = $this->inputs['howto_data'];
+                $this->inputs['howto_data'] = [
+                    'name' => is_array($howto['name'] ?? null)
+                        ? ($howto['name'][$locale] ?? reset($howto['name']) ?: '')
+                        : ($howto['name'] ?? ''),
+                    'description' => is_array($howto['description'] ?? null)
+                        ? ($howto['description'][$locale] ?? reset($howto['description']) ?: '')
+                        : ($howto['description'] ?? ''),
+                    'steps' => array_map(function($step) use ($locale) {
+                        return [
+                            'name' => is_array($step['name'] ?? null)
+                                ? ($step['name'][$locale] ?? reset($step['name']) ?: '')
+                                : ($step['name'] ?? ''),
+                            'text' => is_array($step['text'] ?? null)
+                                ? ($step['text'][$locale] ?? reset($step['text']) ?: '')
+                                : ($step['text'] ?? ''),
+                            'icon' => $step['icon'] ?? 'fa-cog'
+                        ];
+                    }, $howto['steps'] ?? [])
+                ];
             }
 
             $this->inputs['tags'] = $blog->tag_list;
@@ -485,15 +514,77 @@ class BlogManageComponent extends Component implements AIContentGeneratable
         $tagNames = $this->normalizeTagInputs();
         unset($safeInputs['tags']);
 
-        // FAQ ve HowTo JSON string'lerini decode et
-        if (!empty($safeInputs['faq_data']) && is_string($safeInputs['faq_data'])) {
-            $decoded = json_decode($safeInputs['faq_data'], true);
-            $safeInputs['faq_data'] = $decoded ?: null;
+        // FAQ ve HowTo - JSON decode ve locale-aware unflatten (nested yapıya dönüştür)
+        $locale = $this->currentLanguage;
+
+        if (!empty($safeInputs['faq_data'])) {
+            // JSON string ise decode et
+            if (is_string($safeInputs['faq_data'])) {
+                $safeInputs['faq_data'] = json_decode($safeInputs['faq_data'], true) ?: [];
+            }
+
+            // Mevcut veriyi al (diğer dilleri korumak için)
+            $existingFaq = [];
+            if ($this->blogId) {
+                $existingBlog = Blog::query()->find($this->blogId);
+                $existingFaq = $existingBlog?->faq_data ?? [];
+            }
+
+            // Nested yapıya dönüştür (diğer dilleri koru)
+            $safeInputs['faq_data'] = array_map(function($faq, $index) use ($locale, $existingFaq) {
+                $existing = $existingFaq[$index] ?? [];
+                return [
+                    'question' => array_merge(
+                        is_array($existing['question'] ?? null) ? $existing['question'] : [],
+                        [$locale => $faq['question'] ?? '']
+                    ),
+                    'answer' => array_merge(
+                        is_array($existing['answer'] ?? null) ? $existing['answer'] : [],
+                        [$locale => $faq['answer'] ?? '']
+                    ),
+                    'icon' => $faq['icon'] ?? 'fa-question-circle'
+                ];
+            }, $safeInputs['faq_data'], array_keys($safeInputs['faq_data']));
         }
 
-        if (!empty($safeInputs['howto_data']) && is_string($safeInputs['howto_data'])) {
-            $decoded = json_decode($safeInputs['howto_data'], true);
-            $safeInputs['howto_data'] = $decoded ?: null;
+        if (!empty($safeInputs['howto_data'])) {
+            // JSON string ise decode et
+            if (is_string($safeInputs['howto_data'])) {
+                $safeInputs['howto_data'] = json_decode($safeInputs['howto_data'], true) ?: [];
+            }
+
+            // Mevcut veriyi al (diğer dilleri korumak için)
+            $existingHowto = [];
+            if ($this->blogId) {
+                $existingBlog = $existingBlog ?? Blog::query()->find($this->blogId);
+                $existingHowto = $existingBlog?->howto_data ?? [];
+            }
+
+            $howto = $safeInputs['howto_data'];
+            $safeInputs['howto_data'] = [
+                'name' => array_merge(
+                    is_array($existingHowto['name'] ?? null) ? $existingHowto['name'] : [],
+                    [$locale => $howto['name'] ?? '']
+                ),
+                'description' => array_merge(
+                    is_array($existingHowto['description'] ?? null) ? $existingHowto['description'] : [],
+                    [$locale => $howto['description'] ?? '']
+                ),
+                'steps' => array_map(function($step, $index) use ($locale, $existingHowto) {
+                    $existing = $existingHowto['steps'][$index] ?? [];
+                    return [
+                        'name' => array_merge(
+                            is_array($existing['name'] ?? null) ? $existing['name'] : [],
+                            [$locale => $step['name'] ?? '']
+                        ),
+                        'text' => array_merge(
+                            is_array($existing['text'] ?? null) ? $existing['text'] : [],
+                            [$locale => $step['text'] ?? '']
+                        ),
+                        'icon' => $step['icon'] ?? 'fa-cog'
+                    ];
+                }, $howto['steps'] ?? [], array_keys($howto['steps'] ?? []))
+            ];
         }
 
         // Published_at'i datetime formatına çevir

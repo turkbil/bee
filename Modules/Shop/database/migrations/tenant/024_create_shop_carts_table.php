@@ -91,11 +91,8 @@ return new class extends Migration
                   ->onDelete('cascade')
                   ->comment('Müşteri silinirse sepeti de silinir');
 
-            $table->foreign('converted_to_order_id')
-                  ->references('order_id')
-                  ->on('shop_orders')
-                  ->onDelete('cascade')
-                  ->comment('Sipariş silinirse ID null olur');
+            // NOT: shop_orders tablosu kaldırıldı, Cart modülünde orders tablosu kullanılıyor
+            // converted_to_order_id foreign key kaldırıldı
         });
     }
 

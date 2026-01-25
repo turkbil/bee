@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slug Management & Dynamic Route Sistemi (v2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        .code-block { background: #0d1117; font-family: 'Monaco', 'Menlo', monospace; }
+        .flow-arrow { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-gray-100">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 bg-emerald-500/20 px-4 py-2 rounded-full mb-4">
+                <i class="fas fa-check-circle text-emerald-400"></i>
+                <span class="text-emerald-400 font-medium">v2 - Güncellenmiş Dokümantasyon</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4">
+                <i class="fas fa-link text-blue-400 mr-3"></i>
+                Slug Management & Dynamic Route Sistemi
+            </h1>
+            <p class="text-gray-400 text-lg">URL Yönetimi ve Dinamik Rota Sisteminin Teknik Analizi</p>
+            <p class="text-gray-500 text-sm mt-2">Son güncelleme: 20 Ocak 2026</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-2 mb-8 justify-center">
+            <button onclick="showTab('problems')" class="tab-btn active px-4 py-2 rounded-lg bg-blue-600 hover:bg-slate-600 transition" data-tab="problems">
+                <i class="fas fa-bug mr-2"></i>Sorunlar & Çözümler
+            </button>
+            <button onclick="showTab('architecture')" class="tab-btn px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition" data-tab="architecture">
+                <i class="fas fa-sitemap mr-2"></i>Sistem Mimarisi
+            </button>
+            <button onclick="showTab('flow')" class="tab-btn px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition" data-tab="flow">
+                <i class="fas fa-project-diagram mr-2"></i>Akış Şeması
+            </button>
+            <button onclick="showTab('technical')" class="tab-btn px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition" data-tab="technical">
+                <i class="fas fa-code mr-2"></i>Teknik Detaylar
+            </button>
+            <button onclick="showTab('lessons')" class="tab-btn px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition" data-tab="lessons">
+                <i class="fas fa-graduation-cap mr-2"></i>Tecrübeler
+            </button>
+        </div>
+
+        <!-- Tab: Problems & Solutions -->
+        <div id="tab-problems" class="tab-content">
+
+            <!-- Problem 1: Case Sensitivity -->
+            <div class="card rounded-xl p-6 mb-6 border border-red-500/30">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">Sorun #1</span>
+                    <h2 class="text-xl font-semibold">Case-Sensitive Modül Adı</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-red-400 font-medium mb-2"><i class="fas fa-times-circle mr-2"></i>Sorun</h4>
+                        <p class="text-gray-300 text-sm">Admin panelde slug ayarları "Yapılandırma bulunamadı" hatası veriyordu.</p>
+                        <div class="code-block rounded p-2 mt-2 text-xs">
+                            <code>DB: "blog" → Klasör: "Blog" ❌</code>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-emerald-400 font-medium mb-2"><i class="fas fa-check-circle mr-2"></i>Çözüm</h4>
+                        <p class="text-gray-300 text-sm"><code class="bg-slate-700 px-1 rounded">findActualModuleName()</code> fonksiyonu ile case-insensitive arama eklendi.</p>
+                        <div class="mt-2 text-xs text-gray-500">
+                            <i class="fas fa-file-code mr-1"></i>ModuleSlugService.php:273-299
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 2: Show Slug Not Working -->
+            <div class="card rounded-xl p-6 mb-6 border border-orange-500/30">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">Sorun #2</span>
+                    <h2 class="text-xl font-semibold">Show Slug Özelleştirmesi Çalışmıyor</h2>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
+                    <h4 class="text-orange-400 font-medium mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Senaryo</h4>
+                    <p class="text-gray-300 text-sm">Yıldırım Panjur sitesinde blog detay URL'ini <code class="bg-slate-700 px-1 rounded">/haberler/...</code> olarak ayarladın ama sistem hala <code class="bg-slate-700 px-1 rounded">/blog/...</code> kullanıyordu.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-red-400 font-medium mb-2">Eski Kod (Hatalı)</h4>
+                        <div class="code-block rounded p-3 text-xs overflow-x-auto">
+<pre class="text-gray-300"><span class="text-gray-500">// Sadece index slug kontrol ediliyordu</span>
+<span class="text-purple-400">if</span> ($slug1 === $moduleSlugMap[<span class="text-green-400">'index'</span>]) {
+    <span class="text-gray-500">// show sayfasına yönlendir</span>
+}</pre>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-emerald-400 font-medium mb-2">Yeni Kod (Düzeltildi)</h4>
+                        <div class="code-block rounded p-3 text-xs overflow-x-auto">
+<pre class="text-gray-300"><span class="text-gray-500">// Önce show slug, sonra index slug</span>
+<span class="text-purple-400">if</span> ($slug1 === $moduleSlugMap[<span class="text-green-400">'show'</span>]) {
+    <span class="text-purple-400">return</span> show;
+}
+<span class="text-purple-400">if</span> ($slug1 === $moduleSlugMap[<span class="text-green-400">'index'</span>]) {
+    <span class="text-purple-400">return</span> show; <span class="text-gray-500">// backward compat.</span>
+}</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-gray-500">
+                    <i class="fas fa-file-code mr-1"></i>DynamicRouteResolver.php:161-185
+                </div>
+            </div>
+
+            <!-- Problem 3: Cache Tenant Isolation -->
+            <div class="card rounded-xl p-6 mb-6 border border-purple-500/30">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">Sorun #3</span>
+                    <h2 class="text-xl font-semibold">Cache Tenant İzolasyonu Eksikti</h2>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
+                    <h4 class="text-purple-400 font-medium mb-2"><i class="fas fa-bug mr-2"></i>Kritik Hata</h4>
+                    <p class="text-gray-300 text-sm">Cache key'ler tenant-specific değildi! Tüm tenant'lar aynı cache key'i paylaşıyordu. Bir tenant slug değiştirince diğerinin değeri eziliyordu.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-red-400 font-medium mb-2">Eski Cache Key</h4>
+                        <div class="code-block rounded p-3 text-xs">
+<pre class="text-red-400">module_multilang_slug_blog_show_tr
+<span class="text-gray-500">// Tüm tenant'lar aynı key'i kullanıyor!</span></pre>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-emerald-400 font-medium mb-2">Yeni Cache Key</h4>
+                        <div class="code-block rounded p-3 text-xs">
+<pre class="text-emerald-400">module_multilang_slug_<span class="text-yellow-400">3</span>_blog_show_tr
+<span class="text-gray-500">// Tenant ID eklendi: izolasyon sağlandı</span></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-gray-500">
+                    <i class="fas fa-file-code mr-1"></i>ModuleSlugService.php:131-144
+                </div>
+            </div>
+
+            <!-- Problem 4: Livewire 419 CSRF -->
+            <div class="card rounded-xl p-6 mb-6 border border-cyan-500/30">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-sm">Sorun #4</span>
+                    <h2 class="text-xl font-semibold">Livewire 419 CSRF Token Hatası</h2>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
+                    <h4 class="text-cyan-400 font-medium mb-2"><i class="fas fa-shield-alt mr-2"></i>Belirti</h4>
+                    <p class="text-gray-300 text-sm">Sitede gezinirken <code class="bg-slate-700 px-1 rounded">livewire/update</code> isteği 419 hatası veriyordu. CartWidget ve diğer Livewire bileşenleri çalışmıyordu.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-red-400 font-medium mb-2">Neden?</h4>
+                        <p class="text-gray-300 text-sm">ResponseCache, tüm sayfaları <code class="bg-slate-700 px-1 rounded">max-age=3600</code> ile cache'liyordu. CSRF token eski kalıyordu.</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-emerald-400 font-medium mb-2">Çözüm</h4>
+                        <p class="text-gray-300 text-sm">Livewire endpoint'leri cache'den hariç tutuldu:</p>
+                        <div class="code-block rounded p-2 mt-2 text-xs">
+<pre><span class="text-purple-400">if</span> (str_starts_with($path, <span class="text-green-400">'livewire'</span>)) {
+    <span class="text-purple-400">return false</span>;
+}</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-gray-500">
+                    <i class="fas fa-file-code mr-1"></i>TenantCacheProfile.php:116-120
+                </div>
+            </div>
+
+            <!-- Değiştirilen Dosyalar Özeti -->
+            <div class="card rounded-xl p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold mb-4">
+                    <i class="fas fa-file-code text-blue-400 mr-2"></i>Tüm Değiştirilen Dosyalar
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-3 px-4">Dosya</th>
+                                <th class="text-left py-3 px-4">Değişiklik</th>
+                                <th class="text-center py-3 px-4">Sorun #</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/50">
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3 px-4"><code class="text-xs">ModuleSlugSettingsComponent.php</code></td>
+                                <td class="py-3 px-4 text-gray-400">Case-insensitive loadModuleData()</td>
+                                <td class="py-3 px-4 text-center"><span class="text-red-400">#1</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3 px-4"><code class="text-xs">ModuleSlugService.php</code></td>
+                                <td class="py-3 px-4 text-gray-400">findActualModuleName() + Tenant-specific cache key</td>
+                                <td class="py-3 px-4 text-center"><span class="text-red-400">#1</span> <span class="text-purple-400">#3</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3 px-4"><code class="text-xs">DynamicRouteResolver.php</code></td>
+                                <td class="py-3 px-4 text-gray-400">Show slug desteği eklendi</td>
+                                <td class="py-3 px-4 text-center"><span class="text-orange-400">#2</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3 px-4"><code class="text-xs">TenantCacheProfile.php</code></td>
+                                <td class="py-3 px-4 text-gray-400">Livewire endpoint'leri exclude</td>
+                                <td class="py-3 px-4 text-center"><span class="text-cyan-400">#4</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Architecture -->
+        <div id="tab-architecture" class="tab-content hidden">
+
+            <!-- Sistem Bileşenleri -->
+            <div class="card rounded-xl p-6 mb-6 border border-slate-700">
+                <h2 class="text-xl font-semibold mb-6">
+                    <i class="fas fa-cubes text-cyan-400 mr-2"></i>Slug Management Sistem Bileşenleri
+                </h2>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- ModuleSlugService -->
+                    <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-lg p-4 border border-blue-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-10 h-10 bg-blue-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-cogs text-blue-400"></i>
+                            </div>
+                            <h4 class="font-semibold">ModuleSlugService</h4>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">Merkezi slug yönetim servisi</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>• Multi-language slug desteği</li>
+                            <li>• <span class="text-emerald-400">Tenant-specific cache</span></li>
+                            <li>• Slug çakışma kontrolü</li>
+                            <li>• Case-insensitive modül arama</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-gray-600">
+                            app/Services/ModuleSlugService.php
+                        </div>
+                    </div>
+
+                    <!-- DynamicRouteResolver -->
+                    <div class="bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-lg p-4 border border-orange-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-10 h-10 bg-orange-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-route text-orange-400"></i>
+                            </div>
+                            <h4 class="font-semibold">DynamicRouteResolver</h4>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">URL → Controller eşleme</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>• <span class="text-emerald-400">Show slug desteği</span></li>
+                            <li>• Index slug fallback</li>
+                            <li>• Multi-language prefix</li>
+                            <li>• 30 dakika route cache</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-gray-600">
+                            app/Services/DynamicRouteResolver.php
+                        </div>
+                    </div>
+
+                    <!-- TenantCacheProfile -->
+                    <div class="bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 rounded-lg p-4 border border-cyan-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-10 h-10 bg-cyan-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-bolt text-cyan-400"></i>
+                            </div>
+                            <h4 class="font-semibold">TenantCacheProfile</h4>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">ResponseCache profili</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>• <span class="text-emerald-400">Livewire exclude</span></li>
+                            <li>• Admin exclude</li>
+                            <li>• Tenant-aware cache key</li>
+                            <li>• CSRF token replacer</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-gray-600">
+                            app/Services/TenantCacheProfile.php
+                        </div>
+                    </div>
+
+                    <!-- SlugSettingsComponent -->
+                    <div class="bg-gradient-to-br from-purple-500/20 to-purple-600/10 rounded-lg p-4 border border-purple-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-10 h-10 bg-purple-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-sliders-h text-purple-400"></i>
+                            </div>
+                            <h4 class="font-semibold">SlugSettingsComponent</h4>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">Admin panel UI bileşeni</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>• Livewire component</li>
+                            <li>• Dil bazlı slug düzenleme</li>
+                            <li>• SEO tab entegrasyonu</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-gray-600">
+                            ModuleManagement/.../ModuleSlugSettingsComponent.php
+                        </div>
+                    </div>
+
+                    <!-- ModuleTenantSetting -->
+                    <div class="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 rounded-lg p-4 border border-emerald-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-10 h-10 bg-emerald-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-database text-emerald-400"></i>
+                            </div>
+                            <h4 class="font-semibold">ModuleTenantSetting</h4>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">Tenant bazlı slug kayıtları</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>• JSON settings kolonu</li>
+                            <li>• multiLangSlugs yapısı</li>
+                            <li>• Tenant izolasyonu</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-gray-600">
+                            app/Models/ModuleTenantSetting.php
+                        </div>
+                    </div>
+
+                    <!-- Config Dosyaları -->
+                    <div class="bg-gradient-to-br from-pink-500/20 to-pink-600/10 rounded-lg p-4 border border-pink-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-10 h-10 bg-pink-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-alt text-pink-400"></i>
+                            </div>
+                            <h4 class="font-semibold">Module Config</h4>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">Varsayılan slug tanımları</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>• slugs array (index, show, tag)</li>
+                            <li>• routes tanımları</li>
+                            <li>• Controller eşlemeleri</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-gray-600">
+                            Modules/[Module]/config/config.php
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modül Slug Durumları -->
+            <div class="card rounded-xl p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold mb-4">
+                    <i class="fas fa-list-check text-yellow-400 mr-2"></i>Modül Slug Yapılandırması
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-3 px-4">Modül</th>
+                                <th class="text-left py-3 px-4">Varsayılan Slug'lar</th>
+                                <th class="text-left py-3 px-4">Özelleştirilebilir</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/50">
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3 px-4 font-medium">Blog</td>
+                                <td class="py-3 px-4"><code class="text-xs bg-slate-700 px-2 py-1 rounded">index: blog, show: blog, tag: blog/etiket</code></td>
+                                <td class="py-3 px-4"><span class="text-emerald-400"><i class="fas fa-check"></i> index, show, tag</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3 px-4 font-medium">Page</td>
+                                <td class="py-3 px-4"><code class="text-xs bg-slate-700 px-2 py-1 rounded">index: sayfalar, show: sayfalar</code></td>
+                                <td class="py-3 px-4"><span class="text-emerald-400"><i class="fas fa-check"></i> index, show</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3 px-4 font-medium">Portfolio</td>
+                                <td class="py-3 px-4"><code class="text-xs bg-slate-700 px-2 py-1 rounded">index: portfolio, show: portfolio</code></td>
+                                <td class="py-3 px-4"><span class="text-emerald-400"><i class="fas fa-check"></i> index, show</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3 px-4 font-medium">Service</td>
+                                <td class="py-3 px-4"><code class="text-xs bg-slate-700 px-2 py-1 rounded">index: service, show: service</code></td>
+                                <td class="py-3 px-4"><span class="text-emerald-400"><i class="fas fa-check"></i> index, show</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Flow -->
+        <div id="tab-flow" class="tab-content hidden">
+
+            <!-- URL Request Flow -->
+            <div class="card rounded-xl p-6 mb-6 border border-slate-700">
+                <h2 class="text-xl font-semibold mb-6">
+                    <i class="fas fa-exchange-alt text-green-400 mr-2"></i>URL İstek Akışı (Güncellenmiş)
+                </h2>
+
+                <div class="flex flex-col items-center space-y-4">
+                    <!-- Step 1 -->
+                    <div class="w-full max-w-2xl bg-slate-800/50 rounded-lg p-4 border-l-4 border-blue-500">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                            <div>
+                                <h4 class="font-medium">Kullanıcı URL'ye Gider</h4>
+                                <code class="text-sm text-gray-400">https://yildirimpanjur.com/haberler/panjur-tamiri</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <i class="fas fa-arrow-down text-gray-500 flow-arrow"></i>
+
+                    <!-- Step 2 -->
+                    <div class="w-full max-w-2xl bg-slate-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                            <div>
+                                <h4 class="font-medium">DynamicRouteResolver Slug Eşleme</h4>
+                                <p class="text-sm text-gray-400">
+                                    <span class="text-emerald-400">1. Önce show slug kontrolü:</span> "haberler" === show slug? ✓<br>
+                                    <span class="text-gray-500">2. Fallback: index slug kontrolü</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <i class="fas fa-arrow-down text-gray-500 flow-arrow"></i>
+
+                    <!-- Step 3 -->
+                    <div class="w-full max-w-2xl bg-slate-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                            <div>
+                                <h4 class="font-medium">ModuleSlugService Tenant Cache</h4>
+                                <p class="text-sm text-gray-400">
+                                    Cache key: <code class="bg-slate-700 px-1 rounded">module_multilang_slug_<span class="text-yellow-400">3</span>_blog_show_tr</code><br>
+                                    <span class="text-emerald-400">Tenant 3 için izole slug değeri</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <i class="fas fa-arrow-down text-gray-500 flow-arrow"></i>
+
+                    <!-- Step 4 -->
+                    <div class="w-full max-w-2xl bg-slate-800/50 rounded-lg p-4 border-l-4 border-emerald-500">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                            <div>
+                                <h4 class="font-medium">Controller Çağrılır</h4>
+                                <code class="text-sm text-gray-400">BlogController@show('panjur-tamiri')</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cache Key Generation -->
+            <div class="card rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold mb-6">
+                    <i class="fas fa-key text-yellow-400 mr-2"></i>Tenant-Specific Cache Key Oluşturma
+                </h2>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                        <h4 class="text-red-400 font-medium mb-2"><i class="fas fa-times mr-2"></i>Eski (Hatalı)</h4>
+                        <div class="code-block rounded p-3 text-xs">
+<pre>module_multilang_slug_
+blog_show_tr
+
+<span class="text-gray-500">// Tenant ID yok!
+// Tüm tenant'lar çakışıyor</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-arrow-right text-2xl text-gray-500"></i>
+                    </div>
+
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4">
+                        <h4 class="text-emerald-400 font-medium mb-2"><i class="fas fa-check mr-2"></i>Yeni (Doğru)</h4>
+                        <div class="code-block rounded p-3 text-xs">
+<pre>module_multilang_slug_
+<span class="text-yellow-400">3</span>_blog_show_tr
+
+<span class="text-gray-500">// Tenant ID eklendi
+// Her tenant izole</span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Technical -->
+        <div id="tab-technical" class="tab-content hidden">
+
+            <!-- DB Structure -->
+            <div class="card rounded-xl p-6 mb-6 border border-slate-700">
+                <h3 class="text-lg font-semibold mb-4">
+                    <i class="fas fa-database text-emerald-400 mr-2"></i>Veritabanı Yapısı
+                </h3>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium mb-2 text-purple-400">module_tenant_settings (Tenant DB)</h4>
+                    <div class="code-block rounded p-3 text-xs overflow-x-auto">
+                        <pre>
+<span class="text-gray-500">-- Örnek: Yıldırım Panjur (Tenant 3)</span>
+{
+  "multiLangSlugs": {
+    "tr": {
+      "index": "blog",
+      <span class="text-emerald-400">"show": "haberler"</span>,  <span class="text-gray-500">← Özelleştirilmiş!</span>
+      "tag": "blog/etiket"
+    }
+  }
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Changes -->
+            <div class="card rounded-xl p-6 mb-6 border border-slate-700">
+                <h3 class="text-lg font-semibold mb-4">
+                    <i class="fas fa-code text-pink-400 mr-2"></i>Kritik Kod Değişiklikleri
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- DynamicRouteResolver -->
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-medium mb-2 text-orange-400">DynamicRouteResolver.php - Show Slug Desteği</h4>
+                        <div class="code-block rounded p-3 text-xs overflow-x-auto">
+<pre class="text-gray-300"><span class="text-gray-500">// Two slug pattern - show action için</span>
+<span class="text-purple-400">if</span> ($slug2 && !$slug3) {
+    <span class="text-gray-500">// 1. Önce show slug kontrol et</span>
+    <span class="text-purple-400">if</span> (<span class="text-yellow-400">isset</span>($moduleSlugMap[<span class="text-green-400">'show'</span>]) &&
+        $slug1 === $moduleSlugMap[<span class="text-green-400">'show'</span>]) {
+        <span class="text-purple-400">return</span> [<span class="text-green-400">'action'</span> => <span class="text-green-400">'show'</span>, ...];
+    }
+
+    <span class="text-gray-500">// 2. Backward compatibility: index slug</span>
+    <span class="text-purple-400">if</span> ($slug1 === $moduleSlugMap[<span class="text-green-400">'index'</span>] &&
+        (!<span class="text-yellow-400">isset</span>($moduleSlugMap[<span class="text-green-400">'show'</span>]) ||
+         $moduleSlugMap[<span class="text-green-400">'show'</span>] === $moduleSlugMap[<span class="text-green-400">'index'</span>])) {
+        <span class="text-purple-400">return</span> [<span class="text-green-400">'action'</span> => <span class="text-green-400">'show'</span>, ...];
+    }
+}</pre>
+                        </div>
+                    </div>
+
+                    <!-- ModuleSlugService -->
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-medium mb-2 text-blue-400">ModuleSlugService.php - Tenant Cache Key</h4>
+                        <div class="code-block rounded p-3 text-xs overflow-x-auto">
+<pre class="text-gray-300"><span class="text-purple-400">public static function</span> <span class="text-yellow-400">getMultiLangSlug</span>(...): <span class="text-cyan-400">string</span>
+{
+    <span class="text-gray-500">// Tenant ID al - cache key'lerin tenant-specific olması için</span>
+    <span class="text-emerald-400">$tenantId = tenant()?->id ?? 'central';</span>
+
+    <span class="text-gray-500">// Memory cache - tenant + locale specific</span>
+    $memoryCacheKey = <span class="text-emerald-400">$tenantId</span> . <span class="text-green-400">'.'</span> . $moduleName . <span class="text-green-400">'.'</span> . $slugKey . <span class="text-green-400">'.'</span> . $locale;
+
+    <span class="text-gray-500">// Laravel cache - TENANT-SPECIFIC key</span>
+    $cacheKey = <span class="text-green-400">"module_multilang_slug_</span><span class="text-emerald-400">{$tenantId}</span><span class="text-green-400">_{$moduleName}_{$slugKey}_{$locale}"</span>;
+    ...
+}</pre>
+                        </div>
+                    </div>
+
+                    <!-- TenantCacheProfile -->
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-medium mb-2 text-cyan-400">TenantCacheProfile.php - Livewire Exclude</h4>
+                        <div class="code-block rounded p-3 text-xs overflow-x-auto">
+<pre class="text-gray-300"><span class="text-purple-400">public function</span> <span class="text-yellow-400">shouldCacheRequest</span>(Request $request): <span class="text-cyan-400">bool</span>
+{
+    $path = $request->path();
+
+    <span class="text-gray-500">// LIVEWIRE ENDPOINT'LERİ - KESİNLİKLE CACHE'LEME!</span>
+    <span class="text-purple-400">if</span> (<span class="text-yellow-400">str_starts_with</span>($path, <span class="text-green-400">'livewire'</span>)) {
+        <span class="text-purple-400">return false</span>;
+    }
+    ...
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slug Resolution Priority -->
+            <div class="card rounded-xl p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold mb-4">
+                    <i class="fas fa-sort-amount-down text-orange-400 mr-2"></i>Slug Çözümleme Önceliği
+                </h3>
+
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                        <div>
+                            <span class="font-medium">Memory Cache</span>
+                            <span class="text-gray-400 text-sm ml-2">→ Request içinde (en hızlı)</span>
+                            <span class="text-emerald-400 text-xs ml-2">+ Tenant ID</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                        <div>
+                            <span class="font-medium">Laravel Cache</span>
+                            <span class="text-gray-400 text-sm ml-2">→ 1440 dakika (1 gün)</span>
+                            <span class="text-emerald-400 text-xs ml-2">+ Tenant ID</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                        <div>
+                            <span class="font-medium">ModuleTenantSetting</span>
+                            <span class="text-gray-400 text-sm ml-2">→ Tenant özel ayarlar (DB)</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                        <div>
+                            <span class="font-medium">Config Dosyası</span>
+                            <span class="text-gray-400 text-sm ml-2">→ Varsayılan değerler (fallback)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Lessons Learned -->
+        <div id="tab-lessons" class="tab-content hidden">
+
+            <div class="card rounded-xl p-6 mb-6 border border-yellow-500/30">
+                <h2 class="text-xl font-semibold mb-6">
+                    <i class="fas fa-graduation-cap text-yellow-400 mr-2"></i>Tecrübeler & Önemli Dersler
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Lesson 1 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-red-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-red-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-red-400 mb-2">Multi-Tenant Cache İzolasyonu ZORUNLU!</h4>
+                                <p class="text-gray-300 text-sm mb-2">
+                                    Her cache key'e <strong>mutlaka tenant ID ekle</strong>. Aksi halde tenant'lar birbirinin verilerini ezer.
+                                </p>
+                                <div class="code-block rounded p-2 text-xs mt-2">
+<pre><span class="text-red-400">// YANLIŞ</span>
+$cacheKey = "slug_{$module}_{$key}";
+
+<span class="text-emerald-400">// DOĞRU</span>
+$cacheKey = "slug_<span class="text-yellow-400">{$tenantId}</span>_{$module}_{$key}";</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-orange-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-route text-orange-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-orange-400 mb-2">Route Matching Sırası Önemli</h4>
+                                <p class="text-gray-300 text-sm mb-2">
+                                    Özel slug'lar (show) genel slug'lardan (index) önce kontrol edilmeli. Aksi halde özelleştirme çalışmaz.
+                                </p>
+                                <div class="text-xs text-gray-500 mt-2">
+                                    <i class="fas fa-lightbulb mr-1"></i>
+                                    Önce spesifik kurallar, sonra genel kurallar - "most specific first" prensibi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-cyan-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shield-alt text-cyan-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-cyan-400 mb-2">Livewire + ResponseCache = Dikkat!</h4>
+                                <p class="text-gray-300 text-sm mb-2">
+                                    ResponseCache, Livewire bileşenleri olan sayfaları cache'lememelidir. CSRF token eski kalır ve 419 hatası alırsın.
+                                </p>
+                                <div class="text-xs text-gray-500 mt-2">
+                                    <i class="fas fa-lightbulb mr-1"></i>
+                                    <code class="bg-slate-700 px-1 rounded">livewire/*</code> path'lerini her zaman exclude et
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 4 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-purple-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-folder text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">Linux Case-Sensitive!</h4>
+                                <p class="text-gray-300 text-sm mb-2">
+                                    DB'de "blog" yazıyor, klasör "Blog" ise Linux bulamaz. Case-insensitive arama fonksiyonu yaz.
+                                </p>
+                                <div class="text-xs text-gray-500 mt-2">
+                                    <i class="fas fa-lightbulb mr-1"></i>
+                                    <code class="bg-slate-700 px-1 rounded">strtolower()</code> ile karşılaştır, gerçek klasör adını döndür
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 5 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-emerald-500">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-sync text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-emerald-400 mb-2">Cache Temizleme = Test Etme</h4>
+                                <p class="text-gray-300 text-sm mb-2">
+                                    Slug değişikliklerinde cache temizlemeden test etme. Her zaman şu sırayla:
+                                </p>
+                                <div class="code-block rounded p-2 text-xs mt-2">
+<pre>php artisan cache:clear
+php artisan responsecache:clear
+// Sonra test et!</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Reference -->
+            <div class="card rounded-xl p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold mb-4">
+                    <i class="fas fa-terminal text-green-400 mr-2"></i>Hızlı Referans Komutları
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-sm font-medium text-gray-400 mb-2">Cache Temizleme</h4>
+                        <div class="code-block rounded p-2 text-xs">
+<pre>php artisan cache:clear
+php artisan responsecache:clear
+php artisan config:cache</pre>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="text-sm font-medium text-gray-400 mb-2">Slug Değeri Kontrol (Tinker)</h4>
+                        <div class="code-block rounded p-2 text-xs">
+<pre>tenancy()->initialize(Tenant::find(3));
+ModuleSlugService::getSlug('blog', 'show', 'tr');
+// → "haberler"</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            <p>v2 - 20 Ocak 2026 &bull; Tuufi.com</p>
+            <p class="text-xs mt-1">Önceki versiyon: v1 (19 Ocak 2026)</p>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600');
+                btn.classList.add('bg-slate-700');
+            });
+
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+
+            // Add active class to clicked button
+            document.querySelector(`[data-tab="${tabName}"]`).classList.remove('bg-slate-700');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('bg-blue-600');
+        }
+    </script>
+</body>
+</html>

@@ -225,12 +225,64 @@ Konum: `readme/claude-docs/todo/YYYY/MM/DD/todo-HH-MM-konu.md`
 
 ---
 
-### 3.2 VERİTABANI KORUMA
+### 3.2 VERİTABANI KORUMA (EN KRİTİK BÖLÜM!)
 
-**Bu CANLI sistem!**
+**🚨🚨🚨 BU CANLI SİSTEM! VERİTABANI DEĞİŞİKLİĞİ = FELAKET RİSKİ! 🚨🚨🚨**
 
-**❌ ASLA:** migrate:fresh, db:wipe, truncate, DELETE, DROP
-**⚠️ İZİN GEREKLİ:** INSERT/UPDATE, migration oluşturma
+**❌ ASLA (KULLANICI İSTESE BİLE UYARI VER):**
+- migrate:fresh, db:wipe, truncate, DELETE, DROP
+
+**🛑 MUTLAK YASAK - KENDİ BAŞINA ASLA YAPMA:**
+```
+❌ Migration dosyası oluşturma
+❌ Tabloya kolon ekleme
+❌ Tablodan kolon silme
+❌ Yeni tablo oluşturma
+❌ Tablo silme
+❌ Kolon tipini değiştirme
+❌ Index ekleme/silme
+❌ Foreign key ekleme/silme
+❌ php artisan migrate çalıştırma
+❌ php artisan tenants:migrate çalıştırma
+```
+
+**⚠️ ÇOKLU ONAY GEREKLİ (3 AŞAMALI):**
+
+Migration gerektiren bir iş için şu adımları takip et:
+
+**AŞAMA 1 - İLK ONAY:**
+```
+"Bu işlem için migration gerekiyor. Migration şunları yapacak:
+- [Tablo adı]: [Yapılacak değişiklik]
+Migration oluşturmamı onaylıyor musunuz?"
+```
+
+**AŞAMA 2 - DOSYA OLUŞTURMA ONAYI:**
+```
+"Migration dosyası şu içerikle oluşturulacak:
+[Migration içeriği göster]
+Bu dosyayı oluşturmamı onaylıyor musunuz?"
+```
+
+**AŞAMA 3 - ÇALIŞTIRMA ONAYI:**
+```
+"Migration dosyası oluşturuldu. Şimdi çalıştırmamı istiyor musunuz?
+⚠️ DİKKAT: Bu işlem geri alınamaz!
+php artisan migrate --force (Central)
+php artisan tenants:migrate --force (Tenant'lar)"
+```
+
+**❌ YANLIŞ DAVRANIŞLAR:**
+- Kullanıcı "şu alanı ekle" dediğinde direkt migration oluşturmak
+- "Tamam" cevabını 3 aşamanın hepsi için geçerli saymak
+- Migration'ı oluşturup otomatik çalıştırmak
+- "Küçük bir değişiklik" diye onaysız yapmak
+
+**✅ DOĞRU DAVRANIŞLAR:**
+- Her aşama için AYRI onay almak
+- Onay almadan ASLA migration dosyası oluşturmamak
+- Onay almadan ASLA migrate komutu çalıştırmamak
+- Kullanıcıya riskleri açıkça anlatmak
 
 ---
 
@@ -299,9 +351,20 @@ if (tenant()->id === 1001) {
 
 ---
 
-### 4.2 MİGRATION KURALLARI
+### 4.2 MİGRATION KURALLARI (MUTLAKA OKU!)
 
-**🚨 Migration = İKİ YERDE oluştur!**
+**🚨🚨🚨 MİGRATION = 3 AŞAMALI ONAY GEREKLİ (Bkz: 3.2) 🚨🚨🚨**
+
+**KENDİ BAŞINA MİGRATION OLUŞTURMA!**
+**KENDİ BAŞINA KOLON EKLEME!**
+**KENDİ BAŞINA TABLO OLUŞTURMA!**
+
+Kullanıcı "X alanı ekle" veya "Y tablosu oluştur" dese bile:
+1. Önce AŞAMA 1 onayı al
+2. Sonra AŞAMA 2 onayı al
+3. Son olarak AŞAMA 3 onayı al
+
+**Migration Dosya Konumları (ONAY ALINDIKTAN SONRA):**
 
 ```
 Modules/[Modül]/database/migrations/xxx.php           → Central
@@ -311,11 +374,16 @@ Modules/[Modül]/database/migrations/tenant/xxx.php   → Tenant
 **❌ YANLIŞ:** `database/migrations/` ana klasör
 **✅ DOĞRU:** Modül içinde, hem central hem tenant
 
-**Çalıştır:**
+**Çalıştır (SADECE AŞAMA 3 ONAYI ALINDIKTAN SONRA):**
 ```bash
 php artisan migrate --force              # Central
 php artisan tenants:migrate --force      # Tenant'lar
 ```
+
+**⚠️ HATIRLATMA:**
+- "Tamam" = Sadece o aşamanın onayı, diğerleri için tekrar sor
+- Migration içeriğini GÖSTERMEDEN dosya oluşturma
+- Dosya oluşturduktan sonra SORMADAN migrate çalıştırma
 
 ---
 
@@ -357,6 +425,17 @@ Tailwind class eklediysen → safelist'e ekle → npm run prod
 
 **Tasarımsal değişiklik:** Önce HTML taslak göster, "UYGUNDUR" al, sonra kodla
 
+**🚨 TEMA DOSYALARI KONUMU:**
+```
+✅ DOĞRU: resources/views/themes/t-{id}/
+❌ YANLIŞ: Modules/*/resources/views/themes/
+```
+
+- Tema dosyaları (homepage, header, footer, layouts) SADECE `resources/views/themes/` altında
+- Modules içine tema dosyası AÇMA (kullanıcı özellikle istemediği sürece)
+- Header/Footer tek dosya olmalı, tüm sayfalar `@include` ile kullanmalı
+- Homepage dahil hiçbir sayfa inline header/footer içermemeli
+
 ---
 
 ### 5.2 SİSTEM BİLGİLERİ
@@ -386,3 +465,56 @@ Tailwind class eklediysen → safelist'e ekle → npm run prod
 - 🗑️ İş bitti → Temizlik
 - 📁 Her dosya → Permission düzelt
 - 🚫 Footer'da "Claude AI" yazma!
+- 🚨 **MİGRATION = 3 AŞAMALI ONAY! Kafana göre tablo/kolon ekleme!**
+- 🔤 **TÜRKÇE KARAKTER ZORUNLU! ASCII Türkçe YASAK!**
+
+---
+
+## BÖLÜM 6: TÜRKÇE KARAKTER KURALI (KRİTİK!)
+
+### 6.1 MUTLAK KURAL
+
+**🚨 TÜM içeriklerde DOĞRU Türkçe karakterler kullanılmalı!**
+
+**Türkçe Karakterler:** ş, Ş, ğ, Ğ, ü, Ü, ö, Ö, ç, Ç, ı, I, i, İ
+
+**❌ YANLIŞ (ASCII Türkçe) - ASLA KULLANMA:**
+```
+Olusturma → Oluşturma
+Kilavuz   → Kılavuz
+Ozellik   → Özellik
+Icerik    → İçerik
+Calisma   → Çalışma
+Islem     → İşlem
+Uretim    → Üretim
+Gorunum   → Görünüm
+Surec     → Süreç
+Dokuman   → Doküman
+```
+
+**✅ DOĞRU (UTF-8 Türkçe) - HER ZAMAN KULLAN:**
+- Oluşturma, Kılavuz, Özellik, İçerik
+- Çalışma, İşlem, Üretim, Görünüm
+- Süreç, Doküman, Değişiklik, Bağımsız
+
+### 6.2 NEREDE UYGULANIR?
+
+| Alan | Örnek |
+|------|-------|
+| HTML/Blade dosyaları | `<h1>Hakkımızda</h1>` |
+| Veritabanı içerikleri | `INSERT INTO pages (title) VALUES ('İletişim')` |
+| Dokümantasyon | README, CLAUDE.md, HTML raporları |
+| Kod yorumları | `// Oluşturma işlemi` |
+| Commit mesajları | `🔧 Türkçe karakter düzeltmeleri` |
+| Settings değerleri | `site_name = 'Örnek Şirket'` |
+
+### 6.3 KONTROL LİSTESİ
+
+Her dosya oluştururken/düzenlerken şunları kontrol et:
+
+- [ ] "olustur" yerine "oluştur" mu?
+- [ ] "icerik" yerine "içerik" mi?
+- [ ] "ozellik" yerine "özellik" mi?
+- [ ] "calisma" yerine "çalışma" mı?
+- [ ] Büyük İ doğru mu? (I değil İ)
+- [ ] Küçük ı doğru mu? (i değil ı)

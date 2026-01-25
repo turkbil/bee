@@ -41,5 +41,27 @@
     },
     "qrompt\/v2": {
         "marka": "Qrompt"
+    },
+    "ecrin-turizm\/v1": {
+        "marka": "Ecrin Turizm",
+        "kategori": "Turizm",
+        "favorite": true,
+        "rating": 5
+    },
+    "yildirim-panjur\/v2": {
+        "marka": "Yıldırım Panjur"
+    },
+    "yildirim-panjur\/v1": {
+        "marka": "Yıldırım Panjur",
+        "favorite": true,
+        "rating": 5
+    },
+    "mahmutoglu-hukuk\/v2": {
+        "favorite": true,
+        "rating": 5,
+        "kategori": "Hukuk"
+    },
+    "mahmutoglu-hukuk\/v1": {
+        "kategori": "Hukuk"
     }
 }

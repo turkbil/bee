@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t-{id} Tema Yapısı - Multi-Tenant Tema Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.875rem; }
+        pre code { background: none; padding: 0; }
+        .file-new { color: #22c55e; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-full mb-6">
+                <i class="fas fa-palette text-purple-400 text-xl"></i>
+                <span class="text-slate-400">Çıplak Tema</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                t-{id} Tema Yapısı
+            </h1>
+            <p class="text-slate-400">Her tenant kendi teması: t-1001, t-2, t-3...</p>
+        </header>
+
+        <!-- Felsefe -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-purple-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">Felsefe</h2>
+            </div>
+            <div class="text-slate-300 space-y-3">
+                <p><strong>t-{id}</strong> = Tenant teması. Sadece özel dosyalar burada.</p>
+                <p><strong>simple</strong> = Fallback (mevcut, zaten var). t-{id}'de yoksa buradan alır.</p>
+                <p><strong>Örnek:</strong> t-3/homepage.blade.php var → onu kullan, t-3/blog/show.blade.php yok → simple'dan al</p>
+            </div>
+        </section>
+
+        <!-- Klasör Yapısı -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-folder-tree text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">Çıplak Tema Yapısı</h2>
+            </div>
+
+            <pre class="text-sm bg-slate-900 rounded-xl p-6 overflow-x-auto font-mono">
+<span class="text-slate-500">resources/views/themes/</span>
+│
+├── <span class="text-slate-400">simple/</span>                         <span class="text-green-400">← FALLBACK (mevcut, dokunma)</span>
+│   ├── layouts/
+│   │   ├── app.blade.php
+│   │   ├── header.blade.php
+│   │   └── footer.blade.php
+│   ├── homepage.blade.php
+│   └── ...
+│
+├── <span class="text-purple-400">t-1001/</span>                         <span class="text-slate-500">← Muzibu override</span>
+│   ├── homepage.blade.php          <span class="text-slate-500">← Özel anasayfa</span>
+│   └── config.json                 <span class="text-slate-500">← Renkler</span>
+│
+├── <span class="text-orange-400">t-2/</span>                            <span class="text-slate-500">← İxtif override</span>
+│   ├── homepage.blade.php
+│   └── config.json
+│
+└── <span class="file-new">t-3/</span>                            <span class="text-cyan-400">← YENİ TENANT</span>
+    ├── <span class="file-new">homepage.blade.php</span>          <span class="text-slate-500">← Özel anasayfa</span>
+    ├── <span class="file-new">config.json</span>                 <span class="text-slate-500">← Renkler</span>
+    └── <span class="text-slate-500">(blog/, page/ yok → simple'dan gelir)</span>
+</pre>
+        </section>
+
+        <!-- Dosya İçerikleri -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-file-code text-cyan-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">Dosya İçerikleri</h2>
+            </div>
+
+            <p class="text-slate-400 text-sm mb-4">t-3 için sadece override dosyaları oluşturulur. Geri kalan simple'dan gelir.</p>
+
+            <!-- homepage.blade.php -->
+            <div class="mb-6">
+                <h3 class="font-semibold text-cyan-300 mb-2">t-3/homepage.blade.php</h3>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+@extends('themes.simple.layouts.app')
+
+@section('content')
+
+    {{-- Hero --}}
+    &lt;section class="bg-gradient-to-r from-primary to-secondary py-20"&gt;
+        &lt;div class="container mx-auto px-4 text-center text-white"&gt;
+            &lt;h1 class="text-4xl md:text-6xl font-bold mb-4"&gt;
+                {{ setting('site_slogan') ?? setting('site_name') }}
+            &lt;/h1&gt;
+            &lt;p class="text-xl opacity-90"&gt;
+                {{ setting('site_description') }}
+            &lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+    {{-- İçerik buraya gelir --}}
+    &lt;section class="py-16"&gt;
+        &lt;div class="container mx-auto px-4"&gt;
+            {{-- Dinamik içerik --}}
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+@endsection</pre>
+            </div>
+
+            <!-- config.json -->
+            <div>
+                <h3 class="font-semibold text-cyan-300 mb-2">t-3/config.json</h3>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+{
+    "name": "t-3",
+    "title": "Yeni Tenant",
+    "colors": {
+        "primary": "#10b981",
+        "secondary": "#6366f1"
+    }
+}</pre>
+                <p class="text-slate-500 text-xs mt-2">Sadece değişen değerler. Geri kalan simple'dan miras alınır.</p>
+            </div>
+        </section>
+
+        <!-- ThemeService -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cogs text-amber-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">ThemeService Fallback Sırası</h2>
+            </div>
+
+            <pre class="text-sm bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-cyan-400">t-3 (yeni tenant):</span>
+1. themes/t-3/homepage.blade.php     → VARSA kullan
+2. themes/t-3/blog/show.blade.php    → YOK
+3. themes/simple/blog/show.blade.php → simple'dan al ✓
+
+<span class="text-purple-400">Muzibu (t-1001):</span>
+1. themes/muzibu/homepage.blade.php  → VARSA kullan
+2. Modules/*/themes/muzibu/          → Kendi modül view'ları
+3. themes/simple/                    → Yoksa simple
+
+<span class="text-orange-400">İxtif (t-2):</span>
+1. themes/ixtif/homepage.blade.php   → VARSA kullan
+2. Modules/*/themes/ixtif/           → Kendi modül view'ları
+3. themes/simple/                    → Yoksa simple
+
+<span class="text-slate-500">Her tema kendi fallback'ine düşer. Birbirine karışmaz.</span>
+</pre>
+        </section>
+
+        <!-- Yeni Tenant -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-plus text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">Yeni Tenant = 2 Dosya</h2>
+            </div>
+
+            <pre class="text-sm bg-slate-900 rounded-lg p-4 overflow-x-auto font-mono">
+themes/t-3/
+├── config.json           ← Renkler
+└── homepage.blade.php    ← Özel anasayfa
+
+<span class="text-slate-500">blog/, page/, shop/ yok → simple'dan gelir</span>
+</pre>
+        </section>
+
+        <!-- Sayfa Oluşturma -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-file-alt text-blue-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">Sayfa Oluşturma (Page Modülü)</h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Admin Panel -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h3 class="font-semibold text-blue-300 mb-3"><i class="fas fa-cog mr-2"></i>1. Admin Panelden Sayfa Oluştur</h3>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><code>Admin → Sayfalar → Yeni Sayfa</code></p>
+                        <ul class="list-disc list-inside ml-4 text-slate-400">
+                            <li><strong>Başlık:</strong> Sayfa adı</li>
+                            <li><strong>Slug:</strong> URL (otomatik veya manuel)</li>
+                            <li><strong>İçerik:</strong> Sayfa içeriği (HTML/Markdown)</li>
+                            <li><strong>Anasayfa mı?:</strong> Evet ise homepage olur</li>
+                            <li><strong>Aktif:</strong> Yayında mı?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Homepage Ayarı -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h3 class="font-semibold text-green-300 mb-3"><i class="fas fa-home mr-2"></i>2. Anasayfa Belirleme</h3>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p>Bir sayfayı anasayfa yapmak için:</p>
+                        <pre class="bg-slate-900 rounded p-3 text-xs mt-2">
+Sayfalar → Düzenle → "Anasayfa olarak ayarla" ✓</pre>
+                        <p class="text-slate-400 mt-2">Bu sayfa <code>is_homepage = true</code> olur ve <code>/</code> URL'inde görünür.</p>
+                    </div>
+                </div>
+
+                <!-- Tema ile İlişki -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h3 class="font-semibold text-purple-300 mb-3"><i class="fas fa-palette mr-2"></i>3. Tema ile İlişki</h3>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Anasayfa:</strong></p>
+                        <pre class="bg-slate-900 rounded p-3 text-xs">
+themes/t-3/homepage.blade.php → Özel tasarım
+    └── İçerik: Admin'den girilen $item->content</pre>
+
+                        <p class="mt-3"><strong>Diğer Sayfalar:</strong></p>
+                        <pre class="bg-slate-900 rounded p-3 text-xs">
+themes/simple/page/show.blade.php → Otomatik kullanılır
+    └── t-3'te page/ klasörü yok → simple'dan gelir</pre>
+                    </div>
+                </div>
+
+                <!-- Sayfa View Örneği -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h3 class="font-semibold text-cyan-300 mb-3"><i class="fas fa-code mr-2"></i>4. Sayfa View Yapısı</h3>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+{{-- themes/simple/page/show.blade.php --}}
+@extends('themes.simple.layouts.app')
+
+@section('content')
+&lt;article class="container mx-auto px-4 py-8"&gt;
+
+    &lt;h1 class="text-4xl font-bold mb-6"&gt;
+        {{ $item-&gt;title }}
+    &lt;/h1&gt;
+
+    &lt;div class="prose dark:prose-invert max-w-none"&gt;
+        {!! $item-&gt;content !!}
+    &lt;/div&gt;
+
+&lt;/article&gt;
+@endsection</pre>
+                </div>
+
+                <!-- Özel Sayfa İsterse -->
+                <div class="bg-amber-900/20 border border-amber-700 rounded-xl p-4">
+                    <h3 class="font-semibold text-amber-300 mb-3"><i class="fas fa-star mr-2"></i>5. Özel Sayfa Tasarımı İsterse</h3>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p>t-3 için özel "Hakkımızda" sayfası istiyorsa:</p>
+                        <pre class="bg-slate-900 rounded p-3 text-xs mt-2">
+themes/t-3/page/show.blade.php   → Tüm sayfalar için
+themes/t-3/page/about.blade.php  → Sadece "about" slug'ı için</pre>
+                        <p class="text-slate-400 mt-2">Yoksa simple'dan gelir, sorun yok.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menü Oluşturma -->
+        <section class="card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-bars text-pink-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">Menü Oluşturma</h2>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-4">
+                <div class="text-sm text-slate-300 space-y-3">
+                    <p><code>Admin → Menüler → Yeni Menü</code></p>
+                    <ul class="list-disc list-inside ml-4 text-slate-400">
+                        <li><strong>Konum:</strong> header, footer, sidebar</li>
+                        <li><strong>Öğeler:</strong> Sayfa, URL, Kategori ekle</li>
+                        <li><strong>Sıralama:</strong> Sürükle-bırak</li>
+                    </ul>
+
+                    <p class="mt-4"><strong>Header'da kullanım:</strong></p>
+                    <pre class="bg-slate-900 rounded p-3 text-xs">
+{{-- layouts/header.blade.php --}}
+@foreach($menuItems ?? [] as $item)
+    &lt;a href="{{ $item-&gt;url }}"&gt;{{ $item-&gt;title }}&lt;/a&gt;
+@endforeach</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- TODO LİSTESİ -->
+        <section id="todo" class="card rounded-2xl p-6 mb-8 border border-green-700 bg-green-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list-check text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-green-300">t-3 Tema Checklist</h2>
+            </div>
+
+            <div class="space-y-2 text-sm">
+                <!-- Klasör -->
+                <div class="bg-slate-800/30 rounded-lg p-3 border-l-4 border-purple-500">
+                    <h4 class="font-semibold text-purple-300 mb-2"><i class="fas fa-folder mr-2"></i>Klasör</h4>
+                    <label class="flex items-center gap-3 cursor-pointer hover:bg-slate-700/30 p-2 rounded">
+                        <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-green-500">
+                        <span>Klasör oluştur: <code>resources/views/themes/t-3/</code></span>
+                    </label>
+                </div>
+
+                <!-- Dosyalar -->
+                <div class="bg-slate-800/30 rounded-lg p-3 border-l-4 border-green-500">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-file-code mr-2"></i>Dosyalar</h4>
+                    <div class="space-y-1">
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-slate-700/30 p-2 rounded">
+                            <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-green-500">
+                            <span><code>t-3/homepage.blade.php</code> - Özel anasayfa</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-slate-700/30 p-2 rounded">
+                            <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-green-500">
+                            <span><code>t-3/config.json</code> - Renkler</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Test -->
+                <div class="bg-purple-900/30 rounded-lg p-3 border-l-4 border-purple-400">
+                    <h4 class="font-semibold text-purple-200 mb-2"><i class="fas fa-flask mr-2"></i>Test</h4>
+                    <div class="space-y-1">
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-slate-700/30 p-2 rounded">
+                            <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-green-500">
+                            <span>t-3 anasayfa çalışıyor mu?</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-slate-700/30 p-2 rounded">
+                            <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-green-500">
+                            <span>İç sayfalar simple'dan mı geliyor?</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-slate-700/30 p-2 rounded">
+                            <input type="checkbox" class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-green-500">
+                            <span>Muzibu/İxtif bozulmadı mı?</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-slate-800/50 rounded-lg">
+                <p class="text-slate-400 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Sadece 2 dosya: homepage + config. Geri kalan simple'dan gelir.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-8">
+            18 Ocak 2026 • Tuufi.com
+        </footer>
+    </div>
+</body>
+</html>

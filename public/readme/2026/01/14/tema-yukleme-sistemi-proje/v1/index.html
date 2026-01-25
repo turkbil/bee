@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema Yükleme Sistemi - Proje Planlaması</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .section-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(71, 85, 105, 0.5); }
+        .code-block { background: #1e293b; border-radius: 8px; padding: 1rem; overflow-x: auto; font-family: monospace; font-size: 0.75rem; }
+        .step-number { width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 9999px; font-weight: bold; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-gray-100">
+    <header class="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="px-3 py-1 bg-purple-600 text-xs font-bold rounded-full uppercase tracking-wider">Proje Planlaması</span>
+                    <h1 class="text-3xl font-bold mt-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        Tema Yükleme Sistemi
+                    </h1>
+                    <p class="text-slate-400 mt-1">HTML Temalardan Otomatik Site Oluşturma Projesi</p>
+                </div>
+                <div class="text-right text-sm text-slate-400">
+                    <div>14 Ocak 2026</div>
+                    <div class="text-xs">v1.0</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- ==================== PROJE VİZYONU ==================== -->
+        <section class="bg-green-900/20 border border-green-700/50 rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-green-400 flex items-center gap-2 mb-4">
+                <span class="text-3xl">🎯</span> Proje Vizyonu (Basit Anlatım)
+            </h2>
+            <div class="text-slate-300 space-y-4">
+                <p class="text-lg">
+                    <strong class="text-green-300">Problem:</strong> Her yeni tenant (müşteri) için tema kurulumu manuel yapılıyor -
+                    dosyalar kopyalanıyor, widgetlar oluşturuluyor, ayarlar yapılıyor. Bu işlem <strong>saatler</strong> sürüyor ve hata riski yüksek.
+                </p>
+                <p class="text-lg">
+                    <strong class="text-green-300">Çözüm:</strong> Tasarımcı HTML tema hazırlıyor → Claude tema'yı analiz ediyor →
+                    Sistem otomatik olarak tüm widget'ları, ayarları, sayfaları oluşturuyor. <strong>Dakikalar</strong> içinde site hazır!
+                </p>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 mt-4">
+                    <h3 class="font-semibold text-green-300 mb-3">Hedef Akış:</h3>
+                    <div class="flex flex-wrap items-center gap-2 text-sm">
+                        <div class="bg-blue-600 px-3 py-2 rounded-lg">1. HTML Tema</div>
+                        <span class="text-slate-500">→</span>
+                        <div class="bg-purple-600 px-3 py-2 rounded-lg">2. Claude Analiz</div>
+                        <span class="text-slate-500">→</span>
+                        <div class="bg-pink-600 px-3 py-2 rounded-lg">3. JSON Manifest</div>
+                        <span class="text-slate-500">→</span>
+                        <div class="bg-orange-600 px-3 py-2 rounded-lg">4. Panel Import</div>
+                        <span class="text-slate-500">→</span>
+                        <div class="bg-emerald-600 px-3 py-2 rounded-lg">5. Canlı Site!</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SİSTEM MİMARİSİ ==================== -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-blue-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🏗️</span> Sistem Mimarisi
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Sol: Akış Diyagramı -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-cyan-400 mb-4">İş Akışı</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="step-number bg-blue-600 shrink-0">1</span>
+                            <div>
+                                <div class="font-semibold text-white">Tasarımcı HTML Tema Hazırlar</div>
+                                <div class="text-slate-400">Standart klasör yapısında (header, footer, sections, pages)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="step-number bg-purple-600 shrink-0">2</span>
+                            <div>
+                                <div class="font-semibold text-white">Claude Tema'yı Analiz Eder</div>
+                                <div class="text-slate-400">HTML/CSS'i okur, widget'ları, ayarları, menüleri tespit eder</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="step-number bg-pink-600 shrink-0">3</span>
+                            <div>
+                                <div class="font-semibold text-white">JSON Manifest Oluşturur</div>
+                                <div class="text-slate-400">Tüm konfigürasyonlar, içerikler yapılandırılmış JSON'da</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="step-number bg-orange-600 shrink-0">4</span>
+                            <div>
+                                <div class="font-semibold text-white">Admin Panel Import Eder</div>
+                                <div class="text-slate-400">Tema Yükleme modülü JSON'u okur, DB'ye yazar</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="step-number bg-emerald-600 shrink-0">5</span>
+                            <div>
+                                <div class="font-semibold text-white">Site Hazır!</div>
+                                <div class="text-slate-400">Widget'lar, sayfalar, ayarlar, menüler - hepsi yerinde</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ: Bileşenler -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-cyan-400 mb-4">Sistem Bileşenleri</h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="border-l-4 border-blue-500 pl-3">
+                            <div class="font-semibold text-white">1. Tema Dizini (Kaynak)</div>
+                            <div class="text-slate-400">public/design/templates/[tema-adi]/</div>
+                            <div class="text-slate-500 text-xs">HTML, CSS, JS, görseller</div>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-3">
+                            <div class="font-semibold text-white">2. Claude Analiz Prompt'u</div>
+                            <div class="text-slate-400">Özel geliştirilmiş tema okuma prompt'u</div>
+                            <div class="text-slate-500 text-xs">Widget tespit, ayar çıkarma, yapı analizi</div>
+                        </div>
+                        <div class="border-l-4 border-pink-500 pl-3">
+                            <div class="font-semibold text-white">3. JSON Manifest Dosyası</div>
+                            <div class="text-slate-400">theme-manifest.json</div>
+                            <div class="text-slate-500 text-xs">Tüm konfigürasyonların tek dosyası</div>
+                        </div>
+                        <div class="border-l-4 border-orange-500 pl-3">
+                            <div class="font-semibold text-white">4. ThemeLoader Modülü</div>
+                            <div class="text-slate-400">Modules/ThemeLoader/</div>
+                            <div class="text-slate-500 text-xs">Admin panel import/export işlemleri</div>
+                        </div>
+                        <div class="border-l-4 border-emerald-500 pl-3">
+                            <div class="font-semibold text-white">5. Hedef Sistem</div>
+                            <div class="text-slate-400">Widget, Settings, Menu, Page modülleri</div>
+                            <div class="text-slate-500 text-xs">Tenant DB'ye yazım</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== JSON MANIFEST YAPISI ==================== -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-pink-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">📄</span> JSON Manifest Yapısı
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-300 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300">
+                    JSON Manifest = Temanın "tarifi". Bir site kurmak için gereken her şeyin listesi.
+                    Widget'lar, ayarlar, menüler, sayfalar - hepsi bu dosyada tanımlı.
+                    Panel bu dosyayı okuyup otomatik olarak DB'ye yazıyor.
+                </p>
+            </div>
+
+            <div class="code-block text-slate-300 overflow-x-auto">
+<pre><code>{
+  "manifest_version": "1.0",
+  "theme": {
+    "name": "varplas",
+    "display_name": "VARPLAS Kurumsal Tema",
+    "version": "1.0.0",
+    "author": "Tuufi Design",
+    "description": "Endüstriyel/Kurumsal firmalar için modern tema",
+    "preview_url": "https://tuufi.com/design/templates/varplas/v1/",
+    "screenshot": "screenshot.png"
+  },
+
+  "theme_files": {
+    "layouts": [
+      {"source": "index.html", "target": "layouts/app.blade.php", "type": "main_layout"},
+      {"source": "header.html", "target": "layouts/partials/header.blade.php", "type": "partial"},
+      {"source": "footer.html", "target": "layouts/partials/footer.blade.php", "type": "partial"}
+    ],
+    "pages": [
+      {"source": "about.html", "target": "pages/about.blade.php", "slug": "hakkimizda"},
+      {"source": "contact.html", "target": "pages/contact.blade.php", "slug": "iletisim"},
+      {"source": "services.html", "target": "pages/services.blade.php", "slug": "hizmetlerimiz"}
+    ],
+    "assets": {
+      "css": ["css/style.css", "css/responsive.css"],
+      "js": ["js/main.js", "js/animations.js"],
+      "images": "images/"
+    }
+  },
+
+  "widgets": [
+    {
+      "slug": "varplas-hero-slider",
+      "name": "VARPLAS Hero Slider",
+      "type": "hero",
+      "position": "hero",
+      "has_items": true,
+      "settings_schema": {
+        "autoplay": {"type": "boolean", "default": true, "label": "Otomatik Oynatma"},
+        "interval": {"type": "number", "default": 5000, "label": "Geçiş Süresi (ms)"},
+        "show_arrows": {"type": "boolean", "default": true, "label": "Okları Göster"}
+      },
+      "item_schema": {
+        "title": {"type": "text", "label": "Başlık", "required": true},
+        "subtitle": {"type": "text", "label": "Alt Başlık"},
+        "description": {"type": "textarea", "label": "Açıklama"},
+        "image": {"type": "image", "label": "Arkaplan Görseli", "required": true},
+        "button_text": {"type": "text", "label": "Buton Metni"},
+        "button_url": {"type": "url", "label": "Buton Linki"}
+      },
+      "default_items": [
+        {
+          "title": "Plastik Sektöründe 30 Yıllık Tecrübe",
+          "subtitle": "Kalite ve Güven",
+          "description": "Modern üretim tesislerimizle hizmetinizdeyiz",
+          "image": "images/slider/slide-1.jpg",
+          "button_text": "Hakkımızda",
+          "button_url": "/hakkimizda"
+        }
+      ],
+      "content_html": "<!-- Slider HTML template with {{#each items}} -->",
+      "content_css": "/* Slider specific CSS */",
+      "content_js": "// Slider JavaScript"
+    },
+    {
+      "slug": "varplas-services-grid",
+      "name": "VARPLAS Hizmetler Grid",
+      "type": "services",
+      "position": "content",
+      "has_items": true,
+      "settings_schema": {
+        "section_title": {"type": "text", "default": "Hizmetlerimiz", "label": "Bölüm Başlığı"},
+        "columns": {"type": "select", "options": [2,3,4], "default": 3, "label": "Sütun Sayısı"},
+        "show_icons": {"type": "boolean", "default": true, "label": "İkonları Göster"}
+      },
+      "item_schema": {
+        "title": {"type": "text", "label": "Hizmet Adı", "required": true},
+        "description": {"type": "textarea", "label": "Açıklama"},
+        "icon": {"type": "icon", "label": "İkon", "default": "fas fa-cog"},
+        "image": {"type": "image", "label": "Görsel"},
+        "url": {"type": "url", "label": "Detay Linki"}
+      },
+      "default_items": [
+        {"title": "Enjeksiyon Kalıplama", "icon": "fas fa-industry", "description": "..."},
+        {"title": "Ekstrüzyon", "icon": "fas fa-cogs", "description": "..."},
+        {"title": "Kalıp Tasarımı", "icon": "fas fa-drafting-compass", "description": "..."}
+      ]
+    },
+    {
+      "slug": "varplas-about-section",
+      "name": "VARPLAS Hakkımızda",
+      "type": "about",
+      "position": "content",
+      "has_items": false,
+      "settings_schema": {
+        "title": {"type": "text", "default": "Hakkımızda", "label": "Başlık"},
+        "subtitle": {"type": "text", "label": "Alt Başlık"},
+        "content": {"type": "richtext", "label": "İçerik"},
+        "image": {"type": "image", "label": "Görsel"},
+        "stats_enabled": {"type": "boolean", "default": true, "label": "İstatistikleri Göster"},
+        "years": {"type": "number", "default": 30, "label": "Yıl Sayısı"},
+        "projects": {"type": "number", "default": 500, "label": "Proje Sayısı"},
+        "clients": {"type": "number", "default": 200, "label": "Müşteri Sayısı"}
+      }
+    },
+    {
+      "slug": "varplas-cta-banner",
+      "name": "VARPLAS CTA Banner",
+      "type": "cta",
+      "position": "content",
+      "has_items": false,
+      "settings_schema": {
+        "title": {"type": "text", "label": "Başlık"},
+        "description": {"type": "textarea", "label": "Açıklama"},
+        "button_text": {"type": "text", "default": "İletişime Geçin", "label": "Buton Metni"},
+        "button_url": {"type": "url", "default": "/iletisim", "label": "Buton Linki"},
+        "background_color": {"type": "color", "default": "#1e40af", "label": "Arkaplan Rengi"},
+        "background_image": {"type": "image", "label": "Arkaplan Görseli"}
+      }
+    },
+    {
+      "slug": "varplas-contact-info",
+      "name": "VARPLAS İletişim Bilgileri",
+      "type": "contact",
+      "position": "footer",
+      "has_items": false,
+      "settings_schema": {
+        "show_map": {"type": "boolean", "default": true, "label": "Haritayı Göster"},
+        "map_embed": {"type": "textarea", "label": "Google Maps Embed Kodu"}
+      }
+    }
+  ],
+
+  "settings": {
+    "site_info": [
+      {"key": "site_name", "value": "VARPLAS Plastik", "group": "general"},
+      {"key": "site_slogan", "value": "Kaliteli Plastik Çözümleri", "group": "general"},
+      {"key": "site_description", "value": "30 yıllık tecrübesiyle plastik sektörünün öncüsü", "group": "general"}
+    ],
+    "contact": [
+      {"key": "contact_phone", "value": "+90 212 xxx xx xx", "group": "contact"},
+      {"key": "contact_email", "value": "info@varplas.com", "group": "contact"},
+      {"key": "contact_address", "value": "İstanbul, Türkiye", "group": "contact"},
+      {"key": "contact_working_hours", "value": "Pzt-Cuma: 09:00-18:00", "group": "contact"}
+    ],
+    "social": [
+      {"key": "social_facebook", "value": "", "group": "social"},
+      {"key": "social_instagram", "value": "", "group": "social"},
+      {"key": "social_linkedin", "value": "", "group": "social"},
+      {"key": "social_youtube", "value": "", "group": "social"}
+    ],
+    "theme_settings": [
+      {"key": "primary_color", "value": "#1e40af", "group": "theme"},
+      {"key": "secondary_color", "value": "#f59e0b", "group": "theme"},
+      {"key": "header_style", "value": "sticky", "group": "theme"},
+      {"key": "footer_style", "value": "dark", "group": "theme"}
+    ]
+  },
+
+  "menus": [
+    {
+      "slug": "header-menu",
+      "name": "Ana Menü",
+      "location": "header",
+      "items": [
+        {"title": "Ana Sayfa", "url": "/", "order": 1},
+        {"title": "Hakkımızda", "url": "/hakkimizda", "order": 2},
+        {"title": "Hizmetlerimiz", "url": "/hizmetlerimiz", "order": 3, "children": [
+          {"title": "Enjeksiyon Kalıplama", "url": "/hizmetlerimiz/enjeksiyon"},
+          {"title": "Ekstrüzyon", "url": "/hizmetlerimiz/ekstruzyon"},
+          {"title": "Kalıp Tasarımı", "url": "/hizmetlerimiz/kalip-tasarimi"}
+        ]},
+        {"title": "Ürünlerimiz", "url": "/urunlerimiz", "order": 4},
+        {"title": "İletişim", "url": "/iletisim", "order": 5}
+      ]
+    },
+    {
+      "slug": "footer-menu",
+      "name": "Footer Menü",
+      "location": "footer",
+      "items": [
+        {"title": "Gizlilik Politikası", "url": "/gizlilik-politikasi"},
+        {"title": "KVKK", "url": "/kvkk"},
+        {"title": "Çerez Politikası", "url": "/cerez-politikasi"}
+      ]
+    }
+  ],
+
+  "pages": [
+    {
+      "title": "Hakkımızda",
+      "slug": "hakkimizda",
+      "template": "about",
+      "widgets": ["varplas-about-section"],
+      "seo": {
+        "meta_title": "Hakkımızda | VARPLAS Plastik",
+        "meta_description": "30 yıllık tecrübemiz ve modern tesislerimizle plastik sektörünün öncüsüyüz."
+      }
+    },
+    {
+      "title": "Hizmetlerimiz",
+      "slug": "hizmetlerimiz",
+      "template": "services",
+      "widgets": ["varplas-services-grid"],
+      "seo": {
+        "meta_title": "Hizmetlerimiz | VARPLAS Plastik",
+        "meta_description": "Enjeksiyon kalıplama, ekstrüzyon, kalıp tasarımı ve daha fazlası."
+      }
+    },
+    {
+      "title": "İletişim",
+      "slug": "iletisim",
+      "template": "contact",
+      "widgets": ["varplas-contact-info"],
+      "seo": {
+        "meta_title": "İletişim | VARPLAS Plastik",
+        "meta_description": "Bize ulaşın. Sorularınız için 7/24 hizmetinizdeyiz."
+      }
+    }
+  ],
+
+  "seo_defaults": {
+    "site_title_suffix": " | VARPLAS Plastik",
+    "default_og_image": "images/og-image.jpg",
+    "robots": "index, follow",
+    "sitemap_priority": {
+      "home": 1.0,
+      "pages": 0.8,
+      "services": 0.7
+    }
+  }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ==================== CLAUDE PROMPT YAPISI ==================== -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-purple-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🤖</span> Claude Analiz Prompt'u
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-300 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300">
+                    Claude'a özel bir "talimat seti" (prompt) vereceğiz. Bu prompt sayesinde Claude herhangi bir HTML temayı
+                    okuyabilecek, analiz edebilecek ve yukarıdaki JSON formatında çıktı üretebilecek.
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Prompt Bölümleri -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-purple-300 mb-4">Prompt Yapısı (Ana Bölümler)</h3>
+
+                    <div class="space-y-4 text-sm">
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <div class="font-semibold text-white">1. Sistem Talimatları</div>
+                            <div class="text-slate-400 mt-1">
+                                - Sen bir tema analiz uzmanısın<br>
+                                - Verilen HTML dosyalarını oku ve analiz et<br>
+                                - JSON Manifest formatında çıktı üret<br>
+                                - WidgetManagement sistemini bil
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-pink-500 pl-4">
+                            <div class="font-semibold text-white">2. Analiz Kuralları</div>
+                            <div class="text-slate-400 mt-1">
+                                - HTML'de tekrarlayan yapıları (section, card) tespit et → Widget adayı<br>
+                                - İkon + başlık + açıklama paterni → Services/Features widget<br>
+                                - Slider/Carousel yapısı → Hero Slider widget<br>
+                                - Form alanları → Contact widget<br>
+                                - Footer bölümleri → Footer widget
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-cyan-500 pl-4">
+                            <div class="font-semibold text-white">3. Widget Tespit Kuralları</div>
+                            <div class="text-slate-400 mt-1">
+                                - &lt;section&gt; tagları genellikle widget sınırlarını belirler<br>
+                                - Tekrarlayan &lt;div class="card"&gt; → has_items: true<br>
+                                - Tek içerik bloğu → has_items: false<br>
+                                - CSS class isimlerinden widget adı türet
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-orange-500 pl-4">
+                            <div class="font-semibold text-white">4. Ayar Çıkarma Kuralları</div>
+                            <div class="text-slate-400 mt-1">
+                                - Metinler → text tipinde setting<br>
+                                - Görseller → image tipinde setting<br>
+                                - Renkler (CSS'den) → color tipinde setting<br>
+                                - Boolean seçenekler → boolean tipinde setting<br>
+                                - Sayısal değerler → number tipinde setting
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-emerald-500 pl-4">
+                            <div class="font-semibold text-white">5. Çıktı Formatı</div>
+                            <div class="text-slate-400 mt-1">
+                                - Geçerli JSON formatı (syntax hatasız)<br>
+                                - Türkçe label'lar<br>
+                                - Anlamlı slug'lar (tema-adi-widget-tipi)<br>
+                                - Default değerler mevcut içerikten
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Örnek Prompt -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-purple-300 mb-4">Örnek Analiz Prompt'u (Taslak)</h3>
+                    <div class="code-block text-green-300 text-xs">
+<pre><code># TEMA ANALİZ PROMPT'U
+
+Sen bir HTML tema analiz uzmanısın. Görevin, verilen HTML tema dosyalarını
+inceleyip JSON Manifest formatında çıktı üretmek.
+
+## GÖREV
+1. Tema klasöründeki tüm HTML dosyalarını oku
+2. Sayfa yapısını analiz et (header, footer, sections)
+3. Widget adaylarını tespit et
+4. Ayarlanabilir alanları belirle
+5. JSON Manifest oluştur
+
+## WİDGET TESPİT KURALLARI
+
+### has_items: true Olacaklar (Tekrarlı Yapılar)
+- Slider/Carousel (birden fazla slide)
+- Hizmet kartları (grid içinde tekrarlayan cards)
+- Ekip üyeleri (tekrarlayan person cards)
+- Referanslar/Markalar (logo listesi)
+- Blog kartları (tekrarlayan article cards)
+- Galeri (tekrarlayan image cards)
+
+### has_items: false Olacaklar (Tek Yapılar)
+- Hakkımızda bölümü (tek content block)
+- CTA banner (tek mesaj + buton)
+- İletişim bilgileri (tek form veya info block)
+- Hero (slider değilse, tek görsel + text)
+
+## AYAR TİPLERİ
+
+| HTML İçerik | Setting Tipi | Örnek |
+|-------------|--------------|-------|
+| Metin | text | Başlık, alt başlık |
+| Uzun metin | textarea | Açıklama, paragraf |
+| HTML içerik | richtext | Zengin metin editörü |
+| Görsel | image | Arkaplan, ikon |
+| Link | url | Buton linki |
+| Renk | color | Arkaplan rengi |
+| Sayı | number | Sütun sayısı, süre |
+| Açık/Kapalı | boolean | Göster/Gizle |
+| Seçim | select | Stil seçimi |
+
+## JSON ÇIKTI FORMATI
+[Yukarıdaki JSON Manifest yapısı]
+
+## ÖRNEK ANALİZ
+Girdi: &lt;section class="hero-slider"&gt;...&lt;/section&gt;
+Çıktı: Widget (slug: tema-hero-slider, has_items: true, item_schema: {...})
+
+---
+Şimdi verilen tema dosyalarını analiz et ve JSON Manifest üret.</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ADMIN PANEL MODÜLÜ ==================== -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🎛️</span> ThemeLoader Admin Panel Modülü
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-300 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300">
+                    Admin panelde yeni bir modül olacak: <strong>"Tema Yükleyici"</strong>.
+                    Bu modül sayesinde JSON manifest dosyasını yükleyip tek tıkla tüm site kurulumunu yapabileceksiniz.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Sol: Özellikler -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-orange-300 mb-4">Modül Özellikleri</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Manifest Yükleme</div>
+                                <div class="text-slate-400">JSON dosyası upload veya URL'den çekme</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Önizleme</div>
+                                <div class="text-slate-400">Import öncesi nelerin oluşturulacağını görme</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Seçmeli Import</div>
+                                <div class="text-slate-400">Sadece widgetları, sadece ayarları vs. seçebilme</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Çakışma Yönetimi</div>
+                                <div class="text-slate-400">Mevcut verilerle çakışırsa ne yapılacağı</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Geri Alma (Rollback)</div>
+                                <div class="text-slate-400">Hatalı import'u geri alabilme</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">İlerleme Takibi</div>
+                                <div class="text-slate-400">Import sürecini canlı izleme</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ: Sayfa Yapısı -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-orange-300 mb-4">Modül Dosya Yapısı</h3>
+                    <div class="code-block text-xs">
+<pre><code>Modules/ThemeLoader/
+├── app/
+│   ├── Http/
+│   │   └── Livewire/
+│   │       ├── ThemeLoaderComponent.php      # Ana liste
+│   │       ├── ThemeImportComponent.php      # Import wizard
+│   │       └── ThemePreviewComponent.php     # Önizleme
+│   ├── Models/
+│   │   └── ThemeImportLog.php                # Import geçmişi
+│   └── Services/
+│       ├── ThemeLoaderService.php            # Ana servis
+│       ├── ManifestParser.php                # JSON parse
+│       ├── WidgetImporter.php                # Widget import
+│       ├── SettingsImporter.php              # Ayar import
+│       ├── MenuImporter.php                  # Menü import
+│       └── PageImporter.php                  # Sayfa import
+├── database/
+│   └── migrations/
+│       └── tenant/
+│           └── create_theme_import_logs.php
+├── resources/
+│   └── views/
+│       └── admin/
+│           └── livewire/
+│               ├── theme-loader.blade.php
+│               ├── theme-import.blade.php
+│               └── theme-preview.blade.php
+└── routes/
+    └── admin.php</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UI Mockup -->
+            <div class="mt-6 bg-slate-800/50 rounded-lg p-5">
+                <h3 class="font-bold text-orange-300 mb-4">UI Taslağı (Import Wizard)</h3>
+                <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                    <!-- Steps -->
+                    <div class="flex items-center justify-between mb-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">1</span>
+                            <span class="text-emerald-400">Manifest Yükle</span>
+                        </div>
+                        <div class="h-0.5 flex-1 mx-2 bg-slate-700"></div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center font-bold">2</span>
+                            <span class="text-slate-400">Önizle</span>
+                        </div>
+                        <div class="h-0.5 flex-1 mx-2 bg-slate-700"></div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center font-bold">3</span>
+                            <span class="text-slate-400">Seç</span>
+                        </div>
+                        <div class="h-0.5 flex-1 mx-2 bg-slate-700"></div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center font-bold">4</span>
+                            <span class="text-slate-400">Import</span>
+                        </div>
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div class="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
+                        <div class="text-4xl mb-2">📄</div>
+                        <div class="text-slate-300 font-medium">JSON Manifest Dosyasını Sürükleyin</div>
+                        <div class="text-slate-500 text-sm mt-1">veya dosya seçmek için tıklayın</div>
+                        <div class="mt-4">
+                            <span class="text-slate-500 text-xs">Desteklenen: .json</span>
+                        </div>
+                    </div>
+
+                    <!-- OR URL -->
+                    <div class="flex items-center gap-4 my-4">
+                        <div class="flex-1 h-px bg-slate-700"></div>
+                        <span class="text-slate-500 text-sm">veya URL'den yükle</span>
+                        <div class="flex-1 h-px bg-slate-700"></div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="https://example.com/theme-manifest.json"
+                               class="flex-1 bg-slate-800 border border-slate-600 rounded px-3 py-2 text-sm text-slate-300">
+                        <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm font-medium">Yükle</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VERİTABANI İŞLEMLERİ ==================== -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-cyan-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🗄️</span> Veritabanı İşlemleri
+            </h2>
+
+            <div class="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-blue-300 mb-2">🔧 Teknik Detay</h3>
+                <p class="text-slate-300">
+                    Import sırasında hangi tablolara ne yazılacak? Her bileşen için ayrı import servisi
+                    çalışacak ve ilgili tablolara kayıt ekleyecek.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-cyan-400">Bileşen</th>
+                            <th class="text-left py-3 px-4 text-cyan-400">Tablo (Tenant DB)</th>
+                            <th class="text-left py-3 px-4 text-cyan-400">Yazılacak Alanlar</th>
+                            <th class="text-left py-3 px-4 text-cyan-400">Kaynak (JSON)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Widget Instance</td>
+                            <td class="py-3 px-4"><code class="text-pink-400">tenant_widgets</code></td>
+                            <td class="py-3 px-4">widget_id, settings, display_title, position</td>
+                            <td class="py-3 px-4">widgets[]</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Widget Items</td>
+                            <td class="py-3 px-4"><code class="text-pink-400">widget_items</code></td>
+                            <td class="py-3 px-4">tenant_widget_id, content, order</td>
+                            <td class="py-3 px-4">widgets[].default_items[]</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Ayarlar</td>
+                            <td class="py-3 px-4"><code class="text-pink-400">settings_values</code></td>
+                            <td class="py-3 px-4">setting_id, value</td>
+                            <td class="py-3 px-4">settings.*[]</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Menüler</td>
+                            <td class="py-3 px-4"><code class="text-pink-400">menus</code></td>
+                            <td class="py-3 px-4">name, slug, location</td>
+                            <td class="py-3 px-4">menus[]</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Menü Öğeleri</td>
+                            <td class="py-3 px-4"><code class="text-pink-400">menu_items</code></td>
+                            <td class="py-3 px-4">menu_id, title, url, parent_id, order</td>
+                            <td class="py-3 px-4">menus[].items[]</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Sayfalar</td>
+                            <td class="py-3 px-4"><code class="text-pink-400">pages</code></td>
+                            <td class="py-3 px-4">title, slug, content, template</td>
+                            <td class="py-3 px-4">pages[]</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">SEO</td>
+                            <td class="py-3 px-4"><code class="text-pink-400">seo_settings</code></td>
+                            <td class="py-3 px-4">model_type, model_id, meta_*</td>
+                            <td class="py-3 px-4">pages[].seo, seo_defaults</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-medium">Import Log</td>
+                            <td class="py-3 px-4"><code class="text-pink-400">theme_import_logs</code></td>
+                            <td class="py-3 px-4">manifest_data, status, created_ids</td>
+                            <td class="py-3 px-4">Tüm manifest</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
+                <h4 class="font-semibold text-yellow-300 mb-2">⚠️ Önemli: Central DB</h4>
+                <p class="text-slate-300 text-sm">
+                    <code class="text-pink-400">widgets</code> tablosu Central DB'de. Yeni widget template'i oluşturulacaksa
+                    (content_html, settings_schema, item_schema) bu Central'a yazılmalı. ThemeLoader önce Central'da
+                    widget template var mı kontrol eder, yoksa oluşturur.
+                </p>
+            </div>
+        </section>
+
+        <!-- ==================== İMPLEMENTASYON ADIMLARI ==================== -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-emerald-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">📋</span> İmplementasyon Adımları
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Faz 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-blue-600 text-xs font-bold rounded-full">FAZ 1</span>
+                        <h3 class="font-bold text-blue-300">Temel Altyapı</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">1</span>
+                                <span class="text-slate-300">JSON Manifest şema tanımını finalize et</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">2</span>
+                                <span class="text-slate-300">Modules/ThemeLoader modülünü oluştur</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">3</span>
+                                <span class="text-slate-300">ManifestParser servisini yaz</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">4</span>
+                                <span class="text-slate-300">theme_import_logs migration oluştur</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">5</span>
+                                <span class="text-slate-300">Admin route ve temel view oluştur</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-purple-600 text-xs font-bold rounded-full">FAZ 2</span>
+                        <h3 class="font-bold text-purple-300">Import Servisleri</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">1</span>
+                                <span class="text-slate-300">WidgetImporter - Widget template + instance</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">2</span>
+                                <span class="text-slate-300">SettingsImporter - Site ayarları</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">3</span>
+                                <span class="text-slate-300">MenuImporter - Menü yapıları</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">4</span>
+                                <span class="text-slate-300">PageImporter - Sayfa oluşturma</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">5</span>
+                                <span class="text-slate-300">SeoImporter - SEO ayarları</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">6</span>
+                                <span class="text-slate-300">AssetImporter - CSS/JS/Görsel kopyalama</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-pink-600 text-xs font-bold rounded-full">FAZ 3</span>
+                        <h3 class="font-bold text-pink-300">Admin Panel UI</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">1</span>
+                                <span class="text-slate-300">ThemeLoaderComponent - Liste sayfası</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">2</span>
+                                <span class="text-slate-300">ThemeImportComponent - Import wizard</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">3</span>
+                                <span class="text-slate-300">ThemePreviewComponent - Önizleme</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">4</span>
+                                <span class="text-slate-300">Progress tracking (Livewire events)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-orange-600 text-xs font-bold rounded-full">FAZ 4</span>
+                        <h3 class="font-bold text-orange-300">Claude Entegrasyonu</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">1</span>
+                                <span class="text-slate-300">Tema analiz prompt'unu geliştir</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">2</span>
+                                <span class="text-slate-300">Örnek temalarla test et</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">3</span>
+                                <span class="text-slate-300">Prompt'u iyileştir (iteratif)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">4</span>
+                                <span class="text-slate-300">Dokümentasyon hazırla</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 5 -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-emerald-600 text-xs font-bold rounded-full">FAZ 5</span>
+                        <h3 class="font-bold text-emerald-300">Test & Optimizasyon</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">1</span>
+                                <span class="text-slate-300">VARPLAS teması ile tam test</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">2</span>
+                                <span class="text-slate-300">Rollback mekanizması test</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">3</span>
+                                <span class="text-slate-300">Edge case'leri ele al</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 bg-slate-700 rounded flex items-center justify-center text-xs">4</span>
+                                <span class="text-slate-300">Production deployment</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PROMPT GELİŞTİRME STRATEJİSİ ==================== -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-yellow-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🎯</span> Prompt Geliştirme Stratejisi
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-300 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300">
+                    Prompt = Claude'a verilen "talimat seti". Doğru prompt ile Claude herhangi bir HTML temayı
+                    okuyup JSON manifest üretebilir. Prompt'u geliştirmek için iteratif (deneme-yanılma) yaklaşım kullanacağız.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-yellow-300 mb-4">İteratif Geliştirme Süreci</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                            <div>
+                                <div class="text-white font-medium">Temel Prompt Oluştur</div>
+                                <div class="text-slate-400">Basit kurallar, JSON şeması, örnek çıktı</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                            <div>
+                                <div class="text-white font-medium">Test Teması ile Dene</div>
+                                <div class="text-slate-400">VARPLAS temasını Claude'a ver, çıktıyı incele</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</span>
+                            <div>
+                                <div class="text-white font-medium">Hataları Tespit Et</div>
+                                <div class="text-slate-400">Eksik widget, yanlış ayar, hatalı format</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">4</span>
+                            <div>
+                                <div class="text-white font-medium">Prompt'u İyileştir</div>
+                                <div class="text-slate-400">Kuralları netleştir, örnekler ekle</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">5</span>
+                            <div>
+                                <div class="text-white font-medium">Tekrarla</div>
+                                <div class="text-slate-400">Mükemmel sonuç alana kadar 2-4 tekrar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-yellow-300 mb-4">Prompt Bileşenleri</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="border-l-4 border-blue-500 pl-3">
+                            <div class="text-white font-medium">Rol Tanımı</div>
+                            <div class="text-slate-400">"Sen bir tema analiz uzmanısın..."</div>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-3">
+                            <div class="text-white font-medium">Görev Tanımı</div>
+                            <div class="text-slate-400">HTML oku → Widget tespit et → JSON üret</div>
+                        </div>
+                        <div class="border-l-4 border-pink-500 pl-3">
+                            <div class="text-white font-medium">Kurallar</div>
+                            <div class="text-slate-400">Widget tespit kriterleri, ayar tipleri</div>
+                        </div>
+                        <div class="border-l-4 border-orange-500 pl-3">
+                            <div class="text-white font-medium">Çıktı Formatı</div>
+                            <div class="text-slate-400">JSON şeması, field açıklamaları</div>
+                        </div>
+                        <div class="border-l-4 border-emerald-500 pl-3">
+                            <div class="text-white font-medium">Örnekler</div>
+                            <div class="text-slate-400">Girdi HTML → Çıktı JSON örnekleri</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SONRAKI ADIMLAR ==================== -->
+        <section class="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 border border-emerald-700/50 rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-emerald-400 flex items-center gap-2 mb-6">
+                <span class="text-3xl">🚀</span> Hemen Başlayalım - İlk Adımlar
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-emerald-300 mb-4">1. Karar Verilecekler</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-400">?</span>
+                            <span class="text-slate-300">JSON Manifest şeması onaylı mı?</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-400">?</span>
+                            <span class="text-slate-300">ThemeLoader modülü hangi tenant için? (Central/Tenant)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-400">?</span>
+                            <span class="text-slate-300">Widget template'leri Central'da mı oluşturulsun?</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-400">?</span>
+                            <span class="text-slate-300">Tema dosyaları nereye kopyalansın?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-bold text-emerald-300 mb-4">2. İlk Yapılacaklar</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400">→</span>
+                            <span class="text-slate-300">VARPLAS teması için örnek JSON Manifest oluştur</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400">→</span>
+                            <span class="text-slate-300">Tema analiz prompt'unun ilk versiyonunu yaz</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400">→</span>
+                            <span class="text-slate-300">Prompt'u VARPLAS ile test et</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400">→</span>
+                            <span class="text-slate-300">ThemeLoader modül yapısını oluştur</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-700/50 mt-12 py-6 text-center text-slate-500 text-sm">
+        <p>Tema Yükleme Sistemi - Proje Planlaması v1.0</p>
+        <p class="mt-1">14 Ocak 2026 | Claude AI</p>
+    </footer>
+</body>
+</html>

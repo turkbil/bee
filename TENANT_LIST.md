@@ -46,6 +46,42 @@ Bu sistem **multi-tenant** mimarisine sahiptir. Her tenant **tamamen bağımsız
 
 ---
 
+### **Tenant 3 - panjur.tuufi.com (Yıldırım Panjur)**
+- **ID:** `3`
+- **Başlık:** Yıldırım Panjur
+- **Domain:** `panjur.tuufi.com`
+- **Database:** `tenant_yildirimpanjur_04d389`
+- **Durum:** Aktif
+- **Premium:** ❌ Hayır
+- **Tema:** T-3 (Theme ID: 3)
+- **Sektör:** İnşaat / Panjur Sistemleri
+
+**Özellikler:**
+- Panjur ve kepenk sistemleri
+- Hizmetler ve portföy yönetimi
+- Kurumsal web sitesi
+
+---
+
+### **Tenant 4 - unimad.tuufi.com (UNIMAD Madencilik)**
+- **ID:** `4`
+- **Başlık:** Unimad Madencilik
+- **Domain:** `unimad.tuufi.com`
+- **Database:** `tenant_unimadmadencilik_8a32cf`
+- **Durum:** Aktif
+- **Premium:** ❌ Hayır
+- **Tema:** T-4 (Theme ID: 4)
+- **Sektör:** Madencilik & Mühendislik
+
+**Özellikler:**
+- Madencilik mühendislik hizmetleri
+- YTK (Yetkilendirilmiş Tüzel Kişilik) danışmanlık
+- Jeoloji, Hidrojeoloji, Jeoteknik, Mimarlık hizmetleri
+- Blog sistemi (AI içerik üretimi)
+- Service modülü ile 6 kategori
+
+---
+
 ### **Tenant 1001 - muzibu.com**
 - **ID:** `1001`
 - **Başlık:** Muzibu
@@ -244,6 +280,8 @@ public/css/tenant-1001.css
 |--------|-----------|-----------------|---------|--------|
 | Tenant 1 (tuufi.com) | - | - | ✅ | Central |
 | Tenant 2 (ixtif.com) | - | - | ✅ | Endüstriyel |
+| Tenant 3 (panjur.tuufi.com) | - | - | ❌ | Panjur Sistemleri |
+| Tenant 4 (unimad.tuufi.com) | - | - | ❌ | Madencilik |
 | Tenant 1001 (muzibu.com) | - | - | ❌ | Müzik |
 
 ---
@@ -290,5 +328,5 @@ tenant()->domains()->pluck('domain');
 
 ---
 
-**Son Güncelleme:** 2025-11-28
-**Tenant Sayısı:** 3 (1 Central + 2 Alt Tenant)
+**Son Güncelleme:** 2026-01-20
+**Tenant Sayısı:** 5 (1 Central + 4 Alt Tenant)

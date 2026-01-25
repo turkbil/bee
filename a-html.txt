@@ -1,86 +1,43 @@
-playlists:10 🛑 DUR!
-playlists:10 ⛔ YETKİSİZ ERİŞİM TESPİT EDİLDİ ⛔
-playlists:10 
-playlists:10 Bu alan izleniyor. Erişimin kayıt altına alındı.
-playlists:10 Yetkisiz erişim suçtur.
-playlists:10 
-playlists:10 📋 SENİN BİLGİLERİN (SUNUCUYA KAYDEDİLDİ):
-playlists:10 ╔══════════════════════════════════════════════════════════╗
-playlists:10 ║  📅 Tarih/Saat    : 18.01.2026 23:15:08
-playlists:10 ║  🌐 Tarayıcı      : Google Chrome
-playlists:10 ║  💻 İşletim Sis.  : macOS
-playlists:10 ║  🖥️  Platform      : MacIntel
-playlists:10 ║  📐 Ekran Çözün.  : 1728x1117 30bit
-playlists:10 ║  ⚙️  CPU Çekirdek  : 14 çekirdek 8GB RAM
-playlists:10 ║  🌍 Dil           : tr-TR
-playlists:10 ║  🕐 Saat Dilimi   : Europe/Istanbul
-playlists:10 ║  📡 Bağlantı      : Çevrimiçi
-playlists:10 ║  🍪 Çerez Durumu  : Aktif
-playlists:10 ╚══════════════════════════════════════════════════════════╝
-playlists:10 🔴 SENİN IP ADRESİN: 92.44.171.31
-playlists:10 ⚠️ Bu bilgiler yasal işlemlerde delil olarak kullanılabilir.
-VM3274:1  GET https://connect.facebook.net/en_US/fbevents.js net::ERR_BLOCKED_BY_CLIENT
-(anonymous) @ VM3274:1
-(anonymous) @ VM3274:1
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:660
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:661
-RP @ gtm.js?id=GTM-5DNZRWNM:662
-QP @ gtm.js?id=GTM-5DNZRWNM:659
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:232
-k.apply @ gtm.js?id=GTM-5DNZRWNM:161
-$a @ gtm.js?id=GTM-5DNZRWNM:123
-Ya @ gtm.js?id=GTM-5DNZRWNM:122
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:185
-k.apply @ gtm.js?id=GTM-5DNZRWNM:161
-$a @ gtm.js?id=GTM-5DNZRWNM:123
-k.Kp @ gtm.js?id=GTM-5DNZRWNM:125
-gf @ gtm.js?id=GTM-5DNZRWNM:196
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:595
-hg @ gtm.js?id=GTM-5DNZRWNM:211
-e @ gtm.js?id=GTM-5DNZRWNM:540
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:129
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:541
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:541
-kA @ gtm.js?id=GTM-5DNZRWNM:541
-oA @ gtm.js?id=GTM-5DNZRWNM:546
-BB @ gtm.js?id=GTM-5DNZRWNM:570
-DB @ gtm.js?id=GTM-5DNZRWNM:572
-setTimeout
-Uc @ gtm.js?id=GTM-5DNZRWNM:145
-EB @ gtm.js?id=GTM-5DNZRWNM:575
-Jm @ gtm.js?id=GTM-5DNZRWNM:752
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:756
-c @ gtm.js?id=GTM-5DNZRWNM:754
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:756
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:756
-(anonymous) @ gtm.js?id=GTM-5DNZRWNM:758
-playlists:10 loadAndPlaySong error: TypeError: Cannot read properties of null (reading 'loadSource')
-    at Proxy.playHlsStream (player-core.js?v=1768684798:4489:26)
-    at async Proxy.loadAndPlaySong (player-core.js?v=1768684798:4180:21)
-    at async Proxy.playSongFromQueue (player-core.js?v=1768684798:4048:17)
-    at async playPlaylist (play-helpers.js?v=1768339013:249:9)
-    at async window.playContent (play-helpers.js?v=1768339013:774:13)
-console.error @ playlists:10
-loadAndPlaySong @ player-core.js?v=1768684798:4187
-await in loadAndPlaySong
-playSongFromQueue @ player-core.js?v=1768684798:4048
-await in playSongFromQueue
-playPlaylist @ play-helpers.js?v=1768339013:249
-await in playPlaylist
-window.playContent @ play-helpers.js?v=1768339013:774
-[Alpine] window.playContent('playlist', 951) @ VM2645:3
-(anonymous) @ module.esm.js:528
-Rl @ module.esm.js:425
-(anonymous) @ module.esm.js:3437
-o @ module.esm.js:2700
-(anonymous) @ module.esm.js:2728
-(anonymous) @ module.esm.js:2702
-(anonymous) @ module.esm.js:2733
-(anonymous) @ module.esm.js:2702
-(anonymous) @ module.esm.js:2764
-(anonymous) @ module.esm.js:2702
-playlists:10 🔔 Toast shown: 🎵 Queue: 15 şarkı geldi info
-playlists:10 🔔 Toast shown: Şarkı çalınıyor. success
-playlists:10 🔔 Toast shown: Pop Playlist çalınıyor success
-playlists:10 🔔 Toast shown: Latin Jazz Playlist çalınıyor success
-playlists:10 🔔 Toast shown: Acoustic jazz Playlist çalınıyor success
+<div class="absolute w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] orbit-container" :style="'transform: rotate(' + (activeIndex * -90) + 'deg)'" style="transform: rotate(-180deg)">
+
+                        
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 orbit-icon" :style="'transform: translateX(-50%) translateY(-50%) rotate(' + (activeIndex * 90) + 'deg)'" @mouseenter="setActive(0)" @click="setActive(0)" style="transform: translateX(-50%) translateY(-50%) rotate(180deg)">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500 bg-slate-800 hover:bg-slate-700" :class="activeIndex === 0
+                                     ? 'bg-sky-500 shadow-lg shadow-sky-500/50 scale-125'
+                                     : 'bg-slate-800 hover:bg-slate-700'">
+                                <i class="fa-solid fa-leaf text-white text-lg"></i>
+                            </div>
+                            
+                            <div class="absolute inset-0 rounded-full border-2 border-sky-400 scale-150 transition-all duration-500 opacity-0" :class="activeIndex === 0 ? 'opacity-100 animate-ping' : 'opacity-0'"></div>
+                        </div>
+
+                        
+                        <div class="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 orbit-icon" :style="'transform: translateX(50%) translateY(-50%) rotate(' + (activeIndex * 90) + 'deg)'" @mouseenter="setActive(1)" @click="setActive(1)" style="transform: translateX(50%) translateY(-50%) rotate(180deg)">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500 bg-slate-800 hover:bg-slate-700" :class="activeIndex === 1
+                                     ? 'bg-cyan-500 shadow-lg shadow-cyan-500/50 scale-125'
+                                     : 'bg-slate-800 hover:bg-slate-700'">
+                                <i class="fa-solid fa-droplet text-white text-lg"></i>
+                            </div>
+                            <div class="absolute inset-0 rounded-full border-2 border-cyan-400 scale-150 transition-all duration-500 opacity-0" :class="activeIndex === 1 ? 'opacity-100 animate-ping' : 'opacity-0'"></div>
+                        </div>
+
+                        
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 orbit-icon" :style="'transform: translateX(-50%) translateY(50%) rotate(' + (activeIndex * 90) + 'deg)'" @mouseenter="setActive(2)" @click="setActive(2)" style="transform: translateX(-50%) translateY(50%) rotate(180deg)">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500 bg-emerald-500 shadow-lg shadow-emerald-500/50 scale-125" :class="activeIndex === 2
+                                     ? 'bg-emerald-500 shadow-lg shadow-emerald-500/50 scale-125'
+                                     : 'bg-slate-800 hover:bg-slate-700'">
+                                <i class="fa-solid fa-recycle text-white text-lg"></i>
+                            </div>
+                            <div class="absolute inset-0 rounded-full border-2 border-emerald-400 scale-150 transition-all duration-500 opacity-100 animate-ping" :class="activeIndex === 2 ? 'opacity-100 animate-ping' : 'opacity-0'"></div>
+                        </div>
+
+                        
+                        <div class="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 orbit-icon" :style="'transform: translateX(-50%) translateY(-50%) rotate(' + (activeIndex * 90) + 'deg)'" @mouseenter="setActive(3)" @click="setActive(3)" style="transform: translateX(-50%) translateY(-50%) rotate(180deg)">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500 bg-slate-800 hover:bg-slate-700" :class="activeIndex === 3
+                                     ? 'bg-teal-500 shadow-lg shadow-teal-500/50 scale-125'
+                                     : 'bg-slate-800 hover:bg-slate-700'">
+                                <i class="fa-solid fa-cube text-white text-lg"></i>
+                            </div>
+                            <div class="absolute inset-0 rounded-full border-2 border-teal-400 scale-150 transition-all duration-500 opacity-0" :class="activeIndex === 3 ? 'opacity-100 animate-ping' : 'opacity-0'"></div>
+                        </div>
+                    </div>

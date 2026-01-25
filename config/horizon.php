@@ -195,6 +195,49 @@ return [
             'nice' => 0,
         ],
 
+        // 🤖 AI & Blog Queue (OpenAI, Blog AI, Content Generation)
+        'ai-supervisor' => [
+            'connection' => 'redis',
+            'queue' => [
+                'blog-ai',                  // Blog AI generation (ixtif)
+                'ai-content',               // AI content generation
+                'ai-debug',                 // AI debug jobs
+                'ai-file-analysis',         // AI file analysis
+            ],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'minProcesses' => 2,
+            'maxProcesses' => 5,
+            'maxTime' => 0,
+            'maxJobs' => 200,
+            'memory' => 512,
+            'tries' => 2,
+            'timeout' => 600,               // 10 dakika (AI response bekleme)
+            'nice' => 5,
+        ],
+
+        // 🌍 Translation Queue (Ceviri isleri - ayri supervisor)
+        'translation-supervisor' => [
+            'connection' => 'redis',
+            'queue' => [
+                'translation-critical',     // Kritik ceviriler (oncelikli)
+                'translation-high',         // Yuksek oncelikli ceviriler
+                'translation',              // Normal ceviriler
+                'translation_streaming',    // Streaming ceviriler
+                'translations',             // Genel ceviri queue
+            ],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'minProcesses' => 1,
+            'maxProcesses' => 3,
+            'maxTime' => 0,
+            'maxJobs' => 300,
+            'memory' => 256,
+            'tries' => 2,
+            'timeout' => 300,
+            'nice' => 5,
+        ],
+
         // 🎨 Muzibu Module Queue (AI + Media)
         'muzibu-supervisor' => [
             'connection' => 'redis',
@@ -203,6 +246,7 @@ return [
                 'muzibu_my_playlist',       // Playlist cover generation
                 'muzibu_seo',               // SEO generation (OpenAI GPT-4)
                 'muzibu_isolated',          // Bulk operations, translations
+                'muzibu-abuse-scan',        // Abuse scanning
                 'media',                    // Media processing
                 'images',                   // Image processing
             ],
@@ -221,7 +265,7 @@ return [
         // 🎵 Muzibu HLS Conversion Queue (FFmpeg audio processing)
         'muzibu-hls-supervisor' => [
             'connection' => 'redis',
-            'queue' => ['hls'],
+            'queue' => ['hls', 'muzibu_hls'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'minProcesses' => 1,
@@ -244,12 +288,11 @@ return [
                 'webhooks',                 // Webhook isleri
                 'exports',                  // Export isleri
                 'imports',                  // Import isleri
-                'translations',             // Ceviri isleri
                 'scout',                    // Scout (search indexing)
                 'tenant',                   // Tenant isleri
+                'tenant_isolated',          // Tenant isolated jobs
                 'broadcasting',             // Broadcasting
-                'muzibu-abuse-scan',        // Suistimal taramasi
-                'muzibu-abuse-scan:notify', // Suistimal bildirimleri
+                'cleanup',                  // Cleanup jobs
             ],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
@@ -275,6 +318,35 @@ return [
                 'timeout' => 120,
             ],
 
+            // 🤖 AI & Blog Queue (OpenAI, Blog AI, Content Generation)
+            'ai-supervisor' => [
+                'maxProcesses' => 5,
+                'minProcesses' => 2,
+                'queue' => [
+                    'blog-ai',
+                    'ai-content',
+                    'ai-debug',
+                    'ai-file-analysis',
+                ],
+                'memory' => 512,
+                'timeout' => 600,
+            ],
+
+            // 🌍 Translation Queue
+            'translation-supervisor' => [
+                'maxProcesses' => 3,
+                'minProcesses' => 1,
+                'queue' => [
+                    'translation-critical',
+                    'translation-high',
+                    'translation',
+                    'translation_streaming',
+                    'translations',
+                ],
+                'memory' => 256,
+                'timeout' => 300,
+            ],
+
             // 🎨 Muzibu Module Queue (AI + Media)
             'muzibu-supervisor' => [
                 'maxProcesses' => 10,
@@ -284,6 +356,7 @@ return [
                     'muzibu_my_playlist',
                     'muzibu_seo',
                     'muzibu_isolated',
+                    'muzibu-abuse-scan',
                     'media',
                     'images',
                 ],
@@ -295,7 +368,7 @@ return [
             'muzibu-hls-supervisor' => [
                 'maxProcesses' => 2,
                 'minProcesses' => 1,
-                'queue' => ['hls'],
+                'queue' => ['hls', 'muzibu_hls'],
                 'memory' => 512,
                 'timeout' => 600,
             ],
@@ -311,10 +384,11 @@ return [
                     'webhooks',
                     'exports',
                     'imports',
-                    'translations',
                     'scout',
                     'tenant',
+                    'tenant_isolated',
                     'broadcasting',
+                    'cleanup',
                     'blog',
                     'blogs',
                     'ai',
@@ -322,9 +396,6 @@ return [
                     'seo',
                     'sitemap',
                     'cache',
-                    'cleanup',
-                    'muzibu-abuse-scan',
-                    'muzibu-abuse-scan:notify',
                 ],
                 'memory' => 256,
                 'timeout' => 300,
@@ -333,6 +404,12 @@ return [
 
         'local' => [
             'mail-supervisor' => [
+                'maxProcesses' => 1,
+            ],
+            'ai-supervisor' => [
+                'maxProcesses' => 2,
+            ],
+            'translation-supervisor' => [
                 'maxProcesses' => 1,
             ],
             'muzibu-supervisor' => [

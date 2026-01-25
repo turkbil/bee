@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slug Management Sistemi Düzeltmesi | 20 Ocak 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-check-circle text-2xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Slug Management Sistemi Düzeltmesi</h1>
+                    <p class="text-slate-400">Show Slug Özelleştirme Sorunu Çözüldü</p>
+                </div>
+            </div>
+            <div class="flex gap-2 text-sm">
+                <span class="px-2 py-1 bg-green-600/20 text-green-400 rounded">Tamamlandı</span>
+                <span class="px-2 py-1 bg-slate-700 rounded">20 Ocak 2026</span>
+            </div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-8 bg-slate-800 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-user text-blue-400"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2"><i class="fas fa-question-circle text-yellow-400 mr-2"></i>Sorun Neydi?</h3>
+                    <p>Yıldırım Panjur sitesinde blog yazılarının URL'lerini "haberler" olarak değiştirdiniz. Admin panelden ayarı yaptınız, veritabanına kaydedildi, ama site hala eski "blog" adresini kullanıyordu.</p>
+                    <p class="mt-2"><strong>Örnek:</strong></p>
+                    <ul class="list-disc list-inside ml-4 mt-1 text-sm">
+                        <li class="text-red-400">Çalışmıyordu: /haberler/sisli-mecidiyekoy-panjur-tamiri</li>
+                        <li class="text-green-400">Çalışıyordu: /blog/sisli-mecidiyekoy-panjur-tamiri</li>
+                    </ul>
+                </div>
+
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2"><i class="fas fa-search text-blue-400 mr-2"></i>Neden Oluyordu?</h3>
+                    <p>Sistemde "detay sayfası" için özel URL belirleyebiliyorsunuz, ama arka plandaki kod bu özel URL'i kontrol etmiyordu. Sadece "liste sayfası" URL'ini kullanıyordu.</p>
+                    <p class="mt-2 text-sm text-slate-400">Düşünün ki kapınıza yeni bir isim yazdınız ama postacıya söylemediniz - mektuplar hala eski adrese gidiyordu.</p>
+                </div>
+
+                <div class="p-4 bg-green-900/30 border border-green-600/30 rounded-lg">
+                    <h3 class="font-semibold text-green-400 mb-2"><i class="fas fa-check text-green-400 mr-2"></i>Ne Yapıldı?</h3>
+                    <p>Sistemin URL kontrolü yapan kısmı güncellendi. Artık hem "liste" hem de "detay" için belirlediğiniz özel URL'ler çalışıyor.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-8 bg-slate-800 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-code text-green-400"></i>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <div class="space-y-4">
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2">Sorunun Kök Nedeni</h3>
+                    <p class="text-slate-300 mb-2"><code class="bg-slate-900 px-2 py-1 rounded text-sm">DynamicRouteResolver.php:163</code> satırında iki-slug pattern (örn: /prefix/content-slug) için sadece <code class="bg-slate-900 px-1 rounded text-xs">index</code> slug'ı kontrol ediliyordu:</p>
+                    <pre class="bg-slate-900 p-3 rounded text-sm overflow-x-auto text-red-400">// Eski kod
+if ($slug1 === $moduleSlugMap['index'] && isset($routes['show'])) {
+    // show sayfasına yönlendir
+}</pre>
+                    <p class="text-slate-400 mt-2 text-sm">Bu mantık, <code class="bg-slate-900 px-1 rounded text-xs">show</code> için özel slug tanımlandığında çalışmıyordu.</p>
+                </div>
+
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2">Uygulanan Düzeltme</h3>
+                    <p class="text-slate-300 mb-2">İki-slug pattern kontrolüne <code class="bg-slate-900 px-1 rounded text-xs">show</code> slug desteği eklendi:</p>
+                    <pre class="bg-slate-900 p-3 rounded text-sm overflow-x-auto text-green-400">// Yeni kod
+// 1. Önce show slug kontrol et
+if (isset($moduleSlugMap['show']) && $slug1 === $moduleSlugMap['show']) {
+    return show sayfası;
+}
+
+// 2. Backward compatibility: index slug ile de çalış
+if ($slug1 === $moduleSlugMap['index'] &&
+    (!isset($moduleSlugMap['show']) || $moduleSlugMap['show'] === $moduleSlugMap['index'])) {
+    return show sayfası;
+}</pre>
+                </div>
+
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2">Değişen Dosyalar</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li><i class="fas fa-file-code text-blue-400 mr-2"></i><code class="bg-slate-900 px-2 py-1 rounded">app/Services/DynamicRouteResolver.php</code></li>
+                    </ul>
+                </div>
+
+                <div class="p-4 bg-slate-700/50 rounded-lg">
+                    <h3 class="font-semibold text-white mb-2">Veritabanı Yapısı</h3>
+                    <p class="text-slate-300 mb-2">Slug ayarları <code class="bg-slate-900 px-1 rounded text-xs">module_tenant_settings</code> tablosunda JSON formatında saklanıyor:</p>
+                    <pre class="bg-slate-900 p-3 rounded text-sm overflow-x-auto text-slate-300">{
+  "multiLangSlugs": {
+    "tr": {
+      "index": "blog",
+      "show": "haberler",  // Özelleştirilmiş show slug
+      "tag": "blog/etiket"
+    }
+  }
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Sonuçları -->
+        <section class="mb-8 bg-slate-800 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-vial text-purple-400"></i>
+                Test Sonuçları
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 text-slate-400">Tenant</th>
+                            <th class="text-left py-2 text-slate-400">URL</th>
+                            <th class="text-center py-2 text-slate-400">Sonuç</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2">Yıldırım Panjur (3)</td>
+                            <td class="py-2"><code class="text-xs">/haberler/sisli-mecidiyekoy-panjur-tamiri</code></td>
+                            <td class="py-2 text-center"><span class="px-2 py-1 bg-green-600/20 text-green-400 rounded text-xs">200 OK</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2">İxtif (2)</td>
+                            <td class="py-2"><code class="text-xs">/blog/transpalet-nedir-...</code></td>
+                            <td class="py-2 text-center"><span class="px-2 py-1 bg-green-600/20 text-green-400 rounded text-xs">200 OK</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2">tuufi.com (central)</td>
+                            <td class="py-2"><code class="text-xs">/blog</code></td>
+                            <td class="py-2 text-center"><span class="px-2 py-1 bg-green-600/20 text-green-400 rounded text-xs">200 OK</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Önemli Not -->
+        <section class="mb-8 bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-6">
+            <h2 class="text-lg font-semibold text-yellow-400 mb-3 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle"></i>
+                Önemli Not: Cache Temizleme
+            </h2>
+            <p class="text-slate-300 mb-3">Slug ayarlarını değiştirdikten sonra değişikliklerin yansıması için cache temizlenmeli:</p>
+            <pre class="bg-slate-900 p-3 rounded text-sm overflow-x-auto text-slate-300">php artisan cache:clear
+php artisan responsecache:clear</pre>
+            <p class="text-slate-400 text-sm mt-2">Ya da admin panelden slug değişikliği yapıldığında ModuleSlugService::clearCache() otomatik çağrılıyor olmalı.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-4 border-t border-slate-700">
+            20 Ocak 2026 • tuufi.com
+        </footer>
+    </div>
+</body>
+</html>

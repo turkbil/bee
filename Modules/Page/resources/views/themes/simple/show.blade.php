@@ -7,81 +7,64 @@
 
 @section('module_content')
 @if(isset($is_homepage) && $is_homepage)
-<div class="min-h-screen">
     @php
         $currentLocale = app()->getLocale();
-        $title = $item->getTranslated('title', $currentLocale);
         $body = $item->getTranslated('body', $currentLocale);
     @endphp
-    
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="prose prose-xl max-w-none dark:prose-invert 
-                  prose-headings:text-gray-900 dark:prose-headings:text-white 
-                  prose-p:text-gray-700 dark:prose-p:text-gray-300 
-                  prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:text-blue-700 dark:hover:prose-a:text-blue-300
-                  prose-strong:text-gray-900 dark:prose-strong:text-white
-                  prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-50/50 dark:prose-blockquote:bg-blue-900/10
-                  prose-code:text-blue-600 dark:prose-code:text-blue-400 prose-code:bg-blue-50 dark:prose-code:bg-blue-900/20
-                  prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800
-                  prose-img:rounded-lg">
-            @parsewidgets($body ?? '')
-        </div>
+
+    <div class="page-content">
+        @parsewidgets($body ?? '')
     </div>
-    
-    @if(isset($item->js))
-    <script>{!! $item->js !!}</script>
-    @endif
-    
-    @if(isset($item->css))
-    <style>{!! $item->css !!}</style>
-    @endif
-</div>
+
+    @if(isset($item->js))<script>{!! $item->js !!}</script>@endif
+    @if(isset($item->css))<style>{!! $item->css !!}</style>@endif
 
 @else
-<div class="min-h-screen">
     @php
         $currentLocale = app()->getLocale();
         $title = $item->getTranslated('title', $currentLocale);
         $body = $item->getTranslated('body', $currentLocale);
-        
+
         $moduleSlugService = app(\App\Services\ModuleSlugService::class);
         $indexSlug = $moduleSlugService->getMultiLangSlug('Page', 'index', $currentLocale);
         $defaultLocale = get_tenant_default_locale();
         $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
         $pageIndexUrl = $localePrefix . '/' . $indexSlug;
+
+        $breadcrumbsArray = [
+            ['label' => __('page::front.general.home'), 'url' => url('/')],
+            ['label' => __('page::front.general.pages'), 'url' => url($pageIndexUrl)],
+            ['label' => $title]
+        ];
     @endphp
-    
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <article class="prose prose-xl max-w-none dark:prose-invert 
-                      prose-headings:text-gray-900 dark:prose-headings:text-white 
-                      prose-p:text-gray-700 dark:prose-p:text-gray-300 
-                      prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:text-blue-700 dark:hover:prose-a:text-blue-300
-                      prose-strong:text-gray-900 dark:prose-strong:text-white
-                      prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-50/50 dark:prose-blockquote:bg-blue-900/10
-                      prose-code:text-blue-600 dark:prose-code:text-blue-400 prose-code:bg-blue-50 dark:prose-code:bg-blue-900/20
-                      prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800
-                      prose-img:rounded-lg">
-            @parsewidgets($body ?? '')
-        </article>
-        
-        @if(isset($item->js))
-        <script>{!! $item->js !!}</script>
-        @endif
-        
-        @if(isset($item->css))
-        <style>{!! $item->css !!}</style>
-        @endif
-        
-        <footer class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <a href="{{ $pageIndexUrl }}" 
-               class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                {{ __('page::front.general.all_pages') }}
-            </a>
-        </footer>
-    </div>
-</div>
+
+    {{-- SUBHEADER (Service ile aynı) --}}
+    <section class="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto py-4">
+            <nav class="text-sm text-gray-500 dark:text-gray-400 mb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                @foreach($breadcrumbsArray as $index => $crumb)
+                    @if(isset($crumb['url']))
+                        <a href="{{ $crumb['url'] }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition">{{ $crumb['label'] }}</a>
+                        @if($index < count($breadcrumbsArray) - 1)<span class="mx-2">/</span>@endif
+                    @else
+                        <span class="text-gray-900 dark:text-white font-medium">{{ $crumb['label'] }}</span>
+                    @endif
+                @endforeach
+            </nav>
+            <h1 class="text-2xl md:text-3xl font-bold font-heading text-gray-900 dark:text-white">{{ $title }}</h1>
+        </div>
+    </section>
+
+    {{-- CONTENT --}}
+    <section class="bg-white dark:bg-gray-900 py-10 md:py-16">
+        <div class="container mx-auto">
+            <div class="page-content prose prose-base max-w-none font-body dark:prose-invert prose-a:no-underline prose-p:leading-relaxed prose-li:leading-relaxed">
+                @parsewidgets($body ?? '')
+            </div>
+        </div>
+    </section>
+
+    @if(isset($item->js))<script>{!! $item->js !!}</script>@endif
+    @if(isset($item->css))<style>{!! $item->css !!}</style>@endif
 @endif
 @endsection

@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahmutoğlu Hukuk & Danışmanlık | Profesyonel Hukuki Çözümler</title>
+    <meta name="description" content="Mahmutoğlu Hukuk & Danışmanlık | İstanbul merkezli profesyonel hukuk bürosu. Ticaret, şirketler, ceza, sağlık, sigorta, idare, borçlar ve iş hukuku alanlarında uzman avukatlık hizmetleri.">
+
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Cinzel', 'serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Pro 7 Local -->
+    <link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-heading {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Animated Gradient Text */
+        .gradient-text-animated {
+            background: linear-gradient(
+                90deg,
+                #f59e0b,
+                #fbbf24,
+                #f59e0b,
+                #d97706,
+                #f59e0b
+            );
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientFlow 6s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Gradient Border */
+        .gradient-border {
+            position: relative;
+            padding: 2px;
+            background: linear-gradient(135deg, #f59e0b, #d97706, #92400e);
+            border-radius: 1rem;
+        }
+
+        .gradient-border-inner {
+            background: #0f172a;
+            border-radius: calc(1rem - 2px);
+        }
+
+        .light .gradient-border-inner {
+            background: white;
+        }
+
+        /* Animated Border */
+        .animated-border {
+            position: relative;
+            padding: 2px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #d97706, #f59e0b);
+            background-size: 300% 100%;
+            border-radius: 1rem;
+            animation: borderFlow 4s ease infinite;
+        }
+
+        @keyframes borderFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Art Deco Pattern */
+        .art-deco-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f59e0b' fill-opacity='0.05'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Art Deco Lines */
+        .art-deco-lines::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+        }
+
+        .art-deco-lines::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+        }
+
+        /* Geometric Shape */
+        .geometric-diamond {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            transform: rotate(45deg);
+        }
+
+        /* Icon Hover Effect */
+        .icon-hover {
+            transition: all 0.3s ease;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Mega Menu */
+        .mega-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .mega-menu-trigger:hover .mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Card Hover - Card stays still, content moves */
+        .service-card {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover {
+            border-color: #f59e0b;
+        }
+
+        .service-card:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .service-card:hover .card-title {
+            color: #f59e0b;
+        }
+
+        /* Underline Animation */
+        .underline-hover {
+            position: relative;
+        }
+
+        .underline-hover::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f59e0b;
+            transition: width 0.3s ease;
+        }
+
+        .underline-hover:hover::after {
+            width: 100%;
+        }
+
+        /* Button Glow */
+        .btn-glow:hover {
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Parallax Background */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d97706;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 dark:bg-slate-950 text-white transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-slate-950/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-amber-500/20 transition-all duration-300" id="header">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-700 rounded-lg flex items-center justify-center">
+                        <i class="fat fa-scale-balanced text-white text-xl group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <div>
+                        <span class="font-heading text-xl font-semibold text-white block">MAHMUTOĞLU</span>
+                        <span class="text-amber-500 text-xs tracking-[0.3em] uppercase">Hukuk & Danışmanlık</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center gap-8">
+                    <a href="#anasayfa" class="text-white/80 hover:text-amber-500 transition-colors underline-hover">Ana Sayfa</a>
+
+                    <!-- Kurumsal Mega Menu -->
+                    <div class="mega-menu-trigger relative">
+                        <button class="text-white/80 hover:text-amber-500 transition-colors flex items-center gap-1">
+                            Kurumsal
+                            <i class="fat fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="mega-menu absolute top-full left-1/2 -translate-x-1/2 pt-4 w-80">
+                            <div class="bg-slate-900 border border-amber-500/20 rounded-xl p-6 shadow-2xl">
+                                <div class="grid gap-3">
+                                    <a href="#hakkimizda" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-building-columns text-amber-500 text-lg group-hover:font-black transition-all"></i>
+                                        <div>
+                                            <span class="text-white block font-medium">Hakkımızda</span>
+                                            <span class="text-white/50 text-sm">Kurumsal bilgiler</span>
+                                        </div>
+                                    </a>
+                                    <a href="#degerler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-gem text-amber-500 text-lg group-hover:font-black transition-all"></i>
+                                        <div>
+                                            <span class="text-white block font-medium">Değerlerimiz</span>
+                                            <span class="text-white/50 text-sm">İlke ve prensipler</span>
+                                        </div>
+                                    </a>
+                                    <a href="#ekip" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-users text-amber-500 text-lg group-hover:font-black transition-all"></i>
+                                        <div>
+                                            <span class="text-white block font-medium">Ekibimiz</span>
+                                            <span class="text-white/50 text-sm">Uzman kadro</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hizmetler Mega Menu -->
+                    <div class="mega-menu-trigger relative">
+                        <button class="text-white/80 hover:text-amber-500 transition-colors flex items-center gap-1">
+                            Hizmetlerimiz
+                            <i class="fat fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="mega-menu absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[600px]">
+                            <div class="bg-slate-900 border border-amber-500/20 rounded-xl p-6 shadow-2xl">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <a href="#hizmetler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-briefcase text-amber-500 group-hover:font-black transition-all"></i>
+                                        <span class="text-white/80 group-hover:text-white">Ticaret Hukuku</span>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-building text-amber-500 group-hover:font-black transition-all"></i>
+                                        <span class="text-white/80 group-hover:text-white">Şirketler Hukuku</span>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-gavel text-amber-500 group-hover:font-black transition-all"></i>
+                                        <span class="text-white/80 group-hover:text-white">Ceza Hukuku</span>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-stethoscope text-amber-500 group-hover:font-black transition-all"></i>
+                                        <span class="text-white/80 group-hover:text-white">Sağlık Hukuku</span>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-shield-check text-amber-500 group-hover:font-black transition-all"></i>
+                                        <span class="text-white/80 group-hover:text-white">Sigorta Hukuku</span>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-landmark text-amber-500 group-hover:font-black transition-all"></i>
+                                        <span class="text-white/80 group-hover:text-white">İdare ve İmar Hukuku</span>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-handshake text-amber-500 group-hover:font-black transition-all"></i>
+                                        <span class="text-white/80 group-hover:text-white">Borçlar Hukuku</span>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-3 p-3 rounded-lg hover:bg-amber-500/10 transition-colors group">
+                                        <i class="fat fa-user-tie text-amber-500 group-hover:font-black transition-all"></i>
+                                        <span class="text-white/80 group-hover:text-white">İş Hukuku</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#blog" class="text-white/80 hover:text-amber-500 transition-colors underline-hover">Makaleler</a>
+                    <a href="#sss" class="text-white/80 hover:text-amber-500 transition-colors underline-hover">SSS</a>
+                    <a href="#iletisim" class="text-white/80 hover:text-amber-500 transition-colors underline-hover">İletişim</a>
+                </nav>
+
+                <!-- Right Side -->
+                <div class="flex items-center gap-4">
+                    <!-- Dark/Light Toggle -->
+                    <button id="theme-toggle" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors">
+                        <i class="fat fa-sun text-amber-500 dark:hidden"></i>
+                        <i class="fat fa-moon text-amber-500 hidden dark:block"></i>
+                    </button>
+
+                    <!-- CTA Button -->
+                    <a href="#iletisim" class="hidden md:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold rounded-lg hover:from-amber-400 hover:to-amber-500 transition-all btn-glow">
+                        <i class="fat fa-calendar-check"></i>
+                        Randevu Alın
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center">
+                        <i class="fat fa-bars text-white text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-slate-900 border-t border-amber-500/20">
+            <div class="container mx-auto px-4 py-6">
+                <nav class="flex flex-col gap-4">
+                    <a href="#anasayfa" class="text-white/80 hover:text-amber-500 py-2 border-b border-slate-800">Ana Sayfa</a>
+                    <a href="#hakkimizda" class="text-white/80 hover:text-amber-500 py-2 border-b border-slate-800">Hakkımızda</a>
+                    <a href="#hizmetler" class="text-white/80 hover:text-amber-500 py-2 border-b border-slate-800">Hizmetlerimiz</a>
+                    <a href="#ekip" class="text-white/80 hover:text-amber-500 py-2 border-b border-slate-800">Ekibimiz</a>
+                    <a href="#blog" class="text-white/80 hover:text-amber-500 py-2 border-b border-slate-800">Makaleler</a>
+                    <a href="#sss" class="text-white/80 hover:text-amber-500 py-2 border-b border-slate-800">SSS</a>
+                    <a href="#iletisim" class="text-white/80 hover:text-amber-500 py-2">İletişim</a>
+                    <a href="#iletisim" class="mt-4 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold rounded-lg">
+                        <i class="fat fa-calendar-check"></i>
+                        Randevu Alın
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="anasayfa" class="relative min-h-screen flex items-center bg-slate-950 dark:bg-slate-950 overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0">
+            <img src="https://picsum.photos/1920/1080?grayscale" alt="Hero Background" class="w-full h-full object-cover opacity-30">
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950"></div>
+        </div>
+
+        <!-- Art Deco Decorative Elements -->
+        <div class="absolute top-20 left-10 geometric-diamond opacity-50"></div>
+        <div class="absolute top-40 left-20 geometric-diamond w-10 h-10 opacity-30"></div>
+        <div class="absolute bottom-40 right-10 geometric-diamond opacity-50"></div>
+        <div class="absolute bottom-60 right-20 geometric-diamond w-10 h-10 opacity-30"></div>
+
+        <!-- Animated Lines -->
+        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-20 h-[1px] bg-gradient-to-r from-amber-500 to-transparent"></div>
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-[1px] bg-gradient-to-l from-amber-500 to-transparent"></div>
+
+        <!-- Content -->
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10 pt-20">
+            <div class="max-w-4xl mx-auto text-center">
+
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-full mb-8" data-aos="fade-down">
+                    <div class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                    <span class="text-amber-400 text-sm tracking-wider uppercase">15+ Yıllık Deneyim</span>
+                </div>
+
+                <!-- Main Heading -->
+                <h1 class="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight" data-aos="fade-up" data-aos-delay="100">
+                    <span class="text-white">Hukuki Haklarınız İçin</span>
+                    <br>
+                    <span class="gradient-text-animated">Güvenilir Çözüm Ortağınız</span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="text-lg sm:text-xl text-white/70 max-w-3xl mx-auto mb-10 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+                    Mahmutoğlu Hukuk & Danışmanlık olarak, bireysel ve kurumsal müvekkillerimize
+                    <span class="text-amber-400 font-semibold">8 farklı hukuk alanında</span> profesyonel hukuki destek sunuyoruz.
+                    Adaletin ve hakkaniyet ilkelerinin savunucusu olarak, müvekkillerimizin haklarını titizlikle savunuyoruz.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16" data-aos="fade-up" data-aos-delay="300">
+                    <a href="#iletisim" class="group px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold rounded-lg hover:from-amber-400 hover:to-amber-500 transition-all btn-glow flex items-center gap-3">
+                        <i class="fat fa-calendar-check group-hover:scale-110 transition-transform"></i>
+                        Randevu Alın
+                        <i class="fat fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="#hizmetler" class="group px-8 py-4 border-2 border-amber-500/50 text-amber-400 font-semibold rounded-lg hover:bg-amber-500/10 hover:border-amber-500 transition-all flex items-center gap-3">
+                        <i class="fat fa-scale-balanced"></i>
+                        Hizmetlerimizi Keşfedin
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-center p-4 bg-slate-900/50 backdrop-blur-sm rounded-xl border border-amber-500/10">
+                        <div class="font-heading text-3xl md:text-4xl font-bold text-amber-500 mb-1">15+</div>
+                        <div class="text-white/60 text-sm">Yıllık Deneyim</div>
+                    </div>
+                    <div class="text-center p-4 bg-slate-900/50 backdrop-blur-sm rounded-xl border border-amber-500/10">
+                        <div class="font-heading text-3xl md:text-4xl font-bold text-amber-500 mb-1">2500+</div>
+                        <div class="text-white/60 text-sm">Başarılı Dava</div>
+                    </div>
+                    <div class="text-center p-4 bg-slate-900/50 backdrop-blur-sm rounded-xl border border-amber-500/10">
+                        <div class="font-heading text-3xl md:text-4xl font-bold text-amber-500 mb-1">8</div>
+                        <div class="text-white/60 text-sm">Uzmanlık Alanı</div>
+                    </div>
+                    <div class="text-center p-4 bg-slate-900/50 backdrop-blur-sm rounded-xl border border-amber-500/10">
+                        <div class="font-heading text-3xl md:text-4xl font-bold text-amber-500 mb-1">%98</div>
+                        <div class="text-white/60 text-sm">Müvekkil Memnuniyeti</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <a href="#hakkimizda" class="flex flex-col items-center gap-2 text-amber-500/70 hover:text-amber-500 transition-colors">
+                <span class="text-xs tracking-wider uppercase">Keşfet</span>
+                <i class="fat fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="hakkimizda" class="py-20 md:py-32 bg-slate-900 dark:bg-slate-900 relative overflow-hidden">
+        <!-- Art Deco Pattern Background -->
+        <div class="absolute inset-0 art-deco-pattern opacity-50"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+                <!-- Left Content -->
+                <div data-aos="fade-right">
+                    <!-- Section Label -->
+                    <div class="inline-flex items-center gap-2 mb-6">
+                        <div class="w-12 h-[2px] bg-amber-500"></div>
+                        <span class="text-amber-500 text-sm tracking-wider uppercase font-medium">Hakkımızda</span>
+                    </div>
+
+                    <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+                        Profesyonel Hukuki Çözümler İçin
+                        <span class="gradient-text-animated">Doğru Adres</span>
+                    </h2>
+
+                    <p class="text-white/70 text-lg mb-8 leading-relaxed">
+                        Mahmutoğlu Hukuk & Danışmanlık, İstanbul merkezli, ulusal ve uluslararası hukuki hizmetler sunan
+                        profesyonel bir avukatlık bürosudur. <span class="text-amber-400 font-semibold">2009 yılından bu yana</span>
+                        bireysel ve kurumsal müvekkillerimize adalet ve hakkaniyet ilkeleri doğrultusunda hizmet vermekteyiz.
+                    </p>
+
+                    <p class="text-white/60 mb-8 leading-relaxed">
+                        Her müvekkil için özel stratejiler geliştiriyor, karmaşık hukuki sorunlara pratik ve etkili çözümler üretiyoruz.
+                        Hukuki süreçlerde şeffaflık, dürüstlük ve müvekkil memnuniyeti bizim için öncelikli değerlerdir.
+                    </p>
+
+                    <!-- Features -->
+                    <div class="grid sm:grid-cols-2 gap-4 mb-8">
+                        <div class="flex items-center gap-3 p-4 bg-slate-800/50 rounded-lg border border-amber-500/10">
+                            <i class="fat fa-check-circle text-amber-500 text-xl"></i>
+                            <span class="text-white/80">Deneyimli Kadro</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-slate-800/50 rounded-lg border border-amber-500/10">
+                            <i class="fat fa-check-circle text-amber-500 text-xl"></i>
+                            <span class="text-white/80">Çözüm Odaklı</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-slate-800/50 rounded-lg border border-amber-500/10">
+                            <i class="fat fa-check-circle text-amber-500 text-xl"></i>
+                            <span class="text-white/80">Şeffaf İletişim</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-slate-800/50 rounded-lg border border-amber-500/10">
+                            <i class="fat fa-check-circle text-amber-500 text-xl"></i>
+                            <span class="text-white/80">Gizlilik Garantisi</span>
+                        </div>
+                    </div>
+
+                    <a href="#iletisim" class="inline-flex items-center gap-2 text-amber-500 font-semibold hover:gap-4 transition-all">
+                        Daha Fazla Bilgi Alın
+                        <i class="fat fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Right Image -->
+                <div class="relative" data-aos="fade-left">
+                    <div class="animated-border">
+                        <div class="gradient-border-inner p-2">
+                            <img src="https://picsum.photos/600/700" alt="Mahmutoğlu Hukuk Ofisi" class="w-full h-auto rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Floating Card -->
+                    <div class="absolute -bottom-6 -left-6 bg-slate-800 border border-amber-500/20 rounded-xl p-6 shadow-2xl" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center">
+                                <i class="fat fa-scale-balanced text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="font-heading text-2xl font-bold text-amber-500">2009</div>
+                                <div class="text-white/60 text-sm">Kuruluş Yılı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="degerler" class="py-20 md:py-32 bg-slate-950 dark:bg-slate-950 relative">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 mb-6">
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                    <span class="text-amber-500 text-sm tracking-wider uppercase font-medium">Neden Biz</span>
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                </div>
+                <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                    Neden <span class="gradient-text-animated">Mahmutoğlu Hukuk?</span>
+                </h2>
+                <p class="text-white/60 text-lg">
+                    Müvekkillerimize sunduğumuz değerler ve çalışma prensiplerimiz ile fark yaratıyoruz.
+                </p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+
+                <!-- Feature 1 -->
+                <div class="group p-8 bg-slate-900/50 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 transition-all service-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 card-icon transition-transform">
+                        <i class="fat fa-users text-amber-500 text-3xl icon-hover" data-icon="users"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-white mb-3 card-title transition-colors">Deneyimli Kadro</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        Alanında uzman avukat kadromuz ile ulusal ve uluslararası hukuki süreçlerde müvekkillerimize rehberlik ediyoruz.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="group p-8 bg-slate-900/50 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 transition-all service-card" data-aos="fade-up" data-aos-delay="150">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 card-icon transition-transform">
+                        <i class="fat fa-layer-group text-amber-500 text-3xl icon-hover" data-icon="layer-group"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-white mb-3 card-title transition-colors">Çok Yönlü Uzmanlık</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        Ticaret, ceza, şirketler, sağlık, sigorta, idare, borçlar ve iş hukuku alanlarında kapsamlı hizmet sunuyoruz.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="group p-8 bg-slate-900/50 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 transition-all service-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 card-icon transition-transform">
+                        <i class="fat fa-bullseye-arrow text-amber-500 text-3xl icon-hover" data-icon="bullseye-arrow"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-white mb-3 card-title transition-colors">Çözüm Odaklı Yaklaşım</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        Her müvekkil için özel stratejiler geliştiriyor, uygun hukuki yolları kullanarak sonuç odaklı çalışıyoruz.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="group p-8 bg-slate-900/50 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 transition-all service-card" data-aos="fade-up" data-aos-delay="250">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 card-icon transition-transform">
+                        <i class="fat fa-comments text-amber-500 text-3xl icon-hover" data-icon="comments"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-white mb-3 card-title transition-colors">Şeffaf İletişim</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        Süreçlerin her aşamasında müvekkillerimizi bilgilendiriyor, şeffaf ve anlaşılır bir iletişim anlayışı benimsiyoruz.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="group p-8 bg-slate-900/50 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 transition-all service-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 card-icon transition-transform">
+                        <i class="fat fa-lock text-amber-500 text-3xl icon-hover" data-icon="lock"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-white mb-3 card-title transition-colors">Gizlilik ve Güven</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        Müvekkil-avukat sırrının kutsallığına inanıyor, tüm bilgilerinizi titizlikle koruyoruz.
+                    </p>
+                </div>
+
+                <!-- Feature 6 - CTA Card -->
+                <div class="group p-8 bg-gradient-to-br from-amber-500/20 to-amber-700/10 rounded-2xl border border-amber-500/30 flex flex-col justify-center items-center text-center" data-aos="fade-up" data-aos-delay="350">
+                    <div class="w-20 h-20 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center mb-6">
+                        <i class="fat fa-phone text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-semibold text-white mb-3">Hemen İletişime Geçin</h3>
+                    <p class="text-white/60 mb-6">Hukuki sorunlarınız için bize ulaşın</p>
+                    <a href="tel:+902166296411" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold rounded-lg hover:from-amber-400 hover:to-amber-500 transition-all btn-glow">
+                        +90 216 629 6411
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="hizmetler" class="py-20 md:py-32 bg-slate-900 dark:bg-slate-900 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 art-deco-pattern opacity-30"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 mb-6">
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                    <span class="text-amber-500 text-sm tracking-wider uppercase font-medium">Hizmetlerimiz</span>
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                </div>
+                <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                    8 Farklı Alanda <span class="gradient-text-animated">Uzman Hukuki Destek</span>
+                </h2>
+                <p class="text-white/60 text-lg">
+                    Geniş hizmet yelpazemiz ile her türlü hukuki ihtiyacınıza profesyonel çözümler sunuyoruz.
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Service 1 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="100">
+                    <div class="gradient-border h-full">
+                        <div class="gradient-border-inner p-6 h-full">
+                            <div class="w-14 h-14 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-briefcase text-amber-500 text-2xl icon-hover" data-icon="briefcase"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3">Ticaret Hukuku</h3>
+                            <p class="text-white/60 text-sm leading-relaxed mb-4">
+                                Ticari sözleşmeler, anlaşmazlıklar ve uluslararası ticaret hukuku konularında danışmanlık.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Detaylar <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="150">
+                    <div class="gradient-border h-full">
+                        <div class="gradient-border-inner p-6 h-full">
+                            <div class="w-14 h-14 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-building text-amber-500 text-2xl icon-hover" data-icon="building"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3">Şirketler Hukuku</h3>
+                            <p class="text-white/60 text-sm leading-relaxed mb-4">
+                                Şirket kuruluşu, birleşme-devir, borç yapılandırma, konkordato ve iflas süreçleri.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Detaylar <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="200">
+                    <div class="gradient-border h-full">
+                        <div class="gradient-border-inner p-6 h-full">
+                            <div class="w-14 h-14 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-gavel text-amber-500 text-2xl icon-hover" data-icon="gavel"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3">Ceza Hukuku</h3>
+                            <p class="text-white/60 text-sm leading-relaxed mb-4">
+                                Soruşturma ve kovuşturma aşamalarında müdafilik, suçlu iadesi ve yeniden yargılama.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Detaylar <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="250">
+                    <div class="gradient-border h-full">
+                        <div class="gradient-border-inner p-6 h-full">
+                            <div class="w-14 h-14 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-stethoscope text-amber-500 text-2xl icon-hover" data-icon="stethoscope"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3">Sağlık Hukuku</h3>
+                            <p class="text-white/60 text-sm leading-relaxed mb-4">
+                                Tıbbi malpraktis, hekim sorumlulukları ve hasta hakları konularında hukuki danışmanlık.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Detaylar <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="300">
+                    <div class="gradient-border h-full">
+                        <div class="gradient-border-inner p-6 h-full">
+                            <div class="w-14 h-14 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-shield-check text-amber-500 text-2xl icon-hover" data-icon="shield-check"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3">Sigorta Hukuku</h3>
+                            <p class="text-white/60 text-sm leading-relaxed mb-4">
+                                Sigorta sözleşmelerinden kaynaklanan uyuşmazlıklar ve tazminat talepleri.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Detaylar <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="350">
+                    <div class="gradient-border h-full">
+                        <div class="gradient-border-inner p-6 h-full">
+                            <div class="w-14 h-14 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-landmark text-amber-500 text-2xl icon-hover" data-icon="landmark"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3">İdare ve İmar Hukuku</h3>
+                            <p class="text-white/60 text-sm leading-relaxed mb-4">
+                                İdari işlem ve eylemler, imar uygulamaları, kamulaştırma ve iptal davaları.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Detaylar <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 7 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="400">
+                    <div class="gradient-border h-full">
+                        <div class="gradient-border-inner p-6 h-full">
+                            <div class="w-14 h-14 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-handshake text-amber-500 text-2xl icon-hover" data-icon="handshake"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3">Borçlar Hukuku</h3>
+                            <p class="text-white/60 text-sm leading-relaxed mb-4">
+                                Sözleşme hukuku, haksız fiil, sebepsiz zenginleşme ve tazminat davaları.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Detaylar <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 8 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="450">
+                    <div class="gradient-border h-full">
+                        <div class="gradient-border-inner p-6 h-full">
+                            <div class="w-14 h-14 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-user-tie text-amber-500 text-2xl icon-hover" data-icon="user-tie"></i>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3">İş Hukuku</h3>
+                            <p class="text-white/60 text-sm leading-relaxed mb-4">
+                                İş sözleşmeleri, işçi-işveren uyuşmazlıkları, kıdem-ihbar tazminatı davaları.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Detaylar <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="py-20 md:py-32 bg-slate-950 dark:bg-slate-950 relative">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 mb-6">
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                    <span class="text-amber-500 text-sm tracking-wider uppercase font-medium">Süreçlerimiz</span>
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                </div>
+                <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                    Nasıl <span class="gradient-text-animated">Çalışıyoruz?</span>
+                </h2>
+                <p class="text-white/60 text-lg">
+                    Hukuki süreçlerinizi titizlikle yönetiyoruz.
+                </p>
+            </div>
+
+            <!-- Process Steps -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+
+                <!-- Step 1 -->
+                <div class="relative text-center p-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-20 h-20 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+                        <span class="font-heading text-2xl font-bold text-white">01</span>
+                        <div class="absolute -right-3 top-1/2 -translate-y-1/2 hidden lg:block">
+                            <i class="fat fa-arrow-right text-amber-500/50"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-white mb-2">İlk Görüşme</h3>
+                    <p class="text-white/60 text-sm">Sorun detaylı dinlenir ve hukuki durum analiz edilir.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative text-center p-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-20 h-20 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+                        <span class="font-heading text-2xl font-bold text-white">02</span>
+                        <div class="absolute -right-3 top-1/2 -translate-y-1/2 hidden lg:block">
+                            <i class="fat fa-arrow-right text-amber-500/50"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-white mb-2">Strateji Belirleme</h3>
+                    <p class="text-white/60 text-sm">Müvekkilin çıkarlarını koruyacak uygun strateji belirlenir.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative text-center p-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+                        <span class="font-heading text-2xl font-bold text-white">03</span>
+                        <div class="absolute -right-3 top-1/2 -translate-y-1/2 hidden lg:block">
+                            <i class="fat fa-arrow-right text-amber-500/50"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-white mb-2">Süreç Başlatma</h3>
+                    <p class="text-white/60 text-sm">Gerekli dilekçeler ve başvurular hazırlanır.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative text-center p-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-20 h-20 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+                        <span class="font-heading text-2xl font-bold text-white">04</span>
+                        <div class="absolute -right-3 top-1/2 -translate-y-1/2 hidden lg:block">
+                            <i class="fat fa-arrow-right text-amber-500/50"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-white mb-2">Düzenli Bilgilendirme</h3>
+                    <p class="text-white/60 text-sm">Her aşamada müvekkil bilgilendirilir.</p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="relative text-center p-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-20 h-20 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="font-heading text-2xl font-bold text-white">05</span>
+                    </div>
+                    <h3 class="font-heading text-lg font-semibold text-white mb-2">Sonuç ve Takip</h3>
+                    <p class="text-white/60 text-sm">Hakların sonuna kadar takibi yapılır.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="ekip" class="py-20 md:py-32 bg-slate-900 dark:bg-slate-900 relative">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 mb-6">
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                    <span class="text-amber-500 text-sm tracking-wider uppercase font-medium">Ekibimiz</span>
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                </div>
+                <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                    Profesyonel <span class="gradient-text-animated">Avukat Kadromuz</span>
+                </h2>
+                <p class="text-white/60 text-lg">
+                    Alanında uzman, deneyimli ve çözüm odaklı ekibimizle tanışın.
+                </p>
+            </div>
+
+            <!-- Team Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+
+                <!-- Team Member 1 - Founder -->
+                <div class="lg:col-span-3" data-aos="fade-up">
+                    <div class="animated-border">
+                        <div class="gradient-border-inner p-8">
+                            <div class="flex flex-col md:flex-row items-center gap-8">
+                                <div class="w-48 h-48 rounded-xl overflow-hidden flex-shrink-0">
+                                    <img src="https://picsum.photos/200/200?random=1" alt="Av. Ahmet Mahmutoğlu" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center md:text-left">
+                                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 rounded-full mb-4">
+                                        <i class="fat fa-star text-amber-500 text-sm"></i>
+                                        <span class="text-amber-500 text-sm">Kurucu Ortak & Yönetici Avukat</span>
+                                    </div>
+                                    <h3 class="font-heading text-2xl font-bold text-white mb-2">Av. Ahmet Mahmutoğlu</h3>
+                                    <p class="text-white/60 mb-4 leading-relaxed">
+                                        2009 yılında kurduğu Mahmutoğlu Hukuk & Danışmanlık bürosunda yönetici avukat olarak görev yapmaktadır.
+                                        İstanbul Üniversitesi Hukuk Fakültesi mezunu olup, 15 yılı aşkın süredir hukuki danışmanlık ve dava takip hizmetleri sunmaktadır.
+                                    </p>
+                                    <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                                        <span class="px-3 py-1 bg-slate-800 rounded-full text-white/70 text-sm">Ticaret Hukuku</span>
+                                        <span class="px-3 py-1 bg-slate-800 rounded-full text-white/70 text-sm">Şirketler Hukuku</span>
+                                        <span class="px-3 py-1 bg-slate-800 rounded-full text-white/70 text-sm">Ceza Hukuku</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="service-card p-6 bg-slate-800/50 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 transition-all" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-32 h-32 rounded-xl overflow-hidden mx-auto mb-4">
+                        <img src="https://picsum.photos/200/200?random=2" alt="Kıdemli Avukat" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-heading text-lg font-semibold text-white mb-1">Kıdemli Avukat</h3>
+                        <p class="text-amber-500 text-sm mb-3">İş Hukuku Uzmanı</p>
+                        <p class="text-white/60 text-sm">İş hukuku alanında 10+ yıl deneyim.</p>
+                    </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="service-card p-6 bg-slate-800/50 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 transition-all" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-32 h-32 rounded-xl overflow-hidden mx-auto mb-4">
+                        <img src="https://picsum.photos/200/200?random=3" alt="Kıdemli Avukat" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-heading text-lg font-semibold text-white mb-1">Kıdemli Avukat</h3>
+                        <p class="text-amber-500 text-sm mb-3">Sigorta Hukuku Uzmanı</p>
+                        <p class="text-white/60 text-sm">Sigorta ve tazminat davalarında uzman.</p>
+                    </div>
+                </div>
+
+                <!-- Team Member 4 -->
+                <div class="service-card p-6 bg-slate-800/50 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 transition-all" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-32 h-32 rounded-xl overflow-hidden mx-auto mb-4">
+                        <img src="https://picsum.photos/200/200?random=4" alt="Kıdemli Avukat" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-heading text-lg font-semibold text-white mb-1">Kıdemli Avukat</h3>
+                        <p class="text-amber-500 text-sm mb-3">Ceza Hukuku Uzmanı</p>
+                        <p class="text-white/60 text-sm">Ağır ceza davalarında deneyimli.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="py-20 md:py-32 bg-slate-950 dark:bg-slate-950 relative">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
+                <div data-aos="fade-right">
+                    <div class="inline-flex items-center gap-2 mb-4">
+                        <div class="w-12 h-[2px] bg-amber-500"></div>
+                        <span class="text-amber-500 text-sm tracking-wider uppercase font-medium">Makaleler</span>
+                    </div>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-bold text-white">
+                        Hukuk Gündeminden <span class="gradient-text-animated">Haberler</span>
+                    </h2>
+                </div>
+                <a href="#" class="inline-flex items-center gap-2 text-amber-500 font-semibold hover:gap-3 transition-all" data-aos="fade-left">
+                    Tüm Makaleler <i class="fat fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Blog 1 -->
+                <div class="group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card h-full bg-slate-900/50 rounded-2xl border border-amber-500/10 overflow-hidden">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="https://picsum.photos/400/225?random=10" alt="Blog" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="px-2 py-1 bg-amber-500/10 text-amber-500 text-xs rounded">İş Hukuku</span>
+                                <span class="text-white/40 text-sm">15 Ocak 2026</span>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3 card-title transition-colors line-clamp-2">
+                                İş Yerinde Mobbing: Hukuki Haklarınız Nelerdir?
+                            </h3>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Devamını Oku <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog 2 -->
+                <div class="group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card h-full bg-slate-900/50 rounded-2xl border border-amber-500/10 overflow-hidden">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="https://picsum.photos/400/225?random=11" alt="Blog" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="px-2 py-1 bg-amber-500/10 text-amber-500 text-xs rounded">Sigorta</span>
+                                <span class="text-white/40 text-sm">12 Ocak 2026</span>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3 card-title transition-colors line-clamp-2">
+                                Trafik Kazası Sonrası İzlenecek Hukuki Adımlar
+                            </h3>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Devamını Oku <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog 3 -->
+                <div class="group" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-card h-full bg-slate-900/50 rounded-2xl border border-amber-500/10 overflow-hidden">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="https://picsum.photos/400/225?random=12" alt="Blog" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="px-2 py-1 bg-amber-500/10 text-amber-500 text-xs rounded">Şirketler</span>
+                                <span class="text-white/40 text-sm">10 Ocak 2026</span>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3 card-title transition-colors line-clamp-2">
+                                Şirket Kuruluşunda Dikkat Edilmesi Gereken Noktalar
+                            </h3>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Devamını Oku <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog 4 -->
+                <div class="group" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-card h-full bg-slate-900/50 rounded-2xl border border-amber-500/10 overflow-hidden">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="https://picsum.photos/400/225?random=13" alt="Blog" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="px-2 py-1 bg-amber-500/10 text-amber-500 text-xs rounded">Mevzuat</span>
+                                <span class="text-white/40 text-sm">8 Ocak 2026</span>
+                            </div>
+                            <h3 class="font-heading text-lg font-semibold text-white mb-3 card-title transition-colors line-clamp-2">
+                                2024 Yılında Değişen İş Kanunu Düzenlemeleri
+                            </h3>
+                            <a href="#" class="inline-flex items-center gap-2 text-amber-500 text-sm font-medium hover:gap-3 transition-all">
+                                Devamını Oku <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="sss" class="py-20 md:py-32 bg-slate-900 dark:bg-slate-900 relative">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+                <!-- Left Content -->
+                <div data-aos="fade-right">
+                    <div class="inline-flex items-center gap-2 mb-6">
+                        <div class="w-12 h-[2px] bg-amber-500"></div>
+                        <span class="text-amber-500 text-sm tracking-wider uppercase font-medium">SSS</span>
+                    </div>
+                    <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                        Sıkça Sorulan <span class="gradient-text-animated">Sorular</span>
+                    </h2>
+                    <p class="text-white/60 text-lg mb-8">
+                        Müvekkillerimizden en sık aldığımız sorular ve yanıtları.
+                    </p>
+
+                    <div class="p-6 bg-gradient-to-br from-amber-500/10 to-amber-700/5 rounded-2xl border border-amber-500/20">
+                        <h3 class="font-heading text-lg font-semibold text-white mb-3">Sorunuz mu var?</h3>
+                        <p class="text-white/60 mb-4">Aradığınız cevabı bulamadıysanız, bize ulaşın.</p>
+                        <a href="#iletisim" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold rounded-lg hover:from-amber-400 hover:to-amber-500 transition-all btn-glow">
+                            <i class="fat fa-envelope"></i>
+                            İletişime Geçin
+                        </a>
+                    </div>
+                </div>
+
+                <!-- FAQ Accordion -->
+                <div class="space-y-4" data-aos="fade-left" x-data="{ activeAccordion: 1 }">
+
+                    <!-- FAQ 1 -->
+                    <div class="service-card bg-slate-800/50 rounded-xl border border-amber-500/10 overflow-hidden">
+                        <button @click="activeAccordion = activeAccordion === 1 ? null : 1" class="w-full flex items-center justify-between p-6 text-left">
+                            <span class="font-medium text-white pr-4">Avukat görüşmesi ücretli midir?</span>
+                            <i class="fat fa-chevron-down text-amber-500 transition-transform" :class="{ 'rotate-180': activeAccordion === 1 }"></i>
+                        </button>
+                        <div x-show="activeAccordion === 1" x-collapse class="px-6 pb-6">
+                            <p class="text-white/60">İlk danışmanlık görüşmesi değerlendirilir ve ücretlendirme hakkında müvekkillerimize görüşme sonrasında bilgi verilir.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="service-card bg-slate-800/50 rounded-xl border border-amber-500/10 overflow-hidden">
+                        <button @click="activeAccordion = activeAccordion === 2 ? null : 2" class="w-full flex items-center justify-between p-6 text-left">
+                            <span class="font-medium text-white pr-4">Dava süreci ne kadar sürer?</span>
+                            <i class="fat fa-chevron-down text-amber-500 transition-transform" :class="{ 'rotate-180': activeAccordion === 2 }"></i>
+                        </button>
+                        <div x-show="activeAccordion === 2" x-collapse class="px-6 pb-6">
+                            <p class="text-white/60">Dava süresi, davanın türüne ve dosyanın karmaşıklığına göre değişir. Basit davalar 6-12 ay, karmaşık davalar 1-3 yıl sürebilir.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="service-card bg-slate-800/50 rounded-xl border border-amber-500/10 overflow-hidden">
+                        <button @click="activeAccordion = activeAccordion === 3 ? null : 3" class="w-full flex items-center justify-between p-6 text-left">
+                            <span class="font-medium text-white pr-4">Davanın sonucunu garanti edebilir misiniz?</span>
+                            <i class="fat fa-chevron-down text-amber-500 transition-transform" :class="{ 'rotate-180': activeAccordion === 3 }"></i>
+                        </button>
+                        <div x-show="activeAccordion === 3" x-collapse class="px-6 pb-6">
+                            <p class="text-white/60">Hiçbir avukat dava sonucunu garanti edemez. Ancak dosyanızı titizlikle sunar ve hukuki haklarınızı savunmak için azami özen gösteririz.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="service-card bg-slate-800/50 rounded-xl border border-amber-500/10 overflow-hidden">
+                        <button @click="activeAccordion = activeAccordion === 4 ? null : 4" class="w-full flex items-center justify-between p-6 text-left">
+                            <span class="font-medium text-white pr-4">Yurt dışından nasıl hizmet alabilirim?</span>
+                            <i class="fat fa-chevron-down text-amber-500 transition-transform" :class="{ 'rotate-180': activeAccordion === 4 }"></i>
+                        </button>
+                        <div x-show="activeAccordion === 4" x-collapse class="px-6 pb-6">
+                            <p class="text-white/60">Video konferans, e-posta ve telefon üzerinden hukuki danışmanlık sağlıyoruz. Vekaletname için Türk konsolosluklarına başvurabilirsiniz.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 5 -->
+                    <div class="service-card bg-slate-800/50 rounded-xl border border-amber-500/10 overflow-hidden">
+                        <button @click="activeAccordion = activeAccordion === 5 ? null : 5" class="w-full flex items-center justify-between p-6 text-left">
+                            <span class="font-medium text-white pr-4">İşten haksız yere çıkarıldım, ne yapmalıyım?</span>
+                            <i class="fat fa-chevron-down text-amber-500 transition-transform" :class="{ 'rotate-180': activeAccordion === 5 }"></i>
+                        </button>
+                        <div x-show="activeAccordion === 5" x-collapse class="px-6 pb-6">
+                            <p class="text-white/60">1 ay içinde işe iade davası açmanız gerekir. Kıdem, ihbar ve diğer alacaklar için de talepte bulunabilirsiniz. Hemen bir iş hukuku avukatıyla görüşmeniz kritiktir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="iletisim" class="py-20 md:py-32 bg-slate-950 dark:bg-slate-950 relative">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 mb-6">
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                    <span class="text-amber-500 text-sm tracking-wider uppercase font-medium">İletişim</span>
+                    <div class="w-12 h-[2px] bg-amber-500"></div>
+                </div>
+                <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                    Bizimle <span class="gradient-text-animated">İletişime Geçin</span>
+                </h2>
+                <p class="text-white/60 text-lg">
+                    Hukuki sorunlarınız için bize ulaşın. En kısa sürede size dönüş yapacağız.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-5 gap-8 lg:gap-12">
+
+                <!-- Contact Info -->
+                <div class="lg:col-span-2 space-y-6" data-aos="fade-right">
+
+                    <!-- Address Card -->
+                    <div class="service-card p-6 bg-slate-900/50 rounded-2xl border border-amber-500/10">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fat fa-location-dot text-amber-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-semibold text-white mb-2">Adres</h3>
+                                <p class="text-white/60 leading-relaxed">
+                                    Akasya Acıbadem Koru Kule<br>
+                                    Acıbadem Mah. Çeçen Sokak,<br>
+                                    No:46G K:25 D:147<br>
+                                    Üsküdar/İstanbul
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phone Card -->
+                    <div class="service-card p-6 bg-slate-900/50 rounded-2xl border border-amber-500/10">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fat fa-phone text-amber-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-semibold text-white mb-2">Telefon</h3>
+                                <a href="tel:+902166296411" class="text-amber-500 hover:text-amber-400 transition-colors text-lg font-medium">
+                                    +90 216 629 6411
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Card -->
+                    <div class="service-card p-6 bg-slate-900/50 rounded-2xl border border-amber-500/10">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fat fa-envelope text-amber-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-semibold text-white mb-2">E-posta</h3>
+                                <a href="mailto:info@mahmutoglu.com.tr" class="text-amber-500 hover:text-amber-400 transition-colors">
+                                    info@mahmutoglu.com.tr
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Working Hours Card -->
+                    <div class="service-card p-6 bg-slate-900/50 rounded-2xl border border-amber-500/10">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fat fa-clock text-amber-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-semibold text-white mb-2">Çalışma Saatleri</h3>
+                                <p class="text-white/60">
+                                    Pazartesi - Cuma: 09:00 - 18:00<br>
+                                    Cumartesi: 10:00 - 14:00 (Randevu ile)<br>
+                                    Pazar: Kapalı
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-3" data-aos="fade-left">
+                    <div class="animated-border">
+                        <div class="gradient-border-inner p-8">
+                            <h3 class="font-heading text-2xl font-bold text-white mb-6">İletişim Formu</h3>
+                            <form class="space-y-6">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-white/70 text-sm mb-2">Ad Soyad *</label>
+                                        <input type="text" class="w-full px-4 py-3 bg-slate-800/50 border border-amber-500/20 rounded-lg text-white placeholder-white/40 focus:border-amber-500 focus:outline-none transition-colors" placeholder="Adınız Soyadınız">
+                                    </div>
+                                    <div>
+                                        <label class="block text-white/70 text-sm mb-2">Telefon *</label>
+                                        <input type="tel" class="w-full px-4 py-3 bg-slate-800/50 border border-amber-500/20 rounded-lg text-white placeholder-white/40 focus:border-amber-500 focus:outline-none transition-colors" placeholder="+90 5XX XXX XX XX">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-white/70 text-sm mb-2">E-posta *</label>
+                                    <input type="email" class="w-full px-4 py-3 bg-slate-800/50 border border-amber-500/20 rounded-lg text-white placeholder-white/40 focus:border-amber-500 focus:outline-none transition-colors" placeholder="ornek@email.com">
+                                </div>
+                                <div>
+                                    <label class="block text-white/70 text-sm mb-2">Konu *</label>
+                                    <select class="w-full px-4 py-3 bg-slate-800/50 border border-amber-500/20 rounded-lg text-white focus:border-amber-500 focus:outline-none transition-colors">
+                                        <option value="">Konu Seçiniz</option>
+                                        <option value="ticaret">Ticaret Hukuku</option>
+                                        <option value="sirketler">Şirketler Hukuku</option>
+                                        <option value="ceza">Ceza Hukuku</option>
+                                        <option value="saglik">Sağlık Hukuku</option>
+                                        <option value="sigorta">Sigorta Hukuku</option>
+                                        <option value="idare">İdare ve İmar Hukuku</option>
+                                        <option value="borclar">Borçlar Hukuku</option>
+                                        <option value="is">İş Hukuku</option>
+                                        <option value="diger">Diğer</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-white/70 text-sm mb-2">Mesajınız *</label>
+                                    <textarea rows="5" class="w-full px-4 py-3 bg-slate-800/50 border border-amber-500/20 rounded-lg text-white placeholder-white/40 focus:border-amber-500 focus:outline-none transition-colors resize-none" placeholder="Hukuki sorununuzu kısaca açıklayınız..."></textarea>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" id="kvkk" class="mt-1 w-5 h-5 rounded border-amber-500/30 bg-slate-800 text-amber-500 focus:ring-amber-500">
+                                    <label for="kvkk" class="text-white/60 text-sm">
+                                        Kişisel verilerimin Mahmutoğlu Hukuk & Danışmanlık tarafından işlenmesini kabul ediyorum.
+                                    </label>
+                                </div>
+                                <button type="submit" class="w-full px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold rounded-lg hover:from-amber-400 hover:to-amber-500 transition-all btn-glow flex items-center justify-center gap-2">
+                                    <i class="fat fa-paper-plane"></i>
+                                    Mesaj Gönder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="mt-16" data-aos="fade-up">
+                <div class="w-full h-80 bg-slate-800 rounded-2xl overflow-hidden">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3011.7766088878395!2d29.0533!3d40.9927!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cac5f95c3f6a3b%3A0x8a08e2d6c9e3e6d0!2sAkasya%20Ac%C4%B1badem%20AVM!5e0!3m2!1str!2str!4v1705753200000!5m2!1str!2str"
+                        width="100%"
+                        height="100%"
+                        style="border:0; filter: grayscale(100%) invert(92%) contrast(83%);"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 dark:bg-slate-900 border-t border-amber-500/10">
+
+        <!-- Main Footer -->
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-16">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+
+                <!-- Logo & About -->
+                <div class="lg:col-span-1">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-700 rounded-lg flex items-center justify-center">
+                            <i class="fat fa-scale-balanced text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <span class="font-heading text-xl font-semibold text-white block">MAHMUTOĞLU</span>
+                            <span class="text-amber-500 text-xs tracking-[0.2em] uppercase">Hukuk & Danışmanlık</span>
+                        </div>
+                    </a>
+                    <p class="text-white/60 mb-6 leading-relaxed">
+                        2009'dan bu yana bireysel ve kurumsal müvekkillerimize profesyonel hukuki danışmanlık hizmeti sunuyoruz.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-amber-500/20 rounded-lg flex items-center justify-center transition-colors group">
+                            <i class="fab fa-linkedin-in text-white/60 group-hover:text-amber-500"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-amber-500/20 rounded-lg flex items-center justify-center transition-colors group">
+                            <i class="fab fa-twitter text-white/60 group-hover:text-amber-500"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-amber-500/20 rounded-lg flex items-center justify-center transition-colors group">
+                            <i class="fab fa-instagram text-white/60 group-hover:text-amber-500"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-heading text-lg font-semibold text-white mb-6">Hızlı Bağlantılar</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#hakkimizda" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">Hakkımızda</a></li>
+                        <li><a href="#hizmetler" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">Hizmetlerimiz</a></li>
+                        <li><a href="#ekip" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">Ekibimiz</a></li>
+                        <li><a href="#blog" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">Makaleler</a></li>
+                        <li><a href="#sss" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">SSS</a></li>
+                        <li><a href="#iletisim" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">İletişim</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="font-heading text-lg font-semibold text-white mb-6">Hizmetler</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#hizmetler" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">Ticaret Hukuku</a></li>
+                        <li><a href="#hizmetler" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">Şirketler Hukuku</a></li>
+                        <li><a href="#hizmetler" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">Ceza Hukuku</a></li>
+                        <li><a href="#hizmetler" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">Sağlık Hukuku</a></li>
+                        <li><a href="#hizmetler" class="text-white/60 hover:text-amber-500 transition-colors underline-hover">İş Hukuku</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="font-heading text-lg font-semibold text-white mb-6">İletişim</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fat fa-location-dot text-amber-500 mt-1"></i>
+                            <span class="text-white/60">Akasya Acıbadem Koru Kule, Üsküdar/İstanbul</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fat fa-phone text-amber-500"></i>
+                            <a href="tel:+902166296411" class="text-white/60 hover:text-amber-500 transition-colors">+90 216 629 6411</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fat fa-envelope text-amber-500"></i>
+                            <a href="mailto:info@mahmutoglu.com.tr" class="text-white/60 hover:text-amber-500 transition-colors">info@mahmutoglu.com.tr</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fat fa-clock text-amber-500"></i>
+                            <span class="text-white/60">Pzt-Cum: 09:00-18:00</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="border-t border-amber-500/10">
+            <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-6">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-center">
+                    <p class="text-white/40 text-sm">
+                        © 2026 Mahmutoğlu Hukuk & Danışmanlık. Tüm hakları saklıdır.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prompt Modal Button -->
+    <button id="prompt-btn" class="fixed bottom-4 right-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-amber-500 text-sm rounded-lg border border-amber-500/30 transition-colors z-50">
+        <i class="fat fa-code mr-2"></i>Prompt
+    </button>
+
+    <!-- Prompt Modal -->
+    <div id="prompt-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-2xl max-w-md w-full p-8 border border-amber-500/20">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-heading text-xl font-bold text-white">Prompt Dokümanı</h3>
+                <button id="prompt-close" class="text-white/60 hover:text-white">
+                    <i class="fat fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            <p class="text-white/60 mb-6">Bu tasarımın prompt ve görsel dokümanlarına aşağıdaki linkten ulaşabilirsiniz.</p>
+            <a href="prompt.html" target="_blank" class="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold rounded-lg hover:from-amber-400 hover:to-amber-500 transition-all">
+                <i class="fat fa-file-alt"></i>
+                Prompt Dokümanını Görüntüle
+            </a>
+        </div>
+    </div>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'light') {
+            html.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        });
+
+        // Header Scroll Effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('bg-slate-950/98', 'shadow-lg');
+            } else {
+                header.classList.remove('bg-slate-950/98', 'shadow-lg');
+            }
+        });
+
+        // Icon Hover Effect (fat -> fas)
+        document.querySelectorAll('.service-card, .group').forEach(card => {
+            const icon = card.querySelector('.icon-hover');
+            if (icon) {
+                card.addEventListener('mouseenter', () => {
+                    icon.classList.remove('fat');
+                    icon.classList.add('fas');
+                });
+                card.addEventListener('mouseleave', () => {
+                    icon.classList.remove('fas');
+                    icon.classList.add('fat');
+                });
+            }
+        });
+
+        // Prompt Modal
+        const promptBtn = document.getElementById('prompt-btn');
+        const promptModal = document.getElementById('prompt-modal');
+        const promptClose = document.getElementById('prompt-close');
+
+        promptBtn.addEventListener('click', () => {
+            promptModal.classList.remove('hidden');
+            promptModal.classList.add('flex');
+        });
+
+        promptClose.addEventListener('click', () => {
+            promptModal.classList.add('hidden');
+            promptModal.classList.remove('flex');
+        });
+
+        promptModal.addEventListener('click', (e) => {
+            if (e.target === promptModal) {
+                promptModal.classList.add('hidden');
+                promptModal.classList.remove('flex');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -3,78 +3,89 @@
 namespace App\Listeners;
 
 use Stancl\Tenancy\Events\DomainCreated;
-use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
-use App\Jobs\ReissueLetsEncryptCertificate;
+use App\Jobs\RegisterDomainInWebServer;
+use App\Jobs\RenewSSLCertificate;
 
+/**
+ * Domain oluşturulduğunda:
+ * 1. Nginx ve Apache config'e ekle
+ * 2. SSL sertifikasını yenile
+ *
+ * NOT: Plesk lisansı gerektirmez - doğrudan config dosyalarını düzenler
+ */
 class RegisterDomainAliasInPlesk
 {
     /**
-     * Ana domain - tüm alias'lar bu domain'e bağlanır
+     * Central domain - dinamik olarak alınır
      */
-    protected string $parentDomain = 'tuufi.com';
+    protected string $centralDomain;
+
+    public function __construct()
+    {
+        // Central domain'i handle() içinde alacağız, constructor'da DB sorgusu yapmıyoruz
+        $this->centralDomain = '';
+    }
+
+    /**
+     * Central domain'i al (central tenant'ın ilk domain'i)
+     */
+    protected function getCentralDomain(): string
+    {
+        if (empty($this->centralDomain)) {
+            // Central tenant'ı bul
+            $centralTenant = \App\Models\Tenant::where('central', true)->first();
+            if ($centralTenant) {
+                $domain = $centralTenant->domains()
+                    ->where('domain', 'not like', 'www.%')
+                    ->first();
+                $this->centralDomain = $domain?->domain ?? 'tuufi.com';
+            } else {
+                $this->centralDomain = 'tuufi.com';
+            }
+        }
+        return $this->centralDomain;
+    }
 
     public function handle(DomainCreated $event): void
     {
         $domain = $event->domain;
         $domainName = $domain->domain;
+        $tenantId = $domain->tenant_id;
 
-        // Ana domain ise skip
-        if ($domainName === $this->parentDomain) {
+        // Central domain ise skip
+        if ($domainName === $this->getCentralDomain()) {
             return;
         }
 
-        // www. ile başlayan domain'leri atla - Plesk ana domain alias'ı oluşturduğunda www otomatik eklenir
+        // www. ile başlayan domain'leri atla - ana domain eklenince otomatik eklenir
         if (str_starts_with($domainName, 'www.')) {
-            Log::channel('system')->info("⏭️ www subdomain atlandı (Plesk otomatik ekler): {$domainName}", [
-                'tenant_id' => $domain->tenant_id,
+            Log::channel('system')->info("⏭️ www subdomain atlandı: {$domainName}", [
+                'tenant_id' => $tenantId,
             ]);
             return;
         }
 
-        Log::channel('system')->info("📋 Plesk domain alias ekleniyor: {$domainName} → {$this->parentDomain}", [
-            'tenant_id' => $domain->tenant_id,
+        Log::channel('system')->info("📋 Domain kaydediliyor: {$domainName}", [
+            'tenant_id' => $tenantId,
         ]);
 
+        // 1. Nginx ve Apache'ye ekle (senkron)
         try {
-            // Domain alias zaten var mı kontrol et
-            $checkResult = Process::timeout(10)->run(
-                "sudo /usr/sbin/plesk bin domalias --info {$domainName} 2>&1"
-            );
-
-            if ($checkResult->successful() && !str_contains($checkResult->output(), 'not found')) {
-                Log::channel('system')->warning("⚠️ Domain alias zaten mevcut: {$domainName}", [
-                    'tenant_id' => $domain->tenant_id,
-                ]);
-                return;
-            }
-
-            // Domain alias oluştur
-            // SEO redirect kapalı (her domain kendi içeriğini gösterecek)
-            $createResult = Process::timeout(30)->run(
-                "sudo /usr/sbin/plesk bin domalias --create {$domainName} -domain {$this->parentDomain} -web true -mail true -dns true -seo-redirect false"
-            );
-
-            if ($createResult->successful()) {
-                Log::channel('system')->info("✅ Plesk domain alias oluşturuldu: {$domainName}", [
-                    'tenant_id' => $domain->tenant_id,
-                    'parent_domain' => $this->parentDomain,
-                ]);
-
-                // SSL sertifikasını yenile (yeni domain'i dahil et)
-                ReissueLetsEncryptCertificate::dispatch();
-                Log::channel('system')->info("🔐 SSL yenileme job'ı kuyruğa eklendi: {$domainName}");
-            } else {
-                Log::channel('system')->error("❌ Plesk domain alias hatası: {$domainName}", [
-                    'tenant_id' => $domain->tenant_id,
-                    'error' => substr($createResult->errorOutput(), 0, 300),
-                    'output' => substr($createResult->output(), 0, 300),
-                ]);
-            }
+            RegisterDomainInWebServer::dispatchSync($domainName, $tenantId);
         } catch (\Exception $e) {
-            Log::channel('system')->error("❌ Plesk domain alias exception: {$domainName}", [
-                'tenant_id' => $domain->tenant_id,
-                'message' => $e->getMessage(),
+            Log::channel('system')->error("❌ Web server kaydı hatası: {$domainName}", [
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // 2. SSL sertifikasını yenile (queue'da çalışsın - 15sn delay ile)
+        try {
+            RenewSSLCertificate::dispatch();
+            Log::channel('system')->info("🔐 SSL yenileme queue'ya eklendi: {$domainName}");
+        } catch (\Exception $e) {
+            Log::channel('system')->warning("⚠️ SSL yenileme hatası (tenant oluşturma devam ediyor): {$domainName}", [
+                'error' => $e->getMessage(),
             ]);
         }
     }

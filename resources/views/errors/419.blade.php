@@ -1,107 +1,199 @@
-@php
-    // Tenant-aware tema seçimi
-    $currentDomain = request()->getHost();
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oturum Süresi Doldu - 419</title>
+    <link rel="stylesheet" href="/admin-assets/libs/fontawesome-pro@7.1.0/css/all.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #e2e8f0;
+            padding: 1rem;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        .close-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: #334155;
+            border: none;
+            border-radius: 50%;
+            color: #e2e8f0;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .close-btn:hover { background: #475569; }
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .icon-wrapper i { font-size: 2.5rem; color: white; }
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #f1f5f9;
+        }
+        .description {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .info-box h3 {
+            color: #93c5fd;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .info-box ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: #bfdbfe;
+        }
+        .info-box li {
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .info-box li i { color: #60a5fa; font-size: 0.75rem; }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-secondary {
+            background: #334155;
+            color: #e2e8f0;
+        }
+        .btn-secondary:hover { background: #475569; }
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+        .btn-danger:hover { filter: brightness(1.1); }
+    </style>
+</head>
+<body>
+    <button class="close-btn" onclick="closeModal()" title="Kapat">
+        <i class="fas fa-times"></i>
+    </button>
 
-    // Domain'e göre tema belirle
-    if (str_contains($currentDomain, 'muzibu')) {
-        $theme = 'muzibu';
-    } elseif (str_contains($currentDomain, 'ixtif')) {
-        $theme = 'ixtif';
-    } else {
-        // Varsayılan: simple (minimal, bağımsız tema)
-        $theme = 'simple';
-    }
-@endphp
-
-@extends("themes.{$theme}.layouts.app")
-
-@section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-gray-900 dark:to-gray-800 px-4 py-16">
-    <div class="max-w-2xl w-full text-center">
-        {{-- 419 Icon/Animation --}}
-        <div class="mb-8">
-            <div class="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-amber-500 to-yellow-600 rounded-full shadow-2xl animate-pulse">
-                <i class="fas fa-clock-rotate-left text-6xl text-white"></i>
-            </div>
+    <div class="container">
+        <div class="icon-wrapper">
+            <i class="fas fa-clock-rotate-left"></i>
         </div>
 
-        {{-- Title --}}
-        <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
-            {{ __('Oturum Süresi Doldu') }}
-        </h1>
+        <h1>Oturum Süresi Doldu</h1>
 
-        {{-- Description --}}
-        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8">
-            {{ __('Formda çok uzun süre beklediniz. Güvenlik nedeniyle sayfayı yenilemeniz gerekiyor.') }}
+        <p class="description">
+            Formda çok uzun süre beklediniz. Güvenlik nedeniyle sayfayı yenilemeniz gerekiyor.
         </p>
 
-        {{-- Info Box --}}
-        <div class="max-w-lg mx-auto bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
-            <div class="flex items-start gap-3">
-                <i class="fas fa-info-circle text-blue-600 dark:text-blue-400 text-xl mt-1"></i>
-                <div class="text-left">
-                    <h3 class="font-semibold text-blue-900 dark:text-blue-300 mb-2">
-                        {{ __('Ne Yapmalıyım?') }}
-                    </h3>
-                    <ul class="space-y-2 text-sm text-blue-800 dark:text-blue-400">
-                        <li class="flex items-start gap-2">
-                            <i class="fas fa-check-circle mt-0.5"></i>
-                            <span>{{ __('Sayfayı yenileyin (F5 veya yenile butonu)') }}</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fas fa-check-circle mt-0.5"></i>
-                            <span>{{ __('Formu tekrar doldurun') }}</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fas fa-check-circle mt-0.5"></i>
-                            <span>{{ __('İşleminize devam edin') }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> Ne Yapmalıyım?</h3>
+            <ul>
+                <li><i class="fas fa-check"></i> Sayfayı yenileyin (F5)</li>
+                <li><i class="fas fa-check"></i> Formu tekrar doldurun</li>
+                <li><i class="fas fa-check"></i> İşleminize devam edin</li>
+            </ul>
         </div>
 
-        {{-- Action Buttons --}}
-        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <button
-                onclick="window.location.reload()"
-                class="px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-600 text-white rounded-xl font-semibold hover:from-amber-600 hover:to-yellow-700 transition-all shadow-lg"
-            >
-                <i class="fas fa-rotate-right mr-2"></i>
-                {{ __('Sayfayı Yenile') }}
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="window.parent.location.reload()">
+                <i class="fas fa-rotate-right"></i> Sayfayı Yenile
             </button>
-
-            <button
-                onclick="window.history.back()"
-                class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
-            >
-                <i class="fas fa-arrow-left mr-2"></i>
-                {{ __('Geri Dön') }}
+            <button class="btn btn-secondary" onclick="closeModal()">
+                <i class="fas fa-times"></i> Kapat
             </button>
-
-            <a
-                href="{{ url('/') }}"
-                class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg"
-            >
-                <i class="fas fa-home mr-2"></i>
-                {{ __('Ana Sayfaya Git') }}
+            <a href="/admin/login" class="btn btn-danger" target="_top">
+                <i class="fas fa-sign-out-alt"></i> Yeniden Giriş Yap
             </a>
         </div>
-
-        {{-- Warning Box --}}
-        <div class="max-w-lg mx-auto bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6">
-            <div class="flex items-start gap-3">
-                <i class="fas fa-exclamation-triangle text-amber-600 dark:text-amber-400 text-xl mt-1"></i>
-                <div class="text-left">
-                    <h3 class="font-semibold text-amber-900 dark:text-amber-300 mb-2">
-                        {{ __('Neden Bu Oluyor?') }}
-                    </h3>
-                    <p class="text-sm text-amber-800 dark:text-amber-400">
-                        {{ __('Güvenliğiniz için, formlar belirli bir süre sonra otomatik olarak geçersiz hale gelir. Bu, yetkisiz erişimi önlemek için uygulanan bir güvenlik önlemidir. Sayfayı yenilediğinizde form güncellenecek ve işleminize devam edebileceksiniz.') }}
-                    </p>
-                </div>
-            </div>
-        </div>
     </div>
-</div>
-@endsection
+
+    <script>
+        function closeModal() {
+            // Livewire modal'ını kapat
+            try {
+                if (window.parent && window.parent.document) {
+                    var modal = window.parent.document.getElementById('livewire-error');
+                    if (modal) {
+                        modal.close();
+                        modal.remove();
+                        window.parent.document.body.style.overflow = 'visible';
+                    }
+                }
+            } catch(e) {
+                // iframe cross-origin durumunda parent'a erişemeyebiliriz
+                window.parent.location.reload();
+            }
+        }
+
+        // ESC tuşu ile kapatma
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

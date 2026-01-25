@@ -11,7 +11,7 @@
         {{-- Categories Slider (Shop tarzı) --}}
         @if(isset($categories) && $categories->count() > 0)
         <section class="py-6 border-b border-gray-200 dark:border-white/10 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
                     {{-- Tüm Yazılar --}}
                     <a href="{{ url('/blog') }}"
@@ -96,7 +96,7 @@
         @endif
 
         <div class="py-12">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+            <div class="container mx-auto">
                 @if ($items->count() > 0)
                     <!-- Articles Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blogs-grid">

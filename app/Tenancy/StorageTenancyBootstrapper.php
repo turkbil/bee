@@ -6,6 +6,7 @@ use Stancl\Tenancy\Contracts\TenancyBootstrapper;
 use Stancl\Tenancy\Contracts\Tenant;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 
 /**
  * Storage Tenancy Bootstrapper
@@ -166,6 +167,14 @@ class StorageTenancyBootstrapper implements TenancyBootstrapper
             'visibility' => 'private',
             'throw' => false,
         ]);
+
+        // 🔥 CORS FIX: asset() helper için app.url değiştir
+        if ($tenantDomain) {
+            Config::set('app.url', $tenantDomain);
+            Config::set('app.asset_url', $tenantDomain);
+            URL::forceRootUrl($tenantDomain);
+            URL::forceScheme('https');
+        }
     }
 
     private function resetFilesystemDisks(): void

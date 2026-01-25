@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema ile Site Oluşturma Rehberi - Kapsamlı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .code-block { background: #1e293b; border-radius: 8px; padding: 1rem; overflow-x: auto; font-family: monospace; }
+        .code-block code { color: #e2e8f0; font-size: 0.75rem; }
+        .section-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(71, 85, 105, 0.5); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-gray-100">
+    <header class="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="px-3 py-1 bg-emerald-600 text-xs font-bold rounded-full uppercase tracking-wider">Kapsamlı Rehber</span>
+                    <h1 class="text-3xl font-bold mt-2 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                        Tema ile Site Oluşturma
+                    </h1>
+                    <p class="text-slate-400 mt-1">VARPLAS Tema Örneği Üzerinden Adım Adım Analiz</p>
+                </div>
+                <div class="text-right text-sm text-slate-400">
+                    <div>14 Ocak 2026</div>
+                    <div class="text-xs">v1.0</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Genel Bakış -->
+        <section class="bg-green-900/20 border border-green-700/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 flex items-center gap-2 mb-4">
+                <span class="text-2xl">📝</span> Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="text-slate-300 space-y-3">
+                <p>
+                    Bir tema tasarımını (HTML/CSS) gerçek bir çalışan siteye dönüştürmek için birçok adım gerekiyor.
+                    Bu rehber, <strong class="text-green-300">VARPLAS</strong> teması örneğinde tüm adımları detaylandırıyor.
+                </p>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Özet: Ne Yapılacak?</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+                        <div class="bg-slate-700/50 rounded p-3 text-center">
+                            <div class="text-2xl font-bold text-emerald-400">8+</div>
+                            <div class="text-slate-400">Widget Şablonu</div>
+                        </div>
+                        <div class="bg-slate-700/50 rounded p-3 text-center">
+                            <div class="text-2xl font-bold text-cyan-400">15+</div>
+                            <div class="text-slate-400">Tema Dosyası</div>
+                        </div>
+                        <div class="bg-slate-700/50 rounded p-3 text-center">
+                            <div class="text-2xl font-bold text-purple-400">5+</div>
+                            <div class="text-slate-400">Sayfa</div>
+                        </div>
+                        <div class="bg-slate-700/50 rounded p-3 text-center">
+                            <div class="text-2xl font-bold text-yellow-400">20+</div>
+                            <div class="text-slate-400">Setting Değeri</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İçindekiler -->
+        <section class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">📚 İçindekiler</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <a href="#tema" class="text-cyan-400 hover:text-cyan-300">1. Tema Dosyaları</a>
+                <a href="#widgets" class="text-cyan-400 hover:text-cyan-300">2. Widget Şablonları (Central)</a>
+                <a href="#tenant-widgets" class="text-cyan-400 hover:text-cyan-300">3. TenantWidget Kayıtları</a>
+                <a href="#menu" class="text-cyan-400 hover:text-cyan-300">4. Menü Yapısı</a>
+                <a href="#pages" class="text-cyan-400 hover:text-cyan-300">5. Sayfalar</a>
+                <a href="#modules" class="text-cyan-400 hover:text-cyan-300">6. Gerekli Modüller</a>
+                <a href="#settings" class="text-cyan-400 hover:text-cyan-300">7. Settings Değerleri</a>
+                <a href="#seo" class="text-cyan-400 hover:text-cyan-300">8. SEO Ayarları</a>
+                <a href="#checklist" class="text-cyan-400 hover:text-cyan-300">9. Uygulama Checklist</a>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 1. TEMA DOSYALARI -->
+        <!-- ======================== -->
+        <section id="tema" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">1️⃣</span> Tema Dosyaları
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Her tenant (site) kendi temasını kullanabilir. Tema dosyaları <code class="bg-slate-800 px-1 rounded">resources/views/themes/[tema-adi]/</code> 
+                    klasöründe bulunur. Bulamazsa <code class="bg-slate-800 px-1 rounded">simple</code> temasına fallback yapar.
+                </p>
+            </div>
+
+            <div class="code-block mb-6">
+                <pre><code class="text-green-400">
+resources/views/themes/varplas/
+├── layouts/
+│   └── app.blade.php              # Ana layout (head, body, scripts)
+│
+├── partials/
+│   ├── header.blade.php           # Üst menü, logo, iletişim bilgisi
+│   ├── footer.blade.php           # Alt bilgi, sosyal medya, linkler
+│   ├── mega-menu.blade.php        # Ürün kategorileri mega menü
+│   └── mobile-menu.blade.php      # Mobil hamburger menü
+│
+├── pages/
+│   ├── home.blade.php             # Ana sayfa (widget'ları çağırır)
+│   ├── about.blade.php            # Hakkımızda sayfası
+│   ├── contact.blade.php          # İletişim sayfası
+│   ├── certificates.blade.php     # Sertifikalar sayfası
+│   └── products/
+│       ├── index.blade.php        # Ürün listesi
+│       └── show.blade.php         # Ürün detay
+│
+├── components/
+│   ├── product-card.blade.php     # Ürün kartı component
+│   ├── feature-card.blade.php     # Özellik kartı
+│   ├── timeline-item.blade.php    # Zaman çizelgesi item
+│   └── certificate-card.blade.php # Sertifika kartı
+│
+└── assets/                        # Tema'ya özel CSS/JS (opsiyonel)
+    ├── css/
+    │   └── varplas.css
+    └── js/
+        └── varplas.js
+                </code></pre>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-emerald-400 mb-3">📄 layouts/app.blade.php</h3>
+                    <p class="text-slate-400 text-sm mb-2">Ana şablon, tüm sayfalar bunu extend eder:</p>
+                    <div class="code-block text-xs">
+                        <code>
+&lt;!DOCTYPE html&gt;<br>
+&lt;html lang="{{ app()->getLocale() }}"&gt;<br>
+&lt;head&gt;<br>
+&nbsp;&nbsp;@include('themes.varplas.partials.head')<br>
+&lt;/head&gt;<br>
+&lt;body&gt;<br>
+&nbsp;&nbsp;@include('themes.varplas.partials.header')<br>
+&nbsp;&nbsp;@yield('content')<br>
+&nbsp;&nbsp;@include('themes.varplas.partials.footer')<br>
+&nbsp;&nbsp;{!! WidgetService::getStylesOutput() !!}<br>
+&nbsp;&nbsp;{!! WidgetService::getScriptsOutput() !!}<br>
+&lt;/body&gt;<br>
+&lt;/html&gt;
+                        </code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-emerald-400 mb-3">📄 pages/home.blade.php</h3>
+                    <p class="text-slate-400 text-sm mb-2">Ana sayfa widget'ları çağırır:</p>
+                    <div class="code-block text-xs">
+                        <code>
+@extends('themes.varplas.layouts.app')<br><br>
+@section('content')<br>
+&nbsp;&nbsp;@widget($heroWidgetId)<br>
+&nbsp;&nbsp;@widget($productsWidgetId)<br>
+&nbsp;&nbsp;@widget($whyUsWidgetId)<br>
+&nbsp;&nbsp;@widget($aboutWidgetId)<br>
+&nbsp;&nbsp;@widget($certificatesWidgetId)<br>
+&nbsp;&nbsp;@widget($quoteFormWidgetId)<br>
+&nbsp;&nbsp;@widget($contactWidgetId)<br>
+@endsection
+                        </code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-900/20 border border-yellow-700/50 rounded-lg">
+                <h3 class="font-semibold text-yellow-400 mb-2">⚠️ Tenant-Aware Tema Seçimi</h3>
+                <p class="text-slate-300 text-sm">
+                    Tenant'ın hangi temayı kullanacağı <code class="bg-slate-800 px-1 rounded">settings_values</code> tablosunda 
+                    <code class="bg-slate-800 px-1 rounded">active_theme = 'varplas'</code> olarak belirlenir.
+                    Sistem otomatik olarak o tema klasörüne bakar.
+                </p>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 2. WIDGET ŞABLONLARI -->
+        <!-- ======================== -->
+        <section id="widgets" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-cyan-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">2️⃣</span> Widget Şablonları (Central DB)
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    VARPLAS teması için 8 adet widget şablonu gerekiyor. Bunlar <strong>Central DB</strong>'deki 
+                    <code class="bg-slate-800 px-1 rounded">widgets</code> tablosuna eklenir. Tüm tenant'lar bu şablonları kullanabilir.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">#</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Widget Adı</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Slug</th>
+                            <th class="text-left py-3 px-4 text-slate-400">has_items</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">1</td>
+                            <td class="py-3 px-4 text-white font-semibold">Hero Slider</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">varplas-hero-slider</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4 text-slate-400">3 slayt, istatistikler, CTA butonları</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">2</td>
+                            <td class="py-3 px-4 text-white font-semibold">Ürün Kataloğu</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">varplas-product-catalog</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4 text-slate-400">Ürün kartları grid</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">3</td>
+                            <td class="py-3 px-4 text-white font-semibold">Neden Biz</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">varplas-why-us</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4 text-slate-400">4 özellik kartı (ikon, başlık, açıklama)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">4</td>
+                            <td class="py-3 px-4 text-white font-semibold">Hakkımızda Timeline</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">varplas-about-timeline</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4 text-slate-400">Şirket geçmişi zaman çizelgesi</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">5</td>
+                            <td class="py-3 px-4 text-white font-semibold">Sertifikalar</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">varplas-certificates</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4 text-slate-400">ISO, UN belgeleri grid</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">6</td>
+                            <td class="py-3 px-4 text-white font-semibold">Teklif Formu</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">varplas-quote-form</td>
+                            <td class="py-3 px-4 text-red-400">false</td>
+                            <td class="py-3 px-4 text-slate-400">İletişim formu (ContactForm modülüne bağlı)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">7</td>
+                            <td class="py-3 px-4 text-white font-semibold">İletişim Bilgileri</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">varplas-contact-info</td>
+                            <td class="py-3 px-4 text-red-400">false</td>
+                            <td class="py-3 px-4 text-slate-400">Telefon, email, adres kartları</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-cyan-400">8</td>
+                            <td class="py-3 px-4 text-white font-semibold">İstatistikler</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">varplas-stats</td>
+                            <td class="py-3 px-4 text-green-400">true</td>
+                            <td class="py-3 px-4 text-slate-400">Sayaç animasyonlu istatistikler</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Widget Detay: Hero Slider -->
+            <div class="mt-6 bg-slate-800/50 rounded-lg p-4">
+                <h3 class="font-semibold text-cyan-400 mb-3">📦 Örnek: Hero Slider Widget (Central DB)</h3>
+                <div class="code-block text-xs overflow-x-auto">
+                    <pre><code class="text-green-400">{
+  "id": 20,
+  "name": "VARPLAS Hero Slider",
+  "slug": "varplas-hero-slider",
+  "type": "standard",
+  "has_items": true,
+
+  "settings_schema": [
+    { "name": "section_title", "label": "Bölüm Başlığı", "type": "text" },
+    { "name": "section_subtitle", "label": "Alt Başlık", "type": "text" },
+    { "name": "primary_btn_text", "label": "Birincil Buton", "type": "text" },
+    { "name": "primary_btn_url", "label": "Birincil Buton URL", "type": "url" },
+    { "name": "secondary_btn_text", "label": "İkincil Buton", "type": "text" },
+    { "name": "secondary_btn_url", "label": "İkincil Buton URL", "type": "url" },
+    { "name": "autoplay", "label": "Otomatik Oynat", "type": "switch" },
+    { "name": "interval", "label": "Geçiş Süresi (ms)", "type": "number" }
+  ],
+
+  "item_schema": [
+    { "name": "title", "label": "Slayt Başlığı", "type": "text", "required": true },
+    { "name": "image", "label": "Slayt Görseli", "type": "image", "required": true },
+    { "name": "is_active", "label": "Durum", "type": "switch" }
+  ],
+
+  "content_html": "&lt;section class=\"hero-slider\"&gt;...{{#each items}}...{{/each}}&lt;/section&gt;",
+  "content_css": ".hero-slider { ... }",
+  "js_files": ["/js/swiper.min.js"],
+  "css_files": ["/css/swiper.min.css"]
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 3. TENANT WIDGET KAYITLARI -->
+        <!-- ======================== -->
+        <section id="tenant-widgets" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">3️⃣</span> TenantWidget Kayıtları (Tenant DB)
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Her tenant kendi widget örneklerini oluşturur. VARPLAS sitesi için <strong>Tenant DB</strong>'deki
+                    <code class="bg-slate-800 px-1 rounded">tenant_widgets</code> ve <code class="bg-slate-800 px-1 rounded">widget_items</code>
+                    tablolarına kayıtlar eklenir.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">tenant_widgets.id</th>
+                            <th class="text-left py-3 px-4 text-slate-400">widget_id</th>
+                            <th class="text-left py-3 px-4 text-slate-400">display_title</th>
+                            <th class="text-left py-3 px-4 text-slate-400">widget_items sayısı</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 px-4 text-purple-400">1</td>
+                            <td class="py-3 px-4 text-yellow-400">20 (Hero)</td>
+                            <td class="py-3 px-4 text-slate-300">Ana Sayfa Hero Slider</td>
+                            <td class="py-3 px-4 text-green-400">3 slayt</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-purple-400">2</td>
+                            <td class="py-3 px-4 text-yellow-400">21 (Ürünler)</td>
+                            <td class="py-3 px-4 text-slate-300">Ürün Kataloğu</td>
+                            <td class="py-3 px-4 text-green-400">3 ürün kartı</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-purple-400">3</td>
+                            <td class="py-3 px-4 text-yellow-400">22 (Neden Biz)</td>
+                            <td class="py-3 px-4 text-slate-300">Neden VARPLAS</td>
+                            <td class="py-3 px-4 text-green-400">4 özellik</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-purple-400">4</td>
+                            <td class="py-3 px-4 text-yellow-400">23 (Timeline)</td>
+                            <td class="py-3 px-4 text-slate-300">Şirket Tarihçesi</td>
+                            <td class="py-3 px-4 text-green-400">3 dönem</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-purple-400">5</td>
+                            <td class="py-3 px-4 text-yellow-400">24 (Sertifika)</td>
+                            <td class="py-3 px-4 text-slate-300">Sertifikalarımız</td>
+                            <td class="py-3 px-4 text-green-400">4 belge</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-purple-400">6</td>
+                            <td class="py-3 px-4 text-yellow-400">25 (Form)</td>
+                            <td class="py-3 px-4 text-slate-300">Teklif Formu</td>
+                            <td class="py-3 px-4 text-slate-500">-</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-purple-400">7</td>
+                            <td class="py-3 px-4 text-yellow-400">26 (İletişim)</td>
+                            <td class="py-3 px-4 text-slate-300">İletişim Bilgileri</td>
+                            <td class="py-3 px-4 text-slate-500">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-900/20 border border-blue-700/50 rounded-lg">
+                <h3 class="font-semibold text-blue-400 mb-2">💡 Toplam Kayıt Sayısı</h3>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <span class="text-slate-400">tenant_widgets:</span>
+                        <span class="text-purple-400 font-bold ml-2">7 kayıt</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400">widget_items:</span>
+                        <span class="text-green-400 font-bold ml-2">~17 kayıt</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 4. MENÜ YAPISI -->
+        <!-- ======================== -->
+        <section id="menu" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">4️⃣</span> Menü Yapısı
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Site menüleri <code class="bg-slate-800 px-1 rounded">MenuManagement</code> modülü ile yönetilir.
+                    VARPLAS için 3 farklı menü gerekiyor: Header, Footer Hızlı Erişim, Footer Ürünler.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Header Menu -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-orange-400 mb-3">🔝 Header Menü</h3>
+                    <div class="text-sm space-y-2">
+                        <div class="text-slate-300">location: <code class="text-yellow-400">header</code></div>
+                        <ul class="space-y-1 text-slate-400 mt-3">
+                            <li>• Anasayfa → /</li>
+                            <li>• Ürünler → /urunler (mega menü)
+                                <ul class="ml-4 mt-1 text-xs">
+                                    <li>- IBC Tank → /urunler/ibc-tank</li>
+                                    <li>- Metal Varil → /urunler/metal-varil</li>
+                                    <li>- Plastik Varil → /urunler/plastik-varil</li>
+                                </ul>
+                            </li>
+                            <li>• Hakkımızda → /hakkimizda</li>
+                            <li>• Lisanslar → /lisanslar</li>
+                            <li>• İletişim → /iletisim</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Footer Quick Links -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-orange-400 mb-3">🔗 Footer Hızlı Erişim</h3>
+                    <div class="text-sm space-y-2">
+                        <div class="text-slate-300">location: <code class="text-yellow-400">footer_quick</code></div>
+                        <ul class="space-y-1 text-slate-400 mt-3">
+                            <li>• Anasayfa → /</li>
+                            <li>• Hakkımızda → /hakkimizda</li>
+                            <li>• Ürünler → /urunler</li>
+                            <li>• Sertifikalar → /lisanslar</li>
+                            <li>• İletişim → /iletisim</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Footer Products -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-orange-400 mb-3">📦 Footer Ürünler</h3>
+                    <div class="text-sm space-y-2">
+                        <div class="text-slate-300">location: <code class="text-yellow-400">footer_products</code></div>
+                        <ul class="space-y-1 text-slate-400 mt-3">
+                            <li>• IBC Tank → /urunler/ibc-tank</li>
+                            <li>• Metal Varil → /urunler/metal-varil</li>
+                            <li>• Plastik Varil → /urunler/plastik-varil</li>
+                            <li>• Tüm Ürünler → /urunler</li>
+                            <li>• Teklif Al → /teklif-al</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 code-block text-xs">
+                <pre><code class="text-green-400">// menus tablosu (Tenant DB)
+{
+  "id": 1,
+  "name": "Header Menü",
+  "location": "header",
+  "items": [
+    { "title": "Anasayfa", "url": "/", "order": 1 },
+    { "title": "Ürünler", "url": "/urunler", "order": 2, "has_mega_menu": true,
+      "children": [
+        { "title": "IBC Tank", "url": "/urunler/ibc-tank" },
+        { "title": "Metal Varil", "url": "/urunler/metal-varil" },
+        { "title": "Plastik Varil", "url": "/urunler/plastik-varil" }
+      ]
+    },
+    { "title": "Hakkımızda", "url": "/hakkimizda", "order": 3 },
+    { "title": "Lisanslar", "url": "/lisanslar", "order": 4 },
+    { "title": "İletişim", "url": "/iletisim", "order": 5 }
+  ]
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 5. SAYFALAR -->
+        <!-- ======================== -->
+        <section id="pages" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-pink-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">5️⃣</span> Sayfalar (Page Modülü)
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Sayfalar <code class="bg-slate-800 px-1 rounded">Page</code> modülü ile yönetilir. Her sayfa 
+                    <code class="bg-slate-800 px-1 rounded">pages</code> tablosunda bir kayıt olarak tutulur.
+                    Sayfa içeriği widget'lardan veya doğrudan HTML'den oluşabilir.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">Sayfa</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Slug</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Template</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Widget Kullanımı</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 px-4 text-white font-semibold">Ana Sayfa</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">/</td>
+                            <td class="py-3 px-4 text-slate-300">home</td>
+                            <td class="py-3 px-4 text-green-400">✓ 7 widget</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white font-semibold">Hakkımızda</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">hakkimizda</td>
+                            <td class="py-3 px-4 text-slate-300">about</td>
+                            <td class="py-3 px-4 text-green-400">✓ Timeline + Content</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white font-semibold">Ürünler</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">urunler</td>
+                            <td class="py-3 px-4 text-slate-300">products/index</td>
+                            <td class="py-3 px-4 text-slate-400">Module data</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white font-semibold">Ürün Detay</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">urunler/{slug}</td>
+                            <td class="py-3 px-4 text-slate-300">products/show</td>
+                            <td class="py-3 px-4 text-slate-400">Module data</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white font-semibold">Lisanslar</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">lisanslar</td>
+                            <td class="py-3 px-4 text-slate-300">certificates</td>
+                            <td class="py-3 px-4 text-green-400">✓ Sertifikalar widget</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white font-semibold">İletişim</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">iletisim</td>
+                            <td class="py-3 px-4 text-slate-300">contact</td>
+                            <td class="py-3 px-4 text-green-400">✓ Form + Map</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white font-semibold">Teklif Al</td>
+                            <td class="py-3 px-4 font-mono text-yellow-400">teklif-al</td>
+                            <td class="py-3 px-4 text-slate-300">quote</td>
+                            <td class="py-3 px-4 text-green-400">✓ Quote form widget</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 p-4 bg-purple-900/20 border border-purple-700/50 rounded-lg">
+                <h3 class="font-semibold text-purple-400 mb-2">📊 pages tablosu kaydı örneği</h3>
+                <div class="code-block text-xs">
+                    <pre><code class="text-green-400">{
+  "id": 1,
+  "title": { "tr": "Ana Sayfa", "en": "Home" },
+  "slug": { "tr": "", "en": "" },
+  "template": "home",
+  "content": null,  // Widget'lar kullanılacak
+  "widget_ids": [1, 2, 3, 4, 5, 6, 7],  // tenant_widgets ID'leri
+  "seo_title": { "tr": "VARPLAS - Endüstriyel Depolama Çözümleri" },
+  "seo_description": { "tr": "IBC Tank, Metal Varil, Plastik Varil..." },
+  "is_active": true
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 6. GEREKLİ MODÜLLER -->
+        <!-- ======================== -->
+        <section id="modules" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-teal-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">6️⃣</span> Gerekli Modüller
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-teal-400 mb-3">✅ Mevcut Modüller (Kullanılacak)</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            <span class="text-white">Page</span>
+                            <span class="text-slate-400">- Sayfa yönetimi</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            <span class="text-white">WidgetManagement</span>
+                            <span class="text-slate-400">- Widget sistemi</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            <span class="text-white">MenuManagement</span>
+                            <span class="text-slate-400">- Menü sistemi</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            <span class="text-white">SettingsManagement</span>
+                            <span class="text-slate-400">- Site ayarları</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            <span class="text-white">SeoManagement</span>
+                            <span class="text-slate-400">- SEO ayarları</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            <span class="text-white">MediaManagement</span>
+                            <span class="text-slate-400">- Medya yönetimi</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-400">✓</span>
+                            <span class="text-white">ContactForm</span>
+                            <span class="text-slate-400">- İletişim formları</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-3">🆕 Oluşturulacak/Düzenlenecek</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <span class="text-yellow-400">→</span>
+                            <span class="text-white">Services/Products Modülü</span>
+                            <span class="text-slate-400">- Ürün/Hizmet yönetimi</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-yellow-900/20 border border-yellow-700/50 rounded text-xs">
+                        <p class="text-slate-300">
+                            VARPLAS için <strong>Shop modülü</strong> veya yeni bir <strong>Products modülü</strong> gerekebilir.
+                            Ürün kategorileri, ürün detayları, özellikler gibi alanlar için.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 7. SETTINGS DEĞERLERİ -->
+        <!-- ======================== -->
+        <section id="settings" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-yellow-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">7️⃣</span> Settings Değerleri (settings_values tablosu)
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">📝 Basit Anlatım</h3>
+                <p class="text-slate-300 text-sm">
+                    Site genelinde kullanılan ayarlar <code class="bg-slate-800 px-1 rounded">settings_values</code> tablosunda saklanır.
+                    <code class="bg-slate-800 px-1 rounded">setting('key')</code> helper'ı ile çağrılır.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Temel Ayarlar -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-3">🏢 Temel Site Bilgileri</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <code class="text-green-400">site_name</code>
+                            <span class="text-slate-300">"VARPLAS"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">site_slogan</code>
+                            <span class="text-slate-300">"Endüstriyel Depolama Çözümleri"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">site_logo</code>
+                            <span class="text-slate-300">"/storage/logo.png"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">site_favicon</code>
+                            <span class="text-slate-300">"/storage/favicon.ico"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">active_theme</code>
+                            <span class="text-slate-300">"varplas"</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İletişim Bilgileri -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-3">📞 İletişim Bilgileri</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <code class="text-green-400">site_phone</code>
+                            <span class="text-slate-300">"+90 262 658 28 18"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">site_email</code>
+                            <span class="text-slate-300">"info@varplas.com"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">site_address</code>
+                            <span class="text-slate-300">"Kocaeli, Türkiye"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">site_whatsapp</code>
+                            <span class="text-slate-300">"+90 532 XXX XX XX"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">google_maps_embed</code>
+                            <span class="text-slate-300">"&lt;iframe...&gt;"</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sosyal Medya -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-3">🌐 Sosyal Medya</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <code class="text-green-400">social_facebook</code>
+                            <span class="text-slate-300">"https://facebook.com/varplas"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">social_instagram</code>
+                            <span class="text-slate-300">"https://instagram.com/varplas"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">social_linkedin</code>
+                            <span class="text-slate-300">"https://linkedin.com/company/varplas"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">social_twitter</code>
+                            <span class="text-slate-300">"https://twitter.com/varplas"</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Renk & Tasarım -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-3">🎨 Renk & Tasarım</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between items-center">
+                            <code class="text-green-400">primary_color</code>
+                            <span class="flex items-center gap-2">
+                                <span class="w-4 h-4 rounded" style="background:#10b981"></span>
+                                <span class="text-slate-300">"#10b981"</span>
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <code class="text-green-400">secondary_color</code>
+                            <span class="flex items-center gap-2">
+                                <span class="w-4 h-4 rounded" style="background:#0ea5e9"></span>
+                                <span class="text-slate-300">"#0ea5e9"</span>
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">font_heading</code>
+                            <span class="text-slate-300">"Outfit"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <code class="text-green-400">font_body</code>
+                            <span class="text-slate-300">"Inter"</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-900/20 border border-blue-700/50 rounded-lg">
+                <h3 class="font-semibold text-blue-400 mb-2">📊 Toplam Settings Sayısı</h3>
+                <p class="text-slate-300 text-sm">
+                    VARPLAS teması için yaklaşık <strong class="text-yellow-400">20-25 adet</strong> setting değeri gerekiyor.
+                    Bunlar <code class="bg-slate-800 px-1 rounded">settings_values</code> tablosuna eklenir.
+                </p>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 8. SEO AYARLARI -->
+        <!-- ======================== -->
+        <section id="seo" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-red-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">8️⃣</span> SEO Ayarları (seo_settings tablosu)
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-400 mb-3">🔍 Genel SEO</h3>
+                    <div class="space-y-2 text-sm">
+                        <div><code class="text-green-400">default_title</code>: "VARPLAS - Endüstriyel Depolama"</div>
+                        <div><code class="text-green-400">title_separator</code>: " | "</div>
+                        <div><code class="text-green-400">meta_description</code>: "IBC Tank, Metal Varil..."</div>
+                        <div><code class="text-green-400">meta_keywords</code>: "ibc tank, varil, depolama"</div>
+                        <div><code class="text-green-400">robots</code>: "index, follow"</div>
+                        <div><code class="text-green-400">canonical_url</code>: "https://varplas.com"</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-400 mb-3">📱 Social Meta (OG)</h3>
+                    <div class="space-y-2 text-sm">
+                        <div><code class="text-green-400">og_title</code>: "VARPLAS"</div>
+                        <div><code class="text-green-400">og_description</code>: "Endüstriyel depolama..."</div>
+                        <div><code class="text-green-400">og_image</code>: "/storage/og-image.jpg"</div>
+                        <div><code class="text-green-400">twitter_card</code>: "summary_large_image"</div>
+                        <div><code class="text-green-400">google_analytics</code>: "G-XXXXXXXX"</div>
+                        <div><code class="text-green-400">google_tag_manager</code>: "GTM-XXXXXX"</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== -->
+        <!-- 9. UYGULAMA CHECKLIST -->
+        <!-- ======================== -->
+        <section id="checklist" class="section-card rounded-xl p-6">
+            <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2 mb-6">
+                <span class="text-2xl">9️⃣</span> Uygulama Checklist
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">📝 Claude'un Yapması Gerekenler (Sırasıyla)</h3>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Adım 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">1</span>
+                        <h3 class="font-semibold text-emerald-400">Tenant Oluştur</h3>
+                    </div>
+                    <ul class="ml-11 text-sm text-slate-300 space-y-1">
+                        <li>• Yeni tenant kaydı (tenants tablosu)</li>
+                        <li>• Domain kaydı (domains tablosu)</li>
+                        <li>• Tenant database oluştur</li>
+                        <li>• Migration'ları çalıştır</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">2</span>
+                        <h3 class="font-semibold text-emerald-400">Tema Dosyalarını Oluştur</h3>
+                    </div>
+                    <ul class="ml-11 text-sm text-slate-300 space-y-1">
+                        <li>• resources/views/themes/varplas/ klasör yapısı</li>
+                        <li>• layouts/app.blade.php</li>
+                        <li>• partials/ (header, footer, mega-menu)</li>
+                        <li>• pages/ (home, about, contact, products)</li>
+                        <li>• components/ (kartlar, timeline)</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">3</span>
+                        <h3 class="font-semibold text-emerald-400">Widget Şablonlarını Oluştur (Central)</h3>
+                    </div>
+                    <ul class="ml-11 text-sm text-slate-300 space-y-1">
+                        <li>• 8 widget şablonu → widgets tablosu</li>
+                        <li>• Her widget için settings_schema tanımla</li>
+                        <li>• has_items=true olanlar için item_schema tanımla</li>
+                        <li>• content_html, content_css, js_files/css_files</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">4</span>
+                        <h3 class="font-semibold text-emerald-400">TenantWidget Instance'ları Oluştur</h3>
+                    </div>
+                    <ul class="ml-11 text-sm text-slate-300 space-y-1">
+                        <li>• 7 tenant_widgets kaydı</li>
+                        <li>• Her widget için settings JSON doldur</li>
+                        <li>• has_items=true olanlar için widget_items ekle</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 5 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">5</span>
+                        <h3 class="font-semibold text-emerald-400">Settings Değerlerini Gir</h3>
+                    </div>
+                    <ul class="ml-11 text-sm text-slate-300 space-y-1">
+                        <li>• ~20-25 setting değeri → settings_values</li>
+                        <li>• site_name, site_logo, iletişim bilgileri</li>
+                        <li>• Sosyal medya linkleri</li>
+                        <li>• active_theme = 'varplas'</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 6 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">6</span>
+                        <h3 class="font-semibold text-emerald-400">Menüleri Oluştur</h3>
+                    </div>
+                    <ul class="ml-11 text-sm text-slate-300 space-y-1">
+                        <li>• Header menü (mega menu dahil)</li>
+                        <li>• Footer hızlı erişim menüsü</li>
+                        <li>• Footer ürünler menüsü</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 7 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">7</span>
+                        <h3 class="font-semibold text-emerald-400">Sayfaları Oluştur</h3>
+                    </div>
+                    <ul class="ml-11 text-sm text-slate-300 space-y-1">
+                        <li>• 6-7 sayfa → pages tablosu</li>
+                        <li>• Her sayfa için widget_ids belirle</li>
+                        <li>• SEO meta bilgilerini doldur</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 8 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">8</span>
+                        <h3 class="font-semibold text-emerald-400">Test & Cache Temizle</h3>
+                    </div>
+                    <ul class="ml-11 text-sm text-slate-300 space-y-1">
+                        <li>• npm run prod (CSS build)</li>
+                        <li>• php artisan cache:clear</li>
+                        <li>• php artisan view:clear</li>
+                        <li>• Site testi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 border border-emerald-700/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">📋 Toplam İş Listesi Özeti</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-emerald-400">15+</div>
+                    <div class="text-slate-400">Tema Dosyası</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-cyan-400">8</div>
+                    <div class="text-slate-400">Widget Şablonu (Central)</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-purple-400">7</div>
+                    <div class="text-slate-400">TenantWidget Instance</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-yellow-400">~17</div>
+                    <div class="text-slate-400">Widget Items</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-orange-400">3</div>
+                    <div class="text-slate-400">Menü</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-pink-400">6-7</div>
+                    <div class="text-slate-400">Sayfa</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-red-400">20-25</div>
+                    <div class="text-slate-400">Settings Değeri</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-400">10+</div>
+                    <div class="text-slate-400">SEO Ayarı</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-700/50 mt-12 py-6 text-center text-sm text-slate-500">
+        <p>Claude AI tarafından oluşturuldu | Tema ile Site Oluşturma Rehberi v1</p>
+        <p class="mt-1">14 Ocak 2026</p>
+    </footer>
+</body>
+</html>

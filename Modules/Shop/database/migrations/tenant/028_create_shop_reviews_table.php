@@ -101,11 +101,8 @@ return new class extends Migration
                   ->onDelete('cascade')
                   ->comment('Müşteri silinirse ID null olur ama yorum kalır');
 
-            $table->foreign('order_id')
-                  ->references('order_id')
-                  ->on('shop_orders')
-                  ->onDelete('cascade')
-                  ->comment('Sipariş silinirse ID null olur ama yorum kalır');
+            // NOT: shop_orders tablosu kaldırıldı, Cart modülünde orders tablosu kullanılıyor
+            // order_id foreign key kaldırıldı
         });
     }
 

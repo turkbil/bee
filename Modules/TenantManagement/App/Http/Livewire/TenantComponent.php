@@ -52,7 +52,7 @@ class TenantComponent extends Component
         'phone'     => 'nullable|string|max:20',
         'is_active' => 'boolean',
         'newDomain' => 'nullable|string|max:255|unique:domains,domain',
-        'theme_id'  => 'required|integer',
+        'theme_id'  => 'required|integer|min:0',
         'tenant_ai_provider_id' => 'nullable|integer|exists:ai_providers,id',
         'tenant_ai_provider_model_id' => 'nullable|integer|exists:ai_provider_models,id',
     ];
@@ -61,9 +61,13 @@ class TenantComponent extends Component
     {
         $this->is_active = true;
         // Tema listesi ve başlangıç teması
-        $this->themes = Theme::where('is_active', true)->pluck('title','theme_id')->toArray();
-        $this->theme_id = $this->themes ? array_key_first($this->themes) : 1;
-        
+        // t-* ile başlayan otomatik temaları listede gösterme
+        $this->themes = [0 => 'Otomatik (t-{id})'] + Theme::where('is_active', true)
+            ->where('name', 'not like', 't-%')
+            ->pluck('title', 'theme_id')
+            ->toArray();
+        $this->theme_id = 0; // Varsayılan olarak "Otomatik" seçili
+
         // AI Provider listesi yükle
         $this->loadAiProviders();
     }
@@ -77,8 +81,10 @@ class TenantComponent extends Component
             $this->availableAiProviders = \Modules\AI\App\Models\AIProvider::getSelectOptions();
             // Varsayılan seçimi sadece yeni tenant için ayarla
             if (!$this->tenantId && count($this->availableAiProviders) > 0) {
-                $this->tenant_ai_provider_id = $this->availableAiProviders[0]['value'] ?? null;
-                // İlk provider'ı seçtikten sonra modellerini yükle
+                // is_default=1 olan provider'ı bul (OpenAI), yoksa ilk provider
+                $defaultProvider = \Modules\AI\App\Models\AIProvider::where('is_default', 1)->first();
+                $this->tenant_ai_provider_id = $defaultProvider?->id ?? $this->availableAiProviders[0]['value'] ?? null;
+                // Provider'ı seçtikten sonra modellerini yükle
                 if ($this->tenant_ai_provider_id) {
                     $this->updatedTenantAiProviderId($this->tenant_ai_provider_id);
                 }
@@ -203,8 +209,18 @@ class TenantComponent extends Component
             $this->phone = $tenantData->phone ?? '';
             $this->is_active = (bool)$tenantData->is_active;
             // Tema listesi ve mevcut tenant teması
-            $this->themes = Theme::where('is_active', true)->pluck('title','theme_id')->toArray();
-            $this->theme_id = $tenantData->theme_id ?? (array_key_first($this->themes) ?? 1);
+            // t-* ile başlayan otomatik temaları listede gösterme (kendi teması hariç)
+            $currentTheme = $tenantData->theme_id ? Theme::find($tenantData->theme_id) : null;
+            $themesQuery = Theme::where('is_active', true)->where('name', 'not like', 't-%');
+
+            // Eğer mevcut tema t-* formatındaysa, onu da listeye ekle
+            if ($currentTheme && str_starts_with($currentTheme->name, 't-')) {
+                $this->themes = [$currentTheme->theme_id => $currentTheme->title . ' (Özel)'] +
+                    $themesQuery->pluck('title', 'theme_id')->toArray();
+            } else {
+                $this->themes = [0 => 'Otomatik (t-{id})'] + $themesQuery->pluck('title', 'theme_id')->toArray();
+            }
+            $this->theme_id = $tenantData->theme_id ?? 0;
 
             // Theme Settings (subheader_style vb.)
             $themeSettings = $tenantData->theme_settings ? json_decode($tenantData->theme_settings, true) : [];
@@ -266,6 +282,13 @@ class TenantComponent extends Component
                         'subheader_style' => $this->subheader_style,
                     ];
 
+                    // Otomatik tema seçildiyse (theme_id = 0), yeni t-{id} teması oluştur
+                    $finalThemeId = $this->theme_id;
+                    if ($this->theme_id == 0) {
+                        $autoTheme = $this->createAutoTheme($this->tenantId);
+                        $finalThemeId = $autoTheme->theme_id;
+                    }
+
                     // ✅ FİX: Eloquent kullan, double encoding önlenir
                     // Model'de 'theme_settings' => 'array' cast var
                     // Eloquent otomatik encode eder, json_encode() GEREKSIZ!
@@ -275,7 +298,7 @@ class TenantComponent extends Component
                         'email'      => $this->email,
                         'phone'      => $this->phone,
                         'is_active'  => $this->is_active ? 1 : 0,
-                        'theme_id'     => $this->theme_id,
+                        'theme_id'     => $finalThemeId,
                         'theme_settings' => $themeSettings, // Array olarak gönder (cast encode eder)
                         'tenant_ai_provider_id' => $this->tenant_ai_provider_id,
                         'tenant_ai_provider_model_id' => $this->tenant_ai_provider_model_id,
@@ -291,7 +314,14 @@ class TenantComponent extends Component
             } else {
                 // Yeni tenant oluştur
                 // Benzersiz veritabanı adı oluştur (rastgele suffix ekleyerek)
-                $baseDbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
+                // Türkçe karakterleri ASCII eşdeğerlerine çevir
+                $turkishMap = [
+                    'ı' => 'i', 'İ' => 'i', 'ş' => 's', 'Ş' => 's',
+                    'ğ' => 'g', 'Ğ' => 'g', 'ü' => 'u', 'Ü' => 'u',
+                    'ö' => 'o', 'Ö' => 'o', 'ç' => 'c', 'Ç' => 'c',
+                ];
+                $cleanName = strtr($this->name, $turkishMap);
+                $baseDbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $cleanName));
                 $randomSuffix = '_' . substr(md5(mt_rand()), 0, 6);
                 $dbName = $baseDbName . $randomSuffix;
                 
@@ -300,15 +330,30 @@ class TenantComponent extends Component
                     'subheader_style' => $this->subheader_style,
                 ];
 
+                // Boş olan en küçük ID'yi bul (1001 gibi özel ID'leri atlayarak 3'ten devam et)
+                $existingIds = Tenant::pluck('id')->toArray();
+                $nextId = 3; // 1 ve 2 zaten dolu, 3'ten başla
+                while (in_array($nextId, $existingIds)) {
+                    $nextId++;
+                }
+
+                // Otomatik tema seçildiyse (theme_id = 0), yeni t-{id} teması oluştur
+                $finalThemeId = $this->theme_id;
+                if ($this->theme_id == 0) {
+                    $autoTheme = $this->createAutoTheme($nextId);
+                    $finalThemeId = $autoTheme->theme_id;
+                }
+
                 // Tenant oluştur (YENİ SİSTEM - Direkt kolonlar)
                 $tenant = Tenant::create([
+                    'id'              => $nextId,
                     'title'           => $this->name,
                     'fullname'        => $this->fullname,
                     'email'           => $this->email,
                     'phone'           => $this->phone,
                     'tenancy_db_name' => $dbName,
                     'is_active'       => $this->is_active ? 1 : 0,
-                    'theme_id'        => $this->theme_id,
+                    'theme_id'        => $finalThemeId,
                     'theme_settings'  => $themeSettings,
                     'tenant_ai_provider_id' => $this->tenant_ai_provider_id,
                     'tenant_ai_provider_model_id' => $this->tenant_ai_provider_model_id,
@@ -490,47 +535,17 @@ class TenantComponent extends Component
                     $domain->setAsPrimary();
                 }
 
-                // ✅ PLESK OTOMASYONU: Alias oluştur + SSL + Nginx reload
+                // ✅ Web server alias otomasyonu (nginx + apache + SSL)
                 try {
-                    $parentDomain = config('tenancy.parent_domain');
-                    $escapedDomain = escapeshellarg($this->newDomain);
-                    $escapedParent = escapeshellarg($parentDomain);
+                    // 1. Nginx ve Apache'ye ekle
+                    \App\Jobs\RegisterDomainInWebServer::dispatchSync($this->newDomain, $this->tenantId);
 
-                    // 1. Plesk alias oluştur
-                    exec("plesk bin subdomain --create {$escapedDomain} -domain {$escapedParent} -www true 2>&1", $output, $returnCode);
+                    // 2. SSL sertifikasını yenile (queue'da çalışsın)
+                    \App\Jobs\RenewSSLCertificate::dispatch();
 
-                    if ($returnCode === 0) {
-                        \Log::info("Plesk alias created: {$this->newDomain}");
-
-                        // 2. SEO redirect kapat (KRİTİK!)
-                        exec("plesk db \"UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = {$escapedDomain}\"");
-
-                        // 3. Nginx config yenile
-                        exec("plesk repair web {$escapedParent} -y 2>&1");
-                        exec("systemctl reload nginx 2>&1");
-
-                        // 4. SSL sertifika talep et (opsiyonel, DNS hazırsa)
-                        $adminEmail = env('TENANT_ADMIN_EMAIL', "admin@{$parentDomain}");
-                        $escapedEmail = escapeshellarg($adminEmail);
-                        exec("plesk bin certificate --issue -domain {$escapedDomain} -admin-email {$escapedEmail} 2>&1", $sslOutput, $sslReturn);
-
-                        if ($sslReturn === 0) {
-                            \Log::info("SSL certificate issued: {$this->newDomain}");
-                        } else {
-                            \Log::warning("SSL certificate failed (DNS may not be ready): {$this->newDomain}");
-                        }
-
-                        // 5. Test et
-                        sleep(1); // Nginx reload için kısa bekle
-                        $testUrl = "https://{$this->newDomain}/";
-                        $statusCode = exec("curl -s -o /dev/null -w '%{http_code}' -k {$testUrl}");
-                        \Log::info("Domain accessibility test: {$this->newDomain} - HTTP {$statusCode}");
-                    } else {
-                        \Log::error("Plesk alias creation failed: {$this->newDomain} - " . implode("\n", $output));
-                    }
+                    \Log::info("✅ Domain web server'a eklendi: {$this->newDomain}");
                 } catch (\Exception $e) {
-                    \Log::error("Plesk automation failed for {$this->newDomain}: " . $e->getMessage());
-                    // Hata olsa bile domain Laravel'e eklendi, sadece log tut
+                    \Log::error("❌ Web server kaydı hatası: {$this->newDomain} - " . $e->getMessage());
                 }
 
                 if (function_exists('log_activity')) {
@@ -587,43 +602,11 @@ class TenantComponent extends Component
                 $oldDomain = $domain->domain;
                 $domain->update(['domain' => $this->editingDomainValue]);
 
-                // ✅ PLESK OTOMASYONU: Eski alias sil, yeni alias oluştur
-                try {
-                    $parentDomain = config('tenancy.parent_domain');
-                    $escapedParent = escapeshellarg($parentDomain);
-                    $escapedOldDomain = escapeshellarg($oldDomain);
-                    $escapedNewDomain = escapeshellarg($this->editingDomainValue);
-
-                    // 1. Eski Plesk alias'ı sil
-                    exec("plesk bin subdomain --remove {$escapedOldDomain} -domain {$escapedParent} 2>&1", $removeOutput, $removeReturn);
-
-                    if ($removeReturn === 0) {
-                        \Log::info("Old Plesk alias removed: {$oldDomain}");
-                    } else {
-                        \Log::warning("Old Plesk alias removal failed (may not exist): {$oldDomain}");
-                    }
-
-                    // 2. Yeni Plesk alias oluştur
-                    exec("plesk bin subdomain --create {$escapedNewDomain} -domain {$escapedParent} -www true 2>&1", $createOutput, $createReturn);
-
-                    if ($createReturn === 0) {
-                        \Log::info("New Plesk alias created: {$this->editingDomainValue}");
-
-                        // 3. SEO redirect kapat
-                        exec("plesk db \"UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = {$escapedNewDomain}\"");
-
-                        // 4. Nginx reload
-                        exec("plesk repair web {$escapedParent} -y 2>&1");
-                        exec("systemctl reload nginx 2>&1");
-
-                        \Log::info("Domain updated in Plesk: {$oldDomain} → {$this->editingDomainValue}");
-                    } else {
-                        \Log::error("New Plesk alias creation failed: {$this->editingDomainValue}");
-                    }
-                } catch (\Exception $e) {
-                    \Log::error("Plesk update automation failed: " . $e->getMessage());
-                    // Hata olsa bile Laravel'de güncellendi
-                }
+                // ✅ Web server alias güncelleme: Eski sil + yeni ekle
+                // DomainUpdated event ile otomatik yapılır
+                // Manuel tetikleme gerekirse:
+                \App\Jobs\UnregisterDomainAliasFromPlesk::dispatchSync($oldDomain, $domain->tenant_id);
+                \App\Jobs\RegisterDomainInWebServer::dispatchSync($this->editingDomainValue, $domain->tenant_id);
 
                 if (function_exists('log_activity')) {
                     log_activity($domain, 'güncellendi');
@@ -654,32 +637,8 @@ class TenantComponent extends Component
             $domain = Domain::find($domainId);
 
             if ($domain) {
-                $domainName = $domain->domain;
-
-                // ✅ PLESK OTOMASYONU: Alias sil + Nginx reload
-                try {
-                    $parentDomain = config('tenancy.parent_domain');
-                    $escapedParent = escapeshellarg($parentDomain);
-                    $escapedDomain = escapeshellarg($domainName);
-
-                    // 1. Plesk alias'ı sil
-                    exec("plesk bin subdomain --remove {$escapedDomain} -domain {$escapedParent} 2>&1", $output, $returnCode);
-
-                    if ($returnCode === 0) {
-                        \Log::info("Plesk alias removed: {$domainName}");
-                    } else {
-                        \Log::warning("Plesk alias removal failed (may not exist): {$domainName}");
-                    }
-
-                    // 2. Nginx config yenile
-                    exec("plesk repair web {$escapedParent} -y 2>&1");
-                    exec("systemctl reload nginx 2>&1");
-
-                    \Log::info("Domain removed from Plesk and Nginx reloaded: {$domainName}");
-                } catch (\Exception $e) {
-                    \Log::error("Plesk delete automation failed for {$domainName}: " . $e->getMessage());
-                    // Hata olsa bile Laravel'den sil
-                }
+                // ✅ Web server alias silme DeletingDomain event ile otomatik yapılır
+                // Bkz: TenancyServiceProvider -> DeletingDomain event
 
                 if (function_exists('log_activity')) {
                     log_activity($domain, 'silindi');
@@ -806,6 +765,111 @@ class TenantComponent extends Component
         }
     }
     
+    /**
+     * Otomatik t-{id} teması oluştur
+     *
+     * @param int $tenantId
+     * @return Theme
+     */
+    protected function createAutoTheme(int $tenantId): Theme
+    {
+        $themeName = "t-{$tenantId}";
+
+        // Tema zaten varsa döndür
+        $existingTheme = Theme::where('name', $themeName)->first();
+        if ($existingTheme) {
+            return $existingTheme;
+        }
+
+        // Yeni tema oluştur
+        $theme = Theme::create([
+            'name' => $themeName,
+            'title' => "Tenant {$tenantId} Teması",
+            'slug' => $themeName,
+            'folder_name' => $themeName,
+            'description' => "Tenant {$tenantId} için otomatik oluşturulan tema",
+            'is_active' => true,
+            'is_default' => false,
+            'available_for_tenants' => [$tenantId],
+        ]);
+
+        // Tema klasör yapısını oluştur
+        $this->createAutoThemeFiles($themeName, $tenantId);
+
+        \Log::info("Auto theme created: {$themeName} for tenant {$tenantId}");
+
+        return $theme;
+    }
+
+    /**
+     * Otomatik tema dosyalarını oluştur
+     *
+     * @param string $themeName
+     * @param int $tenantId
+     */
+    protected function createAutoThemeFiles(string $themeName, int $tenantId): void
+    {
+        $basePath = resource_path("views/themes/{$themeName}");
+        $layoutsPath = "{$basePath}/layouts";
+        $assetsPath = "{$basePath}/assets";
+
+        // Klasörleri oluştur
+        \Illuminate\Support\Facades\File::ensureDirectoryExists($layoutsPath, 0755, true);
+        \Illuminate\Support\Facades\File::ensureDirectoryExists("{$assetsPath}/css", 0755, true);
+        \Illuminate\Support\Facades\File::ensureDirectoryExists("{$assetsPath}/js", 0755, true);
+
+        // config.json oluştur
+        $configContent = json_encode([
+            'name' => $themeName,
+            'title' => "Tenant {$tenantId} Teması",
+            'version' => '1.0.0',
+            'description' => "Tenant {$tenantId} için otomatik oluşturulan tema",
+            'extends' => 'simple',
+            'colors' => [
+                'primary' => '#3b82f6',
+                'secondary' => '#f59e0b',
+            ],
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        file_put_contents("{$basePath}/config.json", $configContent);
+
+        // layouts/app.blade.php - simple'dan extend eder
+        $appContent = <<<'BLADE'
+{{-- Auto-generated theme - extends simple --}}
+@include('themes.simple.layouts.header')
+
+{{-- Universal Notification System --}}
+@include('themes.simple.layouts.notification')
+
+<main class="flex-1 min-h-[60vh]">
+    {{ $slot ?? '' }}
+
+    @php
+        ob_start();
+    @endphp
+
+    @yield('content')
+    @yield('module_content')
+
+    @php
+        $content = ob_get_clean();
+        echo app('widget.resolver')->resolveWidgetContent($content);
+    @endphp
+</main>
+
+@include('themes.simple.layouts.footer')
+BLADE;
+        file_put_contents("{$layoutsPath}/app.blade.php", $appContent);
+
+        // Permission düzelt
+        try {
+            exec("sudo chown -R tuufi.com_:psaserv " . escapeshellarg($basePath));
+            exec("sudo find " . escapeshellarg($basePath) . " -type d -exec chmod 755 {} \\;");
+            exec("sudo find " . escapeshellarg($basePath) . " -type f -exec chmod 644 {} \\;");
+        } catch (\Exception $e) {
+            \Log::error("Auto theme permission fix failed: {$themeName} - " . $e->getMessage());
+        }
+    }
+
     /**
      * Tenant dizinlerini temizle
      *

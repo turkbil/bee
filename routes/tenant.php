@@ -13,6 +13,13 @@ Route::middleware([
     ->where('path', '.*')
     ->name('tenant.storage.serve');
 
+// Contact Form API - Outside web middleware (no CSRF needed)
+Route::middleware([
+    InitializeTenancyByDomain::class,
+    PreventAccessFromCentralDomains::class,
+])->post('/api/contact', [\App\Http\Controllers\ContactController::class, 'submit'])
+    ->name('api.contact.submit');
+
 // Tenant'a özel route'lar (session gerektiren)
 Route::middleware([
     'web',

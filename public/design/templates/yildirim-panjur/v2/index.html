@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yıldırım Panjur - Profesyonel Panjur Tamiri ve Montaj | İstanbul</title>
+    <meta name="description" content="30 yıllık tecrübe ile İstanbul'da 7/24 panjur tamiri, motorlu panjur sistemleri, sineklik ve garaj kapısı hizmetleri. Ücretsiz keşif, 5 yıl garanti.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome Pro 7 LOCAL -->
+    <link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Inter', 'sans-serif'],
+                        body: ['Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Inter', sans-serif; }
+
+        /* Hero Gradient - Koyu Slate Profesyonel */
+        .hero-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #0f172a 50%, #1e293b 70%, #0f172a 100%);
+            background-size: 400% 400%;
+            animation: heroGradient 20s ease infinite;
+            position: relative;
+        }
+
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(220, 38, 38, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(220, 38, 38, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        @keyframes heroGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Gradient Text - Kırmızı Aksan */
+        .gradient-text {
+            background: linear-gradient(90deg, #dc2626, #f87171, #dc2626);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: textShimmer 4s ease infinite;
+        }
+
+        @keyframes textShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Animated Border */
+        .animated-border {
+            position: relative;
+            padding: 3px;
+            background: linear-gradient(90deg, #dc2626, #ef4444, #b91c1c, #ef4444, #dc2626);
+            background-size: 300% 100%;
+            border-radius: 1.5rem;
+            animation: borderGlow 3s ease infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Service Card Hover */
+        .service-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            border-color: #dc2626;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float { animation: float 4s ease-in-out infinite; }
+
+        /* Pulse Ring */
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border: 2px solid #dc2626;
+            border-radius: inherit;
+            animation: pulseRing 2s ease-out infinite;
+        }
+
+        /* Scroll Indicator */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .scroll-indicator { animation: bounce 2s ease-in-out infinite; }
+
+        /* Process Step */
+        .process-step {
+            transition: all 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* Mega Menu */
+        .mega-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .mega-menu-trigger:hover .mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #dc2626, #b91c1c); border-radius: 5px; }
+    </style>
+</head>
+<body class="bg-white dark:bg-slate-950 text-gray-900 dark:text-white transition-colors duration-300" x-data="{ darkMode: false, mobileMenu: false }" :class="{ 'dark': darkMode }">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+            x-data="{ scrolled: false }"
+            @scroll.window="scrolled = (window.pageYOffset > 50)"
+            :class="scrolled ? 'glass-light dark:glass-dark shadow-lg' : 'bg-transparent'">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <nav class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="relative w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-red-500/30 transition-shadow">
+                        <i class="fat fa-blinds text-white text-2xl icon-hover"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-heading font-bold text-gray-900 dark:text-white">Yıldırım</span>
+                        <span class="text-xl font-heading font-bold text-red-600">Panjur</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#anasayfa" class="font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 transition-colors">Ana Sayfa</a>
+
+                    <!-- Mega Menu Trigger -->
+                    <div class="mega-menu-trigger relative">
+                        <button class="font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 transition-colors flex items-center gap-1">
+                            Hizmetlerimiz
+                            <i class="fat fa-chevron-down text-xs icon-hover"></i>
+                        </button>
+
+                        <!-- Mega Menu -->
+                        <div class="mega-menu absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[600px]">
+                            <div class="glass-light dark:glass-dark rounded-2xl shadow-2xl overflow-hidden">
+                                <div class="grid grid-cols-2 gap-6 p-6">
+                                    <a href="#hizmetler" class="flex items-center gap-4 p-4 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
+                                            <i class="fat fa-screwdriver-wrench text-white text-xl icon-hover"></i>
+                                        </div>
+                                        <div>
+                                            <span class="font-semibold text-gray-900 dark:text-white block">Panjur Tamiri</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">Aynı gün tamir garantisi</span>
+                                        </div>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-4 p-4 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors group">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                            <i class="fat fa-bolt text-white text-xl icon-hover"></i>
+                                        </div>
+                                        <div>
+                                            <span class="font-semibold text-gray-900 dark:text-white block">Motorlu Panjur</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">Akıllı sistemler</span>
+                                        </div>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-4 p-4 rounded-xl hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors group">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                                            <i class="fat fa-bug-slash text-white text-xl icon-hover"></i>
+                                        </div>
+                                        <div>
+                                            <span class="font-semibold text-gray-900 dark:text-white block">Sineklik Sistemleri</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">Plise, sürgülü, sabit</span>
+                                        </div>
+                                    </a>
+                                    <a href="#hizmetler" class="flex items-center gap-4 p-4 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors group">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                            <i class="fat fa-garage text-white text-xl icon-hover"></i>
+                                        </div>
+                                        <div>
+                                            <span class="font-semibold text-gray-900 dark:text-white block">Garaj Kapıları</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">Otomatik sistemler</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#hakkimizda" class="font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 transition-colors">Hakkımızda</a>
+                    <a href="#iletisim" class="font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 transition-colors">İletişim</a>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <!-- Dark Mode Toggle -->
+                    <button @click="darkMode = !darkMode" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
+                        <i class="fat fa-sun text-yellow-500 text-lg icon-hover" x-show="!darkMode"></i>
+                        <i class="fat fa-moon text-blue-400 text-lg icon-hover" x-show="darkMode" x-cloak></i>
+                    </button>
+
+                    <!-- CTA Button -->
+                    <a href="tel:02125967230" class="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-shadow">
+                        <i class="fat fa-phone icon-hover"></i>
+                        <span>Hemen Ara</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden w-10 h-10 rounded-xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
+                        <i class="fat fa-bars text-xl icon-hover" x-show="!mobileMenu"></i>
+                        <i class="fat fa-xmark text-xl icon-hover" x-show="mobileMenu" x-cloak></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu fixed top-20 right-0 bottom-0 w-80 glass-light dark:glass-dark shadow-2xl lg:hidden overflow-y-auto"
+             :class="{ 'active': mobileMenu }"
+             @click.away="mobileMenu = false">
+            <div class="p-6 space-y-6">
+                <a href="#anasayfa" @click="mobileMenu = false" class="flex items-center gap-3 p-4 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <i class="fat fa-home text-red-600 text-xl icon-hover"></i>
+                    <span class="font-medium">Ana Sayfa</span>
+                </a>
+                <a href="#hizmetler" @click="mobileMenu = false" class="flex items-center gap-3 p-4 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <i class="fat fa-grid-2 text-red-600 text-xl icon-hover"></i>
+                    <span class="font-medium">Hizmetlerimiz</span>
+                </a>
+                <a href="#hakkimizda" @click="mobileMenu = false" class="flex items-center gap-3 p-4 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <i class="fat fa-building text-red-600 text-xl icon-hover"></i>
+                    <span class="font-medium">Hakkımızda</span>
+                </a>
+                <a href="#iletisim" @click="mobileMenu = false" class="flex items-center gap-3 p-4 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <i class="fat fa-envelope text-red-600 text-xl icon-hover"></i>
+                    <span class="font-medium">İletişim</span>
+                </a>
+
+                <div class="pt-6 border-t border-gray-200 dark:border-slate-700">
+                    <a href="#iletisim" @click="mobileMenu = false" class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl">
+                        <i class="fat fa-paper-plane icon-hover"></i>
+                        <span>İletişime Geç</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="anasayfa" class="relative min-h-screen flex items-center overflow-hidden">
+        <!-- Hero Gradient Background -->
+        <div class="absolute inset-0 hero-gradient"></div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 left-10 w-64 h-64 bg-black/10 rounded-full blur-3xl float" style="animation-delay: 0s;"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-black/10 rounded-full blur-3xl float" style="animation-delay: 2s;"></div>
+            <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 60px 60px;"></div>
+        </div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10 pt-24">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Left Content -->
+                <div class="text-center lg:text-left" data-aos="fade-right" data-aos-duration="1000">
+                    <!-- Badge -->
+                    <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mb-8">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        <span class="text-white/90 text-sm font-medium">30 Yıllık Tecrübe</span>
+                    </div>
+
+                    <!-- Main Title -->
+                    <h1 class="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6">
+                        <span class="block">Profesyonel</span>
+                        <span class="gradient-text">Panjur Çözümleri</span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-lg sm:text-xl text-white/80 max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed">
+                        İstanbul'un tüm bölgelerinde 7/24 panjur tamiri, motorlu panjur sistemleri, sineklik ve garaj kapısı hizmetleri.
+                        <span class="text-white font-semibold">Ücretsiz keşif ve 5 yıl garanti.</span>
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
+                        <a href="#hizmetler" class="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-red-600 font-bold text-lg rounded-2xl shadow-2xl hover:shadow-white/30 transition-all">
+                            <i class="fat fa-grid-2 text-2xl icon-hover"></i>
+                            <span>Hizmetlerimiz</span>
+                        </a>
+                        <a href="#hakkimizda" class="inline-flex items-center justify-center gap-3 px-8 py-4 glass text-white font-semibold text-lg rounded-2xl hover:bg-white/20 transition-all">
+                            <i class="fat fa-building icon-hover"></i>
+                            <span>Hakkımızda</span>
+                        </a>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="flex flex-wrap gap-6 justify-center lg:justify-start">
+                        <div class="flex items-center gap-2 text-white/80">
+                            <i class="fat fa-shield-check text-green-400 text-xl icon-hover"></i>
+                            <span class="text-sm font-medium">5 Yıl Garanti</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-white/80">
+                            <i class="fat fa-clock text-blue-400 text-xl icon-hover"></i>
+                            <span class="text-sm font-medium">7/24 Hizmet</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-white/80">
+                            <i class="fat fa-badge-check text-yellow-400 text-xl icon-hover"></i>
+                            <span class="text-sm font-medium">Ücretsiz Keşif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content - Modern Contact Card -->
+                <div class="relative" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                    <!-- Decorative glow -->
+                    <div class="absolute -inset-4 bg-gradient-to-r from-red-600/20 to-red-500/20 rounded-3xl blur-2xl"></div>
+
+                    <div class="relative bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-red-600 to-red-700 p-6">
+                            <h3 class="font-heading text-xl font-bold text-white flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                                    <i class="fat fa-headset text-white icon-hover"></i>
+                                </div>
+                                7/24 Acil Destek
+                            </h3>
+                            <p class="text-white/80 text-sm mt-2">Hemen arayın, dakikalar içinde yanınızdayız</p>
+                        </div>
+
+                        <!-- Contact Items -->
+                        <div class="p-6 space-y-4">
+                            <!-- Primary Phone -->
+                            <a href="tel:02125967230" class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 border-2 border-transparent hover:border-red-500 transition-all group">
+                                <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/30 relative">
+                                    <i class="fat fa-phone text-white text-2xl icon-hover"></i>
+                                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block">Sabit Hat</span>
+                                    <span class="text-gray-900 dark:text-white text-xl font-bold">0212 596 72 30</span>
+                                </div>
+                                <i class="fat fa-arrow-right text-gray-400 group-hover:text-red-500 group-hover:translate-x-1 transition-all icon-hover"></i>
+                            </a>
+
+                            <!-- Mobile -->
+                            <a href="tel:05336877311" class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-2 border-transparent hover:border-blue-500 transition-all group">
+                                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                                    <i class="fat fa-mobile text-white text-2xl icon-hover"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block">Mobil Hat</span>
+                                    <span class="text-gray-900 dark:text-white text-xl font-bold">0533 687 73 11</span>
+                                </div>
+                                <i class="fat fa-arrow-right text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all icon-hover"></i>
+                            </a>
+
+                            <!-- WhatsApp -->
+                            <a href="https://wa.me/905336877311" class="flex items-center gap-4 p-4 rounded-2xl bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 border-2 border-green-200 dark:border-green-800 hover:border-green-500 transition-all group">
+                                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                                    <i class="fab fa-whatsapp text-white text-2xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="text-green-600 dark:text-green-400 text-xs uppercase tracking-wider block">WhatsApp</span>
+                                    <span class="text-gray-900 dark:text-white text-lg font-bold">Hızlı Mesaj Gönder</span>
+                                </div>
+                                <i class="fat fa-arrow-right text-green-500 group-hover:translate-x-1 transition-all icon-hover"></i>
+                            </a>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="px-6 pb-6">
+                            <div class="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
+                                <i class="fat fa-shield-check text-amber-600 text-xl icon-hover"></i>
+                                <span class="text-amber-700 dark:text-amber-300 text-sm font-medium">Ücretsiz keşif ve fiyat teklifi</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-indicator">
+            <a href="#istatistikler" class="flex flex-col items-center gap-2 text-white/60 hover:text-white transition-colors">
+                <span class="text-sm">Keşfet</span>
+                <i class="fat fa-chevron-down text-2xl icon-hover"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="istatistikler" class="py-16 md:py-24 bg-gray-50 dark:bg-slate-900 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-red-500 to-red-600"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                <!-- Stat 1 -->
+                <div class="group text-center p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-lg shadow-gray-200/50 dark:shadow-none border-2 border-transparent hover:border-red-500 transition-all" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/30">
+                        <i class="fat fa-calendar-star text-white text-3xl icon-hover"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-heading font-black bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent mb-2">30</div>
+                    <div class="text-gray-600 dark:text-gray-400 font-medium">Yıl Tecrübe</div>
+                </div>
+
+                <!-- Stat 2 -->
+                <div class="group text-center p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-lg shadow-gray-200/50 dark:shadow-none border-2 border-transparent hover:border-red-500 transition-all" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <i class="fat fa-shield-check text-white text-3xl icon-hover"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-heading font-black bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent mb-2">5</div>
+                    <div class="text-gray-600 dark:text-gray-400 font-medium">Yıl Garanti</div>
+                </div>
+
+                <!-- Stat 3 -->
+                <div class="group text-center p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-lg shadow-gray-200/50 dark:shadow-none border-2 border-transparent hover:border-red-500 transition-all" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                        <i class="fat fa-face-smile-beam text-white text-3xl icon-hover"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-heading font-black bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent mb-2">10K+</div>
+                    <div class="text-gray-600 dark:text-gray-400 font-medium">Mutlu Müşteri</div>
+                </div>
+
+                <!-- Stat 4 -->
+                <div class="group text-center p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-lg shadow-gray-200/50 dark:shadow-none border-2 border-transparent hover:border-red-500 transition-all" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+                        <i class="fat fa-headset text-white text-3xl icon-hover"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-heading font-black bg-gradient-to-r from-purple-600 to-purple-500 bg-clip-text text-transparent mb-2">7/24</div>
+                    <div class="text-gray-600 dark:text-gray-400 font-medium">Destek</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="hizmetler" class="py-16 md:py-24 lg:py-32 bg-white dark:bg-slate-950">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-full mb-6">
+                    <i class="fat fa-grid-2 text-red-600 dark:text-red-400 icon-hover"></i>
+                    <span class="text-red-700 dark:text-red-300 text-sm font-semibold">Hizmetlerimiz</span>
+                </div>
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                    Profesyonel
+                    <span class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">Panjur Çözümleri</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400">
+                    30 yıllık tecrübemiz ile her türlü panjur ihtiyacınıza uzman çözümler sunuyoruz.
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card group bg-gray-50 dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl hover:shadow-red-500/10 transition-all" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-16 h-16 mb-6 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/30">
+                        <i class="fat fa-screwdriver-wrench text-white text-3xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Panjur Tamiri</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Her türlü panjur arızasında hızlı ve profesyonel tamir hizmeti. Kırık lameller, takılmalar, mekanik ve motor arızaları.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Aynı gün tamir garantisi</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Ücretsiz keşif</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Tamir garantisi</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card group bg-gray-50 dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl hover:shadow-blue-500/10 transition-all" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 mb-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <i class="fat fa-bolt text-white text-3xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Motorlu Panjur Sistemleri</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Avrupa standartlarında motorlu panjur montajı ve bakımı. Uzaktan kumandalı, akıllı sistemler.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Kaliteli motor sistemleri</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Uzaktan kumanda</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>5 yıl garanti</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card group bg-gray-50 dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl hover:shadow-green-500/10 transition-all" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 mb-6 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                        <i class="fat fa-bug-slash text-white text-3xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Sineklik Sistemleri</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Plise, sürgülü ve sabit sineklik montajı. Tüm kapı ve pencere tiplerine uygun çözümler.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Özel ölçüm ve üretim</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Dayanıklı malzeme</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Hızlı montaj</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card group bg-gray-50 dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl hover:shadow-purple-500/10 transition-all" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 mb-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+                        <i class="fat fa-garage text-white text-3xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Garaj Kapıları</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Otomatik garaj kapısı montajı, tamiri ve bakımı. Manuel ve motorlu sistemler.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Motorlu sistemler</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Güvenlik sensörleri</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Profesyonel montaj</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card group bg-gray-50 dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl hover:shadow-rose-500/10 transition-all" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-16 h-16 mb-6 bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-rose-500/30">
+                        <i class="fat fa-shield text-white text-3xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Güvenli Panjur Sistemleri</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Güvenlik amaçlı takviyeli panjur sistemleri. İşyerleri ve konutlar için ekstra koruma.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Takviyeli malzeme</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Alarm entegrasyonu</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Yüksek güvenlik</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card group bg-gray-50 dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl hover:shadow-amber-500/10 transition-all" data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-16 h-16 mb-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/30">
+                        <i class="fat fa-blinds-open text-white text-3xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Manuel İp Panjur</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Klasik ip sistemli panjur üretimi ve montajı. Mevsimlik pencere/kapı erişimi için ideal.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Uygun fiyat</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Kolay kullanım</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fat fa-check-circle text-green-500 icon-hover"></i>
+                            <span>Dayanıklı yapı</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section class="py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-slate-900 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-red-500/5 to-transparent pointer-events-none"></div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Left Content -->
+                <div data-aos="fade-right">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-full mb-6">
+                        <i class="fat fa-star text-red-600 dark:text-red-400 icon-hover"></i>
+                        <span class="text-red-700 dark:text-red-300 text-sm font-semibold">Neden Biz?</span>
+                    </div>
+                    <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                        Neden
+                        <span class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">Yıldırım Panjur?</span>
+                    </h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                        30 yıllık tecrübemiz, uzman kadromuz ve müşteri odaklı yaklaşımımız ile sektörün en güvenilir firmasıyız.
+                    </p>
+
+                    <!-- Feature List -->
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4 group">
+                            <div class="w-12 h-12 flex-shrink-0 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center group-hover:bg-red-600 transition-colors">
+                                <i class="fat fa-calendar-star text-red-600 dark:text-red-400 text-xl group-hover:text-white transition-colors icon-hover"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-bold text-gray-900 dark:text-white mb-1">30 Yıl Tecrübe</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Sektörde 30 yıllık deneyimimiz ile her türlü panjur sisteminde uzman kadromuz.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 group">
+                            <div class="w-12 h-12 flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                                <i class="fat fa-shield-check text-blue-600 dark:text-blue-400 text-xl group-hover:text-white transition-colors icon-hover"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-bold text-gray-900 dark:text-white mb-1">5 Yıl Garanti</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Tüm ürün ve hizmetlerimizde 5 yıla kadar garanti süresi sunuyoruz.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 group">
+                            <div class="w-12 h-12 flex-shrink-0 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center group-hover:bg-green-600 transition-colors">
+                                <i class="fat fa-badge-check text-green-600 dark:text-green-400 text-xl group-hover:text-white transition-colors icon-hover"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-bold text-gray-900 dark:text-white mb-1">Ücretsiz Keşif</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Keşif, ölçüm ve fiyat teklifi hizmetlerimiz tamamen ücretsizdir.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 group">
+                            <div class="w-12 h-12 flex-shrink-0 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:bg-purple-600 transition-colors">
+                                <i class="fat fa-bolt text-purple-600 dark:text-purple-400 text-xl group-hover:text-white transition-colors icon-hover"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-bold text-gray-900 dark:text-white mb-1">Hızlı Servis</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Aynı gün müdahale garantisi ile acil durumlarda yanınızdayız.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content - Overlapping Cards -->
+                <div class="relative" data-aos="fade-left">
+                    <div class="relative">
+                        <div class="absolute top-8 -right-4 w-full h-full bg-gradient-to-br from-red-600 to-red-700 rounded-3xl transform rotate-3"></div>
+                        <div class="relative rounded-3xl overflow-hidden shadow-2xl">
+                            <img src="https://picsum.photos/600/500?grayscale" alt="Profesyonel Panjur Hizmeti" class="w-full h-auto" loading="lazy">
+                            <div class="absolute bottom-6 left-6 right-6">
+                                <div class="glass-dark rounded-2xl p-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
+                                            <i class="fat fa-users text-white text-2xl icon-hover"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-bold text-xl">Uzman Ekip</div>
+                                            <div class="text-white/70">Sertifikalı ve deneyimli personel</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute -top-4 -left-4 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-4 float">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                                    <i class="fat fa-map-marker-alt text-white text-xl icon-hover"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Hizmet Bölgesi</div>
+                                    <div class="font-bold text-gray-900 dark:text-white">İstanbul Geneli</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section - Yeniden Tasarlandı -->
+    <section class="py-16 md:py-24 lg:py-32 bg-white dark:bg-slate-950">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-full mb-6">
+                    <i class="fat fa-route text-red-600 dark:text-red-400 icon-hover"></i>
+                    <span class="text-red-700 dark:text-red-300 text-sm font-semibold">Çalışma Sürecimiz</span>
+                </div>
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                    Nasıl
+                    <span class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">Çalışır?</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400">
+                    4 basit adımda panjur sorunlarınızı çözüyoruz.
+                </p>
+            </div>
+
+            <!-- Process Steps - Card Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Step 1 -->
+                <div class="process-step bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-8 text-white shadow-xl shadow-red-500/20" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl font-black">01</span>
+                    </div>
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fat fa-phone-volume text-2xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Bizi Arayın</h3>
+                    <p class="text-white/80">Telefon veya WhatsApp ile iletişime geçin.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="process-step bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-8 text-white shadow-xl shadow-blue-500/20" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl font-black">02</span>
+                    </div>
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fat fa-magnifying-glass text-2xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Ücretsiz Keşif</h3>
+                    <p class="text-white/80">Uzman ekibimiz gelip ücretsiz keşif yapar.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="process-step bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-8 text-white shadow-xl shadow-green-500/20" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl font-black">03</span>
+                    </div>
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fat fa-file-invoice-dollar text-2xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Fiyat Teklifi</h3>
+                    <p class="text-white/80">Net ve uygun fiyat teklifi alın.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="process-step bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-8 text-white shadow-xl shadow-purple-500/20" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl font-black">04</span>
+                    </div>
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fat fa-circle-check text-2xl icon-hover"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Hızlı Çözüm</h3>
+                    <p class="text-white/80">Sorunlarınızı aynı gün çözüyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="hakkimizda" class="py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-slate-900">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Left - Image -->
+                <div class="relative" data-aos="fade-right">
+                    <div class="relative rounded-3xl overflow-hidden">
+                        <img src="https://picsum.photos/700/500" alt="Yıldırım Panjur Ekibi" class="w-full h-auto" loading="lazy">
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-6 shadow-2xl shadow-red-500/30">
+                        <div class="text-center">
+                            <div class="text-5xl font-heading font-black text-white mb-1">30+</div>
+                            <div class="text-white/80 font-medium">Yıl Tecrübe</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right - Content -->
+                <div data-aos="fade-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-full mb-6">
+                        <i class="fat fa-building text-red-600 dark:text-red-400 icon-hover"></i>
+                        <span class="text-red-700 dark:text-red-300 text-sm font-semibold">Hakkımızda</span>
+                    </div>
+                    <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                        İstanbul'un Güvenilir
+                        <span class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">Panjur Uzmanı</span>
+                    </h2>
+
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">
+                        <strong class="text-gray-900 dark:text-white">Yıldırım Panjur</strong>, 30 yılı aşkın bir süredir İstanbul'da panjur tamiri ve montaj hizmetleri sunmaktadır. Sektördeki derin tecrübemiz ve müşteri memnuniyeti odaklı yaklaşımımız ile binlerce müşteriye hizmet verdik.
+                    </p>
+
+                    <p class="text-gray-600 dark:text-gray-400 mb-8">
+                        İlk günden bu yana değişmeyen ilkemiz: <span class="text-red-600 font-semibold">Kaliteli hizmet, uygun fiyat ve müşteri memnuniyeti.</span> Her projede aynı özen ve profesyonellikle çalışarak, sektörde güvenilir bir isim haline geldik.
+                    </p>
+
+                    <!-- Values Grid -->
+                    <div class="grid sm:grid-cols-2 gap-4 mb-8">
+                        <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl">
+                            <i class="fat fa-award text-red-600 text-2xl icon-hover"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Kalite Odaklı</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl">
+                            <i class="fat fa-handshake text-blue-600 text-2xl icon-hover"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Güvenilirlik</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl">
+                            <i class="fat fa-heart text-green-600 text-2xl icon-hover"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Müşteri Odaklı</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl">
+                            <i class="fat fa-rocket text-purple-600 text-2xl icon-hover"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Hızlı Servis</span>
+                        </div>
+                    </div>
+
+                    <a href="#iletisim" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all">
+                        <i class="fat fa-message icon-hover"></i>
+                        <span>Bize Ulaşın</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Areas Section - Tüm İlçeler -->
+    <section class="py-16 md:py-24 bg-white dark:bg-slate-950">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-full mb-6">
+                    <i class="fat fa-map text-red-600 dark:text-red-400 icon-hover"></i>
+                    <span class="text-red-700 dark:text-red-300 text-sm font-semibold">Hizmet Bölgelerimiz</span>
+                </div>
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                    İstanbul'un
+                    <span class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">Tüm İlçelerinde</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400">
+                    39 ilçede 7/24 kesintisiz hizmet veriyoruz.
+                </p>
+            </div>
+
+            <!-- Districts Grid - Tüm 39 İlçe -->
+            <div class="flex flex-wrap justify-center gap-3" data-aos="fade-up" data-aos-delay="100">
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Adalar</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Arnavutköy</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Ataşehir</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Avcılar</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Bağcılar</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Bahçelievler</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Bakırköy</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Başakşehir</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Bayrampaşa</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Beşiktaş</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Beykoz</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Beylikdüzü</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Beyoğlu</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Büyükçekmece</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Çatalca</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Çekmeköy</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Esenler</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Esenyurt</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Eyüpsultan</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Fatih</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Gaziosmanpaşa</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Güngören</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Kadıköy</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Kağıthane</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Kartal</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Küçükçekmece</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Maltepe</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Pendik</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Sancaktepe</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Sarıyer</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Silivri</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Sultanbeyli</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Sultangazi</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Şile</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Şişli</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Tuzla</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Ümraniye</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Üsküdar</span>
+                <span class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-default">Zeytinburnu</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="iletisim" class="py-16 md:py-24 lg:py-32 bg-white dark:bg-slate-950">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+                <!-- Left - Contact Info -->
+                <div data-aos="fade-right">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-full mb-6">
+                        <i class="fat fa-envelope text-red-600 dark:text-red-400 icon-hover"></i>
+                        <span class="text-red-700 dark:text-red-300 text-sm font-semibold">İletişim</span>
+                    </div>
+                    <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                        Bize
+                        <span class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">Ulaşın</span>
+                    </h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                        Size yardımcı olmak için buradayız. 7/24 ulaşabilirsiniz.
+                    </p>
+
+                    <!-- Contact Info - Minimal List -->
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fat fa-phone text-red-600 text-xl icon-hover"></i>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 dark:text-gray-400 text-sm block mb-1">Telefon</span>
+                                <a href="tel:02125967230" class="text-gray-900 dark:text-white text-lg font-semibold hover:text-red-600 transition-colors block">0212 596 72 30</a>
+                                <a href="tel:05336877311" class="text-gray-600 dark:text-gray-400 hover:text-red-600 transition-colors">0533 687 73 11</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fab fa-whatsapp text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 dark:text-gray-400 text-sm block mb-1">WhatsApp</span>
+                                <a href="https://wa.me/905336877311" class="text-gray-900 dark:text-white text-lg font-semibold hover:text-green-600 transition-colors">Mesaj Gönder</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fat fa-envelope text-purple-600 text-xl icon-hover"></i>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 dark:text-gray-400 text-sm block mb-1">E-posta</span>
+                                <a href="mailto:info@yildirimpanjur.com" class="text-gray-900 dark:text-white text-lg font-semibold hover:text-purple-600 transition-colors">info@yildirimpanjur.com</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fat fa-location-dot text-blue-600 text-xl icon-hover"></i>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 dark:text-gray-400 text-sm block mb-1">Hizmet Bölgesi</span>
+                                <span class="text-gray-900 dark:text-white text-lg font-semibold">İstanbul (Tüm İlçeler)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right - FAQ -->
+                <div data-aos="fade-left">
+                    <div class="bg-gray-50 dark:bg-slate-900 rounded-3xl p-8">
+                        <h3 class="font-heading text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                            <i class="fat fa-circle-question text-red-600 icon-hover"></i>
+                            Sıkça Sorulan Sorular
+                        </h3>
+
+                        <div class="space-y-4" x-data="{ open: 1 }">
+                            <!-- FAQ 1 -->
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
+                                <button @click="open = open === 1 ? null : 1" class="w-full flex items-center justify-between p-5 text-left">
+                                    <span class="font-semibold text-gray-900 dark:text-white">Keşif ücreti alıyor musunuz?</span>
+                                    <i class="fat fa-chevron-down text-gray-400 transition-transform icon-hover" :class="{ 'rotate-180': open === 1 }"></i>
+                                </button>
+                                <div x-show="open === 1" x-collapse class="px-5 pb-5">
+                                    <p class="text-gray-600 dark:text-gray-400">Hayır, keşif, ölçüm ve fiyat teklifi hizmetlerimiz tamamen <span class="text-red-600 font-semibold">ücretsizdir</span>.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ 2 -->
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
+                                <button @click="open = open === 2 ? null : 2" class="w-full flex items-center justify-between p-5 text-left">
+                                    <span class="font-semibold text-gray-900 dark:text-white">Aynı gün tamir mümkün mü?</span>
+                                    <i class="fat fa-chevron-down text-gray-400 transition-transform icon-hover" :class="{ 'rotate-180': open === 2 }"></i>
+                                </button>
+                                <div x-show="open === 2" x-collapse class="px-5 pb-5">
+                                    <p class="text-gray-600 dark:text-gray-400">Evet, acil durumlarda <span class="text-red-600 font-semibold">aynı gün müdahale ve tamir garantisi</span> veriyoruz.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ 3 -->
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
+                                <button @click="open = open === 3 ? null : 3" class="w-full flex items-center justify-between p-5 text-left">
+                                    <span class="font-semibold text-gray-900 dark:text-white">Garanti süresi ne kadar?</span>
+                                    <i class="fat fa-chevron-down text-gray-400 transition-transform icon-hover" :class="{ 'rotate-180': open === 3 }"></i>
+                                </button>
+                                <div x-show="open === 3" x-collapse class="px-5 pb-5">
+                                    <p class="text-gray-600 dark:text-gray-400">Tüm ürün ve hizmetlerimizde <span class="text-red-600 font-semibold">5 yıla kadar garanti</span> süresi sunuyoruz.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ 4 -->
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
+                                <button @click="open = open === 4 ? null : 4" class="w-full flex items-center justify-between p-5 text-left">
+                                    <span class="font-semibold text-gray-900 dark:text-white">Hangi bölgelerde hizmet veriyorsunuz?</span>
+                                    <i class="fat fa-chevron-down text-gray-400 transition-transform icon-hover" :class="{ 'rotate-180': open === 4 }"></i>
+                                </button>
+                                <div x-show="open === 4" x-collapse class="px-5 pb-5">
+                                    <p class="text-gray-600 dark:text-gray-400">İstanbul'un <span class="text-red-600 font-semibold">tüm 39 ilçesinde 7/24</span> kesintisiz hizmet veriyoruz.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-black text-white">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-16">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <!-- Column 1 -->
+                <div>
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center">
+                            <i class="fat fa-blinds text-white text-2xl icon-hover"></i>
+                        </div>
+                        <div>
+                            <span class="text-xl font-heading font-bold text-white">Yıldırım</span>
+                            <span class="text-xl font-heading font-bold text-red-500">Panjur</span>
+                        </div>
+                    </a>
+                    <p class="text-gray-400 mb-6">
+                        30 yıllık tecrübemiz ile İstanbul'un tüm bölgelerinde panjur tamiri, motorlu panjur sistemleri ve daha fazlası.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/905336877311" class="w-10 h-10 bg-green-600 hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column 2 -->
+                <div>
+                    <h4 class="font-heading font-bold text-lg mb-6">Hızlı Linkler</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#anasayfa" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Ana Sayfa</a></li>
+                        <li><a href="#hizmetler" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Hizmetlerimiz</a></li>
+                        <li><a href="#hakkimizda" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Hakkımızda</a></li>
+                        <li><a href="#iletisim" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> İletişim</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3 -->
+                <div>
+                    <h4 class="font-heading font-bold text-lg mb-6">Hizmetlerimiz</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#hizmetler" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Panjur Tamiri</a></li>
+                        <li><a href="#hizmetler" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Motorlu Panjur</a></li>
+                        <li><a href="#hizmetler" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Sineklik Sistemleri</a></li>
+                        <li><a href="#hizmetler" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Garaj Kapıları</a></li>
+                        <li><a href="#hizmetler" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Güvenli Panjur</a></li>
+                        <li><a href="#hizmetler" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2"><i class="fat fa-chevron-right text-xs icon-hover"></i> Manuel Panjur</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4 -->
+                <div>
+                    <h4 class="font-heading font-bold text-lg mb-6">İletişim</h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="tel:02125967230" class="flex items-center gap-3 text-gray-400 hover:text-red-500 transition-colors">
+                                <i class="fat fa-phone text-red-500 icon-hover"></i>
+                                <span>0212 596 72 30</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:05336877311" class="flex items-center gap-3 text-gray-400 hover:text-red-500 transition-colors">
+                                <i class="fat fa-mobile text-red-500 icon-hover"></i>
+                                <span>0533 687 73 11</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:info@yildirimpanjur.com" class="flex items-center gap-3 text-gray-400 hover:text-red-500 transition-colors">
+                                <i class="fat fa-envelope text-red-500 icon-hover"></i>
+                                <span>info@yildirimpanjur.com</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center gap-3 text-gray-400">
+                                <i class="fat fa-map-marker-alt text-red-500 icon-hover"></i>
+                                <span>İstanbul - 39 İlçe</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800">
+            <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-gray-500 text-sm text-center md:text-left">
+                        &copy; 2024 Yıldırım Panjur. Tüm hakları saklıdır. | 30 yıllık tecrübe | 5 yıl garanti | Ücretsiz keşif
+                    </p>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span>7/24 Acil Servis</span>
+                        <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+                        <a href="tel:02125967230" class="text-red-500 font-semibold hover:text-red-400">0212 596 72 30</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Buttons -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+        <a href="https://wa.me/905336877311" class="w-14 h-14 bg-green-600 hover:bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-600/30 hover:shadow-green-500/50 transition-all hover:scale-110" title="WhatsApp">
+            <i class="fab fa-whatsapp text-white text-2xl"></i>
+        </a>
+        <a href="tel:02125967230" class="w-14 h-14 bg-gradient-to-br from-red-600 to-red-700 rounded-full flex items-center justify-center shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all hover:scale-110 relative pulse-ring" title="Hemen Ara">
+            <i class="fat fa-phone-volume text-white text-xl icon-hover"></i>
+        </a>
+    </div>
+
+    <!-- Prompt Modal Button -->
+    <button onclick="document.getElementById('promptModal').classList.remove('hidden')" class="fixed bottom-6 left-6 z-50 px-4 py-2 bg-gray-900 dark:bg-gray-800 text-white text-sm font-medium rounded-lg hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors shadow-lg">
+        <i class="fat fa-file-code mr-2 icon-hover"></i>Prompt
+    </button>
+
+    <!-- Prompt Modal -->
+    <div id="promptModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-heading font-bold text-xl text-gray-900 dark:text-white">Tasarım Dökümanı</h3>
+                <button onclick="document.getElementById('promptModal').classList.add('hidden')" class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-slate-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
+                    <i class="fat fa-xmark text-gray-500 icon-hover"></i>
+                </button>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Bu tasarımın detaylı dökümanını görüntülemek için aşağıdaki linke tıklayın.</p>
+            <a href="prompt.html" target="_blank" class="flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/30 transition-all">
+                <i class="fat fa-external-link icon-hover"></i>
+                <span>Prompt Dökümanını Aç</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Icon hover effect (fat -> fas) - TÜM İKONLAR İÇİN
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tüm icon-hover class'lı ikonları bul
+            document.querySelectorAll('.icon-hover').forEach(icon => {
+                // Sadece fat class'ı olanlar için
+                if (icon.classList.contains('fat')) {
+                    // Parent element'i bul (a, button, div vs.)
+                    const parent = icon.closest('a, button, div, li, .group, .service-card, .process-step');
+
+                    if (parent) {
+                        parent.addEventListener('mouseenter', () => {
+                            icon.classList.remove('fat');
+                            icon.classList.add('fas');
+                        });
+
+                        parent.addEventListener('mouseleave', () => {
+                            icon.classList.remove('fas');
+                            icon.classList.add('fat');
+                        });
+                    }
+                }
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

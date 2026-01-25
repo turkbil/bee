@@ -113,6 +113,12 @@ class TenantCacheProfile implements CacheProfile
             return false;
         }
 
+        // 🔴 LIVEWIRE ENDPOINT'LERİ - KESİNLİKLE CACHE'LEME!
+        // Livewire update istekleri dinamik ve CSRF token gerektirir
+        if (str_starts_with($path, 'livewire')) {
+            return false;
+        }
+
         // Admin No-Cache Header kontrolü
         if ($request->header('X-Cache-Bypass') === 'admin' || $request->header('X-Admin-No-Cache')) {
             return false;

@@ -84,9 +84,10 @@ class ModuleSlugService
     public static function getDefaultModuleName(string $moduleName, string $locale): string
     {
         try {
-            // Önce modules tablosundan display_name'i al
-            if (\Schema::hasTable('modules')) {
-                $module = \DB::table('modules')
+            // Önce modules tablosundan display_name'i al (CENTRAL DB!)
+            $centralConnection = config('tenancy.central_connection', 'mysql');
+            if (\Schema::connection($centralConnection)->hasTable('modules')) {
+                $module = \DB::connection($centralConnection)->table('modules')
                     ->where('name', strtolower($moduleName))
                     ->first();
                 
@@ -129,15 +130,18 @@ class ModuleSlugService
      */
     public static function getMultiLangSlug(string $moduleName, string $slugKey, string $locale): string
     {
-        // Memory cache kontrolü - locale specific
-        $memoryCacheKey = $moduleName . '.' . $slugKey . '.' . $locale;
+        // Tenant ID al - cache key'lerin tenant-specific olması için
+        $tenantId = tenant()?->id ?? 'central';
+
+        // Memory cache kontrolü - tenant + locale specific
+        $memoryCacheKey = $tenantId . '.' . $moduleName . '.' . $slugKey . '.' . $locale;
         if (isset(self::$memoryCache[$memoryCacheKey])) {
             return self::$memoryCache[$memoryCacheKey];
         }
 
         try {
-            // MultiLang ayarlarından al
-            $cacheKey = "module_multilang_slug_{$moduleName}_{$slugKey}_{$locale}";
+            // MultiLang ayarlarından al - TENANT-SPECIFIC cache key
+            $cacheKey = "module_multilang_slug_{$tenantId}_{$moduleName}_{$slugKey}_{$locale}";
 
             $slug = Cache::remember($cacheKey, 1440, function() use ($moduleName, $slugKey, $locale) {
                 // Tenant context check - ModuleTenantSetting sadece tenant'larda var
@@ -251,15 +255,50 @@ class ModuleSlugService
      */
     private static function loadConfigSlugs(string $moduleName): array
     {
-        $configPath = "Modules/{$moduleName}/config/config.php";
+        // Modül klasörünü case-insensitive bul (Linux case-sensitive!)
+        $actualModuleName = self::findActualModuleName($moduleName);
+
+        if (!$actualModuleName) {
+            return [];
+        }
+
+        $configPath = "Modules/{$actualModuleName}/config/config.php";
         $fullPath = base_path($configPath);
-        
+
         if (file_exists($fullPath)) {
             $config = include $fullPath;
             return $config['slugs'] ?? [];
-        } else {
-            return [];
         }
+
+        return [];
+    }
+
+    /**
+     * Modül klasörünü case-insensitive bul
+     */
+    private static function findActualModuleName(string $moduleName): ?string
+    {
+        static $moduleNameCache = [];
+
+        $cacheKey = strtolower($moduleName);
+        if (isset($moduleNameCache[$cacheKey])) {
+            return $moduleNameCache[$cacheKey];
+        }
+
+        $modulesPath = base_path('Modules');
+        if (!is_dir($modulesPath)) {
+            return null;
+        }
+
+        foreach (scandir($modulesPath) as $dir) {
+            if ($dir === '.' || $dir === '..') continue;
+            if (strtolower($dir) === $cacheKey) {
+                $moduleNameCache[$cacheKey] = $dir;
+                return $dir;
+            }
+        }
+
+        return null;
     }
     
     /**
@@ -407,15 +446,18 @@ class ModuleSlugService
         Cache::forget('module_config_Portfolio');
         Cache::forget('module_config_Announcement');
         
-        // MultiLang cache'lerini temizle - DİNAMİK
+        // MultiLang cache'lerini temizle - DİNAMİK + TENANT-SPECIFIC
         $modules = \App\Services\DynamicModuleManager::getAvailableModules()->toArray();
         $locales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
-        $keys = ['index', 'show', 'category'];
-        
+        $keys = ['index', 'show', 'category', 'tag'];
+        $tenantId = tenant()?->id ?? 'central';
+
         foreach ($modules as $module) {
             foreach ($locales as $locale) {
-                // Slug cache'leri
+                // Slug cache'leri - YENİ tenant-specific format
                 foreach ($keys as $key) {
+                    Cache::forget("module_multilang_slug_{$tenantId}_{$module}_{$key}_{$locale}");
+                    // Eski format için de temizle (backward compatibility)
                     Cache::forget("module_multilang_slug_{$module}_{$key}_{$locale}");
                 }
                 // Modül adı cache'leri

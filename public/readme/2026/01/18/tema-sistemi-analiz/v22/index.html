@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t-{id} Tema Yapisi - Multi-Tenant Tema Sistemi v22</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.875rem; }
+        pre code { background: none; padding: 0; }
+        .file-new { color: #22c55e; }
+        .nav-link { transition: all 0.2s; }
+        .nav-link:hover { background: rgba(139, 92, 246, 0.2); }
+        .section-anchor { scroll-margin-top: 100px; }
+        .golden-rule { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-wrap gap-2 justify-center text-sm">
+                <a href="#felsefe" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-purple-400">Felsefe</a>
+                <a href="#oncelik" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-red-400">Oncelik Sirasi</a>
+                <a href="#container" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-amber-400">Container</a>
+                <a href="#subheader" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-teal-400">Subheader</a>
+                <a href="#breakpoints" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-blue-400">Breakpoints</a>
+                <a href="#grid" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-emerald-400">Grid Sistemi</a>
+                <a href="#typography" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-pink-400">Typography</a>
+                <a href="#pwa" class="nav-link px-3 py-1 rounded-full bg-lime-500/20 text-lime-400 hover:text-lime-300">PWA</a>
+                <a href="#uiux" class="nav-link px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 hover:text-rose-300">UI/UX</a>
+                <a href="#header" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-orange-400">Header Yapisi</a>
+                <a href="#settings" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-cyan-400">Settings</a>
+                <a href="#logo" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-violet-400">Logo Service</a>
+                <a href="#routes" class="nav-link px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 hover:text-sky-300">Routes</a>
+                <a href="#leonardo" class="nav-link px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 hover:text-amber-300 font-semibold">Leonardo AI</a>
+                <a href="#icerik-olusturma" class="nav-link px-3 py-1 rounded-full bg-fuchsia-500/30 text-fuchsia-400 hover:text-fuchsia-300 font-bold animate-pulse">Icerik Olusturma</a>
+                <span class="text-slate-600">|</span>
+                <a href="#modul-page" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-indigo-400">Page</a>
+                <a href="#modul-service" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-emerald-400">Service</a>
+                <a href="#modul-blog" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-pink-400">Blog</a>
+                <a href="#workflow" class="nav-link px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 hover:text-cyan-300">Workflow</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-full mb-6">
+                <i class="fas fa-palette text-purple-400 text-xl"></i>
+                <span class="text-slate-400">v22 - Responsive Container Kurallari Eklendi</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                t-{id} Tema Yapisi
+            </h1>
+            <p class="text-slate-400">Multi-Tenant Tema Sistemi - Kapsamli Referans Dokumani</p>
+        </header>
+
+        <!-- ===== BOLUM 1: FELSEFE ===== -->
+        <section id="felsefe" class="section-anchor card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-purple-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">1. Felsefe</h2>
+            </div>
+            <div class="text-slate-300 space-y-3">
+                <p><strong>t-{id}</strong> = Tenant temasi. Sadece ozel dosyalar burada.</p>
+                <p><strong>simple</strong> = Fallback (mevcut, zaten var). t-{id}'de yoksa buradan alir.</p>
+                <p><strong>Ornek:</strong> t-3/homepage.blade.php var -> onu kullan, t-3/blog/show.blade.php yok -> simple'dan al</p>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 2: ONCELIK SIRASI (KRITIK!) ===== -->
+        <section id="oncelik" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-red-500 bg-red-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-sort-numeric-down text-red-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-red-300">2. View Path Oncelik Sirasi</h2>
+                <span class="bg-red-600 text-white text-xs px-2 py-1 rounded animate-pulse">KRITIK!</span>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Dogru Siralama -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-3"><i class="fas fa-check mr-2"></i>DOGRU Oncelik Sirasi (ThemeService.php)</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3">
+                            <span class="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                            <div>
+                                <code class="text-green-400">resources/views/themes/{tema}/{view}</code>
+                                <p class="text-slate-400 text-xs mt-1">Ana tema klasoru - TEK DOSYA PRENSIBI - ONCELIKLI!</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3">
+                            <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                            <div>
+                                <code class="text-blue-400">Modules/{Modul}/views/themes/{tema}/{view}</code>
+                                <p class="text-slate-400 text-xs mt-1">Modul ici tema - Fallback (resources'da yoksa)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3">
+                            <span class="bg-yellow-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                            <div>
+                                <code class="text-yellow-400">Modules/{Modul}/views/themes/simple/{view}</code>
+                                <p class="text-slate-400 text-xs mt-1">Simple tema fallback - MODUL ICINDE</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3">
+                            <span class="bg-slate-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                            <div>
+                                <code class="text-slate-400">{modul}::front.{view}</code>
+                                <p class="text-slate-400 text-xs mt-1">Son care - Modul front klasoru</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 3: CONTAINER PATTERN ===== -->
+        <section id="container" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-amber-500 bg-amber-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-expand text-amber-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-amber-300">3. Container Pattern (Responsive Standart)</h2>
+                <span class="bg-amber-600 text-white text-xs px-2 py-1 rounded">GUNCELLENDI v22</span>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-amber-500">
+                <h3 class="font-semibold text-amber-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Container <strong>1280px altinda %100 genislik</strong>, padding ile kenarlarda bosluk. 1280px+ sabit genislik.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Responsive Tablo -->
+                <div class="bg-blue-900/30 border border-blue-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-blue-300 mb-3"><i class="fas fa-table mr-2"></i>Responsive Container Tablosu</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-600">
+                                    <th class="text-left py-2 text-slate-400">Breakpoint</th>
+                                    <th class="text-left py-2 text-slate-400">Ekran</th>
+                                    <th class="text-left py-2 text-slate-400">Container</th>
+                                    <th class="text-left py-2 text-slate-400">Padding</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><code class="text-cyan-400">0-767px</code></td>
+                                    <td>Mobil</td>
+                                    <td><span class="text-green-400">100%</span></td>
+                                    <td><code>1.25rem</code> (20px)</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><code class="text-cyan-400">768px+</code></td>
+                                    <td>Tablet</td>
+                                    <td><span class="text-green-400">100%</span></td>
+                                    <td><code>2rem</code> (32px)</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><code class="text-cyan-400">1024px+</code></td>
+                                    <td>Laptop</td>
+                                    <td><span class="text-green-400">100%</span></td>
+                                    <td><code>3rem</code> (48px)</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><code class="text-cyan-400">1280px+</code></td>
+                                    <td>Desktop</td>
+                                    <td><span class="text-amber-400">1280px</span></td>
+                                    <td><code>2rem</code> (32px)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2"><code class="text-cyan-400">1536px+</code></td>
+                                    <td>Large</td>
+                                    <td><span class="text-amber-400">1536px</span></td>
+                                    <td><code>2rem</code> (32px)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- CSS Kodu -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-code mr-2"></i>app.blade.php'ye Eklenecek CSS</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">/* Container full width until xl breakpoint */</span>
+.container {
+    max-width: 100% <span class="text-amber-400">!important</span>;
+    padding-left: 1.25rem <span class="text-amber-400">!important</span>;
+    padding-right: 1.25rem <span class="text-amber-400">!important</span>;
+}
+<span class="text-cyan-400">@media</span> (min-width: 768px) {
+    .container {
+        padding-left: 2rem <span class="text-amber-400">!important</span>;
+        padding-right: 2rem <span class="text-amber-400">!important</span>;
+    }
+}
+<span class="text-cyan-400">@media</span> (min-width: 1024px) {
+    .container {
+        padding-left: 3rem <span class="text-amber-400">!important</span>;
+        padding-right: 3rem <span class="text-amber-400">!important</span>;
+    }
+}
+<span class="text-cyan-400">@media</span> (min-width: 1280px) {
+    .container {
+        max-width: 1280px <span class="text-amber-400">!important</span>;
+        padding-left: 2rem <span class="text-amber-400">!important</span>;
+        padding-right: 2rem <span class="text-amber-400">!important</span>;
+    }
+}
+<span class="text-cyan-400">@media</span> (min-width: 1536px) {
+    .container {
+        max-width: 1536px <span class="text-amber-400">!important</span>;
+    }
+}</pre>
+                </div>
+
+                <!-- Neden !important -->
+                <div class="bg-amber-900/30 border border-amber-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-amber-300 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Neden !important?</h4>
+                    <p class="text-slate-300 text-sm mb-2">Tailwind CDN kullanildiginda inline class'lar (px-4, md:px-2 gibi) CSS'i override edebilir. <code>!important</code> ile tutarlilik saglanir.</p>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-3 overflow-x-auto">
+<span class="text-red-400">{{-- HTML'de bu class'lar CSS'i override eder --}}</span>
+&lt;div class="container mx-auto <span class="text-red-400">px-4 md:px-2</span>"&gt;
+
+<span class="text-green-400">{{-- CSS'te !important ile override onlenir --}}</span>
+.container { padding-left: 2rem <span class="text-green-400">!important</span>; }</pre>
+                </div>
+
+                <!-- Eski vs Yeni -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                        <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>ESKI (Tailwind Varsayilan)</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• 1024px ekranda max-width: 1024px</li>
+                            <li>• Her iki tarafta 100px+ bosluk</li>
+                            <li>• Alan israfi</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                        <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>YENI (v22 Standart)</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• 1280px altinda %100 genislik</li>
+                            <li>• Sadece padding kadar bosluk</li>
+                            <li>• Tam alan kullanimi</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 4: MINIMAL SUBHEADER ===== -->
+        <section id="subheader" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-teal-500 bg-teal-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-teal-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-heading text-teal-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-teal-300">4. Minimal Subheader Pattern</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-teal-500">
+                <h3 class="font-semibold text-teal-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Gradient header <strong>KALDIRILDI</strong>! Yerine minimal subheader: Breadcrumb + H1 baslik, gri arkaplan.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- DOGRU Subheader -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>DOGRU: Minimal Subheader</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- MINIMAL SUBHEADER --}}</span>
+&lt;section class="<span class="text-cyan-400">bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700</span>"&gt;
+    &lt;div class="container mx-auto px-4 sm:px-4 md:px-2 <span class="text-cyan-400">py-4</span>"&gt;
+        <span class="text-green-400">{{-- Breadcrumb --}}</span>
+        &lt;nav class="text-sm text-gray-500 dark:text-gray-400 mb-2"&gt;
+            @foreach($breadcrumbsArray as $index => $crumb)
+                ...
+            @endforeach
+        &lt;/nav&gt;
+        <span class="text-green-400">{{-- H1 Baslik --}}</span>
+        &lt;h1 class="<span class="text-cyan-400">text-2xl md:text-3xl font-bold font-heading text-gray-900 dark:text-white</span>"&gt;
+            {{ $title }}
+        &lt;/h1&gt;
+    &lt;/div&gt;
+&lt;/section&gt;</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 5: BREAKPOINT SISTEMI ===== -->
+        <section id="breakpoints" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-blue-500 bg-blue-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-mobile-screen-button text-blue-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-blue-300">5. Breakpoint Sistemi</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-blue-500">
+                <h3 class="font-semibold text-blue-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Header ve navigasyon icin <strong>xl (1280px)</strong> breakpoint kullaniyoruz. lg (1024px) kullanmak tablet boyutlarinda sorunlara yol acar!</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Tailwind Breakpoints -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-3"><i class="fas fa-ruler text-blue-400 mr-2"></i>Tailwind Breakpoint'leri</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Class</th><th class="text-left pb-2">Piksel</th><th class="text-left pb-2">Kullanim</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr><td class="py-1"><code>sm:</code></td><td>640px</td><td>Buyuk telefonlar</td></tr>
+                            <tr><td class="py-1"><code>md:</code></td><td>768px</td><td>Tablet dikey</td></tr>
+                            <tr><td class="py-1"><code>lg:</code></td><td>1024px</td><td>Tablet yatay / Kucuk laptop</td></tr>
+                            <tr class="bg-blue-900/30"><td class="py-1"><code class="text-blue-400">xl:</code></td><td class="text-blue-300">1280px</td><td class="text-blue-300"><strong>HEADER BREAKPOINT!</strong></td></tr>
+                            <tr><td class="py-1"><code>2xl:</code></td><td>1536px</td><td>Buyuk ekranlar</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 6: GRID SISTEMI ===== -->
+        <section id="grid" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-emerald-500 bg-emerald-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-th text-emerald-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-emerald-300">6. Grid Sistemi (Modul Tipine Gore)</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-emerald-500">
+                <h3 class="font-semibold text-emerald-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Grid yapisi <strong>modul tipine gore</strong> degisir. Gorsel agirlikli modullerde 2 kolon, text agirlikli modullerde 1 kolon mobilde daha okunabilir.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Modul Tipleri -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <!-- Gorsel Moduller -->
+                    <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                        <h4 class="font-semibold text-green-300 mb-3"><i class="fas fa-image mr-2"></i>Gorsel Agirlikli Moduller</h4>
+                        <p class="text-slate-400 text-sm mb-3">Sadece gorsel + baslik, az text</p>
+                        <table class="w-full text-sm">
+                            <tbody class="text-slate-300">
+                                <tr><td class="py-1">Service</td><td><code class="text-green-400">grid-cols-2 md:grid-cols-3</code></td></tr>
+                                <tr><td class="py-1">Portfolio</td><td><code class="text-green-400">grid-cols-2 md:grid-cols-3</code></td></tr>
+                                <tr><td class="py-1">Galeri</td><td><code class="text-green-400">grid-cols-2 md:grid-cols-3 lg:grid-cols-4</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Text Moduller -->
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-xl p-4">
+                        <h4 class="font-semibold text-blue-300 mb-3"><i class="fas fa-align-left mr-2"></i>Text Agirlikli Moduller</h4>
+                        <p class="text-slate-400 text-sm mb-3">Baslik + aciklama + tarih + okuma suresi</p>
+                        <table class="w-full text-sm">
+                            <tbody class="text-slate-300">
+                                <tr><td class="py-1">Blog</td><td><code class="text-blue-400">grid-cols-1 md:grid-cols-2 lg:grid-cols-3</code></td></tr>
+                                <tr><td class="py-1">Page</td><td><code class="text-blue-400">grid-cols-1 md:grid-cols-2 lg:grid-cols-3</code></td></tr>
+                                <tr><td class="py-1">Announcement</td><td><code class="text-blue-400">grid-cols-1 md:grid-cols-2 lg:grid-cols-3</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 7: TYPOGRAPHY ===== -->
+        <section id="typography" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-pink-500 bg-pink-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-font text-pink-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-pink-300">7. Typography (Prose Styling)</h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- DOGRU Prose -->
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>DOGRU: Prose Styling</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">{{-- Icerik alanlari icin --}}</span>
+&lt;div class="prose <span class="text-cyan-400">prose-base</span> max-w-none <span class="text-cyan-400">font-body dark:prose-invert</span>
+          <span class="text-cyan-400">prose-headings:font-heading</span> prose-headings:text-gray-900
+          <span class="text-cyan-400">prose-p:text-gray-600 dark:prose-p:text-gray-300</span>
+          prose-a:text-primary-600 hover:prose-a:underline"&gt;
+    @parsewidgets($body ?? '')
+&lt;/div&gt;</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 8: PWA ===== -->
+        <section id="pwa" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-lime-500 bg-lime-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-lime-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-mobile-screen text-lime-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-lime-300">8. PWA + instant.page + Service Worker</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-lime-500">
+                <h3 class="font-semibold text-lime-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Sayfalar daha hizli acilir, site uygulama olarak yuklenebilir ve offline calisabilir. Tum bunlar otomatik olarak temalarda aktif.</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- 3 Ozellik Grid -->
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-500 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-rocket text-orange-400 text-xl"></i>
+                            <h4 class="font-semibold text-orange-300">instant.page</h4>
+                        </div>
+                        <p class="text-slate-300 text-sm">Link'lere mouse ile geldiginde sayfa arka planda onceden yuklenir.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-900/30 to-indigo-900/30 border border-blue-500 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-mobile-screen text-blue-400 text-xl"></i>
+                            <h4 class="font-semibold text-blue-300">PWA Manifest</h4>
+                        </div>
+                        <p class="text-slate-300 text-sm">Tarayicida "Uygulamayi Yukle" butonu gosterir.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-900/30 to-teal-900/30 border border-green-500 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-database text-green-400 text-xl"></i>
+                            <h4 class="font-semibold text-green-300">Service Worker</h4>
+                        </div>
+                        <p class="text-slate-300 text-sm">Sayfalari onbellege alir, offline destek saglar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 9: UI/UX STANDARTLARI ===== -->
+        <section id="uiux" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-rose-500 bg-rose-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-rose-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-wand-magic-sparkles text-rose-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-rose-300">9. UI/UX Standartlari</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-rose-500">
+                <h3 class="font-semibold text-rose-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Sitede dinamizm ve guzellik icin hover efektleri, animasyonlu gradient text, ikon gecisleri kullanilir. Ancak <strong>ASLA scale/zoom/ziplama efekti KULLANMA</strong> - sadece renk, border ve shadow degisimi!</p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-image mr-2"></i>Lazy Loading</h4>
+                    <p class="text-slate-300 text-sm">Tum gorsellerde <code>loading="lazy"</code> attribute kullan. Hero haric!</p>
+                </div>
+                <div class="bg-red-900/30 border border-red-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-ban mr-2"></i>YASAK Hover Efektleri</h4>
+                    <p class="text-slate-300 text-sm"><code class="text-red-400">hover:scale-*</code>, <code class="text-red-400">hover:-translate-y-*</code> - KULLANMA!</p>
+                    <p class="text-slate-300 text-sm mt-2">Sadece: <code class="text-green-400">hover:border-primary-500</code>, <code class="text-green-400">hover:shadow-lg</code></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 10: HEADER YAPISI ===== -->
+        <section id="header" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-orange-500 bg-orange-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-grip-lines text-orange-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-orange-300">10. Header Yapisi</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-3"><i class="fas fa-layer-group text-orange-400 mr-2"></i>Header Katmanlari</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3 border border-gray-700">
+                            <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                            <div>
+                                <code class="text-orange-400">Top Bar</code>
+                                <p class="text-slate-400 text-xs mt-1">Telefon, WhatsApp, calisma saatleri</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3 border border-gray-700">
+                            <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                            <div>
+                                <code class="text-orange-400">Main Header (sticky)</code>
+                                <p class="text-slate-400 text-xs mt-1">Logo, navigasyon, dark mode toggle</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-800/50 rounded-lg p-3 border border-gray-700">
+                            <span class="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                            <div>
+                                <code class="text-orange-400">Mobile Menu (xl:hidden)</code>
+                                <p class="text-slate-400 text-xs mt-1">x-show ile acilir/kapanir</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 11: SETTINGS PATTERN ===== -->
+        <section id="settings" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-cyan-500 bg-cyan-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cog text-cyan-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-cyan-300">11. Settings Pattern</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-3"><i class="fas fa-phone mr-2"></i>Iletisim Ayarlari</h4>
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr><th class="text-left pb-2">Key</th><th class="text-left pb-2">Aciklama</th></tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr><td class="py-2"><code class="text-green-400">contact_phone_1</code></td><td>Ana telefon (sabit)</td></tr>
+                            <tr><td class="py-2"><code class="text-green-400">contact_phone_2</code></td><td>Mobil telefon</td></tr>
+                            <tr><td class="py-2"><code class="text-green-400">contact_whatsapp_1</code></td><td>WhatsApp numarasi</td></tr>
+                            <tr><td class="py-2"><code class="text-green-400">contact_email_1</code></td><td>E-posta</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 12: LOGO SERVICE ===== -->
+        <section id="logo" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-violet-500 bg-violet-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-image text-violet-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-violet-300">12. Logo Service</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-code mr-2"></i>LogoService Kullanimi</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+@php
+    $logoService = app(\App\Services\LogoService::class);
+    $logos = $logoService->getLogos();
+@endphp
+
+@if($logos['has_light'] && $logos['has_dark'])
+    &lt;img src="{{ $logos['light_logo_url'] }}" class="dark:hidden h-10"&gt;
+    &lt;img src="{{ $logos['dark_logo_url'] }}" class="hidden dark:block h-10"&gt;
+@endif</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 13: DINAMIK ROUTE SISTEMI ===== -->
+        <section id="routes" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-sky-500 bg-gradient-to-br from-sky-900/30 to-blue-900/30">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-sky-500/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-route text-sky-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold text-sky-300">13. Dinamik Route Sistemi</h2>
+                    <p class="text-sky-400/70 text-sm">Tenant bazli URL yonetimi - HARDCODE YASAK!</p>
+                </div>
+            </div>
+
+            <!-- Basit Anlatim -->
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-sky-500">
+                <h3 class="font-semibold text-sky-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Her tenant (site) kendi URL yapisini ozellestirebilir. Ornegin Blog modulu varsayilan <code>/blog</code> yerine <code>/haberler</code> olabilir. Bu yuzden ASLA <code>href="/blog"</code> gibi hardcode URL yazilmaz!</p>
+            </div>
+
+            <!-- KRITIK UYARI -->
+            <div class="bg-red-900/30 border border-red-500 rounded-xl p-4 mb-6">
+                <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>ASLA YAPMA!</h4>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto">
+<span class="text-red-400">// YANLIS - Hardcode URL</span>
+&lt;a href="/blog"&gt;Blog&lt;/a&gt;
+&lt;a href="/hizmetler/web-tasarim"&gt;...&lt;/a&gt;
+&lt;a href="/sayfa/hakkimizda"&gt;...&lt;/a&gt;
+
+<span class="text-green-400">// DOGRU - Dinamik URL</span>
+&lt;a href="{{ module_locale_url('Blog', 'index') }}"&gt;...&lt;/a&gt;
+&lt;a href="{{ $service->getUrl() }}"&gt;...&lt;/a&gt;
+&lt;a href="{{ $page->getUrl() }}"&gt;...&lt;/a&gt;</pre>
+            </div>
+
+            <!-- Slug Tablosu -->
+            <div class="bg-slate-800/50 rounded-xl p-4 mb-4">
+                <h4 class="font-semibold text-slate-300 mb-3"><i class="fas fa-key mr-2"></i>Slug Key Referansi</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-2 text-slate-400">Modul</th>
+                                <th class="text-left py-2 text-slate-400">Key</th>
+                                <th class="text-left py-2 text-slate-400">Varsayilan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-700/50"><td class="py-2"><code>Blog</code></td><td><code>index</code></td><td><code>blog</code></td></tr>
+                            <tr class="border-b border-slate-700/50"><td class="py-2"><code>Service</code></td><td><code>index</code></td><td><code>hizmetler</code></td></tr>
+                            <tr class="border-b border-slate-700/50"><td class="py-2"><code>Page</code></td><td><code>show</code></td><td><code>sayfa</code></td></tr>
+                            <tr><td class="py-2"><code>Portfolio</code></td><td><code>index</code></td><td><code>portfolyo</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 14: LEONARDO AI ===== -->
+        <section id="leonardo" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-amber-500 bg-gradient-to-br from-amber-900/30 to-orange-900/30">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-amber-500/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-wand-magic-sparkles text-amber-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-amber-300">14. Leonardo AI Gorsel Uretim Sistemi</h2>
+                    <p class="text-amber-400/70 text-sm">11 Altin Kural Formulu + Site Renk Entegrasyonu</p>
+                </div>
+            </div>
+
+            <!-- Basit Anlatim -->
+            <div class="mb-8 p-5 bg-slate-800/50 rounded-xl border-l-4 border-amber-500">
+                <h3 class="font-semibold text-amber-300 mb-3"><i class="fas fa-user mr-2"></i>Basit Anlatim (Herkes Icin)</h3>
+                <p class="text-slate-300 text-sm mb-3">
+                    <strong>Leonardo AI</strong>, siteler icin profesyonel gorseller ureten yapay zeka sistemidir.
+                    Basit bir aciklama verirsin ("Forklift depo ici"), sistem bunu <strong>11 Altin Kural</strong> ile
+                    gercek fotograf gibi gorunen detayli bir talimata cevirir.
+                </p>
+            </div>
+
+            <!-- 11 ALTIN KURAL -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 bg-amber-500/30 rounded-full flex items-center justify-center">
+                        <i class="fas fa-trophy text-amber-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold golden-rule">11 ALTIN KURAL FORMULU</h3>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-amber-500/30">
+                            <span class="bg-amber-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">1</span>
+                            <strong class="text-amber-300">Photo Type</strong> - "Photo of", "Editorial photograph"
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-amber-500/30">
+                            <span class="bg-amber-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">2</span>
+                            <strong class="text-amber-300">Subject + Action</strong> - Mikro hikaye
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-amber-500/30">
+                            <span class="bg-amber-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">3</span>
+                            <strong class="text-amber-300">Environment</strong> - Mekan + zaman
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-amber-500/30">
+                            <span class="bg-amber-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">4</span>
+                            <strong class="text-amber-300">Camera Angle</strong> - Cekim acisi
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-amber-500/30">
+                            <span class="bg-amber-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">5</span>
+                            <strong class="text-amber-300">Composition</strong> - Rule of thirds
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-amber-500/30">
+                            <span class="bg-amber-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">6</span>
+                            <strong class="text-amber-300">Lighting</strong> - Golden hour, Rembrandt
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-amber-500/30">
+                            <span class="bg-amber-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">7</span>
+                            <strong class="text-amber-300">Camera + Lens</strong> - Canon EOS R5, 85mm f/1.4
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-orange-500/50">
+                            <span class="bg-orange-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">8</span>
+                            <strong class="text-orange-300">Film Stock</strong> - Kodak Portra 400
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-red-500/50">
+                            <span class="bg-red-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">9</span>
+                            <strong class="text-red-300">Imperfections</strong> - Lens dust, grain <span class="text-red-400 text-xs">(EN KRITIK!)</span>
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-amber-500/30">
+                            <span class="bg-amber-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">10</span>
+                            <strong class="text-amber-300">Mood</strong> - Atmosfer + duygu
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-purple-500/50">
+                            <span class="bg-purple-600 text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">11</span>
+                            <strong class="text-purple-300">Post-Processing</strong> - Teal and orange grading
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gorsel Boyutlari -->
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/60 rounded-xl p-4 border border-emerald-500/50">
+                    <i class="fas fa-film text-emerald-400 mr-2"></i><strong class="text-emerald-300">Hero</strong>
+                    <p class="text-cyan-400 text-sm mt-1">1472x832 (yatay)</p>
+                </div>
+                <div class="bg-slate-800/60 rounded-xl p-4 border border-blue-500/50">
+                    <i class="fas fa-briefcase text-blue-400 mr-2"></i><strong class="text-blue-300">Service</strong>
+                    <p class="text-cyan-400 text-sm mt-1">1024x1024 (kare)</p>
+                </div>
+                <div class="bg-slate-800/60 rounded-xl p-4 border border-pink-500/50">
+                    <i class="fas fa-newspaper text-pink-400 mr-2"></i><strong class="text-pink-300">Blog</strong>
+                    <p class="text-cyan-400 text-sm mt-1">1472x832 (yatay)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 15: ICERIK OLUSTURMA SISTEMI (YENI v21!) ===== -->
+        <section id="icerik-olusturma" class="section-anchor card rounded-2xl p-6 mb-8 border-4 border-fuchsia-500 bg-gradient-to-br from-fuchsia-900/40 to-purple-900/40">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-14 h-14 bg-fuchsia-500/30 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-magic text-fuchsia-400 text-3xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-fuchsia-300">15. Icerik Olusturma Sistemi</h2>
+                    <p class="text-fuchsia-400/70 text-sm">Anasayfa Haric Tum Sayfalar - DB Body Prensibi</p>
+                </div>
+                <span class="bg-fuchsia-600 text-white text-xs px-3 py-1 rounded-full animate-pulse ml-auto">YENI v21!</span>
+            </div>
+
+            <!-- KRITIK PRENSIP -->
+            <div class="mb-8 p-5 bg-red-900/40 rounded-xl border-2 border-red-500">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-400 text-2xl"></i>
+                    <h3 class="text-xl font-bold text-red-300">ALTIN KURAL: DB BODY PRENSIBI</h3>
+                </div>
+                <div class="space-y-3 text-slate-300">
+                    <p class="text-lg"><strong class="text-red-400">HARDCODE IF/ELSE KESINLIKLE YASAK!</strong></p>
+                    <p>Tum sayfa icerikleri veritabanindaki <code class="text-cyan-400">pages.body</code> alaninda saklanir.</p>
+                    <p>show.blade.php dosyasi sadece <code class="text-green-400">@parsewidgets($body)</code> ile icerigi render eder.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4 mt-6">
+                    <div class="bg-red-900/50 border border-red-500 rounded-lg p-4">
+                        <h4 class="font-semibold text-red-300 mb-2"><i class="fas fa-times mr-2"></i>YANLIS</h4>
+                        <pre class="text-xs text-slate-300">@if($slug == 'hakkimizda')
+    &lt;div&gt;Hakkimizda icerigi...&lt;/div&gt;
+@elseif($slug == 'iletisim')
+    &lt;div&gt;Iletisim icerigi...&lt;/div&gt;
+@endif</pre>
+                    </div>
+                    <div class="bg-green-900/50 border border-green-500 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>DOGRU</h4>
+                        <pre class="text-xs text-slate-300"><span class="text-green-400">{{-- show.blade.php --}}</span>
+&lt;div class="page-content"&gt;
+    @parsewidgets($body ?? '')
+&lt;/div&gt;
+
+<span class="text-green-400">{{-- Icerik DB'de! --}}</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAYFA YAPISINI ANLA -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-sitemap text-fuchsia-400 text-xl"></i>
+                    <h3 class="text-lg font-bold text-fuchsia-300">Sayfa Yapisi (Anatomy)</h3>
+                </div>
+                <p class="text-slate-400 text-sm mb-4">Her sayfa birbiri ardina gelen <strong>section</strong>'lardan olusur. Her section'in kendine ozgu arka plan rengi ve ic yapisi vardir.</p>
+
+                <div class="bg-slate-800/60 rounded-xl p-4 border border-fuchsia-500/30">
+                    <pre class="text-xs text-slate-300 overflow-x-auto">
+<span class="text-fuchsia-400">&lt;!-- SAYFA YAPISI --&gt;</span>
+
+<span class="text-cyan-400">&lt;section class="bg-gradient-to-br from-slate-900 via-slate-800 to-primary-900 py-20"&gt;</span>
+    <span class="text-slate-500">&lt;!-- HERO SECTION --&gt;</span>
+<span class="text-cyan-400">&lt;/section&gt;</span>
+
+<span class="text-emerald-400">&lt;section class="bg-white dark:bg-dark-900 py-16"&gt;</span>
+    <span class="text-slate-500">&lt;!-- CONTENT SECTION 1 --&gt;</span>
+<span class="text-emerald-400">&lt;/section&gt;</span>
+
+<span class="text-amber-400">&lt;section class="bg-slate-50 dark:bg-dark-800 py-16"&gt;</span>
+    <span class="text-slate-500">&lt;!-- CONTENT SECTION 2 (alternating bg) --&gt;</span>
+<span class="text-amber-400">&lt;/section&gt;</span>
+
+<span class="text-blue-400">&lt;section class="bg-gradient-to-br from-primary-600 to-primary-800 py-16"&gt;</span>
+    <span class="text-slate-500">&lt;!-- CTA SECTION --&gt;</span>
+<span class="text-blue-400">&lt;/section&gt;</span></pre>
+                </div>
+            </div>
+
+            <!-- TASARIM BILESENLERI -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-puzzle-piece text-fuchsia-400 text-xl"></i>
+                    <h3 class="text-lg font-bold text-fuchsia-300">Tasarim Bilesenleri (Components)</h3>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Hero Section -->
+                    <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl p-4 border border-cyan-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-cyan-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-image text-cyan-400"></i>
+                            </div>
+                            <h4 class="font-semibold text-cyan-300">Hero Section</h4>
+                        </div>
+                        <p class="text-slate-400 text-xs mb-2">Sayfa basinda gradient arka planli, buyuk baslikli bolum</p>
+                        <code class="text-xs text-cyan-400 block bg-slate-900/50 p-2 rounded">bg-gradient-to-br from-slate-900 via-slate-800 to-primary-900</code>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl p-4 border border-emerald-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-emerald-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chart-bar text-emerald-400"></i>
+                            </div>
+                            <h4 class="font-semibold text-emerald-300">Stats Cards</h4>
+                        </div>
+                        <p class="text-slate-400 text-xs mb-2">Istatistik kartlari: 15+ Proje, 7/24 Destek vb.</p>
+                        <code class="text-xs text-emerald-400 block bg-slate-900/50 p-2 rounded">grid grid-cols-2 md:grid-cols-4 gap-4</code>
+                    </div>
+
+                    <!-- Content Grid -->
+                    <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl p-4 border border-amber-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-amber-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-th-large text-amber-400"></i>
+                            </div>
+                            <h4 class="font-semibold text-amber-300">Content Grid</h4>
+                        </div>
+                        <p class="text-slate-400 text-xs mb-2">2 kolonlu icerik: Sol metin, sag gorsel/liste</p>
+                        <code class="text-xs text-amber-400 block bg-slate-900/50 p-2 rounded">grid md:grid-cols-2 gap-8 items-center</code>
+                    </div>
+
+                    <!-- Values/Features Grid -->
+                    <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl p-4 border border-purple-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-purple-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-grip text-purple-400"></i>
+                            </div>
+                            <h4 class="font-semibold text-purple-300">Values Grid</h4>
+                        </div>
+                        <p class="text-slate-400 text-xs mb-2">Degerlerimiz, ozellikler, avantajlar listesi</p>
+                        <code class="text-xs text-purple-400 block bg-slate-900/50 p-2 rounded">grid grid-cols-2 md:grid-cols-3 gap-6</code>
+                    </div>
+
+                    <!-- CTA Section -->
+                    <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl p-4 border border-blue-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-blue-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-bullhorn text-blue-400"></i>
+                            </div>
+                            <h4 class="font-semibold text-blue-300">CTA Section</h4>
+                        </div>
+                        <p class="text-slate-400 text-xs mb-2">Aksiyon cagirisi: "Bizimle Iletisime Gecin"</p>
+                        <code class="text-xs text-blue-400 block bg-slate-900/50 p-2 rounded">bg-gradient-to-br from-primary-600 to-primary-800</code>
+                    </div>
+
+                    <!-- Icon Cards -->
+                    <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl p-4 border border-pink-500/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-pink-500/30 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-icons text-pink-400"></i>
+                            </div>
+                            <h4 class="font-semibold text-pink-300">Icon Cards</h4>
+                        </div>
+                        <p class="text-slate-400 text-xs mb-2">Ikonlu kartlar: Misyon, Vizyon, Hizmetler</p>
+                        <code class="text-xs text-pink-400 block bg-slate-900/50 p-2 rounded">w-16 h-16 bg-primary-100 rounded-xl</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HAKKIMIZDA SAYFASI ORNEGI -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-building text-fuchsia-400 text-xl"></i>
+                    <h3 class="text-lg font-bold text-fuchsia-300">Ornek: Hakkimizda Sayfasi Yapisi</h3>
+                </div>
+                <p class="text-slate-400 text-sm mb-4">Profesyonel bir hakkimizda sayfasinin bolum siralaması:</p>
+
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</span>
+                        <div>
+                            <strong class="text-fuchsia-300">Hero Section</strong>
+                            <p class="text-slate-400 text-xs">Gradient arka plan, buyuk baslik, kisa aciklama</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</span>
+                        <div>
+                            <strong class="text-fuchsia-300">Stats Cards</strong>
+                            <p class="text-slate-400 text-xs">15+ Referans Proje, Kapsamli Hizmet, Profesyonel Kadro, 7/24 Destek</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</span>
+                        <div>
+                            <strong class="text-fuchsia-300">Hakkimizda Content</strong>
+                            <p class="text-slate-400 text-xs">"Biz Kimiz?", Modern Yaklasimimiz, Kalite ve Guvenilirlik</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">4</span>
+                        <div>
+                            <strong class="text-fuchsia-300">Misyon & Vizyon</strong>
+                            <p class="text-slate-400 text-xs">Yan yana 2 kart: Misyonumuz ve Vizyonumuz</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">5</span>
+                        <div>
+                            <strong class="text-fuchsia-300">Degerlerimiz</strong>
+                            <p class="text-slate-400 text-xs">6 deger ikonlu kartlar: Bilgi, Guvenilirlik, Verimlilik, Basari, Arastirma, Mevzuat Uyumu</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">6</span>
+                        <div>
+                            <strong class="text-fuchsia-300">Neden Biz?</strong>
+                            <p class="text-slate-400 text-xs">6 avantaj kartları: Uzman Kadro, Modern Teknoloji, Zamaninda Teslimat...</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">7</span>
+                        <div>
+                            <strong class="text-fuchsia-300">Hizmet Alanlari</strong>
+                            <p class="text-slate-400 text-xs">Service kategorilerine linkler</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">8</span>
+                        <div>
+                            <strong class="text-fuchsia-300">CTA Section</strong>
+                            <p class="text-slate-400 text-xs">"Birlikte Calisalim" - Iletisim butonu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ILETISIM SAYFASI ORNEGI -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-envelope text-fuchsia-400 text-xl"></i>
+                    <h3 class="text-lg font-bold text-fuchsia-300">Ornek: Iletisim Sayfasi Yapisi</h3>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</span>
+                        <div>
+                            <strong class="text-blue-300">Hero Section</strong>
+                            <p class="text-slate-400 text-xs">Gradient arka plan, "Bizimle Iletisime Gecin" basligi</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</span>
+                        <div>
+                            <strong class="text-blue-300">Iletisim Kartlari</strong>
+                            <p class="text-slate-400 text-xs">3'lu grid: Adres, Telefon, E-posta kartlari</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</span>
+                        <div>
+                            <strong class="text-blue-300">2 Kolonlu Alan</strong>
+                            <p class="text-slate-400 text-xs">Sol: Iletisim formu (widget), Sag: Harita veya ek bilgiler</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-lg p-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">4</span>
+                        <div>
+                            <strong class="text-blue-300">Calisma Saatleri</strong>
+                            <p class="text-slate-400 text-xs">Hafta ici/sonu calisma saatleri tablosu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REFERANS ICERIK KAYNAKLARI -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-file-alt text-fuchsia-400 text-xl"></i>
+                    <h3 class="text-lg font-bold text-fuchsia-300">Icerik Kaynaklari</h3>
+                </div>
+
+                <div class="bg-green-900/30 border border-green-500 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-300 mb-3"><i class="fas fa-check mr-2"></i>ICERIK.md Dosyalari</h4>
+                    <p class="text-slate-300 text-sm mb-3">Her tenant icin icerik kaynagi olarak <code>*_ICERIK.md</code> dosyasi kullanilir:</p>
+                    <ul class="text-slate-400 text-sm space-y-2">
+                        <li><i class="fas fa-arrow-right text-green-400 mr-2"></i><code class="text-cyan-400">UNIMAD_MADENCILIK_ICERIK.md</code> - UNIMAD icerikleri</li>
+                        <li><i class="fas fa-arrow-right text-green-400 mr-2"></i><code class="text-cyan-400">YILDIRIM_PANJUR_ICERIK.md</code> - Yildirim Panjur icerikleri</li>
+                        <li><i class="fas fa-arrow-right text-green-400 mr-2"></i><code class="text-cyan-400">IXTIF_ICERIK.md</code> - ixtif icerikleri</li>
+                    </ul>
+                    <p class="text-slate-400 text-sm mt-3">Bu dosyalar: Hakkimizda metni, Misyon/Vizyon, Hizmet aciklamalari, SSS sorulari icerir.</p>
+                </div>
+            </div>
+
+            <!-- TAILWIND PATTERN'LERI -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fab fa-css3 text-fuchsia-400 text-xl"></i>
+                    <h3 class="text-lg font-bold text-fuchsia-300">Tailwind Pattern'leri</h3>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Section Backgrounds -->
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-fuchsia-500/30">
+                        <h4 class="font-semibold text-fuchsia-300 mb-3">Section Arka Planlari (Alternatif)</h4>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="text-slate-400 mb-1">Light Sections:</p>
+                                <code class="text-xs text-white block bg-slate-900/50 p-2 rounded">bg-white dark:bg-dark-900</code>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1">Gray Sections:</p>
+                                <code class="text-xs text-slate-300 block bg-slate-900/50 p-2 rounded">bg-slate-50 dark:bg-dark-800</code>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1">Hero/CTA Gradient:</p>
+                                <code class="text-xs text-cyan-400 block bg-slate-900/50 p-2 rounded">bg-gradient-to-br from-primary-600 to-primary-800</code>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1">Dark Footer:</p>
+                                <code class="text-xs text-slate-400 block bg-slate-900/50 p-2 rounded">bg-slate-900 dark:bg-dark-950</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spacing -->
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-fuchsia-500/30">
+                        <h4 class="font-semibold text-fuchsia-300 mb-3">Spacing (py)</h4>
+                        <table class="w-full text-sm">
+                            <tbody class="text-slate-300">
+                                <tr class="border-b border-slate-700/50">
+                                    <td class="py-2">Hero Section</td>
+                                    <td><code class="text-cyan-400">py-20</code> veya <code class="text-cyan-400">py-24</code></td>
+                                </tr>
+                                <tr class="border-b border-slate-700/50">
+                                    <td class="py-2">Content Section</td>
+                                    <td><code class="text-cyan-400">py-16</code></td>
+                                </tr>
+                                <tr class="border-b border-slate-700/50">
+                                    <td class="py-2">CTA Section</td>
+                                    <td><code class="text-cyan-400">py-16</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Grid Gap</td>
+                                    <td><code class="text-cyan-400">gap-6</code> veya <code class="text-cyan-400">gap-8</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Typography -->
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-fuchsia-500/30">
+                        <h4 class="font-semibold text-fuchsia-300 mb-3">Typography</h4>
+                        <table class="w-full text-sm">
+                            <tbody class="text-slate-300">
+                                <tr class="border-b border-slate-700/50">
+                                    <td class="py-2">Section Basligi</td>
+                                    <td><code class="text-cyan-400">text-3xl md:text-4xl font-bold font-heading</code></td>
+                                </tr>
+                                <tr class="border-b border-slate-700/50">
+                                    <td class="py-2">Alt Baslik</td>
+                                    <td><code class="text-cyan-400">text-xl font-semibold</code></td>
+                                </tr>
+                                <tr class="border-b border-slate-700/50">
+                                    <td class="py-2">Paragraf</td>
+                                    <td><code class="text-cyan-400">text-gray-600 dark:text-gray-300 leading-relaxed</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Badge/Label</td>
+                                    <td><code class="text-cyan-400">text-primary-600 font-semibold text-sm uppercase tracking-wider</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VERITABANINA KAYIT -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-database text-fuchsia-400 text-xl"></i>
+                    <h3 class="text-lg font-bold text-fuchsia-300">Veritabanina Kayit</h3>
+                </div>
+
+                <div class="bg-slate-800/60 rounded-xl p-4 border border-fuchsia-500/30">
+                    <h4 class="font-semibold text-fuchsia-300 mb-3">SQL ile Icerik Guncelleme</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">-- Tenant DB'ye baglan</span>
+USE tenant_unimadmadencilik_8a32cf;
+
+<span class="text-green-400">-- Hakkimizda sayfasini guncelle</span>
+UPDATE pages
+SET body = '{"tr": "&lt;section class=\"...\"&gt;...HTML ICERIK...&lt;/section&gt;"}'
+WHERE slug->>'$.tr' = 'hakkimizda';
+
+<span class="text-green-400">-- veya PHP Tinker ile</span>
+$page = Page::where('slug->tr', 'hakkimizda')->first();
+$page->body = ['tr' => $htmlContent];
+$page->save();</pre>
+                </div>
+
+                <div class="bg-amber-900/30 border border-amber-500 rounded-xl p-4 mt-4">
+                    <h4 class="font-semibold text-amber-300 mb-2"><i class="fas fa-lightbulb mr-2"></i>IPUCU: JSON Escape</h4>
+                    <p class="text-slate-300 text-sm">HTML'i JSON'a koyarken <code>"</code> karakterlerini <code>\"</code> ile escape et. Tailwind class'larinda <code>'</code> kullanilabilir.</p>
+                </div>
+            </div>
+
+            <!-- REFERANS SITELER -->
+            <div class="bg-gradient-to-r from-fuchsia-900/40 to-purple-900/40 rounded-xl p-5 border border-fuchsia-500/50">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-external-link-alt text-fuchsia-400 text-xl"></i>
+                    <h3 class="font-bold text-fuchsia-300">Referans Siteler</h3>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <p class="text-white font-semibold">yildirimpanjur.com/page/hakkimizda</p>
+                        <p class="text-slate-400 text-xs mt-1">Hakkimizda sayfa yapisi referansi</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <p class="text-white font-semibold">unimad.tuufi.com/page/hakkimizda</p>
+                        <p class="text-slate-400 text-xs mt-1">UNIMAD Madencilik hakkimizda</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== EK A: PAGE MODULU ===== -->
+        <section id="modul-page" class="section-anchor card rounded-2xl p-6 mb-8 border border-indigo-700 bg-indigo-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-file-alt text-indigo-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-indigo-300">EK A: Page Modulu Kullanimi</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-indigo-500">
+                <p class="text-slate-300 text-sm">Page modulu, sitedeki statik sayfalari yonetir: Hakkimizda, Iletisim, Gizlilik Politikasi vb.</p>
+            </div>
+
+            <div class="bg-slate-800/60 rounded-xl p-4 border border-indigo-500/30">
+                <h4 class="font-semibold text-indigo-300 mb-3">Veritabani Alanlari</h4>
+                <table class="w-full text-sm">
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-700"><td class="py-2"><code class="text-indigo-400">title</code></td><td>JSON</td><td>Sayfa basligi</td></tr>
+                        <tr class="border-b border-slate-700"><td class="py-2"><code class="text-indigo-400">slug</code></td><td>JSON</td><td>URL slug</td></tr>
+                        <tr class="border-b border-slate-700"><td class="py-2"><code class="text-indigo-400">body</code></td><td>JSON</td><td>HTML icerik (TUM TASARIM BURADA!)</td></tr>
+                        <tr class="border-b border-slate-700"><td class="py-2"><code class="text-amber-400">is_homepage</code></td><td>BOOL</td><td>Anasayfa mi?</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===== EK B: SERVICE MODULU ===== -->
+        <section id="modul-service" class="section-anchor card rounded-2xl p-6 mb-8 border border-emerald-700 bg-emerald-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-briefcase text-emerald-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-emerald-300">EK B: Service Modulu Kullanimi</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-emerald-500">
+                <p class="text-slate-300 text-sm">Service modulu, sirketin sundugu hizmetleri sergiler. Her hizmetin ayri sayfasi, gorseli ve kategorisi olabilir.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/60 rounded-xl p-4 border border-emerald-500/30">
+                    <h4 class="font-semibold text-emerald-300 mb-2">Media</h4>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li><code class="text-green-400">hero</code> - KARE 1024x1024</li>
+                        <li><code class="text-blue-400">gallery</code> - Ek gorseller</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/60 rounded-xl p-4 border border-emerald-500/30">
+                    <h4 class="font-semibold text-emerald-300 mb-2">URL</h4>
+                    <code class="text-cyan-400 text-sm">/hizmetler/{slug}</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== EK C: BLOG MODULU ===== -->
+        <section id="modul-blog" class="section-anchor card rounded-2xl p-6 mb-8 border border-pink-700 bg-pink-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-newspaper text-pink-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-pink-300">EK C: Blog Modulu Kullanimi</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-pink-500">
+                <p class="text-slate-300 text-sm">Blog modulu, haber, makale ve icerik paylasimi icin kullanilir. Zamanlanmis yayinlama, kategori, etiket, FAQ ve HowTo schema destegi vardir.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-green-900/30 rounded-lg p-3 border border-green-500/50">
+                    <p class="text-green-400 font-semibold">YAYINDA</p>
+                    <p class="text-slate-400 text-xs">is_active=true, published_at=past</p>
+                </div>
+                <div class="bg-amber-900/30 rounded-lg p-3 border border-amber-500/50">
+                    <p class="text-amber-400 font-semibold">ZAMANLANMIS</p>
+                    <p class="text-slate-400 text-xs">is_active=true, published_at=future</p>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-3 border border-slate-500/50">
+                    <p class="text-slate-400 font-semibold">TASLAK</p>
+                    <p class="text-slate-400 text-xs">is_active=false</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== EK D: WORKFLOW ===== -->
+        <section id="workflow" class="section-anchor card rounded-2xl p-6 mb-8 border-2 border-cyan-500 bg-gradient-to-br from-cyan-900/30 to-blue-900/30">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-cyan-500/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-route text-cyan-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-cyan-300">EK D: Icerik Girisi Workflow</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-cyan-500">
+                <p class="text-slate-300 text-sm">Kullanici icerik metnini verir, Claude sisteme girer, gorsel uretir ve media tablosuna kaydeder.</p>
+            </div>
+
+            <!-- Workflow Adimlari -->
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">1</div>
+                    <div class="bg-slate-800/60 rounded-xl p-4 flex-1 border border-cyan-500/30">
+                        <h4 class="font-semibold text-cyan-300 mb-1">Kullanici Icerik Verir</h4>
+                        <p class="text-slate-400 text-sm">ICERIK.md dosyasindan veya direkt metin</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">2</div>
+                    <div class="bg-slate-800/60 rounded-xl p-4 flex-1 border border-cyan-500/30">
+                        <h4 class="font-semibold text-cyan-300 mb-1">Claude HTML Tasarim Uretir</h4>
+                        <p class="text-slate-400 text-sm">Tailwind ile section'lar, kartlar, gridler</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">3</div>
+                    <div class="bg-slate-800/60 rounded-xl p-4 flex-1 border border-cyan-500/30">
+                        <h4 class="font-semibold text-cyan-300 mb-1">DB Body'ye Kaydeder</h4>
+                        <p class="text-slate-400 text-sm">pages.body JSON alanina HTML eklenir</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">4</div>
+                    <div class="bg-slate-800/60 rounded-xl p-4 flex-1 border border-amber-500/30">
+                        <h4 class="font-semibold text-amber-300 mb-1">Leonardo AI Gorsel Uretir (Opsiyonel)</h4>
+                        <p class="text-slate-400 text-sm">11 Altin Kural ile profesyonel gorsel</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">5</div>
+                    <div class="bg-slate-800/60 rounded-xl p-4 flex-1 border border-green-500/30">
+                        <h4 class="font-semibold text-green-300 mb-1">Cache Temizle & Test</h4>
+                        <p class="text-slate-400 text-sm">php artisan cache:clear && view:clear</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modul Karsilastirma -->
+            <div class="mt-6 bg-slate-800/60 rounded-xl p-4 border border-cyan-500/30">
+                <h4 class="font-semibold text-cyan-300 mb-3">Modul Karsilastirma</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="text-slate-400">
+                            <tr class="border-b border-slate-600">
+                                <th class="text-left py-2">Ozellik</th>
+                                <th class="text-center py-2">Page</th>
+                                <th class="text-center py-2">Service</th>
+                                <th class="text-center py-2">Blog</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-700">
+                                <td class="py-2">Kategori</td>
+                                <td class="text-center"><i class="fas fa-times text-red-400"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-green-400"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-green-400"></i></td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-2">Etiketler</td>
+                                <td class="text-center"><i class="fas fa-times text-red-400"></i></td>
+                                <td class="text-center"><i class="fas fa-times text-red-400"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-green-400"></i></td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-2">Anasayfa Olabilir</td>
+                                <td class="text-center"><i class="fas fa-check text-green-400"></i></td>
+                                <td class="text-center"><i class="fas fa-times text-red-400"></i></td>
+                                <td class="text-center"><i class="fas fa-times text-red-400"></i></td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Gorsel Boyutu</td>
+                                <td class="text-center text-cyan-400">1472x832</td>
+                                <td class="text-center text-cyan-400">1024x1024</td>
+                                <td class="text-center text-cyan-400">1472x832</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-8">
+            20 Ocak 2026 v21 &bull; Tuufi.com
+        </footer>
+    </div>
+</body>
+</html>

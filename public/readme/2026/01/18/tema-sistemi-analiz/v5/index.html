@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t-{id} Tema Yapisi - Multi-Tenant Tema Sistemi v5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.875rem; }
+        pre code { background: none; padding: 0; }
+        .file-new { color: #22c55e; }
+        .nav-link { transition: all 0.2s; }
+        .nav-link:hover { background: rgba(139, 92, 246, 0.2); }
+        .section-anchor { scroll-margin-top: 100px; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-wrap gap-2 justify-center text-sm">
+                <a href="#felsefe" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-purple-400">Felsefe</a>
+                <a href="#klasor" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-green-400">Klasor</a>
+                <a href="#seo" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-cyan-400">SEO</a>
+                <a href="#darkmode" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-amber-400">Dark Mode</a>
+                <a href="#media" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-emerald-400">Media/Leonardo</a>
+                <a href="#modul" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-blue-400">Modul Path</a>
+                <a href="#ixtif" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-orange-400">ixtif Pattern</a>
+                <a href="#sorunlar" class="nav-link px-3 py-1 rounded-full text-slate-400 hover:text-red-400">Sorunlar</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-full mb-6">
+                <i class="fas fa-palette text-purple-400 text-xl"></i>
+                <span class="text-slate-400">v5 - Media Eklendi</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                t-{id} Tema Yapisi
+            </h1>
+            <p class="text-slate-400">Multi-Tenant Tema Sistemi - SEO, Dark Mode, Leonardo AI, Media Olusturma</p>
+        </header>
+
+        <!-- ===== BOLUM 1: FELSEFE ===== -->
+        <section id="felsefe" class="section-anchor card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-purple-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">1. Felsefe</h2>
+            </div>
+            <div class="text-slate-300 space-y-3">
+                <p><strong>t-{id}</strong> = Tenant temasi. Sadece ozel dosyalar burada.</p>
+                <p><strong>simple</strong> = Fallback (mevcut, zaten var). t-{id}'de yoksa buradan alir.</p>
+                <p><strong>Ornek:</strong> t-3/homepage.blade.php var -> onu kullan, t-3/blog/show.blade.php yok -> simple'dan al</p>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 2: KLASOR YAPISI ===== -->
+        <section id="klasor" class="section-anchor card rounded-2xl p-6 mb-8 border border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-folder-tree text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold">2. Klasor Yapisi</h2>
+            </div>
+
+            <pre class="text-sm bg-slate-900 rounded-xl p-6 overflow-x-auto font-mono">
+<span class="text-slate-500">resources/views/themes/</span>
+|
++-- <span class="text-slate-400">simple/</span>                         <span class="text-green-400">&larr; FALLBACK (mevcut, dokunma)</span>
+|   +-- layouts/
+|   +-- homepage.blade.php
+|
++-- <span class="text-purple-400">t-1001/</span>                         <span class="text-slate-500">&larr; Muzibu</span>
++-- <span class="text-orange-400">t-2/</span>                            <span class="text-slate-500">&larr; Ixtif</span>
++-- <span class="file-new">t-3/</span>                            <span class="text-cyan-400">&larr; Panjur</span>
+    +-- <span class="file-new">homepage.blade.php</span>          <span class="text-slate-500">(STANDALONE)</span>
+</pre>
+
+            <div class="mt-4 p-4 bg-amber-900/20 border border-amber-700 rounded-lg">
+                <p class="text-amber-300 text-sm"><i class="fas fa-exclamation-triangle mr-2"></i><strong>ONEMLI:</strong> Modul view'lari AYRI konumda! "Modul View Path'leri" bolumune bak.</p>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 3: SEO META TAG ===== -->
+        <section id="seo" class="section-anchor card rounded-2xl p-6 mb-8 border border-cyan-700 bg-cyan-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-search text-cyan-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-cyan-300">3. SEO Meta Tag Implementasyonu</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold text-green-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">SEO etiketleri, Google'in sitenizi anlamasini saglar. Title, description, Open Graph, Twitter Cards ve Schema.org otomatik olusturur.</p>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-4">
+                <h4 class="font-semibold text-white mb-2">Kullanim</h4>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+&lt;!-- head icine ekle --&gt;
+&lt;x-seo-meta /&gt;
+
+&lt;!-- Otomatik uretir: --&gt;
+&lt;title&gt;Sayfa Basligi&lt;/title&gt;
+&lt;meta name="description" content="..."&gt;
+&lt;meta property="og:title" content="..."&gt;
+&lt;script type="application/ld+json"&gt;{Schema.org}&lt;/script&gt;</pre>
+            </div>
+
+            <div class="mt-4 bg-slate-800/50 rounded-xl p-4">
+                <h4 class="font-semibold text-white mb-2">Dosya Konumu</h4>
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 text-slate-300">
+resources/views/components/seo-meta.blade.php   <span class="text-green-400">&larr; Component</span>
+app/View/Components/SeoMeta.php                 <span class="text-green-400">&larr; Class</span></pre>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 4: DARK/LIGHT MODE ===== -->
+        <section id="darkmode" class="section-anchor card rounded-2xl p-6 mb-8 border border-amber-700 bg-amber-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-moon text-amber-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-amber-300">4. Dark/Light Mode</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2">1. FOUC Onleme (head icinde)</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+&lt;script&gt;
+    if (localStorage.getItem('darkMode') === 'true' ||
+        (!localStorage.getItem('darkMode') &&
+         window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    }
+&lt;/script&gt;</pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2">2. Tailwind Config</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 text-slate-300">
+tailwind.config = {
+    darkMode: 'class',  <span class="text-green-400">// class bazli!</span>
+}</pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2">3. Alpine.js Toggle</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+&lt;button x-data="{ dark: ... }"
+    @click="dark = !dark; localStorage.setItem('darkMode', dark);
+            document.documentElement.classList.toggle('dark', dark)"&gt;
+    &lt;i :class="dark ? 'fa-sun' : 'fa-moon'"&gt;&lt;/i&gt;
+&lt;/button&gt;</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 5: MEDIA & LEONARDO AI ===== -->
+        <section id="media" class="section-anchor card rounded-2xl p-6 mb-8 border border-emerald-700 bg-emerald-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-wand-magic-sparkles text-emerald-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-emerald-300">5. Media Olusturma & Leonardo AI</h2>
+            </div>
+
+            <div class="mb-6 p-4 bg-slate-800/50 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold text-green-300 mb-2"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300 text-sm">Leonardo AI API ile otomatik gorsel uretimi. Service, Page, Blog gibi modeller icin hero gorseli olusturur ve Spatie Media Library'ye ekler.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Helper Function -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-magic text-emerald-400 mr-2"></i>Helper Fonksiyon (Queue)</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">// Kullanim - Otomatik queue'ya gonder</span>
+generate_ai_cover($model, 'Baslik', 'type');
+
+<span class="text-green-400">// Ornekler:</span>
+generate_ai_cover($service, $service->title, 'service');
+generate_ai_cover($page, $page->title, 'page');
+generate_ai_cover($blog, $blog->title, 'blog');
+
+<span class="text-slate-500">// Dosya: Modules/MediaManagement/helpers.php</span></pre>
+                </div>
+
+                <!-- Direct Service Usage -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-bolt text-amber-400 mr-2"></i>Senkron Uretim (Direkt)</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">// LeonardoAIService direkt kullanim</span>
+$leonardo = app(\App\Services\Media\LeonardoAIService::class);
+
+$imageData = $leonardo->generateFromPrompt($prompt, [
+    'width' => 1472,
+    'height' => 832,
+    'style' => 'stock_photo',  <span class="text-slate-500">// cinematic, dynamic, hdr, vibrant...</span>
+]);
+
+if ($imageData && !empty($imageData['url'])) {
+    $model->addMediaFromUrl($imageData['url'])
+        ->usingFileName('hero.jpg')
+        ->withCustomProperties([
+            'ai_generated' => true,
+            'prompt' => $prompt,
+        ])
+        ->toMediaCollection('hero');
+}
+
+<span class="text-slate-500">// Dosya: app/Services/Media/LeonardoAIService.php</span></pre>
+                </div>
+
+                <!-- Batch Script Example -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-list text-blue-400 mr-2"></i>Toplu Gorsel Uretimi (Script)</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-green-400">// /tmp/generate-images.php</span>
+&lt;?php
+$tenant = \App\Models\Tenant::find(3);
+tenancy()->initialize($tenant);
+
+$leonardo = app(\App\Services\Media\LeonardoAIService::class);
+
+<span class="text-green-400">// Tutarli renk paleti icin ortak stil</span>
+$colorStyle = ", professional photography, warm orange and cool gray
+               color palette, modern industrial aesthetic, 4k quality";
+
+$prompts = [
+    1 => 'Technician repairing shutter mechanism' . $colorStyle,
+    2 => 'Modern motorized roller shutter' . $colorStyle,
+    // ...
+];
+
+foreach ($prompts as $id => $prompt) {
+    $service = \Modules\Service\App\Models\Service::find($id);
+    if ($service->hasMedia('hero')) continue; <span class="text-slate-500">// Skip if exists</span>
+
+    $imageData = $leonardo->generateFromPrompt($prompt, [
+        'width' => 1472, 'height' => 832, 'style' => 'stock_photo'
+    ]);
+
+    if ($imageData) {
+        $service->addMediaFromUrl($imageData['url'])
+            ->toMediaCollection('hero');
+    }
+    sleep(5); <span class="text-slate-500">// Rate limit</span>
+}
+
+<span class="text-green-400">// Calistir:</span>
+php artisan tinker /tmp/generate-images.php</pre>
+                </div>
+
+                <!-- Style Options -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-palette text-pink-400 mr-2"></i>Leonardo Style Secenekleri</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                        <div class="bg-slate-900 rounded p-2"><code>cinematic</code> - Sinematik</div>
+                        <div class="bg-slate-900 rounded p-2"><code>stock_photo</code> - Stok Foto</div>
+                        <div class="bg-slate-900 rounded p-2"><code>dynamic</code> - Dinamik</div>
+                        <div class="bg-slate-900 rounded p-2"><code>hdr</code> - HDR</div>
+                        <div class="bg-slate-900 rounded p-2"><code>vibrant</code> - Canli</div>
+                        <div class="bg-slate-900 rounded p-2"><code>moody</code> - Atmosferik</div>
+                    </div>
+                </div>
+
+                <!-- API Config -->
+                <div class="bg-amber-900/20 border border-amber-700 rounded-xl p-4">
+                    <h4 class="font-semibold text-amber-300 mb-2"><i class="fas fa-key mr-2"></i>API Konfigurasyonu</h4>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-4 text-slate-300">
+<span class="text-green-400"># .env dosyasinda:</span>
+LEONARDO_API_KEY=your-api-key-here
+
+<span class="text-green-400"># config/services.php:</span>
+'leonardo' => [
+    'api_key' => env('LEONARDO_API_KEY'),
+],</pre>
+                </div>
+
+                <!-- Prompt Tips -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-lightbulb text-yellow-400 mr-2"></i>Prompt Ipuclari</h4>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Tutarli Renk:</strong> Her prompt'a ayni renk paleti ekle</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Kalite:</strong> "professional photography, 4k quality, photorealistic"</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Boyut:</strong> 1472x832 (16:9) veya 832x832 (1:1)</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Rate Limit:</strong> Her istek arasinda 3-5 saniye bekle</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 6: MODUL VIEW PATH'LERI ===== -->
+        <section id="modul" class="section-anchor card rounded-2xl p-6 mb-8 border border-blue-700 bg-blue-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cubes text-blue-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-blue-300">6. Modul View Path'leri</h2>
+            </div>
+
+            <div class="mb-4 p-4 bg-slate-800/50 rounded-lg border-l-4 border-green-500">
+                <p class="text-slate-300 text-sm">Her modul (Page, Service, Blog) kendi view dosyalarini kendi klasorunde tutar. <strong>Ana resources/views degil, Modules klasoru icinde!</strong></p>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-4">
+                <pre class="text-xs bg-slate-900 rounded-lg p-4 overflow-x-auto text-slate-300">
+<span class="text-blue-400">Modules/Page/resources/views/themes/</span>
++-- simple/homepage.blade.php      <span class="text-green-400">&larr; Fallback</span>
++-- ixtif/homepage.blade.php
++-- t-3/homepage.blade.php         <span class="text-cyan-400">&larr; Panjur</span>
+
+<span class="text-amber-400">Modules/Service/resources/views/themes/</span>
++-- simple/service/index.blade.php
++-- simple/service/show.blade.php
+
+<span class="text-pink-400">Modules/Blog/resources/views/themes/</span>
++-- simple/blog/index.blade.php
++-- simple/blog/show.blade.php</pre>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 7: IXTIF'TEN ALINAN PATTERN'LER ===== -->
+        <section id="ixtif" class="section-anchor card rounded-2xl p-6 mb-8 border border-orange-700 bg-orange-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-copy text-orange-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-orange-300">7. Ixtif'ten Alinan Pattern'ler</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-search text-cyan-400 mr-2"></i>SEO</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><code>&lt;x-seo-meta /&gt;</code></li>
+                        <li>Open Graph + Twitter Cards</li>
+                        <li>Schema.org JSON-LD</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-moon text-amber-400 mr-2"></i>Dark Mode</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>FOUC prevention script</li>
+                        <li>localStorage persistence</li>
+                        <li>Alpine.js toggle</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-icons text-purple-400 mr-2"></i>FontAwesome</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>Self-hosted Pro</li>
+                        <li><code>fa-light</code> ikonlar</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="font-semibold text-white mb-2"><i class="fas fa-function text-blue-400 mr-2"></i>Helpers</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><code>setting('key')</code></li>
+                        <li><code>thumb($media, w, h)</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 8: TESPIT EDILEN SORUNLAR ===== -->
+        <section id="sorunlar" class="section-anchor card rounded-2xl p-6 mb-8 border border-red-700 bg-red-900/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-bug text-red-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-red-300">8. Tespit Edilen Sorunlar</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-red-500">
+                    <h4 class="font-semibold text-red-300 mb-2">1. Tenant Model Type (Tinker'da)</h4>
+                    <p class="text-sm text-slate-400 mb-2">Tinker'da tenant context'i baslatirken dogru model kullan:</p>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-3 mt-2">
+<span class="text-red-400">// YANLIS:</span> Tenant::find(3);
+<span class="text-red-400">// YANLIS:</span> \Stancl\Tenancy\Database\Models\Tenant::find(3);
+
+<span class="text-green-400">// DOGRU:</span>
+$tenant = \App\Models\Tenant::find(3);
+tenancy()->initialize($tenant);</pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-amber-500">
+                    <h4 class="font-semibold text-amber-300 mb-2">2. Modul 404 Hatasi - Tenant Atamasi</h4>
+                    <p class="text-sm text-slate-400 mb-2">Service/Page modulu 404 donuyorsa <code>module_tenants</code> tablosunda atama eksik olabilir:</p>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-3 mt-2">
+<span class="text-green-400">// Central DB'de calistir:</span>
+INSERT INTO module_tenants (module_id, tenant_id, is_active, created_at, updated_at)
+VALUES (27, 3, true, NOW(), NOW());
+
+<span class="text-slate-500">// module_id: modules tablosundan Service = 27, Page = 12</span>
+<span class="text-slate-500">// tenant_id: tenants tablosundan</span></pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-amber-500">
+                    <h4 class="font-semibold text-amber-300 mb-2">3. Tinker'da Heredoc Parse Error</h4>
+                    <p class="text-sm text-slate-400 mb-2">Cok satirli string'lerde parse error olursa:</p>
+                    <pre class="text-xs bg-slate-900 rounded-lg p-3 mt-2">
+<span class="text-green-400">// PHP dosyasina yaz:</span>
+/tmp/script.php
+
+<span class="text-green-400">// Tinker ile calistir:</span>
+php artisan tinker /tmp/script.php</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BOLUM 9: CHECKLIST ===== -->
+        <section id="todo" class="section-anchor card rounded-2xl p-6 mb-8 border border-green-700 bg-green-900/20">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list-check text-green-400"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-green-300">9. Yeni Tema Checklist</h2>
+            </div>
+
+            <div class="space-y-2 text-sm">
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Klasor olustur: <code>Modules/Page/resources/views/themes/t-{id}/</code></span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span><code>homepage.blade.php</code> olustur</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span><code>&lt;x-seo-meta /&gt;</code> ekle</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>FOUC prevention script ekle</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Modul tenant atamalarini kontrol et</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Service/Page icerikleri ekle</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Leonardo AI ile gorseller uret</span></label>
+                </div>
+                <div class="bg-slate-800/30 rounded-lg p-3">
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded"><span>Dark/Light mode test et</span></label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-8">
+            18 Ocak 2026 v5 &bull; Tuufi.com
+        </footer>
+    </div>
+</body>
+</html>

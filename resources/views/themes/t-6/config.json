@@ -1,0 +1,16 @@
+{
+    "name": "t-6",
+    "title": "Mahmutoğlu Hukuk Art Deco Tema",
+    "version": "2.0.0",
+    "description": "Mahmutoğlu Hukuk & Danışmanlık için Art Deco tasarımlı profesyonel tema",
+    "extends": "simple",
+    "colors": {
+        "primary": "#f59e0b",
+        "secondary": "#d97706",
+        "accent": "#fbbf24"
+    },
+    "fonts": {
+        "heading": "Cinzel",
+        "body": "Lora"
+    }
+}

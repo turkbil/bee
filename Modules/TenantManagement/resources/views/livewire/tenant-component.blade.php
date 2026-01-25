@@ -333,13 +333,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-floating mb-3">
-                            <select class="form-select" wire:model.live="theme_id" data-choices data-choices-search="{{ count($themes) > 6 ? 'true' : 'false' }}" data-choices-placeholder="Tema seçin">
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('tenantmanagement::admin.theme') }}</label>
+                            <select class="form-select" wire:model.live="theme_id">
                                 @foreach($themes as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
-                            <label>{{ __('tenantmanagement::admin.theme') }}</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
@@ -350,39 +350,39 @@
                             Bu tema kendi özel subheader tasarımını kullanıyor.
                         </div>
                         @else
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-layer-group me-1"></i> Subheader Stili</label>
                             <select class="form-select" wire:model="subheader_style">
                                 @foreach($availableSubheaderStyles as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
-                            <label><i class="fas fa-layer-group me-1"></i> Subheader Stili</label>
                         </div>
                         @endif
 
                         @if(count($availableAiProviders) > 0)
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-floating mb-3">
+                                <div class="mb-3">
+                                    <label class="form-label">AI Provider (Marka)</label>
                                     <select class="form-select" wire:model.live="tenant_ai_provider_id">
                                         <option value="">AI Provider seçin</option>
                                         @foreach($availableAiProviders as $provider)
                                         <option value="{{ $provider['value'] }}" @if($tenant_ai_provider_id == $provider['value']) selected @endif>{{ $provider['label'] }}</option>
                                         @endforeach
                                     </select>
-                                    <label>AI Provider (Marka)</label>
                                     @error('tenant_ai_provider_id') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-floating mb-3">
+                                <div class="mb-3">
+                                    <label class="form-label">AI Model @if(empty($availableProviderModels)) (Önce provider seçin) @endif</label>
                                     <select class="form-select" wire:model="tenant_ai_provider_model_id" @if(empty($availableProviderModels)) disabled @endif>
                                         <option value="">Model seçin</option>
                                         @foreach($availableProviderModels as $model)
                                         <option value="{{ $model['id'] }}" @if($tenant_ai_provider_model_id == $model['id']) selected @endif>{{ $model['label'] }}</option>
                                         @endforeach
                                     </select>
-                                    <label>AI Model @if(empty($availableProviderModels)) (Önce provider seçin) @endif</label>
                                     @error('tenant_ai_provider_model_id') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
@@ -485,13 +485,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-floating mb-3">
-                            <select class="form-select" wire:model.live="theme_id" data-choices data-choices-search="{{ count($themes) > 6 ? 'true' : 'false' }}" data-choices-placeholder="Tema seçin">
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('tenantmanagement::admin.theme') }}</label>
+                            <select class="form-select" wire:model.live="theme_id">
                                 @foreach($themes as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
-                            <label>{{ __('tenantmanagement::admin.theme') }}</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
@@ -502,39 +502,39 @@
                             Bu tema kendi özel subheader tasarımını kullanıyor.
                         </div>
                         @else
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-layer-group me-1"></i> Subheader Stili</label>
                             <select class="form-select" wire:model="subheader_style">
                                 @foreach($availableSubheaderStyles as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
-                            <label><i class="fas fa-layer-group me-1"></i> Subheader Stili</label>
                         </div>
                         @endif
 
                         @if(count($availableAiProviders) > 0)
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-floating mb-3">
+                                <div class="mb-3">
+                                    <label class="form-label">AI Provider (Marka)</label>
                                     <select class="form-select" wire:model.live="tenant_ai_provider_id">
                                         <option value="">AI Provider seçin</option>
                                         @foreach($availableAiProviders as $provider)
                                         <option value="{{ $provider['value'] }}">{{ $provider['label'] }}</option>
                                         @endforeach
                                     </select>
-                                    <label>AI Provider (Marka)</label>
                                     @error('tenant_ai_provider_id') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-floating mb-3">
+                                <div class="mb-3">
+                                    <label class="form-label">AI Model @if(empty($availableProviderModels)) (Önce provider seçin) @endif</label>
                                     <select class="form-select" wire:model="tenant_ai_provider_model_id" @if(empty($availableProviderModels)) disabled @endif>
                                         <option value="">Model seçin</option>
                                         @foreach($availableProviderModels as $model)
                                         <option value="{{ $model['id'] }}">{{ $model['label'] }}</option>
                                         @endforeach
                                     </select>
-                                    <label>AI Model @if(empty($availableProviderModels)) (Önce provider seçin) @endif</label>
                                     @error('tenant_ai_provider_model_id') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>

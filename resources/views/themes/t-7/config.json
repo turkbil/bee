@@ -1,0 +1,16 @@
+{
+    "name": "t-7",
+    "title": "Varilsan Grup Endüstriyel Tema",
+    "version": "1.0.0",
+    "description": "Varilsan Grup için endüstriyel ambalaj temalı modern web sitesi tasarımı",
+    "extends": "simple",
+    "colors": {
+        "primary": "#0284c7",
+        "secondary": "#0ea5e9",
+        "accent": "#fac312"
+    },
+    "fonts": {
+        "heading": "Outfit",
+        "body": "DM Sans"
+    }
+}

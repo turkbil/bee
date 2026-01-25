@@ -43,6 +43,7 @@ class TenantCacheService
     public const PREFIX_MUZIBU = 'muzibu';
     public const PREFIX_PERMISSION = 'permission';
     public const PREFIX_THEME = 'theme';
+    public const PREFIX_SERVICE = 'service';
 
     protected ?Tenant $tenant;
     protected string $tenantId;

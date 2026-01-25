@@ -93,6 +93,37 @@
         .dark .logo-footer-adaptive:hover {
             opacity: 1;
         }
+
+        /* Container - Unimad Referans (DOKUNMA!) */
+        .container {
+            max-width: 100% !important;
+            padding-left: 1.25rem !important;
+            padding-right: 1.25rem !important;
+        }
+        @media (min-width: 768px) {
+            .container {
+                padding-left: 2rem !important;
+                padding-right: 2rem !important;
+            }
+        }
+        @media (min-width: 1024px) {
+            .container {
+                padding-left: 3rem !important;
+                padding-right: 3rem !important;
+            }
+        }
+        @media (min-width: 1280px) {
+            .container {
+                max-width: 1280px !important;
+                padding-left: 2rem !important;
+                padding-right: 2rem !important;
+            }
+        }
+        @media (min-width: 1536px) {
+            .container {
+                max-width: 1536px !important;
+            }
+        }
     </style>
     
     {{-- Livewire Styles --}}
@@ -165,10 +196,10 @@
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 flex flex-col">
+<body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 flex flex-col pt-16">
 
 
-    <header class="sticky top-0 z-50 bg-white shadow dark:bg-gray-800 transition-colors duration-300" x-data="{ mobileMenuOpen: false }">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow dark:bg-gray-800 transition-colors duration-300" x-data="{ mobileMenuOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">

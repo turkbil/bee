@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Kullanıcı Sistemi Analizi - Muzibu.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .code-block { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; }
+        .badge-premium { background: #f59e0b; color: white; }
+        .badge-free { background: #6b7280; color: white; }
+        .badge-trial { background: #3b82f6; color: white; }
+        .section-card { background: #1e293b; border-left: 4px solid #f093fb; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+    <!-- Header -->
+    <header class="gradient-bg shadow-lg">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-4xl font-bold text-white mb-2">💎 Premium Kullanıcı Sistemi</h1>
+            <p class="text-slate-100">Muzibu.com Multi-Tenant SaaS - Abonelik ve Cihaz Yönetim Sistemi</p>
+            <div class="flex gap-3 mt-4">
+                <span class="badge badge-premium">PREMIUM</span>
+                <span class="badge badge-trial">TRIAL</span>
+                <span class="badge badge-free">FREE</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-6 py-12">
+
+        <!-- Özet Bölümü -->
+        <div class="bg-slate-800 rounded-lg p-8 mb-8 border-l-4 border-purple-500">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">📋 Sistem Özeti</h2>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-slate-700 p-4 rounded-lg">
+                    <div class="text-3xl font-bold text-amber-400">1</div>
+                    <div class="text-slate-300">Single Source of Truth</div>
+                    <div class="text-sm text-slate-400 mt-1">subscription_expires_at</div>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg">
+                    <div class="text-3xl font-bold text-blue-400">7</div>
+                    <div class="text-slate-300">Subscription Durumu</div>
+                    <div class="text-sm text-slate-400 mt-1">active, trial, pending...</div>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg">
+                    <div class="text-3xl font-bold text-green-400">3</div>
+                    <div class="text-slate-300">Device Limit Katmanı</div>
+                    <div class="text-sm text-slate-400 mt-1">User → Plan → Setting</div>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg">
+                    <div class="text-3xl font-bold text-pink-400">∞</div>
+                    <div class="text-slate-300">Subscription Chain</div>
+                    <div class="text-sm text-slate-400 mt-1">Sınırsız uzatma</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BÖLÜM 1: PREMIUM KONTROLÜ -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">1️⃣ Premium Kontrolü - Single Source of Truth</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Sistemde bir kullanıcının premium üye olup olmadığını kontrol etmek için <strong>tek bir kaynak</strong> vardır:
+                        <code class="bg-slate-800 px-2 py-1 rounded">users.subscription_expires_at</code> alanı.
+                    </p>
+
+                    <div class="bg-amber-900/30 border-l-4 border-amber-500 p-4 rounded mb-4">
+                        <div class="font-bold text-amber-400 mb-2">🎯 TEK KURAL</div>
+                        <div class="text-slate-300 space-y-2">
+                            <div>✅ <strong>subscription_expires_at</strong> gelecekte bir tarih → <strong>PREMIUM</strong></div>
+                            <div>❌ <strong>subscription_expires_at</strong> NULL veya geçmiş tarih → <strong>ÜCRETSİZ</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">📌 Örnek Senaryo</h4>
+                        <div class="space-y-3">
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <div class="text-green-400 font-semibold">Ahmet - Premium Kullanıcı</div>
+                                <div class="text-sm text-slate-400">subscription_expires_at: 2026-12-31</div>
+                                <div class="text-sm text-slate-300">→ 2026 yılının sonuna kadar müzik dinleyebilir, cihaz limiti yüksek</div>
+                            </div>
+
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <div class="text-blue-400 font-semibold">Ayşe - Trial Kullanıcı</div>
+                                <div class="text-sm text-slate-400">subscription_expires_at: 2026-02-04 (7 gün sonra)</div>
+                                <div class="text-sm text-slate-300">→ Deneme süresi devam ediyor, premium özellikler kullanılabilir</div>
+                            </div>
+
+                            <div class="border-l-4 border-red-500 pl-4">
+                                <div class="text-red-400 font-semibold">Mehmet - Ücretsiz Kullanıcı</div>
+                                <div class="text-sm text-slate-400">subscription_expires_at: NULL</div>
+                                <div class="text-sm text-slate-300">→ Müzik dinlemek için abonelik satın alması gerekiyor</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Tek bir alan (<strong>subscription_expires_at</strong>) üzerinden kontrol yapmak, sistem performansını
+                            artırır ve karmaşıklığı azaltır. Her seferinde <strong>subscriptions</strong> tablosunu sorgulamaya
+                            gerek kalmaz. Kullanıcı tablosundan tek bir date kontrolü yeterlidir.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">User::isPremium() Metodu</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Models/User.php (lines 463-481)
+
+/**
+ * Premium üye mi?
+ * 🔴 TEK KAYNAK: users.subscription_expires_at
+ */
+public function isPremium(): bool {
+    // Tenant yoksa false
+    if (!$this->isMuzibuTenant()) {
+        return false;
+    }
+
+    // 1. Model değeri (hızlı)
+    if ($this->subscription_expires_at && $this->subscription_expires_at->isFuture()) {
+        return true;
+    }
+
+    // 2. Fresh DB kontrolü (model stale olabilir)
+    $freshExpiry = \DB::table('users')
+        ->where('id', $this->id)
+        ->value('subscription_expires_at');
+
+    return $freshExpiry && \Carbon\Carbon::parse($freshExpiry)->isFuture();
+}
+
+📌 Kullanım:
+@if(auth()->user()->isPremium())
+    &lt;span class="badge-premium"&gt;Premium Üye&lt;/span&gt;
+@else
+    &lt;a href="{{ route('subscription.plans') }}"&gt;Premium Ol&lt;/a&gt;
+@endif</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">SubscriptionService::checkUserAccess()</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/Subscription/App/Services/SubscriptionService.php (lines 314-356)
+
+/**
+ * Kullanıcı erişim kontrolü (request-level cache ile)
+ */
+public function checkUserAccess(User $user): array {
+    $cacheKey = 'user_' . $user->id;
+
+    // Request cache'den al (3 query → 1 query optimizasyonu)
+    if (isset(self::$accessCache[$cacheKey])) {
+        return self::$accessCache[$cacheKey];
+    }
+
+    // 🔴 SINGLE SOURCE OF TRUTH
+    $expiresAt = $user->subscription_expires_at;
+
+    if ($expiresAt && $expiresAt->isFuture()) {
+        $daysRemaining = (int) now()->diffInDays($expiresAt, false);
+
+        // Trial mi yoksa normal premium mi?
+        $isTrial = Subscription::where('user_id', $user->id)
+            ->where('status', 'trial')
+            ->whereNotNull('trial_ends_at')
+            ->where('trial_ends_at', '>', now())
+            ->exists();
+
+        $result = [
+            'status' => 'unlimited',
+            'is_trial' => $isTrial,
+            'expires_at' => $expiresAt,
+            'days_remaining' => max(0, $daysRemaining),
+        ];
+    } else {
+        $result = [
+            'status' => 'subscription_required',
+            'message' => 'Müzik dinlemek için premium üyelik gereklidir',
+            'expires_at' => null,
+            'days_remaining' => 0,
+        ];
+    }
+
+    // Request cache'e kaydet
+    self::$accessCache[$cacheKey] = $result;
+    return $result;
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Database Schema</h4>
+                            <div class="code-block text-sm">
+<pre>📊 users tablosu (Tenant DB)
+┌──────────────────────────┬───────────┬──────────────────────┐
+│ Kolon                    │ Tip       │ Açıklama             │
+├──────────────────────────┼───────────┼──────────────────────┤
+│ id                       │ bigint    │ PK                   │
+│ email                    │ varchar   │ Unique               │
+│ subscription_expires_at  │ timestamp │ 🔴 SINGLE SOURCE     │
+│ device_limit             │ int       │ Override (nullable)  │
+│ has_used_trial           │ boolean   │ Trial kullanıldı mı  │
+└──────────────────────────┴───────────┴──────────────────────┘
+
+🎯 KRITIK:
+- subscription_expires_at NULL = Abonelik yok
+- subscription_expires_at > NOW() = Premium
+- subscription_expires_at < NOW() = Süresi dolmuş</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: SUBSCRIPTION MODEL ve PLAN -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">2️⃣ Subscription Model ve Plan Yapısı</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Her kullanıcının bir veya birden fazla <strong>abonelik kaydı</strong> (subscription) olabilir.
+                        Her abonelik bir <strong>plana</strong> (SubscriptionPlan) bağlıdır ve bir <strong>durum</strong> içerir.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-green-900/30 border-l-4 border-green-500 p-4 rounded">
+                            <div class="font-bold text-green-400 mb-1">✅ ACTIVE (Aktif)</div>
+                            <p class="text-sm text-slate-300">Abonelik devam ediyor, premium özellikler kullanılabilir</p>
+                        </div>
+                        <div class="bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded">
+                            <div class="font-bold text-blue-400 mb-1">🎁 TRIAL (Deneme)</div>
+                            <p class="text-sm text-slate-300">Ücretsiz deneme süresi, premium özellikler kullanılabilir</p>
+                        </div>
+                        <div class="bg-amber-900/30 border-l-4 border-amber-500 p-4 rounded">
+                            <div class="font-bold text-amber-400 mb-1">⏳ PENDING (Beklemede)</div>
+                            <p class="text-sm text-slate-300">Gelecekte başlayacak (chain sistemi), henüz aktif değil</p>
+                        </div>
+                        <div class="bg-purple-900/30 border-l-4 border-purple-500 p-4 rounded">
+                            <div class="font-bold text-purple-400 mb-1">💳 PENDING_PAYMENT (Ödeme Bekleniyor)</div>
+                            <p class="text-sm text-slate-300">Sipariş oluşturuldu, ödeme henüz tamamlanmadı</p>
+                        </div>
+                        <div class="bg-red-900/30 border-l-4 border-red-500 p-4 rounded">
+                            <div class="font-bold text-red-400 mb-1">❌ EXPIRED (Süresi Dolmuş)</div>
+                            <p class="text-sm text-slate-300">Abonelik süresi bitmiş, yenileme gerekli</p>
+                        </div>
+                        <div class="bg-slate-900/30 border-l-4 border-slate-500 p-4 rounded">
+                            <div class="font-bold text-slate-400 mb-1">🚫 CANCELLED (İptal Edilmiş)</div>
+                            <p class="text-sm text-slate-300">Kullanıcı tarafından iptal edildi</p>
+                        </div>
+                        <div class="bg-orange-900/30 border-l-4 border-orange-500 p-4 rounded">
+                            <div class="font-bold text-orange-400 mb-1">⏸️ PAUSED (Duraklatılmış)</div>
+                            <p class="text-sm text-slate-300">Geçici olarak durdurulmuş</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">📦 Subscription Plan Nedir?</h4>
+                        <p class="text-slate-300 mb-2">
+                            Plan, bir abonelik paketinin şablonudur. Örneğin: <strong>"Premium Yıllık"</strong> adında bir plan:
+                        </p>
+                        <ul class="list-disc list-inside text-slate-300 space-y-1 text-sm">
+                            <li>Fiyat: 240 TL/yıl (veya birden fazla dönem seçeneği)</li>
+                            <li>Cihaz limiti: 5 cihaz</li>
+                            <li>Deneme süresi: 7 gün</li>
+                            <li>Özellikler: Reklamsız dinleme, offline mod, yüksek kalite</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Plan ve subscription ayrımı sayesinde sistem çok esnek çalışır. Aynı plan binlerce kullanıcı
+                            tarafından kullanılabilir. Plan fiyatı değiştiğinde yeni abonelikler yeni fiyatı kullanır ama
+                            mevcut abonelikler etkilenmez. Her kullanıcının kendi subscription kaydı kendi süresini tutar.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Subscription Model</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/Subscription/App/Models/Subscription.php
+
+class Subscription extends BaseModel {
+    protected $fillable = [
+        'user_id',
+        'subscription_plan_id',
+        'subscription_number',      // Unique: SUB-XXXXX
+        'status',                   // active, trial, pending, expired, cancelled, paused
+        'cycle_key',                // '1-month', '1-year' (dinamik)
+        'cycle_metadata',           // Cycle bilgileri (label, duration_days, price)
+        'price_per_cycle',
+        'currency',
+        'has_trial',
+        'trial_days',
+        'trial_ends_at',
+        'current_period_start',     // Bu dönemin başlangıcı
+        'current_period_end',       // Bu dönemin bitişi (ÖNEMLİ!)
+        'next_billing_date',
+        'auto_renew',
+        'metadata',                 // Extra bilgiler (order_id, vb.)
+    ];
+
+    // İlişkiler
+    public function user() { return $this->belongsTo(User::class); }
+    public function plan() { return $this->belongsTo(SubscriptionPlan::class); }
+
+    // Scope'lar
+    public function scopeActive($query) {
+        return $query->where('status', 'active')
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            });
+    }
+
+    // Status Checks
+    public function isActive(): bool {
+        return $this->status === 'active' &&
+               ($this->current_period_end === null || $this->current_period_end->isFuture());
+    }
+
+    public function isTrial(): bool {
+        return $this->status === 'trial' &&
+               $this->trial_ends_at !== null &&
+               $this->trial_ends_at->isFuture();
+    }
+
+    public function daysRemaining(): int {
+        if ($this->isTrial() && $this->trial_ends_at) {
+            return max(0, (int) floor(now()->diffInDays($this->trial_ends_at, false)));
+        }
+        if ($this->current_period_end) {
+            return max(0, (int) floor(now()->diffInDays($this->current_period_end, false)));
+        }
+        return 0;
+    }
+
+    // Cache temizleme (subscription değişince otomatik)
+    protected static function boot() {
+        parent::boot();
+
+        $clearPremiumCache = function ($subscription) {
+            if ($subscription->user_id) {
+                \Cache::forget('user_' . $subscription->user_id . '_is_premium_tenant_1001');
+            }
+        };
+
+        static::created($clearPremiumCache);
+        static::updated($clearPremiumCache);
+        static::deleted($clearPremiumCache);
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">SubscriptionPlan Model</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/Subscription/App/Models/SubscriptionPlan.php
+
+class SubscriptionPlan extends BaseModel {
+    protected $fillable = [
+        'title',                // ['tr' => 'Premium Yıllık', 'en' => 'Premium Yearly']
+        'slug',                 // premium-yearly
+        'description',          // Çoklu dil açıklama
+        'features',             // ['Reklamsız', 'Offline', 'HD Kalite']
+        'billing_cycles',       // 🔥 DİNAMİK CYCLES
+        'device_limit',         // Bu planın cihaz limiti
+        'trial_days',           // Deneme süresi (gün)
+        'is_trial',             // Trial planı mı?
+        'is_featured',          // Öne çıkan plan mı?
+        'is_active',
+        'is_public',
+    ];
+
+    // Dinamik Billing Cycles Örneği:
+    'billing_cycles' => [
+        '1-month' => [
+            'label' => ['tr' => '1 Ay', 'en' => '1 Month'],
+            'duration_days' => 30,
+            'price' => 29.90,
+            'price_type' => 'without_tax', // KDV hariç
+            'sort_order' => 1,
+        ],
+        '1-year' => [
+            'label' => ['tr' => '1 Yıl', 'en' => '1 Year'],
+            'duration_days' => 365,
+            'price' => 240.00,
+            'price_type' => 'without_tax',
+            'sort_order' => 2,
+        ],
+        '2-year' => [
+            'label' => ['tr' => '2 Yıl', 'en' => '2 Years'],
+            'duration_days' => 730,
+            'price' => 400.00,
+            'price_type' => 'without_tax',
+            'sort_order' => 3,
+        ],
+    ]
+
+    // Cycle metodları
+    public function getCyclePrice(string $cycleKey): ?float {
+        $cycles = $this->billing_cycles ?? [];
+        return isset($cycles[$cycleKey]['price']) ? (float) $cycles[$cycleKey]['price'] : null;
+    }
+
+    public function getCycleBasePrice(string $cycleKey): ?float {
+        // KDV hariç fiyat (Cart için)
+        $cycle = $this->getCycle($cycleKey);
+        $price = (float) $cycle['price'];
+        $priceType = $cycle['price_type'] ?? 'without_tax';
+
+        if ($priceType === 'with_tax') {
+            // KDV'yi ayrıştır
+            return $price / (1 + ($this->tax_rate ?? 20.0) / 100);
+        }
+
+        return $price; // Zaten KDV hariç
+    }
+
+    public function getCyclePriceWithTax(string $cycleKey): ?float {
+        // KDV dahil fiyat (gösterim için)
+        $basePrice = $this->getCycleBasePrice($cycleKey);
+        return $basePrice * (1 + ($this->tax_rate ?? 20.0) / 100);
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Database Schema</h4>
+                            <div class="code-block text-sm">
+<pre>📊 subscriptions tablosu (Tenant DB)
+┌──────────────────────────┬───────────┬──────────────────────────┐
+│ Kolon                    │ Tip       │ Açıklama                 │
+├──────────────────────────┼───────────┼──────────────────────────┤
+│ subscription_id          │ bigint    │ PK                       │
+│ user_id                  │ bigint    │ FK users                 │
+│ subscription_plan_id     │ bigint    │ FK subscription_plans    │
+│ subscription_number      │ varchar   │ Unique: SUB-678ABCD      │
+│ status                   │ varchar   │ active/trial/pending...  │
+│ cycle_key                │ varchar   │ '1-month', '1-year'      │
+│ cycle_metadata           │ json      │ {label, duration, price} │
+│ price_per_cycle          │ decimal   │ Bu abonelik için fiyat   │
+│ current_period_start     │ timestamp │ Dönem başlangıcı         │
+│ current_period_end       │ timestamp │ Dönem bitişi (ÖNEMLİ)    │
+│ trial_ends_at            │ timestamp │ Deneme bitişi            │
+│ has_trial                │ boolean   │ Trial kullanıldı mı      │
+│ metadata                 │ json      │ {order_id: 123}          │
+└──────────────────────────┴───────────┴──────────────────────────┘
+
+📊 subscription_plans tablosu (Tenant DB)
+┌──────────────────────────┬───────────┬──────────────────────────┐
+│ subscription_plan_id     │ bigint    │ PK                       │
+│ title                    │ json      │ {'tr': 'Premium Yıllık'} │
+│ billing_cycles           │ json      │ Dinamik cycles (yukarıda)│
+│ device_limit             │ int       │ Cihaz limiti             │
+│ trial_days               │ int       │ Deneme süresi            │
+│ is_trial                 │ boolean   │ Trial planı mı?          │
+│ is_featured              │ boolean   │ Öne çıkan mı?            │
+└──────────────────────────┴───────────┴──────────────────────────┘</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: SUBSCRIPTION CHAIN SİSTEMİ -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">3️⃣ Subscription Chain Sistemi (Zincir)</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Kullanıcılar <strong>birden fazla abonelik satın alabilir</strong> ve bu abonelikler
+                        <strong>zincir şeklinde</strong> birbirine bağlanır. Yani bir abonelik bittikten sonra
+                        otomatik olarak bir sonraki abonelik başlar.
+                    </p>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">📌 Örnek Senaryo</h4>
+                        <div class="space-y-3 text-sm">
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <div class="text-green-400 font-semibold">1 Ocak 2026: İlk Satın Alma (1 Yıl)</div>
+                                <div class="text-slate-400">Status: <strong>ACTIVE</strong></div>
+                                <div class="text-slate-300">Başlangıç: 2026-01-01 → Bitiş: 2027-01-01</div>
+                            </div>
+
+                            <div class="border-l-4 border-amber-500 pl-4">
+                                <div class="text-amber-400 font-semibold">15 Haziran 2026: İkinci Satın Alma (1 Yıl)</div>
+                                <div class="text-slate-400">Status: <strong>PENDING</strong> (beklemede)</div>
+                                <div class="text-slate-300">Başlangıç: 2027-01-01 → Bitiş: 2028-01-01</div>
+                                <div class="text-xs text-slate-500">⚠️ İlk abonelik bitene kadar bekler, sonra aktif olur</div>
+                            </div>
+
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <div class="text-purple-400 font-semibold">20 Aralık 2026: Üçüncü Satın Alma (2 Yıl)</div>
+                                <div class="text-slate-400">Status: <strong>PENDING</strong> (beklemede)</div>
+                                <div class="text-slate-300">Başlangıç: 2028-01-01 → Bitiş: 2030-01-01</div>
+                                <div class="text-xs text-slate-500">⚠️ İkinci abonelik bitene kadar bekler</div>
+                            </div>
+
+                            <div class="border-l-4 border-pink-500 pl-4 bg-pink-900/20 rounded p-2">
+                                <div class="text-pink-400 font-semibold">✨ Sonuç</div>
+                                <div class="text-slate-300">users.subscription_expires_at = <strong>2030-01-01</strong></div>
+                                <div class="text-xs text-slate-400">Toplam 4 yıl kesintisiz premium üyelik!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-green-900/30 border-l-4 border-green-500 p-4 rounded">
+                            <div class="font-bold text-green-400 mb-1">✅ Avantajlar</div>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• Kesintisiz hizmet (süre bitmeden yeni satın alma)</li>
+                                <li>• Kampanyalardan yararlanma (erken alım indirimleri)</li>
+                                <li>• Otomatik uzatma (manuel işlem gerekmez)</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded">
+                            <div class="font-bold text-blue-400 mb-1">🔧 Sistem Mekanizması</div>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• İlk subscription: <strong>active</strong></li>
+                                <li>• Sonraki subscriptions: <strong>pending</strong></li>
+                                <li>• İlki bitince: Pending → Active</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Zincir sistemi sayesinde kullanıcılar istedikleri kadar ileriye dönük abonelik satın alabilir.
+                            Özel günlerde (yılbaşı, kampanyalar) çok sayıda abonelik alıp yıllarca premium kalabilirler.
+                            Sistem otomatik olarak sırayı yönetir, hiçbir süre kaybolmaz.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">User::recalculateSubscriptionExpiry()</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Models/User.php (lines 506-573)
+
+/**
+ * Kullanıcının subscription_expires_at değerini yeniden hesapla
+ * Tüm active ve pending subscription'ların en son bitiş tarihini bul
+ */
+public function recalculateSubscriptionExpiry(): void {
+    $connection = $this->getConnectionName();
+    if (!$connection) return;
+
+    // Sadece ÖDENMİŞ veya MANUEL abonelikleri dahil et
+    $validSubscriptions = $this->subscriptions()
+        ->whereIn('status', ['active', 'pending'])
+        ->get()
+        ->filter(function ($sub) {
+            $orderId = $sub->metadata['order_id'] ?? null;
+
+            // Order yoksa = manuel oluşturulmuş, dahil et
+            if (!$orderId) return true;
+
+            // Order varsa ödeme durumunu kontrol et
+            if (class_exists(\Modules\Cart\App\Models\Order::class)) {
+                $order = \Modules\Cart\App\Models\Order::find($orderId);
+                if ($order && in_array($order->payment_status, ['paid', 'completed'])) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+    // En son bitiş tarihini bul
+    $lastSubscription = $validSubscriptions->sortByDesc('current_period_end')->first();
+    $expiresAt = $lastSubscription?->current_period_end;
+
+    // users.subscription_expires_at güncelle
+    \DB::connection($connection)
+        ->table('users')
+        ->where('id', $this->id)
+        ->update(['subscription_expires_at' => $expiresAt]);
+
+    $this->subscription_expires_at = $expiresAt;
+
+    // Premium cache'i temizle
+    \Cache::forget('user_' . $this->id . '_is_premium_tenant_' . (tenant()?->id ?? 0));
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Subscription::rechainUserSubscriptions()</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/Subscription/App/Models/Subscription.php (lines 370-459)
+
+/**
+ * Kullanıcının tüm abonelik zincirini yeniden hesapla
+ * Bir abonelik silindiğinde veya değiştiğinde çağrılır
+ */
+public static function rechainUserSubscriptions(int $userId): void {
+    if (!tenant()) return;
+
+    \DB::transaction(function () use ($userId) {
+        // Aktif aboneliği bul
+        $active = self::where('user_id', $userId)
+            ->where('status', 'active')
+            ->orderBy('current_period_end', 'desc')
+            ->first();
+
+        if (!$active) {
+            // Aktif yok, sadece subscription_expires_at güncelle
+            $user = User::find($userId);
+            $user?->recalculateSubscriptionExpiry();
+            return;
+        }
+
+        // Pending abonelikleri bul (oluşturma sırasına göre)
+        $pendings = self::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->orderBy('subscription_id', 'asc')
+            ->get();
+
+        if ($pendings->isEmpty()) {
+            $user = User::find($userId);
+            $user?->recalculateSubscriptionExpiry();
+            return;
+        }
+
+        // Zinciri hesapla
+        $chainEnd = $active->current_period_end;
+        $updated = 0;
+
+        foreach ($pendings as $pending) {
+            // Bu aboneliğin süresi
+            $duration = 365; // Default
+            if ($pending->current_period_start && $pending->current_period_end) {
+                $duration = $pending->current_period_start->diffInDays($pending->current_period_end);
+            }
+
+            $newStart = $chainEnd->copy();
+            $newEnd = $chainEnd->copy()->addDays($duration);
+
+            // Tarihler farklıysa güncelle
+            if ($pending->current_period_start->format('Y-m-d') !== $newStart->format('Y-m-d')
+                || $pending->current_period_end->format('Y-m-d') !== $newEnd->format('Y-m-d')) {
+
+                $pending->updateQuietly([
+                    'current_period_start' => $newStart,
+                    'current_period_end' => $newEnd,
+                    'next_billing_date' => $newEnd,
+                ]);
+                $updated++;
+            }
+
+            // Zinciri ilerlet
+            $chainEnd = $newEnd;
+        }
+
+        // subscription_expires_at güncelle
+        $user = User::find($userId);
+        $user?->recalculateSubscriptionExpiry();
+    });
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Chain Position</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Subscription Model - getChainPositionAttribute
+
+/**
+ * Subscription'ın zincirdeki sırasını al
+ * 1 = aktif, 2 = ilk bekleyen, 3 = ikinci bekleyen...
+ */
+public function getChainPositionAttribute(): int {
+    if ($this->status === 'active') {
+        return 1;
+    }
+
+    if ($this->status !== 'pending') {
+        return 0; // Zincirde değil
+    }
+
+    $position = self::where('user_id', $this->user_id)
+        ->whereIn('status', ['active', 'pending'])
+        ->where('current_period_start', '<', $this->current_period_start)
+        ->count();
+
+    return $position + 1;
+}
+
+📌 Kullanım:
+@foreach($user->subscriptions as $sub)
+    Sıra: {{ $sub->chain_position }}
+    Durum: {{ $sub->status }}
+    Başlangıç: {{ $sub->current_period_start }}
+@endforeach</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: DEVICE LIMIT SİSTEMİ -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">4️⃣ Device Limit Sistemi (3-Tier Hierarchy)</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Her kullanıcının <strong>kaç cihazdan aynı anda giriş yapabileceği</strong> sınırlıdır.
+                        Bu limit 3 farklı yerden belirlenebilir ve <strong>öncelik sırası</strong> vardır:
+                    </p>
+
+                    <div class="space-y-3 mb-4">
+                        <div class="bg-amber-900/30 border-l-4 border-amber-500 p-4 rounded">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-amber-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">1</span>
+                                <span class="font-bold text-amber-400">Kullanıcı Özel Limit (User Override)</span>
+                            </div>
+                            <p class="text-sm text-slate-300">
+                                Admin, bir kullanıcıya <strong>özel limit</strong> verebilir.
+                                Örnek: VIP kullanıcıya 10 cihaz, test kullanıcısına 99 cihaz.
+                            </p>
+                            <div class="text-xs text-slate-400 mt-1">users.device_limit (eğer NULL değilse)</div>
+                        </div>
+
+                        <div class="bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">2</span>
+                                <span class="font-bold text-blue-400">Subscription Plan Limit</span>
+                            </div>
+                            <p class="text-sm text-slate-300">
+                                Kullanıcının <strong>aktif planına</strong> göre belirlenir.
+                                Örnek: "Premium" planı = 5 cihaz, "Basic" planı = 2 cihaz.
+                            </p>
+                            <div class="text-xs text-slate-400 mt-1">subscription_plans.device_limit</div>
+                        </div>
+
+                        <div class="bg-slate-700 border-l-4 border-slate-500 p-4 rounded">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-slate-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">3</span>
+                                <span class="font-bold text-slate-300">Global Setting (Fallback)</span>
+                            </div>
+                            <p class="text-sm text-slate-300">
+                                Yukarıdakilerin hiçbiri yoksa <strong>sistem ayarı</strong> kullanılır.
+                                Örnek: Tüm ücretsiz kullanıcılar için 1 cihaz.
+                            </p>
+                            <div class="text-xs text-slate-400 mt-1">setting('auth_device_limit', 1)</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">🔐 LIFO Mekanizması (Last In, First Out)</h4>
+                        <p class="text-slate-300 mb-2">
+                            Kullanıcı limit aşarsa ne olur? <strong>En eski cihaz otomatik çıkış yapar!</strong>
+                        </p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">1️⃣</span>
+                                <span class="text-slate-300">Limit: 2 cihaz, Kullanıcı PC'den giriş yaptı (Cihaz A)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">2️⃣</span>
+                                <span class="text-slate-300">Telefon'dan giriş yaptı (Cihaz B) → Toplam 2 cihaz, limit doldu</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-amber-400">3️⃣</span>
+                                <span class="text-slate-300">Tablet'ten giriş yaptı (Cihaz C) → <strong>Cihaz A otomatik logout!</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            3-tier sistem sayesinde hem genel kurallar hem de özel durumlar yönetilebilir.
+                            LIFO mekanizması sayesinde kullanıcı yeni cihazdan giriş yaptığında eski cihaz
+                            otomatik çıkış yapar, kullanıcının müdahalesine gerek kalmaz.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">DeviceService::getDeviceLimit()</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/Muzibu/App/Services/DeviceService.php (lines 537-571)
+
+/**
+ * Device limit al (3-tier hierarchy)
+ * 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+ */
+public function getDeviceLimit(User $user): int {
+    if (!$this->shouldRun()) {
+        return 999; // Sistem kapalıysa sınırsız
+    }
+
+    // 1️⃣ User override (en yüksek öncelik)
+    if ($user->device_limit !== null && $user->device_limit > 0) {
+        return $user->device_limit;
+    }
+
+    // 2️⃣ Subscription Plan
+    $expiresAt = $user->subscription_expires_at;
+    $hasPremium = $expiresAt && $expiresAt->isFuture();
+
+    if ($hasPremium) {
+        // Plan'dan device_limit al
+        $subscription = $user->subscriptions()
+            ->whereIn('status', ['active', 'trial'])
+            ->with('plan')
+            ->orderByDesc('created_at')
+            ->first();
+
+        if ($subscription && $subscription->plan && $subscription->plan->device_limit) {
+            return (int) $subscription->plan->device_limit;
+        }
+    }
+
+    // 3️⃣ Tenant setting fallback
+    if (function_exists('setting') && setting('auth_device_limit')) {
+        return (int) setting('auth_device_limit');
+    }
+
+    return 1; // Son çare: 1 cihaz
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">DeviceService::registerSession() - LIFO</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/Muzibu/App/Services/DeviceService.php (lines 48-137)
+
+/**
+ * Yeni session kaydet (login sonrası)
+ * Cookie kontrolü ile aynı tarayıcı mı yoksa yeni cihaz mı belirlenir
+ */
+public function registerSession(User $user): void {
+    $sessionId = session()->getId();
+    $cookieName = 'mzb_login_token';
+
+    // 🔥 1. AYNI TARAYICI MI? Cookie kontrolü
+    $existingToken = request()->cookie($cookieName);
+
+    if ($existingToken) {
+        $existingSession = DB::table('user_active_sessions')
+            ->where('user_id', $user->id)
+            ->where('login_token', $existingToken)
+            ->first();
+
+        if ($existingSession) {
+            // ✅ AYNI TARAYICI - Sadece güncelle, yeni token oluşturma!
+            DB::table('user_active_sessions')
+                ->where('id', $existingSession->id)
+                ->update([
+                    'session_id' => $sessionId,
+                    'last_activity' => now(),
+                ]);
+
+            // Cookie süresini uzat
+            cookie()->queue(cookie($cookieName, $existingToken, $lifetime));
+            return; // İŞLEM BİTTİ
+        }
+    }
+
+    // 🔥 2. FARKLI TARAYICI - Yeni session oluştur
+    $lock = Cache::lock("user_login:{$user->id}", 10);
+    $lock->get();
+
+    try {
+        $loginToken = bin2hex(random_bytes(32)); // 64 char
+
+        DB::table('user_active_sessions')->insert([
+            'user_id' => $user->id,
+            'session_id' => $sessionId,
+            'login_token' => $loginToken,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'device_type' => $this->getDeviceType($agent),
+            'device_name' => $this->getDeviceName($agent),
+            'last_activity' => now(),
+        ]);
+
+        // Cookie oluştur
+        cookie()->queue(cookie($cookieName, $loginToken, $lifetime));
+
+        // 🔥 3. LIFO KONTROLÜ - Limit aşıldıysa eski cihaz çıkış yapsın
+        $this->enforceDeviceLimit($user, $sessionId);
+
+    } finally {
+        $lock->release();
+    }
+}
+
+protected function enforceDeviceLimit(User $user, string $currentSessionId): void {
+    $limit = $this->getDeviceLimit($user);
+
+    $sessions = DB::table('user_active_sessions')
+        ->where('user_id', $user->id)
+        ->orderBy('last_activity', 'asc') // En eski önce
+        ->get();
+
+    if ($sessions->count() > $limit) {
+        $toRemove = $sessions->count() - $limit;
+
+        // En eski session'ları sil (mevcut hariç)
+        $oldSessions = $sessions
+            ->filter(fn($s) => $s->session_id !== $currentSessionId)
+            ->take($toRemove);
+
+        foreach ($oldSessions as $old) {
+            $this->terminateSessionAtomicByRow($old, 'lifo', $user);
+        }
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Session Tracking with Login Token</h4>
+                            <div class="code-block text-sm">
+<pre>📁 DeviceService::sessionExists() - Polling için
+
+/**
+ * Session DB'de var mı? (polling için)
+ * Cookie'deki login_token ile DB'deki login_token eşleşirse = geçerli session
+ *
+ * LIFO ile çalışması:
+ * - Tab A login → token_A, cookie + DB
+ * - Tab B login → token_B, LIFO token_A'yı DB'den siler
+ * - Tab A polling → cookie'de token_A var ama DB'de YOK → LOGOUT
+ */
+public function sessionExists(User $user): bool {
+    // 1. Cookie'den login_token al
+    $cookieToken = request()->cookie('mzb_login_token');
+
+    if (!$cookieToken) {
+        return false; // Cookie yok = invalid
+    }
+
+    // 2. Login token ile DB'de kontrol et
+    $session = DB::table('user_active_sessions')
+        ->where('user_id', $user->id)
+        ->where('login_token', $cookieToken)
+        ->first();
+
+    if ($session) {
+        // Token eşleşti - session geçerli, activity güncelle
+        DB::table('user_active_sessions')
+            ->where('id', $session->id)
+            ->update(['last_activity' => now()]);
+        return true;
+    }
+
+    // 3. Token eşleşmiyor = LIFO tarafından silindi → LOGOUT
+    return false;
+}
+
+📊 user_active_sessions tablosu
+┌────────────────┬───────────┬─────────────────────────┐
+│ Kolon          │ Tip       │ Açıklama                │
+├────────────────┼───────────┼─────────────────────────┤
+│ id             │ bigint    │ PK                      │
+│ user_id        │ bigint    │ FK users                │
+│ session_id     │ varchar   │ Laravel session ID      │
+│ login_token    │ varchar   │ 64 char unique token    │
+│ ip_address     │ varchar   │ Giriş IP                │
+│ user_agent     │ text      │ Browser bilgisi         │
+│ device_type    │ varchar   │ mobile/tablet/desktop   │
+│ device_name    │ varchar   │ Platform - Browser      │
+│ last_activity  │ timestamp │ Son aktivite            │
+└────────────────┴───────────┴─────────────────────────┘</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 5: TRIAL SİSTEMİ -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">5️⃣ Trial (Deneme) Sistemi</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Yeni kullanıcılar <strong>ücretsiz deneme</strong> (trial) hakkına sahiptir.
+                        Deneme süresi boyunca tüm premium özellikler kullanılabilir.
+                    </p>
+
+                    <div class="bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded mb-4">
+                        <div class="font-bold text-blue-400 mb-2">🎁 Trial Kuralları</div>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Her kullanıcı <strong>sadece 1 kez</strong> trial hakkı kullanabilir</li>
+                            <li>• Trial süresi: Genellikle 7 gün (plan ayarlarında belirtilir)</li>
+                            <li>• Trial bitince <strong>otomatik ücretlendirme YOK</strong>, kullanıcı satın almalı</li>
+                            <li>• Trial sırasında tüm premium özellikler aktif</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">📌 Trial Akışı</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">1️⃣</span>
+                                <span class="text-slate-300">Kullanıcı kayıt olur</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">2️⃣</span>
+                                <span class="text-slate-300">Sistem <strong>has_used_trial</strong> kontrolü yapar (false ise devam)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">3️⃣</span>
+                                <span class="text-slate-300">Trial planından 7 günlük subscription oluşturulur (status: trial)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">4️⃣</span>
+                                <span class="text-slate-300"><strong>has_used_trial = true</strong> olarak işaretlenir</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-blue-400">5️⃣</span>
+                                <span class="text-slate-300">7 gün boyunca premium özellikler kullanılır</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-amber-400">6️⃣</span>
+                                <span class="text-slate-300">7. gün bitince subscription status: expired olur</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-red-400">7️⃣</span>
+                                <span class="text-slate-300">Kullanıcının abonelik satın alması gerekir (trial hakkı tükendi)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Trial sistemi yeni kullanıcıların servisi denemesini sağlar. <strong>has_used_trial</strong>
+                            flag'i sayesinde her kullanıcı sadece 1 kez deneme yapabilir, sistemin kötüye kullanımı engellenir.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">SubscriptionService::createTrialForUser()</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/Subscription/App/Services/SubscriptionService.php (lines 232-283)
+
+public function createTrialForUser(User $user): ?Subscription {
+    // 1. Setting kontrolü
+    if (!setting('auth_subscription')) {
+        return null;
+    }
+
+    // 2. Trial plan kontrolü
+    $trialPlan = $this->getTrialPlan();
+    if (!$trialPlan) {
+        return null;
+    }
+
+    // 3. has_used_trial kontrolü
+    if ($user->has_used_trial) {
+        return null; // Trial hakkı tükendi
+    }
+
+    // 4. Subscription oluştur
+    $duration = $this->getTrialDuration(); // Trial plan'dan al (örn: 7 gün)
+
+    $cycles = $trialPlan->billing_cycles;
+    $firstCycle = array_values($cycles)[0];
+
+    $subscription = Subscription::create([
+        'user_id' => $user->id,
+        'subscription_plan_id' => $trialPlan->subscription_plan_id,
+        'status' => 'active', // Trial da active sayılır
+        'started_at' => now(),
+        'current_period_start' => now(),
+        'current_period_end' => now()->addDays($duration),
+        'price_per_cycle' => 0, // Trial ücretsiz
+        'currency' => $trialPlan->currency ?? 'TRY',
+        'cycle_key' => array_keys($cycles)[0] ?? 'deneme-7-gun',
+        'cycle_metadata' => $firstCycle,
+        'has_trial' => true,
+        'trial_days' => $duration,
+        'trial_ends_at' => now()->addDays($duration),
+    ]);
+
+    // 5. has_used_trial = true
+    $user->update(['has_used_trial' => true]);
+
+    return $subscription;
+}
+
+/**
+ * Kullanıcı daha önce trial kullandı mı?
+ */
+public static function userHasUsedTrial(int $userId): bool {
+    return self::where('user_id', $userId)
+        ->where('has_trial', true)
+        ->where('status', '!=', 'pending_payment') // Pending olanları sayma
+        ->exists();
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Trial Plan Tanımı</h4>
+                            <div class="code-block text-sm">
+<pre>📊 Trial Plan Örneği (subscription_plans tablosu)
+
+{
+    "subscription_plan_id": 1,
+    "title": {"tr": "Ücretsiz Deneme", "en": "Free Trial"},
+    "slug": "free-trial",
+    "is_trial": true, // 🔴 KRİTİK: Trial planı olduğunu belirtir
+    "is_public": true,
+    "is_active": true,
+    "billing_cycles": {
+        "deneme-7-gun": {
+            "label": {"tr": "7 Gün Deneme", "en": "7 Days Trial"},
+            "duration_days": 7,
+            "price": 0, // Ücretsiz
+            "sort_order": 1
+        }
+    },
+    "device_limit": 3, // Trial sırasında 3 cihaz
+    "features": ["Reklamsız", "HD Kalite", "Offline"]
+}
+
+📌 Kodda Kullanım:
+$trialPlan = SubscriptionPlan::where('is_trial', true)
+    ->where('is_active', true)
+    ->first();</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Database Schema - Trial Fields</h4>
+                            <div class="code-block text-sm">
+<pre>📊 users tablosu
+┌──────────────────┬──────────┬────────────────────────────┐
+│ has_used_trial   │ boolean  │ Trial hakkı kullanıldı mı  │
+└──────────────────┴──────────┴────────────────────────────┘
+
+📊 subscriptions tablosu
+┌──────────────────┬──────────┬────────────────────────────┐
+│ has_trial        │ boolean  │ Bu subscription trial mı   │
+│ trial_days       │ int      │ Trial süresi (gün)         │
+│ trial_ends_at    │ timestamp│ Trial bitiş tarihi         │
+│ status           │ varchar  │ trial / active / expired   │
+└──────────────────┴──────────┴────────────────────────────┘
+
+📊 subscription_plans tablosu
+┌──────────────────┬──────────┬────────────────────────────┐
+│ is_trial         │ boolean  │ Trial planı mı             │
+│ trial_days       │ int      │ Default trial süresi       │
+└──────────────────┴──────────┴────────────────────────────┘</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 6: CORPORATE ACCOUNT (KURUMSAL ABONELİK) -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">6️⃣ Corporate Account Sistemi (Kurumsal Abonelik)</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        <strong>Kurumsal hesaplar</strong>, bir şirketin birden fazla çalışanına toplu abonelik vermesi için tasarlanmıştır.
+                        Sadece <strong>Muzibu.com</strong> tenant'ında (tenant_id: 1001) kullanılır.
+                    </p>
+
+                    <div class="bg-purple-900/30 border-l-4 border-purple-500 p-4 rounded mb-4">
+                        <div class="font-bold text-purple-400 mb-2">🏢 Kurumsal Hesap Yapısı</div>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• <strong>Kurum Sahibi (Owner):</strong> Abonelik satın alan, ödemeyi yapan kişi</li>
+                            <li>• <strong>Çalışanlar (Members):</strong> Davet kodu ile katılan, ücretsiz yararlanan kişiler</li>
+                            <li>• <strong>Spot Sistemi:</strong> Şirket müziği dinlerken araya anonslar ekleyebilir</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">📌 Örnek Senaryo</h4>
+                        <div class="space-y-3 text-sm">
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <div class="text-green-400 font-semibold">ABC Şirketi - Kurucu</div>
+                                <div class="text-slate-400">Sahibi: Ahmet Yılmaz</div>
+                                <div class="text-slate-300">• 50 kullanıcılık abonelik satın aldı (50 x 20 TL/ay = 1000 TL)</div>
+                                <div class="text-slate-300">• Davet kodu oluşturdu: <strong>ABC12345</strong></div>
+                            </div>
+
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <div class="text-blue-400 font-semibold">Çalışan - Mehmet</div>
+                                <div class="text-slate-300">• <strong>ABC12345</strong> kodunu girdi</div>
+                                <div class="text-slate-300">• ABC Şirketi'ne bağlandı, premium üyelik kazandı</div>
+                                <div class="text-slate-300">• Ödeme yapmadı, şirketin aboneliğinden yararlanıyor</div>
+                            </div>
+
+                            <div class="border-l-4 border-amber-500 pl-4">
+                                <div class="text-amber-400 font-semibold">Spot Sistemi</div>
+                                <div class="text-slate-300">• ABC Şirketi her 10 şarkıda bir anons ekleyebilir</div>
+                                <div class="text-slate-300">• Örn: "Mola zamanı! Kantinden sıcak çay alabilirsiniz"</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Kurumsal sistem sayesinde şirketler toplu alım yapıp çalışanlarına premium hizmet verebilir.
+                            Her çalışan ayrı hesap açmak zorunda kalmaz, merkezi yönetim sağlanır.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">MuzibuCorporateAccount Model</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/Muzibu/App/Models/MuzibuCorporateAccount.php
+
+class MuzibuCorporateAccount extends Model {
+    protected $fillable = [
+        'user_id',              // Kurum sahibi
+        'parent_id',            // Ana şube (NULL ise ana firma)
+        'corporate_code',       // Davet kodu (8 char)
+        'company_name',         // Şirket adı
+        'branch_name',          // Şube adı
+        'is_active',
+        // Spot sistemi
+        'spot_enabled',         // Spot aktif mi
+        'spot_songs_between',   // Kaç şarkıda bir spot
+        'spot_current_index',   // Mevcut spot sırası
+        'spot_is_paused',       // Spot duraklatıldı mı
+    ];
+
+    // İlişkiler
+    public function owner(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function parent(): BelongsTo {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children(): HasMany {
+        return $this->hasMany(self::class, 'parent_id'); // Şubeler
+    }
+
+    public function spots(): HasMany {
+        return $this->hasMany(CorporateSpot::class);
+    }
+
+    // Helper metodlar
+    public function isParent(): bool {
+        return $this->parent_id === null;
+    }
+
+    public static function generateCode(): string {
+        do {
+            $code = strtoupper(substr(md5(uniqid()), 0, 8));
+        } while (self::where('corporate_code', $code)->exists());
+
+        return $code; // Örn: ABC12345
+    }
+
+    public static function getCorporateForUser(int $userId): ?self {
+        $record = self::where('user_id', $userId)->first();
+        if (!$record) return null;
+
+        // Üyeyse parent kurumu döndür
+        if ($record->parent_id) {
+            return $record->parent;
+        }
+
+        // Kurum sahibiyse kendisini döndür
+        return $record;
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">User Model - Corporate Metodları</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Models/User.php (lines 248-447)
+
+// Corporate Account ilişkileri (Sadece Muzibu)
+public function corporateAccount() {
+    if (!$this->isMuzibuTenant()) {
+        return $this->belongsTo(self::class, 'id')->whereRaw('1=0'); // Empty
+    }
+    return $this->belongsTo(MuzibuCorporateAccount::class);
+}
+
+public function ownedCorporateAccount() {
+    if (!$this->isMuzibuTenant()) {
+        return $this->hasOne(self::class, 'id')->whereRaw('1=0');
+    }
+    return $this->hasOne(MuzibuCorporateAccount::class, 'user_id');
+}
+
+// Kurum kontrolü
+public function isCorporateOwner(): bool {
+    if (!$this->isMuzibuTenant()) return false;
+    return $this->ownedCorporateAccount()->exists();
+}
+
+public function isCorporateMember(): bool {
+    if (!$this->isMuzibuTenant()) return false;
+    return $this->corporate_account_id !== null;
+}
+
+// Effective Subscription (kurum üyesi ise owner'ın subscription'ını al)
+public function getEffectiveSubscription() {
+    if (!$this->isMuzibuTenant()) {
+        return $this->subscriptions()->active()->first();
+    }
+
+    // Kurum üyesi ise owner'ın subscription'ını kullan
+    if ($this->isCorporateMember() && $this->corporateAccount) {
+        return $this->corporateAccount->owner->subscriptions()->active()->first();
+    }
+
+    // Normal kullanıcı
+    return $this->subscriptions()->active()->first();
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Database Schema</h4>
+                            <div class="code-block text-sm">
+<pre>📊 muzibu_corporate_accounts tablosu (Tenant 1001)
+┌────────────────────────┬──────────┬──────────────────────────┐
+│ Kolon                  │ Tip      │ Açıklama                 │
+├────────────────────────┼──────────┼──────────────────────────┤
+│ id                     │ bigint   │ PK                       │
+│ user_id                │ bigint   │ FK users (owner)         │
+│ parent_id              │ bigint   │ Ana şube (NULL = owner)  │
+│ corporate_code         │ varchar  │ Davet kodu (ABC12345)    │
+│ company_name           │ varchar  │ Şirket adı               │
+│ branch_name            │ varchar  │ Şube adı                 │
+│ is_active              │ boolean  │ Aktif mi                 │
+│ spot_enabled           │ boolean  │ Spot sistemi aktif mi    │
+│ spot_songs_between     │ int      │ Kaç şarkıda bir spot     │
+│ spot_current_index     │ int      │ Mevcut spot sırası       │
+│ spot_is_paused         │ boolean  │ Spot duraklatıldı mı     │
+└────────────────────────┴──────────┴──────────────────────────┘
+
+📊 users tablosu eklentisi
+┌────────────────────────┬──────────┬──────────────────────────┐
+│ corporate_account_id   │ bigint   │ FK muzibu_corporate_...  │
+└────────────────────────┴──────────┴──────────────────────────┘
+
+🎯 İlişki:
+- Owner: corporate_account_id = NULL, ownedCorporateAccount var
+- Member: corporate_account_id = X, corporateAccount var</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-sm mt-16 pb-8">
+            28 Ocak 2026 • Muzibu.com.tr
+        </footer>
+
+    </div>
+</body>
+</html>

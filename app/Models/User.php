@@ -107,6 +107,16 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'two_factor_phone',
         'corporate_account_id',
         'subscription_expires_at', // Toplam subscription bitiş tarihi (zincir sistemi)
+        // Consent fields
+        'terms_accepted',
+        'terms_accepted_at',
+        'terms_accepted_ip',
+        'privacy_accepted',
+        'privacy_accepted_at',
+        'privacy_accepted_ip',
+        'marketing_accepted',
+        'marketing_accepted_at',
+        'marketing_accepted_ip',
     ];
 
     /**
@@ -136,6 +146,13 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'locked_until' => 'datetime',
             'two_factor_enabled' => 'boolean',
             'subscription_expires_at' => 'datetime', // Zincir subscription bitiş tarihi
+            // Consent casts
+            'terms_accepted' => 'boolean',
+            'terms_accepted_at' => 'datetime',
+            'privacy_accepted' => 'boolean',
+            'privacy_accepted_at' => 'datetime',
+            'marketing_accepted' => 'boolean',
+            'marketing_accepted_at' => 'datetime',
         ];
     }
     

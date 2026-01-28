@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Modülü - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        muzibu: '#9333ea',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 rounded-full px-4 py-1 mb-4">
+                <span class="text-sm font-semibold">Muzibu Module</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                Muzibu Modülü Detaylı Analizi
+            </h1>
+            <p class="text-slate-400 text-lg">Müzik Streaming Platformu - Teknik ve İşlevsel İnceleme</p>
+        </header>
+
+        <!-- Hızlı Özet -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">📊 Hızlı Özet</h2>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-4 rounded-lg text-center border border-purple-700">
+                    <p class="text-4xl font-bold text-purple-400">371</p>
+                    <p class="text-slate-400 text-sm">PHP Dosyası</p>
+                </div>
+                <div class="bg-gradient-to-br from-pink-900/50 to-pink-800/30 p-4 rounded-lg text-center border border-pink-700">
+                    <p class="text-4xl font-bold text-pink-400">15</p>
+                    <p class="text-slate-400 text-sm">Model</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-900/50 to-blue-800/30 p-4 rounded-lg text-center border border-blue-700">
+                    <p class="text-4xl font-bold text-blue-400">14</p>
+                    <p class="text-slate-400 text-sm">Service</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-900/50 to-green-800/30 p-4 rounded-lg text-center border border-green-700">
+                    <p class="text-4xl font-bold text-green-400">3.8M</p>
+                    <p class="text-slate-400 text-sm">Toplam Boyut</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h2>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Muzibu Modülü Nedir?</h3>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Muzibu modülü, <strong>Spotify ve Apple Music benzeri bir müzik streaming platformu</strong>dur.
+                        Kullanıcılar şarkı dinleyebilir, playlist oluşturabilir, favorilerine ekleyebilir ve yapay zeka destekli
+                        özelliklerden yararlanabilir.
+                    </p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Bu modül sadece <strong>Muzibu.com</strong> (Tenant 1001) için geliştirilmiştir ve diğer tenant'larda çalışmaz.
+                        Yani bu müzik özellikleri sadece muzibu.com domain'inde aktiftir.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Ana Özellikler</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-purple-500">
+                            <h4 class="font-semibold text-purple-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🎵</span> Şarkı Yönetimi
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Şarkı yükleme, düzenleme, silme. Her şarkı için kapak görseli, şarkı sözleri, süre bilgisi.
+                                Şarkılar albümlere ve türlere (genre) bağlanır. AI ile otomatik kapak görseli oluşturulabilir.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-pink-500">
+                            <h4 class="font-semibold text-pink-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🔒</span> Güvenli Streaming
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Müzik dosyaları <strong>HLS encryption</strong> ile şifrelenir. Yani müzikler doğrudan indirilemez,
+                                sadece platform üzerinden dinlenebilir. Bu sayede telif hakları korunur.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-blue-500">
+                            <h4 class="font-semibold text-blue-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">📱</span> Cihaz Limiti
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Her kullanıcı aynı anda sadece belirli sayıda cihazdan dinleme yapabilir. Yeni cihazdan giriş
+                                yapılınca en eski cihaz otomatik çıkış yapar (LIFO sistemi). Bu Netflix'teki sistem gibi çalışır.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-green-500">
+                            <h4 class="font-semibold text-green-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🤖</span> AI Destekli Özellikler
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Yapay zeka ile otomatik playlist oluşturma, müzik önerisi, şarkı kapağı üretimi.
+                                Kullanıcılar AI ile sohbet ederek "hüzünlü şarkılar listesi oluştur" gibi isteklerde bulunabilir.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-yellow-500">
+                            <h4 class="font-semibold text-yellow-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">📻</span> Radyo ve Sektörler
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Otomatik çalan radyo kanalları. Her radyo belirli sektörlere (kahvehane, restoran, spor salonu)
+                                özel müzik akışı yapar. Kurumsal müşteriler için özel hesap ve spot reklam sistemi var.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-red-500">
+                            <h4 class="font-semibold text-red-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">⭐</span> Favori ve Değerlendirme
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Kullanıcılar şarkıları, albümleri, playlistleri favorilerine ekleyebilir. Yıldız vererek
+                                değerlendirme yapabilir. Yorum sistemleri entegre edilmiş.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-indigo-500">
+                            <h4 class="font-semibold text-indigo-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">📊</span> Dinleme İstatistikleri
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Her şarkının kaç kez dinlendiği kaydedilir. Kullanıcı geçmişi takip edilir.
+                                En çok dinlenen şarkılar, trendler otomatik oluşturulur.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-cyan-500">
+                            <h4 class="font-semibold text-cyan-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🌍</span> Çok Dilli Destek
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Şarkı isimleri, açıklamalar, kategoriler 3 dilde (Türkçe, İngilizce, Arapça) saklanabilir.
+                                Kullanıcı diline göre otomatik gösterilir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Kullanıcı Deneyimi Akışı</h3>
+                    <div class="bg-slate-900 p-6 rounded-lg">
+                        <ol class="space-y-3 text-slate-300">
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">1</span>
+                                <span><strong>Giriş yapılır:</strong> Kullanıcı cihaz limiti kontrol edilir, cookie ile cihaz tanımlanır</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">2</span>
+                                <span><strong>Müzik keşfi:</strong> Ana sayfada öne çıkan şarkılar, albümler, playlistler gösterilir</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">3</span>
+                                <span><strong>Şarkı seçimi:</strong> Şarkıya tıklanınca HLS stream başlar, encryption key ile şifreli akış yapılır</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">4</span>
+                                <span><strong>Queue sistemi:</strong> Şarkı bitince otomatik sıradaki çalar, infinite queue ile liste bitmez</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">5</span>
+                                <span><strong>Playlist oluşturma:</strong> Beğenilen şarkılar playlist'e eklenir, AI ile otomatik liste oluşturulabilir</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">6</span>
+                                <span><strong>İstatistik kaydı:</strong> Her dinleme song_plays tablosuna yazılır, cache'e sayılar atılır</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Neden Önemli?</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Telif koruması:</strong> HLS encryption ile müzikler güvende, illegal paylaşım önlenir</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Kurumsal çözüm:</strong> Kafeler, restoranlar için özel müzik yayını sunulabilir</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Ölçeklenebilir:</strong> Modern teknolojiler ile büyük kullanıcı sayısına hizmet verebilir</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>AI entegrasyonu:</strong> Kullanıcı deneyimini yapay zeka ile zenginleştiriyor</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <div class="space-y-6">
+                <!-- Modül Yapısı -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Modül Yapısı</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg font-mono text-sm">
+                        <pre class="text-slate-400">
+<span class="text-purple-400">Modules/Muzibu/</span>
+├── <span class="text-blue-400">App/</span>
+│   ├── Console/Commands/          # Artisan komutları
+│   ├── DataTransferObjects/       # DTO pattern
+│   ├── Enums/                     # Enum sınıfları
+│   ├── Events/                    # Event listeners
+│   ├── Exceptions/                # Custom exceptions
+│   ├── Helpers/                   # Helper functions
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/            # Admin panel (16 controller)
+│   │   │   ├── Api/              # REST API (14 controller)
+│   │   │   └── Front/            # Frontend
+│   │   ├── Livewire/
+│   │   │   ├── Admin/            # Livewire components
+│   │   │   └── Traits/
+│   │   ├── Middleware/           # Custom middleware
+│   │   └── Resources/            # API resources
+│   ├── Jobs/                     # Queue jobs
+│   ├── Models/                   # Eloquent models (15 model)
+│   ├── Observers/                # Model observers
+│   ├── Repositories/             # Repository pattern
+│   ├── Services/                 # Business logic (14 service)
+│   ├── Traits/                   # Reusable traits
+│   └── View/Composers/           # View composers
+├── <span class="text-green-400">config/</span>                      # Module config
+├── <span class="text-yellow-400">database/</span>
+│   ├── factories/                # Model factories
+│   ├── migrations/
+│   │   └── tenant/               # Tenant migrations (17+)
+│   └── seeders/                  # Database seeders
+├── <span class="text-cyan-400">lang/</span>                        # Translations (tr, en, ar)
+├── <span class="text-pink-400">resources/</span>
+│   ├── css/                      # Module CSS
+│   ├── js/                       # Module JS
+│   └── views/                    # Blade templates (104 files)
+│       ├── admin/
+│       ├── certificate/
+│       ├── components/
+│       ├── front/
+│       ├── livewire/
+│       └── themes/
+└── <span class="text-orange-400">routes/</span>
+    ├── admin.php                 # Admin routes (15.5KB)
+    ├── api.php                   # API routes (18.6KB)
+    └── web.php                   # Web routes (12.4KB)
+                        </pre>
+                    </div>
+                </div>
+
+                <!-- Model'ler -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Model'ler (15 Adet)</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-purple-300 mb-3">Core Models</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start">
+                                    <code class="text-blue-400 mr-2">Song.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Şarkı modeli (29,809 bytes)</span>
+                                </div>
+                                <ul class="ml-6 text-slate-400 space-y-1 text-xs">
+                                    <li>• Traits: Sluggable, HasTranslations, HasSeo, HasMediaManagement, HasFavorites, HasReviews, Searchable</li>
+                                    <li>• Relations: album, genre, playlists, plays</li>
+                                    <li>• Fields: title, lyrics, duration, file_path, hls_path, encryption_key, encryption_iv</li>
+                                    <li>• Media Collections: hero (cover), audio (encrypted HLS)</li>
+                                </ul>
+
+                                <div class="flex items-start mt-3">
+                                    <code class="text-blue-400 mr-2">Album.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Albüm modeli (18,285 bytes)</span>
+                                </div>
+                                <ul class="ml-6 text-slate-400 space-y-1 text-xs">
+                                    <li>• Relations: artist, genre, songs</li>
+                                    <li>• Fields: title, description, release_year, media_id</li>
+                                </ul>
+
+                                <div class="flex items-start mt-3">
+                                    <code class="text-blue-400 mr-2">Artist.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Sanatçı modeli (15,203 bytes)</span>
+                                </div>
+                                <ul class="ml-6 text-slate-400 space-y-1 text-xs">
+                                    <li>• Relations: albums, songs, genres</li>
+                                    <li>• Fields: title, biography, media_id</li>
+                                </ul>
+
+                                <div class="flex items-start mt-3">
+                                    <code class="text-blue-400 mr-2">Genre.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Tür modeli (13,208 bytes)</span>
+                                </div>
+                                <ul class="ml-6 text-slate-400 space-y-1 text-xs">
+                                    <li>• Relations: songs, albums, artists</li>
+                                    <li>• Fields: title, description, media_id, color_code</li>
+                                </ul>
+
+                                <div class="flex items-start mt-3">
+                                    <code class="text-blue-400 mr-2">Playlist.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Playlist modeli (31,468 bytes)</span>
+                                </div>
+                                <ul class="ml-6 text-slate-400 space-y-1 text-xs">
+                                    <li>• Relations: user, songs (many-to-many), playlistables (polymorphic)</li>
+                                    <li>• Fields: title, description, is_system, is_public, is_radio, is_featured</li>
+                                    <li>• Methods: addSong(), removeSong(), reorderSongs()</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-purple-300 mb-3">Support Models</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start">
+                                    <code class="text-blue-400 mr-2">Radio.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Radyo kanalları (13,246 bytes)</span>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <code class="text-blue-400 mr-2">Sector.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Sektör kategorileri (12,881 bytes)</span>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <code class="text-blue-400 mr-2">SongPlay.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Dinleme kayıtları (7,952 bytes)</span>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <code class="text-blue-400 mr-2">PlaylistSong.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Pivot table (1,792 bytes)</span>
+                                </div>
+
+                                <div class="flex items-start mt-3">
+                                    <code class="text-blue-400 mr-2">CorporateSpot.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Kurumsal spot reklamlar (7,440 bytes)</span>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <code class="text-blue-400 mr-2">CorporateSpotPlay.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Spot yayın kayıtları (9,955 bytes)</span>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <code class="text-blue-400 mr-2">MuzibuCorporateAccount.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Kurumsal hesaplar (7,269 bytes)</span>
+                                </div>
+
+                                <div class="flex items-start mt-3">
+                                    <code class="text-blue-400 mr-2">Certificate.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">Sertifikalar (4,084 bytes)</span>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <code class="text-blue-400 mr-2">AbuseReport.php</code>
+                                    <span class="text-slate-500">→</span>
+                                    <span class="text-slate-400 ml-2">İstismar raporları (5,731 bytes)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service'ler -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Service Layer (14 Service - 10,495 satır kod)</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="font-semibold text-blue-300 mb-2">Core Services</p>
+                                <ul class="text-slate-400 space-y-1">
+                                    <li>• <code>SongService.php</code> (4,328 bytes)</li>
+                                    <li>• <code>AlbumService.php</code> (5,169 bytes)</li>
+                                    <li>• <code>ArtistService.php</code> (6,476 bytes)</li>
+                                    <li>• <code>PlaylistService.php</code> (20,825 bytes)</li>
+                                    <li>• <code>GenreService.php</code> (4,380 bytes)</li>
+                                    <li>• <code>RadioService.php</code> (4,380 bytes)</li>
+                                    <li>• <code>SectorService.php</code> (4,414 bytes)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-blue-300 mb-2">Feature Services</p>
+                                <ul class="text-slate-400 space-y-1">
+                                    <li>• <code>DeviceService.php</code> (28,894 bytes) - Cihaz limit yönetimi</li>
+                                    <li>• <code>MuzibuCacheService.php</code> (9,356 bytes) - Cache stratejisi</li>
+                                    <li>• <code>AbuseDetectionService.php</code> (25,290 bytes) - İstismar tespiti</li>
+                                    <li>• <code>MuzibuLeonardoAIService.php</code> (15,424 bytes) - AI cover generation</li>
+                                    <li>• <code>CertificateService.php</code> (6,331 bytes) - Sertifika üretimi</li>
+                                    <li>• <code>CorporateSubscriptionService.php</code> (7,413 bytes)</li>
+                                    <li>• <code>MuzibuCorporateService.php</code> (3,973 bytes)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controller'lar -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Controller'lar</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-green-400 mb-2">API Controllers (14)</p>
+                            <ul class="text-slate-400 text-xs space-y-1">
+                                <li>• <code>SongController.php</code> (20,037 bytes)</li>
+                                <li>• <code>SongStreamController.php</code> (34,109 bytes)</li>
+                                <li>• <code>PlaylistController.php</code> (29,833 bytes)</li>
+                                <li>• <code>QueueRefillController.php</code> (46,997 bytes)</li>
+                                <li>• <code>AlbumController.php</code> (5,631 bytes)</li>
+                                <li>• <code>ArtistController.php</code> (7,641 bytes)</li>
+                                <li>• <code>GenreController.php</code> (3,179 bytes)</li>
+                                <li>• <code>RadioController.php</code> (3,197 bytes)</li>
+                                <li>• <code>SectorController.php</code> (4,132 bytes)</li>
+                                <li>• <code>PlayController.php</code> (7,998 bytes)</li>
+                                <li>• <code>DeviceController.php</code> (2,917 bytes)</li>
+                                <li>• <code>RatingController.php</code> (3,142 bytes)</li>
+                                <li>• <code>PlaylistManagementController.php</code></li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-blue-400 mb-2">Admin Controllers (16)</p>
+                            <ul class="text-slate-400 text-xs space-y-1">
+                                <li>• <code>SongController.php</code></li>
+                                <li>• <code>AlbumController.php</code></li>
+                                <li>• <code>ArtistController.php</code></li>
+                                <li>• <code>GenreController.php</code></li>
+                                <li>• <code>PlaylistController.php</code> (12,129 bytes)</li>
+                                <li>• <code>RadioController.php</code></li>
+                                <li>• <code>SectorController.php</code></li>
+                                <li>• <code>DashboardController.php</code></li>
+                                <li>• <code>ListeningHistoryController.php</code></li>
+                                <li>• <code>StatsController.php</code></li>
+                                <li>• <code>AbuseReportController.php</code> (7,470 bytes)</li>
+                                <li>• <code>CertificateController.php</code></li>
+                                <li>• <code>CorporateController.php</code></li>
+                                <li>• <code>SpotController.php</code></li>
+                                <li>• <code>UserPlaylistController.php</code></li>
+                                <li>• <code>AICoverController.php</code></li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-purple-400 mb-2">Frontend Controllers</p>
+                            <ul class="text-slate-400 text-xs space-y-1">
+                                <li>• <code>SongController.php</code></li>
+                                <li>• <code>AlbumController.php</code></li>
+                                <li>• <code>ArtistController.php</code></li>
+                                <li>• <code>PlaylistController.php</code></li>
+                                <li>• <code>RadioController.php</code></li>
+                                <li>• <code>GenreController.php</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HLS Encryption -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">HLS Encryption Sistemi</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-4">
+                            <strong class="text-slate-200">Teknoloji:</strong> HTTP Live Streaming (HLS) + AES-128 Encryption
+                        </p>
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">1. Şarkı Yükleme Süreci</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• Admin panel'den .mp3/.wav dosyası yüklenir</li>
+                                    <li>• FFmpeg ile HLS formatına dönüştürülür (.m3u8 + .ts segments)</li>
+                                    <li>• Her segment için unique AES-128 encryption key üretilir</li>
+                                    <li>• <code>encryption_key</code> ve <code>encryption_iv</code> database'e kaydedilir</li>
+                                    <li>• Orijinal dosya silinir, sadece encrypted segments saklanır</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">2. Streaming Süreci</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• Frontend <code>GET /api/muzibu/songs/{id}/stream</code> endpoint'ini çağırır</li>
+                                    <li>• Auth token ve device validation yapılır</li>
+                                    <li>• Encryption key database'den okunur</li>
+                                    <li>• Signed URL ile time-limited .m3u8 playlist döndürülür</li>
+                                    <li>• HLS.js player ile stream başlatılır</li>
+                                    <li>• Her segment isteği auth check'ten geçer</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-purple-400 mb-2">3. Güvenlik Katmanları</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• ✓ AES-128 encryption ile dosya koruması</li>
+                                    <li>• ✓ Signed URLs (expiry time ile otomatik geçersiz olma)</li>
+                                    <li>• ✓ Authentication middleware (her istek token kontrolü)</li>
+                                    <li>• ✓ Device limit check (LIFO sistemi)</li>
+                                    <li>• ✓ Rate limiting (abuse prevention)</li>
+                                    <li>• ✓ Hotlink protection (domain check)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-yellow-900/20 border border-yellow-700 p-3 rounded">
+                            <p class="text-yellow-300 font-semibold mb-1">⚠️ Önemli Not</p>
+                            <p class="text-yellow-200 text-sm">
+                                HLS encryption sayesinde müzik dosyaları browser'dan direkt indirilemez.
+                                DevTools'da görünen .ts dosyaları şifrelenmiş parçalardır, tek başlarına çalışmazlar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Device Limit Sistemi -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Device Limit Sistemi (LIFO)</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-4">
+                            <strong class="text-slate-200">Service:</strong> DeviceService.php (28,894 bytes)
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-semibold text-blue-300 mb-2">Nasıl Çalışır?</p>
+                                <ol class="text-slate-400 text-sm space-y-2">
+                                    <li><strong>1. Cookie-based Detection:</strong> Her tarayıcıya unique <code>mzb_login_token</code> cookie'si atanır</li>
+                                    <li><strong>2. Login Check:</strong> Kullanıcı giriş yaptığında aktif cihaz sayısı kontrol edilir</li>
+                                    <li><strong>3. LIFO Logic:</strong> Limit aşılırsa en eski cihaz otomatik logout edilir</li>
+                                    <li><strong>4. Distributed Lock:</strong> Race condition'a karşı <code>Cache::lock()</code> kullanılır</li>
+                                    <li><strong>5. Atomic Termination:</strong> DB + Redis + Cache senkron temizlenir</li>
+                                </ol>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-green-300 mb-2">API Endpoints</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li><code>GET /api/auth/active-devices</code></li>
+                                    <li>→ Kullanıcının aktif cihazlarını listeler</li>
+                                    <li class="mt-2"><code>POST /api/auth/terminate-device</code></li>
+                                    <li>→ Belirli cihazı manuel kapatma</li>
+                                    <li class="mt-2"><code>GET /api/auth/check-session</code></li>
+                                    <li>→ Session geçerlilik kontrolü</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Schema -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Veritabanı Şeması (Tenant Database)</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm">
+                            <strong>Location:</strong> Modules/Muzibu/database/migrations/tenant/ <br>
+                            <strong>Count:</strong> 17+ migration dosyası
+                        </p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-800 text-slate-300">
+                                    <tr>
+                                        <th class="px-4 py-2">Tablo</th>
+                                        <th class="px-4 py-2">Önemli Alanlar</th>
+                                        <th class="px-4 py-2">İlişkiler</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-400">
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_songs</code></td>
+                                        <td class="px-4 py-2">title (JSON), lyrics (JSON), duration, file_path, hls_path, encryption_key, encryption_iv</td>
+                                        <td class="px-4 py-2">album_id, genre_id, media_id</td>
+                                    </tr>
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_albums</code></td>
+                                        <td class="px-4 py-2">title (JSON), description (JSON), release_year</td>
+                                        <td class="px-4 py-2">artist_id, genre_id, media_id</td>
+                                    </tr>
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_artists</code></td>
+                                        <td class="px-4 py-2">title (JSON), biography (JSON)</td>
+                                        <td class="px-4 py-2">media_id</td>
+                                    </tr>
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_genres</code></td>
+                                        <td class="px-4 py-2">title (JSON), description (JSON), color_code</td>
+                                        <td class="px-4 py-2">media_id</td>
+                                    </tr>
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_playlists</code></td>
+                                        <td class="px-4 py-2">title (JSON), description (JSON), is_system, is_public, is_radio, is_featured</td>
+                                        <td class="px-4 py-2">user_id, media_id</td>
+                                    </tr>
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_playlist_song</code></td>
+                                        <td class="px-4 py-2">order (sıralama)</td>
+                                        <td class="px-4 py-2">playlist_id, song_id</td>
+                                    </tr>
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_radios</code></td>
+                                        <td class="px-4 py-2">title (JSON), description (JSON), stream_url</td>
+                                        <td class="px-4 py-2">media_id</td>
+                                    </tr>
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_sectors</code></td>
+                                        <td class="px-4 py-2">title (JSON), description (JSON)</td>
+                                        <td class="px-4 py-2">media_id</td>
+                                    </tr>
+                                    <tr class="border-t border-slate-700">
+                                        <td class="px-4 py-2"><code class="text-blue-400">muzibu_song_plays</code></td>
+                                        <td class="px-4 py-2">played_at, duration_played, completed</td>
+                                        <td class="px-4 py-2">song_id, user_id</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-700 p-3 rounded">
+                            <p class="text-blue-300 font-semibold mb-1">💡 JSON Columns</p>
+                            <p class="text-blue-200 text-sm">
+                                title, slug, description, lyrics gibi alanlar JSON formatında saklanır.
+                                Bu sayede Türkçe, İngilizce, Arapça çeviriler tek kolonda tutulur.
+                                HasTranslations trait ile otomatik dil yönetimi yapılır.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Routes -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">API Endpoints (routes/api.php - 18.6KB)</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <div class="space-y-4">
+                            <div>
+                                <p class="font-semibold text-green-400 mb-2">Playlist Endpoints</p>
+                                <div class="text-slate-400 text-sm space-y-1">
+                                    <code>GET    /api/muzibu/playlists</code> - Tüm playlistler<br>
+                                    <code>GET    /api/muzibu/playlists/featured</code> - Öne çıkan playlistler<br>
+                                    <code>GET    /api/muzibu/playlists/my-playlists</code> - Kullanıcının listeleri (auth)<br>
+                                    <code>GET    /api/muzibu/playlists/{id}</code> - Playlist detayı<br>
+                                    <code>POST   /api/muzibu/playlists/quick-create</code> - Hızlı liste oluştur (auth)<br>
+                                    <code>POST   /api/muzibu/playlists/clone</code> - Liste klonla (auth)<br>
+                                    <code>POST   /api/muzibu/playlists/{id}/add-song</code> - Şarkı ekle (auth)<br>
+                                    <code>POST   /api/muzibu/playlists/{id}/add-album</code> - Albüm ekle (auth)<br>
+                                    <code>DELETE /api/muzibu/playlists/{id}/remove-song/{songId}</code> - Şarkı çıkar (auth)<br>
+                                    <code>PUT    /api/muzibu/playlists/{id}/reorder</code> - Sıralama değiştir (auth)<br>
+                                    <code>PUT    /api/muzibu/playlists/{id}</code> - Liste güncelle (auth)<br>
+                                    <code>DELETE /api/muzibu/playlists/{id}</code> - Liste sil (auth)
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-blue-400 mb-2">Song Endpoints</p>
+                                <div class="text-slate-400 text-sm space-y-1">
+                                    <code>GET    /api/muzibu/songs</code> - Tüm şarkılar<br>
+                                    <code>GET    /api/muzibu/songs/featured</code> - Öne çıkan şarkılar<br>
+                                    <code>GET    /api/muzibu/songs/latest</code> - En yeni şarkılar<br>
+                                    <code>GET    /api/muzibu/songs/trending</code> - Trend şarkılar<br>
+                                    <code>GET    /api/muzibu/songs/{id}</code> - Şarkı detayı<br>
+                                    <code>GET    /api/muzibu/songs/{id}/stream</code> - HLS stream URL<br>
+                                    <code>POST   /api/muzibu/songs/{id}/play</code> - Dinleme kaydı oluştur
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-purple-400 mb-2">Album & Artist Endpoints</p>
+                                <div class="text-slate-400 text-sm space-y-1">
+                                    <code>GET /api/muzibu/albums</code><br>
+                                    <code>GET /api/muzibu/albums/{id}</code><br>
+                                    <code>GET /api/muzibu/artists</code><br>
+                                    <code>GET /api/muzibu/artists/{id}</code>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-yellow-400 mb-2">Queue & Radio Endpoints</p>
+                                <div class="text-slate-400 text-sm space-y-1">
+                                    <code>POST /api/muzibu/queue/refill</code> - Sıra doldurma (infinite queue)<br>
+                                    <code>GET  /api/muzibu/radios</code><br>
+                                    <code>GET  /api/muzibu/radios/{id}</code>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-red-400 mb-2">Other Endpoints</p>
+                                <div class="text-slate-400 text-sm space-y-1">
+                                    <code>GET    /api/muzibu/search</code> - Arama (Meilisearch)<br>
+                                    <code>GET    /api/muzibu/genres</code><br>
+                                    <code>GET    /api/muzibu/sectors</code><br>
+                                    <code>POST   /api/muzibu/rating/toggle</code> - Yıldız verme (auth)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-orange-900/20 border border-orange-700 p-3 rounded">
+                            <p class="text-orange-300 font-semibold mb-1">🔒 Auth Middleware</p>
+                            <p class="text-orange-200 text-sm">
+                                (auth) işaretli endpoint'ler <code>middleware(['web', 'auth'])</code> koruması altındadır.
+                                Sanctum token veya session gerektirir. Rate limiting tüm route'larda aktif: <code>throttle.user:api</code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Helper Functions -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Helper Functions</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> Modules/Muzibu/helpers.php</p>
+                        <div class="bg-slate-800 p-3 rounded">
+                            <p class="font-semibold text-purple-300 mb-2"><code>muzibu_generate_ai_cover()</code></p>
+                            <p class="text-slate-400 text-sm mb-2">
+                                Muzibu model'leri için otomatik Leonardo AI görsel üretimi. Queue job olarak çalışır.
+                            </p>
+                            <div class="bg-slate-900 p-2 rounded text-xs text-slate-500">
+                                <code>muzibu_generate_ai_cover($song, $song->title, 'song');</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Traits -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Kullanılan Trait'ler</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="font-semibold text-blue-300 mb-2">Core Traits (App/Traits)</p>
+                                <ul class="text-slate-400 space-y-1">
+                                    <li>• <code>HasTranslations</code> - Çok dilli alan desteği</li>
+                                    <li>• <code>HasSeo</code> - SEO meta yönetimi</li>
+                                    <li>• <code>HasUniversalSchemas</code> - Schema.org markup</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-blue-300 mb-2">Module Traits</p>
+                                <ul class="text-slate-400 space-y-1">
+                                    <li>• <code>HasMediaManagement</code> - Spatie media</li>
+                                    <li>• <code>HasFavorites</code> - Favori sistemi</li>
+                                    <li>• <code>HasReviews</code> - Rating & review</li>
+                                    <li>• <code>HasCachedCounts</code> - Cache'd counters</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Livewire Components -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Livewire Components</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3">Admin panel için Livewire 3 ile reactive component'ler:</p>
+                        <ul class="text-slate-400 text-sm space-y-1">
+                            <li>• Song management (CRUD + bulk operations)</li>
+                            <li>• Album management</li>
+                            <li>• Artist management</li>
+                            <li>• Playlist management (drag & drop reorder)</li>
+                            <li>• Real-time statistics dashboard</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özellikler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">✨ Öne Çıkan Özellikler</h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/20 p-4 rounded-lg border border-green-700">
+                    <h3 class="font-semibold text-green-400 mb-2">✅ Güvenlik</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• HLS AES-128 encryption</li>
+                        <li>• Signed URLs (time-limited)</li>
+                        <li>• Device limit (LIFO)</li>
+                        <li>• Distributed locking</li>
+                        <li>• Rate limiting</li>
+                        <li>• Abuse detection system</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-4 rounded-lg border border-blue-700">
+                    <h3 class="font-semibold text-blue-400 mb-2">⚡ Performans</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• Redis caching (MuzibuCacheService)</li>
+                        <li>• Eager loading (N+1 prevention)</li>
+                        <li>• Meilisearch full-text search</li>
+                        <li>• Queue jobs (async processing)</li>
+                        <li>• CDN-ready media serving</li>
+                        <li>• Database indexing</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-4 rounded-lg border border-purple-700">
+                    <h3 class="font-semibold text-purple-400 mb-2">🤖 AI Features</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• Auto cover generation (Leonardo AI)</li>
+                        <li>• Genre-based prompt templates</li>
+                        <li>• Smart playlist creation</li>
+                        <li>• Music recommendation</li>
+                        <li>• Context-aware chat</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-pink-900/30 to-pink-800/20 p-4 rounded-lg border border-pink-700">
+                    <h3 class="font-semibold text-pink-400 mb-2">🌍 Multi-Language</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• JSON-based translations</li>
+                        <li>• Supported: TR, EN, AR</li>
+                        <li>• Auto language detection</li>
+                        <li>• Fallback mechanism</li>
+                        <li>• SEO-friendly URLs per language</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- İstatistikler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">📈 Kod İstatistikleri</h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-purple-400">371</p>
+                    <p class="text-slate-400 text-sm">PHP Dosyası</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-pink-400">104</p>
+                    <p class="text-slate-400 text-sm">Blade Template</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-blue-400">~10.5k</p>
+                    <p class="text-slate-400 text-sm">Satır (Services)</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-green-400">15</p>
+                    <p class="text-slate-400 text-sm">Eloquent Model</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-yellow-400">14</p>
+                    <p class="text-slate-400 text-sm">Service Class</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-cyan-400">30+</p>
+                    <p class="text-slate-400 text-sm">Controller</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öneriler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">💡 Geliştirme Notları</h2>
+
+            <div class="space-y-4">
+                <div class="bg-green-900/20 border border-green-700 p-4 rounded">
+                    <h3 class="font-semibold text-green-400 mb-2">✅ İyi Pratikler</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Service layer pattern ile business logic ayrıştırılmış</li>
+                        <li>• Repository pattern kısmen kullanılmış</li>
+                        <li>• Trait-based modular yapı</li>
+                        <li>• Queue jobs ile async processing</li>
+                        <li>• Comprehensive test coverage için factory'ler hazır</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-700 p-4 rounded">
+                    <h3 class="font-semibold text-blue-400 mb-2">📌 Tenant Awareness</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• <strong>MUTLAK KURAL:</strong> Muzibu modülü SADECE Tenant 1001 için!</li>
+                        <li>• Model'lerde <code>getConnectionName()</code> ile <strong>'tenant'</strong> connection zorlanmış</li>
+                        <li>• Migration'lar <code>database/migrations/tenant/</code> altında</li>
+                        <li>• Central DB'ye ASLA veri yazılmamalı</li>
+                        <li>• Route'larda tenant middleware aktif</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-700 p-4 rounded">
+                    <h3 class="font-semibold text-yellow-400 mb-2">⚠️ Dikkat Edilmesi Gerekenler</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• HLS segment'leri storage'da büyük yer kaplıyor, periyodik cleanup gerekebilir</li>
+                        <li>• AI cover generation job'ları Leonardo AI API kredisi tüketir</li>
+                        <li>• Meilisearch index'lerini güncel tutmak için Scout sync gerekli</li>
+                        <li>• Device limit cookie'si httponly + secure flag ile korunmalı</li>
+                        <li>• Rate limiting değerleri production'da ayarlanmalı</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-900/20 border border-red-700 p-4 rounded">
+                    <h3 class="font-semibold text-red-400 mb-2">🚫 Yapılmaması Gerekenler</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Muzibu model'lerini başka tenant'larda kullanma</li>
+                        <li>• Encryption key'leri plain text olarak loglama</li>
+                        <li>• HLS segment'leri public URL ile direkt expose etme</li>
+                        <li>• Device limit'i bypass etmeye çalışma</li>
+                        <li>• Migration olmadan manuel schema değişikliği</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 pt-8 border-t border-slate-700">
+            <p>28 Ocak 2026 • Muzibu.com.tr</p>
+        </footer>
+    </div>
+</body>
+</html>

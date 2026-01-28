@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Player Sistemi - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        muzibu: '#9333ea',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full px-4 py-1 mb-4">
+                <span class="text-sm font-semibold">Frontend Player System</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+                Muzibu Player Sistemi
+            </h1>
+            <p class="text-slate-400 text-lg">Frontend Müzik Çalar Detaylı Analizi</p>
+        </header>
+
+        <!-- Hızlı Özet -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">⚡ Hızlı Özet</h2>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-4 rounded-lg text-center border border-purple-700">
+                    <p class="text-4xl font-bold text-purple-400">~7.9k</p>
+                    <p class="text-slate-400 text-sm">Satır (Player Core)</p>
+                </div>
+                <div class="bg-gradient-to-br from-pink-900/50 to-pink-800/30 p-4 rounded-lg text-center border border-pink-700">
+                    <p class="text-4xl font-bold text-pink-400">1.1MB</p>
+                    <p class="text-slate-400 text-sm">JS Dosyaları</p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-900/50 to-orange-800/30 p-4 rounded-lg text-center border border-orange-700">
+                    <p class="text-4xl font-bold text-orange-400">2</p>
+                    <p class="text-slate-400 text-sm">UI Modu (Mobile/Desktop)</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-900/50 to-blue-800/30 p-4 rounded-lg text-center border border-blue-700">
+                    <p class="text-4xl font-bold text-blue-400">HLS</p>
+                    <p class="text-slate-400 text-sm">Encryption Streaming</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h2>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Player Sistemi Nedir?</h3>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Muzibu'nun player sistemi, <strong>sayfanın altında sabit duran müzik çalar barıdır</strong>.
+                        Spotify veya YouTube Music gibi modern platformlardaki player'a benzer şekilde çalışır. Kullanıcı
+                        sayfalarda gezerken müzik kesintisiz devam eder ve player her zaman ekranda görünür kalır.
+                    </p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Bu sistem tamamen <strong>JavaScript ile</strong> çalışır. Sayfa yenilemeden müzik dinlenebilir,
+                        şarkı değiştirilebilir, kuyruk yönetilebilir.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Kullanıcı Nasıl Kullanır?</h3>
+                    <div class="bg-slate-900 p-6 rounded-lg">
+                        <ol class="space-y-3 text-slate-300">
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">1</span>
+                                <span><strong>Şarkı seç:</strong> Ana sayfadan veya listelerden bir şarkıya tıkla</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">2</span>
+                                <span><strong>Player açılır:</strong> Altta player bar belirir, şarkı yüklenmeye başlar</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">3</span>
+                                <span><strong>Kontroller:</strong> Play/pause, ileri/geri, progress bar ile ilerleme kontrol edilir</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">4</span>
+                                <span><strong>Kuyruk:</strong> Sıradaki şarkılar listesi açılır, drag & drop ile sıralama değiştirilir</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">5</span>
+                                <span><strong>Sayfa geçişi:</strong> Başka sayfaya gidilse bile müzik devam eder</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Ana Özellikler</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-purple-500">
+                            <h4 class="font-semibold text-purple-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">📱</span> Responsive Tasarım
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Mobilde farklı, masaüstünde farklı görünüm. Mobilde progress ring (halka), masaüstünde linear bar.
+                                Her iki modda da kullanımı kolay ve şık.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-pink-500">
+                            <h4 class="font-semibold text-pink-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🎨</span> Dinamik Renkler
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Her şarkının kendine özel renk paleti var. Player, şarkı değiştikçe gradient renkleri değişir.
+                                Progress bar, ring, border - hepsi şarkıya özel renklerle uyumlu.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-orange-500">
+                            <h4 class="font-semibold text-orange-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🔒</span> Güvenli Streaming
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Müzikler HLS formatında şifrelenmiş. Browser'da görünen URL'ler bile blob URL olarak maskelenmiş.
+                                Kullanıcı Network tab'ı açsa bile gerçek müzik URL'ini göremez.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-blue-500">
+                            <h4 class="font-semibold text-blue-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">⚡</span> Kesintisiz Müzik
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Sayfa değişse bile müzik durmaz. SPA (Single Page Application) router sistemi ile sayfa geçişleri
+                                JavaScript ile yapılır, player state korunur.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-green-500">
+                            <h4 class="font-semibold text-green-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🎯</span> Akıllı Kuyruk
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Infinite queue: Kuyruk bitince backend'den otomatik yeni şarkılar eklenir. Drag & drop ile sıralama.
+                                Duplicate kontrolü, queue context (playlist, album, genre) takibi.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-yellow-500">
+                            <h4 class="font-semibold text-yellow-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">⌨️</span> Klavye Kısayolları
+                            </h4>
+                            <p class="text-slate-400 text-sm">
+                                Space = Play/Pause, ← → = İleri/Geri, Shift+↑↓ = Volume, K = Toggle Play,
+                                L = 10sn İleri, J = 10sn Geri. YouTube benzeri kısayollar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Neden Önemli?</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Modern UX:</strong> Spotify seviyesinde kullanıcı deneyimi</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Performans:</strong> Alpine.js ile hafif ve hızlı, sayfa yenileme yok</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Güvenlik:</strong> Blob URL + HLS encryption ile müzik koruması</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Mobil uyumlu:</strong> Touch gesture'lar, swipe, responsive tasarım</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <div class="space-y-6">
+                <!-- Teknoloji Stack -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Teknoloji Stack</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-purple-300 mb-2">Core Framework</p>
+                            <ul class="text-sm text-slate-400 space-y-1">
+                                <li>• <strong>Alpine.js 3.x</strong> - Reactive state</li>
+                                <li>• Livewire 3.5+ (Alpine provider)</li>
+                                <li>• Tailwind CSS v4 - Styling</li>
+                                <li>• FontAwesome Pro 7.1.0 - Icons</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-purple-300 mb-2">Audio Libraries</p>
+                            <ul class="text-sm text-slate-400 space-y-1">
+                                <li>• <strong>HLS.js 1.4.12</strong> - HLS playback</li>
+                                <li>• <strong>Howler.js 2.2.4</strong> - MP3 fallback</li>
+                                <li>• Native HTML5 Audio API</li>
+                                <li>• MediaSource Extensions (MSE)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-purple-300 mb-2">UI Libraries</p>
+                            <ul class="text-sm text-slate-400 space-y-1">
+                                <li>• <strong>SortableJS</strong> - Drag & Drop</li>
+                                <li>• Custom CSS animations</li>
+                                <li>• SVG Progress Rings</li>
+                                <li>• Touch gesture handlers</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dosya Yapısı -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Dosya Yapısı</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg font-mono text-sm">
+                        <pre class="text-slate-400">
+<span class="text-purple-400">public/themes/muzibu/js/</span>                        (1.1MB)
+├── <span class="text-blue-400">player/</span>
+│   ├── core/
+│   │   ├── <span class="text-green-400">player-core.js</span>              (7,883 satır - Ana player mantığı)
+│   │   └── <span class="text-green-400">safe-storage.js</span>            (localStorage wrapper)
+│   └── features/
+│       ├── <span class="text-green-400">play-helpers.js</span>            (1,015 satır - Queue, play functions)
+│       ├── <span class="text-green-400">api.js</span>                     (API çağrıları)
+│       ├── <span class="text-green-400">session.js</span>                 (331 satır - Session check)
+│       ├── <span class="text-green-400">spa-router.js</span>              (687 satır - SPA navigation)
+│       └── <span class="text-green-400">spot-player.js</span>             (564 satır - Corporate spot ads)
+├── <span class="text-blue-400">context-menus/</span>
+│   ├── actions/                       (8 action handler)
+│   ├── handlers/                      (5 feature handler)
+│   ├── utils/
+│   └── <span class="text-green-400">menu-builder.js</span>
+├── <span class="text-blue-400">ai/</span>
+│   └── <span class="text-green-400">tenant1001-ai-chat.js</span>
+└── <span class="text-green-400">alpine-apps.js</span>                     (Dashboard, Corporate, Playlist Editor)
+
+<span class="text-purple-400">resources/views/themes/muzibu/</span>
+├── components/
+│   ├── <span class="text-yellow-400">player.blade.php</span>               (19KB - Player UI component)
+│   ├── <span class="text-yellow-400">queue-overlay.blade.php</span>        (21KB - Queue modal)
+│   ├── <span class="text-yellow-400">lyrics-overlay.blade.php</span>
+│   ├── <span class="text-yellow-400">context-menu.blade.php</span>
+│   └── <span class="text-yellow-400">keyboard-shortcuts-overlay.blade.php</span>
+└── layouts/
+    └── <span class="text-yellow-400">app.blade.php</span>                  (41KB - Main layout + Alpine init)
+                        </pre>
+                    </div>
+                </div>
+
+                <!-- Alpine.js Mimarisi -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Alpine.js Mimarisi</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm">
+                            <strong>Pattern:</strong> Alpine.store() ile global state management
+                        </p>
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Alpine.store('player')</p>
+                                <div class="text-slate-400 text-sm">
+                                    <p class="mb-1"><strong>State:</strong></p>
+                                    <ul class="ml-4 space-y-1">
+                                        <li>• <code>currentSong</code> - Şu an çalan şarkı</li>
+                                        <li>• <code>queue</code> - Sıradaki şarkılar array'i</li>
+                                        <li>• <code>isPlaying</code> - Çalıyor mu boolean</li>
+                                        <li>• <code>currentTime</code> - Geçen süre (saniye)</li>
+                                        <li>• <code>duration</code> - Toplam süre (saniye)</li>
+                                        <li>• <code>isMuted</code> - Sessiz mod</li>
+                                        <li>• <code>isSongLoading</code> - Yükleniyor mu</li>
+                                        <li>• <code>playContext</code> - { type, id, data }</li>
+                                    </ul>
+                                    <p class="mt-2 mb-1"><strong>Methods:</strong></p>
+                                    <ul class="ml-4 space-y-1">
+                                        <li>• <code>playSong(songId)</code></li>
+                                        <li>• <code>togglePlayPause()</code></li>
+                                        <li>• <code>nextTrack()</code></li>
+                                        <li>• <code>previousTrack()</code></li>
+                                        <li>• <code>seekTo(time)</code></li>
+                                        <li>• <code>addToQueue(songs, next)</code></li>
+                                        <li>• <code>removeFromQueue(index)</code></li>
+                                        <li>• <code>reorderQueue(oldIndex, newIndex)</code></li>
+                                        <li>• <code>playPlaylist(id)</code></li>
+                                        <li>• <code>playAlbum(id)</code></li>
+                                        <li>• <code>playRadio(id)</code></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Alpine.store('contextMenu')</p>
+                                <p class="text-slate-400 text-sm">
+                                    Sağ tık menüsü için global state. Song, album, playlist için farklı menüler.
+                                </p>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-purple-400 mb-2">Alpine.store('playlistModal')</p>
+                                <p class="text-slate-400 text-sm">
+                                    "Playlist'e Ekle" modal state. Kullanıcının playlist'lerini listeler.
+                                </p>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-yellow-400 mb-2">Alpine.store('sidebar')</p>
+                                <p class="text-slate-400 text-sm">
+                                    Sağ sidebar state. Preview info (hover), entity info (click), quick access list.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HLS Streaming Akışı -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">HLS Streaming Akışı</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">1. Şarkı Seçimi</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• Kullanıcı <code>playSong(songId)</code> tetikler</li>
+                                    <li>• <code>GET /api/muzibu/songs/{id}</code> ile şarkı detayları çekilir</li>
+                                    <li>• Response: <code>{ song_id, title, artist, hls_url, cover_url, color_hues: [30, 350, 320] }</code></li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">2. Blob URL Oluşturma</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>createHlsBlobUrl(originalHlsUrl)</code> fonksiyonu çalışır</li>
+                                    <li>• .m3u8 playlist fetch edilir</li>
+                                    <li>• Segment URL'leri absolute path'e çevrilir</li>
+                                    <li>• Encryption key URL'i düzeltilir</li>
+                                    <li>• Blob URL oluşturulur: <code>blob:https://muzibu.com/abc-123</code></li>
+                                    <li>• Bu blob URL, gerçek HLS URL'ini maskeler (DevTools'ta görünmez)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-purple-400 mb-2">3. HLS.js İnit</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>new Hls()</code> instance oluşturulur</li>
+                                    <li>• <code>hls.loadSource(blobUrl)</code> - m3u8 yüklenir</li>
+                                    <li>• <code>hls.attachMedia(audioElement)</code> - Audio element'e bağlanır</li>
+                                    <li>• HLS.js, AES-128 encrypted segment'leri otomatik decrypt eder</li>
+                                    <li>• <code>MANIFEST_PARSED</code> event'i tetiklenince <code>audio.play()</code></li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-yellow-400 mb-2">4. Playback Events</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>audio.ontimeupdate</code> → <code>currentTime</code> güncellenir</li>
+                                    <li>• <code>audio.onended</code> → <code>nextTrack()</code> tetiklenir</li>
+                                    <li>• <code>audio.onerror</code> → Hata toast gösterilir</li>
+                                    <li>• <code>audio.oncanplay</code> → Loading spinner gizlenir</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-orange-400 mb-2">5. Cleanup</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• Şarkı değişirken <code>hls.destroy()</code> çağrılır</li>
+                                    <li>• <code>URL.revokeObjectURL(blobUrl)</code> - Blob memory temizlenir</li>
+                                    <li>• <code>audio.pause(); audio.removeAttribute('src'); audio.load()</code></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-red-900/20 border border-red-700 p-3 rounded">
+                            <p class="text-red-300 font-semibold mb-1">⚠️ Güvenlik Katmanları</p>
+                            <ul class="text-red-200 text-sm space-y-1">
+                                <li>• ✓ HLS AES-128 encryption (backend'de şifreleme)</li>
+                                <li>• ✓ Signed URLs (token + expiry + signature)</li>
+                                <li>• ✓ Blob URL maskeleme (gerçek URL görünmez)</li>
+                                <li>• ✓ XOR URL encryption (backend'den gelen URL'ler XOR ile şifreli)</li>
+                                <li>• ✓ Device check (API her istekte cihaz kontrolü)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Queue Sistemi -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Queue (Sıra) Sistemi</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-semibold text-blue-300 mb-2">Queue State</p>
+                                <div class="bg-slate-800 p-3 rounded text-sm text-slate-400">
+                                    <p><code>queue: []</code> - Sıradaki şarkılar array'i</p>
+                                    <p><code>queueIndex: 0</code> - Şu an çalan index</p>
+                                    <p><code>playContext: {}</code> - Playlist/Album/Genre context</p>
+                                    <p class="mt-2">Örnek:</p>
+                                    <pre class="bg-slate-900 p-2 rounded mt-1 text-xs">
+queue: [
+  { song_id: 1, title: "Song 1", ... },
+  { song_id: 2, title: "Song 2", ... },
+  { song_id: 3, title: "Song 3", ... }
+]
+queueIndex: 0 // "Song 1" çalıyor
+                                    </pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-green-300 mb-2">Queue Operations</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>addToQueue(songs, next)</code></li>
+                                    <li>→ Sıraya ekle (next=true ise sonraki olarak)</li>
+                                    <li class="mt-2">• <code>removeFromQueue(index)</code></li>
+                                    <li>→ Kuyruktan çıkar</li>
+                                    <li class="mt-2">• <code>reorderQueue(old, new)</code></li>
+                                    <li>→ Drag & drop ile sıralama değiştir</li>
+                                    <li class="mt-2">• <code>clearQueue()</code></li>
+                                    <li>→ Kuyruğu temizle</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-700 p-3 rounded">
+                            <p class="text-blue-300 font-semibold mb-2">🔁 Infinite Queue</p>
+                            <p class="text-blue-200 text-sm mb-2">
+                                Kuyruk bitince otomatik yeni şarkılar eklenir. Backend'e istek atılır:
+                            </p>
+                            <code class="text-xs text-blue-300 bg-slate-900 p-2 rounded block">
+                                POST /api/muzibu/queue/refill<br>
+                                Body: { context: { type: 'playlist', id: 5 }, count: 10 }
+                            </code>
+                        </div>
+
+                        <div class="mt-4 bg-purple-900/20 border border-purple-700 p-3 rounded">
+                            <p class="text-purple-300 font-semibold mb-2">🎯 Context Tracking</p>
+                            <p class="text-purple-200 text-sm">
+                                Queue her zaman bir context'e bağlı: Playlist, Album, Genre, Sector, Radio.
+                                Bu sayede "sonraki şarkılar" aynı context'ten gelir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SortableJS Drag & Drop -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Drag & Drop (SortableJS)</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3">
+                            Queue overlay'de SortableJS ile sürükle-bırak özelliği. Hem mobile hem desktop uyumlu.
+                        </p>
+                        <div class="bg-slate-800 p-3 rounded text-sm">
+                            <p class="font-semibold text-green-400 mb-2">Initialization</p>
+                            <pre class="text-slate-400 text-xs bg-slate-900 p-2 rounded">
+Sortable.create(queueContainer, {
+    animation: 200,
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    dragClass: 'sortable-drag',
+    handle: '.queue-drag-handle',
+    onEnd: function(evt) {
+        reorderQueue(evt.oldIndex, evt.newIndex);
+    }
+});
+                            </pre>
+                        </div>
+
+                        <div class="mt-3 bg-slate-800 p-3 rounded text-sm">
+                            <p class="font-semibold text-blue-400 mb-2">CSS Animations</p>
+                            <ul class="text-slate-400 space-y-1">
+                                <li>• <code>.sortable-drag</code> - Sürüklenen item (havada asılı efekt)</li>
+                                <li>• <code>.sortable-ghost</code> - Bırakılacak yer (dashed border placeholder)</li>
+                                <li>• <code>.sortable-chosen</code> - Seçilen item (highlight)</li>
+                                <li>• <code>@keyframes queue-item-drop</code> - Bırakıldığında parlama</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile UI -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Mobile vs Desktop UI</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-purple-300 mb-3">📱 Mobile Player (< 1024px)</p>
+                            <ul class="text-slate-400 text-sm space-y-2">
+                                <li>• <strong>Progress Ring:</strong> Albüm kapağı etrafında halka progress</li>
+                                <li>• <strong>Compact Layout:</strong> 3 alan grid [Cover+Info] [Controls] [Menu]</li>
+                                <li>• <strong>Time Badge:</strong> Ring üzerinde kalan süre badge'i</li>
+                                <li>• <strong>Three Dots Menu:</strong> Tüm ek özellikler menüde</li>
+                                <li>• <strong>Swipe Menu:</strong> Menü aşağı kaydırılarak kapatılabilir</li>
+                                <li>• <strong>Touch Progress:</strong> Progress bar'da touch drag ile ilerleme</li>
+                                <li>• <strong>Bottom Nav:</strong> Fixed bottom navigation bar</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg">
+                            <p class="font-semibold text-blue-300 mb-3">🖥️ Desktop Player (>= 1024px)</p>
+                            <ul class="text-slate-400 text-sm space-y-2">
+                                <li>• <strong>Linear Progress:</strong> Yatay progress bar (Spotify style)</li>
+                                <li>• <strong>Full Width:</strong> Tüm kontroller tek satırda</li>
+                                <li>• <strong>Hover Effects:</strong> Button hover animasyonları</li>
+                                <li>• <strong>Time Display:</strong> Geçen / Toplam süre yanyana</li>
+                                <li>• <strong>Volume Button:</strong> Mute/Unmute toggle</li>
+                                <li>• <strong>Queue Button:</strong> Direkt queue açma</li>
+                                <li>• <strong>Lyrics Button:</strong> Şarkı sözleri overlay</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-green-900/20 border border-green-700 p-3 rounded">
+                        <p class="text-green-300 font-semibold mb-1">✨ Ortak Özellikler</p>
+                        <ul class="text-green-200 text-sm space-y-1">
+                            <li>• Dinamik gradient border (şarkıya göre renk değişimi)</li>
+                            <li>• Gradient animasyonu (<code>@keyframes gradientShift</code>)</li>
+                            <li>• Smooth color transition (1s ease)</li>
+                            <li>• Responsive cover image loading</li>
+                            <li>• Fallback coral gradient (cover yoksa)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- API Integration -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">API Integration</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> public/themes/muzibu/js/player/features/api.js</p>
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded text-sm">
+                                <p class="font-semibold text-green-400 mb-2">GET /api/muzibu/songs/{id}</p>
+                                <p class="text-slate-400 mb-1">Şarkı detaylarını çeker</p>
+                                <pre class="bg-slate-900 p-2 rounded text-xs text-slate-500">
+Response: {
+    song_id, title, slug, artist_title, album_title, album_cover,
+    genre_title, duration, hls_url, lyrics, is_favorite,
+    color_hues: [30, 350, 320], // Dinamik renkler
+    ...
+}
+                                </pre>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded text-sm">
+                                <p class="font-semibold text-blue-400 mb-2">POST /api/muzibu/songs/{id}/play</p>
+                                <p class="text-slate-400">Dinleme kaydı oluşturur (song_plays tablosuna insert)</p>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded text-sm">
+                                <p class="font-semibold text-purple-400 mb-2">POST /api/muzibu/queue/refill</p>
+                                <p class="text-slate-400">Infinite queue için yeni şarkılar getirir</p>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded text-sm">
+                                <p class="font-semibold text-yellow-400 mb-2">GET /api/muzibu/playlists/{id}</p>
+                                <p class="text-slate-400">Playlist detayı + songs eager load</p>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded text-sm">
+                                <p class="font-semibold text-orange-400 mb-2">POST /api/favorites/toggle</p>
+                                <p class="text-slate-400">Favori ekleme/çıkarma (polymorphic relation)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session Management -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Session Management</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> public/themes/muzibu/js/player/features/session.js (331 satır)</p>
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Auto Session Check</p>
+                                <p class="text-slate-400 text-sm mb-2">
+                                    Her 2 dakikada bir <code>GET /api/auth/check-session</code> çağrılır.
+                                </p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• Session geçersizse → Auto logout + modal göster</li>
+                                    <li>• Device limit aşılmışsa → Device selection modal</li>
+                                    <li>• Token expire → Refresh veya re-login iste</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Page Visibility API</p>
+                                <p class="text-slate-400 text-sm">
+                                    Kullanıcı tab'ı gizlediğinde session check durur, tab aktif olunca devam eder.
+                                    Battery saver mode.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SPA Router -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">SPA Router Sistemi</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> public/themes/muzibu/js/player/features/spa-router.js (687 satır)</p>
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Nasıl Çalışır?</p>
+                                <ol class="text-slate-400 text-sm space-y-2">
+                                    <li>1. Tüm <code>&lt;a&gt;</code> link'leri intercept edilir</li>
+                                    <li>2. <code>event.preventDefault()</code> ile normal navigation engellenir</li>
+                                    <li>3. <code>fetch(url)</code> ile HTML çekilir</li>
+                                    <li>4. DOM'da sadece <code>#main-content</code> alanı değiştirilir</li>
+                                    <li>5. <code>history.pushState()</code> ile URL güncellenir</li>
+                                    <li>6. Player state korunur, müzik devam eder</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Özellikler</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• ✓ Back/Forward button desteği (<code>popstate</code> event)</li>
+                                    <li>• ✓ Progress bar animasyonu (0% → 50% → 100%)</li>
+                                    <li>• ✓ Scroll to top (sayfa değişince)</li>
+                                    <li>• ✓ Meta tag update (title, description, OG tags)</li>
+                                    <li>• ✓ Google Analytics page view tracking</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-purple-400 mb-2">Exceptions (SPA Bypass)</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• External links (target="_blank")</li>
+                                    <li>• Download links</li>
+                                    <li>• Admin panel (/admin/*)</li>
+                                    <li>• API endpoints (/api/*)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Keyboard Shortcuts -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Klavye Kısayolları</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-semibold text-green-300 mb-2">Playback Controls</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">Space</kbd> - Play/Pause</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">K</kbd> - Play/Pause (YouTube style)</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">←</kbd> - Önceki şarkı</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">→</kbd> - Sonraki şarkı</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">J</kbd> - 10 saniye geri</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">L</kbd> - 10 saniye ileri</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-blue-300 mb-2">Volume & UI</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">Shift</kbd> + <kbd class="bg-slate-700 px-2 py-1 rounded">↑</kbd> - Volume up</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">Shift</kbd> + <kbd class="bg-slate-700 px-2 py-1 rounded">↓</kbd> - Volume down</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">M</kbd> - Mute/Unmute</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">Q</kbd> - Queue overlay toggle</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">F</kbd> - Favorite toggle</li>
+                                    <li>• <kbd class="bg-slate-700 px-2 py-1 rounded">?</kbd> - Show shortcuts overlay</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-yellow-900/20 border border-yellow-700 p-3 rounded">
+                            <p class="text-yellow-300 font-semibold mb-1">⚠️ Context-aware</p>
+                            <p class="text-yellow-200 text-sm">
+                                Input, textarea içinde iken kısayollar devre dışı kalır. Sadece player focused iken aktif.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LocalStorage -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">LocalStorage Persistence</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> public/themes/muzibu/js/player/core/safe-storage.js</p>
+                        <div class="bg-slate-800 p-3 rounded text-sm">
+                            <p class="font-semibold text-green-400 mb-2">Saklanan Veriler</p>
+                            <ul class="text-slate-400 space-y-1">
+                                <li>• <code>muzibu_volume</code> - Son ses seviyesi</li>
+                                <li>• <code>muzibu_queue</code> - Son kuyruk state</li>
+                                <li>• <code>muzibu_current_song</code> - Son çalan şarkı</li>
+                                <li>• <code>muzibu_play_context</code> - Son context (playlist/album/genre)</li>
+                                <li>• <code>muzibu_queue_index</code> - Kuyrukta konum</li>
+                            </ul>
+                            <p class="text-slate-400 mt-3">
+                                Sayfa yenilense bile player state korunur. Kullanıcı kaldığı yerden devam eder.
+                            </p>
+                        </div>
+
+                        <div class="mt-3 bg-slate-800 p-3 rounded text-sm">
+                            <p class="font-semibold text-blue-400 mb-2">Safe Storage Wrapper</p>
+                            <p class="text-slate-400">
+                                localStorage hatası (quota exceeded, private mode) tetiklerse fallback olarak memory'de tutar.
+                                Hata fırlatmaz, graceful degradation.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özellikler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">✨ Öne Çıkan Özellikler</h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/20 p-4 rounded-lg border border-green-700">
+                    <h3 class="font-semibold text-green-400 mb-2">🎨 UI/UX</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• Dinamik gradient renkleri (şarkıya özel)</li>
+                        <li>• Progress ring (mobile) & linear bar (desktop)</li>
+                        <li>• Smooth transitions ve animasyonlar</li>
+                        <li>• Touch gesture support (swipe, drag)</li>
+                        <li>• Responsive tasarım (< 1024px farklı UI)</li>
+                        <li>• Hover effects & active states</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-4 rounded-lg border border-blue-700">
+                    <h3 class="font-semibold text-blue-400 mb-2">⚡ Performans</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• Alpine.js ile hafif (bundle size küçük)</li>
+                        <li>• Lazy loading (HLS segment'ler ihtiyaç olunca)</li>
+                        <li>• Blob URL caching (memory sızıntısı yok)</li>
+                        <li>• LocalStorage persistence (state korunuyor)</li>
+                        <li>• SPA routing (full page reload yok)</li>
+                        <li>• Debounced API calls</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-4 rounded-lg border border-purple-700">
+                    <h3 class="font-semibold text-purple-400 mb-2">🔒 Güvenlik</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• HLS AES-128 encryption</li>
+                        <li>• Blob URL maskeleme</li>
+                        <li>• XOR URL decryption</li>
+                        <li>• Signed URLs (token + expiry + sig)</li>
+                        <li>• Device limit check</li>
+                        <li>• Session validation (2 dakikada bir)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-900/30 to-orange-800/20 p-4 rounded-lg border border-orange-700">
+                    <h3 class="font-semibold text-orange-400 mb-2">🎯 Kullanılabilirlik</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• Keyboard shortcuts (YouTube-style)</li>
+                        <li>• Context menu (sağ tık)</li>
+                        <li>• Drag & drop queue reordering</li>
+                        <li>• Infinite queue (otomatik doldurma)</li>
+                        <li>• Lyrics overlay</li>
+                        <li>• Volume control</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kod İstatistikleri -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">📈 Kod İstatistikleri</h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-purple-400">~11k</p>
+                    <p class="text-slate-400 text-sm">Satır JS (Player)</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-pink-400">~60KB</p>
+                    <p class="text-slate-400 text-sm">Blade Components</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-orange-400">1.1MB</p>
+                    <p class="text-slate-400 text-sm">Toplam JS</p>
+                </div>
+            </div>
+
+            <div class="mt-4 grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900 p-4 rounded">
+                    <p class="font-semibold text-green-400 mb-2">Core Files</p>
+                    <ul class="text-slate-400 text-sm space-y-1">
+                        <li>• player-core.js - 7,883 satır</li>
+                        <li>• play-helpers.js - 1,015 satır</li>
+                        <li>• spa-router.js - 687 satır</li>
+                        <li>• spot-player.js - 564 satır</li>
+                        <li>• session.js - 331 satır</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900 p-4 rounded">
+                    <p class="font-semibold text-blue-400 mb-2">Blade Components</p>
+                    <ul class="text-slate-400 text-sm space-y-1">
+                        <li>• player.blade.php - 19KB</li>
+                        <li>• queue-overlay.blade.php - 21KB</li>
+                        <li>• app.blade.php - 41KB</li>
+                        <li>• sidebar-right.blade.php - 75KB</li>
+                        <li>• header.blade.php - 73KB</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öneriler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">💡 Geliştirme Notları</h2>
+
+            <div class="space-y-4">
+                <div class="bg-green-900/20 border border-green-700 p-4 rounded">
+                    <h3 class="font-semibold text-green-400 mb-2">✅ İyi Pratikler</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Alpine.store pattern ile global state management</li>
+                        <li>• Modüler JS dosya yapısı (core, features ayrımı)</li>
+                        <li>• Safe cleanup functions (memory leak önleme)</li>
+                        <li>• Graceful error handling (toast notifications)</li>
+                        <li>• LocalStorage fallback (private mode support)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-700 p-4 rounded">
+                    <h3 class="font-semibold text-blue-400 mb-2">📌 Dikkat Edilmesi Gerekenler</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• HLS.js destroy() çağrılmazsa memory leak olur</li>
+                        <li>• Blob URL revoke edilmezse garbage collect yapılamaz</li>
+                        <li>• Event listener cleanup gerekli (audio.onerror = null)</li>
+                        <li>• Queue size kontrolü (çok büyükse LocalStorage quota)</li>
+                        <li>• SPA router'da script tag execute edilmeli</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-700 p-4 rounded">
+                    <h3 class="font-semibold text-yellow-400 mb-2">⚠️ Bilinen Limitasyonlar</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• iOS Safari'de autoplay kısıtlaması (user interaction gerekli)</li>
+                        <li>• Private mode'da LocalStorage çalışmayabilir</li>
+                        <li>• HLS.js IE11'de desteklenmiyor (fallback yok)</li>
+                        <li>• SortableJS mobile'da bazen gesture conflict</li>
+                        <li>• Session check 2 dk interval (gerçek zamanlı değil)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-900/20 border border-purple-700 p-4 rounded">
+                    <h3 class="font-semibold text-purple-400 mb-2">🚀 İyileştirme Fikirleri</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Service Worker ile offline playback cache</li>
+                        <li>• WebSocket ile gerçek zamanlı session sync</li>
+                        <li>• Canvas visualizer (audio waveform)</li>
+                        <li>• Lyrics karaoke sync (time-coded lyrics)</li>
+                        <li>• Media Session API (lock screen controls)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 pt-8 border-t border-slate-700">
+            <p>28 Ocak 2026 • Muzibu.com.tr</p>
+        </footer>
+    </div>
+</body>
+</html>

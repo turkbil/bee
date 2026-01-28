@@ -18,6 +18,35 @@ use Illuminate\Support\Facades\Route;
 Route::name('landing.')->group(function() {
 
     // ========================================
+    // MUZIBU LANDING PAGE
+    // ========================================
+
+    // Ana Landing Page - Telif Hakları Uyarısı (Sidebar ile)
+    Route::get('/landing', function() {
+        return view('landing.muzibu.main.1.index');
+    })->name('muzibu.main.1');
+
+    // Ana Landing Page - Minimal (Sidebar yok)
+    Route::get('/landing2', function() {
+        return view('landing.muzibu.main.2.index');
+    })->name('muzibu.main.2');
+
+    // Ana Landing Page - Modern Design (Sidebar yok)
+    Route::get('/landing3', function() {
+        return view('landing.muzibu.main.3.index');
+    })->name('muzibu.main.3');
+
+    // Ana Landing Page - Playful/Eğlenceli (Sidebar ile)
+    Route::get('/landing4', function() {
+        return view('landing.muzibu.main.4.index');
+    })->name('muzibu.main.4');
+
+    // Ana Landing Page - Corporate/Kurumsal (Sidebar ile)
+    Route::get('/landing5', function() {
+        return view('landing.muzibu.main.5.index');
+    })->name('muzibu.main.5');
+
+    // ========================================
     // TRANSPALET F4 KAMPANYALARI
     // ========================================
 

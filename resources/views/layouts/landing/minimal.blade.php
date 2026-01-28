@@ -11,7 +11,7 @@
     <style>
         /* Critical CSS - Above the fold */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #030712; color: #fff; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #1f2937; }
         .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
 
         /* Alpine.js x-cloak */
@@ -31,6 +31,11 @@
             background-size: 200% auto;
             animation: gold-shimmer 4s ease infinite;
         }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
 
     <!-- Compiled CSS (Tailwind + Custom) -->
@@ -45,9 +50,14 @@
     <!-- AI Chat Widget CSS -->
     <link rel="stylesheet" href="/assets/css/ai-chat.css?v={{ time() }}">
 
+    <!-- AOS Animation Library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://wa.me">
+
+    @stack('styles')
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -63,7 +73,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P8HKHCG9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <!-- Minimal Header - Google Ads Optimized -->
-    <header class="fixed top-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-xl border-b border-gray-800/30 py-3 px-4">
+    <header class="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-b border-gray-200 py-3 px-4 shadow-sm">
         <div class="container mx-auto flex items-center justify-between">
             <!-- Logo - Settings'den çekilir -->
             @php
@@ -71,31 +81,37 @@
                 $logos = $logoService->getLogos();
                 $logoUrl = $logos['light_logo_url'] ?? null;
                 $logoDarkUrl = $logos['dark_logo_url'] ?? null;
-                $siteTitle = $logos['site_title'] ?? setting('site_title', 'iXtif');
+                $siteTitle = $logos['site_title'] ?? setting('site_title', config('app.name'));
             @endphp
 
             <a href="/" class="flex items-center hover:opacity-80 transition-opacity">
-                @if($logoDarkUrl)
+                @if($logoUrl)
+                    <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="h-8 md:h-10 w-auto object-contain">
+                @elseif($logoDarkUrl)
                     {{-- Dark logo kullan (2. logo) --}}
                     <img src="{{ $logoDarkUrl }}" alt="{{ $siteTitle }}" class="h-8 md:h-10 w-auto object-contain">
-                @elseif($logoUrl)
-                    <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="h-8 md:h-10 w-auto object-contain">
                 @else
                     {{-- Fallback: Text logo --}}
-                    <span class="text-2xl font-black gold-gradient bg-clip-text text-transparent">{{ $siteTitle }}</span>
+                    <span class="text-2xl font-black text-purple-600">{{ $siteTitle }}</span>
                 @endif
             </a>
 
             <!-- Contact Icons - Settings'den çekilir -->
             @php
-                $contactPhone = setting('contact_phone_1', '0216 755 35 55');
-                $contactWhatsapp = setting('contact_whatsapp_1');
+                $contactPhone = setting('contact_phone_1', setting('contact_phone'));
+                $contactWhatsapp = setting('contact_whatsapp_1', setting('contact_whatsapp'));
+                $pageTitle = $pageTitle ?? 'Bilgi almak istiyorum';
             @endphp
 
             <div class="flex items-center gap-3">
                 <!-- WhatsApp -->
                 @if($contactWhatsapp)
-                    <a href="{{ whatsapp_link(null, 'Elektrikli Transpalet') }}"
+                    @php
+                        $whatsappMessage = urlencode($pageTitle);
+                        $whatsappNumber = preg_replace('/[^0-9]/', '', $contactWhatsapp);
+                        $whatsappUrl = "https://wa.me/{$whatsappNumber}?text={$whatsappMessage}";
+                    @endphp
+                    <a href="{{ $whatsappUrl }}"
                        target="_blank"
                        class="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white transition-colors">
                         <i class="fab fa-whatsapp text-xl"></i>
@@ -106,7 +122,7 @@
                 <!-- Telefon -->
                 @if($contactPhone)
                     <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
-                       class="flex items-center gap-2 px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-white transition-colors">
+                       class="flex items-center gap-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white transition-colors">
                         <i class="fas fa-phone"></i>
                         <span class="hidden md:inline font-semibold text-sm">{{ $contactPhone }}</span>
                     </a>
@@ -121,10 +137,10 @@
     </main>
 
     <!-- Minimal Footer - Google Ads Optimized -->
-    <footer class="bg-black py-6 border-t border-gray-800">
+    <footer class="bg-gray-50 py-6 border-t border-gray-200">
         <div class="container mx-auto px-4 text-center">
             <p class="text-sm text-gray-600">
-                © {{ date('Y') }} İXTİF İç ve Dış Ticaret A.Ş. | Tüm hakları saklıdır.
+                © {{ date('Y') }} {{ setting('site_title', config('app.name')) }} | Tüm hakları saklıdır.
             </p>
         </div>
     </footer>
@@ -141,9 +157,13 @@
     <!-- AI Chat Widget JS -->
     <script src="/assets/js/ai-chat.js?v={{ time() }}"></script>
 
+    <!-- AOS Animation Library JS -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
     <!-- Chat Widget - AI Floating Widget (www.ixtif.com ile aynı) -->
     <x-ai.floating-widget theme="gray" />
 
+    @stack('scripts')
     @stack('scripts-footer')
 </body>
 </html>

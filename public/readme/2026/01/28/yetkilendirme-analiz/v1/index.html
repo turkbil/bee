@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root ve Normal Kullanıcı Yetkilendirme Sistemi Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .code-block { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; }
+        .badge-root { background: #dc2626; color: white; }
+        .badge-admin { background: #f59e0b; color: white; }
+        .badge-editor { background: #3b82f6; color: white; }
+        .section-card { background: #1e293b; border-left: 4px solid #667eea; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+    <!-- Header -->
+    <header class="gradient-bg shadow-lg">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-4xl font-bold text-white mb-2">🔐 Root ve Normal Kullanıcı Yetkilendirme Sistemi</h1>
+            <p class="text-slate-200">Muzibu.com Multi-Tenant SaaS Platformu - Kapsamlı Yetkilendirme Analizi</p>
+            <div class="flex gap-3 mt-4">
+                <span class="badge badge-root">ROOT</span>
+                <span class="badge badge-admin">ADMIN</span>
+                <span class="badge badge-editor">EDITOR</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-6 py-12">
+
+        <!-- Özet Bölümü -->
+        <div class="bg-slate-800 rounded-lg p-8 mb-8 border-l-4 border-purple-500">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">📋 Sistem Özeti</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-slate-700 p-4 rounded-lg">
+                    <div class="text-3xl font-bold text-red-400">3</div>
+                    <div class="text-slate-300">Rol Seviyesi</div>
+                    <div class="text-sm text-slate-400 mt-1">root, admin, editor</div>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg">
+                    <div class="text-3xl font-bold text-amber-400">4</div>
+                    <div class="text-slate-300">İzin Tipi</div>
+                    <div class="text-sm text-slate-400 mt-1">view, create, update, delete</div>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg">
+                    <div class="text-3xl font-bold text-blue-400">2</div>
+                    <div class="text-slate-300">Veritabanı</div>
+                    <div class="text-sm text-slate-400 mt-1">Central + Tenant DB</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BÖLÜM 1: ROL YAPISI -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">1️⃣ Rol Yapısı ve Hiyerarşi</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Sistem, kullanıcıları üç ana gruba ayırır: <strong>root (süper yönetici)</strong>,
+                        <strong>admin (yönetici)</strong> ve <strong>editor (editör)</strong>. Her grubun farklı yetkileri vardır.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="bg-red-900/30 border-l-4 border-red-500 p-4 rounded">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="badge badge-root">ROOT</span>
+                                <span class="font-bold text-red-400">Tam Yetkili Yönetici</span>
+                            </div>
+                            <p class="text-slate-300">
+                                <strong>Her şeyi yapabilir.</strong> Sistemin her yerine erişebilir, tüm ayarları değiştirebilir.
+                                Hem merkezi sistemde (central) hem de her müşterinin (tenant) kendi alanında tam yetkilidir.
+                            </p>
+                            <div class="mt-3 text-sm text-slate-400">
+                                ✅ Tüm modüllere erişim<br>
+                                ✅ Debugbar görüntüleme<br>
+                                ✅ Kritik sistem ayarları<br>
+                                ✅ Central ve tenant DB'ye tam erişim
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-900/30 border-l-4 border-amber-500 p-4 rounded">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="badge badge-admin">ADMIN</span>
+                                <span class="font-bold text-amber-400">Yönetici</span>
+                            </div>
+                            <p class="text-slate-300">
+                                <strong>Kendi alanında tam yetkili.</strong> Bir müşterinin (tenant) kendi sisteminde her şeyi yönetebilir,
+                                ancak sadece kendisine atanan modülleri kullanabilir. Central sistemde bazı kısıtlamaları vardır.
+                            </p>
+                            <div class="mt-3 text-sm text-slate-400">
+                                ✅ Tenant'a atanan modüllere tam erişim<br>
+                                ✅ Kullanıcı yönetimi (kendi tenant'ı)<br>
+                                ✅ İçerik düzenleme (kendi tenant'ı)<br>
+                                ❌ Central'da bazı modüller kısıtlı
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="badge badge-editor">EDITOR</span>
+                                <span class="font-bold text-blue-400">Editör</span>
+                            </div>
+                            <p class="text-slate-300">
+                                <strong>Sınırlı yetkiler.</strong> Sadece kendisine özel olarak verilen modülleri ve
+                                belirli işlemleri (görüntüleme, ekleme, düzenleme, silme) yapabilir. Her modül için ayrı ayrı izin verilir.
+                            </p>
+                            <div class="mt-3 text-sm text-slate-400">
+                                ✅ Belirli modüllere özel izinler<br>
+                                ✅ İzin tipi bazlı erişim (view/create/update/delete)<br>
+                                ❌ Sistem ayarlarına erişim yok<br>
+                                ❌ Kullanıcı yönetimi yok
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Bu sistem sayesinde her kullanıcı sadece yapması gereken işleri görebilir. Bir editörün yanlışlıkla
+                            önemli ayarları bozması veya başka kullanıcıların verilerine erişmesi engellenir. Güvenlik ve düzen sağlanır.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Rol Modeli</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/UserManagement/App/Models/Role.php
+
+class Role extends SpatieRole {
+    const BASE_ROLES = ['root', 'admin', 'editor'];
+    const ROLE_TYPES = [
+        'root' => 'Tam Yetkili Yönetici',
+        'admin' => 'Yönetici',
+        'editor' => 'Editör'
+    ];
+
+    protected $fillable = ['name', 'guard_name', 'is_protected', 'role_type', 'description'];
+
+    public function isRoot(): bool { return $this->role_type === 'root'; }
+    public function isAdmin(): bool { return $this->role_type === 'admin'; }
+    public function isEditor(): bool { return $this->role_type === 'editor'; }
+    public function isDeletable(): bool {
+        return !$this->isBaseRole() && !$this->is_protected && $this->users()->count() === 0;
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">User Model Entegrasyonu</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Models/User.php
+
+use Spatie\Permission\Traits\HasRoles;
+use Modules\UserManagement\App\Traits\HasModulePermissions;
+
+class User extends Authenticatable {
+    use HasRoles, HasModulePermissions;
+
+    protected $guard_name = 'web';
+
+    // Spatie Permission override (global scope bypass)
+    public function roles() {
+        return $this->morphToMany(Role::class, 'model', 'model_has_roles')
+            ->where('roles.guard_name', 'web')
+            ->withoutGlobalScopes(); // 🔴 KRİTİK: Multi-tenant için
+    }
+
+    // Cache-aware rol kontrolü
+    public function hasCachedRole($role): bool {
+        return cache()->remember("user_role_{$this->id}_{$role}", 300, fn() => $this->hasRole($role));
+    }
+
+    // Rol helper metodları
+    public function isRoot(): bool { return $this->hasRole('root'); }
+    public function isAdmin(): bool { return $this->hasRole('admin'); }
+    public function isEditor(): bool { return $this->hasRole('editor'); }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Veritabanı Yapısı</h4>
+                            <div class="code-block text-sm">
+<pre>📊 roles tablosu (Central + Tenant)
+┌───────────────┬──────────────┬─────────────┐
+│ Kolon         │ Tip          │ Açıklama    │
+├───────────────┼──────────────┼─────────────┤
+│ id            │ bigint       │ PK          │
+│ name          │ varchar(255) │ root/admin  │
+│ guard_name    │ varchar(255) │ web         │
+│ role_type     │ varchar(50)  │ rol tipi    │
+│ is_protected  │ boolean      │ silinemez   │
+│ description   │ text         │ açıklama    │
+└───────────────┴──────────────┴─────────────┘
+
+📊 model_has_roles tablosu (Spatie)
+┌───────────────┬──────────────┬─────────────┐
+│ role_id       │ bigint       │ FK roles    │
+│ model_type    │ varchar(255) │ App\Models\User │
+│ model_id      │ bigint       │ user_id     │
+└───────────────┴──────────────┴─────────────┘</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Seeder</h4>
+                            <div class="code-block text-sm">
+<pre>📁 database/seeders/RolePermissionSeeder.php
+
+// Root kullanıcıları (her tenant + central)
+$rootEmails = ['nurullah@nurullah.net', 'info@turkbilisim.com.tr'];
+
+// Central DB
+if (isCentral()) {
+    createOrUpdateRole('root', 'Tam yetkili sistem yöneticisi', 'root', true);
+    createOrUpdateRole('admin', 'Tenant yöneticisi', 'admin', true);
+    createOrUpdateRole('editor', 'Modül bazlı yetkilendirilebilir editör', 'editor', true);
+}
+
+// Tenant DB
+if (isTenant()) {
+    // Aynı roller tenant DB'ye de eklenir
+    Role::create(['name' => 'root', 'role_type' => 'root', 'is_protected' => true]);
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: MODÜL BAZLI YETKİLENDİRME -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">2️⃣ Modül Bazlı Yetkilendirme Sistemi</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Sistem, modüler bir yapıya sahip. Yani her özellik (blog, müzik, ödeme sistemi gibi) birer <strong>modül</strong>dür.
+                        Her modül için 4 farklı işlem izni vardır:
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-green-900/30 border-l-4 border-green-500 p-4 rounded">
+                            <div class="font-bold text-green-400 mb-1">👁️ VIEW (Görüntüleme)</div>
+                            <p class="text-sm text-slate-300">Modülün içeriğini görebilir, listeleyebilir</p>
+                        </div>
+                        <div class="bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded">
+                            <div class="font-bold text-blue-400 mb-1">➕ CREATE (Oluşturma)</div>
+                            <p class="text-sm text-slate-300">Yeni kayıt ekleyebilir (yeni şarkı, blog yazısı)</p>
+                        </div>
+                        <div class="bg-amber-900/30 border-l-4 border-amber-500 p-4 rounded">
+                            <div class="font-bold text-amber-400 mb-1">✏️ UPDATE (Güncelleme)</div>
+                            <p class="text-sm text-slate-300">Mevcut kayıtları düzenleyebilir</p>
+                        </div>
+                        <div class="bg-red-900/30 border-l-4 border-red-500 p-4 rounded">
+                            <div class="font-bold text-red-400 mb-1">🗑️ DELETE (Silme)</div>
+                            <p class="text-sm text-slate-300">Kayıtları silebilir</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">📌 Örnek Senaryo</h4>
+                        <p class="text-slate-300 mb-2">
+                            <strong>Ali</strong> adında bir editör var. Ali'ye <strong>Blog modülü</strong> için şu izinler verilmiş:
+                        </p>
+                        <ul class="list-disc list-inside text-slate-300 space-y-1">
+                            <li>✅ VIEW: Blog yazılarını görebilir</li>
+                            <li>✅ CREATE: Yeni blog yazısı ekleyebilir</li>
+                            <li>✅ UPDATE: Yazıları düzenleyebilir</li>
+                            <li>❌ DELETE: Yazıları SİLEMEZ</li>
+                        </ul>
+                        <p class="text-slate-300 mt-2">
+                            Aynı zamanda Ali'ye <strong>Müzik modülü</strong> için sadece VIEW izni verilmiş.
+                            Yani şarkıları görebilir ama ekleyemez, düzenleyemez veya silemez.
+                        </p>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Bu sistem sayesinde her editörün yetkisi tam olarak kontrol edilir. Bir kişinin yanlışlıkla
+                            önemli verileri silmesi veya yetkisi olmayan alanlara erişmesi engellenir. Her kişi sadece
+                            yapması gereken işleri yapar.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">HasModulePermissions Trait</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/UserManagement/App/Traits/HasModulePermissions.php
+
+trait HasModulePermissions {
+
+    // Ana yetki kontrolü
+    public function hasModulePermission(string $moduleName, string $permissionType): bool {
+        // 1. Root: Her zaman true
+        if ($this->hasRole('root')) return true;
+
+        // 2. Admin: Tenant'a atanmış modüller için true
+        if ($this->hasRole('admin')) {
+            if (tenant()) {
+                $module = ModuleAccessService::getModuleByName($moduleName);
+                return ModuleAccessService::isModuleAssignedToTenant($module->module_id, tenant()->id);
+            }
+            // Central'da kısıtlı modüller kontrol edilir
+            return !in_array($moduleName, config('module-permissions.admin_restricted_modules'));
+        }
+
+        // 3. Editor: UserModulePermission tablosundan kontrol
+        $cacheKey = "user_{$this->id}_module_{$moduleName}_permission_{$permissionType}";
+        return Cache::remember($cacheKey, 300, function() {
+            return $this->userModulePermissions()
+                ->where('module_name', $moduleName)
+                ->where('permission_type', $permissionType)
+                ->where('is_active', true)
+                ->exists();
+        });
+    }
+
+    // Modülün tüm izinlerini getir
+    public function getModulePermissions(string $moduleName): array {
+        if ($this->isRoot() || $this->isAdmin()) {
+            return ['view', 'create', 'update', 'delete'];
+        }
+
+        return $this->userModulePermissions()
+            ->where('module_name', $moduleName)
+            ->where('is_active', true)
+            ->pluck('permission_type')
+            ->toArray();
+    }
+
+    // İzin ekleme
+    public function giveModulePermissionTo(string $moduleName, $permissionTypes): void {
+        foreach ((array)$permissionTypes as $type) {
+            UserModulePermission::updateOrCreate(
+                ['user_id' => $this->id, 'module_name' => $moduleName, 'permission_type' => $type],
+                ['is_active' => true]
+            );
+        }
+        $this->clearModulePermissionCache($moduleName);
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">UserModulePermission Model</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Modules/UserManagement/App/Models/UserModulePermission.php
+
+class UserModulePermission extends Model {
+    protected $fillable = ['user_id', 'module_name', 'permission_type', 'is_active'];
+    protected $casts = ['is_active' => 'boolean'];
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
+    }
+
+    public static function getPermissionTypes(): array {
+        return ModulePermission::getPermissionTypes();
+    }
+}
+
+📊 user_module_permissions tablosu
+┌──────────────────┬──────────────┬────────────────────────────┐
+│ Kolon            │ Tip          │ Açıklama                   │
+├──────────────────┼──────────────┼────────────────────────────┤
+│ id               │ bigint       │ PK                         │
+│ user_id          │ bigint       │ FK users                   │
+│ module_name      │ varchar(50)  │ 'blog', 'muzibu', vb.      │
+│ permission_type  │ varchar(20)  │ 'view', 'create', vb.      │
+│ is_active        │ boolean      │ aktif/pasif                │
+│ created_at       │ timestamp    │                            │
+│ updated_at       │ timestamp    │                            │
+├──────────────────┴──────────────┴────────────────────────────┤
+│ UNIQUE: (user_id, module_name, permission_type)              │
+│ INDEX: module_name, permission_type, is_active               │
+└───────────────────────────────────────────────────────────────┘</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Helper Fonksiyonları</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Helpers/ModulePermissionHelper.php
+
+// Blade'de kullanım: @if(can_module('blog', 'create'))
+function can_module(string $moduleName, string $permissionType = 'view'): bool {
+    $user = Auth::user();
+    if (!$user) return false;
+
+    if ($user->hasRole('root') || $user->hasRole('admin')) {
+        return true;
+    }
+
+    $cacheKey = "user_{$user->id}_module_{$moduleName}_permission_{$permissionType}";
+    return Cache::remember($cacheKey, 86400, fn() =>
+        $user->hasModulePermission($moduleName, $permissionType)
+    );
+}
+
+// Modül aktif mi kontrolü
+function is_module_active(string $moduleName, string $permissionType = 'view'): bool {
+    $cacheKey = "module_{$moduleName}_permission_{$permissionType}_active";
+    return Cache::remember($cacheKey, 86400, function() use ($moduleName, $permissionType) {
+        return Module::where('name', $moduleName)
+            ->where('is_active', true)
+            ->whereHas('permissions', fn($q) =>
+                $q->where('permission_type', $permissionType)->where('is_active', true)
+            )
+            ->exists();
+    });
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: MİDDLEWARE SİSTEMİ -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">3️⃣ Middleware Koruma Katmanları</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        <strong>Middleware</strong>, bir sayfa açılmadan önce çalışan <strong>güvenlik kontrol noktaları</strong>dır.
+                        Tıpkı bir binanın güvenlik görevlisi gibi, her ziyaretçiyi kontrol eder ve yetkisi yoksa içeri almaz.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="bg-red-900/30 border-l-4 border-red-500 p-4 rounded">
+                            <div class="font-bold text-red-400 mb-2">🚫 RootAccessMiddleware (Sadece Root)</div>
+                            <p class="text-slate-300 mb-2">
+                                Bazı sayfalar <strong>sadece root kullanıcıların</strong> erişebileceği kadar kritiktir.
+                                Bu middleware, root olmayan hiç kimsenin o sayfalara girmesine izin vermez.
+                            </p>
+                            <div class="text-sm text-slate-400">
+                                <strong>Örnek:</strong> Sistem ayarları, tenant oluşturma, global yapılandırma sayfaları
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-900/30 border-l-4 border-amber-500 p-4 rounded">
+                            <div class="font-bold text-amber-400 mb-2">🔐 AdminAccessMiddleware (Admin Kontrolü)</div>
+                            <p class="text-slate-300 mb-2">
+                                Admin paneline giriş yapmak isteyen herkesi kontrol eder. Root ve admin'lere izin verir,
+                                editörler için özel kontroller yapar. Ayrıca hangi modüle erişmeye çalıştığını tespit eder.
+                            </p>
+                            <div class="text-sm text-slate-400 space-y-1">
+                                <div>✅ Root: Her yere erişebilir</div>
+                                <div>✅ Admin: Tenant'a atanan modüllere erişebilir</div>
+                                <div>✅ Editor: İzin verilen modüllere erişebilir</div>
+                                <div>❌ Yetkisiz kullanıcı: 403 Forbidden</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-purple-900/30 border-l-4 border-purple-500 p-4 rounded">
+                            <div class="font-bold text-purple-400 mb-2">🔍 RootOnlyDebugbar (Geliştirici Araçları)</div>
+                            <p class="text-slate-300 mb-2">
+                                Debugbar (geliştirici debug araçları), sadece root kullanıcıların görebileceği hassas bilgiler içerir.
+                                Bu middleware, debugbar'ı sadece root kullanıcılara gösterir.
+                            </p>
+                            <div class="text-sm text-slate-400">
+                                <strong>Performans:</strong> Session cache kullanarak her istekte DB sorgusu yapmaz
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Middleware sistemi sayesinde her sayfa açılmadan önce yetki kontrolü yapılır. Yanlışlıkla
+                            veya kasıtlı olarak yetkisiz sayfalara erişim denemeleri engellenir. Sistem güvenliği otomatik
+                            olarak sağlanır, her sayfada ayrı kontrol yazmaya gerek kalmaz.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">RootAccessMiddleware</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Http/Middleware/RootAccessMiddleware.php
+
+class RootAccessMiddleware {
+    public function handle(Request $request, Closure $next) {
+        // Root yetkisi kontrolü
+        if (!auth()->user() || !auth()->user()->isRoot()) {
+            abort(403, 'ERİŞİM ENGELENDİ.');
+        }
+
+        // Tenant kontrolü - sadece central'da erişime izin ver
+        if (TenantHelpers::isTenant()) {
+            abort(403, 'ERİŞİM ENGELENDİ.');
+        }
+
+        return $next($request);
+    }
+}
+
+📋 Kullanım:
+Route::middleware(['auth', 'root'])->group(function() {
+    Route::get('/admin/system-settings', ...);
+    Route::get('/admin/create-tenant', ...);
+});</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">AdminAccessMiddleware</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Http/Middleware/AdminAccessMiddleware.php
+
+class AdminAccessMiddleware {
+    public function handle(Request $request, Closure $next) {
+        if (!auth()->check()) {
+            abort(403, 'Bu alana erişim yetkiniz bulunmamaktadır.');
+        }
+
+        $user = auth()->user();
+
+        // URL'den modül adını çıkar: /admin/blog/posts → 'blog'
+        preg_match('/^admin\/([^\/]+)/', $request->path(), $matches);
+        $moduleName = $matches[1] ?? null;
+
+        // Path-to-module mapping
+        $pathModuleMap = ['orders' => 'cart', 'checkout' => 'cart'];
+        if ($moduleName && isset($pathModuleMap[$moduleName])) {
+            $moduleName = $pathModuleMap[$moduleName];
+        }
+
+        // ROOT: Her yere erişebilir
+        if ($user->isRoot()) {
+            return $next($request);
+        }
+
+        // ADMIN: Tenant'a atanan modüllere erişebilir
+        if ($user->isAdmin()) {
+            $systemRoutes = ['dashboard', 'cache', 'debug', 'ai', 'language'];
+            if (in_array($moduleName, $systemRoutes)) {
+                return $next($request);
+            }
+
+            // Central'da kısıtlı modül kontrolü
+            if (TenantHelpers::isCentral() &&
+                in_array($moduleName, config('module-permissions.admin_restricted_modules'))) {
+                abort(403, 'Bu modüle erişim yetkiniz bulunmamaktadır.');
+            }
+
+            // Tenant'ta modül atama kontrolü (10 dakika cache)
+            if (TenantHelpers::isTenant() && $moduleName) {
+                $cacheKey = "module_tenant_access:{$moduleName}:" . tenant()->id;
+                $hasAccess = Cache::remember($cacheKey, 600, function() use ($moduleName) {
+                    $module = ModuleAccessService::getModuleByName($moduleName);
+                    return $module && ModuleAccessService::isModuleAssignedToTenant($module->module_id, tenant()->id);
+                });
+
+                if (!$hasAccess) {
+                    abort(403, 'Bu modül bu tenant\'a atanmamış.');
+                }
+            }
+
+            return $next($request);
+        }
+
+        // EDITOR: Modül bazlı izin kontrolü
+        if ($user->isEditor()) {
+            if ($moduleName && !ModuleAccessService::canAccess($moduleName, 'view')) {
+                abort(403, 'Bu modüle erişim yetkiniz bulunmamaktadır.');
+            }
+            return $next($request);
+        }
+
+        abort(403, 'Bu alana erişim yetkiniz bulunmamaktadır.');
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">RootOnlyDebugbar</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Http/Middleware/RootOnlyDebugbar.php
+
+class RootOnlyDebugbar {
+    public function handle(Request $request, Closure $next): Response {
+        if (!class_exists(\Barryvdh\Debugbar\Facade::class)) {
+            return $next($request);
+        }
+
+        $showDebugbar = false;
+
+        if (auth()->check()) {
+            $userId = auth()->id();
+            $sessionKey = "is_root_user_{$userId}";
+
+            if (session()->has($sessionKey)) {
+                // Session'dan al (0 query)
+                $showDebugbar = session($sessionKey);
+            } else {
+                // İlk kez: Cache'den al, session'a kaydet
+                $isRoot = Cache::remember("user_is_root_{$userId}", 300, fn() =>
+                    auth()->user()?->hasRole('root') ?? false
+                );
+                session([$sessionKey => $isRoot]);
+                $showDebugbar = $isRoot;
+            }
+        }
+
+        if (!$showDebugbar) {
+            \Barryvdh\Debugbar\Facade::disable();
+        }
+
+        return $next($request);
+    }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: MULTI-TENANT YETKİLENDİRME -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">4️⃣ Multi-Tenant Yetkilendirme Mimarisi</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Sistem, <strong>multi-tenant</strong> (çok kiracılı) bir yapıya sahip. Yani her müşteri (tenant)
+                        kendi bağımsız veritabanına sahip. Bir müşterinin yöneticisi, sadece kendi müşterisinin verilerine
+                        erişebilir, başka müşterilerin verilerini göremez.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-purple-900/30 border-l-4 border-purple-500 p-4 rounded">
+                            <div class="font-bold text-purple-400 mb-2">🏢 Central (Merkezi) Veritabanı</div>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Tüm tenant'ları, modülleri ve global ayarları tutan merkezi veritabanı.
+                                Sadece root kullanıcılar buraya tam erişebilir.
+                            </p>
+                            <div class="text-sm text-slate-400">
+                                <div>📊 Tenant listesi</div>
+                                <div>📦 Modül tanımları</div>
+                                <div>🔗 Modül-tenant atamaları</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded">
+                            <div class="font-bold text-blue-400 mb-2">🏪 Tenant Veritabanı</div>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Her müşterinin kendi veritabanı. Kullanıcılar, içerikler, siparişler gibi
+                                tenant'a özel tüm veriler burada saklanır.
+                            </p>
+                            <div class="text-sm text-slate-400">
+                                <div>👥 Kullanıcılar</div>
+                                <div>📝 İçerikler (blog, müzik vb.)</div>
+                                <div>🔐 Roller ve izinler</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">📌 Örnek Senaryo</h4>
+                        <p class="text-slate-300 mb-3">
+                            3 farklı müşteri var: <strong>Tuufi.com</strong> (central), <strong>Ixtif.com</strong> ve <strong>Muzibu.com</strong>
+                        </p>
+
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start gap-2">
+                                <span class="badge badge-root text-xs">ROOT</span>
+                                <span class="text-slate-300">Nurullah: Tüm tenant'lara ve central DB'ye erişebilir</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="badge badge-admin text-xs">ADMIN</span>
+                                <span class="text-slate-300">Ahmet (Muzibu yöneticisi): Sadece Muzibu DB'ye erişebilir, Ixtif'i göremez</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="badge badge-editor text-xs">EDITOR</span>
+                                <span class="text-slate-300">Ayşe (Muzibu editör): Muzibu'da sadece kendisine verilen modüllere erişebilir</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">🎯 Modül Atama Sistemi</h4>
+                        <p class="text-slate-300 mb-2">
+                            Her tenant'a hangi modüllerin aktif olacağı <strong>central DB'den</strong> kontrol edilir.
+                            Örneğin Muzibu'ya "Müzik" modülü atanmış ama Ixtif'e atanmamış.
+                        </p>
+                        <div class="text-sm text-slate-400">
+                            Böylece her müşteri sadece ihtiyacı olan özellikleri kullanır, gereksiz karmaşa olmaz.
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Multi-tenant yapı sayesinde her müşteri tamamen izole edilmiş ortamda çalışır.
+                            Bir müşterinin yöneticisi yanlışlıkla başka müşterinin verilerini göremez veya değiştiremez.
+                            Veri güvenliği ve gizlilik maksimum seviyede sağlanır.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Tenant Kontrol Mekanizması</h4>
+                            <div class="code-block text-sm">
+<pre>📁 HasModulePermissions Trait - Tenant-Aware Permission Check
+
+public function hasModulePermission(string $moduleName, string $permissionType): bool {
+    // Root: Her zaman bypass
+    if ($this->hasRole('root')) return true;
+
+    // Admin: Tenant context'e göre kontrol
+    if ($this->hasRole('admin')) {
+        // Tenant initialized mı?
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            // Modül bu tenant'a atanmış mı? (Central DB sorgusu)
+            $moduleService = app(\App\Services\ModuleAccessService::class);
+            $module = $moduleService->getModuleByName($moduleName);
+
+            if (!$module) {
+                \Log::warning("Module not found: {$moduleName}");
+                return false;
+            }
+
+            return $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+        }
+
+        // Central'da ise admin_restricted_modules kontrolü
+        if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+            \Log::warning("Admin tried to access restricted module: {$moduleName}");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Editor: UserModulePermission kontrolü (Tenant DB)
+    return $this->userModulePermissions()
+        ->where('module_name', $moduleName)
+        ->where('permission_type', $permissionType)
+        ->where('is_active', true)
+        ->exists();
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">ModuleAccessService - Tenant Assignment</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Services/ModuleAccessService.php
+
+public function isModuleAssignedToTenant(string $moduleId, string $tenantId): bool {
+    // Central tenant (ID: 1) tüm modüllere erişebilir
+    if ($tenantId === '1' || $tenantId === 1) {
+        return true;
+    }
+
+    // Cache kontrolü (10 dakika)
+    $cached = $this->cache->getTenantAssignmentCache($moduleId, $tenantId);
+    if ($cached !== null) return $cached;
+
+    // Database'den kontrol et (Central DB'den!)
+    $isAssigned = TenantHelpers::central(function () use ($moduleId, $tenantId) {
+        // module_tenants tablosunda aktif atama var mı?
+        $assigned = DB::table('module_tenants')
+            ->where('module_id', $moduleId)
+            ->where('tenant_id', $tenantId)
+            ->where('is_active', true)
+            ->exists();
+
+        if ($assigned) return true;
+
+        // Veya tenant central tenant mı?
+        return DB::table('tenants')
+            ->where('id', $tenantId)
+            ->where('central', true)
+            ->where('is_active', true)
+            ->exists();
+    });
+
+    // Cache'e kaydet
+    $this->cache->setTenantAssignmentCache($moduleId, $tenantId, $isAssigned);
+
+    return $isAssigned;
+}
+
+// Tenant'ın modüllerini getir
+public function getTenantModules(int $tenantId): \Illuminate\Support\Collection {
+    return TenantHelpers::central(function () use ($tenantId) {
+        // Central tenant tüm modüllere erişir
+        if ($tenantId === 1) {
+            return Module::where('is_active', true)->get();
+        }
+
+        // Diğer tenant'lar için module_tenants tablosundan
+        return Module::select('modules.*')
+            ->join('module_tenants', 'modules.module_id', '=', 'module_tenants.module_id')
+            ->where('module_tenants.tenant_id', $tenantId)
+            ->where('module_tenants.is_active', true)
+            ->where('modules.is_active', true)
+            ->get();
+    });
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Database Schema</h4>
+                            <div class="code-block text-sm">
+<pre>📊 Central DB - module_tenants tablosu
+┌─────────────┬──────────┬──────────────────────────────┐
+│ Kolon       │ Tip      │ Açıklama                     │
+├─────────────┼──────────┼──────────────────────────────┤
+│ id          │ bigint   │ PK                           │
+│ module_id   │ string   │ FK modules (UUID)            │
+│ tenant_id   │ bigint   │ FK tenants                   │
+│ is_active   │ boolean  │ aktif/pasif                  │
+│ created_at  │timestamp │                              │
+│ updated_at  │timestamp │                              │
+└─────────────┴──────────┴──────────────────────────────┘
+
+📊 Tenant DB - user_module_permissions tablosu
+┌──────────────────┬──────────────┬────────────────┐
+│ user_id          │ module_name  │ permission_type│
+├──────────────────┼──────────────┼────────────────┤
+│ 42               │ blog         │ view           │
+│ 42               │ blog         │ create         │
+│ 42               │ blog         │ update         │
+│ 58               │ muzibu       │ view           │
+└──────────────────┴──────────────┴────────────────┘
+⚠️ Bu tablo her tenant'ın kendi DB'sinde!</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">TenantHelpers Kullanımı</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Helpers/TenantHelpers.php
+
+// Central DB'de sorgu çalıştırma
+TenantHelpers::central(function () {
+    return Module::all(); // Central DB'den modülleri al
+});
+
+// Tenant kontrolü
+if (TenantHelpers::isTenant()) {
+    // Tenant context'indeyiz
+}
+
+if (TenantHelpers::isCentral()) {
+    // Central domain'deyiz
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 5: CACHE ve PERFORMANS -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">5️⃣ Cache Sistemi ve Performans Optimizasyonu</h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-slate-700 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-400">📝 Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Sistem, yetki kontrollerinde <strong>cache (önbellek)</strong> kullanır. Yani bir kullanıcının
+                        yetkisi bir kez kontrol edildiğinde, sonuç hatırlanır ve tekrar veritabanına sorulmaz.
+                        Bu sayede sistem çok daha hızlı çalışır.
+                    </p>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-4">
+                        <h4 class="font-semibold text-purple-300 mb-2">🚀 Nasıl Çalışır?</h4>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">1️⃣</span>
+                                <span>Kullanıcı bir sayfaya girmek ister (örn: Blog modülü)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">2️⃣</span>
+                                <span>Sistem önce cache'e bakar: "Bu kullanıcının blog yetkisi daha önce sorulmuş mu?"</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">3️⃣</span>
+                                <span>Eğer cache'de varsa direkt oradan alır (çok hızlı ⚡)</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">4️⃣</span>
+                                <span>Eğer cache'de yoksa veritabanından kontrol eder ve sonucu cache'e kaydeder</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-400">5️⃣</span>
+                                <span>5-24 saat boyunca cache'deki sonuç kullanılır, tekrar sorulmaz</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4 mb-4">
+                        <div class="bg-green-900/30 border-l-4 border-green-500 p-4 rounded">
+                            <div class="font-bold text-green-400 mb-1">⏱️ 5 Dakika</div>
+                            <p class="text-sm text-slate-300">Modül izin kontrolü cache süresi</p>
+                        </div>
+                        <div class="bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded">
+                            <div class="font-bold text-blue-400 mb-1">⏱️ 10 Dakika</div>
+                            <p class="text-sm text-slate-300">Tenant-modül atama cache</p>
+                        </div>
+                        <div class="bg-purple-900/30 border-l-4 border-purple-500 p-4 rounded">
+                            <div class="font-bold text-purple-400 mb-1">⏱️ 24 Saat</div>
+                            <p class="text-sm text-slate-300">Helper fonksiyon cache</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-300 mb-2">💡 Neden Önemli?</h4>
+                        <p class="text-slate-300">
+                            Cache kullanmadan her sayfa yüklenişinde veritabanına 10-20 kez "bu kullanıcının yetkisi var mı?"
+                            diye sorulurdu. Cache sayesinde bu sorgu sayısı 0'a iner. Sayfa yükleme süreleri 10 kat hızlanır,
+                            veritabanı yükü azalır.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="section-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Cache Key Stratejisi</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Cache Key Yapısı
+
+// Modül izin cache (5 dakika)
+"user_{$userId}_module_{$moduleName}_permission_{$permissionType}"
+Örnek: "user_42_module_blog_permission_create"
+
+// Modülün tüm izinleri (60 dakika)
+"user_{$userId}_module_{$moduleName}_permissions"
+Örnek: "user_42_module_blog_permissions"
+
+// Rol cache (5 dakika)
+"user_role_{$userId}_{$roleName}"
+"user_is_root_{$userId}"
+
+// Tenant-modül atama (10 dakika)
+"module_tenant_access:{$moduleName}:{$tenantId}"
+
+// Modül aktif mi (24 saat)
+"module_{$moduleName}_permission_{$permissionType}_active"
+
+// Modül by name (15 dakika)
+"module_by_name:{$moduleName}"</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Cache Implementation</h4>
+                            <div class="code-block text-sm">
+<pre>📁 HasModulePermissions Trait
+
+public function hasModulePermission(string $moduleName, string $permissionType): bool {
+    if ($this->hasRole('root')) return true;
+    if ($this->hasRole('admin')) { /* ... */ }
+
+    // Editor için cache'li kontrol
+    $cacheKey = "user_{$this->id}_module_{$moduleName}_permission_{$permissionType}";
+
+    return Cache::remember($cacheKey, now()->addMinutes(5), function () use ($moduleName, $permissionType) {
+        // Spatie Permission kontrolü
+        $permissionName = "{$moduleName}.{$permissionType}";
+        if (!Permission::where('name', $permissionName)->exists()) {
+            \Log::error("Permission does not exist: {$permissionName}");
+            return false;
+        }
+
+        if ($this->hasPermissionTo($permissionName)) {
+            return true;
+        }
+
+        // Direct DB kontrolü (fallback)
+        $hasPermissionInDB = \DB::table('model_has_permissions')
+            ->join('permissions', 'model_has_permissions.permission_id', '=', 'permissions.id')
+            ->where('model_id', $this->id)
+            ->where('model_type', get_class($this))
+            ->where('permissions.name', $permissionName)
+            ->exists();
+
+        if ($hasPermissionInDB) return true;
+
+        // UserModulePermission kontrolü
+        return $this->userModulePermissions()
+            ->where('module_name', $moduleName)
+            ->where('permission_type', $permissionType)
+            ->where('is_active', true)
+            ->exists();
+    });
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">ModuleAccessCache Service</h4>
+                            <div class="code-block text-sm">
+<pre>📁 app/Services/ModuleAccessCache.php
+
+class ModuleAccessCache {
+    const CACHE_TTL = 600; // 10 dakika
+
+    public function getAccessCache(int $userId, string $moduleName, string $permissionType): ?bool {
+        $key = $this->buildAccessKey($userId, $moduleName, $permissionType);
+        return Cache::get($key);
+    }
+
+    public function setAccessCache(int $userId, string $moduleName, string $permissionType, bool $hasAccess): void {
+        $key = $this->buildAccessKey($userId, $moduleName, $permissionType);
+        Cache::put($key, $hasAccess, self::CACHE_TTL);
+    }
+
+    public function getTenantAssignmentCache(string $moduleId, string $tenantId): ?bool {
+        $key = "module_tenant_assignment:{$moduleId}:{$tenantId}";
+        return Cache::get($key);
+    }
+
+    public function setTenantAssignmentCache(string $moduleId, string $tenantId, bool $isAssigned): void {
+        $key = "module_tenant_assignment:{$moduleId}:{$tenantId}";
+        Cache::put($key, $isAssigned, self::CACHE_TTL);
+    }
+
+    public function clearUserCache(string $userId): void {
+        // Wildcard cache clear (Redis pattern delete)
+        $pattern = "laravel_cache:user_{$userId}_*";
+        $keys = Redis::keys($pattern);
+        if ($keys) Redis::del($keys);
+    }
+
+    private function buildAccessKey(int $userId, string $moduleName, string $permissionType): string {
+        return "user_module_access:{$userId}:{$moduleName}:{$permissionType}";
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Cache Temizleme Stratejisi</h4>
+                            <div class="code-block text-sm">
+<pre>📁 Cache Invalidation Points
+
+// Rol değiştiğinde (User model)
+public function flushRoleCache(): void {
+    app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+    $this->unsetRelation('roles');
+    $this->unsetRelation('permissions');
+    \Cache::forget("user_{$this->id}_roles");
+    \Cache::forget("user_{$this->id}_permissions");
+}
+
+// Modül izni eklendiğinde/kaldırıldığında
+private function clearModulePermissionCache(string $moduleName): void {
+    $permissionTypes = UserModulePermission::getPermissionTypes();
+    foreach ($permissionTypes as $type => $name) {
+        Cache::forget("user_{$this->id}_module_{$moduleName}_permission_{$type}");
+    }
+    Cache::forget("user_{$this->id}_module_{$moduleName}_permissions");
+}
+
+// Tüm modül cache'i temizleme
+ModuleAccessService::clearModuleAccessCache($userId); // Belirli kullanıcı
+ModuleAccessService::clearModuleAccessCache();        // Tüm cache</pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-slate-200 mb-2">Session Cache (Debugbar)</h4>
+                            <div class="code-block text-sm">
+<pre>📁 RootOnlyDebugbar Middleware - Zero Query Optimization
+
+if (auth()->check()) {
+    $userId = auth()->id();
+    $sessionKey = "is_root_user_{$userId}";
+
+    if (session()->has($sessionKey)) {
+        // Session'dan al (0 DB query, 0 Redis query)
+        $showDebugbar = session($sessionKey);
+    } else {
+        // İlk kez: Redis cache + session
+        $isRoot = Cache::remember("user_is_root_{$userId}", 300, fn() =>
+            auth()->user()?->hasRole('root') ?? false
+        );
+        session([$sessionKey => $isRoot]); // Session'a kaydet
+        $showDebugbar = $isRoot;
+    }
+}
+
+// Sonraki isteklerde: Session'dan okur, hiç sorgu yapmaz! ⚡</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 6: KULLANIM ÖRNEKLERİ -->
+        <section class="mb-12">
+            <div class="bg-slate-800 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-100">6️⃣ Kod Kullanım Örnekleri</h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-purple-400">Blade Template'de Yetki Kontrolü</h3>
+                        <div class="code-block text-sm">
+<pre>{{-- Root kontrolü --}}
+@if(auth()->user()->isRoot())
+    &lt;button class="btn btn-danger"&gt;Sistemi Sıfırla&lt;/button&gt;
+@endif
+
+{{-- Modül izin kontrolü --}}
+@if(can_module('blog', 'create'))
+    &lt;a href="{{ route('admin.blog.create') }}"&gt;Yeni Yazı Ekle&lt;/a&gt;
+@endif
+
+{{-- Çoklu izin kontrolü --}}
+@if(auth()->user()->hasModulePermissions('muzibu', ['update', 'delete']))
+    &lt;button class="btn btn-warning"&gt;Düzenle&lt;/button&gt;
+    &lt;button class="btn btn-danger"&gt;Sil&lt;/button&gt;
+@endif
+
+{{-- Rol bazlı UI --}}
+@role('admin')
+    &lt;div class="admin-panel"&gt;Yönetici Paneli&lt;/div&gt;
+@endrole
+
+@role('editor')
+    &lt;div class="editor-panel"&gt;Editör Paneli&lt;/div&gt;
+@endrole</pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-purple-400">Controller'da Yetki Kontrolü</h3>
+                        <div class="code-block text-sm">
+<pre>use App\Services\ModuleAccessService;
+
+class BlogController extends Controller {
+
+    public function __construct(protected ModuleAccessService $moduleAccess) {
+        // Middleware ile genel kontrol
+        $this->middleware(['auth', 'admin']);
+    }
+
+    public function create() {
+        // İzin kontrolü
+        if (!$this->moduleAccess->canAccess('blog', 'create')) {
+            abort(403, 'Blog oluşturma yetkiniz yok.');
+        }
+
+        return view('blog.create');
+    }
+
+    public function destroy(Blog $blog) {
+        // Policy kullanımı
+        $this->authorize('delete', $blog);
+
+        // veya manuel kontrol
+        if (!auth()->user()->hasModulePermission('blog', 'delete')) {
+            abort(403);
+        }
+
+        $blog->delete();
+        return redirect()->back();
+    }
+}</pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-purple-400">Policy Kullanımı</h3>
+                        <div class="code-block text-sm">
+<pre>📁 app/Policies/WidgetPolicy.php
+
+class WidgetPolicy {
+
+    // Root-only işlem
+    public function update(User $user, Widget $widget): bool {
+        return $user->hasRole('root');
+    }
+
+    // Modül bazlı izin
+    public function manageContent(User $user, Widget $widget): bool {
+        return $user->hasModulePermission('widgetmanagement', 'update');
+    }
+
+    // Karmaşık kontrol
+    public function delete(User $user, Widget $widget): bool {
+        if ($user->isRoot()) return true;
+
+        if ($user->isAdmin()) {
+            // Admin sadece kendi tenant'ının widget'larını silebilir
+            return $widget->tenant_id === tenant()->id;
+        }
+
+        return $user->hasModulePermission('widgetmanagement', 'delete');
+    }
+}</pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-purple-400">Route Middleware Kullanımı</h3>
+                        <div class="code-block text-sm">
+<pre>📁 routes/web.php
+
+// Root-only routes
+Route::middleware(['auth', 'root'])->group(function() {
+    Route::get('/admin/system-settings', [SystemController::class, 'index']);
+    Route::post('/admin/create-tenant', [TenantController::class, 'store']);
+});
+
+// Admin routes (tenant-aware)
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function() {
+    Route::resource('blog', BlogController::class);
+    Route::resource('pages', PageController::class);
+});
+
+// Spatie middleware kullanımı
+Route::middleware(['role:root'])->group(function() {
+    Route::get('/debug/queries', ...);
+});
+
+Route::middleware(['role:admin|editor'])->group(function() {
+    Route::get('/admin/dashboard', ...);
+});
+
+Route::middleware(['permission:blog.create'])->group(function() {
+    Route::post('/admin/blog', ...);
+});</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-sm mt-16 pb-8">
+            28 Ocak 2026 • Muzibu.com.tr
+        </footer>
+
+    </div>
+</body>
+</html>

@@ -44,7 +44,16 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'string', 'regex:/^(5)([0-9]{2})\s?([0-9]{3})\s?([0-9]{2})\s?([0-9]{2})$/', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'terms' => ['required', 'accepted'],
+            'marketing_consent' => ['required', 'in:0,1'],
+        ], [
+            'terms.required' => 'Kullanım Koşulları ve Üyelik Sözleşmesi ile Aydınlatma Metni\'ni kabul etmelisiniz.',
+            'terms.accepted' => 'Kullanım Koşulları ve Üyelik Sözleşmesi ile Aydınlatma Metni\'ni kabul etmelisiniz.',
+            'marketing_consent.required' => 'Ticari elektronik ileti tercihinizi belirtmelisiniz.',
+            'phone.required' => 'Telefon numarası zorunludur.',
+            'phone.regex' => 'Geçerli bir telefon numarası giriniz (5XX XXX XX XX).',
         ]);
 
         if ($validator->fails()) {
@@ -53,11 +62,28 @@ class RegisteredUserController extends Controller
                 ->withInput();
         }
 
+        // Kullanıcının IP adresini al
+        $ipAddress = $request->ip();
+        $acceptedAt = now();
+
         $user = User::create([
             'name' => $request->name,
             'surname' => $request->surname,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            // Kullanım Koşulları ve Üyelik Sözleşmesi (terms checkbox'ından)
+            'terms_accepted' => true,
+            'terms_accepted_at' => $acceptedAt,
+            'terms_accepted_ip' => $ipAddress,
+            // Üyelik ve Satın Alım Faaliyetleri Kapsamında Aydınlatma Metni (terms checkbox'ından)
+            'privacy_accepted' => true,
+            'privacy_accepted_at' => $acceptedAt,
+            'privacy_accepted_ip' => $ipAddress,
+            // Ticari Elektronik İleti Gönderimi (marketing_consent radio'sundan)
+            'marketing_accepted' => (bool) $request->marketing_consent,
+            'marketing_accepted_at' => $acceptedAt,
+            'marketing_accepted_ip' => $ipAddress,
         ]);
 
         event(new Registered($user));

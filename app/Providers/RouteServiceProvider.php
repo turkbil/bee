@@ -36,16 +36,22 @@ class RouteServiceProvider extends ServiceProvider
                 Route::middleware('web')
                     ->group(base_path('routes/admin/web.php'));
             }
-            
+
+            // Landing Pages (Google Ads Campaigns)
+            if (file_exists(base_path('routes/landing.php'))) {
+                Route::middleware('web')
+                    ->group(base_path('routes/landing.php'));
+            }
+
             // NOT: Modül rotaları kendi ServiceProvider'ları tarafından yükleniyor
             // Burada tekrar yüklemeye gerek yok, çift yükleme sorununa neden oluyor
-        
+
             // Web route'larını SON olarak yükle (dynamic route'lar burada)
             if (file_exists(base_path('routes/web.php'))) {
                 Route::middleware('web')
                     ->group(base_path('routes/web.php'));
             }
-        
+
             // API route'larını yükle - dosyanın varlığını kontrol ediyoruz
             if (file_exists(base_path('routes/api.php'))) {
                 Route::prefix('api')

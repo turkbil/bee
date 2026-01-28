@@ -43,6 +43,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Player Debug Level
+    |--------------------------------------------------------------------------
+    |
+    | Controls the verbosity of player JavaScript console logs:
+    | 0 = Logs disabled (production)
+    | 1 = Logs enabled for root users only (admin debug)
+    | 2 = Logs enabled for all users (development)
+    |
+    */
+
+    'player_debug' => (int) env('PLAYER_DEBUG', 0),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     |

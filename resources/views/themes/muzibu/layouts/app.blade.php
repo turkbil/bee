@@ -90,6 +90,16 @@
     {{-- Custom Styles --}}
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-layout.css') }}">
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-custom.css') }}">
+
+    {{-- 🔍 PLAYER DEBUG SYSTEM CONFIGURATION --}}
+    <script>
+        // Player debug level from ENV (0=off, 1=root only, 2=all users)
+        window.PLAYER_DEBUG_LEVEL = {{ (int) config('app.player_debug', 0) }};
+
+        // Is current user a root user? (for debug level 1 check)
+        window.isRootUser = {{ auth()->check() && auth()->user()->hasRole('root') ? 'true' : 'false' }};
+    </script>
+
     <script src="{{ versioned_asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/play-helpers.js') }}"></script>
 

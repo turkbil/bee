@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Teması - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        muzibu: '#ff7f50',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 rounded-full px-4 py-1 mb-4">
+                <span class="text-sm font-semibold">Theme System</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4">
+                <span class="bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                    Muzibu Teması
+                </span>
+            </h1>
+            <p class="text-slate-400 text-lg">Spotify-Style Modern Müzik Platformu Teması</p>
+        </header>
+
+        <!-- Hızlı Özet -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-orange-400">⚡ Hızlı Özet</h2>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-gradient-to-br from-orange-900/50 to-orange-800/30 p-4 rounded-lg text-center border border-orange-700">
+                    <p class="text-4xl font-bold text-orange-400">110</p>
+                    <p class="text-slate-400 text-sm">Blade Dosyası</p>
+                </div>
+                <div class="bg-gradient-to-br from-pink-900/50 to-pink-800/30 p-4 rounded-lg text-center border border-pink-700">
+                    <p class="text-4xl font-bold text-pink-400">1.4MB</p>
+                    <p class="text-slate-400 text-sm">Tema Boyutu</p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-4 rounded-lg text-center border border-purple-700">
+                    <p class="text-4xl font-bold text-purple-400">25</p>
+                    <p class="text-slate-400 text-sm">Klasör</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-900/50 to-blue-800/30 p-4 rounded-lg text-center border border-blue-700">
+                    <p class="text-4xl font-bold text-blue-400">~7k</p>
+                    <p class="text-slate-400 text-sm">Satır (Components)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-orange-400">📝 Basit Anlatım (Herkes İçin)</h2>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Muzibu Teması Nedir?</h3>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Muzibu teması, <strong>Spotify'dan ilham alınarak tasarlanmış modern bir müzik platformu temasıdır</strong>.
+                        Karanlık mod (dark theme) kullanır, turuncu-mercan renk paleti ile canlı ve enerjik bir görünüm sunar.
+                    </p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Tema, tamamen <strong>responsive</strong> tasarımdır. Yani telefon, tablet ve bilgisayarda farklı
+                        görünümler sunar, her cihazda optimize şekilde çalışır.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Tema Nasıl Çalışır?</h3>
+                    <div class="bg-slate-900 p-6 rounded-lg">
+                        <ol class="space-y-3 text-slate-300">
+                            <li class="flex items-start">
+                                <span class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">1</span>
+                                <span><strong>Grid Layout Sistemi:</strong> Sayfa 3 ana alana bölünmüş - Sol sidebar (navigasyon), orta içerik, sağ sidebar (önizleme/öneriler)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">2</span>
+                                <span><strong>Component Sistem:</strong> Header, footer, player, sidebar gibi parçalar ayrı component'ler olarak tasarlanmış, tekrar kullanılabilir</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">3</span>
+                                <span><strong>Tailwind CSS:</strong> Utility-first CSS framework ile styling. Her renk, spacing, font size hazır sınıflarla</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">4</span>
+                                <span><strong>Cache-Driven:</strong> Homepage verileri 5 dakika cache'lenir, performans optimize edilir</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm">5</span>
+                                <span><strong>Dinamik Renkler:</strong> Her şarkı/album için unique gradient renkleri otomatik oluşturulur</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Ana Görsel Özellikler</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-orange-500">
+                            <h4 class="font-semibold text-orange-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🎨</span> Renk Paleti
+                            </h4>
+                            <p class="text-slate-400 text-sm mb-2">
+                                Ana renk: <strong class="text-orange-400">#FF7F50 (Muzibu Coral)</strong>
+                            </p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• Spotify Black: #121212 (Arka plan)</li>
+                                <li>• Spotify Dark: #181818 (Kartlar)</li>
+                                <li>• Spotify Green: #1DB954 (Aksanlar)</li>
+                                <li>• Coral gradientler: Turuncu → Pembe → Mor</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-pink-500">
+                            <h4 class="font-semibold text-pink-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">✨</span> Animasyonlar
+                            </h4>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• <strong>Shimmer:</strong> Card'larda hover efekti, parlama animasyonu</li>
+                                <li>• <strong>Gradient Flow:</strong> Logo ve butonlarda akan gradient</li>
+                                <li>• <strong>Hover Scale:</strong> Kartlar hover'da büyür (scale 1.05)</li>
+                                <li>• <strong>Fade Transitions:</strong> Smooth geçişler (opacity, transform)</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-purple-500">
+                            <h4 class="font-semibold text-purple-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">📱</span> Responsive Breakpoints
+                            </h4>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• <strong>Mobile (< 768px):</strong> Tek kolon, bottom nav</li>
+                                <li>• <strong>Tablet (768px - 1024px):</strong> Sağ sidebar görünür</li>
+                                <li>• <strong>Desktop (1024px+):</strong> Sol + Sağ sidebar</li>
+                                <li>• <strong>Large (1280px+):</strong> Geniş sidebar'lar</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border-l-4 border-blue-500">
+                            <h4 class="font-semibold text-blue-300 mb-2 flex items-center">
+                                <span class="text-2xl mr-2">🎯</span> Grid Layout
+                            </h4>
+                            <p class="text-slate-400 text-sm mb-2">3-satır layout:</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• <strong>Header:</strong> 64px sabit (logo, search, auth)</li>
+                                <li>• <strong>Main:</strong> 1fr esnek (içerik alanı)</li>
+                                <li>• <strong>Player:</strong> 90px sabit (müzik player)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Kullanıcı Deneyimi</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Karanlık mod:</strong> Göz yormayan, modern görünüm</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Hızlı yükleme:</strong> Cache, lazy loading, optimize görseller</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Kolay navigasyon:</strong> Sol sidebar sabit, her zaman erişilebilir</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Canlı önizleme:</strong> Sağ sidebar'da hover ile preview</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span><strong>Touch friendly:</strong> Mobilde swipe, drag gesture'lar</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-orange-400">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <div class="space-y-6">
+                <!-- Dosya Yapısı -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Dosya Yapısı</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg font-mono text-sm">
+                        <pre class="text-slate-400">
+<span class="text-orange-400">resources/views/themes/muzibu/</span>                (1.4MB, 110 dosya)
+├── <span class="text-purple-400">layouts/</span>
+│   ├── <span class="text-green-400">app.blade.php</span>                (41KB - Main layout + Alpine init)
+│   ├── <span class="text-green-400">header.blade.php</span>
+│   ├── <span class="text-green-400">footer.blade.php</span>
+│   └── <span class="text-green-400">notification.blade.php</span>
+├── <span class="text-purple-400">components/</span>                     (39 component, ~7k satır)
+│   ├── <span class="text-green-400">header.blade.php</span>            (73KB - Navigation, search, auth)
+│   ├── <span class="text-green-400">footer.blade.php</span>            (17KB - Footer links, stats)
+│   ├── <span class="text-green-400">player.blade.php</span>            (19KB - Music player UI)
+│   ├── <span class="text-green-400">sidebar-left.blade.php</span>      (20KB - Navigation menu)
+│   ├── <span class="text-green-400">sidebar-right.blade.php</span>     (75KB - Preview, quick access)
+│   ├── <span class="text-green-400">queue-overlay.blade.php</span>     (21KB - Queue modal)
+│   ├── <span class="text-green-400">context-menu.blade.php</span>      (7KB - Right-click menu)
+│   ├── <span class="text-green-400">auth-modal.blade.php</span>        (24KB - Login/Register)
+│   ├── <span class="text-green-400">ai-chat-widget.blade.php</span>    (19KB - AI Assistant)
+│   ├── <span class="text-green-400">playlist-select-modal.blade.php</span>
+│   ├── <span class="text-green-400">lyrics-overlay.blade.php</span>
+│   ├── <span class="text-green-400">keyboard-shortcuts-overlay.blade.php</span>
+│   ├── <span class="text-green-400">device-limit-modal.blade.php</span>
+│   ├── <span class="text-green-400">session-check.blade.php</span>
+│   ├── <span class="text-green-400">cookie-consent.blade.php</span>
+│   └── ...
+├── <span class="text-purple-400">partials/</span>                       (19 partial)
+│   ├── <span class="text-green-400">dashboard-content.blade.php</span>  (28KB - Dashboard grid)
+│   ├── <span class="text-green-400">corporate-subscriptions-content.blade.php</span>
+│   ├── <span class="text-green-400">favorites-list.blade.php</span>
+│   ├── <span class="text-green-400">my-playlists-grid.blade.php</span>
+│   ├── <span class="text-green-400">playlist-detail.blade.php</span>
+│   ├── <span class="text-green-400">album-detail.blade.php</span>
+│   ├── <span class="text-green-400">song-detail.blade.php</span>
+│   └── ...
+├── <span class="text-purple-400">albums/</span>
+│   ├── <span class="text-green-400">index.blade.php</span>
+│   └── <span class="text-green-400">show.blade.php</span>
+├── <span class="text-purple-400">artists/</span>
+├── <span class="text-purple-400">genres/</span>
+├── <span class="text-purple-400">playlists/</span>
+├── <span class="text-purple-400">radios/</span>
+├── <span class="text-purple-400">sectors/</span>
+├── <span class="text-purple-400">songs/</span>
+├── <span class="text-purple-400">auth/</span>
+├── <span class="text-purple-400">cart/</span>
+├── <span class="text-purple-400">certificate/</span>
+├── <span class="text-purple-400">corporate/</span>
+├── <span class="text-purple-400">favorites/</span>
+├── <span class="text-purple-400">profile/</span>
+├── <span class="text-green-400">homepage.blade.php</span>          (5KB - Homepage sections)
+├── <span class="text-green-400">dashboard.blade.php</span>         (25KB - User dashboard)
+├── <span class="text-green-400">listening-history.blade.php</span>
+├── <span class="text-green-400">subscription-plans.blade.php</span>
+└── <span class="text-green-400">subscription-success.blade.php</span>
+
+<span class="text-orange-400">public/themes/muzibu/css/</span>
+├── <span class="text-green-400">muzibu-layout.css</span>           (30KB - Grid, responsive)
+└── <span class="text-green-400">muzibu-custom.css</span>           (8.7KB - Custom styles)
+
+<span class="text-orange-400">tailwind/tenants/</span>
+└── <span class="text-green-400">tenant-1001.config.js</span>       (12.8KB - Tailwind config)
+                        </pre>
+                    </div>
+                </div>
+
+                <!-- Tailwind Konfigürasyonu -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Tailwind CSS Konfigürasyonu</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> tailwind/tenants/tenant-1001.config.js (12.8KB)</p>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Renk Paleti</p>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-[#121212] p-2 rounded border border-slate-700">
+                                        <code class="text-slate-400">spotify-black: #121212</code>
+                                    </div>
+                                    <div class="bg-[#181818] p-2 rounded border border-slate-700">
+                                        <code class="text-slate-400">spotify-dark: #181818</code>
+                                    </div>
+                                    <div class="bg-[#1DB954] p-2 rounded border border-slate-700">
+                                        <code class="text-slate-400">spotify-green: #1DB954</code>
+                                    </div>
+                                    <div class="bg-[#282828] p-2 rounded border border-slate-700">
+                                        <code class="text-slate-400">spotify-gray: #282828</code>
+                                    </div>
+                                    <div class="bg-[#ff7f50] p-2 rounded border border-slate-700">
+                                        <code class="text-slate-400">muzibu-coral: #FF7F50</code>
+                                    </div>
+                                    <div class="bg-[#ff6b6b] p-2 rounded border border-slate-700">
+                                        <code class="text-slate-400">sub-coral: #FF6B6B</code>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Custom Animations</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>animate-shimmer</code> - 2s linear infinite (hover parlama)</li>
+                                    <li>• <code>animate-shimmer-sweep</code> - 0.8s ease-out (çapraz parlama)</li>
+                                    <li>• <code>animate-gradient-flow</code> - 8s ease-in-out infinite (akan gradient)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-purple-400 mb-2">Custom Utilities</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>.scrollbar-hide</code> - Scrollbar gizleme (webkit + firefox)</li>
+                                    <li>• <code>.footer-logo-gradient</code> - Animated coral gradient text</li>
+                                    <li>• <code>.premium-btn-gradient</code> - Animated button gradient</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-yellow-400 mb-2">Safelist (236 class)</p>
+                                <p class="text-slate-400 text-sm mb-2">Dinamik class'lar için safelist:</p>
+                                <ul class="text-slate-400 text-xs space-y-1">
+                                    <li>• Spotify colors & variants</li>
+                                    <li>• Muzibu coral variants (bg, text, border, ring, shadow)</li>
+                                    <li>• Opacity backgrounds (bg-white/5, bg-black/50, etc.)</li>
+                                    <li>• Responsive grid columns (md:grid-cols-[1fr_280px])</li>
+                                    <li>• Animation classes (hover, group-hover)</li>
+                                    <li>• Subscription plan colors</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid Layout Sistemi -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Grid Layout Sistemi</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> public/themes/muzibu/css/muzibu-layout.css</p>
+
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Desktop Layout (>= 1280px)</p>
+                                <pre class="text-slate-400 text-xs bg-slate-900 p-2 rounded">
+.muzibu-app {
+    display: grid;
+    grid-template-rows: 64px 1fr 90px;        /* Header | Content | Player */
+    grid-template-columns: 280px 1fr 380px;   /* Left | Main | Right */
+    height: 100vh;
+    overflow: hidden;
+}
+                                </pre>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Tablet Layout (768px - 1024px)</p>
+                                <pre class="text-slate-400 text-xs bg-slate-900 p-2 rounded">
+grid-template-columns: 1fr 280px;   /* Main | Right (Sol sidebar gizli) */
+                                </pre>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-purple-400 mb-2">Mobile Layout (< 768px)</p>
+                                <pre class="text-slate-400 text-xs bg-slate-900 p-2 rounded">
+grid-template-columns: 1fr;         /* Sadece Main (Sidebar'lar gizli) */
+/* Bottom Nav görünür, Hamburger menu aktif */
+                                </pre>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-blue-900/20 border border-blue-700 p-3 rounded">
+                            <p class="text-blue-300 font-semibold mb-1">🔧 Eski Cihaz Uyumluluğu</p>
+                            <p class="text-blue-200 text-sm">
+                                <code>@supports (backdrop-filter: blur(1px))</code> ile modern cihaz tespiti.
+                                Eski Safari/iOS'ta position:fixed beyaz ekran sorunu için fallback: relative/static layout.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Component Sistemi -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Component Sistemi</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3">39 blade component, ~7,000 satır kod</p>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Core Components</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>header.blade.php</code> (73KB)</li>
+                                    <li>→ Logo, search, navigation, auth</li>
+                                    <li class="mt-2">• <code>footer.blade.php</code> (17KB)</li>
+                                    <li>→ Links, stats, newsletter</li>
+                                    <li class="mt-2">• <code>player.blade.php</code> (19KB)</li>
+                                    <li>→ Mobile + Desktop player UI</li>
+                                    <li class="mt-2">• <code>sidebar-left.blade.php</code> (20KB)</li>
+                                    <li>→ Navigation menu, playlists</li>
+                                    <li class="mt-2">• <code>sidebar-right.blade.php</code> (75KB)</li>
+                                    <li>→ Preview, quick access, recommendations</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Feature Components</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>queue-overlay.blade.php</code> (21KB)</li>
+                                    <li>• <code>auth-modal.blade.php</code> (24KB)</li>
+                                    <li>• <code>ai-chat-widget.blade.php</code> (19KB)</li>
+                                    <li>• <code>playlist-select-modal.blade.php</code> (20KB)</li>
+                                    <li>• <code>context-menu.blade.php</code> (7KB)</li>
+                                    <li>• <code>lyrics-overlay.blade.php</code> (4.6KB)</li>
+                                    <li>• <code>keyboard-shortcuts-overlay.blade.php</code> (5.9KB)</li>
+                                    <li>• <code>device-limit-modal.blade.php</code> (2.8KB)</li>
+                                    <li>• <code>session-check.blade.php</code> (7KB)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 bg-slate-800 p-3 rounded">
+                            <p class="font-semibold text-purple-400 mb-2">Utility Components</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• <code>lazy-image.blade.php</code> - Lazy loading wrapper</li>
+                                <li>• <code>loading-overlay.blade.php</code> - Loading spinner</li>
+                                <li>• <code>toast-notification.blade.php</code> - Toast messages</li>
+                                <li>• <code>confirm-modal.blade.php</code> - Confirmation dialogs</li>
+                                <li>• <code>cookie-consent.blade.php</code> - GDPR cookie banner</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Homepage Yapısı -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Homepage Yapısı</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> resources/views/themes/muzibu/homepage.blade.php</p>
+
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Cache-Driven Data Loading</p>
+                                <p class="text-slate-400 text-sm mb-2">Tüm veriler 300 saniye (5 dakika) cache'lenir:</p>
+                                <ul class="text-slate-400 text-xs space-y-1">
+                                    <li>• <code>home_genres_v4</code> - Genres (15 item)</li>
+                                    <li>• <code>home_featured_playlists_v6</code> - Featured playlists (10 item)</li>
+                                    <li>• <code>home_new_releases_v4</code> - New albums (10 item)</li>
+                                    <li>• <code>home_radios_v4</code> - Radios (10 item)</li>
+                                    <li>• <code>home_sectors_v4</code> - Sectors (10 item)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Section Layout</p>
+                                <ol class="text-slate-400 text-sm space-y-2">
+                                    <li>1. <strong>Quick Access Cards</strong> - Genres (2 satır, horizontal scroll)</li>
+                                    <li>2. <strong>Featured Playlists</strong> - Horizontal scroll section</li>
+                                    <li>3. <strong>New Releases</strong> - Albums horizontal scroll</li>
+                                    <li>4. <strong>Radios</strong> - Horizontal scroll</li>
+                                    <li>5. <strong>Sectors</strong> - Horizontal scroll</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-purple-400 mb-2">Horizontal Scroll Component</p>
+                                <p class="text-slate-400 text-sm">
+                                    <code>&lt;x-muzibu.horizontal-scroll-section&gt;</code> ile sarılır.
+                                    Mobilde swipe, desktop'ta mouse drag ile scroll.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alpine.js Integration -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Alpine.js Integration</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <p class="text-slate-400 mb-3 text-sm"><strong>File:</strong> resources/views/themes/muzibu/layouts/app.blade.php</p>
+
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Global State Stores</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>Alpine.store('player')</code> - Player state</li>
+                                    <li>• <code>Alpine.store('sidebar')</code> - Sidebar state (preview, entity, quick access)</li>
+                                    <li>• <code>Alpine.store('contextMenu')</code> - Right-click menu</li>
+                                    <li>• <code>Alpine.store('playlistModal')</code> - Playlist selection</li>
+                                    <li>• <code>Alpine.store('muzibu')</code> - Global muzibu state</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Component Apps</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code>muzibuApp()</code> - Main app instance</li>
+                                    <li>• <code>dashboardApp()</code> - Dashboard specific</li>
+                                    <li>• <code>corporatePanel()</code> - Corporate subscriptions</li>
+                                    <li>• <code>playlistEditor()</code> - Playlist management</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-purple-400 mb-2">Event System</p>
+                                <pre class="text-slate-400 text-xs bg-slate-900 p-2 rounded">
+@play-song.window="playSong($event.detail.songId)"
+@play-all-preview.window="/* Play all from preview */"
+@play-all-entity.window="/* Play all from entity */"
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CSS Custom Properties -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">CSS Custom Properties & Keyframes</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-green-400 mb-2">Keyframes</p>
+                                <pre class="text-slate-400 text-xs bg-slate-900 p-2 rounded">
+@keyframes shimmer {
+    0% { backgroundPosition: '-200% 0' }
+    100% { backgroundPosition: '200% 0' }
+}
+
+@keyframes gradient-flow {
+    0%, 100% { backgroundPosition: '0% 50%' }
+    50% { backgroundPosition: '100% 50%' }
+}
+                                </pre>
+                            </div>
+
+                            <div class="bg-slate-800 p-3 rounded">
+                                <p class="font-semibold text-blue-400 mb-2">Custom Gradients</p>
+                                <pre class="text-slate-400 text-xs bg-slate-900 p-2 rounded">
+/* Footer Logo */
+linear-gradient(90deg,
+    #ff7f50, #ff6347, #e91e63,
+    #ff7f50, #ff5722, #ec407a,
+    #ff7f50, #ff6347, #9c27b0
+)
+
+/* Premium Button */
+linear-gradient(135deg,
+    #ff6b6b, #ff5252, #e91e63
+)
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asset Pipeline -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-pink-400">Asset Pipeline</h3>
+                    <div class="bg-slate-900 p-4 rounded-lg">
+                        <div class="bg-slate-800 p-3 rounded">
+                            <p class="font-semibold text-green-400 mb-2">Build Process</p>
+                            <pre class="text-slate-400 text-xs bg-slate-900 p-2 rounded">
+# Tailwind build
+node scripts/build-tenant-css.js 1001
+
+# Output
+public/css/tenant-1001.css (compiled Tailwind)
+
+# Custom CSS (statik)
+public/themes/muzibu/css/muzibu-layout.css
+public/themes/muzibu/css/muzibu-custom.css
+                            </pre>
+                        </div>
+
+                        <div class="mt-3 bg-slate-800 p-3 rounded">
+                            <p class="font-semibold text-blue-400 mb-2">Loaded Assets (app.blade.php)</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• <code>tenant_css()</code> - tenant-1001.css (Tailwind compiled)</li>
+                                <li>• <code>muzibu-layout.css</code> - Grid layout, responsive</li>
+                                <li>• <code>muzibu-custom.css</code> - Custom styles</li>
+                                <li>• <code>fontawesome-pro@7.1.0</code> - Icons</li>
+                                <li>• <code>hls.js@1.4.12</code> - HLS playback</li>
+                                <li>• <code>howler.js@2.2.4</code> - Audio fallback</li>
+                                <li>• <code>sortable.min.js</code> - Drag & drop</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özellikler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-orange-400">✨ Öne Çıkan Özellikler</h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/20 p-4 rounded-lg border border-green-700">
+                    <h3 class="font-semibold text-green-400 mb-2">🎨 Tasarım</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• Spotify-inspired dark theme</li>
+                        <li>• Muzibu coral (#FF7F50) brand color</li>
+                        <li>• Animated gradients (shimmer, flow)</li>
+                        <li>• Smooth hover effects</li>
+                        <li>• Consistent spacing & typography</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-4 rounded-lg border border-blue-700">
+                    <h3 class="font-semibold text-blue-400 mb-2">⚡ Performans</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• Cache-driven data (5 dakika TTL)</li>
+                        <li>• Lazy loading images</li>
+                        <li>• Tailwind JIT mode (küçük CSS)</li>
+                        <li>• Component reusability</li>
+                        <li>• CSS scrollbar-hide utility</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-4 rounded-lg border border-purple-700">
+                    <h3 class="font-semibold text-purple-400 mb-2">📱 Responsive</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• Mobile-first approach</li>
+                        <li>• Dynamic grid layout (4 breakpoints)</li>
+                        <li>• Touch gesture support</li>
+                        <li>• Bottom nav (mobile)</li>
+                        <li>• Hamburger menu (tablet)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-900/30 to-orange-800/20 p-4 rounded-lg border border-orange-700">
+                    <h3 class="font-semibold text-orange-400 mb-2">🎯 Modülerlik</h3>
+                    <ul class="text-slate-300 text-sm space-y-1">
+                        <li>• 39 blade component</li>
+                        <li>• Reusable partials</li>
+                        <li>• Alpine.js store pattern</li>
+                        <li>• Component-based architecture</li>
+                        <li>• Theme isolation (tenant-specific)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- İstatistikler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-orange-400">📊 Tema İstatistikleri</h2>
+
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-orange-400">110</p>
+                    <p class="text-slate-400 text-sm">Blade Dosyası</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-pink-400">39</p>
+                    <p class="text-slate-400 text-sm">Component</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-purple-400">19</p>
+                    <p class="text-slate-400 text-sm">Partial</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-3xl font-bold text-blue-400">25</p>
+                    <p class="text-slate-400 text-sm">Klasör</p>
+                </div>
+            </div>
+
+            <div class="mt-4 grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-2xl font-bold text-green-400">1.4MB</p>
+                    <p class="text-slate-400 text-sm">Tema Boyutu</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-2xl font-bold text-yellow-400">~7k</p>
+                    <p class="text-slate-400 text-sm">Satır (Components)</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded text-center">
+                    <p class="text-2xl font-bold text-cyan-400">236</p>
+                    <p class="text-slate-400 text-sm">Safelist Class</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öneriler -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4 text-orange-400">💡 Geliştirme Notları</h2>
+
+            <div class="space-y-4">
+                <div class="bg-green-900/20 border border-green-700 p-4 rounded">
+                    <h3 class="font-semibold text-green-400 mb-2">✅ İyi Pratikler</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Component-based architecture (reusable, maintainable)</li>
+                        <li>• Cache-driven data loading (performance)</li>
+                        <li>• Tailwind utility-first approach (consistent styling)</li>
+                        <li>• Responsive breakpoint sistemi (mobile-first)</li>
+                        <li>• Alpine.js store pattern (global state management)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-700 p-4 rounded">
+                    <h3 class="font-semibold text-blue-400 mb-2">📌 Dikkat Edilmesi Gerekenler</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Tailwind safelist'e yeni dinamik class eklendiğinde rebuild gerekli</li>
+                        <li>• Cache key version'ları güncellenmeli (v4 → v5)</li>
+                        <li>• Component değişikliklerinde tüm kullanım yerleri kontrol edilmeli</li>
+                        <li>• Grid layout breakpoint'leri değiştirilirse CSS de güncellenmeli</li>
+                        <li>• Eski cihaz uyumluluğu (@supports backdrop-filter) korunmalı</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-700 p-4 rounded">
+                    <h3 class="font-semibold text-yellow-400 mb-2">⚠️ Bilinen Sınırlamalar</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Eski Safari (< 14) için fixed layout devre dışı</li>
+                        <li>• Grid layout IE11'de desteklenmiyor</li>
+                        <li>• backdrop-filter Chrome < 76'da çalışmıyor</li>
+                        <li>• CSS custom properties Firefox < 31'de yok</li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-900/20 border border-purple-700 p-4 rounded">
+                    <h3 class="font-semibold text-purple-400 mb-2">🚀 İyileştirme Fikirleri</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Component lazy loading (Livewire defer)</li>
+                        <li>• Critical CSS inline (above-the-fold)</li>
+                        <li>• WebP image support + fallback</li>
+                        <li>• Skeleton loading screens</li>
+                        <li>• Dark/Light mode toggle (şu an sadece dark)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 pt-8 border-t border-slate-700">
+            <p>28 Ocak 2026 • Muzibu.com.tr</p>
+        </footer>
+    </div>
+</body>
+</html>

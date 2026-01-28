@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Debug Sistemi - Muzibu.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            900: '#0f1419',
+                            950: '#0a0d12'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen p-6">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-700 pb-6">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="text-4xl">🔍</span>
+                <h1 class="text-3xl font-bold text-white">Player Debug Sistemi</h1>
+            </div>
+            <p class="text-slate-400 mt-2">Müzik çalar debug log sistemi implementasyonu</p>
+        </header>
+
+        <!-- Özet -->
+        <section class="mb-8 bg-slate-900 rounded-lg p-6 border border-slate-800">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span>📋</span> Özet
+            </h2>
+            <div class="space-y-3 text-slate-300">
+                <p>Müzik çalarda çalma durmasını analiz etmek için kapsamlı bir debug log sistemi eklendi.</p>
+                <p><strong>Problem:</strong> Player'da 4-5 şarkı çaldıktan sonra bir şarkının sonuna geldiğinde çalma duruyor ve Chrome console'da herhangi bir hata çıktısı yok.</p>
+                <p><strong>Çözüm:</strong> ENV dosyasından kontrol edilen, renklendirilmiş konsol logları ile her kritik fonksiyonda debug mesajları eklendi.</p>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-8 bg-slate-900 rounded-lg p-6 border border-slate-800">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span>📝</span> Basit Anlatım
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h3 class="font-semibold text-white mb-2">Debug Sisteminin Amacı</h3>
+                    <p>Müzik çalarımızda bazen şarkı 4-5 tane çaldıktan sonra bir anda duruyor. Ekrana da hata mesajı çıkmadığı için nerede takıldığını anlayamıyoruz. Bu yüzden oynatıcının her adımını kaydetmek için bir sistem kurduk.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-2">3 Seviye Debug Modu</h3>
+                    <ul class="space-y-2 ml-4">
+                        <li><strong class="text-green-400">0 - Kapalı:</strong> Hiçbir log çıkmaz (production - canlı site için)</li>
+                        <li><strong class="text-yellow-400">1 - Root Kullanıcılar:</strong> Sadece admin kullanıcılar logları görür</li>
+                        <li><strong class="text-red-400">2 - Tüm Kullanıcılar:</strong> Herkes logları görür (development - geliştirme için)</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-2">Hangi Olaylar Loglanıyor?</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>Şarkı bittiğinde (ENDED)</li>
+                        <li>Sonraki şarkıya geçerken (NEXT)</li>
+                        <li>Queue (sıra) dolduğunda (QUEUE)</li>
+                        <li>Şarkı çalmaya başladığında (PLAY)</li>
+                        <li>Hata oluştuğunda (ERROR)</li>
+                        <li>Guard kontrolleri (GUARD - örn: çok hızlı tıklama engelleme)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <h3 class="font-semibold text-white mb-2">💡 Kullanım Senaryosu</h3>
+                    <p>Kullanıcı şarkı dinlerken problem yaşarsa, biz ENV dosyasından <code class="text-cyan-400">PLAYER_DEBUG=2</code> yapıp, kullanıcıdan Chrome Console'u açıp screenshot göndermesini isteriz. Böylece hangi adımda durduğunu anlayabiliriz.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-8 bg-slate-900 rounded-lg p-6 border border-slate-800">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span>🔧</span> Teknik Detaylar
+            </h2>
+            <div class="space-y-6 text-slate-300">
+                <div>
+                    <h3 class="font-semibold text-white mb-3">Değiştirilen Dosyalar</h3>
+                    <div class="space-y-2">
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700 font-mono text-sm">
+                            <div class="text-cyan-400 mb-1">.env</div>
+                            <div class="text-slate-400">Satır 162: PLAYER_DEBUG=0 eklendi</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700 font-mono text-sm">
+                            <div class="text-cyan-400 mb-1">config/app.php</div>
+                            <div class="text-slate-400">Satır 52: 'player_debug' config değeri eklendi</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700 font-mono text-sm">
+                            <div class="text-cyan-400 mb-1">resources/views/themes/muzibu/layouts/app.blade.php</div>
+                            <div class="text-slate-400">Satır 93-102: PLAYER_DEBUG_LEVEL ve isRootUser değişkenleri eklendi</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700 font-mono text-sm">
+                            <div class="text-cyan-400 mb-1">public/themes/muzibu/js/player/core/player-core.js</div>
+                            <div class="text-slate-400">
+                                • Satır 83-126: playerDebug() global fonksiyonu eklendi<br>
+                                • Satır 1561+: nextTrack() fonksiyonuna debug logları eklendi<br>
+                                • Satır 1700+: Queue refill mekanizmasına debug logları eklendi<br>
+                                • Satır 2508+: onTrackEnded() fonksiyonuna debug logları eklendi<br>
+                                • Satır 3516+: playSongFromQueue() fonksiyonuna debug logları eklendi<br>
+                                • Satır 5007+: Audio event handlers (onended, onerror, onstalled) debug logları eklendi
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-3">Debug Kategorileri ve Renkleri</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-800 p-3 rounded border-l-4 border-red-500">
+                            <div class="font-mono text-red-400">ENDED</div>
+                            <div class="text-sm text-slate-400">Şarkı bitti olayları</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border-l-4 border-cyan-500">
+                            <div class="font-mono text-cyan-400">NEXT</div>
+                            <div class="text-sm text-slate-400">Sonraki şarkıya geçiş</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border-l-4 border-green-400">
+                            <div class="font-mono text-green-400">QUEUE</div>
+                            <div class="text-sm text-slate-400">Sıra işlemleri</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border-l-4 border-green-500">
+                            <div class="font-mono text-green-500">PLAY</div>
+                            <div class="text-sm text-slate-400">Çalma başlatma</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border-l-4 border-red-600">
+                            <div class="font-mono text-red-600">ERROR</div>
+                            <div class="text-sm text-slate-400">Hata durumları</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border-l-4 border-purple-500">
+                            <div class="font-mono text-purple-500">SPOT</div>
+                            <div class="text-sm text-slate-400">Reklam oynatma</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border-l-4 border-blue-400">
+                            <div class="font-mono text-blue-400">HLS</div>
+                            <div class="text-sm text-slate-400">HLS stream olayları</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border-l-4 border-pink-500">
+                            <div class="font-mono text-pink-500">GUARD</div>
+                            <div class="text-sm text-slate-400">Koruma mekanizmaları</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-3">Örnek Debug Çıktısı</h3>
+                    <div class="bg-slate-950 p-4 rounded border border-slate-700 font-mono text-xs space-y-1 overflow-x-auto">
+                        <div class="text-red-400">[12:34:56.789] [PLAYER:ENDED] onTrackEnded() CALLED { isPlaying: true, currentSong: "Song Title" }</div>
+                        <div class="text-red-400">[12:34:56.790] [PLAYER:ENDED] onTrackEnded proceeding to nextTrack()</div>
+                        <div class="text-cyan-400">[12:34:56.791] [PLAYER:NEXT] nextTrack() CALLED { fromNaturalEnd: true, queueIndex: 3 }</div>
+                        <div class="text-cyan-400">[12:34:56.792] [PLAYER:NEXT] Has next song in queue { nextIndex: 4 }</div>
+                        <div class="text-green-500">[12:34:56.850] [PLAYER:PLAY] playSongFromQueue() CALLED { index: 4, autoplay: true }</div>
+                        <div class="text-green-500">[12:34:56.851] [PLAYER:PLAY] Setting currentSong and starting playback</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-3">Kod Örneği: playerDebug Fonksiyonu</h3>
+                    <div class="bg-slate-950 p-4 rounded border border-slate-700">
+                        <pre class="text-xs overflow-x-auto"><code class="language-javascript">window.playerDebug = function(category, message, data = {}) {
+    // Debug kapalıysa hiçbir şey yapma
+    if (window.PLAYER_DEBUG_LEVEL === 0) {
+        return;
+    }
+
+    // Seviye 1: Sadece root kullanıcılar
+    if (window.PLAYER_DEBUG_LEVEL === 1) {
+        if (!window.isRootUser) {
+            return;
+        }
+    }
+
+    // Timestamp + kategori + mesaj
+    const timestamp = new Date().toISOString().substring(11, 23);
+    const prefix = `[${timestamp}] [PLAYER:${category}]`;
+
+    // Kategori bazlı renklendirme
+    const colors = {
+        'ENDED': 'color: #ff6b6b; font-weight: bold;',
+        'NEXT': 'color: #4ecdc4; font-weight: bold;',
+        'ERROR': 'color: #ff0000; font-weight: bold;'
+        // ... diğer kategoriler
+    };
+
+    console.log(`%c${prefix} ${message}`, colors[category], data);
+};</code></pre>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-3">Kullanım Örneği</h3>
+                    <div class="bg-slate-950 p-4 rounded border border-slate-700">
+                        <pre class="text-xs overflow-x-auto"><code class="language-javascript">// Fonksiyon başında
+playerDebug('NEXT', 'nextTrack() CALLED', {
+    fromNaturalEnd: true,
+    queueIndex: this.queueIndex,
+    currentSong: this.currentSong?.title
+});
+
+// Guard kontrolü
+if (this._nextTrackInProgress) {
+    playerDebug('GUARD', 'nextTrack BLOCKED - already in progress');
+    return;
+}
+
+// Hata durumu
+if (!this.queue || this.queue.length === 0) {
+    playerDebug('ERROR', 'No queue available - stopping playback');
+    return;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kullanım Kılavuzu -->
+        <section class="mb-8 bg-slate-900 rounded-lg p-6 border border-slate-800">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span>📖</span> Kullanım Kılavuzu
+            </h2>
+            <div class="space-y-6 text-slate-300">
+                <div>
+                    <h3 class="font-semibold text-white mb-3">1. Debug Modunu Açma</h3>
+                    <div class="bg-slate-950 p-4 rounded border border-slate-700 font-mono text-sm">
+                        <div class="text-slate-400"># .env dosyasını düzenle</div>
+                        <div class="text-green-400">PLAYER_DEBUG=2  # Tüm kullanıcılar için açık</div>
+                        <div class="text-slate-500 mt-2"># Veya</div>
+                        <div class="text-yellow-400">PLAYER_DEBUG=1  # Sadece root kullanıcılar için</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-3">2. Cache Temizleme</h3>
+                    <div class="bg-slate-950 p-4 rounded border border-slate-700 font-mono text-sm">
+                        <div class="text-cyan-400">/opt/plesk/php/8.3/bin/php artisan config:clear</div>
+                        <div class="text-cyan-400">/opt/plesk/php/8.3/bin/php artisan config:cache</div>
+                        <div class="text-cyan-400">/opt/plesk/php/8.3/bin/php artisan view:clear</div>
+                    </div>
+                    <p class="text-sm text-slate-400 mt-2">Not: Config değişikliği anında aktif olur, cache temizleme opsiyoneldir.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-3">3. Chrome Console'da Logları Görme</h3>
+                    <ol class="list-decimal list-inside space-y-2 ml-4">
+                        <li>Chrome'da siteyi aç</li>
+                        <li>F12 tuşuna bas veya sağ tık → Inspect</li>
+                        <li>Console sekmesine geç</li>
+                        <li>Müzik çalmaya başla</li>
+                        <li>Renkli [PLAYER:XXX] loglarını gör</li>
+                    </ol>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-white mb-3">4. Debug Modunu Kapatma</h3>
+                    <div class="bg-slate-950 p-4 rounded border border-slate-700 font-mono text-sm">
+                        <div class="text-slate-400"># Production'da mutlaka kapat</div>
+                        <div class="text-red-400">PLAYER_DEBUG=0</div>
+                    </div>
+                    <div class="bg-yellow-900/30 border border-yellow-700 p-3 rounded mt-3">
+                        <p class="text-yellow-400 text-sm">⚠️ Dikkat: Production ortamında PLAYER_DEBUG=2 kullanmayın! Performans kaybı ve kullanıcı console'unda karmaşa yaratır.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem Analizi -->
+        <section class="mb-8 bg-slate-900 rounded-lg p-6 border border-slate-800">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span>🐛</span> Problem Analizi İçin Log Noktaları
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h3 class="font-semibold text-white mb-2">Şarkı Durma Problemini Tespit Etmek İçin</h3>
+                    <p class="mb-3">Debug logları ile şu soruların cevaplarını bulabiliriz:</p>
+                    <ul class="space-y-2 ml-4">
+                        <li class="flex items-start gap-2">
+                            <span class="text-cyan-400">1.</span>
+                            <div>
+                                <strong>onTrackEnded() çağrılıyor mu?</strong>
+                                <div class="text-sm text-slate-400">Şarkı bitişi tespit edilemiyor olabilir</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-cyan-400">2.</span>
+                            <div>
+                                <strong>nextTrack() fonksiyonu çalışıyor mu?</strong>
+                                <div class="text-sm text-slate-400">Guard mekanizmaları yanlışlıkla engelliyor olabilir</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-cyan-400">3.</span>
+                            <div>
+                                <strong>Queue'da sonraki şarkı var mı?</strong>
+                                <div class="text-sm text-slate-400">Queue doldurulamıyor olabilir</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-cyan-400">4.</span>
+                            <div>
+                                <strong>playSongFromQueue() çağrılıyor mu?</strong>
+                                <div class="text-sm text-slate-400">Sonraki şarkı yüklenememiş olabilir</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-cyan-400">5.</span>
+                            <div>
+                                <strong>Audio onerror veya onstalled tetikleniyor mu?</strong>
+                                <div class="text-sm text-slate-400">Stream yükleme hatası olabilir</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            28 Ocak 2026 • Muzibu.com
+        </footer>
+    </div>
+</body>
+</html>

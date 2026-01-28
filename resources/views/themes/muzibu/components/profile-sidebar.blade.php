@@ -24,17 +24,25 @@
 
         <a
             href="/profile/password"
-           
+
             class="w-full flex items-center gap-3 px-3 py-2.5 {{ $active === 'password' ? 'bg-yellow-500/20 text-yellow-400 font-medium' : 'hover:bg-white/10 text-white' }} rounded-lg transition-colors">
             <i class="fas fa-key w-5"></i>
             <span class="text-sm">Şifre Değiştir</span>
+        </a>
+
+        <a
+            href="/profile/consents"
+
+            class="w-full flex items-center gap-3 px-3 py-2.5 {{ $active === 'consents' ? 'bg-green-500/20 text-green-400 font-medium' : 'hover:bg-white/10 text-white' }} rounded-lg transition-colors">
+            <i class="fas fa-shield-check w-5"></i>
+            <span class="text-sm">KVKK Onayları</span>
         </a>
 
         <div class="h-px bg-white/10 my-2"></div>
 
         <a
             href="/profile/delete"
-           
+
             class="w-full flex items-center gap-3 px-3 py-2.5 {{ $active === 'delete' ? 'bg-red-500/30 text-red-300 font-medium' : 'hover:bg-red-500/20 text-red-400' }} rounded-lg transition-colors">
             <i class="fas fa-trash-alt w-5"></i>
             <span class="text-sm">Hesabı Sil</span>

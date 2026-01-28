@@ -127,6 +127,46 @@ class ProfileController extends Controller
     }
 
     /**
+     * Display the KVKK consents form.
+     */
+    public function consents(Request $request): View
+    {
+        return view($this->getThemeView('consents'), [
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Update KVKK consents.
+     */
+    public function updateConsents(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'marketing_accepted' => ['required', 'boolean'],
+        ]);
+
+        $user = $request->user();
+
+        $user->update([
+            'marketing_accepted' => $validated['marketing_accepted'],
+            'marketing_accepted_at' => now(),
+            'marketing_accepted_ip' => $request->ip(),
+        ]);
+
+        // KVKK onayı güncelleme log'u
+        activity()
+            ->causedBy($user)
+            ->inLog('User')
+            ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+            ->tap(function ($activity) {
+                $activity->event = 'KVKK onayları güncellendi';
+            })
+            ->log("\"{$user->name}\" KVKK onayları güncellendi");
+
+        return Redirect::route('profile.consents')->with('status', 'consents-updated');
+    }
+
+    /**
      * Update the user's password.
      */
     public function updatePassword(Request $request): RedirectResponse

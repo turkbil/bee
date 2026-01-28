@@ -19,10 +19,7 @@ class PayTRIframeService
      */
     public function prepareIframePayment(Payment $payment, array $userInfo, array $orderInfo, ?string $existingMerchantOid = null): array
     {
-        // 🔥 DEBUG: Function called - write to MULTIPLE locations
-        file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 🚀 prepareIframePayment CALLED: payment_id={$payment->payment_id}\n", FILE_APPEND);
-        file_put_contents('/tmp/paytr-debug.txt', "[" . date('Y-m-d H:i:s') . "] 🚀 prepareIframePayment CALLED: payment_id={$payment->payment_id}\n", FILE_APPEND);
-        \Log::channel('single')->emergency('🚀🚀🚀 prepareIframePayment CALLED: payment_id=' . $payment->payment_id);
+        \Log::info('PayTR prepareIframePayment called', ['payment_id' => $payment->payment_id]);
 
         // Settings'den PayTR credentials al (tenant-aware)
         $merchantId = setting('paytr_merchant_id');

@@ -11,6 +11,32 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 use Modules\Search\App\Http\Controllers\SearchPageController;
 
+// 🔥 OPCACHE RESET - Deploy sonrası otomatik cache temizleme için
+// Sadece localhost veya server'dan erişilebilir
+Route::get('/opcache-reset', function () {
+    // Güvenlik: Sadece localhost, CLI veya belirli IP'lerden
+    $allowedIps = ['127.0.0.1', '::1', request()->server('SERVER_ADDR')];
+    $clientIp = request()->ip();
+
+    // CLI'den veya localhost'tan gelen isteklere izin ver
+    $isAllowed = in_array($clientIp, $allowedIps)
+        || app()->runningInConsole()
+        || str_starts_with($clientIp, '172.') // Cloudflare
+        || str_starts_with($clientIp, '10.')  // Internal
+        || request()->header('X-Opcache-Reset-Token') === config('app.opcache_token', 'muzibu-opcache-2026');
+
+    if (!$isAllowed) {
+        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+    }
+
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+        return response()->json(['success' => true, 'message' => 'OPcache reset', 'time' => now()->toISOString()]);
+    }
+
+    return response()->json(['success' => false, 'message' => 'OPcache not available']);
+})->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
 // 🔄 CSRF TOKEN REFRESH ENDPOINT (Login page auto-refresh için)
 Route::get('/api/csrf-token', function () {
     return response()->json([
@@ -519,13 +545,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/profile/avatar', [ProfileController::class, 'avatar'])->name('profile.avatar');
     Route::get('/profile/password', [ProfileController::class, 'password'])->name('profile.password');
+    Route::get('/profile/consents', [ProfileController::class, 'consents'])->name('profile.consents');
     Route::get('/profile/delete', [ProfileController::class, 'delete'])->name('profile.delete');
-    
+
     // Profile actions
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
     Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('avatar.upload');
     Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('avatar.remove');
+    Route::post('/profile/consents', [ProfileController::class, 'updateConsents'])->name('profile.consents.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

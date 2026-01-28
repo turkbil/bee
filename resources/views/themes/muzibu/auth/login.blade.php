@@ -414,6 +414,25 @@
                 @enderror
             </div>
 
+            <!-- Phone -->
+            <div>
+                <input
+                    type="tel"
+                    name="phone"
+                    value="{{ old('phone') }}"
+                    required
+                    autocomplete="tel"
+                    class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('phone', 'register') border-red-500/50 @enderror"
+                    placeholder="Telefon numaranız (5XX XXX XX XX)"
+                >
+                @error('phone', 'register')
+                    <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
             <!-- Password -->
             <div class="relative">
                 <input

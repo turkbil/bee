@@ -142,6 +142,44 @@
             // Bireysel bilgileri temizle
             $wire.set('new_billing_profile_identity_number', '');
         }
+    },
+
+    // Page Modal State
+    showPageModal: false,
+    pageModalTitle: '',
+    pageModalContent: '',
+    loadingPageContent: false,
+
+    async openPageModal(pageId) {
+        this.showPageModal = true;
+        this.pageModalTitle = 'Yükleniyor...';
+        this.pageModalContent = '';
+        this.loadingPageContent = true;
+
+        try {
+            const response = await fetch('/api/page-content/' + pageId);
+            const data = await response.json();
+
+            if (data.success && data.data) {
+                this.pageModalTitle = data.data.title || 'Sayfa';
+                this.pageModalContent = data.data.body || '';
+            } else {
+                this.pageModalTitle = 'Hata';
+                this.pageModalContent = 'İçerik yüklenirken hata oluştu.';
+            }
+        } catch (error) {
+            console.error('Page content load error:', error);
+            this.pageModalTitle = 'Hata';
+            this.pageModalContent = 'İçerik yüklenirken hata oluştu.';
+        } finally {
+            this.loadingPageContent = false;
+        }
+    },
+
+    closePageModal() {
+        this.showPageModal = false;
+        this.pageModalTitle = '';
+        this.pageModalContent = '';
     }
 }"
 @address-saved.window="
@@ -1489,8 +1527,8 @@
                                 </div>
                             </div>
                             <span class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
-                                <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
-                                <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni kabul ediyorum.
+                                <a href="javascript:void(0)" @click.prevent="openPageModal(15)" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
+                                <a href="javascript:void(0)" @click.prevent="openPageModal(10)" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni kabul ediyorum.
                                 <span class="text-red-500">*</span>
                             </span>
                         </label>
@@ -1799,6 +1837,80 @@
         @endpush
         @endteleport
     @endif
+
+    {{-- Page Content Modal --}}
+    <div x-show="showPageModal"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+         @click.self="closePageModal()"
+         style="display: none;"
+         x-cloak>
+
+        {{-- Modal Content --}}
+        <div x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="relative w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col"
+             style="background-color: #1f2937; border: 1px solid #4b5563; max-height: calc(70vh - 20px);"
+             @click.stop>
+
+            {{-- Modal Header --}}
+            <div class="flex-shrink-0 flex items-center justify-between px-8 py-6" style="background: linear-gradient(to right, #FF6B47, #FF8C6B); border-radius: 1rem 1rem 0 0;">
+                <h3 class="text-2xl font-black text-white pr-8" x-text="pageModalTitle"></h3>
+                <button @click="closePageModal()"
+                        class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 hover:scale-110"
+                        style="background-color: rgba(255, 255, 255, 0.2); color: white;"
+                        onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.3)'"
+                        onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            {{-- Modal Body --}}
+            <div class="flex-1 overflow-y-auto px-8 pt-6 pb-20" style="max-height: calc(70vh - 180px);">
+                <div x-show="loadingPageContent" class="flex items-center justify-center py-12">
+                    <i class="fa-solid fa-spinner fa-spin text-4xl" style="color: #FF6B47;"></i>
+                </div>
+                <div x-show="!loadingPageContent"
+                     class="text-white prose prose-lg max-w-none dark:prose-invert
+                          prose-headings:text-white
+                          prose-p:text-white
+                          prose-strong:text-white
+                          prose-ul:text-white
+                          prose-ol:text-white
+                          prose-li:text-white"
+                     style="color: white;"
+                     x-html="pageModalContent">
+                </div>
+
+                <style>
+                    .prose a { color: #FF9580 !important; }
+                    .prose a:hover { color: #FFB09F !important; }
+                </style>
+            </div>
+
+            {{-- Modal Footer --}}
+            <div class="flex-shrink-0 flex items-center justify-end px-8 py-4" style="background: rgba(17, 24, 39, 0.5); border-top: 1px solid rgb(55, 65, 81);">
+                <button @click="closePageModal()"
+                        class="px-6 py-3 rounded-xl font-bold text-white transition-all duration-200 hover:scale-105"
+                        style="background: linear-gradient(to right, #FF6B47, #FF8C6B); box-shadow: 0 10px 15px -3px rgba(255, 107, 71, 0.3);"
+                        onmouseover="this.style.boxShadow='0 20px 25px -5px rgba(255, 107, 71, 0.3)'"
+                        onmouseout="this.style.boxShadow='0 10px 15px -3px rgba(255, 107, 71, 0.3)'">
+                    <i class="fa-solid fa-check mr-2"></i>
+                    Anladım
+                </button>
+            </div>
+
+        </div>
+    </div>
 
 </div>
 
